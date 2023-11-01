@@ -99,3 +99,31 @@ PS C:\Users\lukst> wsl --import Archlinux .\WSL\Archlinux .\Downloads\base-20231
 PS C:\Users\lukst> wsl -s Archlinux
 PS C:\Users\lukst> wsl
 ```
+
+Now I add my user -- this is not automated as it is with distros packaged for WSL. I also install packages, needed sooner or later.
+
+```
+# useradd -m -U myusername
+# passwd myusername
+# groupadd sudo
+# usermod -aG sudo myuser
+# pacman -Sy sudo git vi wget ca-certificates
+# visudo
+# # uncomment the line staritng with: # %sudo
+:wq
+# exit
+```
+
+```PowerShell
+PS C:\Users\lukst> wsl -u myusername
+```
+
+Now let's install GitHub CLI:
+
+```bash
+$ cd ~
+$ export VERSION=`curl  "https://api.github.com/repos/cli/cli/releases/latest" | grep '"tag_name"' | sed -E 's/.*"([^"]+)".*/\1/' | cut -c2-`
+$ wget https://github.com/cli/cli/releases/download/v${VERSION}/gh_${VERSION}_linux_amd64.tar.gz
+$ tar xvf gh_${VERSION}_linux_amd64.tar.gz
+$ sudo cp gh_${VERSION}_linux_amd64/bin/gh /usr/local/bin/
+```
