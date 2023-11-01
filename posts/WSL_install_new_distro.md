@@ -37,7 +37,9 @@ In my current setup, this failed to mount the Windows disk:
 [17385.384064] ) failed: 16
 ```
 
-Googling suggests the mounting should work when the distro is selected as default. It is also important to `wsl --shutdown`, otherwise the mounting problem doesn't get fixed, and I cannot connect to the distro from VS Code. For VSCode, [WSL tips](https://code.visualstudio.com/docs/remote/troubleshooting#_wsl-tips) mentions installing `wget` and `ca-certificates` is also required. Here I install a different distribution:
+Googling suggests the mounting should work when the distro is selected as default. It is also important to `wsl --shutdown`, otherwise the mounting problem doesn't get fixed, and I cannot connect to the distro from VS Code. P.S. Maybe, `wsl --terminate -d Debian` would suffice, I haven't checked.
+
+For VSCode, [WSL tips](https://code.visualstudio.com/docs/remote/troubleshooting#_wsl-tips) mentions installing `wget` and `ca-certificates` is also required. Here I install a different distribution:
 
 ```PowerShell
 PS C:\Users\lukst> wsl --unregister Ubuntu
@@ -111,11 +113,7 @@ Now I add my user -- this is not automated as it is with distros packaged for WS
 # visudo
 # # uncomment the line staritng with: # %sudo
 :wq
-# cd /etc
-# code wsl.conf
-[user]
-default=myuser
-# # save and quit VS Code after entering the above
+# (echo [user]; echo default=lukstafi) >& /etc/wsl.conf
 # exit
 ```
 
@@ -133,3 +131,22 @@ $ wget https://github.com/cli/cli/releases/download/v${VERSION}/gh_${VERSION}_li
 $ tar xvf gh_${VERSION}_linux_amd64.tar.gz
 $ sudo cp gh_${VERSION}_linux_amd64/bin/gh /usr/local/bin/
 ```
+
+Let's come back to Alpine and add the user.
+
+```PowerShell
+PS C:\Users\lukst> wsl -d Alpine
+# apk add adduser
+# sudo adduser -g "My User" myuser
+# apk add curl wget ca-certificates sudo
+# addgroup sudo
+# adduser lukstafi sudo
+# visudo
+# # uncomment the line staritng with: # %sudo
+:wq
+# (echo [user]; echo default=lukstafi) >& /etc/wsl.conf
+# exit
+PS C:\Users\lukst> wsl --terminate Alpine
+PS C:\Users\lukst> wsl -d Alpine
+```
+
