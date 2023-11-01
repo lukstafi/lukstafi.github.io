@@ -37,7 +37,9 @@ In my current setup, this failed to mount the Windows disk:
 [17385.384064] ) failed: 16
 ```
 
-Googling suggests the mounting should work when the distro is selected as default. It is also important to `wsl --shutdown`, otherwise the mounting problem doesn't get fixed, and I cannot connect to the distro from VS Code. P.S. Maybe, `wsl --terminate -d Debian` would suffice, I haven't checked.
+Googling suggests the mounting should work when the distro is selected as default. It is also important to `wsl --shutdown`, otherwise the mounting problem doesn't get fixed, and I cannot connect to the distro from VS Code.
+
+P.S. Maybe, `wsl --terminate -d Debian` would suffice. Selecting as default does not seem to be needed. Even when `code .` does not start VS Code, opening a new VS Code window and selecting "Connect to..." and then "Connect to WSL using distro..." works.
 
 For VSCode, [WSL tips](https://code.visualstudio.com/docs/remote/troubleshooting#_wsl-tips) mentions installing `wget` and `ca-certificates` is also required. Here I install a different distribution:
 
