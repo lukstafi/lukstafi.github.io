@@ -16,6 +16,3 @@ $ bash -c "sh <(curl -fsSL https://raw.githubusercontent.com/ocaml/opam/master/s
 $ opam init
 $ opam switch create opam-debug-5.1 --repos debug-opam="./opam-repository" 5.1.0
 ```
-
-Installing `gh` in case it is not available in the OS package repository:
-
