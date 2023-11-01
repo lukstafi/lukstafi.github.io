@@ -111,11 +111,17 @@ Now I add my user -- this is not automated as it is with distros packaged for WS
 # visudo
 # # uncomment the line staritng with: # %sudo
 :wq
+# cd /etc
+# code wsl.conf
+[user]
+default=myuser
+# # save and quit VS Code after entering the above
 # exit
 ```
 
 ```PowerShell
-PS C:\Users\lukst> wsl -u myusername
+PS C:\Users\lukst> wsl --terminate Archlinux
+PS C:\Users\lukst> wsl
 ```
 
 Now let's install GitHub CLI:
