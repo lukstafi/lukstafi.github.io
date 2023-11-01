@@ -7,7 +7,7 @@ build: [
 ```
 
 Packages (maybe) needed to debug opam-repository on a fresh OS:
-`gcc make patch bubblewrap diffutils rsync curl wget git ca-certificates`
+`gcc make patch bubblewrap diffutils rsync curl wget git ca-certificates bash`
 
 Installing opam and the opam-debug switch:
 
@@ -16,4 +16,6 @@ $ bash -c "sh <(curl -fsSL https://raw.githubusercontent.com/ocaml/opam/master/s
 $ opam init
 $ opam switch create opam-debug-5.1 --repos debug-opam="./opam-repository" 5.1.0
 ```
+
+Installing `gh` in case it is not available in the OS package repository:
 
