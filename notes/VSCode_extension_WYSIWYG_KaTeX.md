@@ -8,9 +8,22 @@ Two extensions that look relevant:
 - [Fast Unicode Math Characters](https://marketplace.visualstudio.com/items?itemName=GuidoTapia2.unicode-math-vscode&ssr=false#overview)
 - [Ultra Math Preview](https://marketplace.visualstudio.com/items?itemName=yfzhao.ultra-math-preview)
 
-The easiest way to start:
+Okay, the action plan!
 - Intercept the communication in the markdown preview, and add LaTeX code to render the cursor and a thin box around the nearest braces encompassing the cursor.
   - The actual cursor and edit actions happen in the code pane, but user's focus is in the preview pane.
 - Add snippets, keybindings for the snippets commands.
 - Add a command to cycle through alternatives of what's to the left of the cursor. Maybe don't bind it to tab (a la TeXmacs), as it might conflict with other uses.
     - E.g. $S$ -> $\Sigma$ -> $\sum$ -> $S$; $P$ -> $\Pi$ -> $\prod$ -> $P$; $f$ -> $\phi$ -> $\varphi$ -> $f$...
+- Add context-sensitive commands to extend the object at cursor to the right, bottom, left and up. In particular, it should work with tables (builtin markdown), and trees.
+  - And also table and tree specific command "delete row", and table-specific "delete column".
+- Find out what markdown plugin is best for the tree objects -- seems it's best to use [Mermaid](http://mermaid.js.org/#/). It doesn't render on GitHub, but there's:
+  - [a PanDoc filter](https://github.com/raghur/mermaid-filter)
+  - [a VS Code extension](https://github.com/mjbvz/vscode-markdown-mermaid)
+
+```mermaid
+graph TD;
+    A-->B;
+    A-->C;
+```
+
+And the name: `vsc-markmacs`
