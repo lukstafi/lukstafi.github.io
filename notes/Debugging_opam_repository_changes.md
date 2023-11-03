@@ -1,4 +1,8 @@
-[Publishing a regular project.](https://github.com/ocaml/opam-repository/blob/master/CONTRIBUTING.md)
+Publishing a regular project:
+- [opam's CONTRIBUTING](https://github.com/ocaml/opam-repository/blob/master/CONTRIBUTING.md): old version describes the full `dune-release` process.
+- [opam's documentation on Publishing](https://opam.ocaml.org/doc/Packaging.html#Publishing) describes `opam publish` and the manual process.
+- Kit-ty-kate's [release script](https://github.com/kit-ty-kate/ocaml-release-script/blob/main/release.sh) is a light-weight alternative to `dune-release` using `opam publish`.
+
 
 Hacky check os/distribution name from opam:
 
