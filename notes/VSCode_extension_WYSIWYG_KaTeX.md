@@ -27,3 +27,9 @@ graph TD;
 ```
 
 And the name: `vsc-markmacs`
+
+## P.S. 2023-11-23 -- LaTeX-aware navigation for v1.3, WYSIWYG for v2.0
+
+My initial idea of just using the preview hasn't panned out because the burden on editing is just too great: in particular, the edits land in the undo ring, breaking the undo command. On the bright side, I fixed issues with multicharacter delimiters, added skipping delimiters for navigation to previous / next character, added an alternative to previous / next line that always stops at a delimiter, and provided a nice set of LaTeX-specific delimiters and separators. This is lots of features that merit a v1.3 reelase.
+
+The plan is to work on a full-fledged WYSIWYG editor for Markdown+KaTeX+Mermaid, along the original plan of a poor man's TeXmacs replacement. Once I have some spare time; as Navi Parens v2.
