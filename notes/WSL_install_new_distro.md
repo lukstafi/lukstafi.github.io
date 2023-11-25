@@ -106,7 +106,7 @@ PS C:\Users\lukst> wsl
 
 Now I add my user -- this is not automated as it is with distros packaged for WSL. I also install packages, needed sooner or later.
 
-```
+```sh
 # useradd -m -U myusername
 # passwd myusername
 # groupadd sudo
@@ -126,7 +126,7 @@ PS C:\Users\lukst> wsl
 
 Now let's install GitHub CLI:
 
-```bash
+```sh
 $ cd ~
 $ export VERSION=`curl  "https://api.github.com/repos/cli/cli/releases/latest" | grep '"tag_name"' | sed -E 's/.*"([^"]+)".*/\1/' | cut -c2-`
 $ wget https://github.com/cli/cli/releases/download/v${VERSION}/gh_${VERSION}_linux_amd64.tar.gz
@@ -152,3 +152,15 @@ PS C:\Users\lukst> wsl --terminate Alpine
 PS C:\Users\lukst> wsl -d Alpine
 ```
 
+## Some more distro sources
+
+I downloaded [Debian Trixie i.e. 13 from here](https://github.com/debuerreotype/docker-debian-artifacts/blob/feccbb81c63226a8bf2e38315fc025a91fdd95dc/trixie/rootfs.tar.xz).
+Then: `wsl --import Debian_Trixie .\WSL\debian_trixie .\Downloads\debian-trixie-rootfs.tar.xz`
+
+Unfortunately this way of installing Trixie gives a poor terminal experience. Also, `opam` cannot infer the `os-version`.
+
+## Package managers
+
+Packages to install:
+
+* Debian, Ubuntu: `sudo apt-get install gcc make patch bubblewrap diffutils rsync curl wget git ca-certificates bash unzip gh`
