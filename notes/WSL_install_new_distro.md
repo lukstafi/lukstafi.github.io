@@ -163,4 +163,11 @@ Unfortunately this way of installing Trixie gives a poor terminal experience. Al
 
 Packages to install:
 
-* Debian, Ubuntu: `sudo apt-get install gcc make patch bubblewrap diffutils rsync curl wget git ca-certificates bash unzip gh`
+* Debian, Ubuntu: `sudo apt-get install gcc make patch bubblewrap diffutils rsync curl wget git ca-certificates bash unzip`
+
+To [install them on an unsupported Ubuntu](https://medium.com/enekochan/install-software-in-unsupported-ubuntu-versions-with-apt-get-ea9b5bd18d2) version:
+
+```bash
+$ sudo sed -i -e 's/archive.ubuntu.com|security.ubuntu.com/old-releases.ubuntu.com/g' /etc/apt/sources.list
+$ sudo apt-get update
+```

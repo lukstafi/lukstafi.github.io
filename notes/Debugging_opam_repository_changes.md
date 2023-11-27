@@ -7,9 +7,21 @@ Publishing a regular project:
 - Kit-ty-kate's [release script](https://github.com/kit-ty-kate/ocaml-release-script/blob/main/release.sh) is a light-weight alternative to `dune-release` using `opam publish`.
 
 Check os/distribution/version from opam among other things: `$ opam var`
+Also a hacky way to find "once-for-all" the CI targets:
+
+```opam
+  ["sh" "-exc" "echo os %{os}% family %{os-family}% distrib %{os-distribution}% ver %{os-version} ; abort"]
+```
 
 Packages (maybe) needed to debug opam-repository on a fresh OS:
 `gcc make patch bubblewrap diffutils rsync curl wget git ca-certificates bash gh unzip`
+
+To [install them on an unsupported Ubuntu](https://medium.com/enekochan/install-software-in-unsupported-ubuntu-versions-with-apt-get-ea9b5bd18d2) version:
+
+```bash
+$ sudo sed -i -e 's/archive.ubuntu.com|security.ubuntu.com/old-releases.ubuntu.com/g' /etc/apt/sources.list
+$ sudo apt-get update
+```
 
 Installing opam and the opam-debug switch:
 
