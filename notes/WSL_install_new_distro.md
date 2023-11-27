@@ -159,6 +159,14 @@ Then: `wsl --import Debian_Trixie .\WSL\debian_trixie .\Downloads\debian-trixie-
 
 Unfortunately this way of installing Trixie gives a poor terminal experience. Also, `opam` cannot infer the `os-version`.
 
+There is [a whole project dedicated to NixOS on WSL](https://github.com/nix-community/NixOS-WSL), I downloaded [nixos-wsl.tar.gz](https://github.com/nix-community/NixOS-WSL/releases/download/23.5.5.2/nixos-wsl.tar.gz), then ([this tutorial / configuration](https://github.com/LGUG2Z/nixos-wsl-starter) was helpful):
+
+```shell
+> wsl --import NixOS .\WSL\NixOS\ .\Downloads\nixos-wsl.tar.gz --version 2
+> wsl -d NixOS
+$ sudo nix-channel --add https://nixos.org/channels/nixos-23.05 nixos
+````
+
 ## Package managers
 
 Packages to install:
@@ -170,4 +178,25 @@ To [install them on an unsupported Ubuntu](https://medium.com/enekochan/install-
 ```bash
 $ sudo sed -i -e 's/archive.ubuntu.com|security.ubuntu.com/old-releases.ubuntu.com/g' /etc/apt/sources.list
 $ sudo apt-get update
+```
+
+* Arch: `sudo pacman -Sy gcc make patch bubblewrap diffutils rsync curl wget git ca-certificates bash unzip`
+* Alpine: `sudo apk add gcc make patch bubblewrap diffutils rsync curl wget git ca-certificates bash unzip`
+* OracleLinux: `sudo yum install gcc make patch bubblewrap diffutils rsync curl wget git ca-certificates bash unzip`
+* openSUSE: `sudo zypper in gcc make patch bubblewrap diffutils rsync curl wget git ca-certificates bash unzip`
+* NixOS:
+
+```shell
+nix-shell -p gcc
+nix-shell -p gnumake
+nix-shell -p patch
+nix-shell -p bubblewrap
+nix-shell -p diffutils
+nix-shell -p rsync
+nix-shell -p curl
+nix-shell -p wget
+nix-shell -p git
+nix-shell -p cacert
+nix-shell -p bash
+nix-shell -p unzip
 ```
