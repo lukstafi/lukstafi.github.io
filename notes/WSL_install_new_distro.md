@@ -171,6 +171,8 @@ $ sudo nix-channel --add https://nixos.org/channels/nixos-23.05 nixos
 
 I followed the installation instructions on [nomadbsd.org](https://www.nomadbsd.org/download.html). Then I needed to disable _Secure Boot_ in BIOS. You can get to BIOS settings by maybe pressing F2 on startup, or via _Windows / Settings / Windows Update / Advanced Options / Recovery / Advanced startup: Restart now_. Then I needed to disable auto-detection of graphics in NomadBSD: press 7 on startup for settings, then 6, (then 7 for verbose logging,) then 1, then 1. If the computer turns off at this moment, repeat this again (the settings are not saved).
 
+The default shell of NomadBSD was hanging for me, fortunately entering `bash` resolved this!
+
 ## Package managers
 
 Packages to install:
