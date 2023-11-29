@@ -165,7 +165,11 @@ There is [a whole project dedicated to NixOS on WSL](https://github.com/nix-comm
 > wsl --import NixOS .\WSL\NixOS\ .\Downloads\nixos-wsl.tar.gz --version 2
 > wsl -d NixOS
 $ sudo nix-channel --add https://nixos.org/channels/nixos-23.05 nixos
-````
+```
+
+## Installing FreeBSD via NomadBSD on a USB stick
+
+I followed the installation instructions on [nomadbsd.org](https://www.nomadbsd.org/download.html). Then I needed to disable _Secure Boot_ in BIOS. You can get to BIOS settings by maybe pressing F2 on startup, or via _Windows / Settings / Windows Update / Advanced Options / Recovery / Advanced startup: Restart now_. Then I needed to disable auto-detection of graphics in NomadBSD: press 7 on startup for settings, then 6, (then 7 for verbose logging,) then 1, then 1. If the computer turns off at this moment, repeat this again (the settings are not saved).
 
 ## Package managers
 
@@ -200,3 +204,5 @@ nix-shell -p cacert
 nix-shell -p bash
 nix-shell -p unzip
 ```
+
+* FreeBSD: `sudo pkg install gcc gmake patch diffutils rsync curl wget git bash unzip`
