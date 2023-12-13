@@ -167,7 +167,7 @@ There is [a whole project dedicated to NixOS on WSL](https://github.com/nix-comm
 $ sudo nix-channel --add https://nixos.org/channels/nixos-23.05 nixos
 ```
 
-Installing [Linux Mint for WSL2](https://github.com/sileshn/LinuxmintWSL2) is very easy, because SileshN's project has its own [Windows installer](https://github.com/sileshn/LinuxmintWSL2/releases) (archived together with the `rootfs.tar.gz` image). Then just: `wsl -d Mint`, it will interactively setup a new user.
+Installing [Linux Mint for WSL2](https://github.com/sileshn/LinuxmintWSL2) is very easy, because SileshN's project has its own [Windows installer](https://github.com/sileshn/LinuxmintWSL2/releases) (archived together with the `rootfs.tar.gz` image). Then just: `wsl -d Mint`, it will interactively setup a new user. But the installer will not let you install multiple versions of Mint, so to install another parallel version you can [download an older release](https://github.com/sileshn/LinuxmintWSL2/releases), unpack it, and use `wsl --import` as above.
 
 ## Installing FreeBSD via NomadBSD on a USB stick
 
@@ -179,7 +179,7 @@ The default shell of NomadBSD was hanging for me, fortunately entering `bash` re
 
 Packages to install:
 
-* Debian, Ubuntu: `sudo apt-get install gcc make patch bubblewrap diffutils rsync curl wget git ca-certificates bash unzip bzip2`
+* Debian, Ubuntu: `sudo apt-get install gcc make patch bubblewrap diffutils rsync curl wget git ca-certificates bash unzip bzip2 gh`
 
 To [install them on an unsupported Ubuntu](https://medium.com/enekochan/install-software-in-unsupported-ubuntu-versions-with-apt-get-ea9b5bd18d2) version:
 
