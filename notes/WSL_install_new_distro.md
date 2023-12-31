@@ -209,4 +209,4 @@ nix-shell -p bash
 nix-shell -p unzip
 ```
 
-* FreeBSD: `sudo pkg install gcc gmake patch diffutils rsync curl wget git bash unzip`
+* FreeBSD: `sudo pkg install gcc gmake patch diffutils rsync curl wget git bash unzip gh`
