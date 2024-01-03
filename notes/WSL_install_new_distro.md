@@ -186,6 +186,19 @@ Adding the user does not suport `sudo`, so I logged in as root, `pkg install sud
 `pw group add sudo`, `pw group mod sudo -m lukstafi`, `pkg install vim` -- this also installs/enables `visudo`.
 Now to install `opam`, I did `cd /usr/ports/devel/ocaml-opam; sudo make install`. That asked me with a nice UI to configure many of the dependencies.
 
+Turns out going directly for `make install` was a mistake. I should have [Build port but install dependencies with pkg](https://forums.freebsd.org/threads/build-port-but-install-dependencies-with-pkg.54447/). Installing everything from source takes a day (still running).
+Quoting spky:
+
+> In the ports directory I run
+> `make run-depends-list | sort -n > ~/d-run`
+> and then
+> `make build-depends-list | sort -n > ~/d-build`
+>
+> Then I can diff the output:
+> `diff ~/d-run ~/d-build`
+>
+> First make sure that the required run-depends are installed, then I run pkg add on the packages from the diff output, run make install clean and then run pkg remove on the diff output again. Finally some pkg autoremove to clean up.
+
 ## Package managers
 
 Packages to install:
