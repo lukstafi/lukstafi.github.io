@@ -169,7 +169,7 @@ $ sudo nix-channel --add https://nixos.org/channels/nixos-23.05 nixos
 
 Installing [Linux Mint for WSL2](https://github.com/sileshn/LinuxmintWSL2) is very easy, because SileshN's project has its own [Windows installer](https://github.com/sileshn/LinuxmintWSL2/releases) (archived together with the `rootfs.tar.gz` image). Then just: `wsl -d Mint`, it will interactively setup a new user. But the installer will not let you install multiple versions of Mint, so to install another parallel version you can [download an older release](https://github.com/sileshn/LinuxmintWSL2/releases), unpack it, and use `wsl --import` as above.
 
-## Installing FreeBSD via NomadBSD on a USB stick
+## Installing FreeBSD (USB-only NomadBSD or FreeBSD on the disk) via a USB stick
 
 I followed the installation instructions on [nomadbsd.org](https://www.nomadbsd.org/download.html). Then I needed to disable _Secure Boot_ in BIOS. You can get to BIOS settings by maybe pressing F2 on startup, or via _Windows / Settings / Windows Update / Advanced Options / Recovery / Advanced startup: Restart now_. Then I needed to disable auto-detection of graphics in NomadBSD: press 7 on startup for settings, then 6, (then 7 for verbose logging,) then 1, then 1. If the computer turns off at this moment, repeat this again (the settings are not saved).
 
