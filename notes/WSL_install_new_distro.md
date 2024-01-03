@@ -175,6 +175,17 @@ I followed the installation instructions on [nomadbsd.org](https://www.nomadbsd.
 
 The default shell of NomadBSD was hanging for me, fortunately entering `bash` resolved this!
 
+NomadBSD was not really working for me, so I decided to install FreeBSD proper.
+[Following instructions](https://docs.freebsd.org/en/books/handbook/bsdinstall/), I downloaded
+[Win32 Disk Imager](https://sourceforge.net/projects/win32diskimager/files/latest/download),
+a memstick image from [BSD ISO Images](https://download.freebsd.org/releases/amd64/amd64/ISO-IMAGES/).
+I freed up some disk space in Windows Disk Manager, stareted the install.
+I [chose UFS](https://forums.freebsd.org/threads/ufs-vs-zfs.85941/). I installed `ports`.
+I tried to install WiFi but failed, so I picked the LAN connection.
+Adding the user does not suport `sudo`, so I logged in as root, `pkg install sudo`,
+`pw group add sudo`, `pw group mod sudo -m lukstafi`, `pkg install vim` -- this also installs/enables `visudo`.
+Now to install `opam`, I did `cd /usr/ports/devel/ocaml-opam; sudo make install`. That asked me with a nice UI to configure many of the dependencies.
+
 ## Package managers
 
 Packages to install:
