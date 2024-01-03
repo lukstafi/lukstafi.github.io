@@ -184,20 +184,10 @@ I [chose UFS](https://forums.freebsd.org/threads/ufs-vs-zfs.85941/). I installed
 I tried to install WiFi but failed, so I picked the LAN connection.
 Adding the user does not suport `sudo`, so I logged in as root, `pkg install sudo`,
 `pw group add sudo`, `pw group mod sudo -m lukstafi`, `pkg install vim` -- this also installs/enables `visudo`.
-Now to install `opam`, I did `cd /usr/ports/devel/ocaml-opam; sudo make install`. That asked me with a nice UI to configure many of the dependencies.
 
-Turns out going directly for `make install` was a mistake. I should have [Build port but install dependencies with pkg](https://forums.freebsd.org/threads/build-port-but-install-dependencies-with-pkg.54447/). Installing everything from source takes a day (still running).
-Quoting spky:
+Now to install `opam`, I did `cd /usr/ports/devel/ocaml-opam; sudo make install` -- don't do this! Using both ports and packages can potentially mess up things. (It's possible to [Build port but install dependencies with pkg](https://forums.freebsd.org/threads/build-port-but-install-dependencies-with-pkg.54447/). Installing everything from source takes ~ a day?) In the end, I gave up and run `sudo pkg install ocaml-opam`. Then I faced problems with X11 and re-installed everything.
 
-> In the ports directory I run
-> `make run-depends-list | sort -n > ~/d-run`
-> and then
-> `make build-depends-list | sort -n > ~/d-build`
->
-> Then I can diff the output:
-> `diff ~/d-run ~/d-build`
->
-> First make sure that the required run-depends are installed, then I run pkg add on the packages from the diff output, run make install clean and then run pkg remove on the diff output again. Finally some pkg autoremove to clean up.
+Next, setting up a GUI Window Manager, on top of either [X11](https://docs.freebsd.org/en/books/handbook/x11/) or [Wayland](https://docs.freebsd.org/en/books/handbook/wayland/). I tried lots of things but nothing worked. TO BE CONTINUED?
 
 ## Package managers
 
