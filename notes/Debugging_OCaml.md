@@ -8,3 +8,4 @@ As a warm-up, googling:
   * [Deterministically debugging concurrent GC bugs with rr](https://kcsrk.info/ocaml/multicore/rr/2019/04/28/0000-rr-debugging/)
   * [15 minutes tutorial of GDB](https://www.youtube.com/watch?v=PorfLSr3DDI)
 * [Javier Chávarri's _Profiling Dune Builds_](https://tech.ahrefs.com/profiling-dune-builds-a8de589ec268) -- a brief coverage of `perf` and `memtrace`
+* [vg-b's workaround for some `perf` problems](https://discuss.ocaml.org/t/profiling-ocaml-programs/14033/4) (the need for `ocaml-option-fp`)
