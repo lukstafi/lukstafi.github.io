@@ -11,6 +11,7 @@
 * [Javier Chávarri's _Profiling Dune Builds_](https://tech.ahrefs.com/profiling-dune-builds-a8de589ec268) -- a brief coverage of `perf` and `memtrace`
 * [vg-b's workaround for some `perf` problems](https://discuss.ocaml.org/t/profiling-ocaml-programs/14033/4) (the need for `ocaml-option-fp`)
 * [Tianyi Song's _Profiling OCaml programs the quick and dirty way_](https://tsong.co/blog/profiling-ocaml-quick-dirty/) about using [Landmarks](https://github.com/LexiFi/landmarks). Has precise timing (CPU cycles), both manual and automatic annotation (PPX based), callgraph visualization.
+* [Debugging OCaml with Emacs](https://lambdafoo.com/posts/2024-03-25-ocaml-debugging-with-emacs.html) -- setting up bytecode and native debugging.
 
 ## Don't forget
 
