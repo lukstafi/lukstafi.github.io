@@ -2,7 +2,7 @@
 
 ## Recent work
 
-- <sup>2024-12-28</sup>[Mind Maps January 2025](mind_maps/January_2025.pdf) -- Apple's MLX, maintaining habits, Andrej Karpathy's educational resources, llm.c (optimized no-framework GPT2), CUDA warp-level primitives and cooperative groups, cuDNN (optimized NNs library / framework), MPI (Message Passing Interface), NCCL (NVIDIA Collective Communications Library similar to MPI), Caten.
+- <sup>2025-02-01</sup>[Mind Maps January 2025](mind_maps/January_2025.pdf) -- Apple's MLX, maintaining habits, Andrej Karpathy's educational resources, llm.c (optimized no-framework GPT2), CUDA warp-level primitives and cooperative groups, cuDNN (optimized NNs library / framework), MPI (Message Passing Interface), NCCL (NVIDIA Collective Communications Library similar to MPI), Caten.
 - <sup>2024-12-28</sup>[Mind Maps December 2024](mind_maps/December_2024.pdf) -- Keras, JAX distributed, XLA.
 - <sup>2024-11-28</sup>[Mind Maps November 2024](mind_maps/November_2024.pdf) -- OCANNL memory management, OCANNL usability, low prec. numbers, pipeline and model parallelism, tinygrad (program search, shape tracker), JAX Pallas kernels, Triton.
 - <sup>2024-02-16</sup><sub>2025-01-16</sub>[Debugging and Profiling OCaml](notes/Debugging_OCaml.md) -- links and a couple tips.
