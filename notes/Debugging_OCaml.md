@@ -12,6 +12,8 @@
 * [vg-b's workaround for some `perf` problems](https://discuss.ocaml.org/t/profiling-ocaml-programs/14033/4) (the need for `ocaml-option-fp`)
 * [Tianyi Song's _Profiling OCaml programs the quick and dirty way_](https://tsong.co/blog/profiling-ocaml-quick-dirty/) about using [Landmarks](https://github.com/LexiFi/landmarks). Has precise timing (CPU cycles), both manual and automatic annotation (PPX based), callgraph visualization.
 * [Debugging OCaml with Emacs](https://lambdafoo.com/posts/2024-03-25-ocaml-debugging-with-emacs.html) -- setting up bytecode and native debugging.
+* [Bytecode debugging in OCaml 5.3](https://discuss.ocaml.org/t/bytecode-debugging-in-ocaml-5-3/16177)
+* [Vincent Laviron](https://discuss.ocaml.org/t/bytecode-debugging-in-ocaml-5-3/16177/2?u=lukstafi) brings up [rr as an alternative to gdb](https://rr-project.org/). It's Linux only, it combines native debugging like GDB with tracing.
 
 ## Don't forget
 
