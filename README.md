@@ -2,6 +2,7 @@
 
 ## Recent work
 
+- <sup>2025-03-31</sup>[Mind Maps March 2025](mind_maps/March_2025.pdf) -- CUTLASS, CuTe Layout Algebra deep dive, The Ultra-Scale Playbook sneak peek, picotron.
 - <sup>2025-03-01</sup>[Mind Maps February 2025](mind_maps/February_2025.pdf) -- simplifying OCANNL with gradient tensors, more in-depth MLIR, deep dive on polyhedral optimization for loop program transformations / polyhedral schedulers-compilers, Integer Set Library, machine learning loop optimizations in Tiramisu and Halide, matrix multiplication: on CPU / in CUDA / on AMD GPUs, the FineWeb dataset.
 - <sup>2025-02-01</sup>[Mind Maps January 2025](mind_maps/January_2025.pdf) -- Apple's MLX, maintaining habits, Andrej Karpathy's educational resources, llm.c (optimized no-framework GPT2), CUDA warp-level primitives and cooperative groups, cuDNN (optimized NNs library / framework), MPI (Message Passing Interface), NCCL (NVIDIA Collective Communications Library similar to MPI), Caten.
 - <sup>2024-12-28</sup>[Mind Maps December 2024](mind_maps/December_2024.pdf) -- Keras, JAX distributed, XLA.
