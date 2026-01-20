@@ -7,11 +7,11 @@ date: 2026-01-20
 
 ## Note to the reader (re thesis context)
 
-This survey is written around Section 4.2 of your thesis (“Constraint Abduction”), with emphasis on Section 4.2.4.1 (“Abduction for Terms”) and the **JCAQP over the free term algebra** \(\mathcal{T}(\mathcal{F})\) problem. It is feasible to write a coherent survey from the thesis text plus the local paper extracts you collected. However, if you want (i) precise alignment with your appendices (e.g. the referenced proofs/algorithms in Sections A.2.2 / B.2.x) and (ii) a fully accurate bibliography mapping your bracketed citations \([9],[11],[27],[29],\dots\) to concrete venues/years/pages, then yes: providing the complete PDF (including appendices + full reference list) would be helpful.
+This survey is written around Łukasz Stafiniak’s PhD thesis *GADTs for Reconstruction of Invariants and Postconditions* (University of Wrocław, 2015), focusing on Section 4.2 (“Constraint Abduction”), especially Section 4.2.4.1 (“Abduction for Terms”) and the **JCAQP over the free term algebra** \(\mathcal{T}(\mathcal{F})\) problem. The bibliography and appendix pointers (A.2.2, B.2.2, B.2.3) are aligned to the thesis’ full PDF.
 
 ## Abstract
 
-Constraint abduction asks for “missing hypotheses” \(A\) such that \((D \land A) \Rightarrow C\) holds in a fixed model \(\mathcal{M}\), while \(D \land A\) remains satisfiable. In verification and type inference, the missing hypotheses are not arbitrary formulas but *constraints* drawn from a solver domain (e.g. equations over a term algebra, Presburger arithmetic, or combinations thereof). Section 4.2 of the thesis extraction introduces **Joint Constraint Abduction under a Quantifier Prefix (JCAQP)**, motivated by type-inference-driven invariant generation and by implication constraints in GADT typing. This survey focuses on the hard core case where the background model is the **free term algebra** \(\mathcal{T}(\mathcal{F})\) and the abducted constraints are (existentially quantified) conjunctions of equations. We review the landscape of Herbrand constraint abduction (Maher; Maher & Huang), the jump from simple to joint abduction, the extra complications caused by quantifier prefixes, and the delicate role of Herbrandization/Skolemization in a *fixed-model* setting. We then address the thesis-motivated question of how closely the JCAQP\(_{\mathcal{T}(\mathcal{F})}\) existence problem relates to **Simultaneous Rigid \(E\)-Unification (SREU)** (Degtyarev–Voronkov; Voronkov), and what can (and likely cannot) be reduced to what. Finally, we summarize 2014–2026 follow-up work on closely related forms of abduction—especially SMT/SyGuS “abduction as a service” and verification-oriented abduction—and discuss what (if anything) this implies for inference problems more expressive than OutsideIn-style approaches to GADTs.
+Constraint abduction asks for “missing hypotheses” \(A\) such that \((D \land A) \Rightarrow C\) holds in a fixed model \(\mathcal{M}\), while \(D \land A\) remains satisfiable. In verification and type inference, the missing hypotheses are not arbitrary formulas but *constraints* drawn from a solver domain (e.g. equations over a term algebra, Presburger arithmetic, or combinations thereof). Stafiniak (2015, Section 4.2) introduces **Joint Constraint Abduction under a Quantifier Prefix (JCAQP)**, motivated by type-inference-driven invariant generation and by implication constraints in GADT typing. This survey focuses on the hard core case where the background model is the **free term algebra** \(\mathcal{T}(\mathcal{F})\) and the abducted constraints are (existentially quantified) conjunctions of equations. We review the landscape of Herbrand constraint abduction (Maher; Maher & Huang), the jump from simple to joint abduction, the extra complications caused by quantifier prefixes, and the delicate role of Herbrandization/Skolemization in a *fixed-model* setting. We then address the thesis-motivated question of how closely the JCAQP\(_{\mathcal{T}(\mathcal{F})}\) existence problem relates to **Simultaneous Rigid \(E\)-Unification (SREU)** (Degtyarev–Voronkov; Voronkov), and what can (and likely cannot) be reduced to what. Finally, we summarize 2014–2026 follow-up work on closely related forms of abduction—especially SMT/SyGuS “abduction as a service” and verification-oriented abduction—and discuss what (if anything) this implies for inference problems more expressive than OutsideIn-style approaches to GADTs.
 
 ## 1. Problem family and motivations
 
@@ -23,7 +23,7 @@ Classical (logical) abduction is usually phrased as: given a background theory \
 - **consistency:** \(\mathcal{M} \models \exists \mathrm{FV}(D,A).\; D \land A\),
 - and \(A\) belongs to a solver-friendly constraint language (often existentially quantified conjunctions of atoms).
 
-The thesis extraction adopts this fixed-model stance explicitly and emphasizes that it interacts nontrivially with quantifiers (Section 4.2 intro; see also the example in Section 4.2.4.1 on why Herbrandization can be unsound for a fixed model).
+Stafiniak (2015) adopts this fixed-model stance explicitly and emphasizes that it interacts nontrivially with quantifiers (Section 4.2 intro; see also the example in Section 4.2.4.1 on why Herbrandization can be unsound for a fixed model).
 
 ### 1.2 Why joint abduction, and why quantifier prefixes?
 
@@ -46,7 +46,7 @@ The free term algebra \(\mathcal{T}(\mathcal{F})\) over signature \(\mathcal{F}\
 
 Two distinct “hardness boundaries” are easy to conflate here:
 
-1. **Validity/satisfiability of a *given* quantified formula** over \(\mathcal{T}(\mathcal{F})\) (a first-order decision problem). For many fragments, this is decidable (e.g. classical results by Comon and the tree-automata tradition are cited in your thesis as [9]).
+1. **Validity/satisfiability of a *given* quantified formula** over \(\mathcal{T}(\mathcal{F})\) (a first-order decision problem). For many fragments, this is decidable (e.g. Comon’s survey “Disunification: a survey”, 1991, and the tree-automata tradition).
 2. **Abduction** over \(\mathcal{T}(\mathcal{F})\), which is a *second-order* search problem: we are not merely checking a formula, we are synthesizing a constraint \(A\) that makes multiple implications valid while remaining satisfiable.
 
 It is the second boundary that is at the core of JCAQP\(_{\mathcal{T}(\mathcal{F})}\).
@@ -80,7 +80,7 @@ However, the thesis’ JCAQP focus is strictly broader: it targets *quantifier p
 
 ### 3.1 JCAQP vs the first-order decision problem
 
-Your thesis distinguishes (implicitly but crucially) between:
+Stafiniak (2015) distinguishes (implicitly but crucially) between:
 
 - checking \(\mathcal{T}(\mathcal{F}) \models Q:\bigwedge_i(D_i \Rightarrow C_i)\), which is a first-order problem (cited as decidable by Comon in the extraction), and
 - finding \(A\) such that \(\mathcal{T}(\mathcal{F}) \models \bigwedge_i (D_i \land A \Rightarrow C_i)\) plus validity/consistency/no-escaping.
@@ -89,12 +89,12 @@ Even if the *decision* problem is decidable, the abduction problem can remain op
 
 ### 3.2 Why Herbrandization/Skolemization must be treated with suspicion here
 
-Section 4.2 of the thesis extraction makes a sharp point that is easy to miss if one comes from automated deduction rather than fixed-model constraints:
+Section 4.2 of Stafiniak (2015) makes a sharp point that is easy to miss if one comes from automated deduction rather than fixed-model constraints:
 
 - **Herbrandization and Skolemization are transformations at the level of logical consequence**, often used to eliminate quantifiers by moving to a Herbrand universe with additional function symbols.
 - In a **fixed model \(\mathcal{M}\)** (here \(\mathcal{T}(\mathcal{F})\) or a multi-sorted combination built on it), these transformations are **not semantics-preserving**: they introduce new uninterpreted function symbols and thus do not yield equivalent formulas *in that model*.
 
-The thesis’ illustrative counterexample (Section 4.2.4.1) shows that Herbrandization can change a formula’s meaning when interpreted in \(\mathcal{T}(\mathcal{F})\): a premise that is unsatisfiable in \(\mathcal{T}(\mathcal{F})\) (“\(a \doteq b(x)\)”) collapses an implication away, while Herbrandization/Skolemization can turn it into a statement that effectively forces a particular instantiation (e.g. \(\varphi(a)\)).
+Stafiniak’s illustrative counterexample (Section 4.2.4.1) shows that Herbrandization can change a formula’s meaning when interpreted in \(\mathcal{T}(\mathcal{F})\): a premise that is unsatisfiable in \(\mathcal{T}(\mathcal{F})\) (“\(a \doteq b(x)\)”) collapses an implication away, while Herbrandization/Skolemization can turn it into a statement that effectively forces a particular instantiation (e.g. \(\varphi(a)\)).
 
 **For invariant synthesis, this is the core reason you typically want to reason under the quantifier prefix rather than Skolemize it away:** Skolem functions represent *witnesses that may depend on universals*; but invariants (and types) are usually required to live in a constraint language that does **not** admit arbitrary fresh function symbols, and—in the fixed-model reading—adding such symbols changes the model and thus changes what it means for an abduction answer to be relevant/consistent.
 
@@ -105,7 +105,7 @@ Even if one could justify Skolemization in a given setting (e.g. by switching to
 - Skolem functions effectively *name* dependencies. In invariant generation, this often yields solutions that are correct only because they smuggle in a new, uninterpreted function capturing “the witness choice”.
 - Those solutions are not expressible in the intended target language (program invariants, type constraints, etc.), and they can destroy generality: instead of finding a relational invariant under \(Q\), you get a functional witness that is an artifact of the transformation.
 
-This is exactly the thesis’ motivation for keeping quantification explicit and adding “no escaping variables” constraints to control dependency.
+This is exactly Stafiniak’s motivation for keeping quantification explicit and adding “no escaping variables” constraints to control dependency.
 
 ## 4. Relation to SREU and the “rigid / intuitionistic” boundary
 
@@ -119,7 +119,7 @@ This is exactly the thesis’ motivation for keeping quantification explicit and
 
 ### 4.2 The thesis claim: JAQP (logic) is equivalent to SREU “by Herbrandization”
 
-Section 4.2.4.1 states: the **JAQP problem for first-order logic with function symbols and equality** is undecidable because it is equivalent—*via Herbrandization*—to SREU; moreover the existence of (JCAQP/JAQP-style) answers coincides with intuitionistic satisfiability.
+Stafiniak (2015, Section 4.2.4.1) states: the **JAQP problem for first-order logic with function symbols and equality** is undecidable because it is equivalent—*via Herbrandization*—to SREU; moreover the existence of (JCAQP/JAQP-style) answers coincides with intuitionistic satisfiability.
 
 The important nuance for the present survey is that this equivalence is *not* an immediate statement about JCAQP over the fixed model \(\mathcal{T}(\mathcal{F})\). It is about a proof-theoretic/logical reading where Herbrandization is admissible as part of the meta-theory.
 
@@ -130,10 +130,10 @@ Your question (“Can SREU be reduced to JCAQP over \(\mathcal{T}(\mathcal{F})\)
 What we can say with high confidence from the material at hand:
 
 1. **SREU \(\leftrightarrow\) JAQP is a standard equivalence in the automated deduction / intuitionistic provability literature, and the thesis uses it explicitly.**
-2. **A direct reduction from SREU to JCAQP\(_{\mathcal{T}(\mathcal{F})}\)** would be extremely consequential: it would immediately resolve the (currently “unknown” in your thesis extraction) decidability status of JCAQP over term algebras in the negative (for sufficiently expressive signatures), unless the reduction relies on changing the model or signature in a way that is not admissible in the fixed-model setting.
+2. **A direct reduction from SREU to JCAQP\(_{\mathcal{T}(\mathcal{F})}\)** would be extremely consequential: it would immediately resolve the (currently “unknown” in Stafiniak 2015) decidability status of JCAQP over term algebras in the negative (for sufficiently expressive signatures), unless the reduction relies on changing the model or signature in a way that is not admissible in the fixed-model setting.
 3. **The obstacle is exactly the one emphasized in Section 4.2’s introduction and in Section 4.2.4.1:** the reduction that goes “by Herbrandization” moves quantifiers into function symbols that are *uninterpreted with respect to the original model*. JCAQP\(_{\mathcal{T}(\mathcal{F})}\) is evaluated in a fixed \(\mathcal{T}(\mathcal{F})\), so that step is not semantics-preserving.
 
-So: **as stated (fixed model \(\mathcal{T}(\mathcal{F})\), fixed signature \(\mathcal{F}\), abducted constraints are equations over that algebra), a clean published reduction SREU \(\leq\) JCAQP\(_{\mathcal{T}(\mathcal{F})}\) is not something the thesis extraction provides, and it is plausibly open.**
+So: **as stated (fixed model \(\mathcal{T}(\mathcal{F})\), fixed signature \(\mathcal{F}\), abducted constraints are equations over that algebra), a clean published reduction SREU \(\leq\) JCAQP\(_{\mathcal{T}(\mathcal{F})}\) is not something Stafiniak (2015) establishes, and it is plausibly open.**
 
 There *are* two ways one might try to get a reduction “in spirit”, each with a cost:
 
@@ -162,13 +162,13 @@ From the excerpts at hand, a conservative conclusion is:
 
 Your question frames a common tension: “Do we really need to avoid Herbrandization/Skolem constraints and reason under the quantifier prefix?”
 
-In the fixed-model constraint-abduction setting of Section 4.2, the answer is: **yes, if the goal is to preserve semantics and keep solutions in the intended constraint language.** More concretely:
+In the fixed-model constraint-abduction setting of Stafiniak (2015, Section 4.2), the answer is: **yes, if the goal is to preserve semantics and keep solutions in the intended constraint language.** More concretely:
 
-1. **Non-equivalence in a fixed model:** Skolemization/Herbrandization does not, in general, preserve equivalence in \(\mathcal{T}(\mathcal{F})\) (thesis Section 4.2 intro and 4.2.4.1 counterexample).
+1. **Non-equivalence in a fixed model:** Skolemization/Herbrandization does not, in general, preserve equivalence in \(\mathcal{T}(\mathcal{F})\) (Stafiniak 2015, Section 4.2 intro and Section 4.2.4.1 counterexample).
 2. **Witness functions are not admissible constraints:** invariants and types typically must be expressible using the original constructors/relations. Skolem functions introduce extra symbols that cannot be interpreted as program-level structure.
 3. **Dependency control is the point:** in a prefix \(Q\), an existential can depend only on universals to its left; this dependency discipline is precisely what the “no escaping variables” condition enforces for abduced constraints involving invariant parameters. Skolemization replaces that discipline by explicit function symbols, which is a different representation that you may not want—and, in a fixed model, may not even be meaningful.
 
-So, in the thesis’ setting you are not “wrong” to avoid Herbrandization; rather, the avoidance is a principled response to the fixed-model semantics and the intended language of solutions.
+So, in Stafiniak’s fixed-model setting you are not “wrong” to avoid Herbrandization; rather, the avoidance is a principled response to the fixed-model semantics and the intended language of solutions.
 
 ## 6. Does the Skolem/Herbrandization issue apply to Sulzmann et al.?
 
@@ -346,10 +346,14 @@ If you share the full thesis PDF (especially appendices and the exact formal def
 
 ## References
 
-- Isil Dillig, Thomas Dillig, Boyang Li, Ken McMillan. “Inductive Invariant Generation.”
+- Łukasz Stafiniak. *GADTs for Reconstruction of Invariants and Postconditions*. PhD thesis, Institute of Computer Science, University of Wrocław, 2015.
+
+- Hubert Comon. “Disunification: a survey.” In *Computational Logic: Essays in Honor of Alan Robinson*, 1991.
+- Isil Dillig, Thomas Dillig, Boyang Li, Ken McMillan. “Inductive invariant generation via abductive inference.” OOPSLA 2013.
+- Anatoli Degtyarev, Andrei Voronkov. “Simultaneous rigid \(E\)-unification is undecidable.” CSL 1996.
 - Anatoli Degtyarev, Andrei Voronkov. “Reduction of Second-Order Unification to Simultaneous Rigid \(E\)-Unification.” UPMAIL Technical Report 109, 1995.
-- Michael Maher. “Herbrand Constraint Abduction.” LICS 2005.
-- Michael Maher, Ge Huang. “On Computing Constraint Abduction Answers.”
+- Michael Maher. “Herbrand constraint abduction.” LICS 2005.
+- Michael Maher, Ge Huang. “On computing constraint abduction answers.” LPAR 2008.
 - Martin Sulzmann, Tom Schrijvers, Peter J. Stuckey. “Type Inference for GADTs via Herbrand Constraint Abduction.”
 - Andrei Voronkov. “Simultaneous Rigid \(E\)-Unification and Other Decision Problems Related to the Herbrand Theorem.” Theoretical Computer Science 224, 1999.
 - Isil Dillig, Thomas Dillig, Boyang Li, Ken McMillan, Mooly Sagiv. “Synthesis of Circular Compositional Program Proofs via Abduction.” STTT, 2017.
