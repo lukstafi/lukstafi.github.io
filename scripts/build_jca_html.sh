@@ -38,6 +38,9 @@ hr { border: 0; border-top: 1px solid #ddd; margin: 2rem 0; }
 CSS
 fi
 
+tmp_html="$(mktemp)"
+trap 'rm -f "$tmp_html"' EXIT
+
 # Note: use both tex_math_dollars and tex_math_single_backslash so that
 # `$...$` and `\(...\)`/`\[...\]` render via MathJax.
 pandoc \
@@ -46,15 +49,29 @@ pandoc \
   --standalone \
   --toc \
   --toc-depth=3 \
-  --css="$(python3 - <<PY
-import os,sys
-print(os.path.relpath('$css_path', os.path.dirname('$output_html')))
-PY
-)" \
   --mathjax="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" \
   --metadata=pagetitle:"Herbrand Constraint Abduction under Quantifier Prefixes" \
   "$input_md" \
-  -o "$output_html"
+  -o "$tmp_html"
+
+# Inline CSS to avoid relative-path issues on some GitHub Pages setups.
+python3 - <<PY
+from pathlib import Path
+import re
+
+tmp_html = Path("$tmp_html").read_text(encoding="utf-8")
+css = Path("$css_path").read_text(encoding="utf-8")
+
+style_tag = "<style id=\\"jca-css\\">\\n" + css.strip() + "\\n</style>\\n"
+
+if 'id="jca-css"' in tmp_html:
+    out = tmp_html
+else:
+    out, n = re.subn(r"</head>", style_tag + "</head>", tmp_html, count=1)
+    if n != 1:
+        raise SystemExit("error: failed to inject CSS (missing </head>)")
+
+Path("$output_html").write_text(out, encoding="utf-8")
+PY
 
 echo "wrote: $output_html"
-
