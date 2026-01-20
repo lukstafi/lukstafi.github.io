@@ -337,12 +337,67 @@ This reduction attempt fails in a structurally informative way: it fails not due
 
 So your thesis’ “open question” stance looks defensible: SREU-undecidability does not simply carry over “for free” to JCAQP\(_{\mathcal{T}(\mathcal{F})}\) as defined for constraint abduction in a model.
 
-That said, none of the above is a proof of decidability or undecidability. To firm up the status, the next actionable step would be to precisely fix (in the write-up) which variant of JCAQP is meant:
+That said, none of the above is a proof of decidability or undecidability. To firm up the status, the next actionable step is to precisely fix (in the write-up) which variant of JCAQP is meant:
 
 - fixed model \(\mathcal{T}(\mathcal{F})\) with equations as atoms (Section 4.2’s constraint-abduction setting), versus
 - proof-theoretic JAQP/JCAQP where Herbrandization is admissible.
 
-If you share the full thesis PDF (especially appendices and the exact formal definition of “JAQP” used in Section 4.2.4.1), I can align the notation and turn the above into a tighter “failed reduction proof” section (with explicit lemmas showing why each attempted encoding collapses under the consistency condition).
+Given the full thesis PDF (incl. appendices) is available, the natural next step is to tighten Section 9 into explicit lemmas keyed to your formal definitions (in particular, to make the role of the consistency condition and the fixed-model semantics completely explicit in each failed encoding).
+
+### 9.9 Undecidability prospects for *full* JCAQP\(_{\mathcal{T}(\mathcal{F})}\), and (non-)transfer to existential-only JCA\(_{\mathcal{T}(\mathcal{F})}\)
+
+This subsection records the “academic curiosity” angle: even if SREU does not reduce cleanly, is full JCAQP\(_{\mathcal{T}(\mathcal{F})}\) nevertheless likely undecidable, and if so, does that automatically imply undecidability of existential-only JCA over \(\mathcal{T}(\mathcal{F})\)?
+
+#### Two conjectures worth separating
+
+It helps to separate two statements that can easily get conflated:
+
+- **Conjecture A (full JCAQP is undecidable):** the existence problem for JCAQP\(_{\mathcal{T}(\mathcal{F})}\) instances (fixed model \(\mathcal{T}(\mathcal{F})\), satisfiable antecedents, abducted answers as existential conjunctions of equations subject to Def. 4.1-style side conditions) is undecidable.
+- **Conjecture B (existential-only JCA is undecidable):** the existence problem for JCA\(_{\mathcal{T}(\mathcal{F})}\) instances with no universal quantifiers in the prefix (or equivalently with only existential quantification over the object variables and answer variables) is undecidable.
+
+Conjecture B does **not** follow from Conjecture A without an additional theorem showing that the quantifier-prefix discipline can be eliminated (or simulated) *inside the same fixed model and the same answer language*—exactly the kind of move that is delicate in Stafiniak (2015, Section 4.2.4.1).
+
+#### Why undecidability of full JCAQP feels plausible
+
+Even under fixed-model semantics, full JCAQP has several “undecidability-friendly” ingredients:
+
+1. **Synthesis over constraints:** we quantify over candidate hypotheses \(A\) (a second-order search space), not merely check validity of a given formula.
+2. **Jointness:** a single \(A\) must satisfy many implications simultaneously, which can encode global consistency conditions.
+3. **Quantifier alternation / dependency control:** the prefix \(Q\) constrains which variables may depend on which, reminiscent of the “rigidity” that powers classic hard unification and higher-order phenomena.
+
+However, the earlier sections show why importing SREU-hardness wholesale is not straightforward: classic rigid unification uses *assumptions as derivability*, while JCAQP\(_{\mathcal{T}(\mathcal{F})}\) insists that \(D_i \land A\) be satisfiable in the free term algebra and evaluates \((D_i \land A) \Rightarrow C_i\) by truth in that model.
+
+So if Conjecture A is true, the proof likely needs a **different** source problem or a different encoding strategy than “rigid assumptions as false antecedents”.
+
+#### What an undecidability reduction would have to look like (high level)
+
+To prove Conjecture A, a reduction must:
+
+- keep **each** \(D_i \land A\) satisfiable in \(\mathcal{T}(\mathcal{F})\) (to avoid trivial/vacuous implications and to satisfy Def. 4.1 consistency), while
+- forcing the implications to simulate a computation or an unsolvable constraint problem via the **only** available mechanism: equalities between terms in the free term algebra under a controlled quantifier prefix.
+
+One plausible strategy template is:
+
+1. encode a computation as constraints on a *family of terms* (e.g. terms representing configurations, steps, or derivation trees);
+2. use universal variables (when allowed) to express a “for all steps” or “for all contexts” condition without needing infinitely many clauses; and
+3. force the abducted \(A\) to provide the missing structural equalities that witness the computation (analogous to how solutions in unification-style problems act as witnesses).
+
+Whether this can be done while keeping all antecedents satisfiable—and without smuggling in an implicit derivability predicate—is exactly the crux.
+
+#### Why Conjecture A would *not* automatically strengthen to existential-only JCA
+
+If a proof of Conjecture A uses the quantifier alternation in an essential way (for example, to express “for all contexts/steps/positions, some equality must hold”), then eliminating universals is nontrivial:
+
+- In a proof-theoretic setting one might Skolemize, but in \(\mathcal{T}(\mathcal{F})\) Skolem functions are not semantics-preserving and are typically outside the allowed answer language.
+- Simulating a universal quantifier by finitely many existential constraints generally does not work unless the domain being ranged over is finitely bounded in advance (which is not the case for the Herbrand universe of \(\mathcal{T}(\mathcal{F})\)).
+
+So, even if Conjecture A were settled as “undecidable”, Conjecture B could remain open (or require a separate reduction).
+
+#### What might make Conjecture B true anyway?
+
+Existential-only JCA is still “second-order-ish” because the unknown \(A\) is a synthesized conjunction of equations, and jointness can force nonlocal interactions. So Conjecture B is not implausible; but its proof would likely require a source problem whose hardness does not rely on universal quantification/rigidity (e.g. a purely existentially quantified unification-like synthesis problem that can be phrased as “does there exist a conjunction of equations \(A\) such that …”).
+
+At the moment, Section 9’s reduction attempt should be read as evidence that **SREU is not an obvious source of such a proof** for either conjecture under fixed-model semantics.
 
 ## References
 
