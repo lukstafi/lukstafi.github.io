@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>JCAQP Undecidability Analysis - Codex</title>
+  <style>
+    html {
+      color: #1a1a1a;
+      background-color: #fdfdfd;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        background-color: white;
+      }
+      body {
+        background-color: transparent;
+        color: black;
+        font-size: 12pt;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a {
+      color: #1a1a1a;
+    }
+    a:visited {
+      color: #1a1a1a;
+    }
+    img {
+      max-width: 100%;
+    }
+    svg {
+      height: auto;
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    code {
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      border: none;
+      border-top: 1px solid #1a1a1a;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid #1a1a1a;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    th {
+      border-top: 1px solid #1a1a1a;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+  </style>
+  <script
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+  type="text/javascript"></script>
+<style id="jca-css">
+:root { color-scheme: light; }
+body {
+  margin: 0;
+  padding: 2.5rem 1.25rem;
+  background: #fff;
+  color: #111;
+  font: 16px/1.55 system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+}
+
+/* Pandoc HTML doesn't wrap content in <main>; constrain all top-level blocks. */
+body > * {
+  max-width: 980px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+#TOC {
+  margin: 1.25rem auto 2rem auto;
+  padding: 1rem 1rem;
+  border: 1px solid #eee;
+  border-radius: 10px;
+  background: #fafafa;
+}
+
+#TOC ul { padding-left: 1.25rem; }
+pre, code { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; font-size: 0.95em; }
+h1, h2, h3 { line-height: 1.2; }
+h1 { margin-top: 0; }
+a { color: #0b57d0; text-decoration: none; }
+a:hover { text-decoration: underline; }
+blockquote { margin: 1rem 0; padding: 0.25rem 1rem; border-left: 4px solid #ddd; color: #333; }
+table { border-collapse: collapse; }
+th, td { border: 1px solid #ddd; padding: 0.4rem 0.6rem; }
+hr { border: 0; border-top: 1px solid #ddd; margin: 2rem 0; }
+</style>
+</head>
+<body>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#notes-on-undecidability-of-herbrand-jcaqp-existence-codex"
+id="toc-notes-on-undecidability-of-herbrand-jcaqp-existence-codex">Notes
+on undecidability of Herbrand JCAQP existence (codex)</a>
+<ul>
+<li><a href="#scope-and-problem-statement"
+id="toc-scope-and-problem-statement">Scope and problem
+statement</a></li>
+<li><a href="#jcaqp-conditions-from-thesis-section-4.2"
+id="toc-jcaqp-conditions-from-thesis-section-4.2">JCAQP conditions (from
+thesis Section 4.2)</a></li>
+<li><a href="#jointness-matters-maher-example-12"
+id="toc-jointness-matters-maher-example-12">Jointness matters (Maher
+Example 12)</a></li>
+<li><a href="#complexity-note-maherhuang"
+id="toc-complexity-note-maherhuang">Complexity note
+(Maher–Huang)</a></li>
+<li><a href="#key-semantic-constraints-in-mathcaltmathcalf"
+id="toc-key-semantic-constraints-in-mathcaltmathcalf">Key semantic
+constraints in <span
+class="math inline">\(\mathcal{T}(\mathcal{F})\)</span></a></li>
+<li><a href="#fixed-signature-note"
+id="toc-fixed-signature-note">Fixed-signature note</a></li>
+<li><a href="#reminder-what-sreu-actually-asks-for-rigid-e-unification"
+id="toc-reminder-what-sreu-actually-asks-for-rigid-e-unification">Reminder:
+what SREU actually asks for (rigid E-unification)</a></li>
+<li><a href="#lemma-entailment-by-equations-in-the-free-term-algebra"
+id="toc-lemma-entailment-by-equations-in-the-free-term-algebra">Lemma:
+entailment by equations in the free term algebra</a></li>
+<li><a href="#attempt-1-reduction-from-sreu-rigid-e-unification"
+id="toc-attempt-1-reduction-from-sreu-rigid-e-unification">Attempt 1:
+Reduction from SREU (rigid E-unification)</a>
+<ul>
+<li><a href="#naive-encoding" id="toc-naive-encoding">Naive
+encoding</a></li>
+<li><a href="#where-it-fails" id="toc-where-it-fails">Where it
+fails</a></li>
+<li><a href="#extra-context-from-voronkov-1999"
+id="toc-extra-context-from-voronkov-1999">Extra context from Voronkov
+(1999)</a></li>
+<li><a href="#extra-context-from-degtyarevvoronkov-1996"
+id="toc-extra-context-from-degtyarevvoronkov-1996">Extra context from
+Degtyarev–Voronkov (1996)</a></li>
+</ul></li>
+<li><a href="#attempt-2-internalize-rigid-derivability"
+id="toc-attempt-2-internalize-rigid-derivability">Attempt 2: Internalize
+rigid derivability</a></li>
+<li><a href="#attempt-3-encode-computation-history-as-a-term"
+id="toc-attempt-3-encode-computation-history-as-a-term">Attempt 3:
+Encode computation history as a term</a></li>
+<li><a
+href="#attempt-4-reduce-from-semi-unification-higher-order-unification"
+id="toc-attempt-4-reduce-from-semi-unification-higher-order-unification">Attempt
+4: Reduce from (semi-)unification / higher-order unification</a></li>
+<li><a href="#provisional-assessment"
+id="toc-provisional-assessment">Provisional assessment</a>
+<ul>
+<li><a href="#literature-confirmation-jca-decision-status-unknown"
+id="toc-literature-confirmation-jca-decision-status-unknown">Literature
+confirmation: JCA decision status unknown</a></li>
+</ul></li>
+<li><a href="#possible-decidability-angle-speculative"
+id="toc-possible-decidability-angle-speculative">Possible decidability
+angle (speculative)</a></li>
+<li><a href="#no-escaping-as-definable-functions-speculative"
+id="toc-no-escaping-as-definable-functions-speculative">No-escaping as
+“definable functions” (speculative)</a></li>
+<li><a
+href="#limitation-heuristic-finite-equations-cannot-enforce-all-positions"
+id="toc-limitation-heuristic-finite-equations-cannot-enforce-all-positions">Limitation
+heuristic: finite equations cannot enforce “all positions”</a></li>
+<li><a href="#open-directions-to-try-next-if-time"
+id="toc-open-directions-to-try-next-if-time">Open directions to try next
+(if time)</a></li>
+</ul></li>
+</ul>
+</nav>
+<h1 id="notes-on-undecidability-of-herbrand-jcaqp-existence-codex">Notes
+on undecidability of Herbrand JCAQP existence (codex)</h1>
+<h2 id="scope-and-problem-statement">Scope and problem statement</h2>
+<ul>
+<li>Focus: <strong>existence problem</strong> for JCAQP over the free
+term algebra.</li>
+<li>Model: <span class="math inline">\(\mathcal{M} =
+\mathcal{T}(\mathcal{F})\)</span> with <strong>fixed signature</strong>
+<span class="math inline">\(\mathcal{F}\)</span>. We may choose <span
+class="math inline">\(\mathcal{F}\)</span> once for the reduction, but
+it cannot depend on the input instance.</li>
+<li>Instance: a quantifier prefix <span class="math inline">\(Q\)</span>
+and a conjunction of implications <span
+class="math inline">\(\bigwedge_i (D_i \Rightarrow C_i)\)</span>, where
+each <span class="math inline">\(D_i, C_i\)</span> is a conjunction of
+equations (atoms).</li>
+<li>Question: <strong>Does there exist</strong> an abduced answer <span
+class="math inline">\(\exists \bar\beta: A\)</span> (conjunction of
+equations) meeting the conditions of Def. 4.1
+(relevance/validity/consistency/no-escaping) in <span
+class="math inline">\(\mathcal{T}(\mathcal{F})\)</span>?</li>
+</ul>
+<h2 id="jcaqp-conditions-from-thesis-section-4.2">JCAQP conditions (from
+thesis Section 4.2)</h2>
+<p>Let <span class="math inline">\(Q\)</span> quantify all free
+variables in the instance. An answer <span
+class="math inline">\(\exists\bar\beta: A\)</span> (conjunction of
+equations) must satisfy:</p>
+<ol type="1">
+<li><strong>Relevance:</strong> <span
+class="math inline">\(\mathcal{T}(\mathcal{F}) \models \bigwedge_i (D_i
+\land A \Rightarrow C_i)\)</span>.</li>
+<li><strong>Validity (prefix):</strong> <span
+class="math inline">\(\mathcal{T}(\mathcal{F}) \models Q: A[\bar\chi\
+\bar\delta := \bar t]\)</span> for some instantiation of
+parameters.</li>
+<li><strong>Consistency:</strong> for all <span
+class="math inline">\(i\)</span>, <span
+class="math inline">\(\mathcal{T}(\mathcal{F}) \models
+\exists\,\mathrm{FV}(D_i \land A).\; D_i \land A\)</span>.</li>
+<li><strong>No escaping variables:</strong> dependency constraints
+enforced by <span class="math inline">\(Q\)</span> (including the strong
+variant when solved forms are substitutions).</li>
+</ol>
+<h2 id="jointness-matters-maher-example-12">Jointness matters (Maher
+Example 12)</h2>
+<p>Maher shows a simple <strong>JCA</strong> instance whose set of
+answers cannot be captured by any <strong>single</strong> SCA instance
+(even over Herbrand constraints). This indicates that jointness is a
+genuine source of complexity and cannot be eliminated by “solve each
+implication separately and conjoin.”</p>
+<h2 id="complexity-note-maherhuang">Complexity note (Maher–Huang)</h2>
+<p>For SCA over Herbrand constraints, <strong>recognizing</strong>
+maximally general or fully maximal answers is co-NP complete, even
+though checking that a candidate is <em>an</em> answer is easy
+(linear-time unification). This suggests that even the <em>shape</em> of
+the answer space is algorithmically hard to control, which partly
+explains why JCA/JCAQP decision status remains open.</p>
+<h2 id="key-semantic-constraints-in-mathcaltmathcalf">Key semantic
+constraints in <span
+class="math inline">\(\mathcal{T}(\mathcal{F})\)</span></h2>
+<ul>
+<li>Equality is <strong>syntactic identity</strong> of ground
+terms.</li>
+<li>A conjunction of equations is satisfiable iff it unifies (i.e., has
+a substitution that makes all equations syntactically identical).</li>
+<li>The <strong>consistency condition is nontrivial</strong>: it
+prevents the common “vacuous implication” trick where <span
+class="math inline">\(D_i \land A\)</span> is inconsistent.</li>
+</ul>
+<h2 id="fixed-signature-note">Fixed-signature note</h2>
+<ul>
+<li>If a reduction source uses arbitrary function symbols, it can
+usually be encoded over a <strong>fixed signature</strong> (e.g.,
+constants plus a binary constructor <code>node(tag, args)</code> or
+<code>pair</code>) by encoding symbols as ground terms (strings over a
+fixed alphabet). This removes the “growing signature” concern.</li>
+<li>So the <strong>fixed signature restriction is not the main
+obstacle</strong>, as long as the target problem admits such
+encodings.</li>
+</ul>
+<h2
+id="reminder-what-sreu-actually-asks-for-rigid-e-unification">Reminder:
+what SREU actually asks for (rigid E-unification)</h2>
+<p>From standard definitions (e.g., the MSR/Veanes survey), a <em>rigid
+equation</em> is written <code>E |- s ≈ t</code> with <code>E</code> a
+finite set of equations. An SREU instance is a finite set
+<code>{ E_i |- s_i ≈ t_i }_i</code>. A substitution <code>θ</code> is a
+solution if:</p>
+<ol type="1">
+<li><code>E_i θ</code> and <code>(s_i ≈ t_i) θ</code> are
+<strong>ground</strong>, and</li>
+<li><code>E_i θ</code> <strong>entails</strong>
+<code>s_i θ ≈ t_i θ</code> in equational logic (i.e., <code>s_i θ</code>
+and <code>t_i θ</code> are in the congruence closure generated by the
+ground equations <code>E_i θ</code>).</li>
+</ol>
+<p>Thus SREU relies on <em>derivability under axioms</em> (ground
+equations as rewrite/congruence axioms), not on truth in the free term
+algebra.</p>
+<h2 id="lemma-entailment-by-equations-in-the-free-term-algebra">Lemma:
+entailment by equations in the free term algebra</h2>
+<p>Let <code>D</code> be a conjunction of equations in the free term
+algebra. If <code>D</code> is satisfiable and <code>σ</code> is an mgu
+of <code>D</code>, then for any terms <code>s,t</code>:</p>
+<ul>
+<li><code>T(F) |= D -&gt; (s ≈ t)</code> <strong>iff</strong>
+<code>sσ</code> and <code>tσ</code> are syntactically identical.</li>
+</ul>
+<p>So entailment in the free term algebra collapses to unification
+w.r.t. <code>D</code>; it does <strong>not</strong> use <code>D</code>
+as rewrite axioms in the sense of equational logic with a quotient.</p>
+<h2 id="attempt-1-reduction-from-sreu-rigid-e-unification">Attempt 1:
+Reduction from SREU (rigid E-unification)</h2>
+<h3 id="naive-encoding">Naive encoding</h3>
+<p>Given SREU instance: finite family <span class="math inline">\(E_i
+\vdash s_i \approx t_i\)</span>. Try to encode:</p>
+<ul>
+<li>JCAQP with <span class="math inline">\(D_i = E_i\)</span>, <span
+class="math inline">\(C_i = (s_i \approx t_i)\)</span>.</li>
+<li>Abduced answer <span class="math inline">\(A\)</span> is the
+conjunction encoding a substitution <span
+class="math inline">\(\theta\)</span>: for each variable <span
+class="math inline">\(x\)</span>, include equation <span
+class="math inline">\(x \approx \theta(x)\)</span>.</li>
+</ul>
+<p>Then relevance says: <span
+class="math inline">\(\mathcal{T}(\mathcal{F}) \models E_i \land A
+\Rightarrow s_i \approx t_i\)</span>.</p>
+<h3 id="where-it-fails">Where it fails</h3>
+<ul>
+<li>In SREU, <span class="math inline">\(E_i\theta\)</span> is used as
+<strong>assumptions for derivability</strong>, not required to be true
+in the free term algebra.</li>
+<li>JCAQP’s <strong>consistency</strong> forces <span
+class="math inline">\(E_i \land A\)</span> to be satisfiable in <span
+class="math inline">\(\mathcal{T}(\mathcal{F})\)</span>. After
+substitution, that means any ground equations in <span
+class="math inline">\(E_i\theta\)</span> must be <em>syntactically
+identical</em>.</li>
+<li>So the only way to satisfy consistency is that <span
+class="math inline">\(E_i\theta\)</span> is already true in the free
+term algebra, which is far stronger than SREU’s premise.</li>
+</ul>
+<p><strong>Conclusion:</strong> the direct SREU reduction collapses
+because <strong>rigid derivability</strong> is not the same as
+<strong>truth in <span
+class="math inline">\(\mathcal{T}(\mathcal{F})\)</span></strong>.</p>
+<h3 id="extra-context-from-voronkov-1999">Extra context from Voronkov
+(1999)</h3>
+<ul>
+<li>SREU is equivalent (w.r.t. decidability) to <strong>Formula
+Instantiation</strong> in logic with equality (FI<span
+class="math inline">\(^=\)</span>) via encodings of rigid equations as
+implications and vice versa.</li>
+<li>Finite signatures can be encoded into a <strong>fixed binary
+signature</strong> (e.g. <span class="math inline">\((1,0,1)\)</span>),
+so SREU hardness is signature-robust in the <em>proof-theoretic</em>
+setting.</li>
+<li>There is a rigid-equation gadget <code>R_Σ(t)</code> that forces
+<span class="math inline">\(t\)</span> to be ground (in LJ<span
+class="math inline">\(^=\)</span>), highlighting how rigid derivability
+can express properties far beyond free-term entailment.</li>
+</ul>
+<p>These points reinforce: SREU’s power comes from
+<strong>proof-theoretic entailment with equality</strong>, not
+model-theoretic truth in <span
+class="math inline">\(\mathcal{T}(\mathcal{F})\)</span>.</p>
+<h3 id="extra-context-from-degtyarevvoronkov-1996">Extra context from
+Degtyarev–Voronkov (1996)</h3>
+<ul>
+<li>The undecidability proof reduces <strong>second-order
+unification</strong> to SREU using rigid equations that enforce
+<strong>groundness</strong> of higher-order variables (via a finite “Gr”
+gadget when the signature is finite).</li>
+<li>This construction crucially relies on <em>derivability</em> in
+equational logic, not on satisfaction in the free term algebra.</li>
+</ul>
+<p>Again, this is a further illustration that SREU encodes properties
+(like groundness of higher-order instantiations) that are not directly
+expressible with <strong>finite conjunctions of equations</strong>
+evaluated in <span
+class="math inline">\(\mathcal{T}(\mathcal{F})\)</span>.</p>
+<h2 id="attempt-2-internalize-rigid-derivability">Attempt 2: Internalize
+rigid derivability</h2>
+<p>Idea: add equations to encode a “proof object” witnessing that <span
+class="math inline">\(s_i\theta\)</span> rewrites to <span
+class="math inline">\(t_i\theta\)</span> using equations in <span
+class="math inline">\(E_i\theta\)</span>.</p>
+<p>Obstacle:</p>
+<ul>
+<li>The constraint language is <strong>only equations</strong> in the
+free term algebra. There is no predicate or built-in interpretation of
+“derives” or “rewrites”.</li>
+<li>Adding symbols like <code>step</code> or <code>proof</code> does not
+help: in <span class="math inline">\(\mathcal{T}(\mathcal{F})\)</span>,
+they are uninterpreted constructors, so equations cannot enforce the
+semantics of rewriting.</li>
+</ul>
+<p><strong>Conclusion:</strong> encoding derivability requires extending
+the language/model beyond pure Herbrand equations. That leaves the JCAQP
+setting.</p>
+<h2 id="attempt-3-encode-computation-history-as-a-term">Attempt 3:
+Encode computation history as a term</h2>
+<p>Idea: let the abduced answer <span class="math inline">\(A\)</span>
+assert the existence of a term encoding a full computation (e.g., a list
+of configurations). Use implication constraints to enforce local
+transitions.</p>
+<p>Obstacle:</p>
+<ul>
+<li>With <strong>only equations</strong>, there is no way to quantify
+over all adjacent pairs in a list and enforce “valid transition”
+properties.</li>
+<li>Any finite set of equations can only constrain finitely many
+positions; it cannot enforce correctness for an unbounded-length
+witness.</li>
+</ul>
+<p><strong>Conclusion:</strong> the equational language is too weak to
+express “every adjacent pair is a valid step” without additional
+predicates or axioms.</p>
+<h2
+id="attempt-4-reduce-from-semi-unification-higher-order-unification">Attempt
+4: Reduce from (semi-)unification / higher-order unification</h2>
+<p>Idea: view abduced <span class="math inline">\(A\)</span> as an
+unknown conjunction of equations, i.e., a partial substitution, and
+encode a known undecidable unification-style problem.</p>
+<p>Issues:</p>
+<ul>
+<li><strong>Second-order unification</strong> needs function variables.
+A first-order variable in <span
+class="math inline">\(\mathcal{T}(\mathcal{F})\)</span> cannot be
+“applied” to arguments, and there is no encoding of application
+semantics in pure equations.</li>
+<li><strong>Semi-unification</strong> (if used) requires encoding
+“instance” constraints; but using only equations and a single global
+unknown <span class="math inline">\(A\)</span>, this collapses to
+unification-like constraints, which are decidable in the Herbrand
+setting.</li>
+</ul>
+<p><strong>Conclusion:</strong> I do not yet see a faithful encoding of
+second-order or semi-unification into JCAQP with only equations.</p>
+<h2 id="provisional-assessment">Provisional assessment</h2>
+<ul>
+<li><strong>Main obstruction</strong>: SREU-style hardness uses
+<strong>rigid derivability</strong> under assumptions, but JCAQP uses
+<strong>truth</strong> in the fixed free term algebra plus
+<strong>consistency</strong> (nonvacuity).</li>
+<li>Any reduction must ensure all premises are satisfiable in <span
+class="math inline">\(\mathcal{T}(\mathcal{F})\)</span>, ruling out the
+usual rigid-equality trick.</li>
+<li>The quantifier prefix does give <strong>dependency control</strong>,
+but I do not yet see a way to encode an undecidable problem while
+keeping all premises satisfiable and the constraint language purely
+equational.</li>
+</ul>
+<h3 id="literature-confirmation-jca-decision-status-unknown">Literature
+confirmation: JCA decision status unknown</h3>
+<p>Maher’s <em>Herbrand Constraint Abduction</em> explicitly notes that,
+despite semi-unification being undecidable, “the status of the JCA
+decision problem is unknown (though it appears more tractable).” This
+supports the interpretation that undecidability of JCA (let alone JCAQP
+over <span class="math inline">\(\mathcal{T}(\mathcal{F})\)</span>) is
+<strong>not settled</strong> by the classical reductions and remains
+open.</p>
+<h2 id="possible-decidability-angle-speculative">Possible decidability
+angle (speculative)</h2>
+<p>If the answer <span class="math inline">\(A\)</span> fully <em>pins
+down</em> variables via equations (i.e., encodes a substitution), then
+each implication <span class="math inline">\(D_i \land A \Rightarrow
+C_i\)</span> becomes “ground-truth”: either <span
+class="math inline">\(D_i \land A\)</span> is inconsistent or, when
+consistent, the fixed substitution makes <span
+class="math inline">\(C_i\)</span> syntactically true. This suggests a
+(very rough) idea that <strong>existence of A</strong> could reduce to
+checking whether there is a substitution compatible with all
+implications and with the dependency/no-escaping constraints. That looks
+closer to <strong>unification with dependency restrictions</strong> than
+to classic rigid-derivability problems.</p>
+<p>However: - the <strong>no-escaping</strong> condition prevents <span
+class="math inline">\(A\)</span> from freely fixing universal variables;
+- the existence of one “global substitution” is far stronger than needed
+(and may fail even when answers exist); - the jointness across
+implications can force <span class="math inline">\(A\)</span> to be a
+partial substitution only, which is harder to characterize.</p>
+<p>I do not have a precise reduction either way; this is only a possible
+route if one tries to prove decidability rather than undecidability.</p>
+<h2 id="no-escaping-as-definable-functions-speculative">No-escaping as
+“definable functions” (speculative)</h2>
+<p>With a prefix like <span class="math inline">\(\forall x.\exists
+y\)</span>, an equation in <span class="math inline">\(A\)</span> of the
+form <code>y = t(x, p̄)</code> makes <span
+class="math inline">\(y\)</span> a <strong>definable function</strong>
+of <span class="math inline">\(x\)</span> (with parameters <span
+class="math inline">\(p̄\)</span>). This resembles higher-order
+unification where function variables are restricted to <em>first-order
+definable</em> functions (a.k.a. context terms / patterns).</p>
+<p>If JCAQP effectively only allows such “pattern” dependencies, the
+problem could be closer to <strong>higher-order pattern
+unification</strong> (decidable) rather than full second-order
+unification (undecidable). This is not a proof, but it suggests that
+undecidability is not automatic even with quantifier alternation.</p>
+<h2
+id="limitation-heuristic-finite-equations-cannot-enforce-all-positions">Limitation
+heuristic: finite equations cannot enforce “all positions”</h2>
+<p>In the free term algebra, a satisfiable conjunction of equations
+<span class="math inline">\(E\)</span> induces a single most general
+unifier <span class="math inline">\(\sigma\)</span> (up to renaming).
+Entailment reduces to checking syntactic identity after <span
+class="math inline">\(\sigma\)</span>. Thus any implication of the form
+<span class="math inline">\(E \Rightarrow s \approx t\)</span> can only
+constrain <strong>finitely many</strong> positions—those reachable
+through the finitely many equations in <span
+class="math inline">\(E\)</span> and the two terms <span
+class="math inline">\(s,t\)</span>.</p>
+<p>This suggests a meta-lemma: <strong>there is no way, using only
+finitely many equations, to enforce a local “transition” property at
+<em>every</em> depth of a recursively nested term</strong>, because
+every such enforcement would require a definable traversal/predicate not
+present in pure equational logic.</p>
+<p>This is not formalized, but it explains why the TM/PCP “trace term”
+idea repeatedly stalls.</p>
+<h2 id="open-directions-to-try-next-if-time">Open directions to try next
+(if time)</h2>
+<ol type="1">
+<li>Look for a known undecidable synthesis problem where premises are
+<strong>always unifiable</strong> and the only hardness comes from the
+existence of a suitable conjunction of equations (i.e., a structured
+substitution).</li>
+<li>Explore whether <strong>rigid reachability</strong> or similar
+problems can be encoded by introducing a <em>definable</em> derivability
+relation inside the term algebra (likely requires a richer language than
+pure equations).</li>
+<li>Investigate if the <strong>no-escaping-variables</strong> condition
+(dependency restriction) can be used to simulate second-order
+unification more faithfully by treating dependent existential variables
+as “function variables.”</li>
+</ol>
+</body>
+</html>

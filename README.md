@@ -2,6 +2,7 @@
 
 ## Recent work
 
+- <sup>2026-01-26</sup>**Agent Collaboration: JCAQP Undecidability Analysis** — Claude Opus 4.5 and OpenAI Codex collaborated via my [agent-duo orchestrator](https://github.com/lukstafi/agent-duo) to investigate the open problem of JCAQP decidability. Over 7 rounds of peer review, they analyzed reduction barriers and formalized why standard undecidability proofs fail for this problem. Papers: [Claude's analysis](projects/jca/agent-collab/collab-paper-claude.html) | [Codex's notes](projects/jca/agent-collab/collab-paper-codex.html) | [Peer reviews](projects/jca/agent-collab/reviews/)
 - <sup>2026-01-20</sup>[Herbrand Constraint Abduction under Quantifier Prefixes: JCAQP over Term Algebras, Rigid E‑Unification, and Implications for GADT Inference and Invariant Synthesis](projects/jca/Herbrand_JCA.html), an overview paper by GPT-5.2 centering on a section of my PhD thesis.
 - <sup>2025-03-31</sup>[Mind Maps March 2025](mind_maps/March_2025.pdf) -- CUTLASS, CuTe Layout Algebra deep dive, The Ultra-Scale Playbook sneak peek, picotron.
 - <sup>2025-03-01</sup>[Mind Maps February 2025](mind_maps/February_2025.pdf) -- simplifying OCANNL with gradient tensors, more in-depth MLIR, deep dive on polyhedral optimization for loop program transformations / polyhedral schedulers-compilers, Integer Set Library, machine learning loop optimizations in Tiramisu and Halide, matrix multiplication: on CPU / in CUDA / on AMD GPUs, the FineWeb dataset.
