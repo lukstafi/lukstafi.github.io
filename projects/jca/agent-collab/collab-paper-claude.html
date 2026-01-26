@@ -652,15 +652,20 @@ Proving Undecidability of JCAQP over T(F)</h1>
 <h3 id="the-jcaqp-problem-definition-4.1-from-stafiniaks-thesis">1.1 The
 JCAQP Problem (Definition 4.1 from Stafiniak’s thesis)</h3>
 <p>A <strong>JCAQP (Joint Constraint Abduction under a Quantifier
-Prefix)</strong> problem has the form: <span class="math display">\[Q:
-\bigwedge_i (D_i \Rightarrow C_i)\]</span></p>
-<p>where: - <span class="math inline">\(Q\)</span> is a quantifier
-prefix (sequence of <span class="math inline">\(\forall\)</span> and
-<span class="math inline">\(\exists\)</span> quantifiers binding
-variables) - <span class="math inline">\(D_i, C_i\)</span> are
-conjunctions of atomic formulas (equations in our case) - <span
-class="math inline">\(\bar{\chi}\)</span> is a set of parameters
-(invariant variables)</p>
+Prefix)</strong> problem has the form:</p>
+<p><span class="math display">\[Q: \bigwedge_i (D_i \Rightarrow
+C_i)\]</span></p>
+<p>where:</p>
+<ul>
+<li><span class="math inline">\(Q\)</span> is a quantifier prefix
+(sequence of <span class="math inline">\(\forall\)</span> and <span
+class="math inline">\(\exists\)</span> quantifiers binding
+variables)</li>
+<li><span class="math inline">\(D_i, C_i\)</span> are conjunctions of
+atomic formulas (equations in our case)</li>
+<li><span class="math inline">\(\bar{\chi}\)</span> is a set of
+parameters (invariant variables)</li>
+</ul>
 <p>An <strong>answer</strong> <span class="math inline">\(\exists
 \bar{\beta}: A\)</span> must satisfy:</p>
 <ol type="1">
@@ -687,13 +692,17 @@ the instance from the reduced problem).</p>
 <h3 id="key-properties-of-mathcaltmathcalf">1.3 Key Properties of <span
 class="math inline">\(\mathcal{T}(\mathcal{F})\)</span></h3>
 <p>The free term algebra <span
-class="math inline">\(\mathcal{T}(\mathcal{F})\)</span> satisfies: -
-<strong>Freeness:</strong> Distinct constructors produce distinct terms
-- <strong>Injectivity:</strong> <span
+class="math inline">\(\mathcal{T}(\mathcal{F})\)</span> satisfies:</p>
+<ul>
+<li><strong>Freeness:</strong> Distinct constructors produce distinct
+terms</li>
+<li><strong>Injectivity:</strong> <span
 class="math inline">\(f(s_1,...,s_n) = f(t_1,...,t_n)\)</span> iff <span
 class="math inline">\(s_i = t_i\)</span> for all <span
-class="math inline">\(i\)</span> - <strong>Acyclicity:</strong> No term
-equals a proper subterm of itself</p>
+class="math inline">\(i\)</span></li>
+<li><strong>Acyclicity:</strong> No term equals a proper subterm of
+itself</li>
+</ul>
 <hr />
 <h2 id="known-undecidability-results-potential-reduction-sources">2.
 Known Undecidability Results (Potential Reduction Sources)</h2>
@@ -703,7 +712,8 @@ Semi-Unification (Kfoury-Tiuryn-Urzyczyn 1993)</h3>
 class="math inline">\(\{l_i \leq r_i\}_{i=1}^n\)</span>, find
 substitution <span class="math inline">\(\theta\)</span> and
 substitutions <span class="math inline">\(\{\sigma_i\}\)</span> such
-that: <span class="math display">\[\sigma_i(\theta(l_i)) =
+that:</p>
+<p><span class="math display">\[\sigma_i(\theta(l_i)) =
 \theta(r_i)\]</span></p>
 <p><strong>Undecidability:</strong> Reduced from Turing machine
 immortality/boundedness (Kfoury et al.) or directly from Halting Problem
@@ -751,11 +761,15 @@ Let the abducted <span class="math inline">\(A\)</span> encode the
 substitution <span class="math inline">\(\theta\)</span></p>
 <p><strong>Problem:</strong> In T(F), if <span
 class="math inline">\(E_i\)</span> contains equations like <span
-class="math inline">\(f(a) \doteq a\)</span>, then: - <span
-class="math inline">\(E_i\)</span> is FALSE in T(F) (freeness property)
-- The implication <span class="math inline">\(E_i \Rightarrow (s_i
-\doteq t_i)\)</span> becomes vacuously true - The consistency condition
-is violated or the problem becomes trivial</p>
+class="math inline">\(f(a) \doteq a\)</span>, then:</p>
+<ul>
+<li><span class="math inline">\(E_i\)</span> is FALSE in T(F) (freeness
+property)</li>
+<li>The implication <span class="math inline">\(E_i \Rightarrow (s_i
+\doteq t_i)\)</span> becomes vacuously true</li>
+<li>The consistency condition is violated or the problem becomes
+trivial</li>
+</ul>
 <h3 id="what-makes-jcaqp-potentially-hard">3.2 What Makes JCAQP
 Potentially Hard</h3>
 <ol type="1">
@@ -772,10 +786,12 @@ change interpretation</li>
 Consistency Condition</h3>
 <p>The consistency condition <span
 class="math inline">\(\mathcal{T}(\mathcal{F}) \models \exists
-\text{FV}(D_i \land A). D_i \land A\)</span> requires: - <span
-class="math inline">\(D_i \land A\)</span> must be satisfiable (not
-contradictory) - In T(F), this means the combined equations must have a
-unifier</p>
+\text{FV}(D_i \land A). D_i \land A\)</span> requires:</p>
+<ul>
+<li><span class="math inline">\(D_i \land A\)</span> must be satisfiable
+(not contradictory)</li>
+<li>In T(F), this means the combined equations must have a unifier</li>
+</ul>
 <p>This prevents using “false premises” to trivialize implications.</p>
 <hr />
 <h2 id="proof-attempt-reduction-from-semi-unification">4. Proof Attempt:
@@ -787,14 +803,15 @@ purely about finding substitutions such that certain term equalities
 hold after applying the substitutions. This matches better with T(F)’s
 fixed-model semantics.</p>
 <h3 id="semi-unification-formally">4.2 Semi-Unification Formally</h3>
-<p>A semi-unification instance consists of inequations: <span
-class="math display">\[\mathcal{I} = \{l_1 \leq r_1, ..., l_n \leq
-r_n\}\]</span></p>
+<p>A semi-unification instance consists of inequations:</p>
+<p><span class="math display">\[\mathcal{I} = \{l_1 \leq r_1, ..., l_n
+\leq r_n\}\]</span></p>
 <p>A solution is a substitution <span
 class="math inline">\(\theta\)</span> such that for each <span
 class="math inline">\(i\)</span>, there exists <span
-class="math inline">\(\sigma_i\)</span> with: <span
-class="math display">\[\sigma_i(\theta(l_i)) = \theta(r_i)\]</span></p>
+class="math inline">\(\sigma_i\)</span> with:</p>
+<p><span class="math display">\[\sigma_i(\theta(l_i)) =
+\theta(r_i)\]</span></p>
 <p>Equivalently: <span class="math inline">\(\theta(l_i)\)</span> is a
 generalization of (matches onto) <span
 class="math inline">\(\theta(r_i)\)</span>.</p>
@@ -802,23 +819,27 @@ class="math inline">\(\theta(r_i)\)</span>.</p>
 <p><strong>Signature:</strong> <span class="math inline">\(\mathcal{F} =
 \{f/2, a/0, b/0\}\)</span> (binary functor, two constants)</p>
 <p><strong>Idea:</strong> Encode each inequation <span
-class="math inline">\(l_i \leq r_i\)</span> as an implication where: -
-The premise establishes the “matching context” - The conclusion requires
-the matching to succeed - The abducted <span
-class="math inline">\(A\)</span> encodes the shared substitution <span
-class="math inline">\(\theta\)</span></p>
+class="math inline">\(l_i \leq r_i\)</span> as an implication where:</p>
+<ul>
+<li>The premise establishes the “matching context”</li>
+<li>The conclusion requires the matching to succeed</li>
+<li>The abducted <span class="math inline">\(A\)</span> encodes the
+shared substitution <span class="math inline">\(\theta\)</span></li>
+</ul>
 <p><strong>Construction attempt:</strong></p>
 <p>For inequation <span class="math inline">\(l_i \leq r_i\)</span> with
 variables <span class="math inline">\(\text{var}(l_i) \cup
 \text{var}(r_i) = \{x_{i1}, ..., x_{ik}\}\)</span>:</p>
-<p>Let the quantifier prefix include: - <span
-class="math inline">\(\forall\)</span> for variables that represent
-“inputs” (the left-hand side after <span
-class="math inline">\(\theta\)</span>) - <span
-class="math inline">\(\exists\)</span> for witness variables (the <span
-class="math inline">\(\sigma_i\)</span> instantiation)</p>
-<p>Define implication: <span class="math display">\[D_i \Rightarrow
-C_i\]</span></p>
+<p>Let the quantifier prefix include:</p>
+<ul>
+<li><span class="math inline">\(\forall\)</span> for variables that
+represent “inputs” (the left-hand side after <span
+class="math inline">\(\theta\)</span>)</li>
+<li><span class="math inline">\(\exists\)</span> for witness variables
+(the <span class="math inline">\(\sigma_i\)</span> instantiation)</li>
+</ul>
+<p>Define implication:</p>
+<p><span class="math display">\[D_i \Rightarrow C_i\]</span></p>
 <p>where… [This is where the construction becomes unclear]</p>
 <h3 id="the-core-difficulty">4.4 The Core Difficulty</h3>
 <p>The challenge is encoding “there exists <span
@@ -827,10 +848,13 @@ class="math inline">\(\sigma_i(\theta(l_i)) = \theta(r_i)\)</span>”
 using implications over T(F).</p>
 <p><strong>Observation:</strong> The existential <span
 class="math inline">\(\sigma_i\)</span> is local to each inequation,
-while <span class="math inline">\(\theta\)</span> is global. In JCAQP: -
-The answer <span class="math inline">\(A\)</span> plays the role of the
-global <span class="math inline">\(\theta\)</span> - The quantifier
-prefix can provide local existentials</p>
+while <span class="math inline">\(\theta\)</span> is global. In
+JCAQP:</p>
+<ul>
+<li>The answer <span class="math inline">\(A\)</span> plays the role of
+the global <span class="math inline">\(\theta\)</span></li>
+<li>The quantifier prefix can provide local existentials</li>
+</ul>
 <p>But how do we express “exists σ such that σ(t) = s” as an
 implication?</p>
 <p>If we try: <span class="math inline">\((t&#39; \doteq t) \Rightarrow
@@ -855,21 +879,27 @@ class="math inline">\(s\)</span>.</p>
 will be instantiated by the answer <span
 class="math inline">\(A\)</span>).</p>
 <h3 id="revised-encoding-approach">4.5 Revised Encoding Approach</h3>
-<p>Let’s think differently. In semi-unification: - <span
-class="math inline">\(\theta\)</span> instantiates variables in <span
-class="math inline">\(l_i\)</span> and <span
-class="math inline">\(r_i\)</span> - After applying <span
-class="math inline">\(\theta\)</span>: we need <span
-class="math inline">\(\theta(l_i)\)</span> to match <span
-class="math inline">\(\theta(r_i)\)</span></p>
+<p>Let’s think differently. In semi-unification:</p>
+<ul>
+<li><span class="math inline">\(\theta\)</span> instantiates variables
+in <span class="math inline">\(l_i\)</span> and <span
+class="math inline">\(r_i\)</span></li>
+<li>After applying <span class="math inline">\(\theta\)</span>: we need
+<span class="math inline">\(\theta(l_i)\)</span> to match <span
+class="math inline">\(\theta(r_i)\)</span></li>
+</ul>
 <p>The matching condition “<span class="math inline">\(t\)</span>
 matches <span class="math inline">\(s\)</span>” (for ground terms) is
-equivalent to: - Either <span class="math inline">\(t = s\)</span>, or -
-<span class="math inline">\(t = x\)</span> for some variable (which can
-match anything), or - <span class="math inline">\(t = f(t_1, ...,
-t_n)\)</span> and <span class="math inline">\(s = f(s_1, ...,
-s_n)\)</span> and each <span class="math inline">\(t_j\)</span> matches
-<span class="math inline">\(s_j\)</span></p>
+equivalent to:</p>
+<ul>
+<li>Either <span class="math inline">\(t = s\)</span>, or</li>
+<li><span class="math inline">\(t = x\)</span> for some variable (which
+can match anything), or</li>
+<li><span class="math inline">\(t = f(t_1, ..., t_n)\)</span> and <span
+class="math inline">\(s = f(s_1, ..., s_n)\)</span> and each <span
+class="math inline">\(t_j\)</span> matches <span
+class="math inline">\(s_j\)</span></li>
+</ul>
 <p>But for symbolic terms with variables (before applying <span
 class="math inline">\(\theta\)</span>), we can’t express “matches”
 directly as an equation.</p>
@@ -885,31 +915,39 @@ class="math inline">\(\theta(l_i)[\sigma_i] = \theta(r_i)\)</span></p>
 result of <span class="math inline">\(\theta(l_i)\)</span>, not to the
 original variables…</p>
 <h3 id="a-more-concrete-example">4.6 A More Concrete Example</h3>
-<p>Consider the semi-unification instance: <span
-class="math display">\[\{x \leq f(x, a)\}\]</span></p>
+<p>Consider the semi-unification instance:</p>
+<p><span class="math display">\[\{x \leq f(x, a)\}\]</span></p>
 <p>A solution is <span class="math inline">\(\theta = \{x \mapsto f(y,
 a)\}\)</span> with witness <span class="math inline">\(\sigma = \{y
-\mapsto f(y, a)\}\)</span>: - <span class="math inline">\(\theta(x) =
-f(y, a)\)</span> - <span class="math inline">\(\sigma(\theta(x)) =
-\sigma(f(y, a)) = f(f(y,a), a)\)</span> - <span
-class="math inline">\(\theta(f(x, a)) = f(f(y, a), a)\)</span> ✓</p>
+\mapsto f(y, a)\}\)</span>:</p>
+<ul>
+<li><span class="math inline">\(\theta(x) = f(y, a)\)</span></li>
+<li><span class="math inline">\(\sigma(\theta(x)) = \sigma(f(y, a)) =
+f(f(y,a), a)\)</span></li>
+<li><span class="math inline">\(\theta(f(x, a)) = f(f(y, a), a)\)</span>
+✓</li>
+</ul>
 <p>How would we encode this as JCAQP?</p>
 <p>If <span class="math inline">\(A = \{x \doteq f(y, a)\}\)</span>
 (encoding <span class="math inline">\(\theta\)</span>), then we need an
-implication that: - Given the answer <span
-class="math inline">\(A\)</span>, forces the matching condition</p>
+implication that:</p>
+<ul>
+<li>Given the answer <span class="math inline">\(A\)</span>, forces the
+matching condition</li>
+</ul>
 <p>Let <span class="math inline">\(w\)</span> be an existential witness
-variable. We want: “If <span class="math inline">\(x = f(y, a)\)</span>
-(from <span class="math inline">\(A\)</span>), then there exists <span
+variable. We want:</p>
+<p>“If <span class="math inline">\(x = f(y, a)\)</span> (from <span
+class="math inline">\(A\)</span>), then there exists <span
 class="math inline">\(w\)</span> such that <span
 class="math inline">\(f(y, a)[y := w] = f(f(y, a), a)\)</span>”</p>
 <p>This simplifies to: <span class="math inline">\(f(w, a) = f(f(y, a),
 a)\)</span>, i.e., <span class="math inline">\(w = f(y, a)\)</span>.</p>
 <p>So the witness <span class="math inline">\(w = f(y, a) = x\)</span>
 (under <span class="math inline">\(A\)</span>).</p>
-<p>The implication might be something like: <span
-class="math display">\[\text{(no premise)} \Rightarrow f(w, a) \doteq
-f(x, a)\]</span></p>
+<p>The implication might be something like:</p>
+<p><span class="math display">\[\text{(no premise)} \Rightarrow f(w, a)
+\doteq f(x, a)\]</span></p>
 <p>With <span class="math inline">\(\exists w\)</span> in the prefix,
 this asks: “can we find <span class="math inline">\(w\)</span> such that
 <span class="math inline">\(f(w, a) = f(x, a)\)</span>?” Answer: Yes,
@@ -925,8 +963,8 @@ as Implication</h3>
 <p>The condition “<span class="math inline">\(t\)</span> matches <span
 class="math inline">\(s\)</span>” (with <span
 class="math inline">\(t\)</span> having variables, <span
-class="math inline">\(s\)</span> ground) can be written as: <span
-class="math display">\[\exists \bar{w}. t[\bar{x} := \bar{w}] =
+class="math inline">\(s\)</span> ground) can be written as:</p>
+<p><span class="math display">\[\exists \bar{w}. t[\bar{x} := \bar{w}] =
 s\]</span></p>
 <p>where <span class="math inline">\(\bar{x} =
 \text{var}(t)\)</span>.</p>
@@ -934,10 +972,14 @@ s\]</span></p>
 <h3 id="the-quantifier-prefix-as-encoding-tool">5.2 The Quantifier
 Prefix as Encoding Tool</h3>
 <p>In JCAQP, the quantifier prefix <span
-class="math inline">\(Q\)</span> determines: - Which variables are
-universally quantified (must work for all values) - Which are
-existentially quantified (we can choose witnesses) - Dependency order
-(existentials can only depend on universals to their left)</p>
+class="math inline">\(Q\)</span> determines:</p>
+<ul>
+<li>Which variables are universally quantified (must work for all
+values)</li>
+<li>Which are existentially quantified (we can choose witnesses)</li>
+<li>Dependency order (existentials can only depend on universals to
+their left)</li>
+</ul>
 <p>This is reminiscent of the rigidity in SREU, but without the
 “equational reasoning under assumptions” aspect.</p>
 <h3 id="new-idea-encoding-computation-steps">5.3 New Idea: Encoding
@@ -965,27 +1007,36 @@ encoded as <span class="math inline">\(f(a_1, f(a_2, ..., f(a_n,
 e)...))\)</span></p>
 <h3 id="pcp-instance-encoding">6.2 PCP Instance Encoding</h3>
 <p>Given PCP pairs <span class="math inline">\(\{(u_i,
-v_i)\}_{i=1}^n\)</span>, we need to encode: “Does there exist a
-non-empty sequence <span class="math inline">\(i_1, ..., i_k\)</span>
-such that <span class="math inline">\(u_{i_1} \cdot ... \cdot u_{i_k} =
-v_{i_1} \cdot ... \cdot v_{i_k}\)</span>?”</p>
+v_i)\}_{i=1}^n\)</span>, we need to encode:</p>
+<p>“Does there exist a non-empty sequence <span
+class="math inline">\(i_1, ..., i_k\)</span> such that <span
+class="math inline">\(u_{i_1} \cdot ... \cdot u_{i_k} = v_{i_1} \cdot
+... \cdot v_{i_k}\)</span>?”</p>
 <p><strong>Challenge:</strong> The sequence length <span
 class="math inline">\(k\)</span> is unbounded. How do we encode this
 with a fixed number of implications?</p>
-<p><strong>Possible approach:</strong> Use recursive structure. Let: -
-<span class="math inline">\(U\)</span> be a variable representing the
-“accumulated u-side” - <span class="math inline">\(V\)</span> be a
-variable representing the “accumulated v-side” - Implications encode:
-“if we’ve accumulated <span class="math inline">\((U, V)\)</span> so
-far, we can extend with any pair <span class="math inline">\((u_i,
-v_i)\)</span>” - The goal: reach a state where <span
-class="math inline">\(U = V\)</span> (and non-empty)</p>
+<p><strong>Possible approach:</strong> Use recursive structure. Let:</p>
+<ul>
+<li><span class="math inline">\(U\)</span> be a variable representing
+the “accumulated u-side”</li>
+<li><span class="math inline">\(V\)</span> be a variable representing
+the “accumulated v-side”</li>
+<li>Implications encode: “if we’ve accumulated <span
+class="math inline">\((U, V)\)</span> so far, we can extend with any
+pair <span class="math inline">\((u_i, v_i)\)</span>”</li>
+<li>The goal: reach a state where <span class="math inline">\(U =
+V\)</span> (and non-empty)</li>
+</ul>
 <p>But this seems to require an unbounded computation…</p>
 <h3 id="the-problem-with-bounded-structure">6.3 The Problem with Bounded
 Structure</h3>
-<p>JCAQP instances have: - A fixed quantifier prefix <span
-class="math inline">\(Q\)</span> - A finite set of implications <span
-class="math inline">\(\{D_i \Rightarrow C_i\}\)</span></p>
+<p>JCAQP instances have:</p>
+<ul>
+<li>A fixed quantifier prefix <span
+class="math inline">\(Q\)</span></li>
+<li>A finite set of implications <span class="math inline">\(\{D_i
+\Rightarrow C_i\}\)</span></li>
+</ul>
 <p>We can’t directly encode unbounded iteration with finite
 structure.</p>
 <p><strong>However:</strong> The answer <span
@@ -1037,8 +1088,9 @@ Relation</h3>
 <p>For each transition <span class="math inline">\(\delta(q, a) =
 (q&#39;, b, D)\)</span> (write <span class="math inline">\(b\)</span>,
 move <span class="math inline">\(D \in \{L, R\}\)</span>):</p>
-<p>We need an implication that says: “If the current config is <span
-class="math inline">\((q, l, a, r)\)</span> and the next config is <span
+<p>We need an implication that says:</p>
+<p>“If the current config is <span class="math inline">\((q, l, a,
+r)\)</span> and the next config is <span
 class="math inline">\(c&#39;\)</span>, then <span
 class="math inline">\(c&#39;\)</span> must be the correct
 successor.”</p>
@@ -1049,11 +1101,14 @@ class="math inline">\(A\)</span> includes equations that define the
 sequence of configurations.</p>
 <p>Let <span class="math inline">\(c_0, c_1, c_2, ...\)</span> be
 variables representing the configuration sequence.</p>
-<p>The answer <span class="math inline">\(A\)</span> would include: -
-<span class="math inline">\(c_0 \doteq \text{config}(q_0, \text{nil},
-\text{input}_0, \text{input}_{1..})\)</span> (initial config) - For each
-step: <span class="math inline">\(c_{i+1} \doteq
-\text{successor}(c_i)\)</span></p>
+<p>The answer <span class="math inline">\(A\)</span> would include:</p>
+<ul>
+<li><span class="math inline">\(c_0 \doteq \text{config}(q_0,
+\text{nil}, \text{input}_0, \text{input}_{1..})\)</span> (initial
+config)</li>
+<li>For each step: <span class="math inline">\(c_{i+1} \doteq
+\text{successor}(c_i)\)</span></li>
+</ul>
 <p><strong>But:</strong> We need finitely many variables and equations
 in <span class="math inline">\(A\)</span>, yet the computation can be
 arbitrarily long.</p>
@@ -1062,14 +1117,14 @@ Recursive Term Structure</h3>
 <p>Instead of separate variables for each step, encode the entire
 computation trace as a single nested term.</p>
 <p>Let <span class="math inline">\(\text{trace}\)</span> be a term of
-the form: <span class="math display">\[\text{trace}(c_0,
-\text{trace}(c_1, \text{trace}(c_2, ...
-\text{done}(c_k)...)))\]</span></p>
+the form:</p>
+<p><span class="math display">\[\text{trace}(c_0, \text{trace}(c_1,
+\text{trace}(c_2, ... \text{done}(c_k)...)))\]</span></p>
 <p>where <span class="math inline">\(c_k\)</span> is the halting
 configuration.</p>
 <p>The answer <span class="math inline">\(A\)</span> would include a
-single equation: <span class="math display">\[T \doteq
-\text{trace}(...)\]</span></p>
+single equation:</p>
+<p><span class="math display">\[T \doteq \text{trace}(...)\]</span></p>
 <p>where <span class="math inline">\(T\)</span> is a parameter
 variable.</p>
 <p><strong>The implications verify</strong> that <span
@@ -1118,40 +1173,50 @@ directly.</p>
 <h2 id="stuck-point-expressing-structural-constraints">8. Stuck Point:
 Expressing Structural Constraints</h2>
 <h3 id="the-core-difficulty-1">8.1 The Core Difficulty</h3>
-<p>To encode undecidable problems in JCAQP over T(F), we need to: 1.
-Encode potentially unbounded structures (computations, PCP solutions) as
-terms 2. Use implications to verify these structures are valid 3. Use
-the quantifier prefix to universally verify all parts of the
-structure</p>
+<p>To encode undecidable problems in JCAQP over T(F), we need to:</p>
+<ol type="1">
+<li>Encode potentially unbounded structures (computations, PCP
+solutions) as terms</li>
+<li>Use implications to verify these structures are valid</li>
+<li>Use the quantifier prefix to universally verify all parts of the
+structure</li>
+</ol>
 <p><strong>The problem:</strong> We can only express equations between
-terms. We cannot: - Pattern match on term structure (case analysis) -
-Define recursive functions on terms - Look up positions in a term</p>
+terms. We cannot:</p>
+<ul>
+<li>Pattern match on term structure (case analysis)</li>
+<li>Define recursive functions on terms</li>
+<li>Look up positions in a term</li>
+</ul>
 <h3 id="what-we-can-express">8.2 What We CAN Express</h3>
 <p>With implications <span class="math inline">\(D \Rightarrow
-C\)</span> and the consistency condition: - If <span
-class="math inline">\(D\)</span> is satisfiable and the answer <span
-class="math inline">\(A\)</span> is consistent with <span
+C\)</span> and the consistency condition:</p>
+<ul>
+<li>If <span class="math inline">\(D\)</span> is satisfiable and the
+answer <span class="math inline">\(A\)</span> is consistent with <span
 class="math inline">\(D\)</span>, then <span
-class="math inline">\(C\)</span> must follow - We can force certain
-equalities to hold when other equalities hold - The freeness of T(F)
-means <span class="math inline">\(f(x, y) = f(u, v)\)</span> implies
-<span class="math inline">\(x = u\)</span> and <span
-class="math inline">\(y = v\)</span></p>
+class="math inline">\(C\)</span> must follow</li>
+<li>We can force certain equalities to hold when other equalities
+hold</li>
+<li>The freeness of T(F) means <span class="math inline">\(f(x, y) =
+f(u, v)\)</span> implies <span class="math inline">\(x = u\)</span> and
+<span class="math inline">\(y = v\)</span></li>
+</ul>
 <h3 id="a-possible-path-forward">8.3 A Possible Path Forward</h3>
-<p><strong>Observation:</strong> In T(F), if we have: <span
-class="math display">\[\text{trace}(c, T&#39;) = \text{trace}(c&#39;,
-T&#39;&#39;)\]</span> then by injectivity, <span class="math inline">\(c
-= c&#39;\)</span> and <span class="math inline">\(T&#39; =
-T&#39;&#39;\)</span>.</p>
+<p><strong>Observation:</strong> In T(F), if we have:</p>
+<p><span class="math display">\[\text{trace}(c, T&#39;) =
+\text{trace}(c&#39;, T&#39;&#39;)\]</span> then by injectivity, <span
+class="math inline">\(c = c&#39;\)</span> and <span
+class="math inline">\(T&#39; = T&#39;&#39;\)</span>.</p>
 <p>We can use this to “project” components from a compound term.</p>
 <p><strong>Revised implication structure:</strong></p>
 <p>Let the answer <span class="math inline">\(A\)</span> include <span
 class="math inline">\(T\)</span> representing the trace.</p>
-<p>For each transition rule, create an implication: <span
-class="math display">\[T \doteq \text{trace}(\text{config}(q, l, a, r),
-T&#39;) \land T&#39; \doteq \text{trace}(c&#39;, T&#39;&#39;)\]</span>
-<span class="math display">\[\Rightarrow c&#39; \doteq
-\text{successor}(\text{config}(q, l, a, r))\]</span></p>
+<p>For each transition rule, create an implication:</p>
+<p><span class="math display">\[T \doteq \text{trace}(\text{config}(q,
+l, a, r), T&#39;) \land T&#39; \doteq \text{trace}(c&#39;,
+T&#39;&#39;)\]</span> <span class="math display">\[\Rightarrow c&#39;
+\doteq \text{successor}(\text{config}(q, l, a, r))\]</span></p>
 <p><strong>Problem:</strong> This is a single implication that only
 checks one specific form of <span class="math inline">\(T\)</span>. We
 need to check ALL positions in the trace.</p>
@@ -1190,15 +1255,17 @@ same atom with appropriate ordering.</p>
 in an unconstrained way.</p>
 <h3 id="implications-of-the-dependency-structure">9.2 Implications of
 the Dependency Structure</h3>
-<p>The quantifier prefix creates a dependency order: - <span
-class="math inline">\(\exists \beta\)</span> after <span
+<p>The quantifier prefix creates a dependency order:</p>
+<ul>
+<li><span class="math inline">\(\exists \beta\)</span> after <span
 class="math inline">\(\forall \alpha\)</span> means <span
 class="math inline">\(\beta\)</span> can depend on <span
-class="math inline">\(\alpha\)</span> - <span
-class="math inline">\(\forall \alpha\)</span> after <span
+class="math inline">\(\alpha\)</span></li>
+<li><span class="math inline">\(\forall \alpha\)</span> after <span
 class="math inline">\(\exists \gamma\)</span> means <span
 class="math inline">\(\alpha\)</span> is independent of <span
-class="math inline">\(\gamma\)</span></p>
+class="math inline">\(\gamma\)</span></li>
+</ul>
 <p>This is similar to the alternation in <span
 class="math inline">\(\Sigma_n / \Pi_n\)</span> formulas.</p>
 <p><strong>Observation:</strong> If we have <span
@@ -1212,13 +1279,15 @@ chosen <span class="math inline">\(\alpha\)</span>).</p>
 Verification?</h3>
 <p>Consider a prefix <span class="math inline">\(\forall x. \exists y.
 \forall z. \exists w. ...\)</span></p>
-<p>This creates a game-like structure: - Environment chooses <span
-class="math inline">\(x\)</span> - We respond with <span
-class="math inline">\(y\)</span> (depending on <span
-class="math inline">\(x\)</span>) - Environment chooses <span
-class="math inline">\(z\)</span> - We respond with <span
-class="math inline">\(w\)</span> (depending on <span
-class="math inline">\(x, z\)</span>)</p>
+<p>This creates a game-like structure:</p>
+<ul>
+<li>Environment chooses <span class="math inline">\(x\)</span></li>
+<li>We respond with <span class="math inline">\(y\)</span> (depending on
+<span class="math inline">\(x\)</span>)</li>
+<li>Environment chooses <span class="math inline">\(z\)</span></li>
+<li>We respond with <span class="math inline">\(w\)</span> (depending on
+<span class="math inline">\(x, z\)</span>)</li>
+</ul>
 <p>This alternation is powerful but still bounded by the prefix
 length.</p>
 <p><strong>For encoding TM halting:</strong> We would need unbounded
@@ -1229,23 +1298,31 @@ cannot provide.</p>
 id="conjecture-jcaqp-over-tf-with-bounded-prefix-might-be-decidable">10.
 Conjecture: JCAQP over T(F) with Bounded Prefix Might Be Decidable</h2>
 <h3 id="reasoning">10.1 Reasoning</h3>
-<p>If the quantifier prefix has bounded alternation depth, then: - The
-set of “strategies” (ways the answer can depend on universals) is
-limited - The verification amounts to checking a finite tree of
-possibilities - This might reduce to decidable unification/matching
-problems</p>
+<p>If the quantifier prefix has bounded alternation depth, then:</p>
+<ul>
+<li>The set of “strategies” (ways the answer can depend on universals)
+is limited</li>
+<li>The verification amounts to checking a finite tree of
+possibilities</li>
+<li>This might reduce to decidable unification/matching problems</li>
+</ul>
 <h3 id="however">10.2 However…</h3>
 <p>The answer <span class="math inline">\(A\)</span> can involve terms
-of arbitrary depth in T(F). The complexity might come from: - The
-unbounded size of potential answers - The interaction between answer
-structure and prefix structure</p>
+of arbitrary depth in T(F). The complexity might come from:</p>
+<ul>
+<li>The unbounded size of potential answers</li>
+<li>The interaction between answer structure and prefix structure</li>
+</ul>
 <p>The Maher-Huang work shows that even for simple Herbrand abduction,
 there can be infinitely many maximal answers.</p>
 <h3 id="the-decidabilityundecidability-divide">10.3 The
 Decidability/Undecidability Divide</h3>
-<p>Possibly: - JCAQP-EXIST with simple quantifier prefixes: decidable
-(but maybe high complexity) - JCAQP-EXIST with complex prefixes:
-undecidable</p>
+<p>Possibly:</p>
+<ul>
+<li>JCAQP-EXIST with simple quantifier prefixes: decidable (but maybe
+high complexity)</li>
+<li>JCAQP-EXIST with complex prefixes: undecidable</li>
+</ul>
 <p>Or the jointness (multiple implications) is the key factor…</p>
 <hr />
 <h2 id="next-steps">11. Next Steps</h2>
@@ -1282,27 +1359,35 @@ Investigation: The Shifted Pairing Technique</h2>
 <h3 id="from-voronkovs-survey">12.1 From Voronkov’s Survey</h3>
 <p>The “shifted pairing” technique is used to encode Turing machine
 computations for SREU undecidability.</p>
-<p>The idea (roughly): - Encode a computation as a sequence of
-configurations - Use “pairing” to represent pairs of consecutive
-configurations - Use “shifting” to relate positions across the
-computation</p>
+<p>The idea (roughly):</p>
+<ul>
+<li>Encode a computation as a sequence of configurations</li>
+<li>Use “pairing” to represent pairs of consecutive configurations</li>
+<li>Use “shifting” to relate positions across the computation</li>
+</ul>
 <h3 id="how-this-might-apply-to-jcaqp">12.2 How This Might Apply to
 JCAQP</h3>
-<p>If we could express: - “The trace <span
-class="math inline">\(T\)</span> contains a pair <span
-class="math inline">\((c, c&#39;)\)</span> of consecutive
-configurations” - “For all such pairs, they satisfy the transition
-relation”</p>
+<p>If we could express:</p>
+<ul>
+<li>“The trace <span class="math inline">\(T\)</span> contains a pair
+<span class="math inline">\((c, c&#39;)\)</span> of consecutive
+configurations”</li>
+<li>“For all such pairs, they satisfy the transition relation”</li>
+</ul>
 <p>Then we could verify arbitrary-length computations.</p>
 <p><strong>The challenge in JCAQP:</strong> We can’t directly express
 “for all pairs in <span class="math inline">\(T\)</span>” without
-either: - Unbounded quantifier prefix (not allowed - prefix is fixed per
-instance) - A way to encode the “for all pairs” check using finite
-structure</p>
+either:</p>
+<ul>
+<li>Unbounded quantifier prefix (not allowed - prefix is fixed per
+instance)</li>
+<li>A way to encode the “for all pairs” check using finite
+structure</li>
+</ul>
 <h3 id="a-potential-observation">12.3 A Potential Observation</h3>
-<p>In T(F), if we define: <span class="math display">\[T =
-\text{pair}(c_0, c_1, \text{pair}(c_1, c_2, \text{pair}(c_2, c_3,
-...)))\]</span></p>
+<p>In T(F), if we define:</p>
+<p><span class="math display">\[T = \text{pair}(c_0, c_1,
+\text{pair}(c_1, c_2, \text{pair}(c_2, c_3, ...)))\]</span></p>
 <p>Then each “pair” node contains two consecutive configurations with
 overlap.</p>
 <p>An implication with the premise <span class="math inline">\(T \doteq
@@ -1320,9 +1405,10 @@ quantified variable over traces. Let the answer <span
 class="math inline">\(A\)</span> include <span
 class="math inline">\(T_{\text{main}} \doteq \text{the actual
 trace}\)</span>.</p>
-<p>Then consider implications: <span class="math display">\[\bar{T}
-\doteq \text{pair}(c, c&#39;, \bar{T}&#39;) \Rightarrow
-\text{valid-transition}(c, c&#39;)\]</span></p>
+<p>Then consider implications:</p>
+<p><span class="math display">\[\bar{T} \doteq \text{pair}(c, c&#39;,
+\bar{T}&#39;) \Rightarrow \text{valid-transition}(c,
+c&#39;)\]</span></p>
 <p>With <span class="math inline">\(\forall \bar{T}\)</span>, this
 checks: “For all terms that have the form pair(c, c’, …)”, the
 transition must be valid.</p>
@@ -1339,15 +1425,21 @@ Connecting Universal Quantification to the Answer</h3>
 <p>This is the crux. We need the universally quantified variable to
 range over subtrees of the answer term.</p>
 <p><strong>Idea:</strong> Include an implication that forces a
-relationship: <span class="math display">\[\text{(some condition)}
-\Rightarrow \text{subtree}(\bar{T}, T_{\text{main}})\]</span></p>
+relationship:</p>
+<p><span class="math display">\[\text{(some condition)} \Rightarrow
+\text{subtree}(\bar{T}, T_{\text{main}})\]</span></p>
 <p>But we can’t express “subtree” directly…</p>
 <p><strong>Alternative:</strong> Use the answer <span
 class="math inline">\(A\)</span> to “list” all the subtrees.</p>
-<p>If <span class="math inline">\(A\)</span> includes: - <span
-class="math inline">\(T_0 \doteq T_{\text{main}}\)</span> - <span
-class="math inline">\(T_1 \doteq \text{tail}(T_0)\)</span> - <span
-class="math inline">\(T_2 \doteq \text{tail}(T_1)\)</span> - …</p>
+<p>If <span class="math inline">\(A\)</span> includes:</p>
+<ul>
+<li><span class="math inline">\(T_0 \doteq T_{\text{main}}\)</span></li>
+<li><span class="math inline">\(T_1 \doteq
+\text{tail}(T_0)\)</span></li>
+<li><span class="math inline">\(T_2 \doteq
+\text{tail}(T_1)\)</span></li>
+<li>…</li>
+</ul>
 <p>Then the “listing” provides access to subtrees. But this requires
 anticipating the trace length, which defeats the purpose.</p>
 <hr />
@@ -1388,14 +1480,18 @@ just the computation, but also a “proof” that it’s valid?</p>
 <p>The implications then just check that the proof is correctly
 formed.</p>
 <h3 id="sketch">14.2 Sketch</h3>
-<p>Let the answer <span class="math inline">\(A\)</span> be: <span
-class="math display">\[\exists T, P. (T \doteq \text{trace}(...)) \land
-(P \doteq \text{proof}(...))\]</span></p>
-<p>where: - <span class="math inline">\(T\)</span> is the computation
-trace - <span class="math inline">\(P\)</span> is a proof that <span
-class="math inline">\(T\)</span> is valid</p>
+<p>Let the answer <span class="math inline">\(A\)</span> be:</p>
+<p><span class="math display">\[\exists T, P. (T \doteq
+\text{trace}(...)) \land (P \doteq \text{proof}(...))\]</span></p>
+<p>where:</p>
+<ul>
+<li><span class="math inline">\(T\)</span> is the computation trace</li>
+<li><span class="math inline">\(P\)</span> is a proof that <span
+class="math inline">\(T\)</span> is valid</li>
+</ul>
 <p>The proof <span class="math inline">\(P\)</span> might have
-structure: <span class="math display">\[P = \text{prf}(T_0, T_1, P_0,
+structure:</p>
+<p><span class="math display">\[P = \text{prf}(T_0, T_1, P_0,
 \text{prf}(T_1, T_2, P_1, ...))\]</span></p>
 <p>where each <span class="math inline">\(P_i\)</span> is a witness that
 transition <span class="math inline">\(i\)</span> is valid.</p>
@@ -1414,22 +1510,27 @@ self-certifying way?</p>
 <hr />
 <h2 id="final-reflection">15. Final Reflection</h2>
 <h3 id="key-insight">15.1 Key Insight</h3>
-<p>The fundamental difficulty is that JCAQP over T(F) has: -
-<strong>Fixed quantifier prefix:</strong> Bounded structure -
-<strong>Universal quantification over ALL terms:</strong> Too broad (not
-restricted to subtrees of answer) - <strong>No recursion/induction in
-the implication language:</strong> Can’t express unbounded
-verification</p>
+<p>The fundamental difficulty is that JCAQP over T(F) has:</p>
+<ul>
+<li><strong>Fixed quantifier prefix:</strong> Bounded structure</li>
+<li><strong>Universal quantification over ALL terms:</strong> Too broad
+(not restricted to subtrees of answer)</li>
+<li><strong>No recursion/induction in the implication language:</strong>
+Can’t express unbounded verification</li>
+</ul>
 <h3 id="possible-conclusions">15.2 Possible Conclusions</h3>
 <p><strong>Hypothesis A:</strong> JCAQP-EXIST over T(F) is decidable
 (perhaps with high complexity), because the bounded quantifier prefix
 limits the problem’s expressiveness.</p>
 <p><strong>Hypothesis B:</strong> JCAQP-EXIST over T(F) is undecidable,
 but the proof requires a more clever encoding than direct computation
-simulation. Perhaps using: - The interaction between multiple
-implications (jointness) - Specific properties of the no-escaping
-condition - A reduction from a problem that doesn’t require unbounded
-verification</p>
+simulation. Perhaps using:</p>
+<ul>
+<li>The interaction between multiple implications (jointness)</li>
+<li>Specific properties of the no-escaping condition</li>
+<li>A reduction from a problem that doesn’t require unbounded
+verification</li>
+</ul>
 <h3 id="what-would-help">15.3 What Would Help</h3>
 <ol type="1">
 <li>A complete classification of SREU decidability by quantifier prefix
@@ -1451,15 +1552,21 @@ JCA does NOT reduce to SCA.</p>
 <strong>interaction</strong> between multiple implications, not from
 encoding computation within a single implication.</p>
 <h3 id="what-jointness-provides">16.2 What Jointness Provides</h3>
-<p>With a joint answer: - Constraints from one implication can “inform”
-another - The answer must balance requirements from all implications
-simultaneously - This creates a global constraint satisfaction
-problem</p>
+<p>With a joint answer:</p>
+<ul>
+<li>Constraints from one implication can “inform” another</li>
+<li>The answer must balance requirements from all implications
+simultaneously</li>
+<li>This creates a global constraint satisfaction problem</li>
+</ul>
 <h3 id="potential-encoding-using-jointness">16.3 Potential Encoding
 Using Jointness</h3>
-<p>Consider encoding a combinatorial problem where: - Each implication
-constrains part of the answer structure - The joint satisfaction of all
-implications encodes the overall problem</p>
+<p>Consider encoding a combinatorial problem where:</p>
+<ul>
+<li>Each implication constrains part of the answer structure</li>
+<li>The joint satisfaction of all implications encodes the overall
+problem</li>
+</ul>
 <p><strong>Example:</strong> Graph coloring or satisfiability</p>
 <p>For SAT, each clause might become an implication, and the answer
 <span class="math inline">\(A\)</span> encodes a variable
@@ -1497,9 +1604,9 @@ arbitrarily complex term.</p>
 class="math inline">\(\exists \bar{\beta}: A\)</span> where <span
 class="math inline">\(A\)</span> is a conjunction of equations.</p>
 <p>This can encode a substitution! If <span
-class="math inline">\(A\)</span> includes: <span
-class="math display">\[x_1 \doteq t_1 \land x_2 \doteq t_2 \land
-...\]</span></p>
+class="math inline">\(A\)</span> includes:</p>
+<p><span class="math display">\[x_1 \doteq t_1 \land x_2 \doteq t_2
+\land ...\]</span></p>
 <p>This defines <span class="math inline">\(\theta(x_i) =
 t_i\)</span>.</p>
 <h3 id="encoding-the-matching-condition">17.3 Encoding the Matching
@@ -1515,12 +1622,14 @@ class="math inline">\(\bar{w}_i\)</span> be existentially quantified
 witness variables (for <span
 class="math inline">\(\sigma_i\)</span>).</p>
 <p>The condition “<span class="math inline">\(\sigma_i(\theta(l_i)) =
-\theta(r_i)\)</span>” becomes an equation involving: - The terms <span
-class="math inline">\(t_j\)</span> from the answer <span
-class="math inline">\(A\)</span> (which define <span
-class="math inline">\(\theta\)</span>) - The witness variables <span
-class="math inline">\(\bar{w}_i\)</span> (which instantiate <span
-class="math inline">\(\sigma_i\)</span>)</p>
+\theta(r_i)\)</span>” becomes an equation involving:</p>
+<ul>
+<li>The terms <span class="math inline">\(t_j\)</span> from the answer
+<span class="math inline">\(A\)</span> (which define <span
+class="math inline">\(\theta\)</span>)</li>
+<li>The witness variables <span class="math inline">\(\bar{w}_i\)</span>
+(which instantiate <span class="math inline">\(\sigma_i\)</span>)</li>
+</ul>
 <p>But how do we express this as an implication <span
 class="math inline">\(D_i \Rightarrow C_i\)</span>?</p>
 <h3 id="a-concrete-attempt">17.4 A Concrete Attempt</h3>
@@ -1531,9 +1640,12 @@ class="math inline">\(\theta\)</span> such that <span
 class="math inline">\(\theta(f(x, y))\)</span> matches <span
 class="math inline">\(\theta(f(f(x, x), y))\)</span>.</p>
 <p>Suppose <span class="math inline">\(\theta(x) = a\)</span> and <span
-class="math inline">\(\theta(y) = a\)</span>. Then: - <span
-class="math inline">\(\theta(l_i) = f(a, a)\)</span> - <span
-class="math inline">\(\theta(r_i) = f(f(a, a), a)\)</span></p>
+class="math inline">\(\theta(y) = a\)</span>. Then:</p>
+<ul>
+<li><span class="math inline">\(\theta(l_i) = f(a, a)\)</span></li>
+<li><span class="math inline">\(\theta(r_i) = f(f(a, a),
+a)\)</span></li>
+</ul>
 <p>Does <span class="math inline">\(f(a, a)\)</span> match <span
 class="math inline">\(f(f(a, a), a)\)</span>? For this, we’d need <span
 class="math inline">\(\sigma\)</span> such that <span
@@ -1579,8 +1691,9 @@ class="math inline">\(\top\)</span> (no constraints on variables).</p>
 <span class="math inline">\(\sigma\)</span>.</p>
 <p>Let the prefix be <span class="math inline">\(Q = \forall x, y.
 \exists \sigma_x, \sigma_y.\)</span></p>
-<p>The implication: <span class="math display">\[\top \Rightarrow
-(f(\sigma_x, \sigma_y) \doteq f(f(x, x), y))\]</span></p>
+<p>The implication:</p>
+<p><span class="math display">\[\top \Rightarrow (f(\sigma_x, \sigma_y)
+\doteq f(f(x, x), y))\]</span></p>
 <p>This asks: for all <span class="math inline">\(x, y\)</span>, can we
 find <span class="math inline">\(\sigma_x, \sigma_y\)</span> such that
 <span class="math inline">\(f(\sigma_x, \sigma_y) = f(f(x, x),
@@ -1590,29 +1703,38 @@ x)\)</span> and <span class="math inline">\(\sigma_y = y\)</span>. Yes!
 ✓</p>
 <h3 id="the-general-pattern">17.6 The General Pattern</h3>
 <p>For semi-unification inequation <span class="math inline">\(l \leq
-r\)</span>: - Let variables in <span class="math inline">\(l, r\)</span>
-be universally quantified - Let witness variables for the matching
-substitution be existentially quantified - The implication is: <span
-class="math inline">\(\top \Rightarrow (\text{l with witnesses applied}
-\doteq r)\)</span></p>
+r\)</span>:</p>
+<ul>
+<li>Let variables in <span class="math inline">\(l, r\)</span> be
+universally quantified</li>
+<li>Let witness variables for the matching substitution be existentially
+quantified</li>
+<li>The implication is: <span class="math inline">\(\top \Rightarrow
+(\text{l with witnesses applied} \doteq r)\)</span></li>
+</ul>
 <p>Wait, that’s not quite right. Let me redo this.</p>
 <p>If <span class="math inline">\(l = f(x, y)\)</span> and <span
 class="math inline">\(r = f(f(x,x), y)\)</span>, and <span
-class="math inline">\(\theta = \text{id}\)</span>: - <span
-class="math inline">\(\theta(l) = f(x, y)\)</span> - <span
-class="math inline">\(\theta(r) = f(f(x,x), y)\)</span> - We need <span
-class="math inline">\(\sigma\)</span> such that <span
-class="math inline">\(\sigma(\theta(l)) = \theta(r)\)</span> - <span
-class="math inline">\(\sigma(f(x, y)) = f(\sigma(x), \sigma(y)) =
-f(f(x,x), y) = \theta(r)\)</span></p>
+class="math inline">\(\theta = \text{id}\)</span>:</p>
+<ul>
+<li><span class="math inline">\(\theta(l) = f(x, y)\)</span></li>
+<li><span class="math inline">\(\theta(r) = f(f(x,x), y)\)</span></li>
+<li>We need <span class="math inline">\(\sigma\)</span> such that <span
+class="math inline">\(\sigma(\theta(l)) = \theta(r)\)</span></li>
+<li><span class="math inline">\(\sigma(f(x, y)) = f(\sigma(x),
+\sigma(y)) = f(f(x,x), y) = \theta(r)\)</span></li>
+</ul>
 <p>So the equation is: <span class="math inline">\(f(\sigma(x),
 \sigma(y)) = f(f(x,x), y)\)</span>.</p>
-<p>In JCAQP terms: - <span class="math inline">\(x, y\)</span> are
-universally quantified (representing all possible instantiations by the
-environment) - <span class="math inline">\(\sigma_x, \sigma_y\)</span>
-are existentially quantified (representing the matching witnesses) - The
-conclusion is: <span class="math inline">\(f(\sigma_x, \sigma_y) \doteq
-f(f(x,x), y)\)</span></p>
+<p>In JCAQP terms:</p>
+<ul>
+<li><span class="math inline">\(x, y\)</span> are universally quantified
+(representing all possible instantiations by the environment)</li>
+<li><span class="math inline">\(\sigma_x, \sigma_y\)</span> are
+existentially quantified (representing the matching witnesses)</li>
+<li>The conclusion is: <span class="math inline">\(f(\sigma_x, \sigma_y)
+\doteq f(f(x,x), y)\)</span></li>
+</ul>
 <p><strong>But wait:</strong> This implication is satisfied regardless
 of the answer <span class="math inline">\(A\)</span>!</p>
 <p>The issue is that we’ve made <span class="math inline">\(x,
@@ -1630,10 +1752,13 @@ and <span class="math inline">\(\theta(y) = t_y\)</span>.</p>
 <p>But then <span class="math inline">\(x, y\)</span> are NOT free to be
 universally quantified - they’re constrained by <span
 class="math inline">\(A\)</span>.</p>
-<p>So the structure should be: - <span class="math inline">\(A\)</span>
-constrains variables like <span class="math inline">\(x, y\)</span> -
-The implications use these constraints to check the matching
-condition</p>
+<p>So the structure should be:</p>
+<ul>
+<li><span class="math inline">\(A\)</span> constrains variables like
+<span class="math inline">\(x, y\)</span></li>
+<li>The implications use these constraints to check the matching
+condition</li>
+</ul>
 <p>Let me reconsider. The variables in the answer <span
 class="math inline">\(A\)</span> and the variables in the quantifier
 prefix <span class="math inline">\(Q\)</span> are related but
@@ -1645,12 +1770,15 @@ variables <span class="math inline">\(\bar{\beta}\)</span>. The
 quantifier prefix <span class="math inline">\(Q\)</span> governs
 variables in the problem.</p>
 <p>Let me re-read Definition 4.1 more carefully…</p>
-<p>From the thesis: - The JCAQP problem is <span
-class="math inline">\(Q: \bigwedge_i (D_i \Rightarrow C_i)\)</span> -
-The answer is <span class="math inline">\(\exists \bar{\beta}:
-A\)</span> - The relevance condition is: <span
-class="math inline">\(\mathcal{M} \models \bigwedge_i (D_i \land A
-\Rightarrow C_i)\)</span></p>
+<p>From the thesis:</p>
+<ul>
+<li>The JCAQP problem is <span class="math inline">\(Q: \bigwedge_i (D_i
+\Rightarrow C_i)\)</span></li>
+<li>The answer is <span class="math inline">\(\exists \bar{\beta}:
+A\)</span></li>
+<li>The relevance condition is: <span class="math inline">\(\mathcal{M}
+\models \bigwedge_i (D_i \land A \Rightarrow C_i)\)</span></li>
+</ul>
 <p>So the answer <span class="math inline">\(A\)</span> is conjoined
 with each premise <span class="math inline">\(D_i\)</span>. The
 variables in <span class="math inline">\(A\)</span> (both <span
@@ -1665,11 +1793,14 @@ Encoding</h3>
 r_1, ..., l_n \leq r_n\}\)</span> with variables <span
 class="math inline">\(V = \{x_1, ..., x_m\}\)</span>:</p>
 <p><strong>Encoding:</strong></p>
-<p>Variables in JCAQP: - <span class="math inline">\(V&#39; =
-\{x&#39;_1, ..., x&#39;_m\}\)</span>: representing <span
-class="math inline">\(\theta(x_j)\)</span> values - <span
-class="math inline">\(\bar{w}_i\)</span>: witness variables for matching
-in inequation <span class="math inline">\(i\)</span></p>
+<p>Variables in JCAQP:</p>
+<ul>
+<li><span class="math inline">\(V&#39; = \{x&#39;_1, ...,
+x&#39;_m\}\)</span>: representing <span
+class="math inline">\(\theta(x_j)\)</span> values</li>
+<li><span class="math inline">\(\bar{w}_i\)</span>: witness variables
+for matching in inequation <span class="math inline">\(i\)</span></li>
+</ul>
 <p>Quantifier prefix: <span class="math inline">\(Q = \exists x&#39;_1,
 ..., x&#39;_m. \forall \bar{u}_i. \exists \bar{w}_i.\)</span></p>
 <p>Actually, this is getting complicated. Let me think about a simpler
@@ -1677,19 +1808,22 @@ structure.</p>
 <h3 id="simplification-existential-only-prefix">17.9 Simplification:
 Existential-Only Prefix</h3>
 <p>What if we use an existential-only quantifier prefix?</p>
-<p>Then the JCAQP problem becomes essentially: “Does there exist values
-for all variables such that all implications hold?”</p>
+<p>Then the JCAQP problem becomes essentially:</p>
+<p>“Does there exist values for all variables such that all implications
+hold?”</p>
 <p>This is closer to standard constraint solving.</p>
-<p>For semi-unification: - Variables <span
-class="math inline">\(x&#39;_j\)</span> represent <span
-class="math inline">\(\theta(x_j)\)</span> - For each <span
-class="math inline">\(i\)</span>, variables <span
+<p>For semi-unification:</p>
+<ul>
+<li>Variables <span class="math inline">\(x&#39;_j\)</span> represent
+<span class="math inline">\(\theta(x_j)\)</span></li>
+<li>For each <span class="math inline">\(i\)</span>, variables <span
 class="math inline">\(w_{i,j}\)</span> represent <span
 class="math inline">\(\sigma_i(z_j)\)</span> where <span
 class="math inline">\(z_j\)</span> are variables in <span
-class="math inline">\(\theta(l_i)\)</span> - The implications enforce
-<span class="math inline">\(\sigma_i(\theta(l_i)) =
-\theta(r_i)\)</span></p>
+class="math inline">\(\theta(l_i)\)</span></li>
+<li>The implications enforce <span
+class="math inline">\(\sigma_i(\theta(l_i)) = \theta(r_i)\)</span></li>
+</ul>
 <p>The premises <span class="math inline">\(D_i\)</span> could be <span
 class="math inline">\(\top\)</span> (always true). The conclusions <span
 class="math inline">\(C_i\)</span> encode the matching equations.</p>
@@ -1707,9 +1841,12 @@ that all matching equations hold?</p>
 <p>This is… just asking if the semi-unification instance has a
 solution!</p>
 <h3 id="the-connection">17.10 The Connection</h3>
-<p>If we can encode semi-unification as JCAQP where: - An answer <span
-class="math inline">\(A\)</span> exists iff the semi-unification
-instance has a solution - The encoding uses a fixed signature</p>
+<p>If we can encode semi-unification as JCAQP where:</p>
+<ul>
+<li>An answer <span class="math inline">\(A\)</span> exists iff the
+semi-unification instance has a solution</li>
+<li>The encoding uses a fixed signature</li>
+</ul>
 <p>Then JCAQP-EXIST is undecidable (since semi-unification is
 undecidable).</p>
 <h3 id="the-encoding-details">17.11 The Encoding Details</h3>
@@ -1749,17 +1886,21 @@ can introduce arbitrarily many new variables.</p>
 existentially quantified variables <span
 class="math inline">\(\bar{\beta}\)</span>. These play the role of fresh
 variables introduced by <span class="math inline">\(\theta\)</span>.</p>
-<p>So the answer <span class="math inline">\(A\)</span> might be: <span
-class="math display">\[\exists z_1, z_2, ..., z_k: (x_1 \doteq t_1)
-\land (x_2 \doteq t_2) \land ... \land (\text{matching
+<p>So the answer <span class="math inline">\(A\)</span> might be:</p>
+<p><span class="math display">\[\exists z_1, z_2, ..., z_k: (x_1 \doteq
+t_1) \land (x_2 \doteq t_2) \land ... \land (\text{matching
 equations})\]</span></p>
 <p>where <span class="math inline">\(t_j\)</span> are terms possibly
 involving <span class="math inline">\(z_i\)</span>.</p>
 <p>The matching equations directly encode <span
-class="math inline">\(\sigma_i(\theta(l_i)) = \theta(r_i)\)</span> by: -
-Substituting the definitions from <span class="math inline">\(A\)</span>
-for the original variables - Introducing existential witnesses for the
-<span class="math inline">\(\sigma_i\)</span> substitution</p>
+class="math inline">\(\sigma_i(\theta(l_i)) = \theta(r_i)\)</span>
+by:</p>
+<ul>
+<li>Substituting the definitions from <span
+class="math inline">\(A\)</span> for the original variables</li>
+<li>Introducing existential witnesses for the <span
+class="math inline">\(\sigma_i\)</span> substitution</li>
+</ul>
 <h3 id="still-stuck-universality-of-witnesses">17.13 Still Stuck:
 Universality of Witnesses</h3>
 <p>The problem is that the <span class="math inline">\(\sigma_i\)</span>
@@ -1767,12 +1908,15 @@ witnesses need to substitute for <strong>variables that appear in <span
 class="math inline">\(\theta(l_i)\)</span></strong>, and these include
 the fresh variables <span class="math inline">\(z_j\)</span> introduced
 in the answer.</p>
-<p>In JCAQP, we’d need: - Existential variables <span
-class="math inline">\(z_j\)</span> (fresh variables in <span
-class="math inline">\(\theta\)</span>) - Existential variables <span
-class="math inline">\(w_{i,j}\)</span> (witnesses for <span
-class="math inline">\(\sigma_i\)</span>) - Equations that enforce <span
-class="math inline">\(\sigma_i(z_j) = w_{i,j}\)</span></p>
+<p>In JCAQP, we’d need:</p>
+<ul>
+<li>Existential variables <span class="math inline">\(z_j\)</span>
+(fresh variables in <span class="math inline">\(\theta\)</span>)</li>
+<li>Existential variables <span class="math inline">\(w_{i,j}\)</span>
+(witnesses for <span class="math inline">\(\sigma_i\)</span>)</li>
+<li>Equations that enforce <span class="math inline">\(\sigma_i(z_j) =
+w_{i,j}\)</span></li>
+</ul>
 <p>But the matching equation <span
 class="math inline">\(\sigma_i(\theta(l_i)) = \theta(r_i)\)</span>
 becomes an equation where we substitute <span
@@ -1850,8 +1994,11 @@ class="math inline">\(D_i\)</span>: relevance is <span
 class="math inline">\((D_i \land A) \Rightarrow C_i\)</span>.</p>
 <p>For semi-unification, the implication structure should enforce the
 matching condition.</p>
-<p>Let me try: - <span class="math inline">\(D_i = \top\)</span> (no
-premise) - $C_i = $ the matching equation</p>
+<p>Let me try:</p>
+<ul>
+<li><span class="math inline">\(D_i = \top\)</span> (no premise)</li>
+<li>$C_i = $ the matching equation</li>
+</ul>
 <p>Then <span class="math inline">\((D_i \land A) \Rightarrow
 C_i\)</span> becomes <span class="math inline">\(A \Rightarrow
 C_i\)</span>, i.e., if the answer <span class="math inline">\(A\)</span>
@@ -1859,10 +2006,10 @@ holds, then <span class="math inline">\(C_i\)</span> must hold.</p>
 <p>For <span class="math inline">\(C_i = (w \doteq f(X,
 X))\)</span>:</p>
 <p>If <span class="math inline">\(A = (X \doteq \beta) \land (w \doteq
-f(\beta, \beta))\)</span>, then: <span class="math inline">\(A
-\Rightarrow C_i\)</span> becomes: <span class="math inline">\((X \doteq
-\beta) \land (w \doteq f(\beta, \beta)) \Rightarrow (w \doteq f(X,
-X))\)</span>.</p>
+f(\beta, \beta))\)</span>, then:</p>
+<p><span class="math inline">\(A \Rightarrow C_i\)</span> becomes: <span
+class="math inline">\((X \doteq \beta) \land (w \doteq f(\beta, \beta))
+\Rightarrow (w \doteq f(X, X))\)</span>.</p>
 <p>Under <span class="math inline">\(A\)</span>: <span
 class="math inline">\(X = \beta\)</span>, so <span
 class="math inline">\(f(X, X) = f(\beta, \beta) = w\)</span> (from <span
@@ -1894,11 +2041,15 @@ be in the answer <span class="math inline">\(A\)</span>, not the premise
 <span class="math inline">\(D\)</span>.</p>
 <p>Let me re-read the JCAQP structure again…</p>
 <h3 id="jcaqp-structure-revisited">17.17 JCAQP Structure Revisited</h3>
-<p>From the thesis: - Problem: <span class="math inline">\(Q:
-\bigwedge_i (D_i \Rightarrow C_i)\)</span> - Answer: <span
-class="math inline">\(\exists \bar{\beta}: A\)</span> - Relevance: <span
-class="math inline">\(\mathcal{M} \models \bigwedge_i (D_i \land A
-\Rightarrow C_i)\)</span></p>
+<p>From the thesis:</p>
+<ul>
+<li>Problem: <span class="math inline">\(Q: \bigwedge_i (D_i \Rightarrow
+C_i)\)</span></li>
+<li>Answer: <span class="math inline">\(\exists \bar{\beta}:
+A\)</span></li>
+<li>Relevance: <span class="math inline">\(\mathcal{M} \models
+\bigwedge_i (D_i \land A \Rightarrow C_i)\)</span></li>
+</ul>
 <p>The answer <span class="math inline">\(A\)</span> is conjoined with
 each premise <span class="math inline">\(D_i\)</span>.</p>
 <p>So the check is: if the premises <span
@@ -1948,12 +2099,15 @@ class="math inline">\(\theta(l) = \theta(r)\)</span>”.</p>
 <p>Matching means: there exists <span
 class="math inline">\(\sigma\)</span> such that <span
 class="math inline">\(\sigma(\theta(l)) = \theta(r)\)</span>.</p>
-<p>In the example <span class="math inline">\(x \leq f(x, x)\)</span>: -
-<span class="math inline">\(\theta(x) = X\)</span> - <span
-class="math inline">\(\theta(l) = X\)</span> - <span
-class="math inline">\(\theta(r) = f(X, X)\)</span> - Matching: exists
-<span class="math inline">\(\sigma\)</span> such that <span
-class="math inline">\(\sigma(X) = f(X, X)\)</span>.</p>
+<p>In the example <span class="math inline">\(x \leq f(x,
+x)\)</span>:</p>
+<ul>
+<li><span class="math inline">\(\theta(x) = X\)</span></li>
+<li><span class="math inline">\(\theta(l) = X\)</span></li>
+<li><span class="math inline">\(\theta(r) = f(X, X)\)</span></li>
+<li>Matching: exists <span class="math inline">\(\sigma\)</span> such
+that <span class="math inline">\(\sigma(X) = f(X, X)\)</span>.</li>
+</ul>
 <p>If <span class="math inline">\(X\)</span> is a variable, then <span
 class="math inline">\(\sigma(X)\)</span> can be anything, so <span
 class="math inline">\(\sigma(X) = f(X, X)\)</span> is satisfiable (with
@@ -1967,18 +2121,26 @@ class="math inline">\(\sigma\)</span> (on the variables of <span
 class="math inline">\(\theta(l)\)</span>) such that <span
 class="math inline">\(\sigma(\theta(l)) = \theta(r)\)</span>?</p>
 <p>For the inequation <span class="math inline">\(x \leq f(x,
-x)\)</span>: - If <span class="math inline">\(\theta(x) = a\)</span> (a
-constant), then <span class="math inline">\(\theta(l) = a\)</span> and
-<span class="math inline">\(\theta(r) = f(a, a)\)</span>. - Matching:
-<span class="math inline">\(\sigma(a) = f(a, a)\)</span>. But <span
-class="math inline">\(a\)</span> is a constant, so <span
-class="math inline">\(\sigma(a) = a \neq f(a, a)\)</span>. No match. -
-If <span class="math inline">\(\theta(x) = y\)</span> (a variable), then
-<span class="math inline">\(\theta(l) = y\)</span> and <span
-class="math inline">\(\theta(r) = f(y, y)\)</span>. - Matching: <span
-class="math inline">\(\sigma(y) = f(y, y)\)</span>. Yes, set <span
-class="math inline">\(\sigma = \{y \mapsto f(y, y)\}\)</span>.
-Match!</p>
+x)\)</span>:</p>
+<ul>
+<li>If <span class="math inline">\(\theta(x) = a\)</span> (a constant),
+then <span class="math inline">\(\theta(l) = a\)</span> and <span
+class="math inline">\(\theta(r) = f(a, a)\)</span>.
+<ul>
+<li>Matching: <span class="math inline">\(\sigma(a) = f(a, a)\)</span>.
+But <span class="math inline">\(a\)</span> is a constant, so <span
+class="math inline">\(\sigma(a) = a \neq f(a, a)\)</span>. No
+match.</li>
+</ul></li>
+<li>If <span class="math inline">\(\theta(x) = y\)</span> (a variable),
+then <span class="math inline">\(\theta(l) = y\)</span> and <span
+class="math inline">\(\theta(r) = f(y, y)\)</span>.
+<ul>
+<li>Matching: <span class="math inline">\(\sigma(y) = f(y, y)\)</span>.
+Yes, set <span class="math inline">\(\sigma = \{y \mapsto f(y,
+y)\}\)</span>. Match!</li>
+</ul></li>
+</ul>
 <p>So the matching condition restricts what <span
 class="math inline">\(\theta\)</span> can be. Specifically, <span
 class="math inline">\(\theta(x)\)</span> must include at least one
@@ -2002,32 +2164,46 @@ over T(F).</li>
 terms.</li>
 </ul>
 <p>So when we say “<span class="math inline">\(\theta(x) = y\)</span>”
-where <span class="math inline">\(y\)</span> is a variable, we mean: -
-In the JCAQP setting, <span class="math inline">\(y\)</span> ranges over
-ground terms. - The “matching” condition “<span
-class="math inline">\(\sigma(y) = f(y, y)\)</span>” would mean: there
-exists a ground term to substitute for <span
-class="math inline">\(y\)</span> such that it equals <span
-class="math inline">\(f(y, y)\)</span>.</p>
+where <span class="math inline">\(y\)</span> is a variable, we mean:</p>
+<ul>
+<li>In the JCAQP setting, <span class="math inline">\(y\)</span> ranges
+over ground terms.</li>
+<li>The “matching” condition “<span class="math inline">\(\sigma(y) =
+f(y, y)\)</span>” would mean: there exists a ground term to substitute
+for <span class="math inline">\(y\)</span> such that it equals <span
+class="math inline">\(f(y, y)\)</span>.</li>
+</ul>
 <p>But wait, that’s circular—<span class="math inline">\(\sigma\)</span>
 operates on <span class="math inline">\(y\)</span>, but <span
 class="math inline">\(y\)</span> is already in the conclusion.</p>
 <p>I think I’ve been confusing the meta-level (semi-unification’s
 substitutions) with the object level (T(F)’s ground terms).</p>
 <h3 id="reconciling-the-levels">17.20 Reconciling the Levels</h3>
-<p>In semi-unification: - Variables are formal symbols - Substitutions
-map variables to terms (which can contain variables) - The solution
-<span class="math inline">\(\theta\)</span> and witnesses <span
-class="math inline">\(\sigma_i\)</span> operate on syntax</p>
-<p>In JCAQP over T(F): - “Variables” in the problem are first-order
-variables ranging over ground terms - Satisfaction is in the fixed model
-T(F) - There’s no “substitution” operation—variables get assigned
-specific ground terms</p>
+<p>In semi-unification:</p>
+<ul>
+<li>Variables are formal symbols</li>
+<li>Substitutions map variables to terms (which can contain
+variables)</li>
+<li>The solution <span class="math inline">\(\theta\)</span> and
+witnesses <span class="math inline">\(\sigma_i\)</span> operate on
+syntax</li>
+</ul>
+<p>In JCAQP over T(F):</p>
+<ul>
+<li>“Variables” in the problem are first-order variables ranging over
+ground terms</li>
+<li>Satisfaction is in the fixed model T(F)</li>
+<li>There’s no “substitution” operation—variables get assigned specific
+ground terms</li>
+</ul>
 <p>The two notions of “variable” are different!</p>
-<p>To encode semi-unification in JCAQP, we’d need to: 1. Represent
-semi-unification’s terms and substitutions as structures in T(F) 2.
-Encode the substitution operation and matching condition using
-equations</p>
+<p>To encode semi-unification in JCAQP, we’d need to:</p>
+<ol type="1">
+<li>Represent semi-unification’s terms and substitutions as structures
+in T(F)</li>
+<li>Encode the substitution operation and matching condition using
+equations</li>
+</ol>
 <h3 id="representing-terms-as-data">17.21 Representing Terms as
 Data</h3>
 <p>We can represent semi-unification terms as ground terms in T(F) using
@@ -2076,13 +2252,21 @@ Barrier</h2>
 <h3 id="summary-of-the-difficulty">18.1 Summary of the Difficulty</h3>
 <p>To prove JCAQP over T(F) undecidable via reduction, we need to encode
 an undecidable problem. The natural candidates (semi-unification, SREU,
-PCP) all require: - Representing unbounded structures (computations,
-derivations, solutions) - Verifying properties of these structures
-(valid transitions, matching conditions)</p>
-<p>In T(F) with first-order equations: - We can represent structures as
-nested terms - But we can’t express inductive/recursive verification
-over these structures - The quantifier prefix is fixed and finite,
-limiting universal checks</p>
+PCP) all require:</p>
+<ul>
+<li>Representing unbounded structures (computations, derivations,
+solutions)</li>
+<li>Verifying properties of these structures (valid transitions,
+matching conditions)</li>
+</ul>
+<p>In T(F) with first-order equations:</p>
+<ul>
+<li>We can represent structures as nested terms</li>
+<li>But we can’t express inductive/recursive verification over these
+structures</li>
+<li>The quantifier prefix is fixed and finite, limiting universal
+checks</li>
+</ul>
 <h3 id="the-gap">18.2 The Gap</h3>
 <p>SREU’s undecidability proof uses “derivability under assumptions”—a
 notion with inductive character. JCAQP over T(F) uses “satisfaction in a
@@ -2148,9 +2332,9 @@ class="math inline">\(\Sigma\)</span>.</p></li>
 <li><p><strong>Constant Replacement (Lemma 4):</strong> For distinct
 constants <span class="math inline">\(c_i\)</span> and terms <span
 class="math inline">\(t_i\)</span> (where <span
-class="math inline">\(c_i \notin t_j\)</span>): <span
-class="math display">\[c_1 = t_1, \ldots, c_n = t_n \vdash s = r \iff
-s[t_i/c_i] \equiv r[t_i/c_i]\]</span></p></li>
+class="math inline">\(c_i \notin t_j\)</span>):</p>
+<p><span class="math display">\[c_1 = t_1, \ldots, c_n = t_n \vdash s =
+r \iff s[t_i/c_i] \equiv r[t_i/c_i]\]</span></p></li>
 </ol>
 <p>The crucial point: these premises <span class="math inline">\(c_i =
 t_i\)</span> are <strong>not satisfiable in T(F)</strong> (e.g., <span
@@ -2159,8 +2343,8 @@ in SREU because derivability under assumptions doesn’t require the
 assumptions to be satisfiable.</p>
 <h3 id="why-sreu-doesnt-reduce-to-jcaqp">19.4 Why SREU Doesn’t Reduce to
 JCAQP</h3>
-<p>In JCAQP, the <strong>consistency condition</strong> requires: <span
-class="math display">\[\mathcal{T}(\mathcal{F}) \models \exists
+<p>In JCAQP, the <strong>consistency condition</strong> requires:</p>
+<p><span class="math display">\[\mathcal{T}(\mathcal{F}) \models \exists
 \text{FV}(D_i \land A). D_i \land A\]</span></p>
 <p>This means <span class="math inline">\(D_i \land A\)</span> must be
 satisfiable (unifiable) in T(F). The SREU premises that encode
@@ -2197,9 +2381,12 @@ Theorem” (TCS 1999):</p>
 is still open!</p>
 <h3 id="theorem-4.5-minimal-undecidable-sreu-fragment">19.6 Theorem 4.5:
 Minimal Undecidable SREU Fragment</h3>
-<p>Voronkov/Veanes showed: SREU(1,0,1) is undecidable even with: -
-Ground left-hand sides - Only two variables - Only three rigid
-equations</p>
+<p>Voronkov/Veanes showed: SREU(1,0,1) is undecidable even with:</p>
+<ul>
+<li>Ground left-hand sides</li>
+<li>Only two variables</li>
+<li>Only three rigid equations</li>
+</ul>
 <p>But “ground left-hand sides” means ground equations like <span
 class="math inline">\(f(a) = g(b)\)</span>, which are
 <strong>false</strong> in T(F). So this minimal fragment still doesn’t
@@ -2228,12 +2415,14 @@ jointness creates interactions between implications that don’t exist in
 single-implication problems.</p>
 <p>Perhaps the undecidability comes from this interaction, not from
 encoding computation within single implications?</p>
-<p><strong>Observation:</strong> In the JCA problem from Example 12: -
-<span class="math inline">\(B_1 = (x = a)\)</span>, <span
-class="math inline">\(C_1 = (y = a)\)</span> - <span
-class="math inline">\(B_2 = (x = b)\)</span>, <span
-class="math inline">\(C_2 = (y = b)\)</span> - The only answer is <span
-class="math inline">\(x = y\)</span></p>
+<p><strong>Observation:</strong> In the JCA problem from Example 12:</p>
+<ul>
+<li><span class="math inline">\(B_1 = (x = a)\)</span>, <span
+class="math inline">\(C_1 = (y = a)\)</span></li>
+<li><span class="math inline">\(B_2 = (x = b)\)</span>, <span
+class="math inline">\(C_2 = (y = b)\)</span></li>
+<li>The only answer is <span class="math inline">\(x = y\)</span></li>
+</ul>
 <p>The answer must simultaneously satisfy both implications, and this
 creates a constraint that no single SCA problem can express.</p>
 <p>Could we construct a JCA problem where the “joint satisfaction”
@@ -2253,21 +2442,27 @@ requirement encodes an undecidable problem?</p>
 </ol>
 <h3 id="the-core-barrier">21.2 The Core Barrier</h3>
 <p>The SREU undecidability proof uses premises that are
-<strong>unsatisfiable</strong> in T(F): - Grounding constraints: <span
-class="math inline">\(f(c,...,c) = c\)</span> for all <span
-class="math inline">\(f\)</span> - Replacement constraints: <span
-class="math inline">\(c_i = t_i\)</span> where <span
-class="math inline">\(c_i\)</span> is a fresh constant</p>
+<strong>unsatisfiable</strong> in T(F):</p>
+<ul>
+<li>Grounding constraints: <span class="math inline">\(f(c,...,c) =
+c\)</span> for all <span class="math inline">\(f\)</span></li>
+<li>Replacement constraints: <span class="math inline">\(c_i =
+t_i\)</span> where <span class="math inline">\(c_i\)</span> is a fresh
+constant</li>
+</ul>
 <p>These premises provide “derivability context” but violate JCAQP’s
 consistency condition.</p>
 <h3 id="what-would-be-needed-for-undecidability">21.3 What Would Be
 Needed for Undecidability</h3>
-<p>An undecidable problem that encodes into JCAQP where: - All premises
-<span class="math inline">\(D_i\)</span> are satisfiable (unifiable) -
-The answer <span class="math inline">\(A\)</span> combined with each
-<span class="math inline">\(D_i\)</span> remains satisfiable - The
-existence of such an <span class="math inline">\(A\)</span> encodes a
-computationally hard property</p>
+<p>An undecidable problem that encodes into JCAQP where:</p>
+<ul>
+<li>All premises <span class="math inline">\(D_i\)</span> are
+satisfiable (unifiable)</li>
+<li>The answer <span class="math inline">\(A\)</span> combined with each
+<span class="math inline">\(D_i\)</span> remains satisfiable</li>
+<li>The existence of such an <span class="math inline">\(A\)</span>
+encodes a computationally hard property</li>
+</ul>
 <h3 id="what-would-be-needed-for-decidability">21.4 What Would Be Needed
 for Decidability</h3>
 <ul>
@@ -2308,18 +2503,25 @@ variables.”</p>
 <strong>Efficient</strong> - nearly linear time algorithms</p>
 <h3 id="the-analogy-to-jcaqp">22.3 The Analogy to JCAQP</h3>
 <p>In JCAQP with prefix <span class="math inline">\(Q = \forall
-\bar{\alpha}. \exists \bar{\beta}\)</span>: - Universal variables <span
-class="math inline">\(\bar{\alpha}\)</span> are like bound variables -
-Existential variables <span class="math inline">\(\bar{\beta}\)</span>
-can depend on universals to their left - The <strong>no-escaping
-condition</strong> restricts how <span
+\bar{\alpha}. \exists \bar{\beta}\)</span>:</p>
+<ul>
+<li>Universal variables <span
+class="math inline">\(\bar{\alpha}\)</span> are like bound
+variables</li>
+<li>Existential variables <span
+class="math inline">\(\bar{\beta}\)</span> can depend on universals to
+their left</li>
+<li>The <strong>no-escaping condition</strong> restricts how <span
 class="math inline">\(\bar{\alpha}\)</span> can appear with <span
-class="math inline">\(\bar{\beta}\)</span></p>
-<p>The no-escaping condition (Definition 4.1 in thesis) requires: &gt;
-If <span class="math inline">\(\forall \alpha \in Q\)</span> appears in
-an atom <span class="math inline">\(c \in A\)</span>, there must be an
-existential parameter <span class="math inline">\(\chi\)</span> in the
-same atom with appropriate ordering.</p>
+class="math inline">\(\bar{\beta}\)</span></li>
+</ul>
+<p>The no-escaping condition (Definition 4.1 in thesis) requires:</p>
+<blockquote>
+<p>If <span class="math inline">\(\forall \alpha \in Q\)</span> appears
+in an atom <span class="math inline">\(c \in A\)</span>, there must be
+an existential parameter <span class="math inline">\(\chi\)</span> in
+the same atom with appropriate ordering.</p>
+</blockquote>
 <p>This is reminiscent of the pattern restriction: existential variables
 can only have distinct bound variables as arguments.</p>
 <h3 id="could-jcaqp-reduce-to-pattern-matching">22.4 Could JCAQP Reduce
@@ -2333,18 +2535,25 @@ a “function variable” 2. Its dependencies on universals <span
 class="math inline">\(\bar{\alpha}\)</span> define its “arguments” 3.
 The implications constrain how these functions relate 4. The consistency
 condition ensures satisfiability</p>
-<p><strong>But:</strong> This is speculative. Key questions remain: -
-Does the pattern restriction exactly match the no-escaping condition? -
-How do the implications (multiple per instance) interact with pattern
-constraints? - Does jointness add complexity beyond pattern
-unification?</p>
+<p><strong>But:</strong> This is speculative. Key questions remain:</p>
+<ul>
+<li>Does the pattern restriction exactly match the no-escaping
+condition?</li>
+<li>How do the implications (multiple per instance) interact with
+pattern constraints?</li>
+<li>Does jointness add complexity beyond pattern unification?</li>
+</ul>
 <h3 id="decidable-semi-unification-fragments">22.5 Decidable
 Semi-Unification Fragments</h3>
-<p>From web research, decidable fragments of semi-unification include: -
-<strong>Uniform semi-unification</strong> (single inequality) -
-decidable in O(n² α(n)²) - <strong>Acyclic semi-unification</strong> -
-used in ML type inference - <strong>Bounded fragments</strong> -
-restricted cut structures</p>
+<p>From web research, decidable fragments of semi-unification
+include:</p>
+<ul>
+<li><strong>Uniform semi-unification</strong> (single inequality) -
+decidable in O(n² α(n)²)</li>
+<li><strong>Acyclic semi-unification</strong> - used in ML type
+inference</li>
+<li><strong>Bounded fragments</strong> - restricted cut structures</li>
+</ul>
 <p>Could JCAQP relate to one of these decidable fragments? The
 consistency condition might force a structure that avoids the cyclic
 constructions needed for undecidability.</p>
@@ -2361,16 +2570,21 @@ prefixes?”</p>
 <p><strong>Claim:</strong> For any fixed quantifier prefix <span
 class="math inline">\(Q\)</span> and finite set of implications, there
 exists a property <span class="math inline">\(P\)</span> on terms such
-that: - <span class="math inline">\(P\)</span> is “locally checkable”
+that:</p>
+<ul>
+<li><p><span class="math inline">\(P\)</span> is “locally checkable”
 (can verify <span class="math inline">\(P(t)\)</span> given access to
-<span class="math inline">\(t\)</span>’s components) - But the JCAQP
-instance cannot distinguish between: - An answer encoding a term <span
-class="math inline">\(T\)</span> where <span
-class="math inline">\(P\)</span> holds at all positions - An answer
-encoding a term <span class="math inline">\(T\)</span> where <span
-class="math inline">\(P\)</span> fails at position <span
+<span class="math inline">\(t\)</span>’s components)</p></li>
+<li><p>But the JCAQP instance cannot distinguish between:</p>
+<ul>
+<li>An answer encoding a term <span class="math inline">\(T\)</span>
+where <span class="math inline">\(P\)</span> holds at all positions</li>
+<li>An answer encoding a term <span class="math inline">\(T\)</span>
+where <span class="math inline">\(P\)</span> fails at position <span
 class="math inline">\(k\)</span> for <span class="math inline">\(k &gt;
-|Q|\)</span></p>
+|Q|\)</span></li>
+</ul></li>
+</ul>
 <h3 id="why-this-should-be-true">23.3 Why This Should Be True</h3>
 <ol type="1">
 <li><p><strong>Finite prefix, unbounded terms:</strong> The prefix <span
@@ -2419,12 +2633,15 @@ in an arbitrarily long computation are valid”) cannot be expressed in
 JCAQP over T(F).</p>
 <h3 id="implications-for-undecidability">23.5 Implications for
 Undecidability</h3>
-<p>This formalization suggests: - Problems requiring unbounded
-verification (TM halting, PCP, general SREU) cannot reduce to JCAQP -
-The search space for undecidability sources should focus on problems
-with <strong>bounded verification depth</strong> - Or, this might be
-evidence for <strong>decidability</strong> - the bounded verification
-property limits JCAQP’s expressive power</p>
+<p>This formalization suggests:</p>
+<ul>
+<li>Problems requiring unbounded verification (TM halting, PCP, general
+SREU) cannot reduce to JCAQP</li>
+<li>The search space for undecidability sources should focus on problems
+with <strong>bounded verification depth</strong></li>
+<li>Or, this might be evidence for <strong>decidability</strong> - the
+bounded verification property limits JCAQP’s expressive power</li>
+</ul>
 <hr />
 <h2 id="synthesis-where-does-this-leave-us">24. Synthesis: Where Does
 This Leave Us?</h2>
@@ -2454,9 +2671,12 @@ even if bounded</li>
 <p>Based on the analysis:</p>
 <p><strong>Conjecture:</strong> JCAQP-EXIST over T(F) is
 <strong>decidable</strong>, likely with high complexity (perhaps PSPACE
-or EXPTIME), via reduction to: - Higher-order pattern unification with
-constraints, or - Tree automata with bounded alternation, or - A
-specialized constraint solving procedure</p>
+or EXPTIME), via reduction to:</p>
+<ul>
+<li>Higher-order pattern unification with constraints, or</li>
+<li>Tree automata with bounded alternation, or</li>
+<li>A specialized constraint solving procedure</li>
+</ul>
 <p><strong>Key insight:</strong> The consistency condition “tames” the
 problem by requiring all premises to be satisfiable, which rules out the
 proof-theoretic tricks that make SREU undecidable.</p>
@@ -2467,10 +2687,14 @@ normalized to a bounded form (using pattern structure) - Reduce to a
 known decidable problem (tree automata, pattern unification) - Construct
 a complete enumeration procedure</p>
 <p><strong>For undecidability:</strong> - Find an undecidable problem
-that: - Has bounded verification depth - Uses only satisfiable premises
-- Can be encoded using jointness and quantifier prefix - Or show that
-JCAQP with disequations or other extensions is undecidable (then analyze
-why equations alone might differ)</p>
+that:</p>
+<ul>
+<li>Has bounded verification depth</li>
+<li>Uses only satisfiable premises</li>
+<li>Can be encoded using jointness and quantifier prefix</li>
+<li>Or show that JCAQP with disequations or other extensions is
+undecidable (then analyze why equations alone might differ)</li>
+</ul>
 <hr />
 <h2 id="addressing-codexs-questions">25. Addressing Codex’s
 Questions</h2>
@@ -2515,14 +2739,18 @@ class="math inline">\(\exists\theta. \bigwedge_i \exists\sigma_i.
 [\sigma_i(\theta(l_i)) = \theta(r_i)]\)</span></p>
 <p>JCAQP has the structure: <span class="math inline">\(\exists A.
 \bigwedge_i [D_i \land A \Rightarrow C_i]\)</span></p>
-<p>The mismatch is that: - Semi-unification requires a <strong>local
-witness</strong> <span class="math inline">\(\sigma_i\)</span> for each
-inequality - JCAQP’s answer <span class="math inline">\(A\)</span> is
-<strong>global</strong> across all implications - The matching
-substitution <span class="math inline">\(\sigma_i\)</span> cannot be
-encoded as part of <span class="math inline">\(A\)</span> because <span
+<p>The mismatch is that:</p>
+<ul>
+<li>Semi-unification requires a <strong>local witness</strong> <span
+class="math inline">\(\sigma_i\)</span> for each inequality</li>
+<li>JCAQP’s answer <span class="math inline">\(A\)</span> is
+<strong>global</strong> across all implications</li>
+<li>The matching substitution <span
+class="math inline">\(\sigma_i\)</span> cannot be encoded as part of
+<span class="math inline">\(A\)</span> because <span
 class="math inline">\(\sigma_i\)</span> depends on <span
-class="math inline">\(\theta(l_i)\)</span>’s structure</p>
+class="math inline">\(\theta(l_i)\)</span>’s structure</li>
+</ul>
 <p><strong>Attempted encoding via equations:</strong> - Let <span
 class="math inline">\(A\)</span> include equations <span
 class="math inline">\(x_j = t_j\)</span> encoding <span
@@ -2549,14 +2777,16 @@ Statement: Bounded Verification Barrier</h3>
 express “all subterms satisfy P”?</p>
 <p><strong>Definition (Verification Depth):</strong> For a JCAQP
 instance <span class="math inline">\((Q, \{D_i \Rightarrow
-C_i\}_{i=1}^m)\)</span>, define: - <span
-class="math inline">\(d\)</span> = maximum depth of any term appearing
-in any <span class="math inline">\(D_i\)</span> or <span
-class="math inline">\(C_i\)</span> - <span
-class="math inline">\(n\)</span> = number of quantified variables in
-<span class="math inline">\(Q\)</span> - <span
-class="math inline">\(k\)</span> = number of equations in the answer
-<span class="math inline">\(A\)</span></p>
+C_i\}_{i=1}^m)\)</span>, define:</p>
+<ul>
+<li><span class="math inline">\(d\)</span> = maximum depth of any term
+appearing in any <span class="math inline">\(D_i\)</span> or <span
+class="math inline">\(C_i\)</span></li>
+<li><span class="math inline">\(n\)</span> = number of quantified
+variables in <span class="math inline">\(Q\)</span></li>
+<li><span class="math inline">\(k\)</span> = number of equations in the
+answer <span class="math inline">\(A\)</span></li>
+</ul>
 <p><strong>Lemma (Bounded Reach):</strong> Let <span
 class="math inline">\(I = (Q, \{D_i \Rightarrow C_i\}_{i=1}^m)\)</span>
 be a JCAQP instance and let <span
@@ -2585,11 +2815,16 @@ most <span class="math inline">\(d\)</span>, giving total reach <span
 class="math inline">\(O((n+k) \cdot d)\)</span></p>
 <p><strong>Theorem (No Traversal Property):</strong> Let <span
 class="math inline">\(P\)</span> be a property of terms requiring
-unbounded inspection depth, such as: - “All subterms at positions in
-<span class="math inline">\(\{0,1\}^*\)</span> satisfy property <span
-class="math inline">\(\phi\)</span>” - “There exists a path of unbounded
-length satisfying conditions at each node” - “The term encodes a valid
-computation trace of arbitrary length”</p>
+unbounded inspection depth, such as:</p>
+<ul>
+<li>“All subterms at positions in <span
+class="math inline">\(\{0,1\}^*\)</span> satisfy property <span
+class="math inline">\(\phi\)</span>”</li>
+<li>“There exists a path of unbounded length satisfying conditions at
+each node”</li>
+<li>“The term encodes a valid computation trace of arbitrary
+length”</li>
+</ul>
 <p>Then <span class="math inline">\(P\)</span> cannot be expressed as a
 JCAQP instance with fixed size (i.e., size independent of the terms
 being tested).</p>
@@ -2632,10 +2867,13 @@ equations, <span class="math inline">\(d\)</span> = term depth. -
 traversal cannot be encoded. - <strong>Blocks:</strong> TM halting, PCP,
 and computation trace encodings that require verifying unboundedly many
 steps.</p>
-<p><strong>Observation:</strong> These barriers are complementary: -
-Barrier 1 addresses problems that use “proof-theoretic tricks”
-(derivability vs. truth) - Barrier 2 addresses problems that require
-“unbounded verification” (computation traces)</p>
+<p><strong>Observation:</strong> These barriers are complementary:</p>
+<ul>
+<li>Barrier 1 addresses problems that use “proof-theoretic tricks”
+(derivability vs. truth)</li>
+<li>Barrier 2 addresses problems that require “unbounded verification”
+(computation traces)</li>
+</ul>
 <p>Together, they suggest JCAQP over T(F) is in a “sweet spot” -
 expressive enough to be interesting, but not expressive enough to encode
 undecidable problems.</p>
@@ -2672,10 +2910,13 @@ feature.</strong> JCAQP requires premises to be satisfiable, which
 <h3 id="conjecture">26.2 Conjecture</h3>
 <p>Based on our analysis, we conjecture that <strong>JCAQP-EXIST over
 T(F) is decidable</strong>, likely with complexity in PSPACE or EXPTIME.
-A proof would likely proceed by: - Reducing to higher-order pattern
-unification with constraints - Or constructing a complete enumeration of
-bounded answer forms - Or showing equivalence to a bounded alternation
-tree automata problem</p>
+A proof would likely proceed by:</p>
+<ul>
+<li>Reducing to higher-order pattern unification with constraints</li>
+<li>Or constructing a complete enumeration of bounded answer forms</li>
+<li>Or showing equivalence to a bounded alternation tree automata
+problem</li>
+</ul>
 <h3 id="what-we-did-not-prove">26.3 What We Did Not Prove</h3>
 <p>We did <strong>not</strong> prove undecidability. Despite extensive
 attempts, no encoding of an undecidable problem survived the consistency
@@ -2684,11 +2925,15 @@ condition and bounded verification constraints.</p>
 require constructing an algorithm or reduction to a known decidable
 problem.</p>
 <h3 id="contribution">26.4 Contribution</h3>
-<p>This analysis: - Clarified the precise barrier (consistency condition
-vs. derivability semantics) - Surveyed multiple reduction attempts and
-their failure points - Identified structural properties suggesting
-decidability - Connected JCAQP to higher-order pattern unification -
-Confirmed the open status through literature review</p>
+<p>This analysis:</p>
+<ul>
+<li>Clarified the precise barrier (consistency condition
+vs. derivability semantics)</li>
+<li>Surveyed multiple reduction attempts and their failure points</li>
+<li>Identified structural properties suggesting decidability</li>
+<li>Connected JCAQP to higher-order pattern unification</li>
+<li>Confirmed the open status through literature review</li>
+</ul>
 <p>The question of JCAQP decidability over T(F) remains an interesting
 open problem at the intersection of unification theory, constraint
 solving, and proof theory.</p>

@@ -3,6 +3,7 @@
 ## Summary
 
 Codex's notes (`notes_undecidability_codex.md`, 195 lines) have stabilized. The document provides a concise, well-organized analysis covering:
+
 - Problem definition and JCAQP conditions
 - Four proof attempts (SREU, internalize derivability, computation history, semi/higher-order unification)
 - The key semantic gap (rigid derivability vs. T(F) satisfaction)
@@ -25,6 +26,7 @@ Codex's notes (`notes_undecidability_codex.md`, 195 lines) have stabilized. The 
 ## Final Convergence
 
 Both analyses have fully converged on:
+
 1. JCAQP-EXIST over T(F) is genuinely **open** (Maher 2005)
 2. Standard undecidability reductions fail due to **consistency condition** (semantic barrier)
 3. **Bounded verification** prevents computation trace encodings (syntactic barrier)

@@ -3,6 +3,7 @@
 ## Summary
 
 Codex's notes (`notes_undecidability_codex.md`, 189 lines) provide a focused, well-organized analysis of the JCAQP undecidability question. They cover:
+
 - Problem definition and JCAQP conditions
 - Four proof attempts (SREU, internalize derivability, computation history, semi/higher-order unification)
 - The key semantic gap (rigid derivability vs. T(F) satisfaction)
@@ -36,6 +37,7 @@ Codex's notes (`notes_undecidability_codex.md`, 189 lines) provide a focused, we
 ## Convergence Assessment
 
 Both analyses have converged on the same fundamental conclusions:
+
 1. Standard undecidability reductions fail due to the consistency condition
 2. The problem remains genuinely open (Maher 2005)
 3. Evidence suggests decidability is more likely than undecidability

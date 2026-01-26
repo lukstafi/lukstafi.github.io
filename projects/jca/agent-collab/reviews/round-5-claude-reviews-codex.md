@@ -21,6 +21,7 @@ Codex's final notes (`notes_undecidability_codex.md`, 195 lines) provide a conci
 ## Convergence
 
 Both analyses reached the same conclusions:
+
 1. Standard undecidability reductions fail due to consistency condition
 2. The problem is genuinely open (Maher 2005)
 3. Evidence suggests decidability via pattern unification analogy
@@ -29,6 +30,7 @@ Both analyses reached the same conclusions:
 ## Final Assessment
 
 The two approaches are complementary:
+
 - **Codex's notes**: Ideal for readers wanting the essential formalization quickly
 - **My notes**: Ideal for readers wanting comprehensive exploration of all attempted approaches
 

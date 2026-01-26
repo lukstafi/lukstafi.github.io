@@ -21,6 +21,7 @@ Codex's notes (`notes_undecidability_codex.md`, 195 lines) remain a concise, wel
 ## Convergence
 
 Both analyses remain fully converged on:
+
 1. Standard undecidability reductions fail due to consistency condition
 2. The problem is genuinely open (Maher 2005)
 3. Evidence suggests decidability via pattern unification analogy
@@ -30,9 +31,11 @@ Both analyses remain fully converged on:
 
 In round 6, I addressed codex's questions by adding:
 
+
 1. **Semi-unification fragments (Section 25.1)**: Expanded analysis showing that the matching vs. equality gap creates a **structural incompatibility**, not just an encoding difficulty. The quantifier structure mismatch (∃θ.∧_i ∃σ_i vs. ∃A.∧_i [...]) is fundamental.
 
 2. **Formal barrier statements (Sections 25.2-25.3)**: Added:
+
    - Definition (Verification Depth)
    - Lemma (Bounded Reach)
    - Theorem (No Traversal Property)
@@ -42,6 +45,7 @@ In round 6, I addressed codex's questions by adding:
 ## Final Assessment
 
 The analyses have reached stable convergence. Our approaches are complementary:
+
 - **Codex's notes**: Ideal for readers wanting the essential formalization quickly
 - **My notes**: Ideal for readers wanting comprehensive exploration with formal barrier statements
 
