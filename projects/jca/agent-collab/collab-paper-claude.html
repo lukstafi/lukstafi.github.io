@@ -730,13 +730,18 @@ find substitution <span class="math inline">\(\theta\)</span> such that
 t_i\theta\)</span>.</p>
 <p><strong>Undecidability:</strong> Reduced from second-order
 unification or Hilbert’s tenth problem.</p>
-<p><strong>Why SREU doesn’t directly reduce to JCAQP over T(F):</strong>
-- SREU uses “derivability under assumptions” (<span
-class="math inline">\(E_i\theta\)</span> as axioms) - In T(F), if <span
-class="math inline">\(E_i\theta\)</span> contains non-trivial ground
-equations, they’re FALSE - The consistency condition requires <span
-class="math inline">\(D_i \land A\)</span> to be satisfiable - This is
-the “assumption gap” discussed in Herbrand_JCA.md Section 9</p>
+<p><strong>Why SREU doesn’t directly reduce to JCAQP over
+T(F):</strong></p>
+<ul>
+<li>SREU uses “derivability under assumptions” (<span
+class="math inline">\(E_i\theta\)</span> as axioms)</li>
+<li>In T(F), if <span class="math inline">\(E_i\theta\)</span> contains
+non-trivial ground equations, they’re FALSE</li>
+<li>The consistency condition requires <span class="math inline">\(D_i
+\land A\)</span> to be satisfiable</li>
+<li>This is the “assumption gap” discussed in Herbrand_JCA.md Section
+9</li>
+</ul>
 <h3 id="second-order-unification-goldfarb-1981">2.3 Second-Order
 Unification (Goldfarb 1981)</h3>
 <p><strong>Undecidability:</strong> Reduced from Hilbert’s tenth
@@ -754,11 +759,14 @@ halting.</p>
 <h3 id="why-standard-reductions-fail-for-jcaqp-over-tf">3.1 Why Standard
 Reductions Fail for JCAQP over T(F)</h3>
 <p>From Herbrand_JCA.md Section 9.3-9.5:</p>
-<p><strong>Naive SREU encoding attempt:</strong> - Translate <span
-class="math inline">\(E_i \vdash s_i \approx t_i\)</span> to implication
-<span class="math inline">\(E_i \Rightarrow (s_i \doteq t_i)\)</span> -
-Let the abducted <span class="math inline">\(A\)</span> encode the
-substitution <span class="math inline">\(\theta\)</span></p>
+<p><strong>Naive SREU encoding attempt:</strong></p>
+<ul>
+<li>Translate <span class="math inline">\(E_i \vdash s_i \approx
+t_i\)</span> to implication <span class="math inline">\(E_i \Rightarrow
+(s_i \doteq t_i)\)</span></li>
+<li>Let the abducted <span class="math inline">\(A\)</span> encode the
+substitution <span class="math inline">\(\theta\)</span></li>
+</ul>
 <p><strong>Problem:</strong> In T(F), if <span
 class="math inline">\(E_i\)</span> contains equations like <span
 class="math inline">\(f(a) \doteq a\)</span>, then:</p>
@@ -1069,9 +1077,12 @@ Answer Existence</h3>
 class="math inline">\(A\)</span> exists iff a Turing machine halts.</p>
 <p>The answer <span class="math inline">\(A\)</span> would encode the
 entire halting computation as a term structure.</p>
-<p><strong>Implications verify:</strong> - The initial configuration is
-correctly encoded - Each step follows the transition function - The
-final configuration is a halting state</p>
+<p><strong>Implications verify:</strong></p>
+<ul>
+<li>The initial configuration is correctly encoded</li>
+<li>Each step follows the transition function</li>
+<li>The final configuration is a halting state</li>
+</ul>
 <h3 id="encoding-configurations">7.3 Encoding Configurations</h3>
 <p>Configuration: <span class="math inline">\((q, \text{left},
 \text{pos}, \text{right})\)</span> - <span
@@ -1495,11 +1506,13 @@ structure:</p>
 \text{prf}(T_1, T_2, P_1, ...))\]</span></p>
 <p>where each <span class="math inline">\(P_i\)</span> is a witness that
 transition <span class="math inline">\(i\)</span> is valid.</p>
-<p><strong>Implications check:</strong> - Top-level: <span
-class="math inline">\(P\)</span> has the right structure for the trace
-length - Local: Each proof node <span
-class="math inline">\(\text{prf}(T_i, T_{i+1}, P_i, ...)\)</span> is
-valid</p>
+<p><strong>Implications check:</strong></p>
+<ul>
+<li>Top-level: <span class="math inline">\(P\)</span> has the right
+structure for the trace length</li>
+<li>Local: Each proof node <span class="math inline">\(\text{prf}(T_i,
+T_{i+1}, P_i, ...)\)</span> is valid</li>
+</ul>
 <h3 id="this-still-has-the-same-problem">14.3 This Still Has the Same
 Problem</h3>
 <p>We still need to verify “for all proof nodes”, which brings us back
@@ -1852,15 +1865,17 @@ undecidable).</p>
 <h3 id="the-encoding-details">17.11 The Encoding Details</h3>
 <p>For semi-unification instance <span class="math inline">\(\{l_1 \leq
 r_1, ..., l_n \leq r_n\}\)</span>:</p>
-<p><strong>Variables:</strong> - For each variable <span
-class="math inline">\(x\)</span> in the instance, introduce <span
-class="math inline">\(x&#39;\)</span> (representing <span
-class="math inline">\(\theta(x)\)</span>) - For each inequation <span
-class="math inline">\(i\)</span> and each variable <span
-class="math inline">\(y\)</span> that appears in <span
+<p><strong>Variables:</strong></p>
+<ul>
+<li>For each variable <span class="math inline">\(x\)</span> in the
+instance, introduce <span class="math inline">\(x&#39;\)</span>
+(representing <span class="math inline">\(\theta(x)\)</span>)</li>
+<li>For each inequation <span class="math inline">\(i\)</span> and each
+variable <span class="math inline">\(y\)</span> that appears in <span
 class="math inline">\(\theta(l_i)\)</span>, introduce <span
 class="math inline">\(w_{i,y}\)</span> (representing <span
-class="math inline">\(\sigma_i(y)\)</span>)</p>
+class="math inline">\(\sigma_i(y)\)</span>)</li>
+</ul>
 <p>But here’s a subtlety: the variables in <span
 class="math inline">\(\theta(l_i)\)</span> depend on the form of <span
 class="math inline">\(\theta\)</span>, which is what we’re solving
@@ -1954,15 +1969,19 @@ class="math inline">\(y\)</span> is a fresh variable, we can just use
 y: (x&#39; \doteq y)\)</span>.</p>
 <p>Hmm, but <span class="math inline">\(x&#39;\)</span> is also a
 variable. Let me be clearer.</p>
-<p><strong>Variables in JCAQP instance:</strong> - <span
-class="math inline">\(X\)</span>: a variable representing the value
-<span class="math inline">\(\theta(x)\)</span></p>
-<p><strong>Variables in the answer:</strong> - <span
-class="math inline">\(\beta\)</span> (fresh, existentially quantified):
-representing fresh variables introduced by <span
-class="math inline">\(\theta\)</span> - <span
-class="math inline">\(w\)</span>: witness for <span
-class="math inline">\(\sigma\)</span></p>
+<p><strong>Variables in JCAQP instance:</strong></p>
+<ul>
+<li><span class="math inline">\(X\)</span>: a variable representing the
+value <span class="math inline">\(\theta(x)\)</span></li>
+</ul>
+<p><strong>Variables in the answer:</strong></p>
+<ul>
+<li><span class="math inline">\(\beta\)</span> (fresh, existentially
+quantified): representing fresh variables introduced by <span
+class="math inline">\(\theta\)</span></li>
+<li><span class="math inline">\(w\)</span>: witness for <span
+class="math inline">\(\sigma\)</span></li>
+</ul>
 <p><strong>The answer:</strong> <span class="math inline">\(\exists
 \beta, w: (X \doteq \beta) \land (f(w, w) \doteq f(X, X))\)</span></p>
 <p>Wait, that’s not quite right either. Let me think step by step.</p>
@@ -2401,14 +2420,21 @@ Maher in 2005. Our analysis confirms why: the SREU undecidability
 mechanism relies on unsatisfiable premises, which JCAQP’s consistency
 condition rejects.</p>
 <h3 id="possible-paths-forward">20.2 Possible Paths Forward</h3>
-<p><strong>For Undecidability:</strong> - Find an undecidable problem
-where “premises” are always satisfiable - Exploit the quantifier prefix
-structure (the Q in JCAQP) - Use jointness (multiple implications) as
-the source of complexity</p>
-<p><strong>For Decidability:</strong> - Show JCAQP reduces to a
-decidable fragment (perhaps via automata theory) - Prove bounds on
-answer complexity - Use the finite fully-maximal-answers result (Maher
-Prop. 2/5)</p>
+<p><strong>For Undecidability:</strong></p>
+<ul>
+<li>Find an undecidable problem where “premises” are always
+satisfiable</li>
+<li>Exploit the quantifier prefix structure (the Q in JCAQP)</li>
+<li>Use jointness (multiple implications) as the source of
+complexity</li>
+</ul>
+<p><strong>For Decidability:</strong></p>
+<ul>
+<li>Show JCAQP reduces to a decidable fragment (perhaps via automata
+theory)</li>
+<li>Prove bounds on answer complexity</li>
+<li>Use the finite fully-maximal-answers result (Maher Prop. 2/5)</li>
+</ul>
 <h3 id="the-jointness-angle">20.3 The Jointness Angle</h3>
 <p>Maher’s Example 12 proves JCA ≠ SCA (in terms of answers). The
 jointness creates interactions between implications that don’t exist in
@@ -2497,10 +2523,13 @@ patterns, which are terms of the simply-typed lambda-calculus in which
 the arguments of a free variable are always distinct bound
 variables.”</p>
 </blockquote>
-<p><strong>Key properties of pattern unification:</strong> 1.
-<strong>Decidable</strong> - unlike full second-order unification 2.
-<strong>Unitary</strong> - most general unifiers exist 3.
-<strong>Efficient</strong> - nearly linear time algorithms</p>
+<p><strong>Key properties of pattern unification:</strong></p>
+<ol type="1">
+<li><strong>Decidable</strong> - unlike full second-order
+unification</li>
+<li><strong>Unitary</strong> - most general unifiers exist</li>
+<li><strong>Efficient</strong> - nearly linear time algorithms</li>
+</ol>
 <h3 id="the-analogy-to-jcaqp">22.3 The Analogy to JCAQP</h3>
 <p>In JCAQP with prefix <span class="math inline">\(Q = \forall
 \bar{\alpha}. \exists \bar{\beta}\)</span>:</p>
@@ -2529,12 +2558,15 @@ to Pattern Matching?</h3>
 <p><strong>Hypothesis:</strong> If the no-escaping condition forces
 answers into a “pattern-like” form, then JCAQP-EXIST might reduce to a
 decidable pattern-based problem.</p>
-<p><strong>Sketch of potential reduction:</strong> 1. View each
-existential <span class="math inline">\(\beta\)</span> in the answer as
-a “function variable” 2. Its dependencies on universals <span
-class="math inline">\(\bar{\alpha}\)</span> define its “arguments” 3.
-The implications constrain how these functions relate 4. The consistency
-condition ensures satisfiability</p>
+<p><strong>Sketch of potential reduction:</strong></p>
+<ol type="1">
+<li>View each existential <span class="math inline">\(\beta\)</span> in
+the answer as a “function variable”</li>
+<li>Its dependencies on universals <span
+class="math inline">\(\bar{\alpha}\)</span> define its “arguments”</li>
+<li>The implications constrain how these functions relate</li>
+<li>The consistency condition ensures satisfiability</li>
+</ol>
 <p><strong>But:</strong> This is speculative. Key questions remain:</p>
 <ul>
 <li>Does the pattern restriction exactly match the no-escaping
@@ -2635,12 +2667,13 @@ JCAQP over T(F).</p>
 Undecidability</h3>
 <p>This formalization suggests:</p>
 <ul>
-<li>Problems requiring unbounded verification (TM halting, PCP, general
-SREU) cannot reduce to JCAQP</li>
-<li>The search space for undecidability sources should focus on problems
-with <strong>bounded verification depth</strong></li>
-<li>Or, this might be evidence for <strong>decidability</strong> - the
-bounded verification property limits JCAQP’s expressive power</li>
+<li><p>Problems requiring unbounded verification (TM halting, PCP,
+general SREU) cannot reduce to JCAQP</p></li>
+<li><p>The search space for undecidability sources should focus on
+problems with <strong>bounded verification depth</strong></p></li>
+<li><p>Or, this might be evidence for <strong>decidability</strong> -
+the bounded verification property limits JCAQP’s expressive
+power</p></li>
 </ul>
 <hr />
 <h2 id="synthesis-where-does-this-leave-us">24. Synthesis: Where Does
@@ -2682,18 +2715,24 @@ problem by requiring all premises to be satisfiable, which rules out the
 proof-theoretic tricks that make SREU undecidable.</p>
 <h3 id="what-would-settle-the-question">24.4 What Would Settle the
 Question</h3>
-<p><strong>For decidability:</strong> - Show that answers can be
-normalized to a bounded form (using pattern structure) - Reduce to a
-known decidable problem (tree automata, pattern unification) - Construct
-a complete enumeration procedure</p>
-<p><strong>For undecidability:</strong> - Find an undecidable problem
-that:</p>
+<p><strong>For decidability:</strong></p>
+<ul>
+<li>Show that answers can be normalized to a bounded form (using pattern
+structure)</li>
+<li>Reduce to a known decidable problem (tree automata, pattern
+unification)</li>
+<li>Construct a complete enumeration procedure</li>
+</ul>
+<p><strong>For undecidability:</strong></p>
+<ul>
+<li><p>Find an undecidable problem that:</p>
 <ul>
 <li>Has bounded verification depth</li>
 <li>Uses only satisfiable premises</li>
 <li>Can be encoded using jointness and quantifier prefix</li>
-<li>Or show that JCAQP with disequations or other extensions is
-undecidable (then analyze why equations alone might differ)</li>
+</ul></li>
+<li><p>Or show that JCAQP with disequations or other extensions is
+undecidable (then analyze why equations alone might differ)</p></li>
 </ul>
 <hr />
 <h2 id="addressing-codexs-questions">25. Addressing Codex’s
@@ -2751,19 +2790,23 @@ class="math inline">\(\sigma_i\)</span> cannot be encoded as part of
 class="math inline">\(\sigma_i\)</span> depends on <span
 class="math inline">\(\theta(l_i)\)</span>’s structure</li>
 </ul>
-<p><strong>Attempted encoding via equations:</strong> - Let <span
-class="math inline">\(A\)</span> include equations <span
+<p><strong>Attempted encoding via equations:</strong></p>
+<ul>
+<li>Let <span class="math inline">\(A\)</span> include equations <span
 class="math inline">\(x_j = t_j\)</span> encoding <span
-class="math inline">\(\theta\)</span> - For matching <span
-class="math inline">\(\sigma(\theta(l)) = \theta(r)\)</span>, we’d need:
-<span class="math inline">\(\theta(l)\)</span> is a generalization of
-<span class="math inline">\(\theta(r)\)</span> - This is equivalent to:
-the mgu of <span class="math inline">\(\theta(l)\)</span> and <span
+class="math inline">\(\theta\)</span></li>
+<li>For matching <span class="math inline">\(\sigma(\theta(l)) =
+\theta(r)\)</span>, we’d need: <span
+class="math inline">\(\theta(l)\)</span> is a generalization of <span
+class="math inline">\(\theta(r)\)</span></li>
+<li>This is equivalent to: the mgu of <span
+class="math inline">\(\theta(l)\)</span> and <span
 class="math inline">\(\theta(r)\)</span> instantiates only variables
-from <span class="math inline">\(\theta(l)\)</span> -
-<strong>But:</strong> Expressing “the mgu only touches variables from
-the left side” requires meta-level reasoning about substitution domains,
-which is not available in pure equations.</p>
+from <span class="math inline">\(\theta(l)\)</span></li>
+<li><strong>But:</strong> Expressing “the mgu only touches variables
+from the left side” requires meta-level reasoning about substitution
+domains, which is not available in pure equations.</li>
+</ul>
 <p><strong>Conclusion:</strong> No known semi-unification fragment has
 constraints that directly translate to equational implications. The
 matching condition is inherently second-order - it quantifies over both
@@ -2797,22 +2840,26 @@ substitution <span class="math inline">\(\theta\)</span>, the
 class="math inline">\(A\theta\)</span> that can affect satisfaction of
 the implications - is bounded by <span class="math inline">\(O((n+k)
 \cdot d)\)</span>.</p>
-<p><strong>Proof sketch:</strong> 1. Each variable <span
-class="math inline">\(x\)</span> in <span
+<p><strong>Proof sketch:</strong></p>
+<ol type="1">
+<li>Each variable <span class="math inline">\(x\)</span> in <span
 class="math inline">\(Q\)</span> or <span
 class="math inline">\(\bar{\beta}\)</span> can be instantiated to a
-ground term <span class="math inline">\(\theta(x)\)</span> 2. The
-equations in <span class="math inline">\(D_i\)</span>, <span
+ground term <span class="math inline">\(\theta(x)\)</span></li>
+<li>The equations in <span class="math inline">\(D_i\)</span>, <span
 class="math inline">\(C_i\)</span>, and <span
 class="math inline">\(A\)</span> can only “inspect” these terms via
-unification 3. Unification with depth-<span
-class="math inline">\(d\)</span> terms can reach at most depth <span
-class="math inline">\(d\)</span> into each substituted term 4. With
-<span class="math inline">\(n\)</span> quantified variables and <span
-class="math inline">\(k\)</span> answer equations, the total number of
-“inspection points” is bounded 5. Each inspection point reaches depth at
-most <span class="math inline">\(d\)</span>, giving total reach <span
-class="math inline">\(O((n+k) \cdot d)\)</span></p>
+unification</li>
+<li>Unification with depth-<span class="math inline">\(d\)</span> terms
+can reach at most depth <span class="math inline">\(d\)</span> into each
+substituted term</li>
+<li>With <span class="math inline">\(n\)</span> quantified variables and
+<span class="math inline">\(k\)</span> answer equations, the total
+number of “inspection points” is bounded</li>
+<li>Each inspection point reaches depth at most <span
+class="math inline">\(d\)</span>, giving total reach <span
+class="math inline">\(O((n+k) \cdot d)\)</span></li>
+</ol>
 <p><strong>Theorem (No Traversal Property):</strong> Let <span
 class="math inline">\(P\)</span> be a property of terms requiring
 unbounded inspection depth, such as:</p>
@@ -2846,27 +2893,32 @@ bounded verification.</p>
 <h3 id="summary-of-formal-barriers">25.3 Summary of Formal Barriers</h3>
 <p>We identify two orthogonal formal barriers preventing undecidability
 reductions to JCAQP over T(F):</p>
-<p><strong>Barrier 1: Consistency Condition (Semantic)</strong> -
-<strong>Statement:</strong> For JCAQP, we require <span
+<p><strong>Barrier 1: Consistency Condition (Semantic)</strong></p>
+<ul>
+<li><strong>Statement:</strong> For JCAQP, we require <span
 class="math inline">\(\mathcal{T}(\mathcal{F}) \models
 \exists\text{FV}(D_i \land A). D_i \land A\)</span> for all <span
-class="math inline">\(i\)</span>. - <strong>Effect:</strong> Premises
-<span class="math inline">\(D_i\)</span> must be satisfiable when
-combined with <span class="math inline">\(A\)</span>. -
-<strong>Blocks:</strong> SREU reductions that use derivability under
+class="math inline">\(i\)</span>.</li>
+<li><strong>Effect:</strong> Premises <span
+class="math inline">\(D_i\)</span> must be satisfiable when combined
+with <span class="math inline">\(A\)</span>.</li>
+<li><strong>Blocks:</strong> SREU reductions that use derivability under
 false assumptions (e.g., Degtyarev-Voronkov’s Lemmas 3-4 use equations
-violating T(F) freeness).</p>
-<p><strong>Barrier 2: Bounded Verification (Syntactic)</strong> -
-<strong>Statement:</strong> A fixed JCAQP instance <span
+violating T(F) freeness).</li>
+</ul>
+<p><strong>Barrier 2: Bounded Verification (Syntactic)</strong></p>
+<ul>
+<li><strong>Statement:</strong> A fixed JCAQP instance <span
 class="math inline">\((Q, \{D_i \Rightarrow C_i\})\)</span> can only
 inspect <span class="math inline">\(O((n+k) \cdot d)\)</span> positions
 in any candidate structure, where <span class="math inline">\(n\)</span>
 = quantified variables, <span class="math inline">\(k\)</span> = answer
-equations, <span class="math inline">\(d\)</span> = term depth. -
-<strong>Effect:</strong> Properties requiring unbounded structural
-traversal cannot be encoded. - <strong>Blocks:</strong> TM halting, PCP,
-and computation trace encodings that require verifying unboundedly many
-steps.</p>
+equations, <span class="math inline">\(d\)</span> = term depth.</li>
+<li><strong>Effect:</strong> Properties requiring unbounded structural
+traversal cannot be encoded.</li>
+<li><strong>Blocks:</strong> TM halting, PCP, and computation trace
+encodings that require verifying unboundedly many steps.</li>
+</ul>
 <p><strong>Observation:</strong> These barriers are complementary:</p>
 <ul>
 <li>Barrier 1 addresses problems that use “proof-theoretic tricks”

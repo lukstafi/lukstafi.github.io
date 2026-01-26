@@ -20,6 +20,7 @@ Let \(Q\) quantify all free variables in the instance. An answer \(\exists\bar\b
 ## Jointness matters (Maher Example 12)
 
 Maher shows a simple **JCA** instance whose set of answers cannot be captured by any **single**
+
 SCA instance (even over Herbrand constraints). This indicates that jointness is a genuine
 source of complexity and cannot be eliminated by “solve each implication separately and conjoin.”
 
@@ -64,6 +65,7 @@ and `σ` is an mgu of `D`, then for any terms `s,t`:
 - `T(F) |= D -> (s ≈ t)` **iff** `sσ` and `tσ` are syntactically identical.
 
 So entailment in the free term algebra collapses to unification w.r.t. `D`; it does **not**
+
 use `D` as rewrite axioms in the sense of equational logic with a quotient.
 
 ## Attempt 1: Reduction from SREU (rigid E-unification)
@@ -155,6 +157,7 @@ then each implication \(D_i \land A \Rightarrow C_i\) becomes “ground-truth”
 
 either \(D_i \land A\) is inconsistent or, when consistent, the fixed substitution makes
 \(C_i\) syntactically true. This suggests a (very rough) idea that **existence of A**
+
 could reduce to checking whether there is a substitution compatible with all implications
 and with the dependency/no-escaping constraints. That looks closer to **unification with
 dependency restrictions** than to classic rigid-derivability problems.

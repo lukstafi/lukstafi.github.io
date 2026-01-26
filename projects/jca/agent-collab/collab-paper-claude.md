@@ -57,6 +57,7 @@ $$\sigma_i(\theta(l_i)) = \theta(r_i)$$
 **Undecidability:** Reduced from second-order unification or Hilbert's tenth problem.
 
 **Why SREU doesn't directly reduce to JCAQP over T(F):**
+
 - SREU uses "derivability under assumptions" ($E_i\theta$ as axioms)
 - In T(F), if $E_i\theta$ contains non-trivial ground equations, they're FALSE
 - The consistency condition requires $D_i \land A$ to be satisfiable
@@ -82,6 +83,7 @@ From Herbrand_JCA.md Section 9.3-9.5:
 
 
 **Naive SREU encoding attempt:**
+
 - Translate $E_i \vdash s_i \approx t_i$ to implication $E_i \Rightarrow (s_i \doteq t_i)$
 - Let the abducted $A$ encode the substitution $\theta$
 
@@ -138,6 +140,7 @@ Equivalently: $\theta(l_i)$ is a generalization of (matches onto) $\theta(r_i)$.
 - The abducted $A$ encodes the shared substitution $\theta$
 
 **Construction attempt:**
+
 
 For inequation $l_i \leq r_i$ with variables $\text{var}(l_i) \cup \text{var}(r_i) = \{x_{i1}, ..., x_{ik}\}$:
 
@@ -332,6 +335,7 @@ We can't directly encode unbounded iteration with finite structure.
 The answer $A$ would encode the entire halting computation as a term structure.
 
 **Implications verify:**
+
 - The initial configuration is correctly encoded
 - Each step follows the transition function
 - The final configuration is a halting state
@@ -455,6 +459,7 @@ then by injectivity, $c = c'$ and $T' = T''$.
 We can use this to "project" components from a compound term.
 
 **Revised implication structure:**
+
 
 Let the answer $A$ include $T$ representing the trace.
 
@@ -701,6 +706,7 @@ $$P = \text{prf}(T_0, T_1, P_0, \text{prf}(T_1, T_2, P_1, ...))$$
 where each $P_i$ is a witness that transition $i$ is valid.
 
 **Implications check:**
+
 - Top-level: $P$ has the right structure for the trace length
 - Local: Each proof node $\text{prf}(T_i, T_{i+1}, P_i, ...)$ is valid
 
@@ -933,6 +939,7 @@ For semi-unification instance $\{l_1 \leq r_1, ..., l_n \leq r_n\}$ with variabl
 
 **Encoding:**
 
+
 Variables in JCAQP:
 
 - $V' = \{x'_1, ..., x'_m\}$: representing $\theta(x_j)$ values
@@ -986,6 +993,7 @@ For semi-unification instance $\{l_1 \leq r_1, ..., l_n \leq r_n\}$:
 
 
 **Variables:**
+
 - For each variable $x$ in the instance, introduce $x'$ (representing $\theta(x)$)
 - For each inequation $i$ and each variable $y$ that appears in $\theta(l_i)$, introduce $w_{i,y}$ (representing $\sigma_i(y)$)
 
@@ -1053,9 +1061,11 @@ Let me reformulate. The answer is $\exists y: (x' \doteq y)$.
 Hmm, but $x'$ is also a variable. Let me be clearer.
 
 **Variables in JCAQP instance:**
+
 - $X$: a variable representing the value $\theta(x)$
 
 **Variables in the answer:**
+
 - $\beta$ (fresh, existentially quantified): representing fresh variables introduced by $\theta$
 - $w$: witness for $\sigma$
 
@@ -1108,6 +1118,7 @@ The answer $A$ shouldn't directly include the matching equation. It should only 
 
 **Revised approach:**
 
+
 The answer $A$ is: $\exists \beta: (X \doteq \beta)$. This just says $\theta(x) = \beta$ for some fresh $\beta$.
 
 The implication is: $\top \Rightarrow \exists w: (w \doteq f(X, X))$.
@@ -1138,11 +1149,13 @@ So the check is: if the premises $D_i$ plus the answer $A$ hold, then the conclu
 
 **For semi-unification:**
 
+
 We want: if $\theta$ is as specified by $A$, then for each $i$, there exists $\sigma_i$ such that the matching holds.
 
 The "there exists $\sigma_i$" part needs to be handled by the quantifier prefix or the answer.
 
 **Approach:**
+
 
 Let the quantifier prefix include existentials for the $\sigma_i$ witnesses.
 
@@ -1155,6 +1168,7 @@ The answer $A$ specifies the $X_j$ (encoding $\theta$).
 The implications enforce that, given the $X_j$, the witnesses $w_{i, *}$ satisfy the matching equations.
 
 **For example (single inequation $x \leq f(x, x)$):**
+
 
 $Q = \exists X, w.$
 
@@ -1387,11 +1401,13 @@ The JCA/JCAQP decidability question was explicitly noted as open by Maher in 200
 ### 20.2 Possible Paths Forward
 
 **For Undecidability:**
+
 - Find an undecidable problem where "premises" are always satisfiable
 - Exploit the quantifier prefix structure (the Q in JCAQP)
 - Use jointness (multiple implications) as the source of complexity
 
 **For Decidability:**
+
 - Show JCAQP reduces to a decidable fragment (perhaps via automata theory)
 - Prove bounds on answer complexity
 - Use the finite fully-maximal-answers result (Maher Prop. 2/5)
@@ -1467,6 +1483,7 @@ From the literature on higher-order unification:
 > "Miller has shown that the unification problem is decidable for patterns, which are terms of the simply-typed lambda-calculus in which the arguments of a free variable are always distinct bound variables."
 
 **Key properties of pattern unification:**
+
 1. **Decidable** - unlike full second-order unification
 2. **Unitary** - most general unifiers exist
 3. **Efficient** - nearly linear time algorithms
@@ -1490,6 +1507,7 @@ This is reminiscent of the pattern restriction: existential variables can only h
 **Hypothesis:** If the no-escaping condition forces answers into a "pattern-like" form, then JCAQP-EXIST might reduce to a decidable pattern-based problem.
 
 **Sketch of potential reduction:**
+
 1. View each existential $\beta$ in the answer as a "function variable"
 2. Its dependencies on universals $\bar{\alpha}$ define its "arguments"
 3. The implications constrain how these functions relate
@@ -1555,6 +1573,7 @@ This formalization suggests:
 
 - Problems requiring unbounded verification (TM halting, PCP, general SREU) cannot reduce to JCAQP
 - The search space for undecidability sources should focus on problems with **bounded verification depth**
+
 - Or, this might be evidence for **decidability** - the bounded verification property limits JCAQP's expressive power
 
 ---
@@ -1590,11 +1609,13 @@ Based on the analysis:
 ### 24.4 What Would Settle the Question
 
 **For decidability:**
+
 - Show that answers can be normalized to a bounded form (using pattern structure)
 - Reduce to a known decidable problem (tree automata, pattern unification)
 - Construct a complete enumeration procedure
 
 **For undecidability:**
+
 - Find an undecidable problem that:
 
   - Has bounded verification depth
@@ -1625,6 +1646,7 @@ Based on the analysis:
 
 **Analysis of the Encoding Gap:**
 
+
 The fundamental obstacle is that semi-unification asks: "Does there exist $\theta$ such that for each inequality $l_i \leq r_i$, there exists $\sigma_i$ with $\sigma_i(\theta(l_i)) = \theta(r_i)$?"
 
 This has the quantifier structure: $\exists\theta. \bigwedge_i \exists\sigma_i. [\sigma_i(\theta(l_i)) = \theta(r_i)]$
@@ -1638,6 +1660,7 @@ The mismatch is that:
 - The matching substitution $\sigma_i$ cannot be encoded as part of $A$ because $\sigma_i$ depends on $\theta(l_i)$'s structure
 
 **Attempted encoding via equations:**
+
 - Let $A$ include equations $x_j = t_j$ encoding $\theta$
 - For matching $\sigma(\theta(l)) = \theta(r)$, we'd need: $\theta(l)$ is a generalization of $\theta(r)$
 - This is equivalent to: the mgu of $\theta(l)$ and $\theta(r)$ instantiates only variables from $\theta(l)$
@@ -1658,6 +1681,7 @@ The mismatch is that:
 **Lemma (Bounded Reach):** Let $I = (Q, \{D_i \Rightarrow C_i\}_{i=1}^m)$ be a JCAQP instance and let $\exists\bar{\beta}: A$ be an answer. For any ground instantiation of $A$ via substitution $\theta$, the "structural reach" - the set of subterm positions in $A\theta$ that can affect satisfaction of the implications - is bounded by $O((n+k) \cdot d)$.
 
 **Proof sketch:**
+
 1. Each variable $x$ in $Q$ or $\bar{\beta}$ can be instantiated to a ground term $\theta(x)$
 2. The equations in $D_i$, $C_i$, and $A$ can only "inspect" these terms via unification
 3. Unification with depth-$d$ terms can reach at most depth $d$ into each substituted term
@@ -1684,11 +1708,13 @@ We identify two orthogonal formal barriers preventing undecidability reductions 
 
 
 **Barrier 1: Consistency Condition (Semantic)**
+
 - **Statement:** For JCAQP, we require $\mathcal{T}(\mathcal{F}) \models \exists\text{FV}(D_i \land A). D_i \land A$ for all $i$.
 - **Effect:** Premises $D_i$ must be satisfiable when combined with $A$.
 - **Blocks:** SREU reductions that use derivability under false assumptions (e.g., Degtyarev-Voronkov's Lemmas 3-4 use equations violating T(F) freeness).
 
 **Barrier 2: Bounded Verification (Syntactic)**
+
 - **Statement:** A fixed JCAQP instance $(Q, \{D_i \Rightarrow C_i\})$ can only inspect $O((n+k) \cdot d)$ positions in any candidate structure, where $n$ = quantified variables, $k$ = answer equations, $d$ = term depth.
 - **Effect:** Properties requiring unbounded structural traversal cannot be encoded.
 - **Blocks:** TM halting, PCP, and computation trace encodings that require verifying unboundedly many steps.
