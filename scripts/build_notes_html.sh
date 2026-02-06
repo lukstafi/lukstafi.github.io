@@ -14,7 +14,7 @@ for md_file in "$root_dir"/notes/*.md; do
   html_file="$root_dir/notes/$base_name.html"
 
   # Derive title from first H1 heading in the file
-  title="$(grep -m1 '^# ' "$md_file" | sed 's/^# //' || true)"
+  title="$(grep -m1 '^# ' "$md_file" | sed 's/^# //; s/\*\*//g' || true)"
   [ -z "$title" ] && title="$base_name"
 
   pandoc \
