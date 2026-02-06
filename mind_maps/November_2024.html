@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>Mind Maps — November 2024</title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <link rel="stylesheet" href="/assets/tufte.css">
+  <link rel="stylesheet" href="/assets/pandoc-tufte.css">
+  <link rel="stylesheet" href="/assets/site.css">
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+  <script>(function(){var t=localStorage.getItem('theme-preference');if(t)document.documentElement.setAttribute('data-theme',t);})()</script>
+</head>
+<body>
+<nav class="site-nav">
+  <a href="/">Home</a> &middot; <a href="/about.html">About</a>
+</nav>
+<div class="theme-toggle">
+  <button id="theme-btn" aria-label="Toggle dark mode">&#9788;</button>
+</div>
+<article>
+<section id="mind-maps-november-2024" class="level1">
+<h1>Mind Maps — November 2024</h1>
+<section id="ocannl-design-2024.11.07-2024.11.12" class="level2">
+<h2>OCANNL Design (2024.11.07 – 2024.11.12)</h2>
+<section id="factor-out-of-backends-2024.11.07" class="level3">
+<h3>Factor Out of Backends (2024.11.07)</h3>
+<ul>
+<li>Memory modes</li>
+<li>Is-in-context</li>
+<li>Updating context arrays
+<ul>
+<li>Based on <code>traced_arrays</code></li>
+<li>Before linking in backend</li>
+</ul></li>
+</ul>
+</section>
+<section id="release-0.5-2024.11.08" class="level3">
+<h3>Release 0.5 (2024.11.08)</h3>
+<ul>
+<li>Factor out mem context ✓
+<ul>
+<li>Synchronize running routines</li>
+</ul></li>
+<li>Factor out copying prep ✓
+<ul>
+<li>Synchronize copying</li>
+</ul></li>
+<li>Remove syncing from the data-parallel algo
+<ul>
+<li>Debug data-parallel perf</li>
+</ul></li>
+</ul>
+</section>
+<section id="program-search-2024.11.09" class="level3">
+<h3>Program Search (2024.11.09)</h3>
+<ul>
+<li>Symbolic optimization
+<ul>
+<li>Generic across backends</li>
+</ul></li>
+<li>Currently deterministic rewrite system
+<ul>
+<li>Nondeterministic rewrite system
+<ul>
+<li>Beam search and MCTS</li>
+</ul></li>
+</ul></li>
+<li>Needs backend-specific fitness</li>
+</ul>
+</section>
+<section id="training-rig-2024.11.10" class="level3">
+<h3>Training Rig (2024.11.10)</h3>
+<ul>
+<li>How best to connect the comps I have?
+<ul>
+<li>Thunderbolt 5 vs Ethernet</li>
+</ul></li>
+<li>iMac Mini
+<ul>
+<li>Cheap but less memory</li>
+</ul></li>
+<li>Razer Blade laptop?</li>
+</ul>
+</section>
+<section id="managing-scarce-memory-2024.11.11" class="level3">
+<h3>Managing Scarce Memory (2024.11.11)</h3>
+<ul>
+<li><code>evacuated</code> field
+<ul>
+<li>Actually,
+<code>evacuated_to : [Host | Stream Tn.t] option</code></li>
+<li>If node is evacuated, automatically schedule bringing it back when
+needed</li>
+<li>Can evacuation be automated?</li>
+</ul></li>
+<li><code>to_host ~evacuate:true</code></li>
+<li><code>device_to_device ~evacuate:true</code>?
+<ul>
+<li>Bringing back across multiple hops</li>
+</ul></li>
+</ul>
+</section>
+<section id="data-movement-automation-2024.11.12" class="level3">
+<h3>Data Movement Automation (2024.11.12)</h3>
+<ul>
+<li>Default <code>from_host</code> to initialize hosted nodes on device
+<ul>
+<li>But the reverse for computational initialization e.g. random
+distr</li>
+</ul></li>
+<li>Similar to <code>evicted_to</code></li>
+<li>Does not need an extra layer!
+<ul>
+<li>Explicit calls to backend work as currently</li>
+<li>Automates backend calls
+<ul>
+<li>Available functions and/or exposed fields to disable or tune the
+automation</li>
+</ul></li>
+</ul></li>
+</ul>
+</section>
+</section>
+<section id="low-precision-numbers-and-quantization-2024.11.13"
+class="level2">
+<h2>Low-Precision Numbers and Quantization (2024.11.13)</h2>
+<section id="low-precision-numbers-and-quantization-2024.11.13-1"
+class="level3">
+<h3>Low-Precision Numbers and Quantization (2024.11.13)</h3>
+<ul>
+<li>bfloat16
+<ul>
+<li>Broad hardware support</li>
+<li>Standardized?</li>
+<li>Lobby for inclusion in Bigarray?</li>
+<li>Low value per effort — but good stress test of design</li>
+</ul></li>
+<li>fp8
+<ul>
+<li>High-end hardware</li>
+<li>Two fp8 types on H100</li>
+<li>Blockwise quantization on Blackwell hardware</li>
+<li>Missing compute precs — no design effort</li>
+</ul></li>
+<li>TF32: TensorFloat-32
+<ul>
+<li>Nvidia TensorCore</li>
+<li>In fact it’s 19 bits</li>
+</ul></li>
+<li>Quantized
+<ul>
+<li>Training vs inference</li>
+<li>Simple discretization</li>
+<li>Statistically quantizing trained models</li>
+<li>Represent as multidim. precision</li>
+</ul></li>
+<li>Compute prec separated from mem store prec</li>
+</ul>
+</section>
+</section>
+<section id="strong-models-are-very-large-2024.11.14-2024.11.18"
+class="level2">
+<h2>Strong Models Are Very Large (2024.11.14 – 2024.11.18)</h2>
+<section id="strong-models-are-very-large-2024.11.14" class="level3">
+<h3>Strong Models Are Very Large (2024.11.14)</h3>
+<ul>
+<li>Pipeline parallelism
+<ul>
+<li>Synchronous</li>
+<li>Asynchronous
+<ul>
+<li>Multiple copies of grads or weights</li>
+<li>Enforces: 1 worker = multiple streams</li>
+<li>Ensure: possible to assign all resources to a stream while others
+suspended</li>
+</ul></li>
+</ul></li>
+<li>Networked devices
+<ul>
+<li><code>Add_network</code> functor for backends</li>
+</ul></li>
+<li>Model parallelism (see 11.16)
+<ul>
+<li>Heterogeneous backends
+<ul>
+<li>Also: at-home networking Macs and Nvidia RTX</li>
+<li>Should <code>Add_network</code> devices have an option “no network”?
+— No. Primary motivation</li>
+</ul></li>
+</ul></li>
+</ul>
+</section>
+<section id="usability-2024.11.15" class="level3">
+<h3>Usability (2024.11.15)</h3>
+<ul>
+<li>Runs the necessary fwd and bprop code
+<ul>
+<li>Tracking of what needs recomputing</li>
+<li>Invokes <code>%op</code> if needed</li>
+<li>Requiring module <code>Backend</code> in scope</li>
+</ul></li>
+<li>Extension layer <code>%run</code>?
+<ul>
+<li>Not needed for auto memory transfers</li>
+</ul></li>
+<li>Documentation
+<ul>
+<li>Consider <code>.mld</code> and/or <code>mdx</code></li>
+</ul></li>
+<li>Install printers for <code>Tnode.t</code> and
+<code>Tensor.t</code></li>
+<li>Saving/restoring
+<ul>
+<li>Full model graph saving
+<ul>
+<li>W/o pickling aka. marshalling</li>
+</ul></li>
+<li>Granular snapshotting</li>
+</ul></li>
+</ul>
+</section>
+<section id="model-parallelism-2024.11.16" class="level3">
+<h3>Model Parallelism (2024.11.16)</h3>
+<ul>
+<li>Fully Sharded Data Parallel
+<ul>
+<li>Paper from Meta AI arXiv:2304.11277</li>
+<li>Parameter prefetching</li>
+</ul></li>
+<li>Overlap communication with computation
+<ul>
+<li>Operation reordering — hard! requires passing activations</li>
+</ul></li>
+<li>In OCANNL, easy to manually partition a model into components and
+explicitly distribute over devices and backends.
+<ul>
+<li>More natural for pipeline parallelism</li>
+<li>Awkward/hard for model parallelism, especially for parameter
+sharding</li>
+</ul></li>
+<li>We need good design for initialization</li>
+<li>Tensor parallelism
+<ul>
+<li>In OCANNL, activations are typically a special case of
+non-materialized tensors</li>
+<li>Rethinking design: non-materialized tensors vs the eviction
+mechanism</li>
+</ul></li>
+</ul>
+</section>
+<section id="parameter-sharding-2024.11.18" class="level3">
+<h3>Parameter Sharding (2024.11.18)</h3>
+<ul>
+<li>Fully Sharded Data Parallel
+<ol type="1">
+<li>Each sub-module / model layer is a FSDP unit.</li>
+<li>Each unit’s non-shared parameters are flattened, concatenated and
+sharded across backends/devices.</li>
+<li>Before the unit’s computation, unshards required parameters.
+Afterward, deletes other shards’ parameters.</li>
+</ol>
+<ul>
+<li>Communicates parameters &amp; their gradients on demand, for
+unsharding &amp; accumulation</li>
+<li>Crosses abstraction levels: bad fit for OCANNL design</li>
+<li>Great for balancing memory, computation, number of devices</li>
+</ul></li>
+<li>Tensor Parallelism
+<ul>
+<li>Communicates activations: computation boundaries</li>
+<li>Upside: keeps model design clean</li>
+<li>Downside: complicates model design with computational
+considerations</li>
+<li>Manually: a slice operator indexed by backend/device/stream
+<ul>
+<li>Hard work: find good axes to balance memory, computation, number of
+devices</li>
+<li>Fits with OCANNL design</li>
+</ul></li>
+<li>Automatically find good axes — tricky, worse fit for OCANNL
+design</li>
+</ul></li>
+</ul>
+</section>
+</section>
+<section id="ideas-for-upcoming-mind-maps-2024.11.19-updated-2024.11.27"
+class="level2">
+<h2>Ideas for Upcoming Mind Maps (2024.11.19, updated 2024.11.27)</h2>
+<section
+id="ideas-for-upcoming-mind-maps-2024.11.19-updated-2024.11.27-1"
+class="level3">
+<h3>Ideas for Upcoming Mind Maps (2024.11.19, updated 2024.11.27)</h3>
+<ul>
+<li>Convolutions and padding — 1/3 done: tinygrad
+<ul>
+<li>Design risk: interacts with the whole OCANNL, esp. shape
+inference</li>
+<li>Even LLMs: need padding</li>
+<li>Visually attractive examples</li>
+</ul></li>
+<li>Pipeline parallelism — mostly done
+<ul>
+<li>Continues recent theme</li>
+</ul></li>
+<li>Program search in tinygrad — done
+<ul>
+<li>Super important for design</li>
+</ul></li>
+<li>Pallas: extension of JAX for writing custom kernels — done
+<ul>
+<li>Mutable abstraction layer for JAX</li>
+</ul></li>
+<li>What are blocks? (added 11.27)</li>
+<li>More deep dives
+<ul>
+<li>Karpathy’s: llm.c, llama2.c, LLM101n, nanoGPT</li>
+<li>jackpeck’s llama2.ml</li>
+<li>Keller Jordan’s modded-nanogpt</li>
+<li>keras → keras.core</li>
+</ul></li>
+</ul>
+</section>
+</section>
+<section
+id="pipeline-parallelism-and-optimizergradient-sharding-2024.11.20"
+class="level2">
+<h2>Pipeline Parallelism and Optimizer/Gradient Sharding
+(2024.11.20)</h2>
+<section
+id="pipeline-parallelism-and-optimizergradient-sharding-2024.11.20-1"
+class="level3">
+<h3>Pipeline Parallelism and Optimizer/Gradient Sharding
+(2024.11.20)</h3>
+<ul>
+<li>Papers to read: ZeRO arXiv:1910.02054, Zero Bubble arXiv:2401.10241,
+NanoFlow arXiv:2408.12757</li>
+<li>Pipeline parallelism
+<ul>
+<li>Pipeline with nano-batches at the granularity of operations</li>
+<li>PP most helpful for cross-server connections</li>
+<li>Asynchronous PP breaks optimizer semantics</li>
+<li>Zero Bubble
+<ul>
+<li>Optimizes microbatch scheduling of Forward, Backward, and
+Weight-gradient</li>
+<li>Layer-wise parallelizes the optimizer step by accumulating
+progressively</li>
+<li>Propagates global optimizer state of previous iteration while the
+next iteration is computing the initial forward steps</li>
+<li>Redoes the optimizer step if a global check fails for any layer
+(found INF, NaN, or gradient clip needed)</li>
+</ul></li>
+</ul></li>
+<li>Optimizer/gradient sharding
+<ul>
+<li>ZeRO: focus on minimizing per-GPU memory</li>
+<li>ZeRO-DP is similar to FSDP, but lossy and much simpler
+<ul>
+<li>Partitions optimizer states, discards gradient parts for other
+partitions</li>
+</ul></li>
+</ul></li>
+<li>More notes coming</li>
+</ul>
+</section>
+</section>
+<section id="tinygrad-deep-dive-2024.11.21-2024.11.27" class="level2">
+<h2>Tinygrad Deep Dive (2024.11.21 – 2024.11.27)</h2>
+<section id="program-search-in-tinygrad-2024.11.21" class="level3">
+<h3>Program Search in Tinygrad (2024.11.21)</h3>
+<ul>
+<li>Kernel transforming operations — operations usually have axis and
+amt (amount / part of):
+<ul>
+<li><code>LOCAL</code> — converts part of a global axis to local</li>
+<li><code>PADTO</code> — adds padding to an axis</li>
+<li><code>NOLOCALS</code> — prohibits use of local axes</li>
+<li><code>GROUPTOP</code></li>
+<li><code>UPCASTMID</code></li>
+<li><code>GROUP</code> — related: fusing reduce ops??</li>
+<li><code>TC</code> (TensorCore)</li>
+<li><code>UPCAST</code> — converts part of an axis into an innermost
+upcasted axis</li>
+<li><code>UNROLL</code> — converts part of or whole axis into an
+innermost upcasted axis</li>
+<li><code>SWAP</code> — swaps two axes in a tensor</li>
+</ul></li>
+<li>Upcasted axis is computed or reduced at higher precision??</li>
+<li>In tinygrad, memory mode and projection semantics are assigned
+per-axis</li>
+<li>Axis color coding: blue = global dims, cyan = local dims, green =
+reduce-local, white = reduce-late upcasted, red = reduce loops, purple =
+reduce upcasted, yellow = normal upcasted</li>
+<li>TensorCore’s reduce axis is selected starting from
+<code>first_reduce</code>, the 2 inputs axes ending at
+<code>first_reduce</code>
+<ul>
+<li>Applying TC applies PADTO, UNROLL for reduce axis, UPCAST, LOCAL for
+TensorCore’s threads’ axes</li>
+<li>Then optional “hand-coded” UPCAST and LOCAL</li>
+</ul></li>
+<li>All of this is in <code>codegen/kernel.py</code>, beam_search itself
+is in <code>engine/search.py</code></li>
+</ul>
+</section>
+<section id="scheduler-in-tinygrad-2024.11.22" class="level3">
+<h3>Scheduler in Tinygrad (2024.11.22)</h3>
+<ul>
+<li>Why is all this in here? Where is the scheduling? —
+<code>schedule.py</code>: things to schedule, not scheduling</li>
+<li><code>to_uop</code> for non-const buffers is the ShapeTracker’s view
+of the buffer
+<ul>
+<li>An UOp <code>is_scheduled</code> when the op is
+<code>Ops.VIEW</code></li>
+</ul></li>
+<li>Selects groups to fuse, vs. what to materialize — via graph
+rewriting</li>
+<li>Prepares indexing (aka. movement ops), integrates indexing with
+computation
+<ul>
+<li>What is sizzle??? → see later</li>
+</ul></li>
+<li><code>ScheduleItem</code> with disjoint input and output buffers
+<ul>
+<li>Similar to OCANNL’s inputs and outputs fields in
+<code>routine</code></li>
+<li>Multiple outputs possible via <code>Ops.SINK</code> AST node,
+otherwise single output</li>
+</ul></li>
+<li>Upcoming design (PR 7065)
+<ul>
+<li>Gets rid of <code>LazyBuffer</code> (replaced with <code>UOp</code>)
+and of <code>engine/lazy.py</code></li>
+<li>Gets rid of indexing processing in <code>schedule.py</code>, instead
+exposes <code>ShapeTracker</code> methods in <code>ops.py</code></li>
+<li>Tracks materialized buffers (i.e. <code>realized</code> in tinygrad)
+in <code>ops.py</code></li>
+<li>Graph rewriting to push views below computations, collect buffers
+and kernels — in <code>schedule.py</code></li>
+</ul></li>
+</ul>
+</section>
+<section id="pallas-a-jax-kernel-language-2024.11.23" class="level3">
+<h3>Pallas: a JAX Kernel Language (2024.11.23)</h3>
+<ul>
+<li>On TPU: args are already SRAM (copied before running a kernel), then
+copied explicitly into registers before computation</li>
+<li>On GPU: args are HBM/DRAM mem (global), explicitly copied into SRAM
+mem (local) before computation</li>
+<li>Imperative: explicit assignments
+<ul>
+<li><code>Ref</code>s were introduced to make JAX stateful even before
+Pallas, reused</li>
+</ul></li>
+<li>Kernels parallelize over grids
+<ul>
+<li><code>vmap</code> of <code>pallas_call</code>: adds extra grid
+axis</li>
+</ul></li>
+<li>A <code>BlockSpec</code> projects an input or output to a
+block-slice view and threads/streams, for blockwise parallelism over
+grids
+<ul>
+<li>Manually specified for each input &amp; output</li>
+<li>Generalization of tiling</li>
+<li>Dynamic slicing and masking</li>
+<li>Also needs explicit <code>out_shape</code></li>
+<li>Not implemented yet: alternatives to <code>BlockSpec</code>
+e.g. overlapping windows for convolutions</li>
+</ul></li>
+<li><strong>Doesn’t</strong> support: <code>conv_general</code> etc. —
+usually not on hardware; <code>gather</code>/<code>scatter</code> —
+backends without noncontiguous memory reads/writes</li>
+<li>GPU and TPU are not entirely interchangeable?</li>
+<li>More control over memory access (on GPU)</li>
+</ul>
+</section>
+<section id="triton-2024.11.24" class="level3">
+<h3>Triton (2024.11.24)</h3>
+<ul>
+<li>Based on pointers
+<ul>
+<li>Pallas exposes them but on refs</li>
+</ul></li>
+<li><code>load</code>, <code>store</code> with dynamic slicing and
+mask</li>
+<li>Nice idea: associate axes with strides to decouple tensor semantics
+from memory layout</li>
+<li>Sharing code across backends (CUDA, CDNA) but dedicated sections to
+compute e.g. num of threads per multi-processor</li>
+<li>Execution over a grid, as in CUDA and Pallas</li>
+<li>Both manual and auto-tune splitting into warps
+<ul>
+<li>Autotune picks a config out of manually speced candidates</li>
+</ul></li>
+<li>Each block must have 2^n elements, needs padding via mask</li>
+<li>Manual decoding of indices into per-block vectors of offsets for
+load/store, but otherwise functions over ndim arrays</li>
+<li>Nice tutorials
+<ul>
+<li>Maybe worth replicating <code>triton.testing</code>
+(<code>perf_report</code>|<code>Benchmark</code>)</li>
+</ul></li>
+<li>Groups of blocks reduce memory transfers per same num of output
+blocks
+<ul>
+<li>Not built-in</li>
+</ul></li>
+<li><code>tl.exp</code> is <code>__expf</code> from CUDA
+(approximate)</li>
+</ul>
+</section>
+<section id="triton-part-2-2024.11.25" class="level3">
+<h3>Triton Part 2 (2024.11.25)</h3>
+<ul>
+<li>Counter-based Parallel Random Numbers
+<ul>
+<li>Computes pseudo-random nums on the device with seed int32</li>
+</ul></li>
+<li>Reducing across blocks in a group — manual, by locking at the end of
+a kernel</li>
+<li>Vs scheduling DSLs
+<ul>
+<li>Separate algo and schedule: tile splits, loop reordering and
+unrolling, parallel axes</li>
+<li>TVM has built-in automatic scheduling</li>
+</ul></li>
+<li>Vs polyhedral DSLs
+<ul>
+<li>Use affine <em>access functions</em></li>
+<li>Support fusion, interchange, tiling, parallelization</li>
+<li>Loop transformations</li>
+<li>Large search space</li>
+<li>Not applicable to (structured-)sparse networks</li>
+</ul></li>
+<li>Manual optimizations:
+<ul>
+<li>Coalescing — orders threads within micro-tile to contiguous mem
+access</li>
+<li>Thread swizzling — transforms row-major to column-major submatrix
+for each group-size rows</li>
+</ul></li>
+<li>Auto optimizations:
+<ul>
+<li>Pre-fetching</li>
+<li>Async copy scheduling</li>
+<li>Shared mem synchronization — inserts barriers into GPU code by
+detecting read-after-writes and write-after-read</li>
+</ul></li>
+</ul>
+</section>
+<section id="tinygrad-shapetracker-2024.11.26" class="level3">
+<h3>Tinygrad ShapeTracker (2024.11.26)</h3>
+<ul>
+<li>Pure movement ops: RESHAPE, PERMUTE, PAD, EXPAND, SHRINK, STRIDE
+<ul>
+<li>PAD — fwd: NumPy pad, bprop: shrink</li>
+<li>EXPAND — fwd: NumPy <code>broadcast_to</code>, bprop: reduce
+SUM</li>
+<li>SHRINK — fwd: NumPy subarray view, bprop: pad</li>
+<li>STRIDE — decomposed using Flip for &lt; 0 and a combination of Pad
+and Reshape for &gt; 1</li>
+</ul></li>
+<li>Translates all of NumPy syntax to ops</li>
+<li>Vs teenygrad = 1/10th of tinygrad</li>
+<li>Is a list of View objects</li>
+<li>A View has: shape (i.e. dims), strides, offset, mask (begin-end per
+axis), whether it’s contiguous
+<ul>
+<li>Default strides assume shape is rightmost-major</li>
+<li>Canonicalized, e.g.: if mask uncovers just 1 index, convert to “no
+stride” and adjust the offset</li>
+</ul></li>
+<li>Why many views per Tracker? → tomorrow</li>
+<li>Direct relevant ops are: EXPAND, CONTRACT, VIEW, REDUCE_AXIS</li>
+<li>Assigned to op nodes except DEFINE_LOCAL/GLOBAL/VAR, BUFFER, CONST
+<ul>
+<li>VIEW has a ShapeTracker</li>
+<li>Other nodes inherit ShapeTracker from children; all children must
+have the same ShapeTracker!</li>
+</ul></li>
+<li>VIEW = non-copy movement op; VIEW doesn’t have children, instead
+typically provides a view for the preceding DEFINE_GLOBAL</li>
+</ul>
+</section>
+<section id="tinygrad-followup-2024.11.27" class="level3">
+<h3>Tinygrad Followup (2024.11.27)</h3>
+<ul>
+<li><code>MultiLazyBuffer</code> with per-device
+<code>LazyBuffer</code>s
+<ul>
+<li>Stores per-device bounds of the sharded axis</li>
+<li>Dedicated float4 support</li>
+</ul></li>
+<li>Multigpu via sharding
+<ul>
+<li>Ends up duplicating the part of the compute graph below reducing of
+the sharded axes</li>
+<li>Its <code>ScheduleItem</code> forms a kernel</li>
+<li>STORE: retain after kernel finishes</li>
+</ul></li>
+<li><code>DEFINE_GLOBAL</code> args: position in parameter list, param
+name, mutability</li>
+<li>CAST and BITCAST
+<ul>
+<li>BITCAST first takes address and pointer-casts the address</li>
+</ul></li>
+<li>UPCAST UOp actually means UNROLL!
+<ul>
+<li>What is UPCAST Opt (i.e. in program search)?</li>
+</ul></li>
+<li>Variable
+<ul>
+<li>Axis dimensions placeholder</li>
+<li>Has range — this range is used to render loops in Linearizer</li>
+<li>Can remain symbolic
+<ul>
+<li>Generates symbolic mask guard</li>
+<li>Passed as a kernel param</li>
+</ul></li>
+<li>Can <code>create_schedule_with_vars</code> perform some shape
+inference?</li>
+</ul></li>
+</ul>
+</section>
+</section>
+</section>
+</article>
+<script src="/assets/theme-toggle.js"></script>
+</body>
+</html>

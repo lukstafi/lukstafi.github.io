@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>Mind Maps — January 2025</title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <link rel="stylesheet" href="/assets/tufte.css">
+  <link rel="stylesheet" href="/assets/pandoc-tufte.css">
+  <link rel="stylesheet" href="/assets/site.css">
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+  <script>(function(){var t=localStorage.getItem('theme-preference');if(t)document.documentElement.setAttribute('data-theme',t);})()</script>
+</head>
+<body>
+<nav class="site-nav">
+  <a href="/">Home</a> &middot; <a href="/about.html">About</a>
+</nav>
+<div class="theme-toggle">
+  <button id="theme-btn" aria-label="Toggle dark mode">&#9788;</button>
+</div>
+<article>
+<section id="mind-maps-january-2025" class="level1">
+<h1>Mind Maps — January 2025</h1>
+<section id="apple-platforms-2025.01.13-2025.01.15" class="level2">
+<h2>Apple Platforms (2025.01.13 – 2025.01.15)</h2>
+<section id="apples-mlx-2025.01.13" class="level3">
+<h3>Apple’s MLX (2025.01.13)</h3>
+<ul>
+<li>Expression based like JAX — tracing → compute graph
+<ul>
+<li>But imperative and with stateful <code>Module</code> class</li>
+<li>Pythonic: classes, generators</li>
+</ul></li>
+<li>Expr. transformations work on function objects: <code>grad</code>,
+<code>vmap</code>, <code>vjp</code>, <code>jvp</code></li>
+<li>Specify device (cpu, gpu) at the expression / result array —
+actually, specify stream (since uniform memory)</li>
+<li><code>array</code> vs. <code>vector</code></li>
+<li>Good C interface</li>
+<li>Explicitly executed with <code>eval()</code> — implicitly executed
+by <code>print</code>, <code>memoryview</code>, <code>save</code>
+<ul>
+<li>Currently not compiled</li>
+</ul></li>
+<li><code>compile()</code> optimizes graph e.g. by fusion — only for
+pure functions
+<ul>
+<li>Can compile the whole SGD update, support for capturing mutable
+state</li>
+</ul></li>
+<li>Formats: <code>.npy</code>, <code>.npz</code>,
+<code>.safetensors</code> (HuggingFace), <code>.gguf</code>
+(GGreganov)</li>
+<li>Distributed comp. via MPI: <code>all_sum</code>,
+<code>all_gather</code>, <code>send</code>, <code>recv</code> (an
+array)</li>
+<li>Exporting functions, can be imported cross-frontend
+<ul>
+<li>Only for fixed shapes, via example inputs</li>
+<li>Exporting modules with or w/o params</li>
+</ul></li>
+</ul>
+</section>
+<section id="apple-metal-quick-glance-2025.01.15" class="level3">
+<h3>Apple Metal Quick Glance (2025.01.15)</h3>
+<ul>
+<li>Can compile from commandline or at runtime a/synchronously from
+string:
+<code>newLibraryWithSource:options:completionHandler/error</code></li>
+<li>Multilevel command buffer: blit/compute encoders</li>
+<li>Doesn’t support <code>double</code> (?)</li>
+</ul>
+</section>
+</section>
+<section id="habits-2025.01.19" class="level2">
+<h2>Habits (2025.01.19)</h2>
+<ul>
+<li>Atomic
+<ul>
+<li>Obvious — define trigger: definite time+location, or end of earlier
+habit</li>
+<li>Attractive — community, temptation / ritual</li>
+<li>Easy — reduce friction, prime the environment; downscale habit to
+two minutes; break down big ones into multiple; establish a &lt;2min
+minimal satisfying version</li>
+<li>Satisfying — immediate reward on completion; use habit tracker</li>
+</ul></li>
+<li>Modify habit — keep trigger and reward, replace routine</li>
+<li>Stepladder — small changes; Community; Important — dwell on
+priorities; Easy; Neurohack — behavior drives identity; Captivating
+rewards; Engrained — repetition</li>
+</ul>
+</section>
+<section id="andrej-karpathys-educational-resources-2025.01.20"
+class="level2">
+<h2>Andrej Karpathy’s Educational Resources (2025.01.20)</h2>
+<ul>
+<li>GitHub repositories</li>
+<li>nn-zero-to-hero — introductory and experimental parts of the
+lectures
+<ul>
+<li>Lecture 1: micrograd — minimal NumPy NN framework</li>
+<li>Lectures 2–5: makemore — bigram character-level LM</li>
+<li>Lecture 8: nanoGPT — optimizes minGPT</li>
+</ul></li>
+<li>minGPT — the first GPT in PyTorch repo, purely educational</li>
+<li>nanoGPT
+<ul>
+<li>ng-video-lecture — follows the first, 2-hours lecture reproducing
+nanoGPT</li>
+<li>build-nanogpt — follows latest, 4-hours lecture reproducing nanoGPT
+(improved lecture)</li>
+</ul></li>
+<li>minBPE — tokenizer for GPT</li>
+<li>char-rnn — character-level LM, old, in Lua Torch, vanilla Recurrent
+NN, GRU, LSTM</li>
+<li>llama2.c
+<ul>
+<li>train.py in PyTorch</li>
+<li>run.c in FP32 pure C</li>
+<li>runq.c in int8 quantized</li>
+</ul></li>
+<li>llm.c — very efficient C/CUDA, multi-GPU with ZeRO, optimized for
+pretraining GPT-2/3
+<ul>
+<li>Simple reference impls: train_gpt2.c in pure C, train_gpt2.cu in
+CUDA (this is the entry point to main impl.), train_gpt2.py in
+PyTorch</li>
+</ul></li>
+</ul>
+</section>
+<section id="llm.c-deep-dive-2025.01.21-2025.01.23" class="level2">
+<h2>llm.c Deep Dive (2025.01.21 – 2025.01.23)</h2>
+<section id="llm.c-2025.01.21" class="level3">
+<h3>llm.c (2025.01.21)</h3>
+<ul>
+<li>Uses cuBLAS, cuBLASLt in code for <strong>matmul</strong> forward
+and backward, manual kernel for backward bias term</li>
+<li>Manual kernels for: encoder forward and backward, layernorm forward
+and backward, softmax forward and (in-place) backward, Cross-Entropy
+forward fused with backward, AdamW (see slide 2024.11.20)</li>
+<li>Hyperparams for loading any GPT2 or GPT3</li>
+<li>Random init scheme from GPT2, init computed on the CPU</li>
+<li>Uses ZeRO for multi-GPU — uses MPI to distribute (to be
+continued)</li>
+<li>Two variants: with &amp; w/o cuDNN, used for attention</li>
+<li>Uses stochastic rounding from FP32 to BF16</li>
+<li>Judiciously uses <code>size_t</code> to not overflow int</li>
+<li>Conserves memory by reusing buffers</li>
+<li>Manually manages memory (no per-tensor alloc/free)</li>
+</ul>
+</section>
+<section id="llm.c-distributed-2025.01.23" class="level3">
+<h3>llm.c Distributed (2025.01.23)</h3>
+<ul>
+<li>Sharded Data Parallel and FSDP not supported yet — only sharding
+optimizer states aka. ZeRO-1</li>
+<li>Dedicated CUDA stream for NCCL ops</li>
+<li><code>llmc/zero.cuh</code> here, NCCL and MPI overview on future
+maps</li>
+<li><code>multi_gpu_async_reduce_gradient</code>: reduce-scatter if ZeRO
+else all-reduce</li>
+<li><code>gpt2_calculate_grad_norm</code>: reuses the activations
+buffer; without ZeRO, gradients already averaged across all GPUs, sums
+norms locally; with ZeRO, need to all-reduce-sum the norms</li>
+<li>Different network socket API causes some duplication between Windows
+and Linux</li>
+</ul>
+</section>
+</section>
+<section id="cuda-programming-2025.01.24-2025.01.25" class="level2">
+<h2>CUDA Programming (2025.01.24 – 2025.01.25)</h2>
+<section id="cuda-cooperative-groups-2025.01.24" class="level3">
+<h3>CUDA Cooperative Groups (2025.01.24)</h3>
+<ul>
+<li>API for thread subsets — first-class thread blocks</li>
+<li><code>coalesced_group active = coalesced_threads()</code> —
+currently executing in a warp
+<ul>
+<li><code>active.sync()</code> — no deadlock; protects from deadlocks
+wrt. <code>__syncthreads()</code></li>
+</ul></li>
+<li><code>group.sync()</code>, <code>group.thread_rank()</code> (no. of
+this thread in this group)</li>
+<li><code>tiled_partition(group, size)</code> — if <code>size=32</code>,
+gives warps
+<ul>
+<li><code>thread_block_tile&lt;size&gt;</code>,
+<code>tiled_partition&lt;size&gt;(group)</code></li>
+</ul></li>
+<li><code>thread_block_tile::...</code>: <code>shfl()</code>,
+<code>shfl_down()</code>, <code>shfl_up()</code>,
+<code>shfl_xor()</code>, <code>any()</code>, <code>all()</code>,
+<code>ballot()</code>, <code>match_any()</code>,
+<code>match_all()</code>
+<ul>
+<li><code>#pragma unroll</code> since size is static — then, compiler
+can remove synchronizations (unsafe when done manually)</li>
+<li><code>__ffs</code>, <code>__popc</code></li>
+</ul></li>
+<li>CUDA Warp-level primitives — 32-bit (int) masks pick threads of a
+warp
+<ul>
+<li>Synchronized data exchange: <code>__all_sync</code>,
+<code>__any_sync</code>, <code>__uni_sync</code>,
+<code>__ballot_sync</code>; <code>__shfl_sync</code>,
+<code>__shfl_up_sync</code>, <code>__shfl_down_sync</code>,
+<code>__shfl_xor_sync</code>; <code>__match_any_sync</code>,
+<code>__match_all_sync</code></li>
+</ul></li>
+<li>Get <code>__activemask</code>; Sync with memory fence:
+<code>__syncwarp(mask=FULL_MASK)</code> (<code>0xffffffff</code>)</li>
+</ul>
+</section>
+<section id="cuda-warp-functions-vote-match-reduce-shuffle-2025.01.25"
+class="level3">
+<h3>CUDA Warp Functions: Vote, Match, Reduce, Shuffle (2025.01.25)</h3>
+<ul>
+<li>Each calling thread must be in the mask, all masks must be the
+same</li>
+<li>Vote: <code>__all_sync</code>, <code>__any_sync</code> — the value
+is non-zero for all/any of the threads</li>
+<li>Match: <code>__match_any_sync</code> — returns the mask of threads
+with the same value as the calling thread; <code>__match_all_sync</code>
+— returns the given mask if all its threads have the same value,
+otherwise 0</li>
+<li>Vote: <code>__ballot_sync</code> — returns the mask of threads with
+non-zero value</li>
+<li>Reduce: <code>__reduce_add/min/max_sync</code> — reduces the int or
+unsigned values; <code>__reduce_and/or/xor_sync</code> — logical op
+reduces unsigned values</li>
+<li>Shuffle (shfl): exchange a variable between threads of a warp
+(faster than shared mem)
+<ul>
+<li>Unlike reduce functions, works with all numeric types, including
+<code>__half2</code> and <code>__nv_bfloat162</code></li>
+<li><code>__shfl_sync</code> specifies source lane explicitly</li>
+<li><code>__shfl_up/down_sync</code> specify delta, source is
+lower/higher</li>
+<li><code>__shfl_xor_sync</code> bitwise XORs calling thread lane ID
+with the given lane mask (see: butterfly pattern)</li>
+<li>Optional width (one of 2,4,8,16) subdivides operation into groups,
+with group-relative addressing</li>
+</ul></li>
+<li>Warp Matrix Functions leverage Tensor Cores for Matrix Multiply
+Add</li>
+</ul>
+</section>
+</section>
+<section id="cudnn-2025.01.26-2025.01.27" class="level2">
+<h2>cuDNN (2025.01.26 – 2025.01.27)</h2>
+<section id="cudnn-cuda-deep-neural-network-2025.01.26" class="level3">
+<h3>cuDNN: CUDA Deep Neural Network (2025.01.26)</h3>
+<ul>
+<li>Frontend: C++ and Python APIs; Backend: C API</li>
+<li>C++ based on shared pointers</li>
+<li>All tensors have from 3 to 8 axes (with leading dims 1 if not
+needed)</li>
+<li>cuDNN graph performs inference: shapes for virtual/temp tensors,
+strides, precisions
+<ul>
+<li>Via <code>Graph::validate</code></li>
+</ul></li>
+<li>Graph: fusion etc.</li>
+<li>Configurable defaults for: io, intermediate, and compute data
+type</li>
+<li>Autotuning — filtering: numerical, behavior, functional properties;
+policy-based selection; multiple heuristic-based execution plans</li>
+<li>Opt-in to use Tensor Core (in backend, not in frontend?)</li>
+<li>Multinode graphs do not support in-place operations</li>
+<li>Operations:
+<ul>
+<li>Matrix Mult. — matmul broadcasts even non-1 batch axes if
+needed</li>
+<li>Convolution: forward, data grad, weight grad</li>
+<li>Batch Normalization: forward, backprop, finalize stats</li>
+<li>Layernorm: forward, backprop</li>
+<li>Instancenorm: forward, backprop</li>
+<li>Attention: forward, backprop — only for FP16, BF16, FP8</li>
+<li>Pointwise: add, bias, scale, sub, mul, rsqrt, relu, elu, gelu,
+cmp_gt</li>
+</ul></li>
+</ul>
+</section>
+<section id="cudnn-graphs-2025.01.27" class="level3">
+<h3>cuDNN Graphs (2025.01.27)</h3>
+<ul>
+<li>Virtual tensors can be any type, but recommended FP32</li>
+<li>Mixed precision inputs via (pointwise) identity</li>
+<li>On Ada Lovelace, FP8 inputs trigger FP8 Tensor Cores</li>
+<li>Compute type FP32 / <code>CUDNN_DATA_FLOAT</code> (recommended for
+backward pass) and <code>CUDNN_DATA_FAST_FLOAT_FOR_FP8</code></li>
+<li>Require exactly one batch axis</li>
+<li>Pre-compiled single operation engines: convolution and normalization
+ops</li>
+<li>Generic runtime fusion engines: only for pointwise ops → matmul or
+convolution (or none) → pointwise ops [→ reduction op]</li>
+<li>Specialized pre-compiled engines
+<ul>
+<li>Convolution-BatchNorm with ReLU activation</li>
+<li>FP8 Fused Flash Attention max sequence length 512</li>
+<li>Fused Attention with max seq length 512, forward and backward,
+e.g. similar to BERT and T5
+<ul>
+<li>Allows optional: scalar key scaling, padding or causal masks,
+softmax, dropout</li>
+</ul></li>
+</ul></li>
+<li>Specialized runtime fusion patterns
+<ul>
+<li>ResNet helpers: BatchNorm forward (with optional Add, ReLU, and
+(&gt; 0) side output) and backward (with optional dReLU and side grad
+output for fwd’s Add)</li>
+<li>Support multi-GPU batches</li>
+<li>Fused Flash Attention forward and backward, usable GPT and BERT like
+models
+<ul>
+<li>Configurable with many scaling, mask and dropout options</li>
+</ul></li>
+</ul></li>
+</ul>
+</section>
+</section>
+<section id="communication-libraries-2025.01.28-2025.01.30"
+class="level2">
+<h2>Communication Libraries (2025.01.28 – 2025.01.30)</h2>
+<section
+id="mpi-message-passing-interface-and-collective-operations-2025.01.28"
+class="level3">
+<h3>MPI: Message Passing Interface and Collective Operations
+(2025.01.28)</h3>
+<ul>
+<li>llm.c usage: 1 GPU = 1 process
+<ul>
+<li>Can initialize NCCL with: tcp, mpi, fs (fs: file system
+synchronization)</li>
+<li><code>MPI_Bcast</code> to initialize NCCL rank</li>
+<li><code>MPI_Allgather</code> to find the GPU’s ordinal on a
+machine</li>
+</ul></li>
+<li>Send, Recv: point-to-point communication</li>
+<li>Broadcast: send from one to all</li>
+<li>Reduce: send from all, reduce on the fly into a value received by
+one</li>
+<li>All-Reduce: send from all, receive the same reduced value by
+all</li>
+<li>Gather: send from all, all values received by one node in a
+container</li>
+<li>All-Gather: send from all, every node receives all values in a
+container</li>
+<li>Scatter: send from a container on one node, a different value to
+every node</li>
+<li>Reduce-Scatter: pointwise reduces a vector and scatters the
+results</li>
+<li>All-to-all: each node has a container, from which it sends a
+different value to every node’s receiving container</li>
+<li>Scan: each node receives a partially reduced value depending on its
+rank</li>
+<li>Vectorized versions of these, and dedicated versions where values
+are arrays</li>
+</ul>
+</section>
+<section id="nccl-nvidia-collective-communications-library-2025.01.29"
+class="level3">
+<h3>NCCL: NVIDIA Collective Communications Library (2025.01.29)</h3>
+<ul>
+<li>Deals with different GPU and interconnect types: PCIe, NVLINK,
+InfiniBand Verbs, IP sockets</li>
+<li>Single kernel handling both communication and computation</li>
+<li>Control: single-threaded, multi-threaded, multi-process including
+MPI</li>
+<li>Operations: All-Reduce, Broadcast, Reduce, All-Gather,
+Reduce-Scatter, Send, Recv
+<ul>
+<li>Root rank gets the result of Reduce</li>
+</ul></li>
+<li>A communicator has nodes (ranks) and issues collective operations, a
+communicator <em>object</em> is a node</li>
+<li><code>ncclUniqueId</code> is the root rank, w/ it a given rank
+communicates. Can be a set <code>ncclUniqueIds</code>, all nodes must
+have the same set.</li>
+<li>Optionally can block, default async via stream queues — but
+enqueueing can block on other ranks to arrive first</li>
+<li>Using communicators concurrently can cause deadlocks. Even with
+separate streams, e.g. one uses too many blocks.</li>
+<li>Don’t use streams while NCCL uses them</li>
+<li>A communicator object of a device can use host pointers, cannot use
+pointers of a peer device, to avoid programmer errors</li>
+<li>Cooperative Thread Arrays: threads of a warp?</li>
+<li>Group calls — dynamic scope <code>ncclGroupStart/End</code>
+<ul>
+<li>Must be used when single thread manages multiple devices</li>
+<li>Aggregating operations might optimize communication</li>
+</ul></li>
+<li>To avoid internal copies: <code>ncclMemAlloc</code> &amp;
+<code>ncclCommRegister</code></li>
+</ul>
+</section>
+<section id="nccl-usage-in-llm.c-2025.01.30" class="level3">
+<h3>NCCL Usage in llm.c (2025.01.30)</h3>
+<ul>
+<li>NCCL setup and helpers in <code>zero.cuh</code></li>
+<li><code>multi_gpu_async_reduce_gradient</code>: if not sharding then
+All-Reduce, if ZeRO-1 then Reduce-Scatter</li>
+<li><code>gpt2_update</code>: All-Gather updated shards of params</li>
+<li><code>gpt2_backward_and_reduce</code>: All-Reduce gradients
+per-layer in the last microbatch step, also All-Reduce
+<code>accumulated_mean_loss</code></li>
+<li><code>gpt2_calculate_grad_norm</code>: All-Reduce
+<code>grad_norm_squared</code></li>
+<li>Main: Periodically compute and All-Reduce: validation loss,
+HellaSwag accuracy</li>
+<li>All-Reduce to compute memory stats</li>
+</ul>
+</section>
+</section>
+<section id="quick-first-glance-at-caten-2025.01.31" class="level2">
+<h2>Quick First Glance at Caten (2025.01.31)</h2>
+<ul>
+<li>Lazy like tinygrad, but more control like OCANNL: explicitly forced,
+can be explicitly compiled
+<ul>
+<li>Unlike OCANNL compilation is optional</li>
+</ul></li>
+<li>API the same as NumPy/PyTorch? — cumbersome, verbose notation</li>
+<li>All graphs can be compiled with dynamic shapes (unlike tinygrad and
+current OCANNL)</li>
+<li>Compilation pipeline: shape inference, high-level → scheduler
+i.e. kernel demarcation and ordering → low-level → polyhedral IR →
+rendering kernels</li>
+<li>High-level (API) and low-level (AIR) graph interfaces, codegen,
+graph runner</li>
+<li>Focus on “NN inference runtime”</li>
+<li>Verdict: the code is too sprawling (e.g. too many files) to be worth
+digging into; better focus on tinygrad
+<ul>
+<li>But it’s impressive, maybe I’ll have some luck finding
+inspiration</li>
+</ul></li>
+<li>Interesting to look at:
+<code>source/api/</code><strong><code>tensor</code></strong><code>.lisp</code>,
+<code>source/codegen/</code><strong><code>scheduler</code></strong><code>.lisp</code>,
+<code>source/codegen/jit.lisp</code>,
+<code>source/codegen/</code><strong><code>memory-planner</code></strong><code>.lisp</code>
+(minimizes peak memory usage),
+<code>source/byoc/</code><strong><code>metal</code></strong><code>.lisp</code>,
+<code>external/llm/</code><strong><code>layers</code></strong><code>.lisp</code></li>
+</ul>
+</section>
+</section>
+</article>
+<script src="/assets/theme-toggle.js"></script>
+</body>
+</html>

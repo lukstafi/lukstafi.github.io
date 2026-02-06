@@ -12,4 +12,7 @@ echo "=== Building JCA paper ==="
 echo "=== Building agent-collab papers ==="
 "$root_dir/scripts/build_agent_collab_html.sh"
 
+echo "=== Building mind maps ==="
+"$root_dir/scripts/build_mind_maps_html.sh"
+
 echo "=== All builds complete ==="

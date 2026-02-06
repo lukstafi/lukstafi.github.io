@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>Mind Maps — February 2025</title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <link rel="stylesheet" href="/assets/tufte.css">
+  <link rel="stylesheet" href="/assets/pandoc-tufte.css">
+  <link rel="stylesheet" href="/assets/site.css">
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+  <script>(function(){var t=localStorage.getItem('theme-preference');if(t)document.documentElement.setAttribute('data-theme',t);})()</script>
+</head>
+<body>
+<nav class="site-nav">
+  <a href="/">Home</a> &middot; <a href="/about.html">About</a>
+</nav>
+<div class="theme-toggle">
+  <button id="theme-btn" aria-label="Toggle dark mode">&#9788;</button>
+</div>
+<article>
+<section id="mind-maps-february-2025" class="level1">
+<h1>Mind Maps — February 2025</h1>
+<section id="tinygrads-centralized-gradient-2025.02.01" class="level2">
+<h2>Tinygrad’s Centralized Gradient (2025.02.01)</h2>
+<ul>
+<li>Tinygrad decomposes them so there’s only “reciprocal”, but it’s a
+slight loss of expressivity (and convenience!) wrt. “to-power-of”
+<ul>
+<li>In OCANNL it would be slightly harder to do complex gradients like
+“to-power-of” and “division”</li>
+</ul></li>
+<li>Reduces the scope of the tensor class a bit but tensors still have
+grad field — no need to centralize for that</li>
+<li>Inspiring: instead of tracking backprop at the assignments level,
+track it at the tensor expression level like in tinygrad</li>
+<li>We get rid of the diff / non-diff distinction, replace
+<code>diff : diff option</code> by mutable
+<code>diff : diff option</code>, and
+<code>type diff = { grad : t; zero_grads : asgns }</code>
+<ul>
+<li>It shouldn’t reduce flexibility since the new
+<code>grad.forward</code> would function like the old
+<code>diff.bprop</code></li>
+</ul></li>
+<li>We will still use the global session state: to update the diff field
+<ul>
+<li>i.e. there will still be an implicit set of differentiated roots;
+later, we could refactor that too</li>
+</ul></li>
+</ul>
+</section>
+<section id="polyhedral-optimization-2025.02.02-2025.02.06"
+class="level2">
+<h2>Polyhedral Optimization (2025.02.02 – 2025.02.06)</h2>
+<section id="quick-glance-at-polyhedral-optimization-2025.02.02"
+class="level3">
+<h3>Quick Glance at Polyhedral Optimization (2025.02.02)</h3>
+<ul>
+<li>Sources: PLISS 2019 Polyhedral Compilation lecture slides (includes
+a mini primer on MLIR); PolyTOPS: Reconfigurable and Flexible Polyhedral
+Scheduler</li>
+<li>Optimizing nested loops by affine transformations of loop
+variables</li>
+<li>Polyhedra are a technical detail</li>
+<li>Tiling, Loop Fusion and Fission</li>
+<li>Here dataflow perspective: T: topology with nodes-cols and
+buffers-rows; v: node firings; <span
+class="math inline"><em>T</em><em>v</em> = 0</span>: no deadlock or
+buffer overflow; <span
+class="math inline"><em>v</em><sub><em>c</em></sub> &gt; 0 ∀<em>c</em></span>:
+no starvation</li>
+<li>ISL: integer set library</li>
+<li>Schedule: map from timestamp to iteration domain (using
+lexicographic order)</li>
+<li>Construct a producer/consumer dataflow diagram, reorder for
+locality, and compactify buffers by reusing already-read cells</li>
+<li>Optimal solving is too hard, and efficient code generation from a
+solution is too hard</li>
+<li>Simpler — synchronous dataflow: + finds efficient, deadlock free
+schedules; − limited solutions: <span
+class="math inline"><em>S</em><sub><em>p</em></sub>(<em>x</em>) = <em>q</em><sub><em>p</em></sub> ⋅ <em>x</em> + <em>d</em><sub><em>p</em></sub></span>;
+− same amount of data at each node. q: rate, d: delay, p: producer, c:
+consumer
+<ul>
+<li>For example, minimize: <span
+class="math inline"><em>q</em><sub><em>p</em></sub>, <em>q</em><sub><em>c</em></sub>, <em>d</em><sub><em>p</em></sub>, <em>d</em><sub><em>c</em></sub></span>
+subject to: <span
+class="math inline"><em>q</em><sub><em>c</em></sub> ⋅ <em>x</em> + <em>d</em><sub><em>c</em></sub> ≥ <em>q</em><sub><em>p</em></sub> ⋅ <em>x</em>/2 + <em>d</em><sub><em>p</em></sub></span></li>
+</ul></li>
+</ul>
+</section>
+<section id="polyhedral-optimization-framework-2025.02.03"
+class="level3">
+<h3>Polyhedral Optimization Framework (2025.02.03)</h3>
+<ul>
+<li>Iteration domain: space of all executions of statements
+i.e. single-cell assignments</li>
+<li>Schedule = maps iteration domain to execution times preserving
+lexical order
+<ul>
+<li>Actually lines are also lexicographic: output dims, input dims</li>
+</ul></li>
+<li>Loops introduce one dimension to the iteration domain per nesting
+depth</li>
+<li>Statement sequences introduce one dimension per sequence at nesting
+depth (“unrolled loop”)
+<ul>
+<li>Called β-vectors if every other dimension is for sequencing, and
+uniquely identify share merits</li>
+</ul></li>
+<li>Reuse — temporal vs spatial locality, cache lines</li>
+<li>Valid schedule: dependencies have lexico-positive distance, schedule
+is invertible — anyway causality preserved</li>
+<li>Parallelism: benefit distance-0 dependences</li>
+<li>Code generation: invert the schedule; affine eqs. and ineqs.
+schedules invertible (Gauss Elimination, Fourier-Motzkin)</li>
+<li>Optimizing schedule: ILP using heuristic objectives (trying to
+approx. performance on idealized hardware); or discrete search with
+benchmarking JITted solutions
+<ul>
+<li>When ILP, ensure invertibility e.g. iteratively optimize over rows
+adding constraints to keep full row rank</li>
+</ul></li>
+<li>Reuse: benefit accesses not using iterators from the last schedule
+dimension</li>
+<li>Fusion (when the sequence dim difference is zero): penalty for
+fissioned statements sharing a data cell, OR penalty for fused
+statements not sharing any data cells</li>
+<li>Vectorization: penalty for iterator in the fastest-varying array
+subscript and no others</li>
+</ul>
+</section>
+<section
+id="opening-polyhedral-compilers-black-box-from-inria-2025.02.04"
+class="level3">
+<h3>“Opening Polyhedral Compiler’s Black Box” from Inria
+(2025.02.04)</h3>
+<ul>
+<li>A statement can have multiple relations if disjunctive conditions in
+control flow</li>
+<li>Change in a scheduling relation = program transformation</li>
+<li>Requirements — invertibility not necessary: all relations have the
+same iteration domain; union of relations of a statement covers the
+iteration domain and is 1-to-1; all dates are (vectors of) integers —
+implies linear independence of dimensions</li>
+<li>Decodes optimized scheduling relations into a sequence of syntactic
+loop transformations</li>
+<li>Encodes loop transformations as updates of scheduling relations</li>
+<li>Syntactic transformations:
+<ul>
+<li>Reorder — changes sequencing</li>
+<li>FuseNext — fuses a loop with its successor</li>
+<li>Distribute — splits a loop in two</li>
+<li>Interchange — swaps loops at given 2 depths in the given
+nesting</li>
+<li>Shift — moves given statements by given amount in the given
+loop</li>
+<li>Skew — scales the given <strong>output</strong> loop’s iterator by
+given factor</li>
+<li>Reshape — scales the given <strong>input</strong> loop’s iterator by
+given factor</li>
+<li>Reverse — reverses the iteration order for the given loop(s)</li>
+<li>IndexSetSplit — partitions a scheduling relation into two disjoint
+ones, e.g. duplicates a loop with one up to midpoint, the next from
+midpoint</li>
+<li>Collapse — reverse of IndexSetSplit</li>
+<li>Grain / Densify — change how long it takes between two executions of
+the given statements along the given loop</li>
+<li>StripMine — decomposes the given loop into 2 nested loops, with one
+exec of the inner loop iterating for at most the given steps. +
+Interchange = Tiling</li>
+<li>Linearize — reverse of StripMine</li>
+<li>Unroll/Parallelize — not a real transformation, marks the given
+output dimension for unrolling or vectorizing</li>
+</ul></li>
+<li>Transforms not needed for decoding: Interchange, Collapse,
+Linearize, Parallelize</li>
+<li>Grain + Reshape = Rotation: aligns a dependence along a loop</li>
+<li>“High performance compilers for parallel computing” M. Wolfe
+1996</li>
+</ul>
+</section>
+<section
+id="another-glance-at-mlir-multi-level-intermediate-representation-2025.02.05"
+class="level3">
+<h3>Another Glance at MLIR: Multi-Level Intermediate Representation
+(2025.02.05)</h3>
+<ul>
+<li>Typed Static Single Assignment, functional: instead of Phi
+functions, blocks take arguments</li>
+<li>Many improvements over LLVM</li>
+<li>Declarative general programming language with namespaces, pattern
+matching, rewrite rules
+<ul>
+<li>Combined with C++ code (tricky rewrite rules, passes, trait
+implementations etc.)</li>
+<li>E.g. can define syntax of operations from within op. def.</li>
+</ul></li>
+<li><em>Dialects</em> are centrally or externally maintained extensions
+— 48 dialects in the repository
+<ul>
+<li>Lowering sequence (all within MLIR): TensorFlow repr. → XLA HLO →
+Polyhedral/Affine → LLVM IR</li>
+<li>nvgpu dialect — PTX specific operations</li>
+<li>amdgpu dialect</li>
+<li>llvm dialect</li>
+<li>Affine dialect — “Polyhedral” / for-loop lang with first-class loop
+ranges</li>
+<li>Linalg dialect — high-level hierarchical optimization for linalg
+ops, especially convolutions; Structured Abstraction</li>
+<li>GPU dialect — launching kernels</li>
+<li>shape dialect — shape inference</li>
+<li>tensor type dialect</li>
+<li>memref type dialect — views on arrays</li>
+<li>Transformation</li>
+</ul></li>
+<li>Altogether 238 passes, e.g.: linalg-fuse-elementwise-ops,
+gpu-map-parallel-loops, affine-loop-tile, convert-gpu-to-nvvm,
+convert-amdgpu-to-rocdl, convert-affine-for-to-gpu,
+buffer-loop-hoisting, ownership-based-buffer-deallocation,
+loop-invariant-code-motion</li>
+<li>High-level support for H100: <code>nvgpu.mbarrier</code> ops
+(Arrive/Wait Barriers), <code>nvgpu.tma</code> ops (Tensor Memory
+Accelerator), <code>nvgpu.warpgroup</code> MMA ops</li>
+<li>Lowering sequence: nvgpu → nvvm → llvm → PTX</li>
+</ul>
+</section>
+<section
+id="polytops-reconfigurable-and-flexible-polyhedral-scheduler-2025.02.06"
+class="level3">
+<h3>PolyTOPS: Reconfigurable and Flexible Polyhedral Scheduler
+(2025.02.06)</h3>
+<ul>
+<li>Very clean formal setup of polyhedral optimization, nice scheduler
+algo</li>
+<li>(Symbolic) iterators: <span class="math inline">$\vec{it}$</span>;
+(symbolic) constants: <span class="math inline"><em>N⃗</em></span></li>
+<li>Dependency S→R: statement S needs to execute before R to preserve
+semantics</li>
+<li>Iteration domain: <span class="math inline">$D_S = \{ \vec{it} \mid
+M_S \cdot (\vec{it} / \vec{N}) \geq 0 \}$</span></li>
+<li>Dependency legality: <span class="math inline">$\delta_{S \to R} =
+\{ (\vec{it}_S / \vec{it}_R) \mid M_{S \to R} \cdot (\vec{it}_S /
+\vec{it}_R / \vec{N}) \geq 0 \}$</span></li>
+<li>Scheduling function: <span class="math inline">$\Theta_S : \vec{it}
+\mapsto (\phi_{S,0}(\vec{it}), \ldots, \phi_{S,m-1}(\vec{it}))$</span>;
+<span class="math inline">$\phi_{S,i}(\vec{it}) = \lfloor S_i \cdot
+(\vec{it} / \vec{N}) \rfloor$</span> (vector)</li>
+<li>PolyTOPS builds ILPs one scheduling dimension at a time, from
+outermost
+<ul>
+<li><span class="math inline">$(\vec{it}, \vec{it}') \in \delta_{S \to
+R} \Rightarrow \phi_{R,i}(\vec{it}') \geq
+\phi_{S,i}(\vec{it})$</span></li>
+<li>More efficient but doesn’t encode global cost functions</li>
+</ul></li>
+<li>Supports user-defined constraints, cost functions</li>
+<li>Tiling, skewing and intra-tile optims are not done by ILP →
+postprocessing at each step</li>
+<li>Predefined cost funcs:
+<ul>
+<li>proximity — temporal locality</li>
+<li>contiguity — spatial locality</li>
+<li>feautrier — find sequential outer dimensions that carry the most
+dependencies — enables inner loop parallelism / vectorization</li>
+<li>AutoVectorization — which loops should be innermost and unfused,
+based on mem stride and accesses</li>
+<li>bigLoopsFirst — loops with largest domains outermost</li>
+<li>directives — specify that a loop should be parallel / vectorized /
+sequential, if possible</li>
+</ul></li>
+</ul>
+</section>
+</section>
+<section id="second-glance-at-caten-2025.02.07" class="level2">
+<h2>Second Glance at Caten (2025.02.07)</h2>
+<ul>
+<li>https://github.com/hikettei/Caten</li>
+<li>C, Lisp, JS/WebGPU runtimes</li>
+<li>Has frontend but can also load ONNX graphs</li>
+<li>Renamed shape-inference to type-relay, handles shape, stride, iter
+spaces (i.e. OCANNL’s projections)</li>
+<li>Caten Compiler End-to-end pipeline:
+<ul>
+<li><strong>Frontend</strong>: High Level APIs (caten/api) → Decomposing
+→ Primitive Ops Graph (caten/aasm)</li>
+<li><strong>Scheduling</strong>: Schedule Graph (caten/codegen) →
+Extracting SCoP → Polyhedral IR (codegen/polyhedral)</li>
+<li><strong>Backend</strong> (Configuration via caten/byoc):
+Optimization Strategy → Generate Sketch → BEAM Search / Profiling →
+Abstract Runtime</li>
+<li>Hardware Specific Optimized Code → Optimized Abstract IR
+(codegen/blueprint) → Rendering → Optimized Kernel Code</li>
+</ul></li>
+<li>Compiler Workflow: Schedule Item → Extract SCoP → Polyhedral IR →
+Solving ILP (Maximize band depth) → Tile all bands → Packing
+(Microkernel applied) → Parallelize (Outermost band parallelized) →
+Sketch</li>
+<li>Configuration (BYOC):
+<ul>
+<li>Microkernel Rules: <code>&lt;TensorCore (8 8 8) ...&gt;</code>,
+<code>&lt;Vectorize (8) ...&gt;</code>,
+<code>&lt;Upcast (8) ...&gt;</code></li>
+<li>Parallelism Rules: <code>N_GLOBAL_DIMS=3</code>,
+<code>MAX_THREAD_SIZE=...</code></li>
+</ul></li>
+<li>Mapping each band to parallelism — see
+https://github.com/hikettei/Caten/pull/422</li>
+</ul>
+</section>
+<section id="integer-set-library-2025.02.10" class="level2">
+<h2>Integer Set Library (2025.02.10)</h2>
+<ul>
+<li>For loop optimization</li>
+<li>Written in C, easy to bind deeply — distributed with a Python
+interface</li>
+<li>Well documented: a manual, and a tutorial on polyhedral
+compilation</li>
+<li>Continuously since mid-2008; actively developed, by Sven
+Verdoolaege, until release of 0.27 early September 2024</li>
+<li>Outdated bindings for OCaml, half-auto-generated — and generation
+from Haskell to OCaml :-)
+<ul>
+<li>I might rewrite the bindings incompatibly from CamelCase to
+Snake_case</li>
+</ul></li>
+<li>Could be interacted with via binaries (tools) but currently I prefer
+to integrate more tightly</li>
+<li>Three distributions / library options:
+<ul>
+<li><strong>isl</strong>: the core polyhedral manipulation and solution
+/ optimization</li>
+<li><strong>barvinok</strong>: dynamically-typed domain-specific
+programming language; tool <strong>iscc</strong></li>
+<li><strong>pet</strong>: extracting (parts of) a polyhedral model from
+C code</li>
+</ul></li>
+<li>Integrate auto-tuning</li>
+<li>Try to figure out integrating inlining and memory mode decisions, so
+we get rid of code interpretation on the “pure” OCANNL side</li>
+</ul>
+</section>
+<section id="tiramisu-polyhedral-compiler-2025.02.11" class="level2">
+<h2>Tiramisu Polyhedral Compiler (2025.02.11)</h2>
+<ul>
+<li>Written in C++; actively developed May 2016–Feb 2023</li>
+<li>4 layer IR: algorithm, computation, data, communication
+<ul>
+<li>1: instructions and producer-consumer dependences</li>
+<li>2: computation order; iteration space transforms (e.g. tiling);
+architecture (GPU, distributed)</li>
+<li>3: mem layout; buffer alloc and free</li>
+<li>4: sync and comms, within and between architectures</li>
+</ul></li>
+<li>Handles sparsity</li>
+<li>Integrated with ISL to for example express ASTs for CUDA; Halide IR
+is used for CPU ASTs</li>
+<li>Handles recurrent NNs and cyclic dataflows — via skewing</li>
+<li>Optimizes distributed code</li>
+<li>“A Deep Learning Based Cost Model for Automatic Code Optimization” —
+cost model architecture:
+<ul>
+<li>Computation Embedding Layer: feedforward NN on computation vectors
+(per statement A, B, C, D, E)</li>
+<li>Recursive Loop Embedding Layer: LSTM over child loop embeddings and
+child computation embeddings → new loop embedding</li>
+<li>Regression Layer: feedforward NN → predicted speedup</li>
+<li>Computation vectors composed of loop nestings including loop
+transformations, and memory accesses, but padded to 1235 dims for
+feedforward NN embedding</li>
+</ul></li>
+</ul>
+</section>
+<section id="autotuning-program-search-2025.02.12-2025.02.16"
+class="level2">
+<h2>Autotuning / Program Search (2025.02.12 – 2025.02.16)</h2>
+<section
+id="halide-program-search-learning-to-optimize-halide-with-tree-search-and-random-programs-2025.02.1214"
+class="level3">
+<h3>Halide Program Search — Learning to Optimize Halide with Tree Search
+and Random Programs (2025.02.12–14)</h3>
+<ul>
+<li>Autotuning / program search: here Halide (2019), next time Tiramisu
+(2021)</li>
+<li>Iterates through network layers from output</li>
+<li>Compute and storage granularity: how many loops to fuse, memory
+reuse: fusing all loops = inlining</li>
+<li>Add extra tiling to previous layer if it enables more choices</li>
+<li>Steps: (1) add inner tilings (opt. vectorized / SIMD), (2) outer
+tilings (opt. parallel threads); total 2<em>n</em> steps for <em>n</em>
+layers
+<ul>
+<li>Choosing each tile size</li>
+</ul></li>
+<li>Beam search: top-k for each step</li>
+<li>Cost model trained on full pipelines; implicitly assume unscheduled
+layers are inputs; when interdependent, assume max locality and dense
+vector loads (optimistic)</li>
+<li>Pruning: limit search space, e.g. loops compute→storage should be
+single-dimensional (best results for line-buffer)</li>
+<li>Coarse-to-fine: diversify the beam by prioritizing one
+representative of a loop nest class; next pass: only optimize within
+winning loop nest classes, with finer subclasses</li>
+<li>Heuristic instead of search: loop unrolling, no nest reordering
+except vector dims pushed inside, memory space selection</li>
+<li>Cost model and runtime to be continued</li>
+<li>See figure from yesterday (Tiramisu cost model)</li>
+<li>Algo and schedule features, computed statically:
+<ul>
+<li>Histograms of operations to compute a single point</li>
+<li>Jacobians of input/prev-stage accesses wrt. loop dimensions
+(non-constant ignored assuming worst case)</li>
+<li>Count of evaluations of a region, of allocations of storage for
+their result, of accesses of this storage: both in bytes and in
+contiguous segments</li>
+<li>Number of parallel tasks launched</li>
+<li>Number of whole SIMD vectors computed, and of the corresponding
+scalar values</li>
+<li>Number of dense vectors and scalars loaded per vector computed
+(amortized over sharing by unrolled loops)</li>
+</ul></li>
+<li>Region shapes via symbolic interval arithmetic</li>
+<li>A small cost network: <em>features</em> → <em>coefficients</em> for
+simple manual heuristics, also built out of the features</li>
+<li>Beam search with “dropout”: expand k-th best w/prob p^k</li>
+<li>Pretrained on random algos / networks</li>
+<li>Autotune: benchmark end-of-beam candidates; finetune: update model
+while beam-searching</li>
+</ul>
+</section>
+<section id="tiramisu-program-search-2025.02.16" class="level3">
+<h3>Tiramisu Program Search (2025.02.16)</h3>
+<ul>
+<li>Searches for a sequence of transformations: fusion, tiling,
+interchanges, unrolling</li>
+<li>Heuristic / not optimized: parallelization, vectorization</li>
+<li>Recursive NN over a loop embedding: combines outputs of LSTMs
+<ul>
+<li>Loop children: LSTM over loop transformations</li>
+<li>Statement children: LSTM over computation vectors</li>
+</ul></li>
+<li>Use of two LSTMs loses ordering info between nested loops and
+statements</li>
+<li>Computation vectors composed of loop nestings including loop
+transformations, and memory accesses, but padded to 1235 dims for
+feedforward NN embedding</li>
+</ul>
+</section>
+</section>
+<section id="matrix-multiplication-2025.02.16-2025.02.21"
+class="level2">
+<h2>Matrix Multiplication (2025.02.16 – 2025.02.21)</h2>
+<section id="matrix-multiplication-on-multicore-cpu-2025.02.16"
+class="level3">
+<h3>Matrix Multiplication on Multicore CPU (2025.02.16)</h3>
+<ul>
+<li>Source: siboehm.com</li>
+<li>SGEM = single-precision general matrix multiply: a*A*B + b*C</li>
+<li>The machine FMA is accumulating! c := a*b + c; FMA = fused multiply
+add = MAC = multiply accumulate</li>
+<li>Uses vectorized FMA instructions</li>
+<li>Intel’s MKL has dedicated SGEMM functions / kernels for each
+microarchitecture</li>
+<li>CPUs are compute bound even for small matrices</li>
+<li><code>-march=native</code> specializes C compiler’s output to
+microarchitecture it compiled on</li>
+<li>Big gain from loop reordering: non-contiguous iterator should never
+be innermost — much better than assigning to a register in innermost
+loop</li>
+<li>Tiling on multiple dimensions
+<ul>
+<li>Tiling the reduce loop (middle) with outermost replication</li>
+<li>Idea: tile width so that a single tile of the reduce loop fits in
+cache; in practice the best size is bigger</li>
+<li>It’s two elementary loop transforms: strip-mine and reorder</li>
+</ul></li>
+<li>Multithreading strategy: tile rows of A and columns of B so that
+there’s no need to communicate except to gather the results</li>
+</ul>
+</section>
+<section
+id="matrix-multiplication-in-cuda-without-tensor-cores-2025.02.1718"
+class="level3">
+<h3>Matrix Multiplication in CUDA without Tensor Cores
+(2025.02.17–18)</h3>
+<ul>
+<li>Source: siboehm.com</li>
+<li>We implement FMA / MAC: C := alpha A @ B + beta C</li>
+<li>cuBLAS at FP32 doesn’t use tensor cores, only at TF32 and BF16</li>
+<li>Should be compute bound if well designed</li>
+<li>Kernel 1: each cell of C a separate thread doing reduction, thread
+ids end up increasing along columns of C; 1.3% eff.
+<ul>
+<li>No change in assembly, access coalescing at runtime, requires
+aligned access; compiler does partial inner loop unrolling</li>
+</ul></li>
+<li>Kernel 2: ensure thread ids increase along rows of C; 8.5% eff.</li>
+<li>Kernel 3: threads first populate shared mem, then sync, then reduce
+the shared mem block; 12.8% eff.
+<ul>
+<li>It’s a strip-mining of the reduce loop, but tricky as pure loop
+transforms — kinda also strip-mining of A and B’s non-shared axis (into
+block-parallel and thread-parallel) and promoting tiles to shared
+mem</li>
+</ul></li>
+<li>Kernel 4: kernel 3’s thread-parallel A loop strip-mined to new
+innermost non-parallel loop, smaller tiling of reduce loop than kernel 3
+to lower smem; 36.5% eff.
+<ul>
+<li><code>__syncthreads</code> separates two implicit thread-parallel
+loops, but logically the thread-parallel iterators are different (the
+first loop’s iter for A becomes the innermost non-parallel loop for
+A)</li>
+</ul></li>
+<li>Kernel 5: also strip-mine kernel 4’s thread-parallel B loop to new
+innermost non-parallel loop; now too few threads wrt. tile size: smem
+copy loops; 68.7% eff.
+<ul>
+<li>Combats shared mem access bottleneck; why does the strip-mining
+halve threads per threadblock?</li>
+</ul></li>
+<li>Kernel 6: transpose a tile of A while copying to shared mem;
+vectorize copying via <code>reinterpret_cast&lt;float4 *&gt;</code>;
+78.4% eff.</li>
+<li>Kernels 7 and 8: shared-mem bank conflicts</li>
+<li>Kernel 9: autotuning: how much data cached — from global to shared
+mem, from shared mem to register file i.e. local mem</li>
+<li>Kernel 10: warptiling: GPU → GMEM-to-SMEM → SM; SMEM-to-RegisterFile
+→ Warp; RegisterFile-to-core → Thread
+<ul>
+<li>Each level of tiling is: strip-mining, reordering, preparatory loops
+for mem level transfer (sometimes with transpose)</li>
+</ul></li>
+<li>Kernels 11 and 12: double buffering</li>
+<li>Smem bank conflicts and double buffering continued after Sep. V
+notes on AMD GPUs</li>
+<li>Levels of parallelism: blocktiling (different Streaming
+Microprocessors, syncing and shared mem within tile), warptiling
+(different warp schedulers, mem bank benefits, warp-level ops
+e.g. tensor cores), threadtiling (Instruction Level Parallelism)</li>
+<li>CUDA compiler can do the ILP vectorization</li>
+</ul>
+</section>
+<section id="matrix-multiplication-on-amd-rdna3-gpus-2025.02.19"
+class="level3">
+<h3>Matrix Multiplication on AMD RDNA3 GPUs (2025.02.19)</h3>
+<ul>
+<li>Source: seb-v.github.io</li>
+<li>Nomenclature: Compute Unit = Streaming Multiprocessor; Stream
+Processor = CUDA Core; wavefront (32 or 64) = warp (32 threads);
+workgroup = block; Local Data Storage = Shared MEMory</li>
+<li>The programming model is almost the same, uses the same keywords
+e.g. <code>__shared__</code></li>
+<li>Like before, we do C := a*A*B + b*C in FP32 prec.; 32*4 (b/c FP32) =
+128 bytes mem transaction</li>
+<li>Kernel 1 is identical to CUDA; 3.3% eff.</li>
+<li>Kernel 2: LDS tiling; square As, Bs 32x32 of A / B, strip-mines
+reduce dim and reorders, loads the tiles As, Bs w/ transpose into LDS
+along rows of A, B; 13.1% eff.</li>
+<li>Kernel 3: register tiling adds 2 (3) more tiling levels:
+1-per-thread increases arithmetic complexity and 2x2-per-wave enables
+vectorized mem transfers; loads a col,row of LDS tile to registers to
+reduce, strip-mines both tile dims
+<ul>
+<li>This is kinda swizzled layout</li>
+<li>The wave tile is composed of 2x2 subtiles sized 8x4 that each fit in
+a wavefront (8*4=32) (why?) doesn’t prevent mem bank conflicts b/c
+accessed contiguously?</li>
+<li>Also unlocks <code>v_dual_fmac_f32</code>: parallel vector
+multiply-accumulate operations</li>
+</ul></li>
+<li>Kernel 7 from siboehm.com prevents bank conflicts by dispersing
+consecutive Bs, so on reading to regs they’re from the same bank
+<ul>
+<li>I don’t see how kernel 8 from siboehm.com prevents bank
+conflicts?</li>
+</ul></li>
+</ul>
+</section>
+<section
+id="matrix-multiplication-on-amd-gpus-double-buffering-and-bank-conflicts-2025.02.20"
+class="level3">
+<h3>Matrix Multiplication on AMD GPUs: Double Buffering and Bank
+Conflicts (2025.02.20)</h3>
+<ul>
+<li>Source: seb-v.github.io</li>
+<li>Needs <code>__launch_bounds__</code>, otherwise compiler uses
+scratch mem instead of registers</li>
+<li>Kernel 4: double buffering; load the next block’s GMEM data into
+registers at the beginning of a step; sync at end of step and write to
+SMEM; also adds unroll pragmas; 83.7% eff.
+<ul>
+<li>While some threads queue for loading from GMEM, others continue
+computing</li>
+</ul></li>
+<li>Kernel 5: bank conflicts → adds padding to As rows (smem tile of A)
+so that accesses are staggered: original BM%32=0, new (BM+4)%32=4 no
+same-thread same-bank conflicts; arithmetic intensity → 2x wider wave
+tile; adds <code>-cumode</code> (each SIMD32 sticks to its own LDS);
+109.8% eff.
+<ul>
+<li>Theoretically close to 200% eff. might be possible because for
+unknown reason rocBLAS is not using dual_fmac: 2x multiply-accumulate
+ops.</li>
+</ul></li>
+</ul>
+</section>
+<section
+id="matrix-multiplication-on-amd-gpus-from-hip-to-isa-2025.02.21"
+class="level3">
+<h3>Matrix Multiplication on AMD GPUs: from HIP to ISA (2025.02.21)</h3>
+<ul>
+<li>Source: seb-v.github.io</li>
+<li>Nomenclature: HIP = CUDA; ISA = SASS (assembly); AMDIL / ROCm llvm
+IR = PTX</li>
+<li>Kernel 6: optimize vector arithmetics using
+<code>v_dual_fmac_f32</code>: maximize number of vec registers read per
+instruction; maximize use of cache; maintain a consistent symmetric
+access pattern; don’t worry about contiguous use of registers: reorder
+before writing to LDS
+<ul>
+<li>Kernel 6 details: ensure C_regs contiguous, assign A_col and B_row
+to non-overlapping banks (0-1 and 2-3), update LDS loads and inner loop
+v_dual_fmac accordingly, permute registers as needed by code writing to
+global memory; 123.7% eff.</li>
+</ul></li>
+<li>Kernel 7: loop unrolling; didn’t work with the HIP implementation
+b/c the compiler prefetched more values from the LDS; now just duplicate
+ISA loop body with address increments, remove branch instructions;
+135.1% eff.</li>
+<li>Kernel 8: batched GMEM loads; precompute global load offsets into
+scalar registers (saving on vec registers); in the loop, update A,B
+index vec registers, <code>global_load_b32</code> output-reg, index-reg,
+offset-reg format; spread the loads across the unrolled inner loop;
+160.6% eff.</li>
+<li>Remaining possible optimization: double buffering for LDS</li>
+<li>This approach is not scalable but gives insight into optimal
+execution on RDNA3</li>
+</ul>
+</section>
+</section>
+<section id="the-fineweb-recipe-2025.02.22" class="level2">
+<h2>The FineWeb Recipe (2025.02.22)</h2>
+<ul>
+<li>OpenAI, Anthropic etc. use their own web crawlers and data</li>
+<li>Common Crawl is a non-profit org extracting data for researchers;
+currently over 250 billion pages; new crawls w/ 200-400TiB text every
+1-2 months
+<ul>
+<li>CommonCrawl text extraction (WET) is poor quality; but text
+extraction is costly → redone</li>
+</ul></li>
+<li>FineWeb is derived from 96 CommonCrawl snapshots; has 15 trillion
+tokens; 44TB</li>
+<li>FineWeb-Edu: 1.3 trillion and 5.4 trillion tokens (very) high
+quality
+<ul>
+<li>Filtered by “educational content” classifier distilled from
+Llama-3-70B-instruct prompted to focus on grade/middle-school</li>
+</ul></li>
+<li>Data quality: train small models and evaluate on early-signal
+benchmarks
+<ul>
+<li>CommonSense QA, HellaSwag, OpenBook QA, PIQA, SIQA, WinoGrande, ARC,
+MMLU</li>
+</ul></li>
+<li>Base filtering: URL blocklists; English only (fastText classifier);
+repetition filter (many repeated lines); filters from MassiveText (used
+to train Gopher); 36T tokens</li>
+<li>MassiveText filters: docs between 50 and 100K words, mean word
+length from 3 to 10 chars, hash|ellipsis-to-word ratio &lt; 0.1; less
+than 90% lines bullet points; less than 30% lines end with ellipsis; 80%
+words contain alphabetic char; contains at least 2 of: <em>the, be, to,
+of, and, that, have, with</em></li>
+<li>Filters from C4 dataset: no “lorem ipsum” and no curly brackets</li>
+<li>C4 dataset inspired filters: docs with fraction of lines ending with
+punctuation &gt; 0.12; docs with fraction of chars in duplicated lines
+&gt; 0.1; docs with fraction of lines shorter than 30 chars &lt;
+0.67</li>
+<li>Deduplicating: MinHash based: 5-grams, 112 hash functions, 14
+buckets; 0.85 similarity → 98.8% discard
+<ul>
+<li>Within-snapshot only; cross-snapshot-repeated data has higher
+quality, global dedup upsamples bad quality</li>
+</ul></li>
+</ul>
+</section>
+</section>
+</article>
+<script src="/assets/theme-toggle.js"></script>
+</body>
+</html>
