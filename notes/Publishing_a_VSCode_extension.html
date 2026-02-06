@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>Notes on publishing a VS Code extension from Windows</title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <link rel="stylesheet" href="/assets/tufte.css">
+  <link rel="stylesheet" href="/assets/pandoc-tufte.css">
+  <link rel="stylesheet" href="/assets/site.css">
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+  <script>(function(){var t=localStorage.getItem('theme-preference');if(t)document.documentElement.setAttribute('data-theme',t);})()</script>
+</head>
+<body>
+<nav class="site-nav">
+  <a href="/">Home</a> &middot; <a href="/about.html">About</a>
+</nav>
+<div class="theme-toggle">
+  <button id="theme-btn" aria-label="Toggle dark mode">&#9788;</button>
+</div>
+<article>
+<section id="notes-on-publishing-a-vs-code-extension-from-windows"
+class="level1">
+<h1>Notes on publishing a VS Code extension from Windows</h1>
+<p>Super easy, barely an inconvenience.</p>
+<p>Install <a href="https://nodejs.org/en">node.js</a>. This might also
+install Chocolatey, Visual Studio C++, Python.</p>
+<p>Then:</p>
+<pre class="terminal"><code>&gt; npm install -g @vscode/vsce
+&gt; vsce package</code></pre>
+<p>This creates a package that can be added to the GitHub release
+assets. Create an alternative package without the animations by
+temporarily adding a line to <code>.vscodeignore</code>,
+e.g. <code>animations/*.gif</code>, and re-running
+<code>vsce package</code>.</p>
+<p>Next we need an up-to-date personal access token for Microsoft. Go to
+<code>https://dev.azure.com/YOUR_USERNAME</code>. Click on the
+person-gears in the upper right corner, then <em>Personal access
+tokens</em>, then <em>New Token</em>. In <em>Scopes</em>, click on
+<em>Show more scopes</em>, scroll to <em>Marketplace</em>, select
+<em>Manage</em>. Click <em>Create</em>.</p>
+<p>Now:</p>
+<pre class="terminal"><code>&gt; vsce publish</code></pre>
+</section>
+</article>
+<script src="/assets/theme-toggle.js"></script>
+</body>
+</html>

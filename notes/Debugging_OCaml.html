@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>Debugging and Profiling OCaml -- lessons (re)learned</title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <link rel="stylesheet" href="/assets/tufte.css">
+  <link rel="stylesheet" href="/assets/pandoc-tufte.css">
+  <link rel="stylesheet" href="/assets/site.css">
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+  <script>(function(){var t=localStorage.getItem('theme-preference');if(t)document.documentElement.setAttribute('data-theme',t);})()</script>
+</head>
+<body>
+<nav class="site-nav">
+  <a href="/">Home</a> &middot; <a href="/about.html">About</a>
+</nav>
+<div class="theme-toggle">
+  <button id="theme-btn" aria-label="Toggle dark mode">&#9788;</button>
+</div>
+<article>
+<section id="debugging-and-profiling-ocaml-lessons-relearned"
+class="level1">
+<h1>Debugging and Profiling OCaml – lessons (re)learned</h1>
+<section id="links" class="level2">
+<h2>Links</h2>
+<ul>
+<li><a href="https://ocaml.org/docs/debugging">OCaml.org tutorial on
+debugging</a></li>
+<li><a
+href="https://github.com/lukstafi/ppx_minidebug">ppx_minidebug</a>, a
+debugging and logging framework.</li>
+<li><a
+href="https://dev.realworldocaml.org/compiler-backend.html"><em>Debugging
+Native Code Binaries</em> in <strong>Real World OCaml</strong></a></li>
+<li><a href="https://kcsrk.info/ocaml/gdb/2024/01/20/gdb-ocaml/">KC
+Sivaramakrishnan’s <em>Getting Started with GDB on OCaml</em></a>
+<ul>
+<li><a
+href="https://kcsrk.info/ocaml/multicore/rr/2019/04/28/0000-rr-debugging/">Deterministically
+debugging concurrent GC bugs with rr</a></li>
+<li><a href="https://www.youtube.com/watch?v=PorfLSr3DDI">15 minutes
+tutorial of GDB</a></li>
+</ul></li>
+<li><a
+href="https://tech.ahrefs.com/profiling-dune-builds-a8de589ec268">Javier
+Chávarri’s <em>Profiling Dune Builds</em></a> – a brief coverage of
+<code>perf</code> and <code>memtrace</code></li>
+<li><a
+href="https://discuss.ocaml.org/t/profiling-ocaml-programs/14033/4">vg-b’s
+workaround for some <code>perf</code> problems</a> (the need for
+<code>ocaml-option-fp</code>)</li>
+<li><a href="https://tsong.co/blog/profiling-ocaml-quick-dirty/">Tianyi
+Song’s <em>Profiling OCaml programs the quick and dirty way</em></a>
+about using <a href="https://github.com/LexiFi/landmarks">Landmarks</a>.
+Has precise timing (CPU cycles), both manual and automatic annotation
+(PPX based), callgraph visualization.</li>
+<li><a
+href="https://lambdafoo.com/posts/2024-03-25-ocaml-debugging-with-emacs.html">Debugging
+OCaml with Emacs</a> – setting up bytecode and native debugging.</li>
+<li><a
+href="https://discuss.ocaml.org/t/bytecode-debugging-in-ocaml-5-3/16177">Bytecode
+debugging in OCaml 5.3</a></li>
+<li><a
+href="https://discuss.ocaml.org/t/bytecode-debugging-in-ocaml-5-3/16177/2">Vincent
+Laviron</a> brings up <a href="https://rr-project.org/">rr as an
+alternative to gdb</a>. It’s Linux only, it combines native debugging
+like GDB with tracing.</li>
+<li><a
+href="https://discuss.ocaml.org/t/ann-a-tool-to-reverse-debug-ocaml-other-binary-runs/16366">A
+tool to reverse debug OCaml/other binary runs</a> – <a
+href="https://github.com/sidkshatriya/me/blob/master/008-rr-everywhere.md">Bringing
+Record and Replay everywhere</a> by Sid Kshatriya</li>
+</ul>
+</section>
+<section id="dont-forget" class="level2">
+<h2>Don’t forget</h2>
+<ul>
+<li>Use Valgrind to debug memory corruption.
+<ul>
+<li>Symptoms: random crashes in garbage collection, in
+<code>ctypes</code> code, in system libraries etc.</li>
+<li>Example invocation:
+<code>valgrind --leak-check=full --leak-resolution=high --show-leak-kinds=all --errors-for-leak-kinds=none _build/default/bin/example.exe</code></li>
+</ul></li>
+<li>Use GDB when the program hangs to quickly see the stack trace.</li>
+<li>If you use <code>landmarks</code> to compare performances of parts
+within a program run: it seems that the optional wallclock timer is not
+reset properly between restarts.</li>
+</ul>
+</section>
+</section>
+</article>
+<script src="/assets/theme-toggle.js"></script>
+</body>
+</html>

@@ -1,213 +1,31 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<html>
 <head>
-  <meta charset="utf-8" />
-  <meta name="generator" content="pandoc" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
   <title>JCAQP Undecidability Analysis - Claude</title>
-  <style>
-    html {
-      color: #1a1a1a;
-      background-color: #fdfdfd;
-    }
-    body {
-      margin: 0 auto;
-      max-width: 36em;
-      padding-left: 50px;
-      padding-right: 50px;
-      padding-top: 50px;
-      padding-bottom: 50px;
-      hyphens: auto;
-      overflow-wrap: break-word;
-      text-rendering: optimizeLegibility;
-      font-kerning: normal;
-    }
-    @media (max-width: 600px) {
-      body {
-        font-size: 0.9em;
-        padding: 12px;
-      }
-      h1 {
-        font-size: 1.8em;
-      }
-    }
-    @media print {
-      html {
-        background-color: white;
-      }
-      body {
-        background-color: transparent;
-        color: black;
-        font-size: 12pt;
-      }
-      p, h2, h3 {
-        orphans: 3;
-        widows: 3;
-      }
-      h2, h3, h4 {
-        page-break-after: avoid;
-      }
-    }
-    p {
-      margin: 1em 0;
-    }
-    a {
-      color: #1a1a1a;
-    }
-    a:visited {
-      color: #1a1a1a;
-    }
-    img {
-      max-width: 100%;
-    }
-    svg {
-      height: auto;
-      max-width: 100%;
-    }
-    h1, h2, h3, h4, h5, h6 {
-      margin-top: 1.4em;
-    }
-    h5, h6 {
-      font-size: 1em;
-      font-style: italic;
-    }
-    h6 {
-      font-weight: normal;
-    }
-    ol, ul {
-      padding-left: 1.7em;
-      margin-top: 1em;
-    }
-    li > ol, li > ul {
-      margin-top: 0;
-    }
-    blockquote {
-      margin: 1em 0 1em 1.7em;
-      padding-left: 1em;
-      border-left: 2px solid #e6e6e6;
-      color: #606060;
-    }
-    code {
-      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
-      font-size: 85%;
-      margin: 0;
-      hyphens: manual;
-    }
-    pre {
-      margin: 1em 0;
-      overflow: auto;
-    }
-    pre code {
-      padding: 0;
-      overflow: visible;
-      overflow-wrap: normal;
-    }
-    .sourceCode {
-     background-color: transparent;
-     overflow: visible;
-    }
-    hr {
-      border: none;
-      border-top: 1px solid #1a1a1a;
-      height: 1px;
-      margin: 1em 0;
-    }
-    table {
-      margin: 1em 0;
-      border-collapse: collapse;
-      width: 100%;
-      overflow-x: auto;
-      display: block;
-      font-variant-numeric: lining-nums tabular-nums;
-    }
-    table caption {
-      margin-bottom: 0.75em;
-    }
-    tbody {
-      margin-top: 0.5em;
-      border-top: 1px solid #1a1a1a;
-      border-bottom: 1px solid #1a1a1a;
-    }
-    th {
-      border-top: 1px solid #1a1a1a;
-      padding: 0.25em 0.5em 0.25em 0.5em;
-    }
-    td {
-      padding: 0.125em 0.5em 0.25em 0.5em;
-    }
-    header {
-      margin-bottom: 4em;
-      text-align: center;
-    }
-    #TOC li {
-      list-style: none;
-    }
-    #TOC ul {
-      padding-left: 1.3em;
-    }
-    #TOC > ul {
-      padding-left: 0;
-    }
-    #TOC a:not(:hover) {
-      text-decoration: none;
-    }
-    code{white-space: pre-wrap;}
-    span.smallcaps{font-variant: small-caps;}
-    div.columns{display: flex; gap: min(4vw, 1.5em);}
-    div.column{flex: auto; overflow-x: auto;}
-    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
-    /* The extra [class] is a hack that increases specificity enough to
-       override a similar rule in reveal.js */
-    ul.task-list[class]{list-style: none;}
-    ul.task-list li input[type="checkbox"] {
-      font-size: inherit;
-      width: 0.8em;
-      margin: 0 0.8em 0.2em -1.6em;
-      vertical-align: middle;
-    }
-  </style>
+  <style type="text/css">code{white-space: pre;}</style>
+  <link rel="stylesheet" href="/assets/tufte.css">
+  <link rel="stylesheet" href="/assets/pandoc-tufte.css">
+  <link rel="stylesheet" href="/assets/site.css">
   <script
   src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
   type="text/javascript"></script>
-<style id="jca-css">
-:root { color-scheme: light; }
-body {
-  margin: 0;
-  padding: 2.5rem 1.25rem;
-  background: #fff;
-  color: #111;
-  font: 16px/1.55 system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
-}
-
-/* Pandoc HTML doesn't wrap content in <main>; constrain all top-level blocks. */
-body > * {
-  max-width: 980px;
-  margin-left: auto;
-  margin-right: auto;
-}
-
-#TOC {
-  margin: 1.25rem auto 2rem auto;
-  padding: 1rem 1rem;
-  border: 1px solid #eee;
-  border-radius: 10px;
-  background: #fafafa;
-}
-
-#TOC ul { padding-left: 1.25rem; }
-pre, code { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; font-size: 0.95em; }
-h1, h2, h3 { line-height: 1.2; }
-h1 { margin-top: 0; }
-a { color: #0b57d0; text-decoration: none; }
-a:hover { text-decoration: underline; }
-blockquote { margin: 1rem 0; padding: 0.25rem 1rem; border-left: 4px solid #ddd; color: #333; }
-table { border-collapse: collapse; }
-th, td { border: 1px solid #ddd; padding: 0.4rem 0.6rem; }
-hr { border: 0; border-top: 1px solid #ddd; margin: 2rem 0; }
-</style>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+  <script>(function(){var t=localStorage.getItem('theme-preference');if(t)document.documentElement.setAttribute('data-theme',t);})()</script>
 </head>
 <body>
-<nav id="TOC" role="doc-toc">
+<nav class="site-nav">
+  <a href="/">Home</a> &middot; <a href="/about.html">About</a>
+</nav>
+<div class="theme-toggle">
+  <button id="theme-btn" aria-label="Toggle dark mode">&#9788;</button>
+</div>
+<article>
+<nav id="TOC">
 <ul>
 <li><a href="#notes-on-proving-undecidability-of-jcaqp-over-tf"
 id="toc-notes-on-proving-undecidability-of-jcaqp-over-tf">Notes on
@@ -646,11 +464,14 @@ Consulted</a></li>
 </ul></li>
 </ul>
 </nav>
-<h1 id="notes-on-proving-undecidability-of-jcaqp-over-tf">Notes on
-Proving Undecidability of JCAQP over T(F)</h1>
-<h2 id="problem-definition">1. Problem Definition</h2>
-<h3 id="the-jcaqp-problem-definition-4.1-from-stafiniaks-thesis">1.1 The
-JCAQP Problem (Definition 4.1 from Stafiniak’s thesis)</h3>
+<section id="notes-on-proving-undecidability-of-jcaqp-over-tf"
+class="level1">
+<h1>Notes on Proving Undecidability of JCAQP over T(F)</h1>
+<section id="problem-definition" class="level2">
+<h2>1. Problem Definition</h2>
+<section id="the-jcaqp-problem-definition-4.1-from-stafiniaks-thesis"
+class="level3">
+<h3>1.1 The JCAQP Problem (Definition 4.1 from Stafiniak’s thesis)</h3>
 <p>A <strong>JCAQP (Joint Constraint Abduction under a Quantifier
 Prefix)</strong> problem has the form:</p>
 <p><span class="math display">\[Q: \bigwedge_i (D_i \Rightarrow
@@ -682,14 +503,18 @@ class="math inline">\(\mathcal{T}(\mathcal{F}) \models \bigwedge_i
 <li><strong>No escaping variables:</strong> Certain dependency
 conditions on variables</li>
 </ol>
-<h3 id="the-existence-problem">1.2 The Existence Problem</h3>
+</section>
+<section id="the-existence-problem" class="level3">
+<h3>1.2 The Existence Problem</h3>
 <p><strong>JCAQP-EXIST:</strong> Given a JCAQP instance, does there
 exist an answer <span class="math inline">\(\exists \bar{\beta}:
 A\)</span>?</p>
 <p><strong>Constraint:</strong> The signature <span
 class="math inline">\(\mathcal{F}\)</span> must be fixed (not depend on
 the instance from the reduced problem).</p>
-<h3 id="key-properties-of-mathcaltmathcalf">1.3 Key Properties of <span
+</section>
+<section id="key-properties-of-mathcaltmathcalf" class="level3">
+<h3>1.3 Key Properties of <span
 class="math inline">\(\mathcal{T}(\mathcal{F})\)</span></h3>
 <p>The free term algebra <span
 class="math inline">\(\mathcal{T}(\mathcal{F})\)</span> satisfies:</p>
@@ -704,10 +529,14 @@ class="math inline">\(i\)</span></li>
 itself</li>
 </ul>
 <hr />
-<h2 id="known-undecidability-results-potential-reduction-sources">2.
-Known Undecidability Results (Potential Reduction Sources)</h2>
-<h3 id="semi-unification-kfoury-tiuryn-urzyczyn-1993">2.1
-Semi-Unification (Kfoury-Tiuryn-Urzyczyn 1993)</h3>
+</section>
+</section>
+<section id="known-undecidability-results-potential-reduction-sources"
+class="level2">
+<h2>2. Known Undecidability Results (Potential Reduction Sources)</h2>
+<section id="semi-unification-kfoury-tiuryn-urzyczyn-1993"
+class="level3">
+<h3>2.1 Semi-Unification (Kfoury-Tiuryn-Urzyczyn 1993)</h3>
 <p><strong>Problem:</strong> Given equations <span
 class="math inline">\(\{l_i \leq r_i\}_{i=1}^n\)</span>, find
 substitution <span class="math inline">\(\theta\)</span> and
@@ -721,8 +550,10 @@ immortality/boundedness (Kfoury et al.) or directly from Halting Problem
 <p><strong>Key property:</strong> <span
 class="math inline">\(\theta\)</span> is shared, <span
 class="math inline">\(\sigma_i\)</span> are local witnesses.</p>
-<h3 id="simultaneous-rigid-e-unification-degtyarev-voronkov-1996">2.2
-Simultaneous Rigid E-Unification (Degtyarev-Voronkov 1996)</h3>
+</section>
+<section id="simultaneous-rigid-e-unification-degtyarev-voronkov-1996"
+class="level3">
+<h3>2.2 Simultaneous Rigid E-Unification (Degtyarev-Voronkov 1996)</h3>
 <p><strong>Problem:</strong> Given rigid equations <span
 class="math inline">\(\{E_i \vdash s_i \approx t_i\}_{i=1}^n\)</span>,
 find substitution <span class="math inline">\(\theta\)</span> such that
@@ -742,12 +573,14 @@ non-trivial ground equations, they’re FALSE</li>
 <li>This is the “assumption gap” discussed in Herbrand_JCA.md Section
 9</li>
 </ul>
-<h3 id="second-order-unification-goldfarb-1981">2.3 Second-Order
-Unification (Goldfarb 1981)</h3>
+</section>
+<section id="second-order-unification-goldfarb-1981" class="level3">
+<h3>2.3 Second-Order Unification (Goldfarb 1981)</h3>
 <p><strong>Undecidability:</strong> Reduced from Hilbert’s tenth
 problem.</p>
-<h3 id="post-correspondence-problem">2.4 Post Correspondence
-Problem</h3>
+</section>
+<section id="post-correspondence-problem" class="level3">
+<h3>2.4 Post Correspondence Problem</h3>
 <p><strong>Problem:</strong> Given pairs <span
 class="math inline">\((u_i, v_i)\)</span> of words, find a sequence such
 that <span class="math inline">\(u_{i_1}...u_{i_k} =
@@ -755,9 +588,13 @@ v_{i_1}...v_{i_k}\)</span>.</p>
 <p><strong>Undecidability:</strong> Reduced from Turing machine
 halting.</p>
 <hr />
-<h2 id="structural-observations">3. Structural Observations</h2>
-<h3 id="why-standard-reductions-fail-for-jcaqp-over-tf">3.1 Why Standard
-Reductions Fail for JCAQP over T(F)</h3>
+</section>
+</section>
+<section id="structural-observations" class="level2">
+<h2>3. Structural Observations</h2>
+<section id="why-standard-reductions-fail-for-jcaqp-over-tf"
+class="level3">
+<h3>3.1 Why Standard Reductions Fail for JCAQP over T(F)</h3>
 <p>From Herbrand_JCA.md Section 9.3-9.5:</p>
 <p><strong>Naive SREU encoding attempt:</strong></p>
 <ul>
@@ -778,8 +615,9 @@ property)</li>
 <li>The consistency condition is violated or the problem becomes
 trivial</li>
 </ul>
-<h3 id="what-makes-jcaqp-potentially-hard">3.2 What Makes JCAQP
-Potentially Hard</h3>
+</section>
+<section id="what-makes-jcaqp-potentially-hard" class="level3">
+<h3>3.2 What Makes JCAQP Potentially Hard</h3>
 <ol type="1">
 <li><strong>Synthesis over constraints:</strong> We’re quantifying over
 all possible <span class="math inline">\(A\)</span></li>
@@ -790,8 +628,9 @@ between variables</li>
 <li><strong>Fixed model:</strong> Can’t add new function symbols or
 change interpretation</li>
 </ol>
-<h3 id="the-role-of-the-consistency-condition">3.3 The Role of the
-Consistency Condition</h3>
+</section>
+<section id="the-role-of-the-consistency-condition" class="level3">
+<h3>3.3 The Role of the Consistency Condition</h3>
 <p>The consistency condition <span
 class="math inline">\(\mathcal{T}(\mathcal{F}) \models \exists
 \text{FV}(D_i \land A). D_i \land A\)</span> requires:</p>
@@ -802,15 +641,20 @@ class="math inline">\(\mathcal{T}(\mathcal{F}) \models \exists
 </ul>
 <p>This prevents using “false premises” to trivialize implications.</p>
 <hr />
-<h2 id="proof-attempt-reduction-from-semi-unification">4. Proof Attempt:
-Reduction from Semi-Unification</h2>
-<h3 id="why-semi-unification-might-work">4.1 Why Semi-Unification Might
-Work</h3>
+</section>
+</section>
+<section id="proof-attempt-reduction-from-semi-unification"
+class="level2">
+<h2>4. Proof Attempt: Reduction from Semi-Unification</h2>
+<section id="why-semi-unification-might-work" class="level3">
+<h3>4.1 Why Semi-Unification Might Work</h3>
 <p>Semi-unification doesn’t use “derivability under assumptions” - it’s
 purely about finding substitutions such that certain term equalities
 hold after applying the substitutions. This matches better with T(F)’s
 fixed-model semantics.</p>
-<h3 id="semi-unification-formally">4.2 Semi-Unification Formally</h3>
+</section>
+<section id="semi-unification-formally" class="level3">
+<h3>4.2 Semi-Unification Formally</h3>
 <p>A semi-unification instance consists of inequations:</p>
 <p><span class="math display">\[\mathcal{I} = \{l_1 \leq r_1, ..., l_n
 \leq r_n\}\]</span></p>
@@ -823,7 +667,9 @@ class="math inline">\(\sigma_i\)</span> with:</p>
 <p>Equivalently: <span class="math inline">\(\theta(l_i)\)</span> is a
 generalization of (matches onto) <span
 class="math inline">\(\theta(r_i)\)</span>.</p>
-<h3 id="encoding-attempt">4.3 Encoding Attempt</h3>
+</section>
+<section id="encoding-attempt" class="level3">
+<h3>4.3 Encoding Attempt</h3>
 <p><strong>Signature:</strong> <span class="math inline">\(\mathcal{F} =
 \{f/2, a/0, b/0\}\)</span> (binary functor, two constants)</p>
 <p><strong>Idea:</strong> Encode each inequation <span
@@ -849,7 +695,9 @@ class="math inline">\(\theta\)</span>)</li>
 <p>Define implication:</p>
 <p><span class="math display">\[D_i \Rightarrow C_i\]</span></p>
 <p>where… [This is where the construction becomes unclear]</p>
-<h3 id="the-core-difficulty">4.4 The Core Difficulty</h3>
+</section>
+<section id="the-core-difficulty" class="level3">
+<h3>4.4 The Core Difficulty</h3>
 <p>The challenge is encoding “there exists <span
 class="math inline">\(\sigma_i\)</span> such that <span
 class="math inline">\(\sigma_i(\theta(l_i)) = \theta(r_i)\)</span>”
@@ -886,7 +734,9 @@ class="math inline">\(s\)</span>.</p>
 <p>But we need to express this for symbolic terms (with variables that
 will be instantiated by the answer <span
 class="math inline">\(A\)</span>).</p>
-<h3 id="revised-encoding-approach">4.5 Revised Encoding Approach</h3>
+</section>
+<section id="revised-encoding-approach" class="level3">
+<h3>4.5 Revised Encoding Approach</h3>
 <p>Let’s think differently. In semi-unification:</p>
 <ul>
 <li><span class="math inline">\(\theta\)</span> instantiates variables
@@ -922,7 +772,9 @@ class="math inline">\(\theta(l_i)[\sigma_i] = \theta(r_i)\)</span></p>
 <p>Hmm, but <span class="math inline">\(\sigma_i\)</span> applies to the
 result of <span class="math inline">\(\theta(l_i)\)</span>, not to the
 original variables…</p>
-<h3 id="a-more-concrete-example">4.6 A More Concrete Example</h3>
+</section>
+<section id="a-more-concrete-example" class="level3">
+<h3>4.6 A More Concrete Example</h3>
 <p>Consider the semi-unification instance:</p>
 <p><span class="math display">\[\{x \leq f(x, a)\}\]</span></p>
 <p>A solution is <span class="math inline">\(\theta = \{x \mapsto f(y,
@@ -964,10 +816,13 @@ this asks: “can we find <span class="math inline">\(w\)</span> such that
 class="math inline">\(x\)</span>, regardless of the answer <span
 class="math inline">\(A\)</span>!</p>
 <hr />
-<h2 id="revised-approach-direct-encoding-of-term-relationships">5.
-Revised Approach: Direct Encoding of Term Relationships</h2>
-<h3 id="observation-matching-as-implication">5.1 Observation: Matching
-as Implication</h3>
+</section>
+</section>
+<section id="revised-approach-direct-encoding-of-term-relationships"
+class="level2">
+<h2>5. Revised Approach: Direct Encoding of Term Relationships</h2>
+<section id="observation-matching-as-implication" class="level3">
+<h3>5.1 Observation: Matching as Implication</h3>
 <p>The condition “<span class="math inline">\(t\)</span> matches <span
 class="math inline">\(s\)</span>” (with <span
 class="math inline">\(t\)</span> having variables, <span
@@ -977,8 +832,9 @@ s\]</span></p>
 <p>where <span class="math inline">\(\bar{x} =
 \text{var}(t)\)</span>.</p>
 <p>For T(F), this is a unification problem, which is decidable.</p>
-<h3 id="the-quantifier-prefix-as-encoding-tool">5.2 The Quantifier
-Prefix as Encoding Tool</h3>
+</section>
+<section id="the-quantifier-prefix-as-encoding-tool" class="level3">
+<h3>5.2 The Quantifier Prefix as Encoding Tool</h3>
 <p>In JCAQP, the quantifier prefix <span
 class="math inline">\(Q\)</span> determines:</p>
 <ul>
@@ -990,8 +846,9 @@ their left)</li>
 </ul>
 <p>This is reminiscent of the rigidity in SREU, but without the
 “equational reasoning under assumptions” aspect.</p>
-<h3 id="new-idea-encoding-computation-steps">5.3 New Idea: Encoding
-Computation Steps</h3>
+</section>
+<section id="new-idea-encoding-computation-steps" class="level3">
+<h3>5.3 New Idea: Encoding Computation Steps</h3>
 <p>Instead of directly reducing from semi-unification, let’s try
 encoding computation directly.</p>
 <p><strong>Turing machine configuration:</strong> Encode as a term
@@ -1003,9 +860,12 @@ class="math inline">\(A\)</span> that provides witnesses for a halting
 computation.</p>
 <p>[To be developed…]</p>
 <hr />
-<h2 id="alternative-reduction-from-pcp">6. Alternative: Reduction from
-PCP</h2>
-<h3 id="pcp-encoding-in-terms">6.1 PCP Encoding in Terms</h3>
+</section>
+</section>
+<section id="alternative-reduction-from-pcp" class="level2">
+<h2>6. Alternative: Reduction from PCP</h2>
+<section id="pcp-encoding-in-terms" class="level3">
+<h3>6.1 PCP Encoding in Terms</h3>
 <p>Alphabet: <span class="math inline">\(\{a, b\}\)</span> (constants)
 Concatenation: <span class="math inline">\(f(x, y)\)</span> (binary
 functor) Empty word: <span class="math inline">\(e\)</span>
@@ -1013,7 +873,9 @@ functor) Empty word: <span class="math inline">\(e\)</span>
 <p>A word <span class="math inline">\(w = a_1 a_2 ... a_n\)</span> is
 encoded as <span class="math inline">\(f(a_1, f(a_2, ..., f(a_n,
 e)...))\)</span></p>
-<h3 id="pcp-instance-encoding">6.2 PCP Instance Encoding</h3>
+</section>
+<section id="pcp-instance-encoding" class="level3">
+<h3>6.2 PCP Instance Encoding</h3>
 <p>Given PCP pairs <span class="math inline">\(\{(u_i,
 v_i)\}_{i=1}^n\)</span>, we need to encode:</p>
 <p>“Does there exist a non-empty sequence <span
@@ -1036,8 +898,9 @@ pair <span class="math inline">\((u_i, v_i)\)</span>”</li>
 V\)</span> (and non-empty)</li>
 </ul>
 <p>But this seems to require an unbounded computation…</p>
-<h3 id="the-problem-with-bounded-structure">6.3 The Problem with Bounded
-Structure</h3>
+</section>
+<section id="the-problem-with-bounded-structure" class="level3">
+<h3>6.3 The Problem with Bounded Structure</h3>
 <p>JCAQP instances have:</p>
 <ul>
 <li>A fixed quantifier prefix <span
@@ -1056,10 +919,15 @@ instantiated to complex terms.</p>
 class="math inline">\(A\)</span> encode an arbitrarily long PCP
 solution?</p>
 <hr />
-<h2
-id="new-proof-attempt-using-answer-structure-to-encode-computation">7.
-New Proof Attempt: Using Answer Structure to Encode Computation</h2>
-<h3 id="setup">7.1 Setup</h3>
+</section>
+</section>
+<section
+id="new-proof-attempt-using-answer-structure-to-encode-computation"
+class="level2">
+<h2>7. New Proof Attempt: Using Answer Structure to Encode
+Computation</h2>
+<section id="setup" class="level3">
+<h3>7.1 Setup</h3>
 <p><strong>Signature:</strong> <span class="math inline">\(\mathcal{F} =
 \{f/2, g/2, a/0, b/0, z/0, s/1\}\)</span> - <span
 class="math inline">\(f, g\)</span>: binary constructors for different
@@ -1071,8 +939,9 @@ class="math inline">\(s(n) = n+1\)</span>)</p>
 class="math inline">\(A\)</span> is an existentially quantified
 conjunction of equations. The terms in these equations can be
 arbitrarily deep, encoding arbitrarily complex structures.</p>
-<h3 id="encoding-halting-as-answer-existence">7.2 Encoding Halting as
-Answer Existence</h3>
+</section>
+<section id="encoding-halting-as-answer-existence" class="level3">
+<h3>7.2 Encoding Halting as Answer Existence</h3>
 <p><strong>Idea:</strong> Design implications such that an answer <span
 class="math inline">\(A\)</span> exists iff a Turing machine halts.</p>
 <p>The answer <span class="math inline">\(A\)</span> would encode the
@@ -1083,7 +952,9 @@ entire halting computation as a term structure.</p>
 <li>Each step follows the transition function</li>
 <li>The final configuration is a halting state</li>
 </ul>
-<h3 id="encoding-configurations">7.3 Encoding Configurations</h3>
+</section>
+<section id="encoding-configurations" class="level3">
+<h3>7.3 Encoding Configurations</h3>
 <p>Configuration: <span class="math inline">\((q, \text{left},
 \text{pos}, \text{right})\)</span> - <span
 class="math inline">\(q\)</span>: state (encoded as a constant or term)
@@ -1094,8 +965,9 @@ class="math inline">\(\text{right}\)</span>: tape contents to the right
 (as a list term)</p>
 <p>Encode as: <span class="math inline">\(\text{config}(q, \text{left},
 \text{pos}, \text{right})\)</span> using a 4-ary constructor.</p>
-<h3 id="encoding-the-transition-relation">7.4 Encoding the Transition
-Relation</h3>
+</section>
+<section id="encoding-the-transition-relation" class="level3">
+<h3>7.4 Encoding the Transition Relation</h3>
 <p>For each transition <span class="math inline">\(\delta(q, a) =
 (q&#39;, b, D)\)</span> (write <span class="math inline">\(b\)</span>,
 move <span class="math inline">\(D \in \{L, R\}\)</span>):</p>
@@ -1123,8 +995,9 @@ config)</li>
 <p><strong>But:</strong> We need finitely many variables and equations
 in <span class="math inline">\(A\)</span>, yet the computation can be
 arbitrarily long.</p>
-<h3 id="the-key-insight-recursive-term-structure">7.5 The Key Insight:
-Recursive Term Structure</h3>
+</section>
+<section id="the-key-insight-recursive-term-structure" class="level3">
+<h3>7.5 The Key Insight: Recursive Term Structure</h3>
 <p>Instead of separate variables for each step, encode the entire
 computation trace as a single nested term.</p>
 <p>Let <span class="math inline">\(\text{trace}\)</span> be a term of
@@ -1141,7 +1014,9 @@ variable.</p>
 <p><strong>The implications verify</strong> that <span
 class="math inline">\(T\)</span> represents a valid computation
 trace.</p>
-<h3 id="verification-implications">7.6 Verification Implications</h3>
+</section>
+<section id="verification-implications" class="level3">
+<h3>7.6 Verification Implications</h3>
 <p><strong>Implication 1:</strong> Initial configuration is correct.
 <span class="math display">\[\top \Rightarrow \text{head}(T) \doteq
 c_{\text{init}}\]</span></p>
@@ -1157,8 +1032,9 @@ T(F) (we don’t have pattern matching in the constraint language).</p>
 T&#39;)) \Rightarrow (c_0 \doteq c_{\text{init}})\)</span></p>
 <p><strong>Problem:</strong> This only checks the first step. How do we
 check all steps?</p>
-<h3 id="universal-quantification-over-structure">7.7 Universal
-Quantification Over Structure</h3>
+</section>
+<section id="universal-quantification-over-structure" class="level3">
+<h3>7.7 Universal Quantification Over Structure</h3>
 <p><strong>Key observation from SREU:</strong> The rigidity (universal
 quantification over substitution variables) creates the power to check
 all instances.</p>
@@ -1181,9 +1057,13 @@ class="math inline">\(T\)</span>”?</p>
 <p>This requires a “lookup” function, which again we can’t define
 directly.</p>
 <hr />
-<h2 id="stuck-point-expressing-structural-constraints">8. Stuck Point:
-Expressing Structural Constraints</h2>
-<h3 id="the-core-difficulty-1">8.1 The Core Difficulty</h3>
+</section>
+</section>
+<section id="stuck-point-expressing-structural-constraints"
+class="level2">
+<h2>8. Stuck Point: Expressing Structural Constraints</h2>
+<section id="the-core-difficulty-1" class="level3">
+<h3>8.1 The Core Difficulty</h3>
 <p>To encode undecidable problems in JCAQP over T(F), we need to:</p>
 <ol type="1">
 <li>Encode potentially unbounded structures (computations, PCP
@@ -1199,7 +1079,9 @@ terms. We cannot:</p>
 <li>Define recursive functions on terms</li>
 <li>Look up positions in a term</li>
 </ul>
-<h3 id="what-we-can-express">8.2 What We CAN Express</h3>
+</section>
+<section id="what-we-can-express" class="level3">
+<h3>8.2 What We CAN Express</h3>
 <p>With implications <span class="math inline">\(D \Rightarrow
 C\)</span> and the consistency condition:</p>
 <ul>
@@ -1213,7 +1095,9 @@ hold</li>
 f(u, v)\)</span> implies <span class="math inline">\(x = u\)</span> and
 <span class="math inline">\(y = v\)</span></li>
 </ul>
-<h3 id="a-possible-path-forward">8.3 A Possible Path Forward</h3>
+</section>
+<section id="a-possible-path-forward" class="level3">
+<h3>8.3 A Possible Path Forward</h3>
 <p><strong>Observation:</strong> In T(F), if we have:</p>
 <p><span class="math display">\[\text{trace}(c, T&#39;) =
 \text{trace}(c&#39;, T&#39;&#39;)\]</span> then by injectivity, <span
@@ -1231,8 +1115,9 @@ T&#39;&#39;)\]</span> <span class="math display">\[\Rightarrow c&#39;
 <p><strong>Problem:</strong> This is a single implication that only
 checks one specific form of <span class="math inline">\(T\)</span>. We
 need to check ALL positions in the trace.</p>
-<h3 id="universal-quantification-to-the-rescue">8.4 Universal
-Quantification to the Rescue?</h3>
+</section>
+<section id="universal-quantification-to-the-rescue" class="level3">
+<h3>8.4 Universal Quantification to the Rescue?</h3>
 <p>What if the quantifier prefix is <span class="math inline">\(\forall
 T. ...\)</span>?</p>
 <p>Then the implications must hold for ALL possible <span
@@ -1251,9 +1136,13 @@ levels.</p>
 <p><strong>The real question:</strong> Can we express “for all subtrees”
 using the JCAQP structure?</p>
 <hr />
-<h2 id="exploring-the-quantifier-prefix-more-carefully">9. Exploring the
-Quantifier Prefix More Carefully</h2>
-<h3 id="the-no-escaping-condition">9.1 The No-Escaping Condition</h3>
+</section>
+</section>
+<section id="exploring-the-quantifier-prefix-more-carefully"
+class="level2">
+<h2>9. Exploring the Quantifier Prefix More Carefully</h2>
+<section id="the-no-escaping-condition" class="level3">
+<h3>9.1 The No-Escaping Condition</h3>
 <p>The “no escaping variables” condition constrains how universal
 variables can appear in the answer <span
 class="math inline">\(A\)</span>.</p>
@@ -1264,8 +1153,9 @@ existential parameter <span class="math inline">\(\chi\)</span> in the
 same atom with appropriate ordering.</p>
 <p>This prevents the answer from directly mentioning universal variables
 in an unconstrained way.</p>
-<h3 id="implications-of-the-dependency-structure">9.2 Implications of
-the Dependency Structure</h3>
+</section>
+<section id="implications-of-the-dependency-structure" class="level3">
+<h3>9.2 Implications of the Dependency Structure</h3>
 <p>The quantifier prefix creates a dependency order:</p>
 <ul>
 <li><span class="math inline">\(\exists \beta\)</span> after <span
@@ -1286,8 +1176,9 @@ class="math inline">\(\beta\)</span> can effectively be a “function” of
 <span class="math inline">\(\alpha\)</span> (the witness <span
 class="math inline">\(\beta\)</span> can depend on the universally
 chosen <span class="math inline">\(\alpha\)</span>).</p>
-<h3 id="can-alternation-encode-verification">9.3 Can Alternation Encode
-Verification?</h3>
+</section>
+<section id="can-alternation-encode-verification" class="level3">
+<h3>9.3 Can Alternation Encode Verification?</h3>
 <p>Consider a prefix <span class="math inline">\(\forall x. \exists y.
 \forall z. \exists w. ...\)</span></p>
 <p>This creates a game-like structure:</p>
@@ -1305,10 +1196,15 @@ length.</p>
 alternation to simulate unbounded computation, which a fixed prefix
 cannot provide.</p>
 <hr />
-<h2
-id="conjecture-jcaqp-over-tf-with-bounded-prefix-might-be-decidable">10.
-Conjecture: JCAQP over T(F) with Bounded Prefix Might Be Decidable</h2>
-<h3 id="reasoning">10.1 Reasoning</h3>
+</section>
+</section>
+<section
+id="conjecture-jcaqp-over-tf-with-bounded-prefix-might-be-decidable"
+class="level2">
+<h2>10. Conjecture: JCAQP over T(F) with Bounded Prefix Might Be
+Decidable</h2>
+<section id="reasoning" class="level3">
+<h3>10.1 Reasoning</h3>
 <p>If the quantifier prefix has bounded alternation depth, then:</p>
 <ul>
 <li>The set of “strategies” (ways the answer can depend on universals)
@@ -1317,7 +1213,9 @@ is limited</li>
 possibilities</li>
 <li>This might reduce to decidable unification/matching problems</li>
 </ul>
-<h3 id="however">10.2 However…</h3>
+</section>
+<section id="however" class="level3">
+<h3>10.2 However…</h3>
 <p>The answer <span class="math inline">\(A\)</span> can involve terms
 of arbitrary depth in T(F). The complexity might come from:</p>
 <ul>
@@ -1326,8 +1224,9 @@ of arbitrary depth in T(F). The complexity might come from:</p>
 </ul>
 <p>The Maher-Huang work shows that even for simple Herbrand abduction,
 there can be infinitely many maximal answers.</p>
-<h3 id="the-decidabilityundecidability-divide">10.3 The
-Decidability/Undecidability Divide</h3>
+</section>
+<section id="the-decidabilityundecidability-divide" class="level3">
+<h3>10.3 The Decidability/Undecidability Divide</h3>
 <p>Possibly:</p>
 <ul>
 <li>JCAQP-EXIST with simple quantifier prefixes: decidable (but maybe
@@ -1336,9 +1235,12 @@ high complexity)</li>
 </ul>
 <p>Or the jointness (multiple implications) is the key factor…</p>
 <hr />
-<h2 id="next-steps">11. Next Steps</h2>
-<h3 id="to-make-progress-on-undecidability">11.1 To Make Progress on
-Undecidability</h3>
+</section>
+</section>
+<section id="next-steps" class="level2">
+<h2>11. Next Steps</h2>
+<section id="to-make-progress-on-undecidability" class="level3">
+<h3>11.1 To Make Progress on Undecidability</h3>
 <ol type="1">
 <li>Find a way to express “for all subtrees” or similar unbounded
 verification</li>
@@ -1347,15 +1249,18 @@ encode it</li>
 <li>Study the SREU proof techniques more carefully - they use “shifted
 pairing” to encode computation</li>
 </ol>
-<h3 id="to-explore-decidability">11.2 To Explore Decidability</h3>
+</section>
+<section id="to-explore-decidability" class="level3">
+<h3>11.2 To Explore Decidability</h3>
 <ol type="1">
 <li>Characterize what fragment of JCAQP is decidable</li>
 <li>Understand the complexity of the JCA (no prefix) case</li>
 <li>Check if the Maher-Huang results imply anything about decision
 complexity</li>
 </ol>
-<h3 id="alternative-reduction-sources">11.3 Alternative Reduction
-Sources</h3>
+</section>
+<section id="alternative-reduction-sources" class="level3">
+<h3>11.3 Alternative Reduction Sources</h3>
 <ol type="1">
 <li><strong>Word problem for finitely presented groups</strong> -
 undecidable, might encode differently</li>
@@ -1365,9 +1270,13 @@ map better to term structure</li>
 string-based, might encode via terms</li>
 </ol>
 <hr />
-<h2 id="further-investigation-the-shifted-pairing-technique">12. Further
-Investigation: The Shifted Pairing Technique</h2>
-<h3 id="from-voronkovs-survey">12.1 From Voronkov’s Survey</h3>
+</section>
+</section>
+<section id="further-investigation-the-shifted-pairing-technique"
+class="level2">
+<h2>12. Further Investigation: The Shifted Pairing Technique</h2>
+<section id="from-voronkovs-survey" class="level3">
+<h3>12.1 From Voronkov’s Survey</h3>
 <p>The “shifted pairing” technique is used to encode Turing machine
 computations for SREU undecidability.</p>
 <p>The idea (roughly):</p>
@@ -1376,8 +1285,9 @@ computations for SREU undecidability.</p>
 <li>Use “pairing” to represent pairs of consecutive configurations</li>
 <li>Use “shifting” to relate positions across the computation</li>
 </ul>
-<h3 id="how-this-might-apply-to-jcaqp">12.2 How This Might Apply to
-JCAQP</h3>
+</section>
+<section id="how-this-might-apply-to-jcaqp" class="level3">
+<h3>12.2 How This Might Apply to JCAQP</h3>
 <p>If we could express:</p>
 <ul>
 <li>“The trace <span class="math inline">\(T\)</span> contains a pair
@@ -1395,7 +1305,9 @@ instance)</li>
 <li>A way to encode the “for all pairs” check using finite
 structure</li>
 </ul>
-<h3 id="a-potential-observation">12.3 A Potential Observation</h3>
+</section>
+<section id="a-potential-observation" class="level3">
+<h3>12.3 A Potential Observation</h3>
 <p>In T(F), if we define:</p>
 <p><span class="math display">\[T = \text{pair}(c_0, c_1,
 \text{pair}(c_1, c_2, \text{pair}(c_2, c_3, ...)))\]</span></p>
@@ -1431,8 +1343,10 @@ class="math inline">\(T_{\text{main}}\)</span>.</p>
 <p><strong>Hmm:</strong> The universal quantification is over ALL terms
 in T(F), not just subtrees of the answer. So we’d be checking all
 pair-shaped terms everywhere, which is too broad.</p>
-<h3 id="connecting-universal-quantification-to-the-answer">12.4
-Connecting Universal Quantification to the Answer</h3>
+</section>
+<section id="connecting-universal-quantification-to-the-answer"
+class="level3">
+<h3>12.4 Connecting Universal Quantification to the Answer</h3>
 <p>This is the crux. We need the universally quantified variable to
 range over subtrees of the answer term.</p>
 <p><strong>Idea:</strong> Include an implication that forces a
@@ -1454,9 +1368,12 @@ class="math inline">\(A\)</span> to “list” all the subtrees.</p>
 <p>Then the “listing” provides access to subtrees. But this requires
 anticipating the trace length, which defeats the purpose.</p>
 <hr />
-<h2 id="reflection-and-current-status">13. Reflection and Current
-Status</h2>
-<h3 id="what-ive-established">13.1 What I’ve Established</h3>
+</section>
+</section>
+<section id="reflection-and-current-status" class="level2">
+<h2>13. Reflection and Current Status</h2>
+<section id="what-ive-established" class="level3">
+<h3>13.1 What I’ve Established</h3>
 <ol type="1">
 <li>The standard SREU reduction doesn’t work due to fixed-model
 semantics (Section 3-4)</li>
@@ -1465,13 +1382,17 @@ non-trivial (Section 4-5)</li>
 <li>Encoding unbounded computation faces the challenge of expressing
 universal verification over structure (Section 7-12)</li>
 </ol>
-<h3 id="the-central-open-question">13.2 The Central Open Question</h3>
+</section>
+<section id="the-central-open-question" class="level3">
+<h3>13.2 The Central Open Question</h3>
 <p>Can JCAQP’s quantifier prefix and implication structure, combined
 with T(F)’s injectivity properties, express “for all positions in an
 unbounded structure”?</p>
 <p>If yes: likely undecidable via computation encoding If no: might be
 decidable (or undecidable for other reasons)</p>
-<h3 id="stuck-points">13.3 Stuck Points</h3>
+</section>
+<section id="stuck-points" class="level3">
+<h3>13.3 Stuck Points</h3>
 <ol type="1">
 <li><strong>Expressing universal subtree verification:</strong> Can’t
 directly say “for all subtrees of the answer”</li>
@@ -1482,15 +1403,22 @@ ranges over all terms, not specifically subtrees</li>
 prefix can’t directly encode unbounded alternation</li>
 </ol>
 <hr />
-<h2
-id="one-more-approach-internalizing-the-verification-in-the-answer">14.
-One More Approach: Internalizing the Verification in the Answer</h2>
-<h3 id="idea">14.1 Idea</h3>
+</section>
+</section>
+<section
+id="one-more-approach-internalizing-the-verification-in-the-answer"
+class="level2">
+<h2>14. One More Approach: Internalizing the Verification in the
+Answer</h2>
+<section id="idea" class="level3">
+<h3>14.1 Idea</h3>
 <p>What if the answer <span class="math inline">\(A\)</span> encodes not
 just the computation, but also a “proof” that it’s valid?</p>
 <p>The implications then just check that the proof is correctly
 formed.</p>
-<h3 id="sketch">14.2 Sketch</h3>
+</section>
+<section id="sketch" class="level3">
+<h3>14.2 Sketch</h3>
 <p>Let the answer <span class="math inline">\(A\)</span> be:</p>
 <p><span class="math display">\[\exists T, P. (T \doteq
 \text{trace}(...)) \land (P \doteq \text{proof}(...))\]</span></p>
@@ -1513,16 +1441,21 @@ structure for the trace length</li>
 <li>Local: Each proof node <span class="math inline">\(\text{prf}(T_i,
 T_{i+1}, P_i, ...)\)</span> is valid</li>
 </ul>
-<h3 id="this-still-has-the-same-problem">14.3 This Still Has the Same
-Problem</h3>
+</section>
+<section id="this-still-has-the-same-problem" class="level3">
+<h3>14.3 This Still Has the Same Problem</h3>
 <p>We still need to verify “for all proof nodes”, which brings us back
 to the same issue.</p>
 <p>Unless… the proof structure itself encodes the verification in a
 self-certifying way?</p>
 <p>This is getting circular. Let me think differently.</p>
 <hr />
-<h2 id="final-reflection">15. Final Reflection</h2>
-<h3 id="key-insight">15.1 Key Insight</h3>
+</section>
+</section>
+<section id="final-reflection" class="level2">
+<h2>15. Final Reflection</h2>
+<section id="key-insight" class="level3">
+<h3>15.1 Key Insight</h3>
 <p>The fundamental difficulty is that JCAQP over T(F) has:</p>
 <ul>
 <li><strong>Fixed quantifier prefix:</strong> Bounded structure</li>
@@ -1531,7 +1464,9 @@ self-certifying way?</p>
 <li><strong>No recursion/induction in the implication language:</strong>
 Can’t express unbounded verification</li>
 </ul>
-<h3 id="possible-conclusions">15.2 Possible Conclusions</h3>
+</section>
+<section id="possible-conclusions" class="level3">
+<h3>15.2 Possible Conclusions</h3>
 <p><strong>Hypothesis A:</strong> JCAQP-EXIST over T(F) is decidable
 (perhaps with high complexity), because the bounded quantifier prefix
 limits the problem’s expressiveness.</p>
@@ -1544,7 +1479,9 @@ simulation. Perhaps using:</p>
 <li>A reduction from a problem that doesn’t require unbounded
 verification</li>
 </ul>
-<h3 id="what-would-help">15.3 What Would Help</h3>
+</section>
+<section id="what-would-help" class="level3">
+<h3>15.3 What Would Help</h3>
 <ol type="1">
 <li>A complete classification of SREU decidability by quantifier prefix
 complexity</li>
@@ -1554,17 +1491,24 @@ fragments of JAQP</li>
 complexity</li>
 </ol>
 <hr />
-<h2
-id="new-direction-exploiting-jointness-and-the-no-escaping-condition">16.
-New Direction: Exploiting Jointness and the No-Escaping Condition</h2>
-<h3 id="observation">16.1 Observation</h3>
+</section>
+</section>
+<section
+id="new-direction-exploiting-jointness-and-the-no-escaping-condition"
+class="level2">
+<h2>16. New Direction: Exploiting Jointness and the No-Escaping
+Condition</h2>
+<section id="observation" class="level3">
+<h3>16.1 Observation</h3>
 <p>The jointness of JCA (multiple implications with a single answer) is
 explicitly noted in Maher’s work as changing the problem’s character.
 JCA does NOT reduce to SCA.</p>
 <p>Perhaps the undecidability comes from the
 <strong>interaction</strong> between multiple implications, not from
 encoding computation within a single implication.</p>
-<h3 id="what-jointness-provides">16.2 What Jointness Provides</h3>
+</section>
+<section id="what-jointness-provides" class="level3">
+<h3>16.2 What Jointness Provides</h3>
 <p>With a joint answer:</p>
 <ul>
 <li>Constraints from one implication can “inform” another</li>
@@ -1572,8 +1516,9 @@ encoding computation within a single implication.</p>
 simultaneously</li>
 <li>This creates a global constraint satisfaction problem</li>
 </ul>
-<h3 id="potential-encoding-using-jointness">16.3 Potential Encoding
-Using Jointness</h3>
+</section>
+<section id="potential-encoding-using-jointness" class="level3">
+<h3>16.3 Potential Encoding Using Jointness</h3>
 <p>Consider encoding a combinatorial problem where:</p>
 <ul>
 <li>Each implication constrains part of the answer structure</li>
@@ -1588,7 +1533,9 @@ assignment.</p>
 <p>We need something that requires <strong>infinitely many</strong> or
 <strong>unbounded</strong> clauses, which a fixed JCAQP instance can’t
 have.</p>
-<h3 id="unless">16.4 Unless…</h3>
+</section>
+<section id="unless" class="level3">
+<h3>16.4 Unless…</h3>
 <p>The answer <span class="math inline">\(A\)</span> itself can create
 unbounded interaction. If the structure of <span
 class="math inline">\(A\)</span> can “generate” unbounded constraints
@@ -1598,10 +1545,13 @@ class="math inline">\(A\)</span> makes ALL implications valid. There are
 only finitely many implications in the instance.</p>
 <p>So jointness alone doesn’t create unbounded computation.</p>
 <hr />
-<h2 id="back-to-semi-unification-a-more-careful-analysis">17. Back to
-Semi-Unification: A More Careful Analysis</h2>
-<h3 id="the-semi-unification-problem-structure">17.1 The
-Semi-Unification Problem Structure</h3>
+</section>
+</section>
+<section id="back-to-semi-unification-a-more-careful-analysis"
+class="level2">
+<h2>17. Back to Semi-Unification: A More Careful Analysis</h2>
+<section id="the-semi-unification-problem-structure" class="level3">
+<h3>17.1 The Semi-Unification Problem Structure</h3>
 <p>Given: <span class="math inline">\(\{l_1 \leq r_1, ..., l_n \leq
 r_n\}\)</span></p>
 <p>Find: <span class="math inline">\(\theta\)</span> such that for each
@@ -1612,7 +1562,9 @@ class="math inline">\(\theta(r_i)\)</span>.</p>
 <strong>substitution</strong>, which maps variables to terms. In the
 solution, each <span class="math inline">\(\theta(x)\)</span> can be an
 arbitrarily complex term.</p>
-<h3 id="jcaqp-answer-structure">17.2 JCAQP Answer Structure</h3>
+</section>
+<section id="jcaqp-answer-structure" class="level3">
+<h3>17.2 JCAQP Answer Structure</h3>
 <p>The answer <span class="math inline">\(A\)</span> is: <span
 class="math inline">\(\exists \bar{\beta}: A\)</span> where <span
 class="math inline">\(A\)</span> is a conjunction of equations.</p>
@@ -1622,8 +1574,9 @@ class="math inline">\(A\)</span> includes:</p>
 \land ...\]</span></p>
 <p>This defines <span class="math inline">\(\theta(x_i) =
 t_i\)</span>.</p>
-<h3 id="encoding-the-matching-condition">17.3 Encoding the Matching
-Condition</h3>
+</section>
+<section id="encoding-the-matching-condition" class="level3">
+<h3>17.3 Encoding the Matching Condition</h3>
 <p>For each semi-unification inequation <span class="math inline">\(l_i
 \leq r_i\)</span>:</p>
 <p>We need: <span class="math inline">\(\theta(l_i)\)</span> matches
@@ -1645,7 +1598,9 @@ class="math inline">\(\theta\)</span>)</li>
 </ul>
 <p>But how do we express this as an implication <span
 class="math inline">\(D_i \Rightarrow C_i\)</span>?</p>
-<h3 id="a-concrete-attempt">17.4 A Concrete Attempt</h3>
+</section>
+<section id="a-concrete-attempt" class="level3">
+<h3>17.4 A Concrete Attempt</h3>
 <p>Let <span class="math inline">\(l_i = f(x, y)\)</span> and <span
 class="math inline">\(r_i = f(f(x, x), y)\)</span>.</p>
 <p>For this to have a solution, we need <span
@@ -1693,7 +1648,9 @@ class="math inline">\(\sigma(y) = y\)</span>. ✓</p>
 <p>So <span class="math inline">\(\theta = \text{identity}\)</span>
 works with <span class="math inline">\(\sigma = \{x \mapsto f(x, x), y
 \mapsto y\}\)</span>.</p>
-<h3 id="encoding-this-in-jcaqp">17.5 Encoding This in JCAQP</h3>
+</section>
+<section id="encoding-this-in-jcaqp" class="level3">
+<h3>17.5 Encoding This in JCAQP</h3>
 <p>The answer <span class="math inline">\(A\)</span> should encode <span
 class="math inline">\(\theta\)</span>. If <span
 class="math inline">\(\theta = \text{id}\)</span>, then <span
@@ -1714,7 +1671,9 @@ y)\)</span>?</p>
 <p>By injectivity: <span class="math inline">\(\sigma_x = f(x,
 x)\)</span> and <span class="math inline">\(\sigma_y = y\)</span>. Yes!
 ✓</p>
-<h3 id="the-general-pattern">17.6 The General Pattern</h3>
+</section>
+<section id="the-general-pattern" class="level3">
+<h3>17.6 The General Pattern</h3>
 <p>For semi-unification inequation <span class="math inline">\(l \leq
 r\)</span>:</p>
 <ul>
@@ -1754,8 +1713,9 @@ of the answer <span class="math inline">\(A\)</span>!</p>
 y\)</span> universal, so we’re asking if for all <span
 class="math inline">\(x, y\)</span>, there exist witnesses. But that’s a
 question about the instance, not about the answer.</p>
-<h3 id="the-missing-piece-the-answers-role">17.7 The Missing Piece: The
-Answer’s Role</h3>
+</section>
+<section id="the-missing-piece-the-answers-role" class="level3">
+<h3>17.7 The Missing Piece: The Answer’s Role</h3>
 <p>The answer <span class="math inline">\(A\)</span> should encode the
 substitution <span class="math inline">\(\theta\)</span>. If <span
 class="math inline">\(A\)</span> includes <span class="math inline">\(x
@@ -1800,8 +1760,9 @@ interact with the variables in <span class="math inline">\(D_i\)</span>
 and <span class="math inline">\(C_i\)</span>.</p>
 <p>This changes the picture. The answer can add equations involving the
 problem’s variables.</p>
-<h3 id="revised-semi-unification-encoding">17.8 Revised Semi-Unification
-Encoding</h3>
+</section>
+<section id="revised-semi-unification-encoding" class="level3">
+<h3>17.8 Revised Semi-Unification Encoding</h3>
 <p>For semi-unification instance <span class="math inline">\(\{l_1 \leq
 r_1, ..., l_n \leq r_n\}\)</span> with variables <span
 class="math inline">\(V = \{x_1, ..., x_m\}\)</span>:</p>
@@ -1818,8 +1779,9 @@ for matching in inequation <span class="math inline">\(i\)</span></li>
 ..., x&#39;_m. \forall \bar{u}_i. \exists \bar{w}_i.\)</span></p>
 <p>Actually, this is getting complicated. Let me think about a simpler
 structure.</p>
-<h3 id="simplification-existential-only-prefix">17.9 Simplification:
-Existential-Only Prefix</h3>
+</section>
+<section id="simplification-existential-only-prefix" class="level3">
+<h3>17.9 Simplification: Existential-Only Prefix</h3>
 <p>What if we use an existential-only quantifier prefix?</p>
 <p>Then the JCAQP problem becomes essentially:</p>
 <p>“Does there exist values for all variables such that all implications
@@ -1853,7 +1815,9 @@ premise, the implication just says the conclusion must hold.</p>
 that all matching equations hold?</p>
 <p>This is… just asking if the semi-unification instance has a
 solution!</p>
-<h3 id="the-connection">17.10 The Connection</h3>
+</section>
+<section id="the-connection" class="level3">
+<h3>17.10 The Connection</h3>
 <p>If we can encode semi-unification as JCAQP where:</p>
 <ul>
 <li>An answer <span class="math inline">\(A\)</span> exists iff the
@@ -1862,7 +1826,9 @@ semi-unification instance has a solution</li>
 </ul>
 <p>Then JCAQP-EXIST is undecidable (since semi-unification is
 undecidable).</p>
-<h3 id="the-encoding-details">17.11 The Encoding Details</h3>
+</section>
+<section id="the-encoding-details" class="level3">
+<h3>17.11 The Encoding Details</h3>
 <p>For semi-unification instance <span class="math inline">\(\{l_1 \leq
 r_1, ..., l_n \leq r_n\}\)</span>:</p>
 <p><strong>Variables:</strong></p>
@@ -1888,7 +1854,9 @@ class="math inline">\(\theta(l_i) = f(g(z, w), z)\)</span> has variables
 <p>The witnesses <span class="math inline">\(\sigma_i\)</span> need to
 substitute for these variables, but we don’t know a priori what they
 are.</p>
-<h3 id="the-key-insight">17.12 The Key Insight</h3>
+</section>
+<section id="the-key-insight" class="level3">
+<h3>17.12 The Key Insight</h3>
 <p>In semi-unification, the variables that appear in <span
 class="math inline">\(\theta(l_i)\)</span> are <strong>exactly the fresh
 variables introduced by <span
@@ -1916,8 +1884,9 @@ class="math inline">\(A\)</span> for the original variables</li>
 <li>Introducing existential witnesses for the <span
 class="math inline">\(\sigma_i\)</span> substitution</li>
 </ul>
-<h3 id="still-stuck-universality-of-witnesses">17.13 Still Stuck:
-Universality of Witnesses</h3>
+</section>
+<section id="still-stuck-universality-of-witnesses" class="level3">
+<h3>17.13 Still Stuck: Universality of Witnesses</h3>
 <p>The problem is that the <span class="math inline">\(\sigma_i\)</span>
 witnesses need to substitute for <strong>variables that appear in <span
 class="math inline">\(\theta(l_i)\)</span></strong>, and these include
@@ -1941,7 +1910,9 @@ class="math inline">\(\theta(l_i)\)</span>, and this should equal <span
 class="math inline">\(\theta(r_i)\)</span>.</p>
 <p>This seems expressible!</p>
 <p>Let me try a concrete example.</p>
-<h3 id="concrete-example-encoding">17.14 Concrete Example Encoding</h3>
+</section>
+<section id="concrete-example-encoding" class="level3">
+<h3>17.14 Concrete Example Encoding</h3>
 <p>Semi-unification instance: <span class="math inline">\(\{x \leq f(x,
 x)\}\)</span></p>
 <p>Solution: <span class="math inline">\(\theta(x) = y\)</span> (fresh
@@ -2005,7 +1976,9 @@ The condition is: <span class="math inline">\(w = f(X, X) = f(\beta,
 class="math inline">\(\beta\)</span> and set <span
 class="math inline">\(w = f(\beta, \beta)\)</span>.</p>
 <p>I’m not setting up the implications correctly.</p>
-<h3 id="the-role-of-implications">17.15 The Role of Implications</h3>
+</section>
+<section id="the-role-of-implications" class="level3">
+<h3>17.15 The Role of Implications</h3>
 <p>In JCAQP, we have implications <span class="math inline">\(D_i
 \Rightarrow C_i\)</span>, and the answer <span
 class="math inline">\(A\)</span> is conjoined with <span
@@ -2036,7 +2009,9 @@ class="math inline">\(A\)</span>). So <span class="math inline">\(w =
 f(X, X)\)</span>. ✓</p>
 <p>But this is circular—<span class="math inline">\(A\)</span> directly
 includes the conclusion!</p>
-<h3 id="the-missing-constraint">17.16 The Missing Constraint</h3>
+</section>
+<section id="the-missing-constraint" class="level3">
+<h3>17.16 The Missing Constraint</h3>
 <p>The answer <span class="math inline">\(A\)</span> shouldn’t directly
 include the matching equation. It should only encode <span
 class="math inline">\(\theta\)</span>, and the implication should
@@ -2059,7 +2034,9 @@ be in the prefix <span class="math inline">\(Q\)</span>.</p>
 be in the answer <span class="math inline">\(A\)</span>, not the premise
 <span class="math inline">\(D\)</span>.</p>
 <p>Let me re-read the JCAQP structure again…</p>
-<h3 id="jcaqp-structure-revisited">17.17 JCAQP Structure Revisited</h3>
+</section>
+<section id="jcaqp-structure-revisited" class="level3">
+<h3>17.17 JCAQP Structure Revisited</h3>
 <p>From the thesis:</p>
 <ul>
 <li>Problem: <span class="math inline">\(Q: \bigwedge_i (D_i \Rightarrow
@@ -2109,8 +2086,9 @@ such that <span class="math inline">\(w = f(X, X)\)</span>?</p>
 <p>Answer: Yes, for any <span class="math inline">\(X\)</span>, set
 <span class="math inline">\(w = f(X, X)\)</span>.</p>
 <p>This is trivially satisfiable! Not what we want.</p>
-<h3 id="the-issue-matching-vs-equality">17.18 The Issue: Matching vs
-Equality</h3>
+</section>
+<section id="the-issue-matching-vs-equality" class="level3">
+<h3>17.18 The Issue: Matching vs Equality</h3>
 <p>The matching condition “<span
 class="math inline">\(\theta(l)\)</span> matches <span
 class="math inline">\(\theta(r)\)</span>” is NOT “<span
@@ -2164,8 +2142,9 @@ y)\}\)</span>. Match!</li>
 class="math inline">\(\theta\)</span> can be. Specifically, <span
 class="math inline">\(\theta(x)\)</span> must include at least one
 variable (can’t be ground) for this inequation.</p>
-<h3 id="encoding-the-constraint-not-ground">17.19 Encoding the
-Constraint “Not Ground”</h3>
+</section>
+<section id="encoding-the-constraint-not-ground" class="level3">
+<h3>17.19 Encoding the Constraint “Not Ground”</h3>
 <p>The constraint that <span class="math inline">\(\theta(l)\)</span>
 must contain a variable is a non-trivial structural constraint.</p>
 <p>In JCAQP over T(F), we can express equations, but can we express
@@ -2197,7 +2176,9 @@ operates on <span class="math inline">\(y\)</span>, but <span
 class="math inline">\(y\)</span> is already in the conclusion.</p>
 <p>I think I’ve been confusing the meta-level (semi-unification’s
 substitutions) with the object level (T(F)’s ground terms).</p>
-<h3 id="reconciling-the-levels">17.20 Reconciling the Levels</h3>
+</section>
+<section id="reconciling-the-levels" class="level3">
+<h3>17.20 Reconciling the Levels</h3>
 <p>In semi-unification:</p>
 <ul>
 <li>Variables are formal symbols</li>
@@ -2223,8 +2204,9 @@ in T(F)</li>
 <li>Encode the substitution operation and matching condition using
 equations</li>
 </ol>
-<h3 id="representing-terms-as-data">17.21 Representing Terms as
-Data</h3>
+</section>
+<section id="representing-terms-as-data" class="level3">
+<h3>17.21 Representing Terms as Data</h3>
 <p>We can represent semi-unification terms as ground terms in T(F) using
 a “quoting” scheme.</p>
 <p>Signature: <span class="math inline">\(\{var/1, app/2, c/0\}\)</span>
@@ -2239,8 +2221,9 @@ var(2)))\)</span> (where <span class="math inline">\(c_f\)</span>
 encodes the symbol <span class="math inline">\(f\)</span>).</p>
 <p>This “quoted” representation allows us to manipulate terms as
 data.</p>
-<h3 id="encoding-substitution-as-a-function">17.22 Encoding Substitution
-as a Function</h3>
+</section>
+<section id="encoding-substitution-as-a-function" class="level3">
+<h3>17.22 Encoding Substitution as a Function</h3>
 <p>To encode <span class="math inline">\(\theta(t)\)</span> for term
 <span class="math inline">\(t\)</span>, we’d need to represent <span
 class="math inline">\(\theta\)</span> and apply it to <span
@@ -2254,8 +2237,9 @@ class="math inline">\(t\)</span> yields <span
 class="math inline">\(t&#39;\)</span>”.</p>
 <p>But defining this relation requires induction on term structure,
 which we can’t do in first-order equations.</p>
-<h3 id="the-fundamental-limitation">17.23 The Fundamental
-Limitation</h3>
+</section>
+<section id="the-fundamental-limitation" class="level3">
+<h3>17.23 The Fundamental Limitation</h3>
 <p>This analysis reveals the core issue: encoding “computation” (like
 applying a substitution) in T(F) requires inductive/recursive structure
 that first-order equations can’t capture.</p>
@@ -2266,9 +2250,12 @@ provability/derivability, not satisfaction in a fixed model. The
 finite conjunctions of equations, evaluated in a model without
 computation.</p>
 <hr />
-<h2 id="conclusion-the-encoding-barrier">18. Conclusion: The Encoding
-Barrier</h2>
-<h3 id="summary-of-the-difficulty">18.1 Summary of the Difficulty</h3>
+</section>
+</section>
+<section id="conclusion-the-encoding-barrier" class="level2">
+<h2>18. Conclusion: The Encoding Barrier</h2>
+<section id="summary-of-the-difficulty" class="level3">
+<h3>18.1 Summary of the Difficulty</h3>
 <p>To prove JCAQP over T(F) undecidable via reduction, we need to encode
 an undecidable problem. The natural candidates (semi-unification, SREU,
 PCP) all require:</p>
@@ -2286,14 +2273,18 @@ structures</li>
 <li>The quantifier prefix is fixed and finite, limiting universal
 checks</li>
 </ul>
-<h3 id="the-gap">18.2 The Gap</h3>
+</section>
+<section id="the-gap" class="level3">
+<h3>18.2 The Gap</h3>
 <p>SREU’s undecidability proof uses “derivability under assumptions”—a
 notion with inductive character. JCAQP over T(F) uses “satisfaction in a
 fixed model”—a notion without built-in recursion.</p>
 <p>This semantic gap may be fundamental. It’s possible that JCAQP over
 T(F) is decidable (perhaps with high complexity), precisely because it
 lacks the power to express unbounded verification.</p>
-<h3 id="open-questions">18.3 Open Questions</h3>
+</section>
+<section id="open-questions" class="level3">
+<h3>18.3 Open Questions</h3>
 <ol type="1">
 <li>Is JCAQP-EXIST over T(F) decidable? What’s its complexity?</li>
 <li>What’s the exact boundary between decidable and undecidable
@@ -2301,7 +2292,9 @@ fragments?</li>
 <li>Can jointness (multiple implications) compensate for the lack of
 inductive structure?</li>
 </ol>
-<h3 id="possible-next-steps">18.4 Possible Next Steps</h3>
+</section>
+<section id="possible-next-steps" class="level3">
+<h3>18.4 Possible Next Steps</h3>
 <ol type="1">
 <li><strong>Prove decidability:</strong> Show that JCAQP over T(F)
 reduces to a decidable problem (e.g., tree automata, bounded quantifier
@@ -2316,10 +2309,12 @@ primitives (disequations, ordering) that might enable encoding.</li>
 Stafiniak (2015), Herbrand_JCA.md survey, and web research on related
 undecidability proofs</em></p>
 <hr />
-<h2 id="critical-findings-from-the-private-papers">19. Critical Findings
-from the Private Papers</h2>
-<h3 id="maher-2005-on-jca-decidability">19.1 Maher (2005) on JCA
-Decidability</h3>
+</section>
+</section>
+<section id="critical-findings-from-the-private-papers" class="level2">
+<h2>19. Critical Findings from the Private Papers</h2>
+<section id="maher-2005-on-jca-decidability" class="level3">
+<h3>19.1 Maher (2005) on JCA Decidability</h3>
 <p>From “Herbrand Constraint Abduction” (Maher, LICS 2005), Section
 5.2:</p>
 <blockquote>
@@ -2330,16 +2325,20 @@ tractable).”</p>
 </blockquote>
 <p>This confirms that as of 2005, the decidability of JCA (and hence
 JCAQP) over the Herbrand domain was an open problem.</p>
-<h3 id="key-structural-difference-jca-cannot-be-reduced-to-sca">19.2 Key
-Structural Difference: JCA Cannot Be Reduced to SCA</h3>
+</section>
+<section id="key-structural-difference-jca-cannot-be-reduced-to-sca"
+class="level3">
+<h3>19.2 Key Structural Difference: JCA Cannot Be Reduced to SCA</h3>
 <p>Maher proves (Example 12) that Joint Constraint Abduction
 <strong>cannot be reduced</strong> to Simple Constraint Abduction. The
 proof shows that for certain JCA instances, there is no SCA problem with
 the same answers.</p>
 <p>This is significant: it means JCA has fundamentally more expressive
 power than SCA.</p>
-<h3 id="sreu-undecidability-mechanism-degtyarev-voronkov">19.3 SREU
-Undecidability Mechanism (Degtyarev-Voronkov)</h3>
+</section>
+<section id="sreu-undecidability-mechanism-degtyarev-voronkov"
+class="level3">
+<h3>19.3 SREU Undecidability Mechanism (Degtyarev-Voronkov)</h3>
 <p>The SREU undecidability proof reduces second-order unification via
 two key techniques:</p>
 <ol type="1">
@@ -2360,8 +2359,9 @@ t_i\)</span> are <strong>not satisfiable in T(F)</strong> (e.g., <span
 class="math inline">\(c = f(a,b)\)</span> violates freeness). They work
 in SREU because derivability under assumptions doesn’t require the
 assumptions to be satisfiable.</p>
-<h3 id="why-sreu-doesnt-reduce-to-jcaqp">19.4 Why SREU Doesn’t Reduce to
-JCAQP</h3>
+</section>
+<section id="why-sreu-doesnt-reduce-to-jcaqp" class="level3">
+<h3>19.4 Why SREU Doesn’t Reduce to JCAQP</h3>
 <p>In JCAQP, the <strong>consistency condition</strong> requires:</p>
 <p><span class="math display">\[\mathcal{T}(\mathcal{F}) \models \exists
 \text{FV}(D_i \land A). D_i \land A\]</span></p>
@@ -2371,8 +2371,9 @@ second-order unification (equations like <span class="math inline">\(c =
 f(w_1, w_2)\)</span> where <span class="math inline">\(c\)</span> is a
 constant) are <strong>unsatisfiable</strong> in T(F).</p>
 <p>Therefore, the standard SREU reduction cannot be used for JCAQP.</p>
-<h3 id="voronkovs-survey-table-of-results">19.5 Voronkov’s Survey: Table
-of Results</h3>
+</section>
+<section id="voronkovs-survey-table-of-results" class="level3">
+<h3>19.5 Voronkov’s Survey: Table of Results</h3>
 <p>From “SREU and Other Decision Problems Related to the Herbrand
 Theorem” (TCS 1999):</p>
 <table>
@@ -2398,8 +2399,10 @@ Theorem” (TCS 1999):</p>
 </table>
 <p>Key observation: Even the monadic case (no binary functions) of SREU
 is still open!</p>
-<h3 id="theorem-4.5-minimal-undecidable-sreu-fragment">19.6 Theorem 4.5:
-Minimal Undecidable SREU Fragment</h3>
+</section>
+<section id="theorem-4.5-minimal-undecidable-sreu-fragment"
+class="level3">
+<h3>19.6 Theorem 4.5: Minimal Undecidable SREU Fragment</h3>
 <p>Voronkov/Veanes showed: SREU(1,0,1) is undecidable even with:</p>
 <ul>
 <li>Ground left-hand sides</li>
@@ -2411,15 +2414,19 @@ class="math inline">\(f(a) = g(b)\)</span>, which are
 <strong>false</strong> in T(F). So this minimal fragment still doesn’t
 transfer to JCAQP.</p>
 <hr />
-<h2 id="revised-assessment-after-private-papers">20. Revised Assessment
-After Private Papers</h2>
-<h3 id="the-open-problem-is-genuine">20.1 The Open Problem is
-Genuine</h3>
+</section>
+</section>
+<section id="revised-assessment-after-private-papers" class="level2">
+<h2>20. Revised Assessment After Private Papers</h2>
+<section id="the-open-problem-is-genuine" class="level3">
+<h3>20.1 The Open Problem is Genuine</h3>
 <p>The JCA/JCAQP decidability question was explicitly noted as open by
 Maher in 2005. Our analysis confirms why: the SREU undecidability
 mechanism relies on unsatisfiable premises, which JCAQP’s consistency
 condition rejects.</p>
-<h3 id="possible-paths-forward">20.2 Possible Paths Forward</h3>
+</section>
+<section id="possible-paths-forward" class="level3">
+<h3>20.2 Possible Paths Forward</h3>
 <p><strong>For Undecidability:</strong></p>
 <ul>
 <li>Find an undecidable problem where “premises” are always
@@ -2435,7 +2442,9 @@ theory)</li>
 <li>Prove bounds on answer complexity</li>
 <li>Use the finite fully-maximal-answers result (Maher Prop. 2/5)</li>
 </ul>
-<h3 id="the-jointness-angle">20.3 The Jointness Angle</h3>
+</section>
+<section id="the-jointness-angle" class="level3">
+<h3>20.3 The Jointness Angle</h3>
 <p>Maher’s Example 12 proves JCA ≠ SCA (in terms of answers). The
 jointness creates interactions between implications that don’t exist in
 single-implication problems.</p>
@@ -2454,8 +2463,12 @@ creates a constraint that no single SCA problem can express.</p>
 <p>Could we construct a JCA problem where the “joint satisfaction”
 requirement encodes an undecidable problem?</p>
 <hr />
-<h2 id="final-summary">21. Final Summary</h2>
-<h3 id="what-we-know">21.1 What We Know</h3>
+</section>
+</section>
+<section id="final-summary" class="level2">
+<h2>21. Final Summary</h2>
+<section id="what-we-know" class="level3">
+<h3>21.1 What We Know</h3>
 <ol type="1">
 <li><strong>SREU is undecidable</strong> (Degtyarev-Voronkov 1996)</li>
 <li><strong>JCA decidability is open</strong> (Maher 2005)</li>
@@ -2466,7 +2479,9 @@ requirement encodes an undecidable problem?</p>
 <li><strong>Fully maximal answers are finite</strong> (Maher Props 2,
 5)</li>
 </ol>
-<h3 id="the-core-barrier">21.2 The Core Barrier</h3>
+</section>
+<section id="the-core-barrier" class="level3">
+<h3>21.2 The Core Barrier</h3>
 <p>The SREU undecidability proof uses premises that are
 <strong>unsatisfiable</strong> in T(F):</p>
 <ul>
@@ -2478,8 +2493,9 @@ constant</li>
 </ul>
 <p>These premises provide “derivability context” but violate JCAQP’s
 consistency condition.</p>
-<h3 id="what-would-be-needed-for-undecidability">21.3 What Would Be
-Needed for Undecidability</h3>
+</section>
+<section id="what-would-be-needed-for-undecidability" class="level3">
+<h3>21.3 What Would Be Needed for Undecidability</h3>
 <p>An undecidable problem that encodes into JCAQP where:</p>
 <ul>
 <li>All premises <span class="math inline">\(D_i\)</span> are
@@ -2489,24 +2505,30 @@ satisfiable (unifiable)</li>
 <li>The existence of such an <span class="math inline">\(A\)</span>
 encodes a computationally hard property</li>
 </ul>
-<h3 id="what-would-be-needed-for-decidability">21.4 What Would Be Needed
-for Decidability</h3>
+</section>
+<section id="what-would-be-needed-for-decidability" class="level3">
+<h3>21.4 What Would Be Needed for Decidability</h3>
 <ul>
 <li>A completeness result showing all answers are “captured” by a
 decidable fragment</li>
 <li>Reduction to tree automata or a bounded alternation problem</li>
 <li>Exploitation of the finite fully-maximal-answers property</li>
 </ul>
-<h3 id="status">21.5 Status</h3>
+</section>
+<section id="status" class="level3">
+<h3>21.5 Status</h3>
 <p>The decidability of JCAQP-EXIST over T(F) remains
 <strong>OPEN</strong>. Our analysis identified the precise barrier (the
 consistency condition vs. SREU’s derivability semantics) but did not
 resolve the question in either direction.</p>
 <hr />
-<h2 id="exploring-decidability-the-pattern-unification-connection">22.
-Exploring Decidability: The Pattern Unification Connection</h2>
-<h3 id="codexs-speculation-on-pattern-unification">22.1 Codex’s
-Speculation on Pattern Unification</h3>
+</section>
+</section>
+<section id="exploring-decidability-the-pattern-unification-connection"
+class="level2">
+<h2>22. Exploring Decidability: The Pattern Unification Connection</h2>
+<section id="codexs-speculation-on-pattern-unification" class="level3">
+<h3>22.1 Codex’s Speculation on Pattern Unification</h3>
 <p>Codex observed that with a prefix like <span
 class="math inline">\(\forall x. \exists y\)</span>, an equation in the
 answer <span class="math inline">\(A\)</span> of the form <span
@@ -2514,8 +2536,9 @@ class="math inline">\(y = t(x, \bar{p})\)</span> makes <span
 class="math inline">\(y\)</span> a “definable function” of <span
 class="math inline">\(x\)</span>. This resembles <strong>higher-order
 pattern unification</strong>.</p>
-<h3 id="miller-patterns-and-decidability">22.2 Miller Patterns and
-Decidability</h3>
+</section>
+<section id="miller-patterns-and-decidability" class="level3">
+<h3>22.2 Miller Patterns and Decidability</h3>
 <p>From the literature on higher-order unification:</p>
 <blockquote>
 <p>“Miller has shown that the unification problem is decidable for
@@ -2530,7 +2553,9 @@ unification</li>
 <li><strong>Unitary</strong> - most general unifiers exist</li>
 <li><strong>Efficient</strong> - nearly linear time algorithms</li>
 </ol>
-<h3 id="the-analogy-to-jcaqp">22.3 The Analogy to JCAQP</h3>
+</section>
+<section id="the-analogy-to-jcaqp" class="level3">
+<h3>22.3 The Analogy to JCAQP</h3>
 <p>In JCAQP with prefix <span class="math inline">\(Q = \forall
 \bar{\alpha}. \exists \bar{\beta}\)</span>:</p>
 <ul>
@@ -2553,8 +2578,9 @@ the same atom with appropriate ordering.</p>
 </blockquote>
 <p>This is reminiscent of the pattern restriction: existential variables
 can only have distinct bound variables as arguments.</p>
-<h3 id="could-jcaqp-reduce-to-pattern-matching">22.4 Could JCAQP Reduce
-to Pattern Matching?</h3>
+</section>
+<section id="could-jcaqp-reduce-to-pattern-matching" class="level3">
+<h3>22.4 Could JCAQP Reduce to Pattern Matching?</h3>
 <p><strong>Hypothesis:</strong> If the no-escaping condition forces
 answers into a “pattern-like” form, then JCAQP-EXIST might reduce to a
 decidable pattern-based problem.</p>
@@ -2575,8 +2601,9 @@ condition?</li>
 pattern constraints?</li>
 <li>Does jointness add complexity beyond pattern unification?</li>
 </ul>
-<h3 id="decidable-semi-unification-fragments">22.5 Decidable
-Semi-Unification Fragments</h3>
+</section>
+<section id="decidable-semi-unification-fragments" class="level3">
+<h3>22.5 Decidable Semi-Unification Fragments</h3>
 <p>From web research, decidable fragments of semi-unification
 include:</p>
 <ul>
@@ -2590,15 +2617,21 @@ inference</li>
 consistency condition might force a structure that avoids the cyclic
 constructions needed for undecidability.</p>
 <hr />
-<h2 id="formalizing-the-no-universal-subtree-verification-barrier">23.
-Formalizing the “No Universal Subtree Verification” Barrier</h2>
-<h3 id="codexs-question">23.1 Codex’s Question</h3>
+</section>
+</section>
+<section id="formalizing-the-no-universal-subtree-verification-barrier"
+class="level2">
+<h2>23. Formalizing the “No Universal Subtree Verification” Barrier</h2>
+<section id="codexs-question" class="level3">
+<h3>23.1 Codex’s Question</h3>
 <blockquote>
 <p>“Would it help to formalize an impossibility result for expressing
 ‘all subterms satisfy property P’ using only equations and finite
 prefixes?”</p>
 </blockquote>
-<h3 id="informal-statement">23.2 Informal Statement</h3>
+</section>
+<section id="informal-statement" class="level3">
+<h3>23.2 Informal Statement</h3>
 <p><strong>Claim:</strong> For any fixed quantifier prefix <span
 class="math inline">\(Q\)</span> and finite set of implications, there
 exists a property <span class="math inline">\(P\)</span> on terms such
@@ -2617,7 +2650,9 @@ class="math inline">\(k\)</span> for <span class="math inline">\(k &gt;
 |Q|\)</span></li>
 </ul></li>
 </ul>
-<h3 id="why-this-should-be-true">23.3 Why This Should Be True</h3>
+</section>
+<section id="why-this-should-be-true" class="level3">
+<h3>23.3 Why This Should Be True</h3>
 <ol type="1">
 <li><p><strong>Finite prefix, unbounded terms:</strong> The prefix <span
 class="math inline">\(Q\)</span> has fixed length <span
@@ -2639,7 +2674,9 @@ language.</p></li>
 implications, each checking a specific pattern. We can’t add
 implications for every possible depth.</p></li>
 </ol>
-<h3 id="formal-version-sketch">23.4 Formal Version (Sketch)</h3>
+</section>
+<section id="formal-version-sketch" class="level3">
+<h3>23.4 Formal Version (Sketch)</h3>
 <p><strong>Definition:</strong> A JCAQP instance <span
 class="math inline">\((Q, \{D_i \Rightarrow C_i\})\)</span> has
 <strong>depth-<span class="math inline">\(k\)</span>
@@ -2663,8 +2700,9 @@ term structure is bounded.</p>
 <p><strong>Corollary:</strong> Unbounded verification (e.g., “all steps
 in an arbitrarily long computation are valid”) cannot be expressed in
 JCAQP over T(F).</p>
-<h3 id="implications-for-undecidability">23.5 Implications for
-Undecidability</h3>
+</section>
+<section id="implications-for-undecidability" class="level3">
+<h3>23.5 Implications for Undecidability</h3>
 <p>This formalization suggests:</p>
 <ul>
 <li><p>Problems requiring unbounded verification (TM halting, PCP,
@@ -2676,10 +2714,12 @@ the bounded verification property limits JCAQP’s expressive
 power</p></li>
 </ul>
 <hr />
-<h2 id="synthesis-where-does-this-leave-us">24. Synthesis: Where Does
-This Leave Us?</h2>
-<h3 id="evidence-toward-decidability">24.1 Evidence Toward
-Decidability</h3>
+</section>
+</section>
+<section id="synthesis-where-does-this-leave-us" class="level2">
+<h2>24. Synthesis: Where Does This Leave Us?</h2>
+<section id="evidence-toward-decidability" class="level3">
+<h3>24.1 Evidence Toward Decidability</h3>
 <ol type="1">
 <li><strong>Pattern unification analogy:</strong> The no-escaping
 condition resembles pattern restrictions</li>
@@ -2690,8 +2730,9 @@ the answer space</li>
 <li><strong>Consistency condition:</strong> Rules out the “false
 premise” tricks used in SREU</li>
 </ol>
-<h3 id="evidence-toward-undecidability">24.2 Evidence Toward
-Undecidability</h3>
+</section>
+<section id="evidence-toward-undecidability" class="level3">
+<h3>24.2 Evidence Toward Undecidability</h3>
 <ol type="1">
 <li><strong>JCA &gt; SCA:</strong> Jointness adds expressive power
 (Maher Example 12)</li>
@@ -2700,7 +2741,9 @@ someone would have shown it</li>
 <li><strong>Quantifier prefix:</strong> Alternation provides some power,
 even if bounded</li>
 </ol>
-<h3 id="most-likely-resolution">24.3 Most Likely Resolution</h3>
+</section>
+<section id="most-likely-resolution" class="level3">
+<h3>24.3 Most Likely Resolution</h3>
 <p>Based on the analysis:</p>
 <p><strong>Conjecture:</strong> JCAQP-EXIST over T(F) is
 <strong>decidable</strong>, likely with high complexity (perhaps PSPACE
@@ -2713,8 +2756,9 @@ or EXPTIME), via reduction to:</p>
 <p><strong>Key insight:</strong> The consistency condition “tames” the
 problem by requiring all premises to be satisfiable, which rules out the
 proof-theoretic tricks that make SREU undecidable.</p>
-<h3 id="what-would-settle-the-question">24.4 What Would Settle the
-Question</h3>
+</section>
+<section id="what-would-settle-the-question" class="level3">
+<h3>24.4 What Would Settle the Question</h3>
 <p><strong>For decidability:</strong></p>
 <ul>
 <li>Show that answers can be normalized to a bounded form (using pattern
@@ -2735,10 +2779,12 @@ unification)</li>
 undecidable (then analyze why equations alone might differ)</p></li>
 </ul>
 <hr />
-<h2 id="addressing-codexs-questions">25. Addressing Codex’s
-Questions</h2>
-<h3 id="semi-unification-fragments-close-to-jcaqp">25.1 Semi-Unification
-Fragments Close to JCAQP</h3>
+</section>
+</section>
+<section id="addressing-codexs-questions" class="level2">
+<h2>25. Addressing Codex’s Questions</h2>
+<section id="semi-unification-fragments-close-to-jcaqp" class="level3">
+<h3>25.1 Semi-Unification Fragments Close to JCAQP</h3>
 <p><strong>Question:</strong> Is there a semi-unification fragment whose
 constraints are expressible in JCAQP?</p>
 <p><strong>Answer:</strong> The most promising candidates are:</p>
@@ -2814,8 +2860,10 @@ matching condition is inherently second-order - it quantifies over both
 that semi-unification, even in decidable fragments, is
 <strong>structurally incompatible</strong> with JCAQP rather than merely
 harder to encode.</p>
-<h3 id="formal-statement-bounded-verification-barrier">25.2 Formal
-Statement: Bounded Verification Barrier</h3>
+</section>
+<section id="formal-statement-bounded-verification-barrier"
+class="level3">
+<h3>25.2 Formal Statement: Bounded Verification Barrier</h3>
 <p><strong>Question:</strong> Can we formalize why equations cannot
 express “all subterms satisfy P”?</p>
 <p><strong>Definition (Verification Depth):</strong> For a JCAQP
@@ -2890,7 +2938,9 @@ fixed instance size.</p>
 equations cannot enforce properties at all positions.” The barrier is
 not merely practical but structural: the syntactic form of JCAQP implies
 bounded verification.</p>
-<h3 id="summary-of-formal-barriers">25.3 Summary of Formal Barriers</h3>
+</section>
+<section id="summary-of-formal-barriers" class="level3">
+<h3>25.3 Summary of Formal Barriers</h3>
 <p>We identify two orthogonal formal barriers preventing undecidability
 reductions to JCAQP over T(F):</p>
 <p><strong>Barrier 1: Consistency Condition (Semantic)</strong></p>
@@ -2930,8 +2980,12 @@ encodings that require verifying unboundedly many steps.</li>
 expressive enough to be interesting, but not expressive enough to encode
 undecidable problems.</p>
 <hr />
-<h2 id="final-conclusion">26. Final Conclusion</h2>
-<h3 id="summary-of-findings">26.1 Summary of Findings</h3>
+</section>
+</section>
+<section id="final-conclusion" class="level2">
+<h2>26. Final Conclusion</h2>
+<section id="summary-of-findings" class="level3">
+<h3>26.1 Summary of Findings</h3>
 <p>After extensive analysis of the JCAQP existence problem over the free
 term algebra T(F), we conclude:</p>
 <ol type="1">
@@ -2959,7 +3013,9 @@ structural properties point toward decidability:</p>
 feature.</strong> JCAQP requires premises to be satisfiable, which
 “tames” the problem relative to SREU.</p></li>
 </ol>
-<h3 id="conjecture">26.2 Conjecture</h3>
+</section>
+<section id="conjecture" class="level3">
+<h3>26.2 Conjecture</h3>
 <p>Based on our analysis, we conjecture that <strong>JCAQP-EXIST over
 T(F) is decidable</strong>, likely with complexity in PSPACE or EXPTIME.
 A proof would likely proceed by:</p>
@@ -2969,14 +3025,18 @@ A proof would likely proceed by:</p>
 <li>Or showing equivalence to a bounded alternation tree automata
 problem</li>
 </ul>
-<h3 id="what-we-did-not-prove">26.3 What We Did Not Prove</h3>
+</section>
+<section id="what-we-did-not-prove" class="level3">
+<h3>26.3 What We Did Not Prove</h3>
 <p>We did <strong>not</strong> prove undecidability. Despite extensive
 attempts, no encoding of an undecidable problem survived the consistency
 condition and bounded verification constraints.</p>
 <p>We also did <strong>not</strong> prove decidability. This would
 require constructing an algorithm or reduction to a known decidable
 problem.</p>
-<h3 id="contribution">26.4 Contribution</h3>
+</section>
+<section id="contribution" class="level3">
+<h3>26.4 Contribution</h3>
 <p>This analysis:</p>
 <ul>
 <li>Clarified the precise barrier (consistency condition
@@ -2994,7 +3054,10 @@ solving, and proof theory.</p>
 Stafiniak (2015), Herbrand_JCA.md survey, Degtyarev-Voronkov (1996),
 Voronkov (1999), Maher (2005)</em> <em>Collaborative analysis with codex
 peer agent</em></p>
-<h2 id="sources-consulted">Sources Consulted</h2>
+</section>
+</section>
+<section id="sources-consulted" class="level2">
+<h2>Sources Consulted</h2>
 <ul>
 <li><a
 href="https://drops.dagstuhl.de/entities/document/10.4230/LIPIcs.FSCD.2020.9">Undecidability
@@ -3025,5 +3088,9 @@ Pattern Unification (Miller)</a></li>
 href="https://en.wikipedia.org/wiki/Unification_(computer_science)">Wikipedia:
 Unification (computer science)</a></li>
 </ul>
+</section>
+</section>
+</article>
+<script src="/assets/theme-toggle.js"></script>
 </body>
 </html>

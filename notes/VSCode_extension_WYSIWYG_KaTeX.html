@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>Lowest hanging fruit of TeXmacs greatness for VSCode</title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <link rel="stylesheet" href="/assets/tufte.css">
+  <link rel="stylesheet" href="/assets/pandoc-tufte.css">
+  <link rel="stylesheet" href="/assets/site.css">
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+  <script>(function(){var t=localStorage.getItem('theme-preference');if(t)document.documentElement.setAttribute('data-theme',t);})()</script>
+</head>
+<body>
+<nav class="site-nav">
+  <a href="/">Home</a> &middot; <a href="/about.html">About</a>
+</nav>
+<div class="theme-toggle">
+  <button id="theme-btn" aria-label="Toggle dark mode">&#9788;</button>
+</div>
+<article>
+<section id="lowest-hanging-fruit-of-texmacs-greatness-for-vscode"
+class="level1">
+<h1>Lowest hanging fruit of TeXmacs greatness for VSCode</h1>
+<p>An extension to directly WYSIWYG-style edit equations, with rendering
+through KaTeX, and key bindings.</p>
+<p>The high-bar ideal is to approach the usability of TeXmacs. So eg. we
+will use more braces than necessary for rendering, to keep track of the
+structure of formulas. The key bindings will be strictly compatible with
+<a
+href="https://marketplace.visualstudio.com/items?itemName=lukstafi.navi-parens">Navi
+Parens</a>, and compatible with TeXmacs where that is also most
+ergonomic.</p>
+<p>Two extensions that look relevant: - <a
+href="https://marketplace.visualstudio.com/items?itemName=GuidoTapia2.unicode-math-vscode&amp;ssr=false#overview">Fast
+Unicode Math Characters</a> - <a
+href="https://marketplace.visualstudio.com/items?itemName=yfzhao.ultra-math-preview">Ultra
+Math Preview</a></p>
+<p>Okay, the action plan! - Intercept the communication in the markdown
+preview, and add LaTeX code to render the cursor and a thin box around
+the nearest braces encompassing the cursor. - The actual cursor and edit
+actions happen in the code pane, but user’s focus is in the preview
+pane. - Add snippets, keybindings for the snippets commands. - Add a
+command to cycle through alternatives of what’s to the left of the
+cursor. Maybe don’t bind it to tab (a la TeXmacs), as it might conflict
+with other uses. - E.g. <span class="math inline"><em>S</em></span>
+-&gt; <span class="math inline"><em>Σ</em></span> -&gt; <span
+class="math inline">∑</span> -&gt; <span
+class="math inline"><em>S</em></span>; <span
+class="math inline"><em>P</em></span> -&gt; <span
+class="math inline"><em>Π</em></span> -&gt; <span
+class="math inline">∏</span> -&gt; <span
+class="math inline"><em>P</em></span>; <span
+class="math inline"><em>f</em></span> -&gt; <span
+class="math inline"><em>ϕ</em></span> -&gt; <span
+class="math inline"><em>φ</em></span> -&gt; <span
+class="math inline"><em>f</em></span>… - Add context-sensitive commands
+to extend the object at cursor to the right, bottom, left and up. In
+particular, it should work with tables (builtin markdown), and trees. -
+And also table and tree specific command “delete row”, and
+table-specific “delete column”. - Find out what markdown plugin is best
+for the tree objects – seems it’s best to use <a
+href="http://mermaid.js.org/#/">Mermaid</a>. It doesn’t render on
+GitHub, but there’s: - <a
+href="https://github.com/raghur/mermaid-filter">a PanDoc filter</a> - <a
+href="https://github.com/mjbvz/vscode-markdown-mermaid">a VS Code
+extension</a></p>
+<pre class="mermaid"><code>graph TD;
+    A--&gt;B;
+    A--&gt;C;</code></pre>
+<p>And the name: <code>vsc-markmacs</code></p>
+<section
+id="p.s.-2023-11-23-latex-aware-navigation-for-v1.3-wysiwyg-for-v2.0"
+class="level2">
+<h2>P.S. 2023-11-23 – LaTeX-aware navigation for v1.3, WYSIWYG for
+v2.0</h2>
+<p>My initial idea of just using the preview hasn’t panned out because
+the burden on editing is just too great: in particular, the edits land
+in the undo ring, breaking the undo command. On the bright side, I fixed
+issues with multicharacter delimiters, added skipping delimiters for
+navigation to previous / next character, added an alternative to
+previous / next line that always stops at a delimiter, and provided a
+nice set of LaTeX-specific delimiters and separators. This is lots of
+features that merit a v1.3 release.</p>
+<p>The plan is to work on a full-fledged WYSIWYG editor for
+Markdown+KaTeX+Mermaid, along the original plan of a poor man’s TeXmacs
+replacement. Once I have some spare time; as Navi Parens v2. That is, I
+will fork a Markdown preview extension to implement the cursor marking
+and nearest scope highlighting; while the actual editing still happening
+in a regular Markdown editing window. Implementing a custom editor would
+make it (maybe) too hard to ensure all editing features work.</p>
+</section>
+</section>
+</article>
+<script src="/assets/theme-toggle.js"></script>
+</body>
+</html>

@@ -1,0 +1,231 @@
+/* site.css — dark mode, homepage styles, overrides for lukstafi.github.io */
+
+/* ===== Dark mode variables ===== */
+
+:root {
+  --bg: #fffff8;
+  --fg: #111;
+  --link: #0b57d0;
+  --link-visited: #6a3aaf;
+  --border: #ccc;
+  --code-bg: #f5f5f0;
+  --tag-bg: #e8e8e0;
+  --tag-fg: #555;
+  --nav-bg: rgba(255, 255, 248, 0.95);
+}
+
+/* System preference dark mode */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #151515;
+    --fg: #d4d4d4;
+    --link: #8ab4f8;
+    --link-visited: #c4a8f5;
+    --border: #444;
+    --code-bg: #1e1e1e;
+    --tag-bg: #2a2a2a;
+    --tag-fg: #bbb;
+    --nav-bg: rgba(21, 21, 21, 0.95);
+  }
+}
+
+/* Manual dark mode override */
+:root[data-theme="dark"] {
+  --bg: #151515;
+  --fg: #d4d4d4;
+  --link: #8ab4f8;
+  --link-visited: #c4a8f5;
+  --border: #444;
+  --code-bg: #1e1e1e;
+  --tag-bg: #2a2a2a;
+  --tag-fg: #bbb;
+  --nav-bg: rgba(21, 21, 21, 0.95);
+}
+
+/* Manual light mode override */
+:root[data-theme="light"] {
+  --bg: #fffff8;
+  --fg: #111;
+  --link: #0b57d0;
+  --link-visited: #6a3aaf;
+  --border: #ccc;
+  --code-bg: #f5f5f0;
+  --tag-bg: #e8e8e0;
+  --tag-fg: #555;
+  --nav-bg: rgba(255, 255, 248, 0.95);
+}
+
+/* Apply variables — override Tufte's hardcoded colors */
+body {
+  background-color: var(--bg) !important;
+  color: var(--fg) !important;
+}
+
+a { color: var(--link); }
+a:visited { color: var(--link-visited); }
+
+hr { border-top-color: var(--border); }
+
+.sidenote, .marginnote { color: var(--fg); }
+
+pre, code { background-color: var(--code-bg); }
+pre { padding: 0.5rem 0.8rem; border-radius: 4px; }
+
+div.sourceCode { background-color: var(--code-bg); border-radius: 4px; }
+
+blockquote { border-left: 4px solid var(--border); }
+
+table { border-top-color: var(--fg); border-bottom-color: var(--fg); }
+th { border-bottom-color: var(--border); }
+
+/* Font smoothing for dark backgrounds */
+:root[data-theme="dark"] body,
+:root:not([data-theme="light"]) body {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) body {
+    -webkit-font-smoothing: auto;
+    -moz-osx-font-smoothing: auto;
+  }
+}
+
+/* ===== Navigation ===== */
+
+.site-nav {
+  font-family: et-book, Palatino, "Palatino Linotype", "Book Antiqua", Georgia, serif;
+  font-size: 1.2rem;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.site-nav a {
+  text-decoration: none;
+}
+
+.site-nav a:hover {
+  text-decoration: underline;
+}
+
+/* ===== Theme toggle ===== */
+
+.theme-toggle {
+  position: fixed;
+  bottom: 1.2rem;
+  right: 1.2rem;
+  z-index: 100;
+}
+
+.theme-toggle button {
+  background: var(--bg);
+  color: var(--fg);
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  width: 2.4rem;
+  height: 2.4rem;
+  font-size: 1.2rem;
+  cursor: pointer;
+  line-height: 1;
+  transition: opacity 0.2s;
+}
+
+.theme-toggle button:hover {
+  opacity: 0.7;
+}
+
+/* ===== TOC box (migrated from jca.css) ===== */
+
+#TOC {
+  margin: 1.25rem 0 2rem 0;
+  padding: 1rem;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--code-bg);
+  width: 55%;
+}
+
+#TOC ul { padding-left: 1.25rem; }
+
+@media (max-width: 760px) {
+  #TOC { width: 100%; }
+}
+
+/* ===== Homepage: tag filters ===== */
+
+.tag-filters {
+  margin: 1.5rem 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.tag-btn {
+  font-family: et-book, Palatino, Georgia, serif;
+  font-size: 1rem;
+  padding: 0.3rem 0.8rem;
+  border: 1px solid var(--border);
+  border-radius: 2rem;
+  background: transparent;
+  color: var(--fg);
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+
+.tag-btn:hover {
+  background: var(--tag-bg);
+}
+
+.tag-btn.active {
+  background: var(--fg);
+  color: var(--bg);
+  border-color: var(--fg);
+}
+
+/* ===== Homepage: post list ===== */
+
+.post-list {
+  list-style: none;
+  padding: 0;
+  width: 55%;
+}
+
+.post-item {
+  margin-bottom: 1.4rem;
+  line-height: 1.4;
+}
+
+.post-item time {
+  font-family: et-book-roman-old-style, et-book, Georgia, serif;
+  font-size: 1.1rem;
+  color: var(--tag-fg);
+  margin-right: 0.5rem;
+}
+
+.post-item .tag {
+  display: inline-block;
+  font-size: 0.85rem;
+  padding: 0.1rem 0.5rem;
+  border-radius: 1rem;
+  background: var(--tag-bg);
+  color: var(--tag-fg);
+  margin-right: 0.4rem;
+  vertical-align: middle;
+}
+
+.post-item a {
+  font-size: 1.3rem;
+}
+
+.post-item .description {
+  display: block;
+  font-size: 1.1rem;
+  color: var(--tag-fg);
+  margin-top: 0.2rem;
+}
+
+@media (max-width: 760px) {
+  .post-list { width: 100%; }
+}
