@@ -36,57 +36,63 @@
     an OCaml-native deep learning framework.</p>
 </section>
 
-<section>
+<div class="tag-filters">
+  <button class="tag-btn active" data-tag="all">All</button>
+  <button class="tag-btn" data-tag="maintained">Maintained</button>
+  <button class="tag-btn" data-tag="active">Active</button>
+</div>
+
+<section class="project-group">
   <h2>Primary Projects</h2>
 
-  <p><a href="https://github.com/ahrefs/ocannl">OCANNL</a> &mdash;
+  <p class="project-item" data-tags="active"><a href="https://github.com/ahrefs/ocannl">OCANNL</a> &mdash;
     OCaml-based deep learning system with backends for CPU, CUDA, and Metal.
     Designed around shape inference and compositional model building.</p>
 
-  <p><a href="https://github.com/lukstafi/ppx_minidebug">ppx_minidebug</a> &mdash;
+  <p class="project-item" data-tags="active"><a href="https://github.com/lukstafi/ppx_minidebug">ppx_minidebug</a> &mdash;
     OCaml PPX preprocessor for logging type-annotated let-bound values and function
     results, optionally as collapsible HTML or Markdown trees.</p>
 
-  <p><a href="https://github.com/lukstafi/curious-ocaml">curious-ocaml</a> &mdash;
+  <p class="project-item" data-tags="maintained"><a href="https://github.com/lukstafi/curious-ocaml">curious-ocaml</a> &mdash;
     Educational book about OCaml covering logic, algebra, computation,
     functions, constraints, monads, and effects.</p>
 
-  <p><a href="https://github.com/lukstafi/invargent">InvarGenT</a> &mdash;
+  <p class="project-item"><a href="https://github.com/lukstafi/invargent">InvarGenT</a> &mdash;
     Invariant generation as type inference using GADTs and existential types.</p>
 </section>
 
-<section>
+<section class="project-group">
   <h2>Tools &amp; Libraries</h2>
 
-  <p><a href="https://github.com/lukstafi/ocaml-cudajit">ocaml-cudajit</a> &mdash;
+  <p class="project-item" data-tags="maintained"><a href="https://github.com/lukstafi/ocaml-cudajit">ocaml-cudajit</a> &mdash;
     OCaml bindings for CUDA driver API and NVRTC runtime compilation.</p>
 
-  <p><a href="https://github.com/lukstafi/ocaml-metal">ocaml-metal</a> &mdash;
+  <p class="project-item" data-tags="maintained"><a href="https://github.com/lukstafi/ocaml-metal">ocaml-metal</a> &mdash;
     OCaml bindings to Apple Metal for general compute applications.</p>
 
-  <p><a href="https://github.com/lukstafi/ocaml-gccjit">ocaml-gccjit</a> &mdash;
+  <p class="project-item"><a href="https://github.com/lukstafi/ocaml-gccjit">ocaml-gccjit</a> &mdash;
     OCaml bindings for libgccjit.</p>
 
-  <p><a href="https://github.com/lukstafi/navi-parens">navi-parens</a> &mdash;
+  <p class="project-item"><a href="https://github.com/lukstafi/navi-parens">navi-parens</a> &mdash;
     VS Code extension: navigate structured code with keybindings (programming languages and LaTeX).</p>
 
-  <p><a href="https://github.com/lukstafi/agent-duo">agent-duo</a> &mdash;
+  <p class="project-item" data-tags="active"><a href="https://github.com/lukstafi/agent-duo">agent-duo</a> &mdash;
     Shell scripts for coordinating AI agent peers in collaborative research.</p>
 
-  <p><a href="https://github.com/lukstafi/pai-lite">pai-lite</a> &mdash;
+  <p class="project-item" data-tags="active"><a href="https://github.com/lukstafi/pai-lite">pai-lite</a> &mdash;
     Lightweight Personal AI Infrastructure inspired by Daniel Miessler&rsquo;s project.</p>
 </section>
 
-<section>
+<section class="project-group">
   <h2>Just for Fun</h2>
 
-  <p><a href="https://github.com/lukstafi/Pascal-course">Pascal-course</a> &mdash;
+  <p class="project-item"><a href="https://github.com/lukstafi/Pascal-course">Pascal-course</a> &mdash;
     A comprehensive Pascal programming course based on the Free Pascal implementation.</p>
 
-  <p><a href="https://github.com/lukstafi/pic-breeder-imaginary">pic-breeder-imaginary</a> &mdash;
+  <p class="project-item" data-tags="maintained"><a href="https://github.com/lukstafi/pic-breeder-imaginary">pic-breeder-imaginary</a> &mdash;
     A Pic Breeder clone in OCaml.</p>
 
-  <p><a href="https://github.com/lukstafi/percolation">percolation</a> &mdash;
+  <p class="project-item"><a href="https://github.com/lukstafi/percolation">percolation</a> &mdash;
     Visualizing percolation (various strategies).</p>
 </section>
 
@@ -104,5 +110,37 @@
 </div>
 
 <script src="/assets/theme-toggle.js"></script>
+<script>
+(function () {
+  var hierarchy = ['active', 'maintained'];
+  var buttons = document.querySelectorAll('.tag-btn');
+  var items = document.querySelectorAll('.project-item');
+  var groups = document.querySelectorAll('.project-group');
+
+  buttons.forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      buttons.forEach(function (b) { b.classList.remove('active'); });
+      btn.classList.add('active');
+      var tag = btn.getAttribute('data-tag');
+      var idx = hierarchy.indexOf(tag);
+      var allowed = idx !== -1 ? hierarchy.slice(0, idx + 1) : null;
+      items.forEach(function (item) {
+        var itemTag = item.getAttribute('data-tags') || '';
+        if (!allowed || (itemTag && allowed.indexOf(itemTag) !== -1)) {
+          item.style.display = '';
+        } else {
+          item.style.display = 'none';
+        }
+      });
+      groups.forEach(function (group) {
+        var children = group.querySelectorAll('.project-item');
+        var anyVisible = false;
+        children.forEach(function (c) { if (c.style.display !== 'none') anyVisible = true; });
+        group.style.display = anyVisible ? '' : 'none';
+      });
+    });
+  });
+})();
+</script>
 </body>
 </html>
