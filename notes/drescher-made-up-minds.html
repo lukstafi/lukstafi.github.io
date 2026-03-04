@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>drescher-made-up-minds</title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <link rel="stylesheet" href="/assets/tufte.css">
+  <link rel="stylesheet" href="/assets/pandoc-tufte.css">
+  <link rel="stylesheet" href="/assets/site.css">
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+  <script>(function(){var t=localStorage.getItem('theme-preference');if(t)document.documentElement.setAttribute('data-theme',t);})()</script>
+</head>
+<body>
+<nav class="site-nav">
+  <a href="/">Home</a> &middot; <a href="/about.html">About</a>
+</nav>
+<div class="theme-toggle">
+  <button id="theme-btn" aria-label="Toggle dark mode">&#9788;</button>
+</div>
+<article>
+<p>The “schema mechanism” system developed in Gary Drescher’s PhD
+project reminds me of Anticipation-Based Learning Classifier Systems,
+but it is more AGI / cognitive-architecture worthy because of its
+representation building facilities. The book is very novel for its year
+1991, before modern RL theory became popular in AI. ABLCSes are quite
+recent development in LCSes (although with an early publication in
+1990). I have (good) sentiment towards Learning Classifier Systems, they
+were my first encounter with a more cognitive form of AI, very long
+ago.</p>
+<p>It would be cool to redo Gary Drescher’s project, but using Rich
+Sutton and Hamid Maei’s recent results – Gradient Temporal-Difference
+Algorithms with off-policy learning – instead of schemas.</p>
+<p>The principle behind Gary’s project is constructivism, the opposite
+of nativism. Almost all structure of the world, even what Kant claimed
+to be necessarily needed a priori – binding of experience into objects
+having features – can be learned from input by a relatively simple
+mechanism. You might think that therefore constructivism isn’t only
+radically against Chomsky, but also David Deutsch’es ideas I’ve been
+quoting recently – bashing of empiricism and of logico-positivism. But
+consider this: the construction algorithm, to succeed, must have
+universal reach in David Deutsch’es terms. And Gary Drescher accepts the
+criticisms against logico-empiricism, “Even the most rudimentary
+conceptions of the physical object cannot be defined by the schema
+mechanism as any function of the sensory primitives.” Section 8.6
+stresses “Why Non-naive Induction Must Be Built In”; and the mechanism
+needs to solve similar problems with counterfactuals. The system uses
+counterfactuals for learning and concept invention. “The difficulty and
+obscurity of the concept of counterfactuals is, I suspect, a reason that
+its fundamental importance for learning systems has been late to be
+recognized, rather than a reason to consider it an implausible basis for
+learning.”</p>
+<p>Notes below focus on chapters 3 and 4 as these describe the
+mechanisms of the cognitive system. I pick a couple of nuggets from
+later chapters. Chapter 2 presents Piagetian theory, elaborating on
+initial stages of development. It is worth reading in full.</p>
+<ol type="1">
+<li>Conditions are conjunctions of items. Primitive items are sensory
+facts and synthetic items are beliefs.</li>
+<li>Primitive items are binary: On / Off, synthetic items are ternary:
+On / Off / Unknown.</li>
+<li>Objects and relations between objects are supposed to be stable
+configurations of schemas, synthetic items and composite actions.</li>
+<li>Schemas are identified by a triple: preconditions, action,
+postconditions.</li>
+<li>Primitive actions change state of the world and agent.</li>
+<li>Composite actions are identified by a postcondition they
+achieve.</li>
+<li>Therefore a schema might be a refinement of the postcondition of a
+composite action under given preconditions.</li>
+<li>Accessible value in a state is the maximum value achievable along a
+reliable path from the state.</li>
+<li>Instrumental value is assigned to items along reliable paths to a
+goal. I.e. items in a state have its accessible value as instrumental
+value. Instrumental value is transient.</li>
+<li>Delegated value is assigned proportionally to (1) the difference of
+average accessible values of an item: when the item is On minus when the
+item is Off; and (2) the duration of the item being On. It is more
+permanent.</li>
+<li>Item of frequently instrumental value only has delegated value when
+it is not “readily accessible” – readily accessible items have the
+difference in accessible values (between their On/Off states) close to
+zero.</li>
+<li>To avoid runaway of propagating delegated value through cycles, the
+value propagated is half of the delegated value.</li>
+<li>Attention via hysteresis-habituation loop: recently selected schemas
+have more weight but decreasing with consecutive selections.</li>
+<li>Reweighting to upsample schemas with rare actions.</li>
+<li>Promote actions with inverse effects (turns an item On/Off right
+after it was turned Off/On) as it heuristically leads to reliable
+schemas.</li>
+<li>Marginal attribution:</li>
+<li>Start from bare schema: {}-A-&gt;{}; add results in spinoff schemas
+for items whose positive-transition (from Off to On) or
+negative-transition rates following action A are higher than their
+averages for all actions.</li>
+<li>Add (negated) items in contexts of spinoff schemas which
+(anti)correlate with validity of the schema, making the spinoff schema
+more reliable.</li>
+<li>All statistics count only unexplained transitions and correlations –
+when the items aren’t in results or contexts of existing valid schemas.
+(Statistics are reset after a spinoff accordingly.) Statistics are only
+collected by most specific schemas accounting for a situation. This
+increases sensitivity to regularities and reduces combinatorial
+explosion.</li>
+<li>Schema chaining requires that all items of the (primary) context of
+a following schema are provided by results of preceding schema. It’s
+used for composite actions, etc.</li>
+<li>Schemas have associated extended context (and extended results).
+Extended contexts and results are mutable (evolve over time). Besides
+being a data structure for spinoff formation, extended context adds to
+the condition for activation of a schema. Schema chaining cannot rely on
+the corresponding spinoff schemas, because it often requires general
+primary contexts.</li>
+<li>For a composite action, besides conditions that need to hold
+initially, there can also be conditions that need to hold throughout the
+action.</li>
+<li>Synthetic items are designed to identify invariants when all
+apparent manifestations change or cease (compare Piagetian conservation
+phenomena).</li>
+<li>Keep track of local consistency: the probability that a schema will
+be valid right after it has been valid, and expected duration of
+consistency: how long since onset of validity to first invalid
+activation. (Recall attention via hysteresis.)</li>
+<li>A synthetic item is a reifier of validity conditions of an
+unreliable locally consistent schema, called its host schema – action
+called probing action and result called manifestation. I.e. it is the
+state item such that when added to the context (precondition) of the
+schema, if the schema were activated, the action would bring the
+result.</li>
+<li>The intention is that the synthetic item captures a persistent
+feature, like presence of an object, while the remaining context items
+of the host schema capture transient features, like effector
+configuration.</li>
+<li>Learned verification conditions set the state of a synthetic
+item:</li>
+<li>Host schema trial: when host schema is activated, On resp. Of if it
+succeded resp. failed.</li>
+<li>Local consistency: the state remains as changed for at most a period
+of expected duration of host schema’s local consistency (for On, local
+“inconsistency” for Off). Then revert to Unknown.</li>
+<li>Augmented context conditions: the extended context of the host
+schema (which collects evidence from spinoff schemas).</li>
+<li>Predictions: “If a synthetic item appears in the result of a
+reliable schema, and that schema is activated, then in the absence of
+any evidence to the contrary, the mechanism presumes that that schema
+succeeded”.</li>
+<li>Above mechanism approximates a synthetic item, but the synthetic
+item is not coextensive with any function of cumulative inputs (i.e. of
+the inputs history).</li>
+<li>“The schema mechanism grounds its synthetic items in the reification
+of counter-factual assertions; the subsequent adaptation of its
+verification conditions is driven by that grounding.”</li>
+<li>Composite action is created for each spinoff schema that has a novel
+result.</li>
+<li>“A composite action is considered to have been implicitly taken
+whenever its goal state becomes satisfied […] Marginal attribution can
+thereby detect results caused by the goal state, even if the goal state
+obtains due to external events.” Which together with hysteresis leads to
+imitation.</li>
+<li>Backward Broadcast mechanism and action controller learn proximity
+of schemas (results) to goal states (of composite actions). If reliable
+chains of schemas are found, they are incorporated into composite
+actions. The chains are also used for forward prediction.</li>
+<li>Action controller handles special cases: indeterministic actions
+(schemas with same contexts and actions but various results),
+repetition, on-the-fly repair (detecting schema that make applicable
+some component of an interrupted action).</li>
+<li>Schema with composite action cannot spin off a schema with part of
+the composite action goal in the results.</li>
+<li>There is no “problem resolution” mechanism. Rather, some schemas hit
+a dead-end, and are taken over by schemas that capture more fruitful
+regularities.</li>
+<li>I haven’t understood how <em>inversely indexed</em> representations
+(synthetic items) work. (par. 6.4.4)</li>
+<li>Note that synthetic items do not represent identity of for example
+tactile-visual objects. This isn’t bad though because the system’s
+mistakes reproduce Piagetian errors at corresponding developmental
+stages. Errors mean unreliable schemas which leads to further
+development.</li>
+<li>Now on to more far-fetched stuff. “The new conception [learned
+abstract concept] reifies the set of circumstances under which a piece
+of one’s computational machinery behaves a certain way.”</li>
+<li>“Consciousness requires knowledge (and hence representation) of
+one’s own mental experiences as such; the schema mechanism does not come
+close to demonstrating such knowledge.”</li>
+<li>Unimplemented mechanism: subactivation. “To subactivate an
+applicable schema is essentially to simulate taking its action, by
+forcing its result items into a simulated-On state (or, if negated, a
+simulated-Off state).” The simulated states are entirely distinct from
+actual states and all mechanisms are duplicated for them. But statistics
+are shared, and spinoff schemas are created “for real”.</li>
+<li>Simulations are serial but parallel chaining search will cache the
+knowledge.</li>
+<li>Unimplemented mechanism: explicitly represent inverse actions to
+make them available for subactivation (i.e. simulation).</li>
+<li>Override generalizations: when a derived (by simulation) schema
+prediction is wrong because a direct schema from which it was derived is
+overriden, derived schema should be overriden too, without penalty for
+the derivation. A new schema will be created to capture this
+exception.</li>
+<li>“The suggestion is that deductive-override machinery may permit the
+schema mechanism to escape the fallacy of naive induction. The key is to
+regard the conflict between a reasonable generalization and an absurd
+but always-confirmed generalization as just another conflict between
+generalizations expressed at different levels of description.”</li>
+<li>“The reason [not to build in] a variable-matching implementation of
+generalizations, is just that there is no apparent way to support such
+an implementation without abandoning the constructivist working
+hypothesis by including domain-specific build-in structure. […] Perhaps
+the system itself could be designed to devise explicit structured
+representations to support variablized generalizations. [I]f virtual
+generalization fails, devising such machinery may be vital to the schema
+mechanism.”</li>
+<li>“A schema’s extended context is essentially a connectionist network
+solving a classifier problem.”</li>
+<li>Unimplemented: clustering (i.e. hierarchical modeling); “having
+coordinated coarse- and fine-grained spaces mitigates the combinatorics
+of showing the path from one fine-grained place to another, because the
+path can be represented as a coarse segment to get in the right
+vicinity, followed by a fine-tuning segment.”</li>
+<li>Unimplemented: garbage collection. Schemas: not contributing to goal
+achievement, not spawning new spinoffs, seldom activated, perhaps even
+those that are activated but recreation opportunities are more frequent
+than activation opportunities.</li>
+</ol>
+</article>
+<script src="/assets/theme-toggle.js"></script>
+</body>
+</html>
