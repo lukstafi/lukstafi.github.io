@@ -1,8 +1,8 @@
-My inner anti-anti-realist: "Let's do some metaphysics!"
-My inner positivist: "You must be kidding! Such frivolous activities will waste your mind."
-My inner neopragmatist: "Come on, inner positivist. Some frivolity is not necessarily a bad thing. Would you rather have us watch 'Dark Knight Rises'?"
-My inner positivist: "Well... I'm not taking part in this, anyway."
-My inner neopragmatist: "I'd rather have us write some poetry, but I'm not gonna spend this evening alone. Bring out your toys, inner anti-anti-realist."
+My inner anti-anti-realist: "Let's do some metaphysics!"  
+My inner positivist: "You must be kidding! Such frivolous activities will waste your mind."  
+My inner neopragmatist: "Come on, inner positivist. Some frivolity is not necessarily a bad thing. Would you rather have us watch 'Dark Knight Rises'?"  
+My inner positivist: "Well... I'm not taking part in this, anyway."  
+My inner neopragmatist: "I'd rather have us write some poetry, but I'm not gonna spend this evening alone. Bring out your toys, inner anti-anti-realist."  
 
 ### Reality is indexical
 
