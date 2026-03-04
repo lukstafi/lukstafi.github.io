@@ -1,0 +1,376 @@
+#!/usr/bin/env python3
+"""Convert Blogger Atom feed to individual Markdown files."""
+
+import xml.etree.ElementTree as ET
+import html
+import re
+import os
+from datetime import datetime
+
+FEED_PATH = "/Users/lukstafi/Downloads/Takeout/Blogger/Blogs/Digits/feed.atom"
+OUTPUT_DIR = "/Users/lukstafi/lukstafi.github.io/poetry"
+
+NS = {
+    'atom': 'http://www.w3.org/2005/Atom',
+    'blogger': 'http://schemas.google.com/blogger/2018',
+}
+
+
+def html_to_markdown(raw_html: str) -> str:
+    """Convert escaped HTML content to clean Markdown text."""
+    # The content has HTML entities like &lt; &gt; &amp; already decoded by XML parser,
+    # so we get actual HTML tags.
+    text = raw_html
+
+    # Collapse <br />\n into just <br /> to avoid double newlines
+    text = re.sub(r'<br\s*/?>[ \t]*\n', '<br />', text)
+
+    # Convert <blockquote> to markdown blockquote
+    def replace_blockquote(m):
+        inner = m.group(1)
+        # Convert <br /> inside blockquote to newlines
+        inner = re.sub(r'<br\s*/?>', '\n', inner)
+        inner = inner.strip()
+        lines = inner.split('\n')
+        # Skip empty-only blockquotes
+        if not any(line.strip() for line in lines):
+            return ''
+        return '\n'.join('> ' + line.strip() for line in lines if line.strip())
+
+    text = re.sub(r'<blockquote[^>]*>(.*?)</blockquote>', replace_blockquote, text, flags=re.DOTALL)
+
+    # Convert <i> and <em> to markdown italic
+    text = re.sub(r'<(?:i|em)>(.*?)</(?:i|em)>', r'*\1*', text, flags=re.DOTALL)
+
+    # Convert <b> and <strong> to markdown bold
+    text = re.sub(r'<(?:b|strong)>(.*?)</(?:b|strong)>', r'**\1**', text, flags=re.DOTALL)
+
+    # Convert <a href="...">text</a> to [text](url)
+    text = re.sub(r'<a\s+href=["\']([^"\']*)["\'][^>]*>(.*?)</a>', r'[\2](\1)', text, flags=re.DOTALL)
+
+    # Remove <div> and </div> tags (they just wrap content)
+    text = re.sub(r'</?div[^>]*>', '', text)
+
+    # Remove <span> tags
+    text = re.sub(r'</?span[^>]*>', '', text)
+
+    # Convert <br /> and <br> to newline
+    text = re.sub(r'<br\s*/?>', '\n', text)
+
+    # Remove any remaining HTML tags
+    text = re.sub(r'<[^>]+>', '', text)
+
+    # Decode HTML entities like &nbsp;
+    text = html.unescape(text)
+
+    # Replace non-breaking spaces with regular spaces
+    text = text.replace('\u00a0', ' ')
+
+    # Clean up excessive blank lines (3+ -> 2)
+    text = re.sub(r'\n{3,}', '\n\n', text)
+
+    # Preserve line breaks for poetry: add two trailing spaces on non-blank lines
+    # but only when the next line is also non-blank (single line breaks).
+    # Double line breaks (blank line) already create paragraph breaks in Markdown.
+    lines = text.split('\n')
+    result = []
+    for i, line in enumerate(lines):
+        stripped = line.rstrip()
+        next_is_nonblank = (i + 1 < len(lines)) and lines[i + 1].strip()
+        if stripped and next_is_nonblank:
+            result.append(stripped + '  ')
+        else:
+            result.append(stripped)
+    text = '\n'.join(result)
+
+    # Strip leading/trailing blank lines
+    text = text.strip()
+
+    return text
+
+
+def slugify(title: str) -> str:
+    """Create a filename-safe slug from a title."""
+    # Remove leading ? or [] brackets used as markers
+    slug = re.sub(r'^[?\[]+\s*', '', title)
+    slug = re.sub(r'\]+$', '', slug)
+    slug = slug.strip()
+    slug = slug.lower()
+    # Replace non-alphanum with hyphens
+    slug = re.sub(r'[^a-z0-9]+', '-', slug)
+    slug = slug.strip('-')
+    # Limit length
+    if len(slug) > 60:
+        slug = slug[:60].rstrip('-')
+    return slug or 'untitled'
+
+
+GROUPS = {
+    "body-in-motion": {
+        "name": "The Body in Motion",
+        "description": "Dance, movement, embodied sensation",
+    },
+    "hearts-coordinates": {
+        "name": "The Heart's Coordinates",
+        "description": "Love, longing, desire, interpersonal connection",
+    },
+    "self-assembled": {
+        "name": "The Self, Assembled and Questioned",
+        "description": "Identity, selfhood, vulnerability, resilience",
+    },
+    "mind-and-language": {
+        "name": "Mind, Language, and the Poem Itself",
+        "description": "Meta-poetry, self-reference, thought and expression",
+    },
+    "worlds-in-mind": {
+        "name": "Bodies in Space, Worlds in Mind",
+        "description": "Cosmic scale, stars, science fiction, the human inside the vast",
+    },
+    "landscape-and-creature": {
+        "name": "Landscape, Season, Creature",
+        "description": "Nature, weather, animals, sensory life",
+    },
+    "persons-and-portraits": {
+        "name": "Persons and Portraits",
+        "description": "Poems shaped around specific people",
+    },
+    "polski": {
+        "name": "Polski / Polish",
+        "description": "Polish and bilingual poems",
+    },
+    "voiced-by-machines": {
+        "name": "Voiced by Machines",
+        "description": "Poems generated by GPT-2 language models",
+    },
+    "collections": {
+        "name": "Collections &amp; Marginalia",
+        "description": "Compilations and meta-documents",
+    },
+}
+
+# slug -> group-id mapping
+SLUG_TO_GROUP = {
+    # The Body in Motion
+    "beauty": "body-in-motion",
+    "dance-miniature-1": "body-in-motion",
+    "dance-miniature-2": "body-in-motion",
+    "dance-miniature-3": "body-in-motion",
+    "coincidences": "body-in-motion",
+    "the-clay": "body-in-motion",
+    "redemption": "body-in-motion",
+    "to-do-list": "body-in-motion",
+    "ultimate-qualia": "body-in-motion",
+    "ways-of-holding-hands-meditation": "body-in-motion",
+    "disguise": "body-in-motion",
+    "work-in-progress": "body-in-motion",
+    "ideal-glass": "body-in-motion",
+    "life": "body-in-motion",
+    "an-offering": "body-in-motion",
+    "savasana": "body-in-motion",
+    # The Heart's Coordinates
+    "scared": "hearts-coordinates",
+    "shameless": "hearts-coordinates",
+    "choose-life": "hearts-coordinates",
+    "on-and-on": "hearts-coordinates",
+    "the-first-time": "hearts-coordinates",
+    "romantic": "hearts-coordinates",
+    "particular": "hearts-coordinates",
+    "modality": "hearts-coordinates",
+    "mysterious-creature": "hearts-coordinates",
+    "not-a-poem": "hearts-coordinates",
+    "flower-by-kim-ch-un-su": "hearts-coordinates",
+    "shore-sick": "hearts-coordinates",
+    "just-a-comfort-poem": "hearts-coordinates",
+    "friend": "hearts-coordinates",
+    "thought": "hearts-coordinates",
+    # The Self, Assembled and Questioned
+    "who-i-am": "self-assembled",
+    "identity": "self-assembled",
+    "how-to-choose-one-s-identity": "self-assembled",
+    "lament": "self-assembled",
+    "hate": "self-assembled",
+    "lonely": "self-assembled",
+    "confused": "self-assembled",
+    "clean": "self-assembled",
+    "discarded-sketches-of-self-pity": "self-assembled",
+    "commuting": "self-assembled",
+    "laziness": "self-assembled",
+    "breakdown-night": "self-assembled",
+    "phoenix": "self-assembled",
+    "emergent": "self-assembled",
+    # Mind, Language, and the Poem Itself
+    "close-reading": "mind-and-language",
+    "this-sentence": "mind-and-language",
+    "constraints": "mind-and-language",
+    "the-poem": "mind-and-language",
+    "poems-that-collide": "mind-and-language",
+    "onomatopoeia": "mind-and-language",
+    "trees-of-noun-and-verb": "mind-and-language",
+    "the-future-of-poetry": "mind-and-language",
+    "notebook": "mind-and-language",
+    "discarded-sketches-of-the-night": "mind-and-language",
+    "the-objective": "mind-and-language",
+    "here": "mind-and-language",
+    # Bodies in Space, Worlds in Mind
+    "a-freighter-in-transit": "worlds-in-mind",
+    "discarded-sketches-of-distraction": "worlds-in-mind",
+    "lone-galaxy": "worlds-in-mind",
+    "celebrate": "worlds-in-mind",
+    "stories-of-your-life": "worlds-in-mind",
+    "ve-story": "worlds-in-mind",
+    "riding-the-elephant": "worlds-in-mind",
+    "end-of-the-world": "worlds-in-mind",
+    "seven-of-nine": "worlds-in-mind",
+    "ancient-epistle": "worlds-in-mind",
+    "mathematics": "worlds-in-mind",
+    "no-suicides-permitted-here-and-no-smoking-in-the-parlor": "worlds-in-mind",
+    # Landscape, Season, Creature
+    "autumn-s-sunny-angels": "landscape-and-creature",
+    "airbender": "landscape-and-creature",
+    "raptor": "landscape-and-creature",
+    "bridge-knitter": "landscape-and-creature",
+    "nocturnal-visitor": "landscape-and-creature",
+    "mosquitoes": "landscape-and-creature",
+    "falling-asleep": "landscape-and-creature",
+    "the-metaphysical-club": "landscape-and-creature",
+    "a-wooden-bench": "landscape-and-creature",
+    "visit-to-a-grocery": "landscape-and-creature",
+    "visiting-rhyme": "landscape-and-creature",
+    "silent-lullaby": "landscape-and-creature",
+    "one-quiet-night": "landscape-and-creature",
+    "the-eye-of-the-storm": "landscape-and-creature",
+    "waiting": "landscape-and-creature",
+    "silhouette": "landscape-and-creature",
+    "sea-lion": "landscape-and-creature",
+    # Persons and Portraits
+    "clara": "persons-and-portraits",
+    "collectionneur": "persons-and-portraits",
+    "the-beauty-and-me": "persons-and-portraits",
+    "driver-s-licence": "persons-and-portraits",
+    "gift-wrapped": "persons-and-portraits",
+    "of-clarity": "persons-and-portraits",
+    "closed-circulation": "persons-and-portraits",
+    "apprentice": "persons-and-portraits",
+    "circle-of-light": "persons-and-portraits",
+    "distances-close-apart": "persons-and-portraits",
+    # Polski / Polish
+    "artyzm": "polski",
+    "kim-jestem": "polski",
+    "naucz-mnie-rado-ci": "polski",
+    "nadzieja-hope": "polski",
+    "cisza-silence": "polski",
+    "over-the-rainbow": "polski",
+    "sen-a-dream": "polski",
+    "source-code": "polski",
+    "trudne-s-wka": "polski",
+    "weronika": "polski",
+    # Voiced by Machines
+    "a-lost-home-by-gpt-2-774m": "voiced-by-machines",
+    "go-all-the-way-by-gpt-2": "voiced-by-machines",
+    "nature-and-the-moon-by-gpt-2-774m-and-1558m": "voiced-by-machines",
+    "the-meadow-of-seasons-by-gpt-2": "voiced-by-machines",
+    # Collections & Marginalia
+    "cross-posting-from-poetry-com": "collections",
+    "some-older-ones-in-english": "collections",
+    # Missing assignments
+    "the-joys-of-watching-touching-listening-and-tasting": "landscape-and-creature",
+    "perspective": "mind-and-language",
+}
+
+
+def main():
+    tree = ET.parse(FEED_PATH)
+    root = tree.getroot()
+
+    os.makedirs(OUTPUT_DIR, exist_ok=True)
+
+    entries = root.findall('atom:entry', NS)
+    print(f"Found {len(entries)} entries")
+
+    used_slugs = {}
+    count = 0
+
+    for entry in entries:
+        # Only process POST type entries that are LIVE
+        entry_type = entry.find('blogger:type', NS)
+        if entry_type is not None and entry_type.text != 'POST':
+            continue
+        entry_status = entry.find('blogger:status', NS)
+        if entry_status is not None and entry_status.text != 'LIVE':
+            continue
+
+        title_el = entry.find('atom:title', NS)
+        title = title_el.text if title_el is not None and title_el.text else 'Untitled'
+
+        content_el = entry.find('atom:content', NS)
+        content_html = content_el.text if content_el is not None and content_el.text else ''
+
+        published_el = entry.find('atom:published', NS)
+        published = published_el.text if published_el is not None else ''
+
+        # Parse date for frontmatter
+        date_str = ''
+        if published:
+            try:
+                # Handle various date formats
+                for fmt in ['%Y-%m-%dT%H:%M:%S.%fZ', '%Y-%m-%dT%H:%M:%SZ',
+                           '%Y-%m-%dT%H:%M:%S.%f%z', '%Y-%m-%dT%H:%M:%S%z']:
+                    try:
+                        dt = datetime.strptime(published.replace('+00:00', 'Z').replace('+0000', 'Z'), fmt)
+                        date_str = dt.strftime('%Y-%m-%d')
+                        break
+                    except ValueError:
+                        continue
+            except Exception:
+                date_str = published[:10]
+
+        # Get categories/tags
+        categories = []
+        for cat in entry.findall('atom:category', NS):
+            term = cat.get('term', '')
+            if term:
+                categories.append(term)
+
+        # Convert content
+        markdown_content = html_to_markdown(content_html)
+
+        # Generate slug and handle duplicates
+        slug = slugify(title)
+        if slug in used_slugs:
+            used_slugs[slug] += 1
+            slug = f"{slug}-{used_slugs[slug]}"
+        else:
+            used_slugs[slug] = 1
+
+        filename = f"{slug}.md"
+        filepath = os.path.join(OUTPUT_DIR, filename)
+
+        # Determine group
+        group_id = SLUG_TO_GROUP.get(slug, '')
+        if not group_id:
+            print(f"  WARNING: no group for slug '{slug}'")
+
+        # Build frontmatter
+        # Escape quotes in title for YAML
+        safe_title = title.replace('"', '\\"')
+        frontmatter = f'---\ntitle: "{safe_title}"\ndate: {date_str}\n'
+        if categories:
+            frontmatter += f'tags: [{", ".join(categories)}]\n'
+        if group_id:
+            frontmatter += f'group: {group_id}\n'
+        frontmatter += '---\n'
+
+        with open(filepath, 'w', encoding='utf-8') as f:
+            f.write(frontmatter)
+            f.write('\n')
+            f.write(markdown_content)
+            f.write('\n')
+
+        count += 1
+        print(f"  [{count}] {filename} ({date_str})")
+
+    print(f"\nConverted {count} poems to {OUTPUT_DIR}/")
+
+
+if __name__ == '__main__':
+    main()
