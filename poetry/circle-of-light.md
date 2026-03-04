@@ -1,5 +1,5 @@
 ---
-title: "[circle of light]"
+title: "circle of light"
 date: 2013-11-14
 tags: [English]
 group: persons-and-portraits

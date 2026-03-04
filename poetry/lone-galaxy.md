@@ -1,5 +1,5 @@
 ---
-title: "[lone galaxy]"
+title: "lone galaxy"
 date: 2020-03-10
 tags: [English]
 group: worlds-in-mind

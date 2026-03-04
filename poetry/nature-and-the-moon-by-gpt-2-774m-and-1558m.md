@@ -1,5 +1,5 @@
 ---
-title: "[nature and the moon] (by GPT-2 774M and 1558M)"
+title: "nature and the moon (by GPT-2 774M and 1558M)"
 date: 2019-11-14
 tags: [English, GPT-2]
 group: voiced-by-machines
@@ -29,44 +29,26 @@ the moon is a guide.
 
       *
 
-In the eyes of the horse-rider,
+In the eyes of the horse-rider,  
+the sound of the bells,  
+the whirl of the train.  
+In the softness of the clouds,  
+the shadows of the trees,  
+the red of the sun,  
+the yellow of the rain.  
+In the light of the moon,  
+the darkness of the night.  
+The whole atmosphere.  
 
-the sound of the bells,
-
-the whirl of the train.
-
-In the softness of the clouds,
-
-the shadows of the trees,
-
-the red of the sun,
-
-the yellow of the rain.
-
-In the light of the moon,
-
-the darkness of the night.
-
-The whole atmosphere.
-
-There are some who are blind
-
-to the beauties of nature;
-
-some who feel no sympathy
-
-for the earth,
-
-who regard only the sky.
-
-They cannot find, in the flower,
-
-the flower, in the tree,
-
-the tree, and the moon.
-
-The earth is not only beautiful;
-
-it is also necessary.
+There are some who are blind  
+to the beauties of nature;  
+some who feel no sympathy  
+for the earth,  
+who regard only the sky.  
+They cannot find, in the flower,  
+the flower, in the tree,  
+the tree, and the moon.  
+The earth is not only beautiful;  
+it is also necessary.  
 
 --- by GPT-2 1558M

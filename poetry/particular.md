@@ -1,5 +1,5 @@
 ---
-title: "[particular]"
+title: "particular"
 date: 2019-10-02
 tags: [English]
 group: hearts-coordinates

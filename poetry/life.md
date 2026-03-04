@@ -1,5 +1,5 @@
 ---
-title: "[life]"
+title: "life"
 date: 2019-09-05
 tags: [English]
 group: body-in-motion

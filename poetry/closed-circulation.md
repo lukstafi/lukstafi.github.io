@@ -1,5 +1,5 @@
 ---
-title: "[closed circulation]"
+title: "closed circulation"
 date: 2020-03-07
 tags: [English]
 group: persons-and-portraits

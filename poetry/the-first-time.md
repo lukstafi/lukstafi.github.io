@@ -1,5 +1,5 @@
 ---
-title: "[The first time]"
+title: "The first time"
 date: 2019-07-18
 tags: [English]
 group: hearts-coordinates

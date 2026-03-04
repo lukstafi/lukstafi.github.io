@@ -1,5 +1,5 @@
 ---
-title: "[sea lion]"
+title: "sea lion"
 date: 2019-07-11
 tags: [English]
 group: landscape-and-creature

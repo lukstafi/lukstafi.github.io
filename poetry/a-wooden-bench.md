@@ -1,5 +1,5 @@
 ---
-title: "[a wooden bench]"
+title: "a wooden bench"
 date: 2020-02-09
 tags: [English]
 group: landscape-and-creature

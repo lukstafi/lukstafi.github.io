@@ -1,5 +1,5 @@
 ---
-title: "[ancient epistle]"
+title: "ancient epistle"
 date: 2019-10-19
 tags: [English]
 group: worlds-in-mind

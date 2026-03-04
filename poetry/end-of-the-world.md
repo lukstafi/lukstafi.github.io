@@ -1,11 +1,12 @@
 ---
-title: "[end of the world]"
+title: "end of the world"
 date: 2011-05-21
 tags: [English]
 group: worlds-in-mind
 ---
 
-***  
+***
+
 Sometimes  
 the world is so small  
 that the end of it all  

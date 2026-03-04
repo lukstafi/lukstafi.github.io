@@ -2,7 +2,7 @@
 title: "thought"
 date: 2010-11-13
 tags: [English]
-group: hearts-coordinates
+group: mind-and-language
 ---
 
 thought

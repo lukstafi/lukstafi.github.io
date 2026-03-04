@@ -1,5 +1,5 @@
 ---
-title: "[hate]"
+title: "hate"
 date: 2010-05-13
 tags: [English]
 group: self-assembled

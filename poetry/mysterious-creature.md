@@ -1,5 +1,5 @@
 ---
-title: "[mysterious creature]"
+title: "mysterious creature"
 date: 2019-07-04
 tags: [English]
 group: hearts-coordinates

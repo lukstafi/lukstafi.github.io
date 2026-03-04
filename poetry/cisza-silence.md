@@ -1,5 +1,5 @@
 ---
-title: "[cisza] / [silence]"
+title: "cisza / silence"
 date: 2010-09-21
 tags: [English, Polski]
 group: polski
@@ -17,13 +17,10 @@ i szyje dalej
 
 ***
 
-silence!
-
-harvest mice
-
-stop to listen
-
-then sail away
+silence!  
+harvest mice  
+stop to listen  
+then sail away  
 
 ---
 

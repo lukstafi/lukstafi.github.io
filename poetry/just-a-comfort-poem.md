@@ -1,5 +1,5 @@
 ---
-title: "[just a comfort poem]"
+title: "just a comfort poem"
 date: 2011-01-01
 tags: [English]
 group: hearts-coordinates

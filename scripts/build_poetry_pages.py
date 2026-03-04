@@ -171,8 +171,8 @@ def inline_format(text):
     text = re.sub(r'\*\*(.+?)\*\*', r'<strong>\1</strong>', text)
     # Italic *text* (but not ** or ***)
     text = re.sub(r'(?<!\*)\*(?!\*)(.+?)(?<!\*)\*(?!\*)', r'<em>\1</em>', text)
-    # Links [text](url)
-    text = re.sub(r'\[([^\]]+)\]\(([^)]+)\)', r'<a href="\2">\1</a>', text)
+    # Links [text](url) — allow brackets inside link text
+    text = re.sub(r'\[(.+?)\]\(([^)]+)\)', r'<a href="\2">\1</a>', text)
     return text
 
 

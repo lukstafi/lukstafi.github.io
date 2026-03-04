@@ -5,7 +5,8 @@ tags: [Polski]
 group: polski
 ---
 
-artyzm  
+artyzm
+
  tego dnia wstałem trochę wcześniej  
 wyczucie czasu jest bardzo ważne  
 ze świeżością dociera świadomość  

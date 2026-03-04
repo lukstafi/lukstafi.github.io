@@ -7,4 +7,7 @@ group: body-in-motion
 
 savasana
 
-birds cross the patches of skythe ceiling seems blueevery bone searches for the flooras I slowly breathe
+birds cross the patches of sky  
+the ceiling seems blue  
+every bone searches for the floor  
+as I slowly breathe

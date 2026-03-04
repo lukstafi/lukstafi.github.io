@@ -170,7 +170,7 @@ SLUG_TO_GROUP = {
     # The Heart's Coordinates
     "scared": "hearts-coordinates",
     "shameless": "hearts-coordinates",
-    "choose-life": "hearts-coordinates",
+    "choose-life": "self-assembled",
     "on-and-on": "hearts-coordinates",
     "the-first-time": "hearts-coordinates",
     "romantic": "hearts-coordinates",
@@ -182,7 +182,7 @@ SLUG_TO_GROUP = {
     "shore-sick": "hearts-coordinates",
     "just-a-comfort-poem": "hearts-coordinates",
     "friend": "hearts-coordinates",
-    "thought": "hearts-coordinates",
+    "thought": "mind-and-language",
     # The Self, Assembled and Questioned
     "who-i-am": "self-assembled",
     "identity": "self-assembled",

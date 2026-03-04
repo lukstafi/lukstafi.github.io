@@ -1,5 +1,5 @@
 ---
-title: "[a lost home] (by GPT-2 774M)"
+title: "a lost home (by GPT-2 774M)"
 date: 2019-10-05
 tags: [English, GPT-2]
 group: voiced-by-machines

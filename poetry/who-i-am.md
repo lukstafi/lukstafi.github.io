@@ -1,5 +1,5 @@
 ---
-title: "[who I am]"
+title: "who I am"
 date: 2010-06-12
 tags: [English]
 group: self-assembled

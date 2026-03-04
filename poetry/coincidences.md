@@ -1,5 +1,5 @@
 ---
-title: "[coincidences]"
+title: "coincidences"
 date: 2019-07-06
 tags: [English]
 group: body-in-motion

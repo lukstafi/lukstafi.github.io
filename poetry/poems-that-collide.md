@@ -1,5 +1,5 @@
 ---
-title: "[poems that collide]"
+title: "poems that collide"
 date: 2019-07-30
 tags: [English]
 group: mind-and-language

@@ -1,5 +1,5 @@
 ---
-title: "[go all the way] (by GPT-2)"
+title: "go all the way (by GPT-2)"
 date: 2020-02-06
 tags: [English, GPT-2]
 group: voiced-by-machines

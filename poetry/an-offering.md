@@ -1,5 +1,5 @@
 ---
-title: "[an offering]"
+title: "an offering"
 date: 2020-10-11
 tags: [English]
 group: body-in-motion

@@ -7,4 +7,15 @@ group: landscape-and-creature
 
 autumn's sunny angels
 
-to live at the surfacescratch the wavesbreathe fresh airkids collect bouquetsof golden autumnand laugh to their mommiesto run fullspeedto catch your smileby heartfulshappiness is easysun-laid tapestryon the dance-floor
+to live at the surface  
+scratch the waves  
+breathe fresh air  
+kids collect bouquets  
+of golden autumn  
+and laugh to their mommies  
+to run fullspeed  
+to catch your smile  
+by heartfuls  
+happiness is easy  
+sun-laid tapestry  
+on the dance-floor  

@@ -12,43 +12,32 @@ falling awake
 borrowing a polo shirt  
 with colors subtly textured
 
-carrying a heavy bag
-
+carrying a heavy bag  
 of a restless night
 
-asking the smiling day for directions
-
+asking the smiling day for directions  
 bumping into people and resolutions
 
-failing to deliver
+failing to deliver  
+and refitting scaffoldings  
 
-and refitting scaffoldings
-
-Gaudí constructions
-
-searching for a piece of mind
-
+Gaudí constructions  
+searching for a piece of mind  
 to inhabit
 
-taking a seat next to someone
-
+taking a seat next to someone  
 to ask for a little help
 
-morning down the streets
-
-and letting the sea
-
+morning down the streets  
+and letting the sea  
 play with the calves
 
-evening dining out
-
+evening dining out  
 table by the beach  
 taken for a walk
 
-then Avinguda d'Icària
-
-and say goodnight
-
+then Avinguda d'Icària  
+and say goodnight  
 to yet someone
 
 noon at aeroport  

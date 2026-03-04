@@ -2,7 +2,7 @@
 title: "choose life"
 date: 2010-05-26
 tags: [English]
-group: hearts-coordinates
+group: self-assembled
 ---
 
 choose life

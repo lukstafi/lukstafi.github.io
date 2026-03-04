@@ -1,5 +1,5 @@
 ---
-title: "[kim jestem]"
+title: "kim jestem"
 date: 2010-05-22
 tags: [Polski]
 group: polski
