@@ -5,7 +5,8 @@ tags: [English, Polski]
 group: polski
 ---
 
-> sen  
+sen
+
 nie śniłem o takim szczęściu  
 śniłem o wielkim szczęściu dla niego  
 dla niej  
@@ -20,7 +21,8 @@ myjesz włosy
 
 --- [translation: July 23, 2010 -- June 16, 2011]
 
-> a dream  
+a dream
+
 I never dreamed of such happiness  
 I dreamed of great happiness for him  
 for her  

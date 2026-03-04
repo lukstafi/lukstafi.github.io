@@ -5,7 +5,8 @@ tags: [English]
 group: persons-and-portraits
 ---
 
-> apprentice  
+apprentice
+
 hey, mister unquiet kid!  
 How come shoes grow on trees?  
 How come freshly white shirt  

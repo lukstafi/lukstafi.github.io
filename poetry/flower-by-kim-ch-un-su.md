@@ -5,7 +5,8 @@ tags: [English]
 group: hearts-coordinates
 ---
 
-> FlowerBefore I spoke his name  
+Flower  
+Before I spoke his name  
 he was simply  
 one set of gestures, nothing more.
 
@@ -26,8 +27,9 @@ we long to become a never-to-be-forgotten gaze.
 
 [translated by brother Anthony](http://hompi.sogang.ac.kr/anthony/Favorites.htm)
 
-> The Flower  
-> It is nothing but a mere pose  
+The Flower
+
+It is nothing but a mere pose  
 Before I call it by name.  
 When I call it by name  
 It comes to me and becomes a flower.  
@@ -40,7 +42,8 @@ You to me, I to you.
 
 [Translated by Kim Joihiun](http://www.ekoreajournal.net/archive/content.jsp?BACKFLAG=N&VOLUMENO=17&BOOKNUM=1&PAPERNUM=9&TOTALSEARCH=&AUTHORENAME=&PAPERTITLE=&KEYWORD=&PAPERTYPE=0&SUBJECT=0&STARTYEAR=1961&ENDYEAR=2003&LISTOPTION=1&KEYPAGE=10&PAGE=174)
 
-> 꽃내가 그의 이름이 불러 주기 전에는  
+꽃  
+내가 그의 이름이 불러 주기 전에는  
 그는 다만  
 하나의 몸짓에 지나지 않았다.
 

@@ -5,7 +5,8 @@ tags: [English]
 group: persons-and-portraits
 ---
 
-> collectionneurI collect lives. Every life is a language.  
+collectionneur  
+I collect lives. Every life is a language.  
 I travel, state to state, white to black.  
 I collect a story, one that I've read while still a kid.  
 Translated into so many languages  

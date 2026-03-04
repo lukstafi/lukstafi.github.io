@@ -5,7 +5,8 @@ tags: [Polski]
 group: polski
 ---
 
-> ***naucz mnie  
+***  
+naucz mnie  
 radości mieć otwarte ramiona  
 i chwytać Twoje miłe słowa  
 złote brzoskwinie -- na czubkach palców  

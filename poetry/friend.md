@@ -5,7 +5,8 @@ tags: [English]
 group: hearts-coordinates
 ---
 
-> friend  
+friend
+
 He might not listen to my silence. I wonder.  
 I've heard of a couple  
 living on an island at the edge of the world  

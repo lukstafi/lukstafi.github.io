@@ -5,7 +5,8 @@ tags: [English]
 group: hearts-coordinates
 ---
 
-> choose life  
+choose life
+
 choose to enter  
 do not wait  
 choose tension and pain  

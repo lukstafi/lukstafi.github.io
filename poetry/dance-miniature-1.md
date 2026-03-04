@@ -5,7 +5,8 @@ tags: [English]
 group: body-in-motion
 ---
 
-> ***  
+***
+
 A buildup of hand over hand  
 quickly climbing a phrase, taking eyes for a ride  
 until a soft overflow into falling right angles  

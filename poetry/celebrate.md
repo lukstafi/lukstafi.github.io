@@ -5,7 +5,7 @@ tags: [English]
 group: worlds-in-mind
 ---
 
-> celebrate
+celebrate
 
 Celebrating requires composure.  
 Love compresses the chest  

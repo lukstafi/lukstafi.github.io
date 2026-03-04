@@ -5,7 +5,8 @@ tags: [English]
 group: hearts-coordinates
 ---
 
-> on and on  
+on and on
+
 I'll be strong  
 I'll paddle on to you, dear  
 my farthest shore

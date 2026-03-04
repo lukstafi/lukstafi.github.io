@@ -5,7 +5,8 @@ tags: [English]
 group: hearts-coordinates
 ---
 
-> thought  
+thought
+
 It happens sometimes.  
 I'm dropped out.  
 I'm me, no, I'm moving  

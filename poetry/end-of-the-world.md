@@ -5,7 +5,8 @@ tags: [English]
 group: worlds-in-mind
 ---
 
-> ***Sometimes  
+***  
+Sometimes  
 the world is so small  
 that the end of it all  
 is a trifle:  
@@ -15,7 +16,8 @@ it will heal in no time.
 ---  
 W.H. suggested:
 
-> ***  
+***
+
 Sometimes  
 the world is so small  
 that you bang your head  

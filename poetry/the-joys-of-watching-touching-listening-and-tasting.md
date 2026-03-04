@@ -5,7 +5,8 @@ tags: [English]
 group: landscape-and-creature
 ---
 
-> the joys of watching, touching, listening and tastingwithin me  
+the joys of watching, touching, listening and tasting  
+within me  
 I hold a treasure  
 another pair of eyes right behind mine  
 another touch just underneath my skin  

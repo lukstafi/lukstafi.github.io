@@ -5,7 +5,8 @@ tags: [Polski]
 group: polski
 ---
 
-> ***  
+***
+
 Kto jest możliwy  
 Jak się odważyć  
 Gdzie czekasz na mnie  
@@ -18,7 +19,8 @@ w którym się rozpoznasz
 Ścieżki rozkwitają w życie  
 przekraczające pojęcie
 
-> kim jestem  
+kim jestem
+
 Jestem kłębkiem. Cały zwinięty.  
 Zwojem liny wrzuconym pod pokład.  
 Migotaniem latarni. Burzą.  

@@ -5,7 +5,7 @@ tags: [English]
 group: landscape-and-creature
 ---
 
-> bridge-knitter
+bridge-knitter
 
 brown bridges of bark-  
 hardened wool  

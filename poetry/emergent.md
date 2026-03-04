@@ -5,7 +5,7 @@ tags: [English]
 group: self-assembled
 ---
 
-> emergent
+emergent
 
 falling awake
 

@@ -5,7 +5,7 @@ tags: [English, Polski]
 group: polski
 ---
 
-> source code
+source code
 
 he bought me balloons  
 licked by the sun  
@@ -28,7 +28,7 @@ on the glass
 
 --- [tłumaczenie: 30 V 2010]
 
-> kod źródłowy
+kod źródłowy
 
 kupił mi balony  
 słońca lizaki  

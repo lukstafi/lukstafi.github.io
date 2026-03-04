@@ -5,7 +5,8 @@ tags: [English]
 group: self-assembled
 ---
 
-> ***  
+***
+
 Who is possible  
 How to dare  
 Where do you wait for me  
@@ -20,7 +21,8 @@ beyond comprehension
 
 ---
 
-> who I am  
+who I am
+
 I'm curled into a ball. All of me.  
 A coil of rope thrown under the deck.  
 The flickering of a lighthouse. A storm.  

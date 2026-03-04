@@ -137,16 +137,6 @@ def markdown_to_html(md_text):
     """Very simple markdown-to-HTML for poetry content."""
     lines = md_text.split('\n')
     out = []
-    in_blockquote = False
-    bq_lines = []
-
-    def flush_bq():
-        nonlocal in_blockquote, bq_lines
-        if bq_lines:
-            inner = '<br>\n'.join(bq_lines)
-            out.append(f'<blockquote>{inner}</blockquote>')
-            bq_lines = []
-        in_blockquote = False
 
     for line in lines:
         # Check for trailing two spaces (markdown line break) before stripping
@@ -155,26 +145,15 @@ def markdown_to_html(md_text):
         if add_br:
             display = display.rstrip()
 
-        if display.startswith('> '):
-            in_blockquote = True
-            bq_content = display[2:]
-            bq_content = inline_format(html.escape(bq_content))
-            bq_lines.append(bq_content)
+        if display == '':
+            out.append('')
         else:
-            if in_blockquote:
-                flush_bq()
-            if display == '':
-                out.append('')
+            escaped = html.escape(display)
+            escaped = inline_format(escaped)
+            if add_br:
+                out.append(escaped + '<br>')
             else:
-                escaped = html.escape(display)
-                escaped = inline_format(escaped)
-                if add_br:
-                    out.append(escaped + '<br>')
-                else:
-                    out.append(escaped)
-
-    if in_blockquote:
-        flush_bq()
+                out.append(escaped)
 
     # Join and wrap in a poem div
     result = '\n'.join(out)

@@ -5,7 +5,7 @@ tags: [English]
 group: persons-and-portraits
 ---
 
-> ***
+***
 
 within a little circle of light  
 a stack of books  

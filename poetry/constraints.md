@@ -5,7 +5,7 @@ tags: [English]
 group: mind-and-language
 ---
 
-> constraints
+constraints
 
 So many the variables glow over Sisyphus,  
 indiscernible letters on black screen.  

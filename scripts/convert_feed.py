@@ -25,17 +25,17 @@ def html_to_markdown(raw_html: str) -> str:
     # Collapse <br />\n into just <br /> to avoid double newlines
     text = re.sub(r'<br\s*/?>[ \t]*\n', '<br />', text)
 
-    # Convert <blockquote> to markdown blockquote
+    # Remove <blockquote> tags (originally used for visual indentation of titles)
+    # Just extract the inner content as plain text, with a trailing blank line
     def replace_blockquote(m):
         inner = m.group(1)
-        # Convert <br /> inside blockquote to newlines
         inner = re.sub(r'<br\s*/?>', '\n', inner)
         inner = inner.strip()
         lines = inner.split('\n')
-        # Skip empty-only blockquotes
         if not any(line.strip() for line in lines):
             return ''
-        return '\n'.join('> ' + line.strip() for line in lines if line.strip())
+        content = '\n'.join(line.strip() for line in lines if line.strip())
+        return content + '\n'
 
     text = re.sub(r'<blockquote[^>]*>(.*?)</blockquote>', replace_blockquote, text, flags=re.DOTALL)
 

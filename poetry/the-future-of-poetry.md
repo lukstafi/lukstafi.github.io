@@ -5,7 +5,7 @@ tags: [English]
 group: mind-and-language
 ---
 
-> the future of poetry
+the future of poetry
 
 "*For now we see through a glass, darkly; but then face to face:*  
 *now I know in part; but then shall I know even as also I am known.*"

@@ -5,7 +5,8 @@ tags: [English]
 group: hearts-coordinates
 ---
 
-> scared  
+scared
+
 I'm so scared  
 of touching you  
 I'm scared  

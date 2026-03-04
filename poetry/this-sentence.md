@@ -5,7 +5,7 @@ tags: [English]
 group: mind-and-language
 ---
 
-> ***
+***
 
 This sentence is first.  
 This sentence is false.  

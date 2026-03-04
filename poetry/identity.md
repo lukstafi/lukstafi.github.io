@@ -5,7 +5,7 @@ tags: [English]
 group: self-assembled
 ---
 
-> identity
+identity
 
 Identity is an obligation.  
 But she doesn't talk much.  

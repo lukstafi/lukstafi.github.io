@@ -5,7 +5,7 @@ tags: [English, Polski]
 group: polski
 ---
 
-> ***
+***
 
 cisza --  
 polna mysza  
@@ -15,8 +15,7 @@ i szyje dalej
 ---  
 [translated: June 16, 2011]
 
->  
-> ***
+***
 
 silence!
 

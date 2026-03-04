@@ -5,7 +5,8 @@ tags: [English, Polski]
 group: polski
 ---
 
-> Weronika  
+Weronika
+
 Feet at the foot of the ocean, the dress echoes the waves  
 and a while ago it was a kite pointing the way  
 over a rock, which deftly  

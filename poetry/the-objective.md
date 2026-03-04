@@ -5,7 +5,8 @@ tags: [English]
 group: mind-and-language
 ---
 
-> the objective  
+the objective
+
 I wasn't made for this  
 to chase free variables  
 difficult to approach, gain intimacy  

@@ -5,7 +5,7 @@ tags: [English]
 group: mind-and-language
 ---
 
-> close reading
+close reading
 
 "Close reading" describes a need.  
 A need to understand is what reading  

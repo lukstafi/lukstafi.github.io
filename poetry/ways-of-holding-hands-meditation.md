@@ -5,7 +5,8 @@ tags: [English]
 group: body-in-motion
 ---
 
-> ways of holding hands  
+ways of holding hands
+
 the ground carries the feet  
 the wind carries the laughter  
 the soil carries a seed  
@@ -16,7 +17,7 @@ you carry a watering potthen we talk in Braille
 ------  
 [June 6, 2010]
 
-> meditation
+meditation
 
 I carry your weight on the shoulder
 

@@ -5,7 +5,7 @@ tags: [English, Polski]
 group: polski
 ---
 
-> nadzieja
+nadzieja
 
 podziwiam  
 jak do mnie machasz  

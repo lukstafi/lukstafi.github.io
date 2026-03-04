@@ -5,7 +5,8 @@ tags: [English]
 group: collections
 ---
 
-> [Give me some two minutes]  
+[Give me some two minutes]
+
 Give me some two minutes  
 and then I'll be ready  
 and then I'll go with you  
@@ -26,7 +27,8 @@ it's not the spoon that bends
 
 -------
 
-> hours  
+hours
+
 assertion 'path != NULL' failed  
 install exited abnormally  
 sending termination signals... done  
@@ -38,7 +40,8 @@ you may safely reboot your system
 
 -----------
 
-> Steppenwolf  
+Steppenwolf
+
 I've caught myself into a cold cage  
 (reason, that at the crossroads bleeds of a predetermined choice)  
 a thousand butterflies - those are my dreams  
@@ -55,7 +58,8 @@ where death marks its sour grip
 
 ---------
 
-> ***  
+***
+
 When tears dry away I can see that smile on your face again  
 like a lion you bring the sun to me "pretend it's a cake"  
 and I almost get my hands burnt but it tastes delicious  
@@ -72,7 +76,8 @@ that I hope you'll teach me to understand
 
 ---------
 
-> Beautiful  
+Beautiful
+
 There runs the rainbow  
 scattered by autumn leaves  
 Sun-ray-straight-on-tip-toes  

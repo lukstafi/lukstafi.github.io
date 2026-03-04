@@ -5,7 +5,7 @@ tags: [English]
 group: self-assembled
 ---
 
-> ***
+***
 
 that little thingleft alonenext to nothingbreaks downcollapses onto itselfcrumbles into piecesuntil they cannot break further  
 and the peaceful nightcollects themand spreads over the plain

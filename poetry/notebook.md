@@ -5,7 +5,7 @@ tags: [English]
 group: mind-and-language
 ---
 
-> notebook
+notebook
 
 What does a twelve-years-old have in his notebook --  
 Three sketches of trees,  

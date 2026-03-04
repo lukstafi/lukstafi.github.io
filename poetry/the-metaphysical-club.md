@@ -5,7 +5,8 @@ tags: [English]
 group: landscape-and-creature
 ---
 
-> The Metaphysical Club  
+The Metaphysical Club
+
 It was supposed to be entertaining.  
 Torches and all.  
 Only that friends forgot  

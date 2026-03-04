@@ -5,7 +5,7 @@ tags: [English]
 group: landscape-and-creature
 ---
 
-> falling asleep
+falling asleep
 
 How to pass from this world to another world?  
 The numb blankness whose weight sinks into the pillow.  

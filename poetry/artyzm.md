@@ -5,7 +5,8 @@ tags: [Polski]
 group: polski
 ---
 
-> artyzm tego dnia wstałem trochę wcześniej  
+artyzm  
+ tego dnia wstałem trochę wcześniej  
 wyczucie czasu jest bardzo ważne  
 ze świeżością dociera świadomość  
 słońca, które dopiero się wspina, ale wie już jak  

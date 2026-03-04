@@ -5,7 +5,7 @@ tags: [English]
 group: mind-and-language
 ---
 
-> perspective
+perspective
 
 That which breaks a prison out of her eyes.  
 At once beautiful and distant, like climbing eight thousand.  
