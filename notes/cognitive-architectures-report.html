@@ -1,0 +1,968 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>Cognitive Architectures: A Deep Dive into the Science of the
+Mind</title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <link rel="stylesheet" href="/assets/tufte.css">
+  <link rel="stylesheet" href="/assets/pandoc-tufte.css">
+  <link rel="stylesheet" href="/assets/site.css">
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+  <script>(function(){var t=localStorage.getItem('theme-preference');if(t)document.documentElement.setAttribute('data-theme',t);})()</script>
+</head>
+<body>
+<nav class="site-nav">
+  <a href="/">Home</a> &middot; <a href="/about.html">About</a>
+</nav>
+<div class="theme-toggle">
+  <button id="theme-btn" aria-label="Toggle dark mode">&#9788;</button>
+</div>
+<article>
+<section
+id="cognitive-architectures-a-deep-dive-into-the-science-of-the-mind"
+class="level1">
+<h1>Cognitive Architectures: A Deep Dive into the Science of the
+Mind</h1>
+<p><strong>Synthesizing Anderson, Carruthers, Laird, Lebiere, and
+Rosenbloom</strong></p>
+<p><em>March 2026</em></p>
+<hr />
+<p><strong>Sources:</strong></p>
+<ul>
+<li>Anderson, J.R. (2007). <em>How Can the Human Mind Occur in the
+Physical Universe?</em> Oxford University Press.</li>
+<li>Carruthers, P. (2015). <em>The Centered Mind: What the Science of
+Working Memory Shows Us About the Nature of Human Thought.</em> Oxford
+University Press.</li>
+<li>Laird, J.E., Lebiere, C., &amp; Rosenbloom, P.S. (2017). A Standard
+Model of the Mind. <em>AI Magazine</em> 38(4), 13–26.</li>
+<li>Rosenbloom, P.S. (2025). In Search of Insight: My Life as an
+Architectural Explorer. <em>Journal of Artificial General
+Intelligence</em> 15(1), 3–61.</li>
+</ul>
+<hr />
+<section id="introduction-the-question-that-drives-it-all"
+class="level2">
+<h2>1. Introduction: The Question That Drives It All</h2>
+<p>On December 4, 1991, Allen Newell delivered his last lecture, knowing
+he was dying. The question that had consumed his career was startlingly
+simple: <em>How can the human mind occur in the physical universe?</em>
+As John Anderson writes, this question can hold you for a lifetime, and
+you can only progress a little way toward the answer, but it is a
+fabulous journey. The answer, Newell argued, must come in the form of a
+<strong>cognitive architecture</strong>—a specification of the fixed
+structures and processes that constitute the mind’s computational
+machinery.</p>
+<p>The concept of cognitive architecture was introduced by Newell
+through analogy to computer architecture, which Frederick Brooks had
+introduced through analogy to building architecture. Just as a
+building’s architecture specifies the structure that achieves desired
+functions, a cognitive architecture specifies the fixed computational
+framework within which the mind’s processes of learning, reasoning, and
+action unfold. Anderson offers his own characterization: “a theory of
+the basic principles of operation built into the cognitive system.” What
+is critical is that the architecture remains fixed (or only slowly
+varying) relative to the timescale of normal reasoning, even as the
+skills and knowledge it processes change rapidly.</p>
+<p>This report synthesizes four major works that collectively span
+nearly five decades of progress on Newell’s question. Anderson gives us
+the detailed gears-and-pistons account of ACT-R, grounded in both
+functional analysis and neural mapping. Carruthers provides a
+philosophical analysis of how conscious thought depends on sensory-based
+working memory, challenging deep assumptions about the nature of
+reflection. Laird, Lebiere, and Rosenbloom distill a consensus across
+multiple architectures into a shared framework they call the Standard
+Model of the Mind. And Rosenbloom’s memoir traces the intellectual
+journey from Soar through Sigma to the Common Model of Cognition,
+revealing how the pursuit of <em>functional elegance</em>—generating
+broad capabilities from a small set of interacting mechanisms—has driven
+the field forward.</p>
+<p>Together, these works offer complementary perspectives on a single
+grand challenge: understanding complete, integrated minds rather than
+isolated cognitive capacities.</p>
+</section>
+<section id="andersons-act-r-rational-analysis-meets-neural-mapping"
+class="level2">
+<h2>2. Anderson’s ACT-R: Rational Analysis Meets Neural Mapping</h2>
+<section id="the-modular-organization" class="level3">
+<h3>2.1 The Modular Organization</h3>
+<p>ACT-R is constructed as a set of modules that run asynchronously and
+in parallel around a central rule-based procedural module that provides
+global control. Each module yields only a single result per operation,
+which is placed in a module-specific working memory buffer. The
+procedural module tests these buffers and transfers information between
+them, triggering further activity in the corresponding modules. This is
+the architecture’s central bottleneck: while processing within modules
+can be highly parallel, the procedural module selects only one
+production rule to fire at a time, yielding a serial cognitive cycle of
+approximately 50 milliseconds.</p>
+<p>Anderson’s key contribution was to map these functional modules
+directly onto regions of the human brain. The procedural module
+corresponds to the basal ganglia, with its matching, selection, and
+execution phases corresponding to the striatum, pallidum, and thalamus
+respectively. The goal buffer maps to dorsolateral prefrontal cortex
+(DLPFC), the retrieval buffer to ventrolateral prefrontal cortex
+(VLPFC), the visual module to occipital cortex and parietal regions, and
+the declarative module to temporal cortex and hippocampus. The
+intentional module, which maintains goal states, maps to anterior
+prefrontal cortex (aPFC).</p>
+<p>This neural mapping was not merely decorative. It provided genuine
+constraints on the theory and enabled predictions testable with
+functional brain imaging. The title question—<em>How can the human mind
+occur in the physical universe?</em>—gets its answer through this neural
+grounding. Anderson argues that cognitive architecture provides the
+bridge between the neural substrate below and the rational computations
+above. The architecture sits at what Newell called the “deliberate act
+level,” roughly 100 milliseconds, where elementary operations are
+selected and applied.</p>
+</section>
+<section id="human-associative-memory-and-rational-analysis"
+class="level3">
+<h3>2.2 Human Associative Memory and Rational Analysis</h3>
+<p>ACT-R’s declarative memory stores facts as <em>chunks</em>—structured
+units with typed slots that encode relational information. These chunks
+are annotated with quantitative metadata, most importantly
+<em>activation values</em> that reflect the frequency and recency of
+their use. The activation equation combines a base-level component
+(reflecting the chunk’s history of use) with an associative component
+(reflecting the relevance of the current context). Retrieval from
+declarative memory is probabilistic: chunks with higher activation are
+more likely to be retrieved and are retrieved faster.</p>
+<p>This is where Anderson’s methodology of <em>rational analysis</em>
+becomes central. Rather than treating the activation equation as an
+arbitrary curve-fitting exercise, Anderson derived it from a Bayesian
+analysis of the statistical structure of the environment. The base-level
+learning equation reflects the empirical finding that the probability of
+needing a piece of information follows a power-law decay from its last
+use—a regularity Anderson and Schooler (1991) documented across domains
+as diverse as newspaper headlines and child-directed speech. The
+architecture is thus <em>adapted</em> to its environment in a principled
+mathematical sense: its memory system implements an approximately
+optimal solution to the problem of retrieving information given the
+statistical structure of real-world demands.</p>
+<p>This same rational-analysis methodology extends to ACT-R’s procedural
+system. Production rules are selected not just by symbolic matching but
+also by <em>utility values</em> that are learned through reinforcement.
+The utility learning mechanism adjusts the expected payoff of each
+production based on whether it contributed to achieving the system’s
+goals, implementing a form of temporal-difference learning. The result
+is that ACT-R gradually learns to select the most effective strategies
+through experience, without requiring explicit programming of preference
+orderings.</p>
+</section>
+<section id="the-adaptive-control-of-thought" class="level3">
+<h3>2.3 The Adaptive Control of Thought</h3>
+<p>The “adaptive” in ACT-R (Adaptive Control of Thought—Rational) is not
+ornamental. Anderson’s central theoretical claim is that human cognition
+is adapted to the statistical structure of the environment in a way that
+can be modeled as approximately Bayesian optimization under resource
+constraints. This is <em>bounded rationality</em> in Herbert Simon’s
+sense, but with the specific constraints determined by the cognitive
+architecture rather than left unspecified.</p>
+<p>The procedural system operates through a recognize-act cycle. On each
+cycle, all production rules whose conditions match the current state of
+the buffers are identified (the matching phase). Among these, one is
+selected based on utility values and noise (the selection phase). The
+selected production then fires, modifying buffer contents and
+potentially initiating retrievals from declarative memory or actions in
+the external environment (the execution phase). Complex behavior arises
+from sequences of these cycles, each operating in its local
+context—there is no separate architectural module for global
+optimization or planning.</p>
+<p>This last point is significant. Planning, language processing,
+analogical reasoning, and other complex cognitive activities are
+hypothesized to emerge from sequences of these primitive cognitive
+cycles, not from dedicated architectural modules. The architecture
+provides the fixed substrate; the flexibility comes from the knowledge
+and skills that are acquired and processed by that substrate. In
+Anderson’s terms, intelligent behavior arises from the combination of an
+implementation of a cognitive architecture plus knowledge and
+skills.</p>
+</section>
+</section>
+<section
+id="carruthers-centered-mind-consciousness-working-memory-and-the-sensory-base"
+class="level2">
+<h2>3. Carruthers’ Centered Mind: Consciousness, Working Memory, and the
+Sensory Base</h2>
+<section id="the-sensory-based-account-of-thought" class="level3">
+<h3>3.1 The Sensory-Based Account of Thought</h3>
+<p>Peter Carruthers’ <em>The Centered Mind</em> develops a radical
+thesis about the nature of conscious thought that has deep implications
+for how we understand cognitive architecture. His central claim is that
+<strong>conscious thought is always sensory-based</strong>, relying on
+the resources of the working memory system. When we reflect—examining
+possibilities, considering options, making inferences, arriving at
+judgments—we do so by sustaining and manipulating sensory images
+(including inner speech, visual imagery, and other modality-specific
+representations) through attentional signals directed at midlevel
+sensory areas of the brain.</p>
+<p>This challenges the philosophical default assumption that conscious
+thinking consists (at least partly) of amodal propositional
+attitudes—that when you consciously judge that it will rain tomorrow,
+the content of your consciousness includes the abstract, non-sensory
+proposition itself. Carruthers argues instead that amodal attitudes
+(beliefs, goals, decisions, intentions) are <em>never</em> conscious.
+They operate entirely in the background, “pulling the strings” by
+selecting, maintaining, and manipulating the sensory-based contents that
+<em>do</em> figure consciously in working memory. The conscious mind is,
+as Carruthers vividly puts it, somewhat like a marionette controlled by
+off-stage actors who do their work unseen.</p>
+</section>
+<section id="working-memory-as-the-theater-of-consciousness"
+class="level3">
+<h3>3.2 Working Memory as the Theater of Consciousness</h3>
+<p>Carruthers builds his account on the cognitive science of working
+memory, particularly the framework associated with Baddeley and
+colleagues but significantly updated with neuroscientific findings. The
+classical model posited a central executive controlling two “slave”
+subsystems: a visuospatial sketchpad and a phonological loop.
+Contemporary evidence, however, reveals that working memory utilizes the
+resources of perceptual systems across <em>all</em> sense modalities—not
+just vision and audition, but also smell, touch, proprioception, and
+affect. Whenever brain imaging has been used to investigate
+working-memory tasks, activity in the relevant sensory area has been
+found.</p>
+<p>This is a critical finding for cognitive architecture. It means that
+working memory is not a separate storage buffer but rather a <em>mode of
+operation</em> of the perceptual systems themselves, sustained by
+top-down attentional signals from prefrontal cortex. The same mechanisms
+used during online processing of visual input to categorize and
+conceptualize a stimulus are used offline to create neural activity in
+midlevel visual areas similar to what would occur if an appropriate
+object were being perceived. The same category-specific patterns of
+activity occur in both midlevel and higher-level areas of the temporal
+cortex visual-processing stream, regardless of whether instances of
+those categories are perceived or imagined.</p>
+<p>This connects directly to the architecture question. If working
+memory is implemented by sustained activity in sensory cortices under
+executive control, then the “working memory” component of cognitive
+architectures like ACT-R and the Standard Model is not a single
+homogeneous buffer but a distributed system whose contents are
+inherently sensory in character. The “global workspace” through which
+modules communicate is implemented by the very perceptual machinery that
+processes incoming information from the world.</p>
+</section>
+<section id="attention-as-the-mechanism-of-consciousness"
+class="level3">
+<h3>3.3 Attention as the Mechanism of Consciousness</h3>
+<p>Carruthers draws on global workspace theory (Baars, Dehaene) to argue
+that access-conscious states are those whose contents are globally
+broadcast to a wide range of consumer systems—memory encoding, emotional
+evaluation, decision-making, verbal report, and so on. The mechanism
+that determines which representations achieve this global broadcasting
+is <em>attention</em>. Attended sensory representations in working
+memory become conscious; unattended ones do not.</p>
+<p>But what <em>is</em> attention? Carruthers argues that attending is a
+form of <em>action</em>—specifically, a form of mental action that
+involves directing processing resources toward particular
+representations. This is not metaphorical. The neural circuits involved
+in directing attention overlap substantially with those involved in
+planning and executing overt motor actions. The frontal eye fields, for
+instance, are involved in both directing eye movements and directing
+covert visual attention. This action-based conception of attention has a
+crucial implication: the stream of consciousness is thoroughly
+<em>active</em> in nature. Even mind-wandering, which subjectively seems
+passive, results from unconscious cost-benefit decisions to redirect
+attention.</p>
+</section>
+<section id="dual-systems-and-the-architecture-of-reasoning"
+class="level3">
+<h3>3.4 Dual Systems and the Architecture of Reasoning</h3>
+<p>Carruthers engages extensively with dual-process theories of
+reasoning (System 1 / System 2 in Kahneman’s popularization). System 1
+processes are fast, automatic, parallel, and unconscious. System 2
+processes are slow, controlled, serial, and conscious. On Carruthers’
+account, System 2 reasoning just <em>is</em> reasoning conducted through
+the working memory system—manipulating sensory-based representations
+under executive control, cycling through sequences of attended
+states.</p>
+<p>This provides a natural bridge to the cognitive architecture
+literature. The “serial bottleneck” identified in architectures like
+ACT-R and Soar—the constraint that only one deliberate act can be
+selected per cognitive cycle—corresponds to the capacity limitations of
+System 2 reasoning. System 1 processes, meanwhile, correspond to the
+massively parallel processing that occurs <em>within</em> modules
+(perceptual processing, memory retrieval, motor preparation) between
+cognitive cycles. The architecture’s serial core operating over parallel
+periphery maps neatly onto the dual-systems framework, but with the
+architectural account providing the mechanistic detail that dual-systems
+theory typically leaves unspecified.</p>
+<p>Carruthers raises a provocative question about whether System 2
+reasoning constitutes a “second mind” or an “extended mind.” He argues
+against both. System 2 is not a separate mind but rather the
+<em>same</em> cognitive architecture operating in a particular mode—one
+that routes processing through the working memory bottleneck rather than
+allowing it to proceed entirely within individual modules. And while
+external representations (notes, diagrams, calculators) can scaffold
+this process, the core reasoning mechanism remains internal.</p>
+</section>
+</section>
+<section id="the-standard-model-of-the-mind-toward-consensus"
+class="level2">
+<h2>4. The Standard Model of the Mind: Toward Consensus</h2>
+<section id="why-a-standard-model" class="level3">
+<h3>4.1 Why a Standard Model?</h3>
+<p>The 2017 paper by Laird, Lebiere, and Rosenbloom proposes developing
+a <em>standard model</em> of humanlike minds, analogous to the Standard
+Model of particle physics. The motivation is that decades of work on
+cognitive architectures—each developed largely independently, with
+different goals, terminologies, and implementation choices—have
+converged on a set of shared assumptions that had never been made
+explicit. Making this consensus visible could accelerate progress by
+providing a common reference point, facilitating comparison across
+architectures, and guiding both researchers and practitioners.</p>
+<p>The proposed standard model is not itself an implemented
+architecture. It is a theoretical architecture: a statement of what must
+be in a cognitive architecture in order to provide a humanlike mind. The
+intent is not unanimity but consensus—a best current understanding that
+will inevitably be incomplete and will need revision as more is learned.
+Omission from the standard model is often a statement of where consensus
+is needed, rather than a consensus on lack of importance.</p>
+</section>
+<section id="core-structure-and-processing" class="level3">
+<h3>4.2 Core Structure and Processing</h3>
+<p>The Standard Model posits that the mind is built from independent
+modules with distinct functionalities. The core components are:</p>
+<ul>
+<li><p><strong>Perception</strong> — converts external signals into
+internal representations with associated metadata, placing results in
+specific working memory buffers. There can be multiple perceptual
+modules for different modalities, each with an attentional bottleneck
+constraining what reaches working memory. Perception can be influenced
+by top-down expectations from working memory.</p></li>
+<li><p><strong>Working Memory</strong> — a temporary global space within
+which representations can be dynamically composed from the outputs of
+perception and long-term memories. It includes buffers for initiating
+retrievals and motor actions, maintaining intermediate results, and
+tracking goals. All of working memory is available for inspection and
+modification by procedural memory.</p></li>
+<li><p><strong>Declarative Long-Term Memory</strong> — a persistent
+store for facts and concepts, structured as a graph of symbolic
+relations annotated with quantitative metadata (frequency, recency,
+co-occurrence, similarity). Retrieval is cue-based: a cue is created in
+a working memory buffer, and the result is deposited back in that
+buffer.</p></li>
+<li><p><strong>Procedural Long-Term Memory</strong> — contains knowledge
+about actions, both internal and external. Based on pattern-directed
+invocation: rule-like conditions match against working memory contents,
+and a single deliberate act is selected per cycle, with metadata
+influencing the selection. This is the locus of global control.</p></li>
+<li><p><strong>Motor</strong> — converts symbolic structures in its
+buffers into external action through control of effectors.</p></li>
+</ul>
+<p>The heart of the model is the <strong>cognitive cycle</strong>.
+Procedural memory tests working memory, selects a single deliberate act,
+and executes it by modifying working memory. These modifications can
+initiate further processing: memory retrievals, motor actions, top-down
+influence on perception. Complex behavior—both external and
+internal—arises from sequences of such cycles, operating at roughly 50
+ms per cycle in human cognition. There is no separate module for global
+planning or optimization; all complex cognitive activities (planning,
+language processing, Theory of Mind) emerge from sequences of primitive
+acts composed through the cognitive cycle.</p>
+</section>
+<section id="memory-and-content-the-hybrid-representation"
+class="level3">
+<h3>4.3 Memory and Content: The Hybrid Representation</h3>
+<p>A crucial feature of the Standard Model is the <strong>hybrid of
+symbolic and subsymbolic processing</strong>. This represents perhaps
+the most dramatic evolution from the early days of purely symbolic
+cognitive architectures. The core content is represented as relations
+over symbols—the primitive elements over which relational structures
+(semantic networks, ontologies, taxonomies) can be defined. But
+supplementing these symbolic structures is quantitative metadata that
+annotates symbols and relations: frequency, recency, activation,
+utility, similarity, and other numeric values.</p>
+<p>There is a strict distinction between domain data (symbols and
+relations) and metadata (numeric annotations). Metadata exists only in
+support of symbolic representations, and relations cannot be defined
+over metadata. The available metadata types and associated processing
+mechanisms are fixed within the architecture. This is what yields the
+“subsymbolic” or statistical character of modern cognitive
+architectures—not the replacement of symbols by vectors (as in neural
+networks) but the <em>annotation</em> of symbols with numeric
+information that modulates how they are stored, retrieved, and
+selected.</p>
+<p>The Standard Model is agnostic about whether symbols are implemented
+as uninterpreted labels (as in Lisp, Soar, and ACT-R), as patterns over
+distributed vectors (as in Spaun’s semantic pointers), or as both (as in
+Clarion and Sigma). What matters is that they provide the necessary
+functionality to represent and manipulate relational
+structures—addressing the binding problem of how multiple elements can
+be associated in structured ways.</p>
+</section>
+<section id="learning" class="level3">
+<h3>4.4 Learning</h3>
+<p>All types of long-term knowledge are assumed to be learnable.
+Learning is incremental, online, and occurs as a side effect of
+performance—typically based on some form of backward flow of information
+through internal representations. Procedural memory involves at least
+two learning mechanisms: one that creates new rules from the composition
+of rule firings (yielding behavioral automatization, as in Soar’s
+chunking or ACT-R’s production compilation) and one that tunes action
+selection through reinforcement learning. Declarative memory similarly
+involves mechanisms for creating new relations and tuning associated
+metadata.</p>
+<p>More complex forms of learning—such as acquiring entirely new
+cognitive strategies or restructuring knowledge—arise from combinations
+of these fixed, simpler learning mechanisms. Learning over longer
+timescales accumulates from shorter-term learning episodes, and can
+include explicit deliberation over past experiences.</p>
+</section>
+<section id="the-convergence" class="level3">
+<h3>4.5 The Convergence</h3>
+<p>The paper includes a striking analysis showing how ACT-R and
+Soar—which started from rather different bases—have converged
+dramatically over the decades. By 2016, both architectures are in
+near-total theoretical agreement with the Standard Model, differing
+mainly in the extent to which they implement perception and motor
+systems. Sigma, being newer, shows more incompleteness but also more
+disagreement, particularly in its claim that capabilities the other
+architectures implement through dedicated modules can instead emerge
+from interactions among more primitive mechanisms. This disagreement is
+itself illuminating: it points to a genuine open question about how much
+modularity is architecturally fixed versus arising from knowledge and
+experience.</p>
+</section>
+</section>
+<section
+id="rosenblooms-architectural-exploration-from-soar-through-sigma"
+class="level2">
+<h2>5. Rosenbloom’s Architectural Exploration: From Soar Through
+Sigma</h2>
+<section id="the-xaps-prelude-and-the-power-law-of-practice"
+class="level3">
+<h3>5.1 The XAPS Prelude and the Power Law of Practice</h3>
+<p>Rosenbloom’s memoir reveals that his career-long pursuit of cognitive
+architectures began with an attempt to fuse symbolic rule-based
+processing with neural-like activation flow in the late 1970s. The XAPS
+(eXperimental Activation-based Production System) architectures explored
+what happens when rules guide the flow of activation associated with
+symbol structures. One crucial lesson emerged: unconstrained activation
+processing is a morass. Making it work requires either constraining the
+processing to match probability theory (as in graphical models) or
+taming it through learning algorithms that align it with experience (as
+in backpropagation). This insight would not bear full fruit for three
+decades, until Sigma.</p>
+<p>The work on the power law of practice, conducted with Newell,
+established that human performance improvement follows a power-law
+function across an extraordinary range of tasks. The explanation they
+developed—<em>chunking</em>, combining multiple processing steps into a
+single compiled step—became a domain-independent architectural learning
+mechanism. Making chunking impasse-driven (triggered by gaps in
+knowledge needed for decision-making) yielded a simple, elegant solution
+that became central to Soar.</p>
+</section>
+<section id="soar-elegant-unification" class="level3">
+<h3>5.2 Soar: Elegant Unification</h3>
+<p>Soar combined rules, problem spaces, impasse-driven subgoaling, and
+chunking into a remarkably parsimonious architecture: one representation
+for long-term knowledge (rules), one way to make decisions (symbolic
+preferences), one way to learn (chunking), and one way to reflect on its
+own behavior (impasse-driven subgoaling). Yet from this small set of
+mechanisms, a wide range of critical behaviors emerged.</p>
+<p>The key principle was <em>listening to the architecture</em>—Newell’s
+maxim that the architecture itself should guide how new capabilities are
+implemented. Rather than adding a dedicated module for each new
+capability (planning, declarative memory, various forms of learning),
+the Soar team explored whether existing mechanisms could produce the
+desired behavior through novel interactions. Data chunking, for
+instance, emerged as an unexpected form of declarative learning from the
+interaction between search and chunking—what had been designed as a
+speed-up mechanism turned out to support entirely new kinds of learning.
+Planning could arise without explicit planning modules, with chunking
+storing plans piecemeal into rule memory.</p>
+<p>Soar was applied to military simulation (Intelligent Automated
+Forces), natural language processing, robotics, and modeling of human
+cognition. By the early 1990s, Newell used it as the basis for his
+William James Lectures arguing for <em>Unified Theories of
+Cognition</em>. But by the late 1990s, Rosenbloom felt he had reached a
+dead end: he could not see how to extend Soar further while maintaining
+the constraint of simplicity and elegance. John Laird continued
+developing Soar by adding new memories and learning mechanisms (semantic
+memory, episodic memory, reinforcement learning, mental imagery),
+yielding a more capable but also more modular architecture. Rosenbloom
+stepped away entirely for a decade.</p>
+</section>
+<section id="sigma-grand-unification-through-graphical-models"
+class="level3">
+<h3>5.3 Sigma: Grand Unification Through Graphical Models</h3>
+<p>The breakthrough that launched Sigma came from recognizing that
+probabilistic graphical models—specifically, factor graphs processed by
+the sum-product algorithm—could provide a single computational substrate
+general enough to subsume both symbolic rule-based processing and
+statistical/neural processing. Where Soar’s rule-based memory was
+replaced by an extension of statistical-relational factor graphs, and
+Soar’s chunking mechanism was replaced by gradient descent learning.</p>
+<p>Sigma crystallized around four desiderata: <strong>grand
+unification</strong> (spanning high-level symbolic thought and low-level
+perception/motor processes without separate modules), <strong>generic
+cognition</strong> (modeling both natural and artificial humanlike
+minds), <strong>functional elegance</strong> (generating broad
+capabilities from interactions among a small set of general mechanisms),
+and <strong>sufficient efficiency</strong> (running fast enough for real
+applications).</p>
+<p>The result was an architecture with a single long-term memory general
+enough to support rule-based procedural processing, semantic and
+episodic declarative memories, probabilistic reasoning, neural networks,
+and forms of perception and motor control—all without dedicated modules
+for each. Two architectural layers (one graphical, one cognitive) plus
+specialized knowledge and skills yielded the range of capabilities that
+other architectures achieve through proliferating modules.</p>
+<p>Rosenbloom describes this as <em>deconstruction</em>: taking
+capabilities traditionally implemented as distinct modules
+(reinforcement learning, episodic memory, mental imagery) and
+reinterpreting them as combinations of more basic mechanisms. These
+reinterpretations provided some of the strongest intellectual
+breakthroughs of his career—moments when a deeper understanding seemed
+to emerge from taking a new perspective on familiar capabilities. The
+experience convinced him that functional elegance is not merely an
+aesthetic preference but a genuine source of scientific insight.</p>
+</section>
+<section id="the-common-model-of-cognition" class="level3">
+<h3>5.4 The Common Model of Cognition</h3>
+<p>The Standard Model paper of 2017 was later renamed the <em>Common
+Model of Cognition</em> after community feedback that “Standard Model”
+sounded overly prescriptive. The Common Model represents a consensus
+theoretical architecture—a meta-architecture about the space of
+humanlike architectures rather than a single implementation. It has been
+mapped onto more than a dozen cognitive architectures and tested as a
+model of high-level brain architecture by Andrea Stocco’s team, who used
+functional brain scans to compare it with traditional hub-and-spoke and
+hierarchical proposals from neuroscience. The Common Model showed
+overwhelming statistical dominance over these alternatives.</p>
+<p>The ongoing work includes extensions to emotion, metacognition,
+language processing, and the neural underpinnings of the model’s
+components. The social process of achieving community consensus has
+proven as challenging as the scientific content—working groups have gone
+quiescent, and the core team is rethinking how to maintain momentum. But
+Rosenbloom believes the Common Model may ultimately have a larger and
+more enduring impact than any of the individual cognitive architectures
+from which it was distilled.</p>
+</section>
+<section id="dichotomic-maps-understanding-the-space-of-architectures"
+class="level3">
+<h3>5.5 Dichotomic Maps: Understanding the Space of Architectures</h3>
+<p>Rosenbloom’s most recent theoretical contribution is the development
+of <em>dichotomic maps</em>—theoretical architectures that leverage
+cross products of dichotomies (this-or-that distinctions) to structure
+and understand spaces of cognitive/AI technologies. Three core
+dichotomies have been identified: <strong>(a)symmetric</strong> (whether
+processing proceeds in one direction or uniformly in any direction),
+<strong>(un)controlled</strong> (whether decisions are required during
+processing), and <strong>(meta)data</strong> (whether representations
+are symbolic data or quantitative metadata).</p>
+<p>These maps serve two purposes. <em>Disciplinary maps</em> structure
+the technologies underlying AI and cognitive science, revealing that
+many traditional dichotomies (rules vs. logic, procedural
+vs. declarative, feedforward vs. autoassociative networks, supervised
+vs. unsupervised learning) are instances of the same core (a)symmetric
+distinction. <em>Architectural maps</em> show which technologies are
+combined within a specific architecture, revealing gaps and structural
+similarities. For instance, mapping AlphaZero onto this framework
+reveals it as surprisingly similar to Soar in its core structure,
+differing mainly in lacking a symmetric uncontrolled
+(reasoning/declarative) capability and in using neural rather than
+symbolic representations.</p>
+<p>The deeper insight is that rather than forcing a choice between
+opposing ends of these dichotomies, the best architectures <em>span</em>
+them—incorporating both asymmetric and symmetric processing, both
+controlled and uncontrolled mechanisms, both symbolic and subsymbolic
+representations—to achieve the complementary benefits of each.</p>
+</section>
+</section>
+<section id="cross-cutting-themes" class="level2">
+<h2>6. Cross-Cutting Themes</h2>
+<section id="the-serial-bottleneck" class="level3">
+<h3>6.1 The Serial Bottleneck</h3>
+<p>All four works converge on the existence of a <strong>serial
+bottleneck</strong> at the heart of cognition. In ACT-R, only one
+production fires per cycle. In Soar, a single deliberate act is selected
+per cognitive cycle. The Standard Model explicitly posits this
+constraint. And Carruthers’ analysis of working memory and System 2
+reasoning identifies the same bottleneck from a philosophical and
+psychological perspective: the capacity limitations of conscious,
+controlled thought reflect the architectural constraint that only one
+act of attention or executive control can be executed at a time.</p>
+<p>Yet this serial core operates within a massively parallel context.
+Processing within modules proceeds in parallel (perceptual recognition,
+memory retrieval, motor preparation all happen simultaneously). Multiple
+modules operate asynchronously. The serial bottleneck in procedural
+memory’s interaction with working memory provides just enough seriality
+for coherent, goal-directed thought while preserving the efficiency of
+parallel processing everywhere else.</p>
+</section>
+<section id="the-symbolic-subsymbolic-hybrid" class="level3">
+<h3>6.2 The Symbolic-Subsymbolic Hybrid</h3>
+<p>The purely symbolic cognitive architectures of the 1970s and 1980s
+have given way to hybrid systems that integrate symbolic structures with
+quantitative metadata. ACT-R pioneered this with activation-based
+retrieval and utility-based selection. Sigma takes it furthest by
+grounding the entire architecture in factor graphs that inherently blend
+symbolic and probabilistic computation. The Standard Model makes it
+official: the hybrid of symbolic data and quantitative metadata is a
+consensus feature, not an idiosyncratic choice.</p>
+<p>Carruthers’ analysis adds a philosophical dimension to this: the
+contents of conscious working memory are <em>sensory</em>
+representations—inherently graded, analog, metric—bound to abstract
+conceptual representations. The symbolic content (the propositional
+attitude) is never itself conscious; what is conscious is always the
+sensory vehicle. This suggests that the symbolic-subsymbolic distinction
+in cognitive architectures may correspond to a deeper distinction
+between the abstract computational content of thought and the sensory
+medium through which it becomes available to consciousness.</p>
+</section>
+<section id="working-memory-as-the-hub" class="level3">
+<h3>6.3 Working Memory as the Hub</h3>
+<p>Working memory emerges from all four perspectives as the central hub
+of cognitive processing. In the Standard Model, it acts as the
+inter-component communication buffer, the only place where information
+from different modules can be brought together and acted upon by
+procedural memory. In ACT-R, the buffers associated with each module
+constitute the aggregate working memory through which the procedural
+module exerts control. In Carruthers’ account, working memory is the
+theater of consciousness itself—the global workspace through which
+representations achieve the broadcasting needed for conscious access.
+And in Soar and Sigma, working memory is the substrate that the
+cognitive cycle operates over.</p>
+<p>But the accounts differ on the nature of working memory. Carruthers
+emphasizes that it is implemented by sustained activity in sensory
+cortices, making it inherently modality-specific. ACT-R models it as a
+set of module-specific buffers. The Standard Model allows it to be seen
+as unitary or as separate modality-specific memories. These differences
+may reflect genuine uncertainty about the level of architectural
+commitment warranted by current evidence.</p>
+</section>
+<section id="learning-as-a-side-effect-of-performance" class="level3">
+<h3>6.4 Learning as a Side Effect of Performance</h3>
+<p>A striking consensus across the architectures is that learning occurs
+<strong>incrementally and online, as a side effect of
+performance</strong>—not as a separate phase requiring distinct
+processing. Soar’s chunking creates new rules during problem-solving.
+ACT-R’s utility learning adjusts production strengths based on goal
+achievement during task performance. Sigma’s gradient descent operates
+continuously. The Standard Model codifies this as a general
+principle.</p>
+<p>This contrasts sharply with the dominant paradigm in machine
+learning, where training and inference are typically distinct phases
+with different algorithms and even different hardware. The cognitive
+architecture tradition suggests that truly humanlike learning must be
+integrated into the performance loop—learning from every cognitive
+cycle, not just from curated training sets.</p>
+</section>
+<section id="bounded-rationality-as-the-organizing-principle"
+class="level3">
+<h3>6.5 Bounded Rationality as the Organizing Principle</h3>
+<p>The Standard Model explicitly identifies bounded rationality—Herbert
+Simon’s concept—as the purpose of architectural processing, in contrast
+to the optimality that dominates much of AI. The architecture is not
+designed to find globally optimal solutions but to support effective
+decision-making under the constraints of limited memory, limited time,
+and limited knowledge. Anderson’s rational analysis shows that ACT-R’s
+specific constraints can be derived as approximately Bayesian-optimal
+solutions to information retrieval under realistic environmental
+statistics. The architecture is adapted to its niche, not abstractly
+optimal.</p>
+<p>Carruthers’ analysis of how System 2 reasoning works through working
+memory manipulation adds a mechanistic account of <em>why</em>
+rationality is bounded: the serial bottleneck and capacity limitations
+of working memory impose fundamental constraints on the depth and
+breadth of deliberation. We reason by cycling through sequences of
+attended sensory representations, each constrained by what can be held
+in working memory at once. The “bounds” on bounded rationality are
+architectural features, not accidental limitations.</p>
+</section>
+</section>
+<section id="open-questions-and-future-directions" class="level2">
+<h2>7. Open Questions and Future Directions</h2>
+<section id="consciousness-and-architecture" class="level3">
+<h3>7.1 Consciousness and Architecture</h3>
+<p>Perhaps the deepest open question is the relationship between
+cognitive architecture and consciousness. The Standard Model is silent
+on phenomenal consciousness. ACT-R treats consciousness functionally, in
+terms of what information is available in the buffers. Carruthers offers
+the most developed account: access consciousness is global broadcasting
+of attended sensory representations in working memory, and phenomenal
+consciousness reduces to (or is constituted by) this access
+consciousness. But whether any cognitive architecture can truly
+<em>explain</em> consciousness rather than merely correlating with it
+remains contested.</p>
+<p>The sensory-based account suggests a provocative architectural
+constraint: if conscious thought requires sensory vehicles, then
+architectures that process only abstract symbol structures may be
+inherently incapable of supporting consciousness in the relevant sense.
+This would mean that the question of machine consciousness is partly an
+architectural question—about whether the system’s representations have
+the right kind of sensory grounding.</p>
+</section>
+<section id="emotion-motivation-and-personality" class="level3">
+<h3>7.2 Emotion, Motivation, and Personality</h3>
+<p>The Standard Model acknowledges significant incompleteness regarding
+emotion, motivation, and what Rosenbloom calls “personal” aspects of
+cognition. Rosenbloom’s Sigma project had begun to explore
+appraisal-based emotion and temporal motivation theory before his work
+was interrupted by illness. A 2024 proposal for extending the Common
+Model to emotion has been developed but not yet achieved consensus. This
+remains a major gap: any architecture claiming to model complete
+humanlike minds must account for the pervasive influence of affect on
+cognition, decision-making, and learning.</p>
+</section>
+<section id="the-challenge-from-large-language-models" class="level3">
+<h3>7.3 The Challenge from Large Language Models</h3>
+<p>The recent emergence of large language models (LLMs) poses a
+fascinating challenge to the cognitive architecture tradition. LLMs
+achieve remarkable generality through a single mechanism
+(transformer-based neural networks trained on vast text corpora) rather
+than through the modular, hybrid architectures described here.
+Rosenbloom notes that LLMs have begun to blur the distinction between
+narrow and general AI. The Standard Model paper’s aside about “no
+additional specialized architectural modules” for complex activities
+like language processing and Theory of Mind takes on new significance
+when LLMs appear to do both without any of the traditional architectural
+machinery.</p>
+<p>Yet LLMs also have well-documented limitations that the cognitive
+architecture tradition predicted: difficulties with systematic
+compositionality, lack of persistent memory and learning from
+experience, inability to ground language in perception and action, and
+absence of the kind of goal-directed, deliberate reasoning that the
+serial bottleneck enables. The emerging consensus may be that LLMs and
+cognitive architectures need each other—with LLMs providing the
+statistical knowledge and flexible language processing that
+architectures have struggled with, and architectures providing the
+structured reasoning, persistent memory, and grounded action that LLMs
+lack.</p>
+</section>
+<section id="the-space-of-all-possible-minds" class="level3">
+<h3>7.4 The Space of All Possible Minds</h3>
+<p>Rosenbloom’s dichotomic maps point toward an even more ambitious
+question: understanding not just humanlike minds but the full space of
+possible minds—including animal minds, artificial minds of various
+kinds, and perhaps alien minds. The Common Model deliberately restricts
+itself to humanlike architectures, acknowledging that there may be
+fundamentally different ways to achieve human-level intelligence. But
+the dichotomic maps provide tools for reasoning about this broader
+space: by identifying the core dichotomies that structure cognitive
+technologies and the criteria that explain why each end is useful, they
+offer a principled way to explore which combinations of capabilities are
+possible, which are effective, and which are humanlike.</p>
+</section>
+</section>
+<section id="hippocampal-systems-and-complementary-learning"
+class="level2">
+<h2>8. Hippocampal Systems and Complementary Learning</h2>
+<p>Carruthers treats the hippocampus as central to three capacities:
+binding episodic memories (using spatial and temporal coordinates to
+link sensory representations across cortical areas), supporting
+prospection (constructing and evaluating future scenarios by recombining
+episodic elements), and contributing to the default mode network’s
+stimulus-independent activity (the mind-wandering that fills much of
+waking life). A widely accepted generalization in cognitive neuroscience
+— that memories are stored where they are processed, within the same
+systems that gave rise to the information — means the sensory content of
+episodic memory lives in sensory cortex, while the hippocampus provides
+the binding that links these distributed traces into coherent episodes.
+When episodic memories are activated, they are globally broadcast in the
+same manner as perception, entering consciousness through the same
+working-memory machinery.</p>
+<p>What Carruthers does not engage with is <em>why</em> the hippocampal
+system exists as a separate architectural component in the first place.
+McClelland, McNaughton, and O’Reilly’s Complementary Learning Systems
+(CLS) theory provides the computational answer. Neural networks with
+distributed representations face a fundamental tradeoff: rapid learning
+of new information causes <em>catastrophic interference</em> — new
+learning overwrites the statistical regularities painstakingly extracted
+from prior experience. The solution is two complementary systems with
+different learning rates. The neocortex learns slowly, through
+interleaved exposure, to extract the statistical structure that
+constitutes general knowledge (semantic memory, concepts, skills). The
+hippocampus learns rapidly from single episodes, storing sparse
+pattern-separated traces that can later be “replayed” to the neocortex —
+during sleep, rest, or idle moments — for gradual consolidation.</p>
+<p>A 2016 update by Kumaran, Hassabis, and McClelland broadened the
+theory in important ways. Hippocampal replay is not merely passive
+re-presentation; it allows goal-dependent weighting of experience
+statistics, so the system can prioritize consolidating what matters.
+Furthermore, neocortical learning can be rapid when new information is
+<em>consistent with known structure</em> — schema-consistent learning
+benefits from existing scaffolding. The theory thus predicts an
+asymmetry: genuinely novel information must go through slow
+hippocampal-to-neocortical consolidation, while information that fits
+established schemas can be integrated quickly.</p>
+<p>This directly addresses an unresolved question in the Standard Model.
+The 2017 paper notes that there is not yet a consensus on whether there
+is a single uniform declarative memory or two separate memories, one
+semantic and the other episodic. CLS theory provides the computational
+argument for why two are needed: they embody complementary learning
+rates that solve the stability-plasticity dilemma. The Standard Model’s
+semantic memory corresponds to the slow neocortical system that extracts
+cross-episode statistical structure; its episodic memory corresponds to
+the fast hippocampal system that stores individual experiences. They are
+not merely different <em>contents</em> within a single memory but
+different <em>learning regimes</em> with different computational
+properties.</p>
+<p>The connection to concept formation is immediate. The slow
+neocortical learning system is essentially the substrate for the kind of
+concept acquisition described by prototype theory and the Bayesian
+program — gradually extracting the statistical regularities that define
+categories from interleaved exposure to instances. The fast hippocampal
+system provides the episodic grounding that exemplar theory and Prinz’s
+proxytype account emphasize — retaining specific encounters that can be
+consulted for context-sensitive categorization. Machery’s heterogeneity
+thesis — that “concepts” actually involve multiple distinct
+psychological structures deployed for different tasks — maps onto the
+CLS architecture: prototype-like processing draws on neocortical
+statistical summaries, while exemplar-like processing draws on
+hippocampal episodic traces. These are not competing theories of the
+same thing but descriptions of two complementary systems, each optimized
+for different computational demands.</p>
+<p>For the cognitive architecture tradition, CLS theory also illuminates
+the learning principle that the Standard Model codifies — that all
+learning is incremental and online, occurring as a side effect of
+performance. This is true of both the fast and slow systems, but in
+different senses. Hippocampal encoding is rapid and online — it captures
+episodes as they happen. Neocortical consolidation is slow and online —
+it integrates replayed episodes during ongoing processing. Neither
+system has a separate “training phase” distinct from performance, which
+is precisely the architectural principle the Standard Model emphasizes.
+But the two systems implement this principle at different timescales and
+with different consequences for what kind of knowledge results.</p>
+</section>
+<section id="four-pointers-and-the-merge-conjecture" class="level2">
+<h2>9. Four Pointers and the Merge Conjecture</h2>
+<p>The empirical finding that working memory sustains approximately four
+chunks of information (Cowan 2001) is one of the most robust results in
+cognitive psychology. Activity in the intraparietal sulcus increases
+with memory load and plateaus at about four items. Visual and auditory
+working memory share the same attentional resources, with the maximum
+number of items retained in each domain matching what can be retained in
+cross-modal tasks. The limit appears to reflect attentional capacity
+rather than storage capacity — it is the number of representations that
+top-down attention can simultaneously sustain in an active, globally
+broadcast state.</p>
+<p>Recent models suggest that this capacity may be implemented by a
+small number of pointer-like attentional indices — approximately two per
+hemisphere — each of which can latch onto a sensory representation in
+midlevel cortex and sustain it through top-down signals from prefrontal
+and parietal regions. These are functionally similar to the “object
+files” described in the vision literature (Kahneman and Treisman;
+Pylyshyn): location-based indexicals that anchor to particular entities,
+with folders attached into which property information is placed. In
+Carruthers’ framework, these pointers are the mechanism of the global
+workspace — what is pointed to is globally broadcast and thereby
+conscious; what loses its pointer decays.</p>
+<p>If working memory consists of a small number of pointers to sensory
+representations, then the fundamental question becomes: what is the
+minimal operation these pointers can perform? We propose that the answer
+is <strong>Merge</strong> — the binary operation that takes what two
+pointers reference and combines them into a new structured object, which
+can then be re-attached to one of the pointers, freeing the other.</p>
+<p>This is recognizably Chomsky’s Merge operation from the Minimalist
+Program: taking two syntactic objects A and B and forming the new object
+{A, B}. But we are proposing something stronger than the linguistic
+claim. Merge, on this view, is not specifically linguistic — it is the
+<em>domain-general</em> operation that the working memory architecture
+affords. It is what you inevitably get when you have a small number of
+pointers and the capacity to form structured combinations. The
+linguistic application of Merge — building hierarchical syntactic
+structures — is an exaptation of this more fundamental architectural
+operation.</p>
+<p>Several converging lines of evidence support this conjecture.
+Fujita’s hypothesis of the motor-control origin of Merge argues that
+hierarchical syntax evolved from the capacity for sequential and
+hierarchical object manipulation — combining two actions into a
+structured sequence. This is directly compatible: the working memory
+pointers would provide the substrate for holding two action
+representations simultaneously while the motor system combines them. A
+February 2025 eLife paper from the Frank lab demonstrates a neural
+network model of prefrontal cortex and basal ganglia in which a ring
+attractor mechanism merges sensory representations with their nearest
+neighbor in PFC, and — critically — the resulting chunk can replace the
+original representation in a working memory slot. This is our proposal
+realized computationally: two items merge, the result re-attaches to one
+pointer, the other pointer is freed.</p>
+<p>This reinterpretation also unifies the chunking traditions across
+cognitive architectures. In Soar, chunking compiles sequences of rule
+firings into new rules that accomplish in one step what previously
+required multiple steps. In ACT-R, chunk formation in declarative memory
+creates new structured units from experienced combinations. The Standard
+Model codifies procedural composition (yielding behavioral
+automatization) and declarative chunk creation as fundamental learning
+mechanisms. In every case, the underlying operation has the same
+structure: two or more elements are combined into a single structured
+unit that occupies one “slot” where multiple slots were previously
+required. This <em>is</em> Merge, operating at the level of working
+memory pointers.</p>
+<p>The capacity limit of approximately four pointers then acquires an
+evolutionary interpretation. Four is the minimum number that supports
+recursive application of Merge with sufficient depth for useful
+structure-building. With two pointers, you can perform one Merge
+operation. With four, you can Merge two pairs independently and then
+Merge the results — yielding hierarchical structure with two levels of
+embedding. This corresponds closely to the practical depth of
+center-embedding in natural language (which rarely exceeds two levels
+despite unbounded recursive grammar) and to the depth of hierarchical
+planning in motor action. The brain did not evolve excess working memory
+capacity because it did not need to: four pointers suffice for the
+recursive Merge operations that natural language, action planning, and
+analogical reasoning require.</p>
+<p>This conjecture connects the cognitive architecture tradition
+(working memory as the hub of the Standard Model) to Minimalist
+linguistics (Merge as the fundamental operation) to the learning
+literature (chunking as the mechanism by which experience is compressed
+into reusable units). It suggests that the serial bottleneck at the
+heart of cognitive architecture is not merely a constraint imposed by
+limited neural resources but a <em>design feature</em> — the minimal
+substrate for a binary combinatorial operation that, through recursive
+application and consolidation into long-term memory, generates the
+open-ended structured thought that distinguishes human cognition.</p>
+</section>
+<section id="conclusion" class="level2">
+<h2>10. Conclusion</h2>
+<p>Architectures that began from different premises — ACT-R from
+cognitive psychology and rational analysis, Soar from AI and
+problem-solving, Sigma from probabilistic graphical models — have
+arrived at shared commitments: modular organization around a central
+working memory, a serial bottleneck driven by procedural memory, hybrid
+symbolic-subsymbolic representations, incremental online learning, and
+bounded rationality as the organizing principle. That this convergence
+can be captured in a Common Model that also outperforms neuroscientific
+alternatives as a model of high-level brain organization is significant.
+Carruthers’ philosophical analysis adds that even within this consensus,
+open questions remain about the nature of the representations involved
+and about the relationship between architectural processing and
+conscious experience.</p>
+<p>The two extensions proposed in sections 8 and 9 are offered in the
+spirit of Rosenbloom’s architectural exploration — seeking insight
+through synthesis across disciplines. Grounding the semantic-episodic
+distinction in CLS theory’s complementary learning rates resolves an
+open question in the Standard Model and connects the architecture of
+memory to the architecture of concept formation. The conjecture that
+Merge over working memory pointers is the fundamental operation
+underlying both chunking and linguistic syntax connects the cognitive
+architecture tradition to Minimalist linguistics and to the learning
+literature, while offering a specific evolutionary rationale for the
+~4-item capacity limit. Whether these connections hold up under closer
+scrutiny is a question for future work — but the convergence across
+fields suggests they are worth pursuing.</p>
+<p>Rosenbloom’s memoir cites a maxim from Allen Newell: “Deep scientific
+ideas are exceedingly simple. Others usually see them as trivial.” The
+idea of a cognitive architecture — a fixed computational framework that
+enables and constrains the mind’s flexibility — is simple. Working out
+its details is not. It is, as Newell said, a question that can hold you
+for a lifetime.</p>
+<hr />
+<p><em>This article was co-authored by Lukasz Stafiniak and Claude
+(Anthropic). The arguments, errors, and speculative leaps are jointly
+owned.</em></p>
+</section>
+</section>
+</article>
+<script src="/assets/theme-toggle.js"></script>
+</body>
+</html>
