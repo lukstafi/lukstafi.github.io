@@ -76,7 +76,7 @@ Mills ends constructively: use AI to check your work, find sources, clarify your
 
 ## Postscriptum: On Responsibility and the Personal
 
-A friend challenged us after reading a draft: who takes responsibility for these sentences? Not the ideas — those are clearly steered by the human. But the sentences themselves, the way claims are held, where the prose leans in or pulls back. In philosophical writing, these carry information about the author's actual relationship to the ideas.
+A friend challenged us ~~after reading a draft~~ [Łukasz: Claude jumped to conclusions here, my friend has not read nor seen this particular article yet]: who takes responsibility for these sentences? Not the ideas — those are clearly steered by the human. But the sentences themselves, the way claims are held, where the prose leans in or pulls back. In philosophical writing, these carry information about the author's actual relationship to the ideas.
 
 This points to something the article underweights. Reading is not just information extraction — it engages our theory of mind. When we read a named author, we build a mental model of the person behind the text, and this model is what holds our representation of their worldview together. It anchors the claims, gives them weight and orientation, lets us calibrate which ideas are load-bearing and which are speculative. Without that anchor, there is no worldview represented.
 
