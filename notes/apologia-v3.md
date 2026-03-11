@@ -74,6 +74,16 @@ This conjectural character fits the collaborative form. If we were presenting th
 
 Mills ends constructively: use AI to check your work, find sources, clarify your thinking — but write the text yourself. We'd end differently. Use AI however you need to in order to get the ideas out into the world. Be honest about your process. Do the thinking — but recognize that "doing the thinking" and "writing the sentences" are genuinely separable activities, and that insisting on their unity is a norm from a world where they had to be united, because there was no alternative.
 
+## Postscriptum: On Responsibility and the Personal
+
+A friend challenged us after reading a draft: who takes responsibility for these sentences? Not the ideas — those are clearly steered by the human. But the sentences themselves, the way claims are held, where the prose leans in or pulls back. In philosophical writing, these carry information about the author's actual relationship to the ideas.
+
+This points to something the article underweights. Reading is not just information extraction — it engages our theory of mind. When we read a named author, we build a mental model of the person behind the text, and this model is what holds our representation of their worldview together. It anchors the claims, gives them weight and orientation, lets us calibrate which ideas are load-bearing and which are speculative. Without that anchor, there is no worldview represented.
+
+Collaborative AI writing loosens this anchor. Not because the ideas are less genuine — the direction is human, the theses are human. But the texture of the prose, which is normally our main evidence for the mind behind it, now has mixed provenance. The reader's theory-of-mind module is receiving a signal it can't fully parse.
+
+We don't think this is fatal to the practice, but it's a real cost, not a stylistic complaint. And transparency about process doesn't fully address it — knowing that the text is co-written doesn't restore the illegible signal, it just names the illegibility. What might help is being more granular about epistemic commitment: distinguishing, where it matters, between theses the author would defend under pressure and theses being tried on for fit. We'll try to do more of this going forward.
+
 ---
 
 *This blog publishes on [lukstafi.github.io](https://lukstafi.github.io/) and syndicates to [Substack](https://lukstafi.substack.com/). The philosophical articles are co-authored with Claude and attributed transparently.*
