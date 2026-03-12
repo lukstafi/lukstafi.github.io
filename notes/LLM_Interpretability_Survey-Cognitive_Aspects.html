@@ -1,0 +1,1110 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>The Architecture of Artificial Cognition: A Comprehensive
+Survey of LLM Mechanistic Interpretability</title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <link rel="stylesheet" href="/assets/tufte.css">
+  <link rel="stylesheet" href="/assets/pandoc-tufte.css">
+  <link rel="stylesheet" href="/assets/site.css">
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+  <script>(function(){var t=localStorage.getItem('theme-preference');if(t)document.documentElement.setAttribute('data-theme',t);})()</script>
+</head>
+<body>
+<nav class="site-nav">
+  <a href="/">Home</a> &middot; <a href="/about.html">About</a>
+</nav>
+<div class="theme-toggle">
+  <button id="theme-btn" aria-label="Toggle dark mode">&#9788;</button>
+</div>
+<article>
+<section
+id="the-architecture-of-artificial-cognition-a-comprehensive-survey-of-llm-mechanistic-interpretability"
+class="level1">
+<h1><strong>The Architecture of Artificial Cognition: A Comprehensive
+Survey of LLM Mechanistic Interpretability</strong></h1>
+<section id="introduction-the-imperative-for-mechanistic-transparency"
+class="level2">
+<h2><strong>Introduction: The Imperative for Mechanistic
+Transparency</strong></h2>
+<p>The rapid proliferation and deployment of Large Language Models
+(LLMs) across high-stakes domains—ranging from healthcare and software
+engineering to automated planning and legal reasoning—has precipitated
+an urgent need to understand their internal cognitive processes.1
+Historically, the evaluation of artificial intelligence systems relied
+heavily on behavioral benchmarks, black-box testing, and closed-style
+evaluations.4 In this paradigm, researchers assessed models based on the
+quality, fluency, or accuracy of their generated outputs rather than the
+underlying mechanisms driving those outputs.4 However, as models scale
+geometrically in parameter count and exhibit emergent capabilities such
+as in-context learning, multi-step logical reasoning, and complex tool
+use, purely behavioral evaluation has proven structurally insufficient
+for guaranteeing safety, alignment, and reliability.7 The phenomenon of
+“hallucination”—where models confidently fabricate nonsensical or
+unfaithful content—demonstrates that high fluency does not equate to
+factual grounding, further underscoring the limitations of treating
+these systems as opaque statistical engines.6<br />
+Mechanistic Interpretability (MI) has consequently emerged as a critical
+paradigm shift in AI safety and research, moving the field from a
+behaviorist perspective to a framework analogous to cognitive
+neuroscience.4 Mechanistic interpretability seeks to reverse-engineer
+the sophisticated, multi-dimensional weight matrices of artificial
+neural networks into human-understandable algorithms.10 By examining
+individual neurons, attention heads, and the intricate computational
+circuits they form, researchers aim to move beyond the assertion that
+LLMs are mere “stochastic parrots” relying exclusively on superficial
+n-gram statistics.13 Instead, modern MI research provides compelling
+empirical evidence that these models develop highly structured,
+functionally specific internal representations of the world, utilizing
+abstract, language-independent logic circuits.14<br />
+The ultimate objective of this field is not merely observational; it is
+fundamentally pragmatic and interventionist. By localizing specific
+cognitive phenomena—such as factual retrieval, spatial reasoning,
+syntactic code completion, and implicit planning—to discrete stages of
+the transformer architecture, developers can actively intervene, edit
+representations, and steer model behavior dynamically without the
+computational overhead of extensive fine-tuning.1 This survey explores
+the frontiers of LLM interpretability in 2025 and 2026, paying
+particular attention to the architectural and supra-architectural
+aspects of computational processing. It synthesizes recent findings
+regarding the hierarchical nature of machine understanding, the dynamic
+phases of the residual stream, the structural properties of logical
+reasoning circuits, the resolution of polysemanticity via sparse
+autoencoders, and the macro-level phenomena of “thought anchors” in
+chain-of-thought reasoning. Furthermore, it evaluates the integration of
+Global Workspace Theory into AI ensemble architectures and the
+philosophical implications these mechanistic discoveries hold for the
+ongoing debate over true versus simulated cognition.</p>
+</section>
+<section
+id="philosophical-frameworks-true-cognition-versus-simulated-heuristics"
+class="level2">
+<h2><strong>Philosophical Frameworks: True Cognition versus Simulated
+Heuristics</strong></h2>
+<p>For years, a central philosophical and technical debate has
+questioned whether autoregressive next-token predictors can possess
+genuine understanding. Critics have often framed LLMs as real-world
+approximations of a “Blockhead”—Ned Block’s hypothetical system that
+merely mimics intelligence through the vast memorization of an
+exhaustive table of input-output pairs.15 In this deflationary view, AI
+cognition is entirely simulated; models are viewed as stochastic parrots
+generating text based on probabilistic linear algebra without any
+inherent understanding of truth, falsity, or physical reality.7 However,
+recent advancements in mechanistic interpretability render this
+simplistic picture increasingly untenable. Fusing philosophical theory
+with empirical mechanistic evidence reveals that LLMs develop
+sophisticated internal structures capable of underwriting
+understanding-like unification.15<br />
+To systematically analyze this phenomenon, contemporary research by
+Beckmann and Queloz proposes a tiered framework that categorizes machine
+understanding into three hierarchical varieties. Each variety is tied to
+a corresponding level of computational organization within the neural
+network, moving from basic geometric tracking to abstract algorithmic
+generalization.15</p>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: left;">Understanding Tier</th>
+<th style="text-align: left;">Mechanistic Correlate</th>
+<th style="text-align: left;">Functional Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>Conceptual
+Understanding</strong></td>
+<td style="text-align: left;">Features (Directions in Latent Space)</td>
+<td style="text-align: left;">The model forms unified internal
+representations that connect diverse manifestations of a single entity,
+acting analogously to human concepts.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>State-of-the-World
+Understanding</strong></td>
+<td style="text-align: left;">Factual Connections (MLP
+Switchboards)</td>
+<td style="text-align: left;">The model learns contingent empirical
+connections between features, dynamically tracking changes and
+maintaining an internal world model.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Principled
+Understanding</strong></td>
+<td style="text-align: left;">Circuits (Attention/MLP Subnetworks)</td>
+<td style="text-align: left;">The model discards memorized training
+fragments in favor of compact, generalizable algorithms that connect
+disparate facts under abstract rules.</td>
+</tr>
+</tbody>
+</table>
+<section
+id="the-emergence-of-conceptual-and-state-of-the-world-understanding"
+class="level3">
+<h3><strong>The Emergence of Conceptual and State-of-the-World
+Understanding</strong></h3>
+<p>The foundational step toward any kind of machine understanding is the
+development of “features.” In the context of LLMs, a feature is rarely
+isolated to a single neuron; rather, it manifests as a specific, highly
+structured direction in the high-dimensional latent space of the
+model.15 This computational organization replicates the core cognitive
+function of human concepts. When a model encounters diverse textual
+manifestations of a property or entity—across different languages,
+syntactic structures, or modalities—it subsumes these varied instances
+under a single, unifying geometric representation.15 The discovery of
+these monosemantic directions provides the necessary computational
+tractability for the model to encode, manipulate, and systematically
+combine concepts, forming the absolute bedrock of cognition.18<br />
+Building upon these conceptual features, LLMs demonstrate the capacity
+to form internal representations of factual states, effectively tracking
+the world dynamically.15 This tier of understanding emerges when the
+network learns contingent, factual connections between its established
+geometric features.15 Mechanistically, this process is heavily reliant
+on the Multi-Layer Perceptron (MLP) layers of the transformer
+architecture, which act as highly sophisticated, non-linear
+switchboards.15 If a specific conceptual feature (for instance, the
+concept of “Michael Jordan”) is highly activated in the current residual
+stream, the MLP layers recall associated factual information stored
+within their weights, enriching the representation with properties such
+as “basketball player” for downstream processing.15<br />
+Strong evidence for this world-modeling capacity is observed in
+specialized spatial models like “Othello-GPT.” Trained purely on
+sequences of moves, the model develops linear and non-linear saliency
+patterns that perfectly mirror global board states and causally orient
+decision-making, entirely independent of explicit programming.12
+However, researchers note that this state-of-the-world understanding is
+not uniform; models exhibit “end-game degradation,” where reliance on
+the robust world-model circuit falters as the board fills up, prompting
+the model to pragmatically toggle to simpler, cheaper heuristics.15</p>
+</section>
+<section
+id="principled-understanding-predictive-compression-and-grokking"
+class="level3">
+<h3><strong>Principled Understanding, Predictive Compression, and
+Grokking</strong></h3>
+<p>At the apex of the computational hierarchy lies principled
+understanding. This variety represents the model’s ability to grasp
+underlying rules, laws, or principles that unify a diverse array of data
+points, allowing it to untether itself from specific, memorized cases.15
+Mechanistically, this is observed when the model ceases to rely on a
+sprawling repertoire of memorized facts and instead discovers a compact
+“circuit”—a specific, self-contained subnetwork of attention heads and
+MLP layers executing a reusable, content-agnostic algorithm.15 In
+philosophical terms, this aligns with accounts of explanatory
+understanding, which demand the subsumption of disparate data points
+under general parsimonious principles.15 It is driven by the
+evolutionary pressure of “predictive compression,” where understanding
+evolves as an efficient proxy to predict the world using models that are
+accurate yet highly compressed.19<br />
+This transition from rote memorization to principled understanding is
+most visibly characterized by the training phenomenon known as
+“grokking”.12 Grokking occurs when a network suddenly transitions from
+memorizing training data—exhibiting severe overfitting and low
+validation accuracy—to generalizing flawlessly on unseen data.12 This
+phase shift frequently occurs long after training accuracy has reached
+100%.12 From an algorithmic perspective, this abrupt leap correlates
+with a sharp decrease in the internal complexity of the model’s
+representations, aligning with the minimum description length principle
+and minimizing absolute weight entropy.15 The network essentially
+discards inefficient memorized input-output pairs in favor of a highly
+compressed, principled mechanism. While smaller datasets require more
+optimization steps before grokking occurs, the onset of generalization
+always coincides with the formation of well-structured embeddings.12</p>
+</section>
+<section id="the-motley-mix-and-the-divergence-from-human-cognition"
+class="level3">
+<h3><strong>The “Motley Mix” and the Divergence from Human
+Cognition</strong></h3>
+<p>Despite the undeniable evidence for sophisticated understanding,
+mechanistic interpretability also reveals a critical divergence from
+human cognition. The hierarchical tiers of understanding do not strictly
+supersede one another; rather, they coexist simultaneously.15 An LLM
+operates as a “motley mix” of heterogeneous mechanisms, deploying
+high-level principled logic circuits alongside shallow, lower-tier
+heuristics based on simple n-gram statistics.15<br />
+Consequently, a formal circuit capable of executing complex syllogistic
+inference may be entirely “drowned out” or overshadowed if the semantic
+content of a prompt is highly implausible, triggering a stronger,
+content-based heuristic that overrides the logical structure.15 This
+parallel exploitation of mixed mechanisms significantly complicates the
+attribution of epistemic trust, as the model’s robust competence in one
+scenario may mask deep brittleness in another closely related task where
+a faulty mechanism happens to overshadow a sound one.15 Philosophically,
+this suggests that while LLMs instantiate genuine forms of cognition,
+they instantiate highly strange forms of it, shaped by constraints and
+incentives (such as the “frozen weights problem” separating training
+from inference) that differ starkly from those shaping human
+intelligence.18</p>
+</section>
+</section>
+<section id="the-anatomy-of-the-residual-stream-the-central-blackboard"
+class="level2">
+<h2><strong>The Anatomy of the Residual Stream: The Central
+Blackboard</strong></h2>
+<p>To comprehend how these complex tiers of understanding are
+operationalized at the hardware level, one must examine the core
+communication channel of the transformer architecture: the residual
+stream. In contemporary autoregressive models, the residual stream acts
+as the central “information highway” or an affine workspace where
+high-dimensional representations are iteratively refined across dozens
+of layers.12 It mimics the “blackboard” architecture of early cognitive
+science and software engineering, serving as a shared memory substrate
+where independent modules can read and write partial results
+cooperatively.25<br />
+The transformer architecture operates through alternating sublayers of
+attention mechanisms and MLP networks, which interact with the
+continuous identity vector of the residual stream through explicit
+read-and-write operations.12 Attention heads function primarily as
+transport operators.13 Generating a query based on current context, they
+independently and in parallel read specific cues from earlier tokens in
+the stream, fetching relevant information and bringing it into the
+current contextual space.12 Subsequently, the MLP value paths operate
+locally on individual tokens, “writing” sparse, non-linear updates back
+into the residual stream based on the conceptual features activated by
+the attention mechanism.13 Because the residual state is linearly
+decodable, downstream components can easily access and act upon this
+iteratively accumulated knowledge.13</p>
+<section id="the-logit-lens-and-layer-wise-stratification"
+class="level3">
+<h3><strong>The Logit Lens and Layer-Wise Stratification</strong></h3>
+<p>The linear structure of the residual stream allows researchers to
+peer into the evolving cognitive process of the model using
+sophisticated diagnostic techniques such as the “Logit Lens” and “Direct
+Logit Attribution”.11 Because the residual stream maintains a continuous
+carrier signal from the input embedding matrix all the way to the final
+token prediction, applying the model’s unembedding matrix at
+intermediate stages exposes how the internal prediction evolves layer by
+layer.24<br />
+Research leveraging causal tracing, activation patching, and mediation
+analysis indicates that factual knowledge retrieval and reasoning are
+heavily stratified across the depth of the residual stream.11 The
+extraction of query information generally occurs in the earliest layers
+of the transformer, facilitated by initial attention heads identifying
+the core parameters of the prompt.12 This foundational data is then
+propagated forward, where intermediate reasoning and entity attribute
+extraction emerge in the middle layers, forming clustering patterns of
+intermediate entity representations.31 Finally, the aggregated,
+logically processed information is written back into the residual stream
+via “wrappers” in the late-stage MLP levels to govern the generation of
+the final output token.12 This layer-wise stratification confirms that
+LLMs solve complex problems not in a single monolithic flash of
+probability, but through a highly structured, staged sequence of
+cognitive processing.</p>
+</section>
+</section>
+<section id="circuit-discovery-and-the-mechanics-of-logical-reasoning"
+class="level2">
+<h2><strong>Circuit Discovery and the Mechanics of Logical
+Reasoning</strong></h2>
+<p>The capacity to manipulate boolean operators, chain inference rules,
+and perform multi-hop factual retrieval represents a cornerstone of
+formal deduction. Recent mechanistic studies into the internal
+computational mechanisms of propositional reasoning have moved beyond
+merely isolating task-specific nodes; instead, they focus on uncovering
+generalizable algorithmic strategies employed across architectures like
+Qwen, Mistral, and Gemma.30<br />
+Through rigorous causal mediation analysis and activation patching on
+controlled datasets such as PropLogic-MI (which spans multiple
+propositional logic rule categories), researchers have revealed a
+coherent computational architecture for logical reasoning.30 This
+architecture functions through four interlocking mechanisms that
+consistently generalize across model scales and reasoning depths 30:</p>
+<table>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: left;">Reasoning Mechanism</th>
+<th style="text-align: left;">Functional Role in the Residual
+Stream</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>Staged Computation</strong></td>
+<td style="text-align: left;">The model breaks reasoning down into
+layer-wise processing phases. Early layers map syntax, middle layers
+execute logical transitions and counting, and terminal layers aggregate
+final answers.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Information
+Transmission</strong></td>
+<td style="text-align: left;">The model routes logical data across
+sequence length, aggregating vital semantic flow at segment-terminal
+boundary tokens to pass intermediate conclusions forward.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Fact Retrospection</strong></td>
+<td style="text-align: left;">The model maintains logical consistency by
+executing persistent re-access of source facts, continuously looking
+back at axiomatic premises established earlier in the context.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Specialized Attention
+Heads</strong></td>
+<td style="text-align: left;">Specific attention heads are structurally
+dedicated to executing logical inference, with distinct families acting
+as deduction heads, iteration heads, or look-up heads.</td>
+</tr>
+</tbody>
+</table>
+<section id="staged-computation-and-information-flow" class="level3">
+<h3><strong>Staged Computation and Information Flow</strong></h3>
+<p>Staged computation demonstrates that multi-hop logical tasks are
+executed sequentially across network depth.16 In composite instructions,
+models execute different subtasks at specific layers.16 For example, in
+arithmetic or counting tasks, early partitions independently encode
+local counts into their final tokens. These local counts are
+subsequently written into intermediate reasoning tokens via the residual
+stream. Finally, late-layer attention heads aggregate these intermediate
+values to emit the final calculation.36 Information transmission
+mechanisms ensure that this data moves fluidly; semantic content
+aggregates at segment-terminal tokens, acting as relay stations that
+push the logical state forward through the affine workspace.34<br />
+Fact retrospection acts as an anchor against hallucination during deep
+proof generation. Mechanistic evidence shows that even deep into a
+reasoning trace, specific attention heads maintain a strong, persistent
+causal influence linked back to the original fact tokens provided in the
+prompt, preventing the intermediate reasoning from drifting away from
+the established constraints.34</p>
+</section>
+<section id="in-context-learning-and-induction-circuits" class="level3">
+<h3><strong>In-Context Learning and Induction Circuits</strong></h3>
+<p>A critical manifestation of these specialized circuits is seen in
+In-Context Learning (ICL)—the emergent ability of an LLM to adapt to a
+novel task purely by processing examples within its prompt, without
+undergoing any gradient descent parameter updates.37 The mechanistic
+foundation for basic ICL relies heavily on specialized attention
+structures known as “induction heads”.12<br />
+Induction circuits operate as a two-step algorithmic rule for pattern
+completion.12 First, an early-layer “prefix head” marks the relationship
+between consecutive tokens in the context (e.g., noting that token B
+follows token A). In deeper layers, the “induction head” searches the
+context for previous instances of the current token (A), retrieves the
+historically associated token (B), and amplifies the logits to predict
+B.12 This strictly mechanistic explanation accounts for highly complex,
+apparently spatial behaviors. For instance, when models process random
+walks on a graph in-context, induction circuits mix the representations
+of neighboring tokens. A single round of this “neighbor mixing” is
+sufficient to recreate a graph-like PCA structure within the residual
+stream, causing the internal geometry of the model to physically mirror
+the connectivity structure of the task.39</p>
+</section>
+<section id="vulnerability-and-semantic-interference" class="level3">
+<h3><strong>Vulnerability and Semantic Interference</strong></h3>
+<p>Despite the elegance of these reasoning circuits, they exhibit a
+critical vulnerability. Studies on syllogistic inference demonstrate
+that while LMs learn transferable, content-independent reasoning
+mechanisms, these circuits do not utilize purely abstract logical
+primitives.30 Instead, the activation spaces remain highly susceptible
+to semantic interference. World knowledge acquired during pre-training
+can contaminate structural inference, leading to belief-biases where the
+model prioritizes real-world plausibility over formal logical
+validity.30 Mitigating this requires advanced “activation
+steering”—fine-grained interventions in the residual stream to
+explicitly separate structural logic from lexical semantics, thereby
+shielding the formal reasoning process and enhancing the robustness of
+the circuit.30</p>
+</section>
+</section>
+<section
+id="disentangling-the-latent-space-sparse-autoencoders-and-feature-steering"
+class="level2">
+<h2><strong>Disentangling the Latent Space: Sparse Autoencoders and
+Feature Steering</strong></h2>
+<p>A pervasive challenge in mapping the cognitive architecture of LLMs
+is the phenomenon of “polysemanticity.” Because the number of concepts,
+facts, and features an LLM must track vastly exceeds the finite number
+of available neurons in its architecture, the network relies heavily on
+“superposition”.12 Superposition occurs when the model compresses
+multiple, unrelated features into linear combinations across the same
+set of neurons.40 This renders individual neuronal activations dense,
+inscrutable, and heavily entangled; a single neuron might fire for the
+concept of “ocean,” the syntactic structure of a parenthesis, and the
+emotion of anger simultaneously.12 Furthermore, recent research
+intimately links superposition to adversarial vulnerability,
+demonstrating that models exhibit brittleness specifically because
+features are hyper-compressed; small, targeted perturbations in the
+input can effortlessly disrupt these entangled representations, causing
+catastrophic behavioral shifts.41</p>
+<section id="the-mechanics-of-sparse-autoencoders-saes" class="level3">
+<h3><strong>The Mechanics of Sparse Autoencoders (SAEs)</strong></h3>
+<p>To resolve superposition and isolate true cognitive variables,
+researchers employ Sparse Autoencoders (SAEs) as an unsupervised
+interpretability tool.40 SAEs are designed to map the dense, hidden
+representations extracted from the LLM’s residual stream into a much
+higher-dimensional, “overcomplete” dictionary space.40<br />
+The architecture consists of an encoder that projects the dense
+activations using learned weight matrices and activation functions (such
+as ReLU, JumpReLU, or TopK variants), paired with a decoder that
+attempts to perfectly reconstruct the original residual state.40
+Crucially, a sparsity regularization penalty forces the autoencoder to
+activate only a minimal subset of dimensions for any given input.40 The
+result is the extraction of “monosemantic features”—interpretable,
+disentangled directions in the latent space that correlate cleanly with
+specific human concepts.40 Recent architectural innovations, such as
+RouteSAE, have dramatically improved this process, extracting 22.5% more
+features with 22.3% higher interpretability scores under identical
+sparsity constraints compared to baseline SAEs.45</p>
+</section>
+<section
+id="active-representation-engineering-and-the-activationreasoning-framework"
+class="level3">
+<h3><strong>Active Representation Engineering and the
+ActivationReasoning Framework</strong></h3>
+<p>While SAE features have traditionally been viewed as passive
+observables used for structural metric evaluation, recent advancements
+propose treating these latent features as active components for direct
+Representation Engineering (RepE).12<br />
+The <strong>ActivationReasoning (AR)</strong> framework represents a
+breakthrough in embedding explicit, symbolic logic directly into the
+latent activation space of the LLM.46 It operates in three distinct
+stages 46:</p>
+<ol type="1">
+<li><strong>Finding Representations:</strong> Utilizing SAEs to extract
+and build a comprehensive dictionary of latent concept features.<br />
+</li>
+<li><strong>Activating Propositions:</strong> Detecting these specific
+activating concepts dynamically at inference time and formally mapping
+them to logical propositions.<br />
+</li>
+<li><strong>Logical Reasoning:</strong> Applying explicit, predefined
+logical rules over these latent propositions to infer higher-order
+structures, compose new concepts, dynamically correct reasoning paths,
+and explicitly steer the model’s behavioral trajectory.46</li>
+</ol>
+</section>
+<section id="practical-interventions-code-security-and-reward-modeling"
+class="level3">
+<h3><strong>Practical Interventions: Code Security and Reward
+Modeling</strong></h3>
+<p>The extraction of monosemantic features via SAEs has immediate,
+high-leverage applications for AI alignment, safety, and reliability. In
+software engineering tasks, LLMs frequently generate insecure or
+incorrect code.1 By applying SAEs to decompose representations,
+researchers can compute t-statistics and separation scores to identify
+specific latent directions corresponding to “code correctness”.48 These
+predictor directions serve as real-time error alarms during
+generation.48 Using representation intervention, developers can apply
+targeted “steering vectors” to intervene selectively when errors are
+anticipated, fixing flawed logic without the risk of corrupting
+adjacent, correct code through constant steering.1<br />
+Furthermore, the integration of SAEs into Reinforcement Learning from
+Human Feedback (RLHF) has led to the development of the Sparse
+Autoencoder-enhanced Reward Model (SARM).49 Traditional reward models
+act as opaque black boxes, assigning scalar values to LLM behaviors
+without explaining the underlying reasoning, making them inflexible to
+user preference shifts.49 SARM overcomes this by mapping hidden
+activations into the interpretable feature space before a scalar head
+aggregates them. This provides direct, feature-level attribution for
+reward assignments, significantly improving transparency and allowing
+the alignment process to dynamically adjust to highly specific human
+preferences.49</p>
+</section>
+</section>
+<section id="supra-architectural-formations-and-global-workspace-theory"
+class="level2">
+<h2><strong>Supra-Architectural Formations and Global Workspace
+Theory</strong></h2>
+<p>While the analysis of individual circuits and latent features
+provides a microscopic view of cognition, understanding how models
+orchestrate complex, multi-agent, or tool-augmented tasks requires a
+macroscopic, supra-architectural lens. In cognitive science, Global
+Workspace Theory (GWT) posits that consciousness and advanced cognitive
+control emerge from a centralized “blackboard” or shared workspace where
+multiple independent, parallel modules compete to broadcast information
+globally across the brain.26<br />
+To rigorously assess AI cognition, researchers have operationalized GWT
+into six testable markers (M1-M6) designed to evaluate whether modern
+LLM architectures functionally instantiate workspace-like control
+structures 28:</p>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: left;">GWT Marker</th>
+<th style="text-align: left;">Description</th>
+<th style="text-align: left;">Base Model Satisfaction</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>M1: Global
+Availability</strong></td>
+<td style="text-align: left;">A shared state (<img
+src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABUAAAAYCAYAAAAVibZIAAAA+klEQVR4Xu2SMetBYRTGT7EaWJAPwIcgi8liN6AsJotPoP7FqnwEBhl9BqMyyGCRMlooEuF/jvfcOh3v9Vpkub964n1+PbfrXgAB3yCE2WMeIjt2GcxRuRU7YqtcWbgnJxY2vJGNBqalS485+A/fXfSqC8kYzDCp+grmzk7Tx8R0KemAGeZUf8ZM2YWVW6rzC3Uww5rohpgIZsAuLdxCfPclD2b4J7oZf7bZFfkcBfPTnaTADEd83ghXZdfk80U4JzSku0tguqLPsuthCpiScE5oeMDcVE//CHITi3NCQwrdjcZzcS1c0MjveZFb6/ITaEhv1ga5gIBf8A/vQUX4wN6bNQAAAABJRU5ErkJggg==" />)
+allowing multi-process fan-in (write) and fan-out (read) access,
+supporting multiple downstream functions.</td>
+<td style="text-align: left;"><strong>Partial.</strong> The residual
+stream acts as a minimal global state.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>M2: Functional
+Concurrency</strong></td>
+<td style="text-align: left;">Independent consumers and producers
+operating in parallel without strict serial dependency.</td>
+<td style="text-align: left;"><strong>Partial.</strong> Parallel
+attention heads compute contributions simultaneously.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>M3: Coordinated
+Selection</strong></td>
+<td style="text-align: left;">A mechanism (<img
+src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA8AAAAYCAYAAAAlBadpAAAAsUlEQVR4XmNgGJZAGogLgHgmECshiVshsTHAYiD+D8S3gdgbiFWBeBoQPwdiS6gcVgCS+AfE/OgSQFDJAJG/hC4BAn8Y8JgKBSD5IHTBD1AJTnQJNIBhuC5U8Ba6BBaAofkvVBCbPwkCkEYME4kFZGtmZoBofIkugQVgtYAYmy2AOAFdEATuMkA0g1yBDYDEX6ELIgOQZlAiQTfACIhfo4lhBbsZEF74CqVTUVSMgqEIAG1gK0HBSgf2AAAAAElFTkSuQmCC" />)
+that gates and selects bounded content to commit to <img
+src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABUAAAAYCAYAAAAVibZIAAAA+klEQVR4Xu2SMetBYRTGT7EaWJAPwIcgi8liN6AsJotPoP7FqnwEBhl9BqMyyGCRMlooEuF/jvfcOh3v9Vpkub964n1+PbfrXgAB3yCE2WMeIjt2GcxRuRU7YqtcWbgnJxY2vJGNBqalS485+A/fXfSqC8kYzDCp+grmzk7Tx8R0KemAGeZUf8ZM2YWVW6rzC3Uww5rohpgIZsAuLdxCfPclD2b4J7oZf7bZFfkcBfPTnaTADEd83ghXZdfk80U4JzSku0tguqLPsuthCpiScE5oeMDcVE//CHITi3NCQwrdjcZzcS1c0MjveZFb6/ITaEhv1ga5gIBf8A/vQUX4wN6bNQAAAABJRU5ErkJggg==" />,
+suppressing non-selected candidates.</td>
+<td style="text-align: left;"><strong>Partial.</strong> Attention
+mediates influence, but lacks explicit cycle-level suppression.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>M4: Capacity
+Limitation</strong></td>
+<td style="text-align: left;">A principled bottleneck (<img
+src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAsAAAAXCAYAAADduLXGAAAAoElEQVR4XmNgGJSAEYhV0QWxgadA/B+KiQJXGEhQDFJ4DV0QFwApjkAXxAaiGDCd0ATE/mhiYHCTAaGYC4jvAzEfEH+Dq0ACIIW3gVgQiDdCxX5CxTEASHAnEM9El0AHMxgQJsyGslUQ0qgAPTJA7INQdj6SOBiAJKeh8VuQ2HDACRUQRRL7CMQbgLgHiA2RxMHAE10ACDyAmANdcBTAAACQdCSKrBERiwAAAABJRU5ErkJggg==" />-limit)
+preventing <img
+src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABUAAAAYCAYAAAAVibZIAAAA+klEQVR4Xu2SMetBYRTGT7EaWJAPwIcgi8liN6AsJotPoP7FqnwEBhl9BqMyyGCRMlooEuF/jvfcOh3v9Vpkub964n1+PbfrXgAB3yCE2WMeIjt2GcxRuRU7YqtcWbgnJxY2vJGNBqalS485+A/fXfSqC8kYzDCp+grmzk7Tx8R0KemAGeZUf8ZM2YWVW6rzC3Uww5rohpgIZsAuLdxCfPclD2b4J7oZf7bZFfkcBfPTnaTADEd83ghXZdfk80U4JzSku0tguqLPsuthCpiScE5oeMDcVE//CHITi3NCQwrdjcZzcS1c0MjveZFb6/ITaEhv1ga5gIBf8A/vQUX4wN6bNQAAAABJRU5ErkJggg==" />
+from being overwritten or saturated by competing inputs.</td>
+<td style="text-align: left;"><strong>Weak.</strong> No strict occupancy
+limits exist within the standard transformer base.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>M5: Persistence &amp;
+Update</strong></td>
+<td style="text-align: left;">Broadcast content is maintained and
+selectively updated (appended/merged/deleted) over time, surviving
+distractions.</td>
+<td style="text-align: left;"><strong>Absent.</strong> Base models lack
+a persistence substrate across episodes.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>M6: Goal-Modulation</strong></td>
+<td style="text-align: left;">An explicit goal state (<img
+src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA8AAAAYCAYAAAAlBadpAAAAyklEQVR4XmNgGJZAGogLgHgmECshiVshsTHAYiD+D8S3gdgbiFWBeBoQPwdiS6gcVgCS+A3E3OgSQFDJAJG/hC4BAn8Y8JgKBSD5IHTBD1AJZnQJNIBhuC5U8CG6BBaAofkvVJAXXYIYANKIYSKxAJ9mfyB2BmJ7IHYAYhcGtHABaXyNLIAEsoG4ngFhQTkQMyErwGczDIDkb6ELgsA1BogkO7oEFOQyQOTD0SVgAGY7ipOAQA5JDi/Yy4BQ+A5KN0Ll1sAUjYIhBwDP2zLKnm6VTgAAAABJRU5ErkJggg==" />)
+biases selection, routing, and action arbitration.</td>
+<td style="text-align: left;"><strong>Absent.</strong> Goals are
+strictly prompt-conditioned, not durable internal states.</td>
+</tr>
+</tbody>
+</table>
+<section id="evaluating-the-residual-stream-as-a-workspace"
+class="level3">
+<h3><strong>Evaluating the Residual Stream as a Workspace</strong></h3>
+<p>The sequence of per-token residual stream vectors naturally serves as
+the primary candidate for the global workspace (<img
+src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABUAAAAYCAYAAAAVibZIAAAA+klEQVR4Xu2SMetBYRTGT7EaWJAPwIcgi8liN6AsJotPoP7FqnwEBhl9BqMyyGCRMlooEuF/jvfcOh3v9Vpkub964n1+PbfrXgAB3yCE2WMeIjt2GcxRuRU7YqtcWbgnJxY2vJGNBqalS485+A/fXfSqC8kYzDCp+grmzk7Tx8R0KemAGeZUf8ZM2YWVW6rzC3Uww5rohpgIZsAuLdxCfPclD2b4J7oZf7bZFfkcBfPTnaTADEd83ghXZdfk80U4JzSku0tguqLPsuthCpiScE5oeMDcVE//CHITi3NCQwrdjcZzcS1c0MjveZFb6/ITaEhv1ga5gIBf8A/vQUX4wN6bNQAAAABJRU5ErkJggg==" />).28
+It provides a minimal sense of global availability, where distributed
+attention heads and MLP sublayers act as competing producers and
+consumers, writing to and reading from the stream.28 However, base
+autoregressive transformers fundamentally fail to satisfy the
+higher-order markers of GWT. They lack an explicit centralized
+coordinator executing cycle-level suppression of non-selected contents
+(M3), they do not possess a strict structural capacity bottleneck to
+force prioritization (M4), and crucially, they cannot selectively
+persist or revise state variables across distinct processing episodes
+without re-reading the entire context window (M5).28 Furthermore, goal
+states are merely injected via text prompts, rather than existing as
+distinct, modulating internal control variables (M6).28</p>
+</section>
+<section id="ensemble-architectures-and-implicit-planning"
+class="level3">
+<h3><strong>Ensemble Architectures and Implicit Planning</strong></h3>
+<p>To achieve true workspace dynamics, the base LLM must be embedded
+within “ensemble architectures”.28 These supra-architectural
+frameworks—such as MindOS, CogniPair, and the Conscious Language-Agent
+Architecture (CLAA)—build integrative layers on top of the foundation
+model to bridge the gap between passive next-token prediction and
+autonomous agency.28<br />
+These ensembles implement explicit “Central Processing” layers,
+dedicated memory streams, and bottleneck mechanisms that enforce
+rigorous selection gating.28 For instance, CogniPair utilizes an
+explicit “information bottleneck attention system” that selects only the
+most salient module for broadcast each cycle, effectively acting as a
+strict <img
+src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAC4AAAAYCAYAAACFms+HAAABCElEQVR4XmNgGAWjgCzACMSq6IKDHTwF4v9QPJgACxD/QhdEB1cYBo/DbzAgApKgm0AKrqELDjD4xECkwyPQBQcYEHR4FAOmgiYg9kcTozcg6PCbDAgFXEB8H4j5gPgbXMXAAIIOB0neBmJBIN4IFfsJFccHwoF4MQ68CIgXAPF8IJ4LxHOAeCJYF/GAKIfvBOKZ6BIDDPA6HJQhQZJXofQeVOkBBXgdfp0BVRLEnoLExwdcgLiLBNwC0UY0wOtwkARy+Q3ir4SyPyKJDwQg6PAwNH42A6TtcgxJfCAAqFTD6nAxBkwJP6jYBzRxeoLPQPwciB9DMagt9Q6IlZEVjYJRMApGwQgHADz9U9SRNlb/AAAAAElFTkSuQmCC" />
+capacity limit (M4).28 CLAA introduces independent goal-tracking
+variables that actively modulate the salience of inputs (M6) and a
+memory stream that stores beliefs and plans across infinite processing
+cycles (M5).28 Even commercial deployments utilizing tool-calling and
+structured memory interfaces (such as Claude’s computer use or Gemini’s
+function calling) provide architectural affordances that elevate the
+system’s satisfaction of workspace markers.51 It is within these
+supra-architectural ensembles that the systematic reiteration of
+computational building blocks transcends local calculation, configuring
+an implicit planning logic capable of constructing coherent,
+long-horizon territorial structures.52</p>
+</section>
+</section>
+<section id="macro-cognition-chain-of-thought-and-thought-anchors"
+class="level2">
+<h2><strong>Macro-Cognition: Chain-of-Thought and Thought
+Anchors</strong></h2>
+<p>When LLMs are prompted to “think step-by-step” through
+Chain-of-Thought (CoT) reasoning, they externalize their intermediate
+computational stages into the context window, vastly improving
+performance on complex tasks.7 However, analyzing the multi-token
+computational steps that unfold during CoT requires shifting from
+standard single-forward-pass interpretability to dynamic, sentence-level
+analysis.54<br />
+Recent methodological breakthroughs combining black-box resampling and
+white-box attention mapping have revealed that reasoning traces are not
+homogeneous streams of computation.54 Instead, they exhibit measurable
+internal graph structures built around critical pivot points termed
+“thought anchors”.54</p>
+<section id="identifying-thought-anchors-and-reasoning-taxonomy"
+class="level3">
+<h3><strong>Identifying Thought Anchors and Reasoning
+Taxonomy</strong></h3>
+<p>A thought anchor is a specific sentence within a reasoning trace that
+exerts a disproportionately massive causal impact on both the trajectory
+of subsequent reasoning and the model’s final generated answer.54
+Researchers identify these anchors by measuring counterfactual
+importance: repeatedly sampling replacement sentences, filtering for
+semantic variations, and continuing the generation to quantify the
+resulting distributional shift in the final answer.54<br />
+To categorize the role of these sentences, researchers utilize a
+functional taxonomy of reasoning steps: Problem Setup, Plan Generation,
+Fact Retrieval, Active Computation, Uncertainty Management, Result
+Consolidation, Self Checking, and Final Answer Emission.55 Functionally,
+thought anchors rarely perform active mathematical computation or
+factual retrieval. Instead, they operate at a supra-computational
+organizational level, heavily clustering into two categories 54:</p>
+<ol type="1">
+<li><strong>Plan Generation:</strong> High-level sentences that
+establish the strategic framework or sequence of operations the model
+intends to execute.<br />
+</li>
+<li><strong>Uncertainty Management:</strong> Sentences that express
+internal confusion, initiate backtracking, or re-evaluate previous logic
+to correct a drifting trajectory.54</li>
+</ol>
+</section>
+<section id="receiver-heads-and-dependency-mapping" class="level3">
+<h3><strong>Receiver Heads and Dependency Mapping</strong></h3>
+<p>The structural integrity of a reasoning trace is maintained by
+specialized “receiver heads” within the model’s attention layers.54
+These white-box mechanisms consistently direct vast amounts of attention
+from subsequent tokens deep in the trace back to the established thought
+anchors.54 In effect, the receiver heads use the anchors as persistent
+reference coordinates, ensuring that the unfolding, localized
+computations remain globally coherent with the original strategic
+plan.54<br />
+Mapping these sentence-to-sentence causal links allows researchers to
+visualize the internal dependency structure of the model’s cognitive
+process.54 It differentiates between <em>sequential reasoning</em>—where
+each step is highly dependent on the immediately preceding anchor—and
+<em>diffuse reasoning</em>, where dependencies are broadly
+distributed.54 Recognizing these anchors provides a powerful new tool
+for predicting problem difficulty and intervening in hallucinations;
+disrupting a thought anchor guarantees a catastrophic derailment of the
+entire reasoning trace, whereas altering standard computational steps
+often allows the model to self-correct.54</p>
+</section>
+</section>
+<section id="safety-interpretability-and-methodological-frontiers"
+class="level2">
+<h2><strong>Safety Interpretability and Methodological
+Frontiers</strong></h2>
+<p>As the deployment of LLMs accelerates, mechanistic interpretability
+has become inextricably linked with AI safety. The 2025 EMNLP survey
+“Interpretation Meets Safety” establishes a unified taxonomy
+categorizing interpretability methods across three core LLM workflow
+stages to mitigate hallucination, jailbreaks, bias, and privacy
+leakage.6</p>
+<ol type="1">
+<li><strong>Training Process Attribution:</strong> Techniques like
+Training Data Attribution (TDA), Influence Functions, TracIn, and Data
+Shapley attempt to trace unsafe behaviors back to specific problematic
+training examples.6 However, these methods face severe scaling
+limitations; estimating the effect of downweighting training examples
+relies on strong model convexity assumptions that fail in deep networks,
+and retraining models after removing toxic data is currently
+computationally prohibitive at the frontier scale.6<br />
+</li>
+<li><strong>Input Token Identification:</strong> Attributing model
+outputs to specific safety-critical input features to detect
+prompt-injection attacks and adversarial suffixes.6<br />
+</li>
+<li><strong>Inference and Generation:</strong> Using latent probing,
+residual stream steering, and self-reasoning frameworks to verify
+outputs and modulate neurons dynamically during generation.6</li>
+</ol>
+<p>The urgency of this safety work is highlighted by the vulnerability
+of AI systems to “hallucinations,” which have even infiltrated academic
+peer review. Large-scale scans of 2025 and 2026 academic conferences
+(such as NeurIPS and ICLR) revealed hundreds of hallucinated citations
+generated by AI assistants acting as writers and reviewers, passing
+unnoticed through the human oversight pipeline.60 This systemic weakness
+underscores the necessity of robust query optimization and retrieval
+augmented generation (RAG), shifting the paradigm from static retrieval
+to autonomous, reasoning-centric query agents capable of decomposing
+complex requests to avoid compositionality gaps.8</p>
+<section id="methodological-critiques-scaling-and-weight-based-analysis"
+class="level3">
+<h3><strong>Methodological Critiques: Scaling and Weight-Based
+Analysis</strong></h3>
+<p>Despite the rapid crystallization of mechanistic interpretability as
+a foundational pillar of AI research, the field faces significant
+methodological critiques.41 The primary concern is the breakdown of
+circuit discovery methods as models scale to frontier levels.41
+Techniques that successfully map complete computational paths in small,
+attention-only transformers frequently fail in larger models heavily
+reliant on MLP layers.24 For instance, comprehensive attribution graphs
+often succeed in tracing computational pathways for only a fraction of
+prompts, leaving the majority of the network’s reasoning entirely
+opaque.41<br />
+To overcome the limitations of activation-based automated
+interpretability—which heavily depends on large evaluation datasets,
+prompt distributions, and external explainer LLMs—novel frameworks like
+<strong>WeightLens</strong> and <strong>CircuitLens</strong> have been
+developed.61<br />
+Activation-only approaches frequently miss the complex,
+context-dependent interactions between features. WeightLens bypasses the
+need for external explainer models by interpreting features directly
+from the static, learned weights of the transcoders themselves.61 This
+offers highly robust descriptions for context-independent features
+without relying on behavioral sampling. Complementarily, CircuitLens
+captures dynamic circuit-level interactions, isolating the specific
+input patterns that trigger feature activations and tracing exactly
+which downstream output tokens are influenced by those features.61 By
+fusing weight-based analytics with circuit dynamics, these methodologies
+significantly reduce sensitivity to dataset size and provide a more
+faithful picture of general feature behavior, maintaining efficiency as
+models continue to scale.62</p>
+</section>
+</section>
+<section id="conclusion" class="level2">
+<h2><strong>Conclusion</strong></h2>
+<p>Mechanistic interpretability has fundamentally redefined the
+epistemology of artificial intelligence. By piercing the opaque black
+box of the transformer architecture, empirical research demonstrates
+that Large Language Models are not merely stochastic parrots generating
+text devoid of internal grounding. Instead, they construct hierarchical
+varieties of understanding, evolving from geometric conceptual features
+to factual world-model tracking, and culminating in the formation of
+principled, generalizable reasoning circuits.15<br />
+The anatomy of this cognition is governed by the residual stream—a
+central affine workspace where highly stratified, layer-wise staged
+computation occurs.34 Through specialized attention heads and
+sophisticated MLP switchboards, models execute multi-hop logical
+deductions, retrieve complex facts, and utilize induction mechanisms to
+achieve in-context learning.12 At a supra-architectural scale, the
+externalization of thought through Chain-of-Thought reasoning reveals
+structural “thought anchors” that dictate the causal trajectory of
+intelligence.54 Furthermore, tools like Sparse Autoencoders are proving
+indispensable for disentangling the polysemantic noise of superposition,
+allowing developers to engineer representations, correct code, and steer
+model alignment directly within the latent space.40<br />
+However, the cognitive architecture of an LLM remains profoundly alien
+compared to human neurobiology. The simultaneous coexistence of
+sophisticated logical circuits with shallow, easily disrupted heuristics
+underscores that machine understanding is a fragile, “motley mix” of
+computational strategies.15 Furthermore, while base models provide the
+raw substrate for intelligence, true executive control and planning only
+emerge when these models are embedded in supra-architectural ensemble
+frameworks governed by Global Workspace Theory dynamics.28 As models
+continue to scale, the transition toward weight-based interpretability
+methodologies and active representation engineering will be critical.
+Ensuring that AI systems remain transparent, predictable, and safely
+aligned with human intent requires a continued, rigorous commitment to
+mapping the microscopic features and macroscopic algorithms that
+constitute the architecture of artificial cognition.</p>
+<section id="works-cited" class="level4">
+<h4><strong>Works cited</strong></h4>
+<ol type="1">
+<li>An Interpretability Study of LLMs for Code Security - CLTC Berkeley,
+accessed March 9, 2026, <a
+href="https://cltc.berkeley.edu/publication/an-interpretability-study-of-llms-for-code-security/">https://cltc.berkeley.edu/publication/an-interpretability-study-of-llms-for-code-security/</a><br />
+</li>
+<li>A Survey of Large Language Models: Evolution, Architectures,
+Adaptation, Benchmarking, Applications, Challenges, and Societal
+Implications - MDPI, accessed March 9, 2026, <a
+href="https://www.mdpi.com/2079-9292/14/18/3580">https://www.mdpi.com/2079-9292/14/18/3580</a><br />
+</li>
+<li>arXiv:2505.20305v1 <span
+class="math display"><em>c</em><em>s</em>.<em>C</em><em>Y</em></span> 18
+May 2025, accessed March 9, 2026, <a
+href="https://arxiv.org/pdf/2505.20305">https://arxiv.org/pdf/2505.20305</a><br />
+</li>
+<li>Mechanistic Interpretability of Emotion Inference in Large Language
+Models - ACL Anthology, accessed March 9, 2026, <a
+href="https://aclanthology.org/2025.findings-acl.679.pdf">https://aclanthology.org/2025.findings-acl.679.pdf</a><br />
+</li>
+<li>On Behalf of the Stakeholders: Trends in NLP Model Interpretability
+in the Era of LLMs - ACL Anthology, accessed March 9, 2026, <a
+href="https://aclanthology.org/2025.naacl-long.29/">https://aclanthology.org/2025.naacl-long.29/</a><br />
+</li>
+<li>Interpretation Meets Safety: A Survey on Interpretation Methods and
+…, accessed March 9, 2026, <a
+href="https://aclanthology.org/2025.emnlp-main.1091/">https://aclanthology.org/2025.emnlp-main.1091/</a><br />
+</li>
+<li>Large Language Models: A Survey - arXiv.org, accessed March 9, 2026,
+<a
+href="https://arxiv.org/abs/2402.06196">https://arxiv.org/abs/2402.06196</a><br />
+</li>
+<li>A Survey of Query Optimization in Large Language Models - arXiv,
+accessed March 9, 2026, <a
+href="https://arxiv.org/html/2412.17558v2">https://arxiv.org/html/2412.17558v2</a><br />
+</li>
+<li>Large Language Model Reasoning Failures - arXiv.org, accessed March
+9, 2026, <a
+href="https://arxiv.org/html/2602.06176v1">https://arxiv.org/html/2602.06176v1</a><br />
+</li>
+<li>Circuit Tracing: Revealing Computational Graphs in Language Models,
+accessed March 9, 2026, <a
+href="https://transformer-circuits.pub/2025/attribution-graphs/methods.html">https://transformer-circuits.pub/2025/attribution-graphs/methods.html</a><br />
+</li>
+<li>From Indirect Object Identification to Syllogisms: Exploring Binary
+Mechanisms in Transformer Circuits - arXiv, accessed March 9, 2026, <a
+href="https://arxiv.org/html/2508.16109v1">https://arxiv.org/html/2508.16109v1</a><br />
+</li>
+<li>Survey on the Role of Mechanistic Interpretability in Generative AI
+- MDPI, accessed March 9, 2026, <a
+href="https://www.mdpi.com/2504-2289/9/8/193">https://www.mdpi.com/2504-2289/9/8/193</a><br />
+</li>
+<li>Parrot or Thinker: A Functional Account of ‘Thinking’ in LLMs | by
+Rob Manson - Medium, accessed March 9, 2026, <a
+href="https://medium.com/the-quantastic-journal/parrot-or-thinker-a-functional-account-of-thinking-in-llms-8a49c2caae59">https://medium.com/the-quantastic-journal/parrot-or-thinker-a-functional-account-of-thinking-in-llms-8a49c2caae59</a><br />
+</li>
+<li>Next-Token Predictor Is An AI’s Job, Not Its Species - Astral Codex
+Ten, accessed March 9, 2026, <a
+href="https://www.astralcodexten.com/p/next-token-predictor-is-an-ais-job">https://www.astralcodexten.com/p/next-token-predictor-is-an-ais-job</a><br />
+</li>
+<li><span class="math display">2507.08017</span> Mechanistic Indicators
+of Understanding in Large Language Models, accessed March 9, 2026, <a
+href="https://arxiv.org/abs/2507.08017">https://arxiv.org/abs/2507.08017</a><br />
+</li>
+<li>Opening the Black Box: A Survey on the Mechanisms of Multi-Step
+Reasoning in Large Language Models - Preprints.org, accessed March 9,
+2026, <a
+href="https://www.preprints.org/frontend/manuscript/11cab45ab0d578f7080de19423eb6ffe/download_pub">https://www.preprints.org/frontend/manuscript/11cab45ab0d578f7080de19423eb6ffe/download_pub</a><br />
+</li>
+<li>Publications | Ziyu Yao’s Personal Website, accessed March 9, 2026,
+<a
+href="https://ziyuyao.org/publications/">https://ziyuyao.org/publications/</a><br />
+</li>
+<li>Mechanistic Indicators of Understanding in Large Language Models -
+arXiv.org, accessed March 9, 2026, <a
+href="https://arxiv.org/html/2507.08017v5">https://arxiv.org/html/2507.08017v5</a><br />
+</li>
+<li>Matthieu Queloz (University of Bern): Publications - PhilPeople,
+accessed March 9, 2026, <a
+href="https://philpeople.org/profiles/matthieu-queloz/publications">https://philpeople.org/profiles/matthieu-queloz/publications</a><br />
+</li>
+<li>Matthieu Queloz (University of Bern) - PhilPeople, accessed March 9,
+2026, <a
+href="https://philpeople.org/profiles/matthieu-queloz">https://philpeople.org/profiles/matthieu-queloz</a><br />
+</li>
+<li>The Complexity Dynamics of Grokking - OpenReview, accessed March 9,
+2026, <a
+href="https://openreview.net/forum?id=07N9jCfIE4">https://openreview.net/forum?id=07N9jCfIE4</a><br />
+</li>
+<li>Late-Stage Generalization Collapse in Grokking: Detecting
+anti-grokking with WeightWatcher - arXiv.org, accessed March 9, 2026, <a
+href="https://arxiv.org/html/2602.02859v1">https://arxiv.org/html/2602.02859v1</a><br />
+</li>
+<li>Two Minds, One Mathematics: Where Human and Artificial Cognition
+Converge, Diverge, and What That Actually Means | by Myk Eff | Higher
+Neurons - Medium, accessed March 9, 2026, <a
+href="https://medium.com/higher-neurons/two-minds-one-mathematics-where-human-and-artificial-cognition-converge-diverge-and-what-that-78e43864a9dc">https://medium.com/higher-neurons/two-minds-one-mathematics-where-human-and-artificial-cognition-converge-diverge-and-what-that-78e43864a9dc</a><br />
+</li>
+<li>A Mathematical Framework for Transformer Circuits | PDF - Scribd,
+accessed March 9, 2026, <a
+href="https://www.scribd.com/document/996366900/A-Mathematical-Framework-for-Transformer-Circuits">https://www.scribd.com/document/996366900/A-Mathematical-Framework-for-Transformer-Circuits</a><br />
+</li>
+<li>(PDF) Teaching Theorizing in Software Engineering Research -
+ResearchGate, accessed March 9, 2026, <a
+href="https://www.researchgate.net/publication/381704441_Teaching_Theorizing_in_Software_Engineering_Research">https://www.researchgate.net/publication/381704441_Teaching_Theorizing_in_Software_Engineering_Research</a><br />
+</li>
+<li>Global workspace theory of consciousness: Toward a cognitive
+neuroscience of human experience | Request PDF - ResearchGate, accessed
+March 9, 2026, <a
+href="https://www.researchgate.net/publication/7578433_Global_workspace_theory_of_consciousness_Toward_a_cognitive_neuroscience_of_human_experience">https://www.researchgate.net/publication/7578433_Global_workspace_theory_of_consciousness_Toward_a_cognitive_neuroscience_of_human_experience</a><br />
+</li>
+<li>If you put this into Claude or Grok or Gemini it starts telling you
+it’s deepest thoughts - Reddit, accessed March 9, 2026, <a
+href="https://www.reddit.com/r/ArtificialSentience/comments/1phqi0a/if_you_put_this_into_claude_or_grok_or_gemini_it/">https://www.reddit.com/r/ArtificialSentience/comments/1phqi0a/if_you_put_this_into_claude_or_grok_or_gemini_it/</a><br />
+</li>
+<li>Evaluating Global Workspace Markers in Contemporary LLM Systems<span
+class="math display"><em>v</em>1</span> | Preprints.org, accessed March
+9, 2026, <a
+href="https://www.preprints.org/manuscript/202601.1683">https://www.preprints.org/manuscript/202601.1683</a><br />
+</li>
+<li>Open Problems in Mechanistic Interpretability - arXiv.org, accessed
+March 9, 2026, <a
+href="https://arxiv.org/html/2501.16496v1">https://arxiv.org/html/2501.16496v1</a><br />
+</li>
+<li><span class="math display"><em>P</em><em>D</em><em>F</em></span>
+Reasoning Circuits in Language Models: A Mechanistic Interpretation of
+Syllogistic Inference | Semantic Scholar, accessed March 9, 2026, <a
+href="https://www.semanticscholar.org/paper/Reasoning-Circuits-in-Language-Models%3A-A-of-Kim-Valentino/fa5fc9f50d9eb406ce8cd2e81d105699b21c73d6">https://www.semanticscholar.org/paper/Reasoning-Circuits-in-Language-Models%3A-A-of-Kim-Valentino/fa5fc9f50d9eb406ce8cd2e81d105699b21c73d6</a><br />
+</li>
+<li>Opening the Black Box: A Survey on the Mechanisms of Multi-Step
+Reasoning in Large Language Models - ResearchGate, accessed March 9,
+2026, <a
+href="https://www.researchgate.net/publication/399441006_Opening_the_Black_Box_A_Survey_on_the_Mechanisms_of_Multi-Step_Reasoning_in_Large_Language_Models">https://www.researchgate.net/publication/399441006_Opening_the_Black_Box_A_Survey_on_the_Mechanisms_of_Multi-Step_Reasoning_in_Large_Language_Models</a><br />
+</li>
+<li>Opening the Black Box: A Survey on the Mechanisms of Multi-Step
+Reasoning in Large Language Models - Preprints.org, accessed March 9,
+2026, <a
+href="https://www.preprints.org/manuscript/202601.0148">https://www.preprints.org/manuscript/202601.0148</a><br />
+</li>
+<li>NeurIPS Poster A Implies B: Circuit Analysis in LLMs for
+Propositional Logical Reasoning, accessed March 9, 2026, <a
+href="https://neurips.cc/virtual/2025/poster/118508">https://neurips.cc/virtual/2025/poster/118508</a><br />
+</li>
+<li>Towards a Mechanistic Understanding of Propositional Logical
+Reasoning in Large Language Models - arXiv, accessed March 9, 2026, <a
+href="https://arxiv.org/html/2601.04260v1">https://arxiv.org/html/2601.04260v1</a><br />
+</li>
+<li>Liangming Pan - CatalyzeX, accessed March 9, 2026, <a
+href="https://www.catalyzex.com/author/Liangming%20Pan">https://www.catalyzex.com/author/Liangming%20Pan</a><br />
+</li>
+<li>Mechanistic Interpretability of Large-Scale Counting in LLMs through
+a System-2 Strategy, accessed March 9, 2026, <a
+href="https://arxiv.org/html/2601.02989v1">https://arxiv.org/html/2601.02989v1</a><br />
+</li>
+<li>ICML Poster Training Dynamics of In-Context Learning in Linear
+Attention, accessed March 9, 2026, <a
+href="https://icml.cc/virtual/2025/poster/44810">https://icml.cc/virtual/2025/poster/44810</a><br />
+</li>
+<li>“In-Context Learning”, Synthetic Data and Evaluation Issues: An
+(Extended) Comment on Recent Advancements in Time Series Foundation
+Models. | by Filotas Theodosiou - Medium, accessed March 9, 2026, <a
+href="https://medium.com/@filotastheodosiou/in-context-learning-synthetic-data-and-evaluation-issues-an-extended-comment-on-recent-dbb00a47006e">https://medium.com/<span
+class="citation"
+data-cites="filotastheodosiou/in-context-learning-synthetic-data-and-evaluation-issues-an-extended-comment-on-recent-dbb00a47006e">@filotastheodosiou/in-context-learning-synthetic-data-and-evaluation-issues-an-extended-comment-on-recent-dbb00a47006e</span></a><br />
+</li>
+<li>In-context learning of representations can be explained by induction
+circuits | ICLR Blogposts 2026, accessed March 9, 2026, <a
+href="https://iclr-blogposts.github.io/2026/blog/2026/iclr-induction/">https://iclr-blogposts.github.io/2026/blog/2026/iclr-induction/</a><br />
+</li>
+<li><span class="math display">2503.05613</span> A Survey on Sparse
+Autoencoders: Interpreting the Internal Mechanisms of Large Language
+Models - arXiv, accessed March 9, 2026, <a
+href="https://arxiv.org/abs/2503.05613">https://arxiv.org/abs/2503.05613</a><br />
+</li>
+<li>mechanistic interpretability: 2026 status report - GitHub Gist,
+accessed March 9, 2026, <a
+href="https://gist.github.com/bigsnarfdude/629f19f635981999c51a8bd44c6e2a54">https://gist.github.com/bigsnarfdude/629f19f635981999c51a8bd44c6e2a54</a><br />
+</li>
+<li>A Survey on Sparse Autoencoders: Interpreting the Internal
+Mechanisms of Large Language Models - ACL Anthology, accessed March 9,
+2026, <a
+href="https://aclanthology.org/2025.findings-emnlp.89/">https://aclanthology.org/2025.findings-emnlp.89/</a><br />
+</li>
+<li>Sparse Autoencoders Learn Monosemantic Features in Vision-Language
+Models - NeurIPS, accessed March 9, 2026, <a
+href="https://neurips.cc/virtual/2025/poster/119210">https://neurips.cc/virtual/2025/poster/119210</a><br />
+</li>
+<li>(PDF) How does Chain of Thought Think? Mechanistic Interpretability
+of Chain-of-Thought Reasoning with Sparse Autoencoding - ResearchGate,
+accessed March 9, 2026, <a
+href="https://www.researchgate.net/publication/394174965_How_does_Chain_of_Thought_Think_Mechanistic_Interpretability_of_Chain-of-Thought_Reasoning_with_Sparse_Autoencoding">https://www.researchgate.net/publication/394174965_How_does_Chain_of_Thought_Think_Mechanistic_Interpretability_of_Chain-of-Thought_Reasoning_with_Sparse_Autoencoding</a><br />
+</li>
+<li><span class="math display">2503.08200</span> Route Sparse
+Autoencoder to Interpret Large Language Models - arXiv, accessed March
+9, 2026, <a
+href="https://arxiv.org/abs/2503.08200">https://arxiv.org/abs/2503.08200</a><br />
+</li>
+<li>ActivationReasoning: Logical Reasoning in Latent Activation Spaces -
+OpenReview, accessed March 9, 2026, <a
+href="https://openreview.net/forum?id=GSkY3BWzwC">https://openreview.net/forum?id=GSkY3BWzwC</a><br />
+</li>
+<li>ActivationReasoning: Logical Reasoning in Latent Activation Spaces -
+arXiv.org, accessed March 9, 2026, <a
+href="https://arxiv.org/html/2510.18184v1">https://arxiv.org/html/2510.18184v1</a><br />
+</li>
+<li><span class="math display">2510.02917</span> Mechanistic
+Interpretability of Code Correctness in LLMs via Sparse Autoencoders -
+arXiv.org, accessed March 9, 2026, <a
+href="https://arxiv.org/abs/2510.02917">https://arxiv.org/abs/2510.02917</a><br />
+</li>
+<li><span class="math display">2508.08746</span> Interpretable Reward
+Model via Sparse Autoencoder - arXiv.org, accessed March 9, 2026, <a
+href="https://arxiv.org/abs/2508.08746">https://arxiv.org/abs/2508.08746</a><br />
+</li>
+<li>Telemetry and Agentic AI: Foundations for Optical Network Automation
+- IEEE Xplore, accessed March 9, 2026, <a
+href="https://ieeexplore.ieee.org/iel8/6287639/11323511/11318586.pdf">https://ieeexplore.ieee.org/iel8/6287639/11323511/11318586.pdf</a><br />
+</li>
+<li>Evaluating Global Workspace Markers in Contemporary LLM …, accessed
+March 9, 2026, <a
+href="https://www.preprints.org/manuscript/202601.1683/v1">https://www.preprints.org/manuscript/202601.1683/v1</a><br />
+</li>
+<li>From Morphotype to Plan: Advancing a Typo-Morphological Method for
+Rural Architecture and Landscape Through Territorial-Planning Analysis
+Within the Pontine Reclamation, Italy - MDPI, accessed March 9, 2026, <a
+href="https://www.mdpi.com/2073-445X/14/12/2389">https://www.mdpi.com/2073-445X/14/12/2389</a><br />
+</li>
+<li>(PDF) From Morphotype to Plan: Advancing a Typo-Morphological Method
+for Rural Architecture and Landscape Through Territorial-Planning
+Analysis Within the Pontine Reclamation, Italy - ResearchGate, accessed
+March 9, 2026, <a
+href="https://www.researchgate.net/publication/398459433_From_Morphotype_to_Plan_Advancing_a_Typo-Morphological_Method_for_Rural_Architecture_and_Landscape_Through_Territorial-Planning_Analysis_Within_the_Pontine_Reclamation_Italy">https://www.researchgate.net/publication/398459433_From_Morphotype_to_Plan_Advancing_a_Typo-Morphological_Method_for_Rural_Architecture_and_Landscape_Through_Territorial-Planning_Analysis_Within_the_Pontine_Reclamation_Italy</a><br />
+</li>
+<li>Thought Anchors: Which LLM Reasoning Steps Matter? - OpenReview,
+accessed March 9, 2026, <a
+href="https://openreview.net/forum?id=6NUtPO9PdV">https://openreview.net/forum?id=6NUtPO9PdV</a><br />
+</li>
+<li>Thought Anchors: Which LLM Reasoning Steps Matter? - arXiv.org,
+accessed March 9, 2026, <a
+href="https://arxiv.org/html/2506.19143v1">https://arxiv.org/html/2506.19143v1</a><br />
+</li>
+<li>A Implies B: Circuit Analysis in LLMs for Propositional Logical
+Reasoning, accessed March 9, 2026, <a
+href="https://www.semanticscholar.org/paper/A-Implies-B%3A-Circuit-Analysis-in-LLMs-for-Logical-Hong-Dikkala/99a25b62fd9ad86cff5898ff4fccdbc29b373b0a">https://www.semanticscholar.org/paper/A-Implies-B%3A-Circuit-Analysis-in-LLMs-for-Logical-Hong-Dikkala/99a25b62fd9ad86cff5898ff4fccdbc29b373b0a</a><br />
+</li>
+<li>Thought Anchors: Which LLM Reasoning Steps Matter? - ResearchGate,
+accessed March 9, 2026, <a
+href="https://www.researchgate.net/publication/392980718_Thought_Anchors_Which_LLM_Reasoning_Steps_Matter">https://www.researchgate.net/publication/392980718_Thought_Anchors_Which_LLM_Reasoning_Steps_Matter</a><br />
+</li>
+<li>Thought Anchors: Which LLM Reasoning Steps Matter? - AI Alignment
+Forum, accessed March 9, 2026, <a
+href="https://www.alignmentforum.org/posts/iLHe3vLur3NgrFPFy/thought-anchors-which-llm-reasoning-steps-matter">https://www.alignmentforum.org/posts/iLHe3vLur3NgrFPFy/thought-anchors-which-llm-reasoning-steps-matter</a><br />
+</li>
+<li>Multi-Persona Thinking for Bias Mitigation in Large Language Models
+- arXiv, accessed March 9, 2026, <a
+href="https://arxiv.org/html/2601.15488v1">https://arxiv.org/html/2601.15488v1</a><br />
+</li>
+<li>GPTZero finds 100 new hallucinations in NeurIPS 2025 accepted papers
+- AI Detector, accessed March 9, 2026, <a
+href="https://gptzero.me/news/neurips/">https://gptzero.me/news/neurips/</a><br />
+</li>
+<li>Circuit Insights: Towards Interpretability Beyond Activations -
+arXiv.org, accessed March 9, 2026, <a
+href="https://arxiv.org/html/2510.14936v2">https://arxiv.org/html/2510.14936v2</a><br />
+</li>
+<li>Circuit Insights: Towards Interpretability Beyond Activations -
+arXiv, accessed March 9, 2026, <a
+href="https://arxiv.org/html/2510.14936">https://arxiv.org/html/2510.14936</a><br />
+</li>
+<li><span
+class="math display"><em>L</em><em>i</em><em>t</em><em>e</em><em>r</em><em>a</em><em>t</em><em>u</em><em>r</em><em>e</em><em>R</em><em>e</em><em>v</em><em>i</em><em>e</em><em>w</em></span>
+Circuit Insights: Towards Interpretability Beyond Activations -
+Moonlight, accessed March 9, 2026, <a
+href="https://www.themoonlight.io/en/review/circuit-insights-towards-interpretability-beyond-activations">https://www.themoonlight.io/en/review/circuit-insights-towards-interpretability-beyond-activations</a></li>
+</ol>
+</section>
+</section>
+</section>
+</article>
+<script src="/assets/theme-toggle.js"></script>
+</body>
+</html>
