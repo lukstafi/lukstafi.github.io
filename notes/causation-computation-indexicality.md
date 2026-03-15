@@ -6,7 +6,7 @@
 
 ---
 
-This essay develops a philosophical framework through dialogue. It argues that causation and computation collapse into a single metaphysical primitive, that physics is descriptive rather than generative, that indexicality originates with minds and propagates mereologically downward, and that normative facts — including the foundations of morality — are best understood as the mathematics of indexicality. The result is a picture of reality in four ontological layers, with consequences for the question Camus made unavoidable: why live?
+This essay develops a philosophical framework through dialogue. It argues that causation and computation collapse into a single metaphysical primitive, that higher-level descriptions are real when constitutively grounded via structure-preserving maps, that physics is descriptive rather than generative, that indexicality originates with minds and propagates mereologically downward, and that normative facts — including the foundations of morality — are best understood as the mathematics of indexicality. The result is a picture of reality in four ontological layers, with consequences for the question Camus made unavoidable: why live?
 
 ## 1. Causation as a Metaphysical Primitive
 
@@ -24,7 +24,27 @@ The extended Church–Turing thesis strengthens this convergence. Read ontologic
 
 Wolfram's physics project makes the identification nearly explicit. Hypergraph rewriting rules are a computation, and they are the causal structure. The causal graph emerging from the rewriting history is not a representation of causation — it is causation. The two descriptions — one emphasising logical structure (computation), the other emphasising productive character (causation) — pick out the same primitive.
 
-## 3. Four Ontological Layers
+But if causation and computation are one, a question immediately arises: is every computation real? Can any physical system be interpreted as performing any computation, given a sufficiently ingenious mapping? Hilary Putnam argued that it can — that computational descriptions are observer-relative, not intrinsic to the physics. If that were right, the collapse of causation and computation would be vacuous: everything would compute everything. The answer to Putnam requires a precise account of what makes a computational description genuine rather than projected. That account depends on the notion of real patterns, to which we now turn.
+
+## 3. Real Patterns and Constitutive Grounding
+
+A pattern carries modal depth when it supports counterfactuals, sustains predictions under intervention, and remains stable across a range of perturbations. This modal depth belongs to the pattern as a mathematical structure, independent of any particular physical realisation. The structure of a feedback loop, a neural network, or a predator–prey dynamic supports counterfactuals whether or not it is physically instantiated. Considered purely as mathematics, it already has the richness that makes it explanatorily powerful.
+
+What, then, distinguishes a real pattern *in a physical system* from a merely projected one? Not modal depth alone — a sufficiently clever observer can always find some mathematical structure with modal depth and map it onto any sufficiently complex physical process. The distinction lies in the **constitutive grounding relation**: the relation between the pattern and the physical process that realises it.
+
+Following Ladyman and Ross (*Every Thing Must Go*, 2007), we hold that the relationships between descriptions at different scales — whether spatio-temporal or energetic — are properly captured by structure-preserving maps: morphisms that preserve the modal and counterfactual structure of the higher-level description in the lower-level dynamics. A pattern is genuinely realised in a physical system when the realization relation is such a morphism. Causal succession at the pattern level maps onto causal succession in the physics. Intervene on the pattern and you intervene on the physics; perturb the physics within the relevant range and the pattern-level structure is preserved. The modal structure of the mathematics is *echoed* in the modal structure of the physical realisation.
+
+This is what "bulk regularities" means precisely. When we say that physics describes the bulk regularities of what Layer 0 generates, we mean that the mathematical structure of physical theories — general relativity, quantum mechanics, thermodynamics — maps onto the generative dynamics via structure-preserving limiting relations. Wolfram's programme is the attempt to exhibit these morphisms explicitly: to show that the mathematical structure of known physics is preserved under the passage from hypergraph rewriting to the continuum. The same holds at every inter-layer transition. The mathematical structure of biology maps onto physics via biophysical morphisms. The mathematical structure of cognitive science maps onto neurobiology. At each step, what makes the higher-level description *real* rather than fictive is that the grounding relation preserves modal structure.
+
+The classic thought experiment that tests this criterion is the "dust man" — the claim that a mind could be instantiated by scattered dust particles if one assigns the right computational interpretation to their states. The dust man pattern, considered as mathematics, has genuine modal depth: the computation it describes supports counterfactuals internally. But the grounding relation between the dust particles and the computational states is not a structure-preserving map. Adjacent physical states of the dust do not map to adjacent computational states. Causal succession in the dust dynamics does not track causal succession in the computation. The "morphism" is an arbitrary lookup table — a gerrymandered mapping that preserves nothing. The pattern is real as mathematics. It is not realised in the dust.
+
+A brain is different. The functional organisation of a neural network is constitutively grounded in the physics via genuine morphisms: intervene on network connectivity and activation dynamics change predictably; perturb the physics and the pattern-level behaviour responds systematically. The realization relation preserves the modal structure that makes the higher-level description explanatorily indispensable.
+
+This resolves Putnam's challenge. Not every computational description is genuine. A computation is real in a physical system when and only when the grounding relation is structure-preserving — when the modal depth of the mathematical pattern is inherited by the physical realisation through a genuine morphism rather than an arbitrary assignment. The collapse of causation and computation is not vacuous, because computation-in-the-world is constrained by the same criterion that governs all inter-layer relations: the constitutive grounding must preserve structure.
+
+Real patterns at each layer interact causally in the ordinary sense — the organisation of a brain causes things that are inexplicable without the pattern-level description. But this causation is not generative in the Layer 0 sense. It does not add productive power to the generative primitive. It is entirely constituted by that primitive. What the pattern-level description captures is structure within the generative output — structure with modal depth, preserved across the grounding relation, and therefore genuinely explanatorily relevant. Not generative, not Platonic, but not merely projected either. Real.
+
+## 4. Four Ontological Layers
 
 The world of things has a layered structure, arranged on what we call the mereological continuum — a spectrum of increasing mereological (part–whole) complexity. Beneath the world of things sits a zeroth layer: the generative principle itself.
 
@@ -34,11 +54,11 @@ Efficient causation–computation. Not a thing in the world, but what makes ther
 
 ### Layer 1: Physics
 
-The bulk regularities of what Layer 0 generates. Particles, fields, spacetime, conservation laws. This is the first level at which description becomes possible, because there are stable enough patterns to describe. Physics is ideally derivable from the computational primitive — this is Wolfram's programme — but the derivation is a mathematical relationship between levels of description, not a causal one. Physics deals with the simplest, most universal patterns in the generative output.
+The mathematical structure preserved from the generative level via limiting relations and structure-preserving maps. Particles, fields, spacetime, conservation laws. This is the first level at which description becomes possible, because there are stable enough patterns to describe. Physics is ideally derivable from the computational primitive — this is Wolfram's programme — but the derivation is a mathematical relationship between levels of description, not a causal one. Physics deals with the simplest, most universal patterns in the generative output; its reality consists in the modal structure that the grounding morphisms preserve.
 
 ### Layer 2: Biology–Technology–Information
 
-Where things get organised. Self-replication, functional structure, information processing, feedback loops, artefacts. The transition from Layer 1 to Layer 2 is not a new kind of stuff but the emergence of organisation within physical regularities. A cell and a computer are both composed of Layer 1 constituents obeying Layer 1 regularities; what makes them Layer 2 entities is their informational and functional structure. This is where Aristotle's formal cause re-enters: the organisation itself is explanatorily relevant, not merely the physical substrate.
+Where things get organised. Self-replication, functional structure, information processing, feedback loops, artefacts. The transition from Layer 1 to Layer 2 is not a new kind of stuff but the emergence of organisation within physical regularities. A cell and a computer are both composed of Layer 1 constituents obeying Layer 1 regularities; what makes them Layer 2 entities is their informational and functional structure, constitutively grounded in the physics via structure-preserving maps. The organisation itself is genuinely explanatorily relevant — not because it adds generative power, but because the modal structure it carries is preserved in the grounding relation.
 
 ### Layer 3: Psychology–Representation
 
@@ -46,7 +66,7 @@ Where things begin to be about other things. Intentionality, meaning, experience
 
 Each layer is grounded in the one below it but not reducible to it, because the organisational and representational structure at each higher layer is genuinely explanatorily relevant. The layers form a continuum of increasing mereological complexity: Layer 0 is prior to parthood; Layer 1 has simple parts in simple relations; Layer 2 has parts organised into functional wholes; Layer 3 has parts organised into representational wholes — wholes that model their own structure and environment.
 
-## 4. Indexicality and the Boundary of Mathematics
+## 5. Indexicality and the Boundary of Mathematics
 
 What distinguishes facts on the mereological spectrum from facts that are purely mathematical? Our answer: indexicality.
 
@@ -60,13 +80,13 @@ A remarkable consequence follows. Without a mind — without Layer 3 — there i
 
 This also explains why physics and mathematics share the same epistemic structure. Both proceed by constructing things and building theories of those constructions. There was never an ontological gap between them. The gap is purely indexical — contributed by the representer. Physics feels different from mathematics because we are in it, not because it is different.
 
-## 5. The Structure of Mathematics
+## 6. The Structure of Mathematics
 
 Mathematics appears to have structure: distinct fields (algebra, analysis, topology, number theory, logic) and deep correspondences between them (Galois theory, the Langlands programme, Curry–Howard). Some of this structure seems necessary — the correspondences feel like discoveries about how mathematical reality is articulated. Some seems sociological — the boundaries of named fields reflect human institutional history more than ontological joints.
 
 If the generative primitive is computational, then computability provides a natural organising principle for mathematical structure. The Curry–Howard correspondence — proofs are programs, propositions are types — is not a curiosity but a reflection of the intimate relationship between mathematical structure and the structure of computation. The deep correspondences in mathematics — the ones that feel like discoveries — may be the internal joints of computability showing through. The sociological accidents are the human-drawn boundaries between fields. The necessities are the joints themselves.
 
-## 6. Normative Facts and the Mathematics of Indexicality
+## 7. Normative Facts and the Mathematics of Indexicality
 
 Where do normative facts sit in this picture? Following Parfit and Putnam, we hold that normative facts are real, irreducible, and neither physical nor natural. But if mathematical facts and the mindless mereological spectrum are indistinguishable, what makes normative facts distinctive?
 
@@ -76,7 +96,7 @@ This distinguishes them from their neighbours. Psychological facts are Layer 3 d
 
 Epistemology is the bridge case that demonstrates normative realism, because even thoroughgoing naturalists accept that there is a real difference between good and bad epistemic practice that is not merely conventional. From epistemology, the path to morality requires one further step: an account of the good.
 
-## 7. Finitude, Plurality, and the Account of the Good
+## 8. Finitude, Plurality, and the Account of the Good
 
 The generative primitive is local. Computation proceeds step by step, neighbour by neighbour. There is no action at a distance in Layer 0. This locality constraint has a profound consequence for minds: a mind cannot grow without limit. The coordination costs of maintaining a unified perspective scale with size. Minds are necessarily finite and bounded. A planetary mind — a Solaris — is not possible.
 
@@ -88,7 +108,7 @@ Morality is then genuinely pragmatic in character. Finite minds facing other fin
 
 This also guards against totalitarian degradation. Any political or moral project that aims at total unity — one perspective subsuming all others — works against the locality constraint. It is not merely morally wrong; it is metaphysically impossible. It can only be approximated by destroying other perspectives, never by genuinely incorporating them.
 
-## 8. Why Live?
+## 9. Why Live?
 
 This brings us to the question Camus asks. If you are a finite indexical unity, always precarious, facing irreducible others, unable to grow without limit or achieve total coherence — and if the universe without your perspective is indistinguishable from a mathematical structure — then why maintain the unity? Why keep indexing?
 
@@ -100,7 +120,7 @@ Every individual must answer for themselves whether they want to live a moral li
 
 This is more respectful of Camus's question than most answers. It does not pretend the universe forces your hand. It does not claim that recognising the moral structure compels you to live by it. It says: here is something real, something structured, something worth engaging with. Not absurd, not compulsory. Just there.
 
-## 9. What's on Offer
+## 10. What's on Offer
 
 Suppose you answer yes. What does the moral life look like from within this framework?
 
