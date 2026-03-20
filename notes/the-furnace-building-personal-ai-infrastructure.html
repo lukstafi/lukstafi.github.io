@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>The Furnace: Building Personal AI Infrastructure on the Eve of
+Singularity</title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <link rel="stylesheet" href="/assets/tufte.css">
+  <link rel="stylesheet" href="/assets/pandoc-tufte.css">
+  <link rel="stylesheet" href="/assets/site.css">
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+  <script>(function(){var t=localStorage.getItem('theme-preference');if(t)document.documentElement.setAttribute('data-theme',t);})()</script>
+</head>
+<body>
+<nav class="site-nav">
+  <a href="/">Home</a> &middot; <a href="/about.html">About</a> &middot; <a href="https://lukstafi.substack.com">Substack</a>
+</nav>
+<div class="theme-toggle">
+  <button id="theme-btn" aria-label="Toggle dark mode">&#9788;</button>
+</div>
+<article>
+<section
+id="the-furnace-building-personal-ai-infrastructure-on-the-eve-of-singularity"
+class="level1">
+<h1>The Furnace: Building Personal AI Infrastructure on the Eve of
+Singularity</h1>
+<p><em>Łukasz Stafiniak and Claude (Anthropic)</em></p>
+<hr />
+<p>It all started with a humbling realization: I can sustain, at most,
+one active thread of work at a time. On a good day, maybe two —
+switching back and forth, keeping both alive. That’s it. That’s my
+ceiling.</p>
+<p>This would be unremarkable if I didn’t know what the frontier looked
+like. Following podcasts, scanning X, seeing practitioners discuss their
+fully integrated agentic workflows, I was watching people manage between
+half a dozen and a dozen concurrent threads. Not because they were
+smarter or more disciplined — many of them said so explicitly — but
+because they had figured out how to delegate, orchestrate, and maintain
+momentum across parallel streams of work using AI agents.</p>
+<p>The gap between my single thread and their six or ten wasn’t a gap in
+intelligence. It was a gap in infrastructure.</p>
+<section id="the-ralph-wiggum-loop" class="level2">
+<h2>The Ralph Wiggum Loop</h2>
+<p>The first problem I wanted to solve wasn’t parallelism — it was
+continuity. When I’m deep in a coding task and hit a point where the AI
+agent needs to grind through something mechanical — running tests,
+refactoring a module, exploring the codebase for dependencies — I lose
+momentum if I sit and watch. But if I switch to something else, the
+agent’s thread dies when it finishes. There’s no loop. The flow
+breaks.</p>
+<p>I wanted what is known as a “Ralph Wiggum loop” — a setup where the
+agent keeps going, keeps trying, keeps iterating on its task, while I
+think or work on something else. The name is self-deprecating (Ralph
+Wiggum from <em>The Simpsons</em>, cheerfully oblivious, doing his
+thing), but the pattern is serious: autonomous continuation without
+human gating.</p>
+<p>It turns out this wasn’t an idiosyncratic idea. When Cursor built
+their “grind mode” — a long-running agent that works for hours or even
+days without human intervention — their team had independently arrived
+at the same pattern. As one of their engineers put it in a recent
+podcast, the concept of “have criteria for completion and do not stop
+until you complete” was floating around, and multiple people converged
+on it. The idea is simple enough that it was discovered repeatedly; the
+challenge is in the scaffolding that makes it reliable.</p>
+<p>Around this same time, OpenAI’s Codex was getting very popular — and
+deservedly so. It pains me to say it, but GPT-5.2 Codex is smarter than
+Claude Opus 4.5 in many practical coding scenarios. It can be sluggish,
+but it’s faster when it one-shots a solution that Claude Code needs
+multiple iterations to reach. Many practitioners report that Codex is
+more trustworthy in sticking to the request and providing well-scoped
+solutions — it does what you asked, neither more nor less. I got a
+subscription plan. I tested it extensively. The claims held up.</p>
+<p>But Claude Opus had a different strength. Rather than pushing back or
+flagging contradictions explicitly, Claude was more productive in making
+progress around them — picking a more meaningful or constructive
+interpretation when the specification was ambiguous or inconsistent.
+Where Codex excelled at disciplined, thorough implementation of a
+well-scoped request, Claude was better at navigating the mess when the
+request wasn’t well-scoped yet.</p>
+<p>I knew I wanted the models to shine in their native harnesses. Not a
+universal wrapper that homogenizes them, but a coordination layer that
+routes the right work to the right agent. That’s how agent-duo
+started.</p>
+</section>
+<section id="leaving-cursor-and-why-that-might-have-been-a-mistake"
+class="level2">
+<h2>Leaving Cursor (and Why That Might Have Been a Mistake)</h2>
+<p>Slightly before these events, I had stopped using Cursor. The reason,
+in retrospect, was bad: they changed the UI in a way that disrupted my
+habits. I was comfortable with my setup, and they moved things around,
+and I left in irritation.</p>
+<p>This connects to the main story because Cursor is one of very few
+companies doing serious agentic engineering in the consumer space. They
+are perhaps the only one not focused primarily on UI-based software
+products. Lovable and base44 are also agentic and hands-off, but they’re
+optimized for building web apps from prompts — not for research, systems
+programming, or general-purpose development work.</p>
+<p>There are companies doing impressive agentic engineering in
+commercial settings — Blitzy, which orchestrates thousands of AI agents
+for enterprise-scale autonomous code generation, comes to mind — but
+their tools aren’t consumer-facing. So I was aware that by leaving
+Cursor, I was walking away from a significant chunk of accessible
+opportunity.</p>
+<p>Maybe I should have doubled down on Cursor and made the best use of
+what they bring. Their recent trajectory suggests so. Cloud agents,
+launched this year, give each agent its own VM — a full computer with
+desktop, browser, terminal, the works. You can kick off ten agents in
+the morning, each working on a different task in its own sandbox. They
+come back with tested PRs and video recordings of what they built. You
+review, iterate, merge — hopping between tabs in ninety-second bursts.
+The parallelism problem, at least for coding tasks, is being solved by
+brute-force VM replication.</p>
+<p>Cursor also discovered something that validates a core principle of
+agent-duo. They experimented with running different model providers at
+the base tier of a “best-of-N” pipeline — Claude, Codex, Gemini — and
+found what they called “synergistic output that was better than having a
+very unified bottom model tier.” Different models have different
+strengths, and combining them produces results that no single model
+achieves alone. This is exactly the thesis agent-duo was built on: let
+each provider’s harness shine, and use the outer loop to compose their
+strengths.</p>
+<p>Or maybe I should have stuck more tightly with Anthropic’s own
+offerings. Claude Code has been gaining functionality —
+<code>loop</code> for autonomous continuation,
+<code>remote-control</code> for picking up a local session from your
+phone or any browser (your environment stays on your machine, only chat
+messages flow through the encrypted bridge), and scheduled tasks that
+let Claude run prompts on a recurring cadence — morning briefings,
+deployment monitoring, PR reviews — without you being at the keyboard.
+Claude Cowork, launched this year, wraps Claude Code in a VM with a more
+managerial-oriented front end and its own <code>/schedule</code> command
+for persistent recurring tasks. In a recent podcast, Felix Rieseberg
+from the Cowork team described their philosophy: give the AI its own
+computer, the same tools you’d give a human colleague, and let it figure
+out how to get the job done. No MCP configuration maze, no permission
+chains — just a capable entity with access to a full Linux system.</p>
+<p>So why didn’t I just use these? Why build my own?</p>
+</section>
+<section id="the-real-bottleneck" class="level2">
+<h2>The Real Bottleneck</h2>
+<p>Because the bottleneck wasn’t the agents’ intelligence. It wasn’t
+even the agents’ tooling. It was mine.</p>
+<p>I could have the most capable coding agents in the world, and if I
+can only sustain attention on one thread, I’ll use one agent at a time,
+the same way I’d write code myself — just faster. The force multiplier
+of AI isn’t in making one thread faster; it’s in making the pipe wider,
+running many threads in parallel. But widening the pipe requires changes
+in the human, not just the machine.</p>
+<p>The productive practitioners I was watching on X didn’t just have
+better tools. They had better <em>systems</em>. They had ways of keeping
+track of what was in flight, what was blocked, what needed attention,
+and what could be left to cook. They had forcing functions that
+prevented them from collapsing back into single-threaded work. They had
+infrastructure for their own attention.</p>
+<p>This diagnosis — that the bottleneck was organizational and
+motivational, not technical — is what separated the problem Ludics
+needed to solve from the problem that Cursor or Claude Code solves.
+Those tools make each individual agent session better. Ludics needed to
+make <em>me</em> better at running many sessions and maintaining the
+strategic picture.</p>
+<p>Yegge has talked about a “vampiric” effect of AI-assisted work: it
+drains your System 2 thinking at a much higher rate than traditional
+coding, because the easy stuff is automated and you’re left with a
+concentrated stream of hard decisions. You might only get three
+productive hours at maximum speed. This resonated with my experience.
+The bottleneck isn’t just organizational — it’s energetic. If you have
+three good hours, you need infrastructure that makes those hours count:
+clear priorities, pre-computed context, no time wasted figuring out what
+to work on next.</p>
+</section>
+<section id="what-i-looked-for" class="level2">
+<h2>What I Looked For</h2>
+<p>Before building, I surveyed the landscape. I was looking for any
+existing tool where I could say: this handles everything Ludics intends
+to do, and I can jump ship. I never found one.</p>
+<p>Two projects in particular deserve more than passing mention, because
+they’re solving overlapping problems at serious scale.</p>
+<p>Steve Yegge’s <strong>Gas Town</strong> is the most ambitious project
+in this space. Yegge — forty years of coding, stints at Amazon, Google,
+Sourcegraph — spent the second half of 2025 building what he describes
+as “Kubernetes for AI coding agents”: an orchestration system that
+coordinates twenty to thirty Claude Code instances working in parallel
+on the same codebase. He went through four complete, functioning
+versions before arriving at the current one (in Go). Gas Town has a
+Mayor (an AI coordinator, analogous to Mag), Rigs (projects), Crews
+(workspaces), and Polecats (worker agents). All state lives in Beads,
+Yegge’s git-backed issue tracking system that serves as both data plane
+and control plane. The architecture draws on Erlang-style supervisor
+trees and mailboxes.</p>
+<p>Gas Town’s key concept is what Yegge calls “nondeterministic
+idempotence”: work is expressed as chained sequences of small tasks
+stored as Beads in git, each with clear acceptance criteria. If an agent
+crashes mid-step, the next session picks up where it left off. The path
+varies — agents take different approaches each time — but the outcome
+converges because the workflow definition is persistent. This is a
+different bet from Ludics’ deterministic state machine, but aimed at the
+same problem: making agent work recoverable and auditable.</p>
+<p>Yegge maps the progression of AI-assisted coding across eight stages,
+from basic code completions to building your own orchestrator. Gas Town
+targets Stage 8 — people already juggling ten-plus parallel agents who
+need a control plane. This is significantly more aggressive than Ludics’
+six slots. The cost reflects it: early adopters report spending a
+hundred dollars per hour on API credits. Work can be chaotic — bugs get
+fixed multiple times by different agents, designs occasionally go
+missing. It demands expertise.</p>
+<p>Gas Town’s ambition influenced my thinking, but Ludics makes a
+different bet. Where Gas Town scales up to thirty parallel agents on a
+single codebase, Ludics focuses on the human orchestrator’s capacity —
+six slots, because that’s what I can actually supervise. Where Gas Town
+is opinionated about being an “agent factory,” Ludics is deliberately a
+coordination layer that doesn’t replace existing tools. Where Gas Town
+pushes toward full autonomy (“your agents use Beads and Gas Town so
+effortlessly”), Ludics keeps the human firmly in the loop for strategic
+decisions. And where Gas Town is primarily a coding orchestrator, Ludics
+manages the whole workday — task priorities, deadlines, morning
+briefings, phone notifications.</p>
+<p>Daniel Miessler’s <strong>Personal AI Infrastructure (PAI)</strong>
+approaches from a different angle. Miessler, a cybersecurity veteran,
+has been building a unified system for life and work management since
+late 2022. His philosophy — which directly inspired Ludics (the README
+acknowledges this) — is that the orchestration and scaffolding matter
+more than model intelligence. PAI is built around Kai, Miessler’s
+persistent digital assistant: a personalized Claude Code instance with
+skills, memory, goals, and a twelve-trait personality system. Kai knows
+Miessler’s mission, projects, challenges, and beliefs — ten markdown
+files that capture who he is.</p>
+<p>Where Miessler’s PAI focuses on the personal assistant as a unified
+interface to your life (with skills for content creation, cybersecurity,
+life management), Ludics focuses on the operational infrastructure for
+parallel technical work. PAI’s insight — that you need a system that
+knows your goals and grows with you — is one Ludics shares through Mag’s
+institutional memory. But PAI operates primarily through a single Claude
+Code session, while Ludics is built around the multi-slot parallelism
+problem.</p>
+<p>Among smaller projects, I also looked at autoresearch, a minimal
+orchestrator for autonomous agent experiments. It validates important
+patterns — git as audit trail, never-stop loops, fast-fail when things
+go wrong, ruthless simplicity. But it’s a single-slot, single-metric
+runner. No multi-agent coordination, no strategic layer, no task
+management.</p>
+<p>I looked at Archon, a microservices-based MCP platform with
+RAG-powered documentation search and project management.
+Well-engineered, but it operates at a different layer — it’s
+infrastructure for knowledge management, not for orchestrating a working
+day. Its work orders system is a headless batch pipeline:
+fire-and-forget, no human-in-the-loop.</p>
+<p>I looked at Codex Autorunner (CAR), a web-first ticket runner with
+turn-level control over agent interactions. Excellent for sequential
+single-agent execution, but no multi-agent collaboration per task, no
+persistent strategic coordinator, no dependency-aware scheduling. It’s
+CI/CD for AI agents — pick a ticket, run the agent, done.</p>
+<p>I looked at OpenSquirrel, a beautiful GPU-rendered terminal
+multiplexer for AI agents. Zero-config, gorgeous UI, multi-runtime
+support. But the orchestration is agent-driven — the coordinator agent
+decides what to delegate via natural language — and there’s no task
+management, no scheduling, no flow engine. It’s an agent UI, not a
+workflow system.</p>
+<p>I looked at Greenhouse, a tight, opinionated pipeline for automating
+GitHub workflows. Well-tested, focused, effective. But it’s a
+single-workflow tool that shows the power of being opinionated about one
+pipeline — the opposite of what I needed.</p>
+<p>I looked at Seeds, a clever task tracker with some genuinely good
+ideas — JSONL with merge-safe concurrent access, workflow templates that
+expand into dependency-wired task chains, structured close reasons. But
+no flow engine, no slot awareness, no orchestration, no aggregation from
+external sources.</p>
+<p>The pattern across the whole landscape: every tool I found was either
+a <em>coding agent harness</em> (making agents better at tasks) or a
+<em>task tracker</em> (managing what needs doing) or an <em>agent
+factory</em> (scaling up agent parallelism). None combined a strategic
+coordinator, multi-agent orchestration, flow-based scheduling, and —
+crucially — a forcing function for human parallelism that respects
+cognitive limits rather than trying to blow past them. That’s the gap
+Ludics sits in.</p>
+</section>
+<section id="agent-duo-the-first-response" class="level2">
+<h2>Agent-Duo: The First Response</h2>
+<p>Agent-duo, the predecessor to Ludics, was built on a specific
+principle: don’t step into the scope of the providers’ harnesses. It
+wasn’t meant to do sub-agent delegation or team coordination. It was an
+outer loop connecting different providers in a pair programming
+style.</p>
+<p>In Duo mode, agents from different providers (Claude Code and Codex,
+typically) propose alternative solutions and cross-check each other’s
+work. Think of it as best-of-N with adversarial review: each agent sees
+the other’s output and can challenge it, catch bugs, suggest
+improvements. Different models have different blind spots — Claude tends
+to over-engineer abstractions, Codex sometimes ignores edge cases in
+type systems — and the cross-checking catches errors that either model
+alone would miss. The result is code that has been through a genuine
+review process, not just generated and shipped.</p>
+<p>In Pair mode, the division of labor is explicit: one agent writes the
+implementation, the other does the review. The coder goes through
+clarification, planning, and work phases. The reviewer does context
+gathering, pushback (explicitly looking for reasons the plan is wrong or
+incomplete), plan review, and code review. The roles play to different
+model strengths — some models are better at generation, others at
+critique. And it mirrors a real pair programming dynamic: the reviewer
+sees the code fresh, without the implementation bias the coder has
+accumulated.</p>
+<p>The workflow was structured as phases: clarify → pushback → plan →
+work → review → merge. Each phase had skill templates — markdown
+instructions injected into the agent’s context — and transitions were
+deterministic. The agents didn’t decide when to move to the next phase;
+the orchestrator did, based on completion signals. This was the
+“autonomous minds, deterministic rails” principle: AI makes the creative
+decisions, but deterministic code controls the process.</p>
+<p>I still struggle with this principle, even though it’s probably
+right. The temptation is to give Mag unlimited autonomy and proactivity
+— let it decide not just <em>what</em> to recommend but <em>when</em> to
+act, <em>what</em> to preempt, <em>how</em> to reorganize priorities
+without asking. The deterministic rails feel constraining when you watch
+an intelligent agent wait patiently for a trigger that a truly
+autonomous coordinator would have anticipated. But every time I’ve
+relaxed the rails, things have gone sideways in ways that were hard to
+debug precisely because the agent’s reasoning was opaque. Deterministic
+transitions are boring, but they’re auditable. For now, the principle
+holds — but it’s held in tension, not settled conviction.</p>
+<p>Agent-duo grew into a substantial project — about 14,000 lines of
+Bash — and it worked. But it had limitations. It coordinated agents on a
+single task. It didn’t manage multiple parallel tasks. It didn’t know
+about my schedule, my priorities, my deadlines. It didn’t push me to
+widen the pipe.</p>
+</section>
+<section id="ludics-the-forcing-function" class="level2">
+<h2>Ludics: The Forcing Function</h2>
+<p>The name “Ludics” comes from Jean-Yves Girard’s mathematical
+framework where interaction is primary and objects are defined by their
+behavior in dialogue — a fitting reference for a system built around
+mediating between human intention and agent execution. (The project was
+formerly called “pai-lite,” after Miessler’s PAI, before it grew into
+something with its own identity. Emacs’ org-mode is also a spiritual
+ancestor — the idea that your task management, scheduling, and notes
+should live in plain text files under version control.)</p>
+<p>Ludics grew from the realization that the obstacle was also along
+motivation and organization. Recall that from my glean of the
+conversation on X, it looked like successful practitioners handle at
+least six threads of work in parallel, if not ten or twenty. I wanted a
+forcing function to have six ongoing parallel threads. And a furnace to
+feed and keep six threads in flight at all times.</p>
+<p>The architecture has three layers.</p>
+<p><strong>Mag</strong> is a persistent Claude Opus instance — a
+lifelong coordinator that builds institutional memory over time. It runs
+in a dedicated tmux session, receives notifications, processes a request
+queue, and provides strategic thinking: analyzing GitHub issues for
+actionability, generating morning briefings, suggesting what to work on
+next based on priorities and dependencies, elaborating high-level tasks
+into detailed specifications. Mag doesn’t write code. It thinks about
+what code should be written, by whom, and in what order.</p>
+<p>The name Mag has two interpretations. One is short for “Magister
+Ludi” — the Master of the Game from Hermann Hesse’s <em>The Glass Bead
+Game</em>, a figure who orchestrates an intricate intellectual practice.
+The other is “magistrate,” by analogy with Gas Town’s Mayor — a
+governing authority rather than a player. It’s intentionally meant as a
+proper noun, like a person’s name, rather than a role title — Mag, not
+“the Mag.”</p>
+<p>Mag learns from corrections. When I tell it “that task dependency was
+wrong” or “don’t elaborate tasks from that project until I say so,” it
+updates its institutional memory — a structured collection of learnings
+that persists across sessions. Periodically, it consolidates scattered
+corrections into organized knowledge, the way a new employee gradually
+builds a mental model of how things actually work (as opposed to how the
+documentation says they work).</p>
+<p>Mag has a skill system with context isolation. This matters because
+Mag is a long-running session, and every tool invocation injects outputs
+into its conversation context. Heavy skills — like drafting a proposal
+that requires reading across the codebase, or verifying that a task was
+actually completed properly — would fill Mag’s context with ephemeral
+details, pushing out the strategic memory it needs for cross-project
+awareness. So heavy skills use an orchestrator/worker pattern: the
+orchestrator runs inline in Mag’s context (reading the task file, making
+a strategic decision about whether to proceed), while the worker runs in
+an isolated subagent that does the heavy exploration. The orchestrator
+composes a brief — three to ten lines distilling relevant background
+from Mag’s conversation history — and hands it to the worker along with
+the task. The worker returns a structured summary. Mag’s context stays
+clean.</p>
+<p>There’s a practical rhythm to it. The morning briefing trigger fires
+at 8:00. Mag reviews what happened overnight — which tasks completed,
+which agents errored out, which deadlines are approaching. It generates
+a briefing that tells me: here’s what’s ready, here’s what’s blocked,
+here’s what I think you should work on today and why. I read this on my
+phone over coffee via ntfy.sh. Sometimes I message back: “actually,
+prioritize the OCANNL concatenation work, I want that done before the
+conference.” Mag receives this as an incoming notification, adjusts its
+recommendations, and the next time I sit down at my desk, the slots
+reflect the updated priorities.</p>
+<p><strong>The automation layer</strong> is deterministic TypeScript —
+about 26,000 vibe-coded lines of TypeScript compiled to a standalone Bun
+binary. It includes a flow engine that maintains a dependency graph
+(using Kahn’s algorithm for topological sorting), computes a
+priority-sorted ready queue, and detects deadline violations. It
+includes the 23-phase orchestration engine migrated from agent-duo. It
+includes a trigger system (launchd on macOS, systemd on Linux) that
+fires events: morning briefings at 8:00, periodic sync and health
+checks, file-change watchers. It includes session discovery that scans
+for running agent sessions across t3code, Claude Code, and Codex. It
+includes bidirectional notifications via ntfy.sh — Mag pushes strategic
+updates to my phone, and I can message it back from anywhere.</p>
+<p><strong>The worker slots</strong> are where ephemeral AI agents do
+the actual coding. There are six of them. This number is hardcoded, and
+that’s deliberate.</p>
+<p>Why six? Human working memory holds roughly four to seven items. Six
+sits at the upper bound of focused attention. But the constraint isn’t
+about cognitive science — it’s about behavior. Fixed capacity creates
+pressure to parallelize, the same way Kanban WIP limits do. Without a
+fixed number, you’d either default to one (the natural single-thread
+habit) or face an unbounded list and give up — if you might be doing a
+hundred things, the sheer openness becomes paralyzing rather than
+motivating. Six is a number you can hold in your head. It reduces the
+pull to a manageable force. If you have six slots and only one is
+active, the five empty ones create a visible, nagging reminder that
+you’re not using your full capacity. You don’t have to use all six. But
+their presence changes the default from “work on one thing” to “why am I
+not working on more?”</p>
+<p>Slots have no persistent identity — slot 3 isn’t “the OCANNL slot.”
+Context switching has a cost, just like with real CPUs. Runtime state is
+lost when a slot is cleared. But the work persists — commits, task
+files, branches — only the “registers” are ephemeral. Slots support
+preemption: if a priority task arrives, you can stash the current slot
+state and restore it later.</p>
+<p>The slot model uses adapters — a common TypeScript interface that
+wraps different agent systems. There are adapters for t3code
+(multi-agent orchestration with WebSocket control), for Claude Code and
+Codex (SSH-based, tmux sessions), for browser-based Claude and ChatGPT
+conversations (URL bookmarks), and for manual human work. The adapters
+don’t run agents — they coordinate whatever you’re already using. This
+adapter pattern dates from the era when Ludics and agent-duo were
+separate projects with a clean interface between them. Now that
+agent-duo’s orchestration has been folded into Ludics, the adapter
+abstraction makes less sense — the system is increasingly opinionated
+about how agents are managed rather than being a neutral coordination
+layer. This is one of the design tensions still being worked out.</p>
+<p>For multi-machine setups — I plan to eventually run a laptop
+alongside an always-on mini PC or Mac Mini — Ludics includes a
+federation system. Seniority-based leader election determines which
+machine runs Mag. Heartbeats are published via git-backed state files.
+If the leader goes down (heartbeat timeout of 900 seconds), the next
+node by seniority takes over. The idea is that Mag can keep working even
+when I’m on a different machine, and the state stays consistent through
+git sync. I haven’t deployed this yet — I’m waiting for the newest Mac
+Mini and currently have a mini PC I plan to use as the always-on node
+when traveling — but the infrastructure is designed and mostly built,
+though entirely untested in practice — so it may turn out to be
+half-built once reality gets involved.</p>
+</section>
+<section id="flow-based-not-time-based" class="level2">
+<h2>Flow-Based, Not Time-Based</h2>
+<p>Ludics uses flow-based scheduling: throughput over latency,
+dependencies over deadlines.</p>
+<p>What matters is: What blocks what? What’s ready to start? What has a
+hard external deadline (paper due, conference date)? What’s the priority
+(critical, important, nice-to-have)?</p>
+<p>Tasks are stored as individual Markdown files with YAML frontmatter —
+the human-readable, git-backed source of truth. They carry dependency
+information (what blocks what), effort estimates, context tags for
+minimizing context switches, and status. The flow engine computes ready
+queues, detects cycles, identifies critical paths, and shows the impact
+of completing any given task (what it would unblock).</p>
+<p>This is deliberately not a calendar. I don’t schedule “work on OCANNL
+from 9:00 to 11:00.” I ask the system: what’s ready, what’s
+high-priority, what would unblock the most downstream work? The answer
+changes dynamically as tasks complete, new issues come in from GitHub,
+and dependencies resolve.</p>
+<p>Task aggregation pulls from multiple sources: GitHub issues (via the
+<code>gh</code> CLI), watched files (scanning for <code>TODO:</code>
+lines and unchecked checkboxes), and manual entries. The aggregation
+generates deterministic IDs so it can run repeatedly without creating
+duplicates, and it preserves local edits to task files across syncs.</p>
+</section>
+<section id="the-scaffolding-question" class="level2">
+<h2>The Scaffolding Question</h2>
+<p>There’s a serious objection to everything I’ve described, and I want
+to address it honestly.</p>
+<p>Felix Rieseberg, the Cowork lead at Anthropic, said something in a
+podcast that has stuck with me. He’s increasingly wondering whether
+building elaborate scaffolding is the right investment, or whether you
+should “just give the model as many capabilities as possible, try to
+make those safe, and then simply wait for the next model to drop.” His
+bet is that as models improve, the scaffolding melts away. Skills
+replace MCPs. General intelligence replaces specialized pipelines.</p>
+<p>The Cursor team takes a different view. They’re investing heavily in
+scaffolding — the multi-agent orchestration for their browser-building
+project, the onboarding system for cloud agents, the subagent
+architecture, the memory system. One of their engineers described
+self-awareness as a key theme: the agent needs to understand its own
+harness, its own boundaries, its own environment — and potentially edit
+its own system prompt to optimize for the system it operates in. This
+isn’t AGI-style consciousness. It’s practical self-knowledge: knowing
+what tools are available, knowing what’s broken in the DevEx, knowing
+when to ask and when to push through. They see the scaffold as necessary
+infrastructure that the model must internalize, not temporary workaround
+that the model will make redundant.</p>
+<p>Where does Ludics fall? Honestly, I don’t know. Parts of it are
+already being overtaken. Claude Code’s <code>loop</code> command handles
+periodic monitoring tasks — watching for PR comments, checking for
+changes to merge from the main branch — that overlap with parts of
+Ludics’ automation layer. Claude Code’s experimental Agent Teams feature
+— where a lead session spawns teammates that work independently,
+communicate with each other, and coordinate through shared task lists —
+overlaps significantly with agent-duo’s Duo and Pair modes. Cowork’s
+scheduled tasks overlap with Ludics’ trigger system. Every few months,
+another piece of what I built appears as a native feature in a managed
+product.</p>
+<p>But other parts are getting <em>more</em> necessary, not less. The
+multi-agent orchestration that Cursor is investing in — the 23-phase
+workflows, the merge voting, the coordination across parallel agents —
+is growing in complexity, not shrinking. The need for a strategic
+coordinator that maintains cross-project awareness hasn’t been absorbed
+by any product. And the human-facing infrastructure — the six-slot
+forcing function, the flow engine that tells me what to work on next,
+the phone notifications that keep me in the loop when I’m away from my
+desk — isn’t compensating for model limitations at all. It’s
+compensating for <em>my</em> limitations. No improvement in Claude’s
+intelligence will make me better at remembering what’s in flight. No new
+Codex feature will push me to parallelize when I’m tempted to go deep on
+one thread.</p>
+<p>So the honest answer is: Ludics is a bet that the human orchestration
+layer matters and won’t be absorbed, placed alongside an acknowledgment
+that some of the agent orchestration layer is being absorbed right now
+and more will follow. Whether that bet is right depends on whether the
+platforms eventually build personal strategic infrastructure — and I
+suspect they won’t, because it’s irreducibly personal.</p>
+<p>Mag isn’t a workaround for a dumb model. It’s infrastructure for a
+limited human.</p>
+<p>And this is where the analogy to Kanban WIP limits is most apt. The
+six-slot constraint isn’t a technical limitation — it’s a design
+decision about human behavior. You don’t remove WIP limits when your
+team gets smarter. You keep them because the constraint is the
+point.</p>
+</section>
+<section id="folding-agent-duo-into-ludics" class="level2">
+<h2>Folding Agent-Duo Into Ludics</h2>
+<p>Agent-duo, the Bash predecessor, grew to 14,000 lines before I
+decided it had outgrown its implementation language. I had planned to
+migrate it to TypeScript separately, but Ludics was already taking shape
+in TypeScript. So instead of maintaining two projects, I folded
+agent-duo’s orchestration into Ludics for tighter integration.</p>
+<p>The migration wasn’t a line-by-line port. The strongest meta-lesson
+from surveying the landscape — particularly from autoresearch’s ruthless
+minimalism — was: don’t port features, port outcomes. If a simpler
+mechanism achieves the same coordination, prefer it.</p>
+<p>I planned to simplify the 23-phase workflow during the port — make it
+less bureaucratic, less burdensome to the agents. But it turned out to
+be better to stick with the somewhat-battle-tested workflow and evolve
+it incrementally. The phases encode real workflow structure —
+clarification before planning, planning before work, review before merge
+— and simplifying aggressively would have meant re-learning lessons the
+hard way. So the state machine survived largely intact, which is in
+tension with the “port outcomes” principle but reflects a pragmatic
+choice: when you have something that works, conservatism has value.</p>
+<p>What did change fundamentally was the execution layer, thanks to the
+arrival of t3code at exactly the right moment. T3code, by Theo Browne’s
+ping.gg team, is a minimal web GUI for coding agents — a
+Node.js/React/Electron app with event-sourced state in SQLite, WebSocket
+JSON-RPC for programmatic control, and first-class support for threads,
+worktrees, and checkpointing. It launched Codex-first, with Claude Code
+support arriving just today. Where agent-duo had managed agents via tmux
+send-keys and stop hooks — parsing terminal output to detect when an
+agent was done — t3code gave Ludics a proper runtime layer. Ludics now
+drives agent sessions via structured WebSocket commands: creating
+threads, dispatching turns, inspecting state. T3code handles the agent
+session lifecycle; Ludics handles the orchestration logic on top. The
+fragility of terminal text parsing was replaced by bidirectional
+programmatic communication, and it made the whole migration from Bash to
+TypeScript feel like the right moment rather than a premature one.</p>
+<p>The peer-sync protocol — a filesystem-based coordination channel
+where Ludics writes and agents read — carried over as the low-overhead
+alternative to forcing agents to use API calls. It’s zero-dependency,
+works across any agent runtime, and agents can read
+<code>.peer-sync/</code> files as naturally as they read any project
+file.</p>
+</section>
+<section id="what-this-writing-is-for" class="level2">
+<h2>What This Writing Is For</h2>
+<p>This article is the first in a new series I’m calling “Working on the
+Eve of Singularity.” The previous series on this blog — about
+consciousness, cognitive architecture, AI mentality, the philosophy of
+mind — ran to seventeen or eighteen articles, depending on whether you
+count “Writing with LLMs.” That was exploration of ideas for their own
+sake, following questions where they led.</p>
+<p>This series is different. It combines the personal and the technical.
+It’s about doing work — real, specific, sometimes mundane work — in a
+period when the tools for doing it are changing faster than anyone’s
+habits can track.</p>
+<p>I’m writing it in part because I believe it has intrinsic value: it
+fleshes out my identity as a writer, which is something I care about
+independent of audience metrics. The blog is free, the Substack
+subscriptions are a tip jar, and the writing is co-authored with Claude,
+as it has always been. These are not pieces optimized for
+engagement.</p>
+<p>But I’m also writing it because the act of writing provides focus and
+prioritization. Describing what I’m building and why forces me to
+articulate decisions I’ve been making intuitively. It surfaces
+contradictions — like leaving Cursor for bad reasons, or building a
+26,000-line orchestration system when maybe I should have gone deeper
+with existing tools. It facilitates flow by making me appreciate the
+meaning and the holistic picture of what I’m doing day to day.</p>
+<p>This is, in a way, the same logic as Mag’s morning briefings. The
+briefing doesn’t change the tasks. But it changes my relationship to the
+tasks. It makes the structure visible, the priorities legible, the
+progress real. Writing does the same thing at a longer timescale.</p>
+</section>
+<section id="looking-forward" class="level2">
+<h2>Looking Forward</h2>
+<p>The honest question is whether Ludics will survive contact with the
+accelerating capabilities of the platforms. Cursor’s cloud agents
+already do parallel VMs. Anthropic’s Cowork already provides a managed
+environment with scheduled tasks and skills. OpenAI’s Codex has
+background agents. Every few months, another chunk of what I built
+becomes available as a managed service.</p>
+<p>My bet is that the bottom layers — the agent session management, the
+terminal multiplexing, the basic VM orchestration — will indeed be
+absorbed. I should probably go back to using Cursor or Cowork for the
+raw agent execution, and I may do so. But the top layers — Mag as
+lifelong strategic coordinator, the flow engine with dependency-aware
+scheduling, the six-slot forcing function, the phone-first notification
+system, the cross-project institutional memory — these are personal
+infrastructure. They encode my specific priorities, my specific
+projects, my specific cognitive limitations. No product will be built to
+serve an audience of one.</p>
+<p>And that, I think, is what working on the eve of singularity actually
+looks like. Not grand gestures, but small, specific acts of
+self-knowledge: figuring out where your bottleneck actually is, building
+infrastructure for your particular limitations, and maintaining the
+discipline to use it even when the temptation is to collapse back into
+the familiar single thread.</p>
+<p>The six empty slots are staring at me right now. Time to fill
+them.</p>
+<hr />
+<p><em>This is the first article in the series “Working on the Eve of
+Singularity.” The previous series on consciousness, cognitive
+architecture, and AI mentality is available at <a
+href="https://lukstafi.github.io">lukstafi.github.io</a>. Ludics is open
+source at <a
+href="https://github.com/lukstafi/ludics">github.com/lukstafi/ludics</a>.</em></p>
+</section>
+</section>
+</article>
+<script src="/assets/theme-toggle.js"></script>
+</body>
+</html>
