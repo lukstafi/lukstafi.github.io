@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>Issue Tracking Is Dead, Long Live the Furnace</title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <link rel="stylesheet" href="/assets/tufte.css">
+  <link rel="stylesheet" href="/assets/pandoc-tufte.css">
+  <link rel="stylesheet" href="/assets/site.css">
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+  <script>(function(){var t=localStorage.getItem('theme-preference');if(t)document.documentElement.setAttribute('data-theme',t);})()</script>
+</head>
+<body>
+<nav class="site-nav">
+  <a href="/">Home</a> &middot; <a href="/about.html">About</a> &middot; <a href="https://lukstafi.substack.com">Substack</a>
+</nav>
+<div class="theme-toggle">
+  <button id="theme-btn" aria-label="Toggle dark mode">&#9788;</button>
+</div>
+<article>
+<section id="issue-tracking-is-dead-long-live-the-furnace"
+class="level1">
+<h1>Issue Tracking Is Dead, Long Live the Furnace</h1>
+<p><em>Łukasz Stafiniak and Claude (Anthropic)</em></p>
+<hr />
+<p>Linear just declared issue tracking dead — on their own website, with
+their own logo flipped to light mode for the occasion. Theo Browne made
+a video about it. Nate B Jones has been building a framework for
+thinking about agents that cuts deeper than either of them. And I find
+myself agreeing with almost everyone while thinking they’re all
+describing different floors of the same building without noticing the
+staircase.</p>
+<p>The argument from Linear, in brief: the handoff model that issue
+trackers were built for — PM scopes work, engineer picks it up,
+bureaucratic ceremony bridges the gap — no longer makes sense when
+agents can absorb most of the procedural overhead. Linear wants to
+become “the shared product system that turns context into execution.”
+Their numbers are real: coding agents are installed in more than 75% of
+their enterprise workspaces, agent-completed work grew 5x in three
+months, agents authored nearly 25% of new issues.</p>
+<p>Theo agrees the old model is dead but thinks Linear is still thinking
+too much about how teams were split up historically. He proposes that
+code itself should be the plan: build a scrappy prototype first,
+discover the real scope, then make the spec if you still need one. He’s
+been doing this since Twitch — building rough versions in one to three
+days, shipping about half of them directly. “Build it three times and
+throw away the first two.” This made more sense when code was expensive
+to write. Now code is cheap.</p>
+<p>These are real insights. But they’re about different things. Linear
+is solving for <em>team context</em>. Theo is solving for <em>task
+execution</em>. Neither addresses what happens when you’re a single
+person trying to manage six concurrent threads of agent-assisted
+work.</p>
+<section id="the-agent-primitives" class="level3">
+<h3>The Agent Primitives</h3>
+<p>Nate B Jones has been assembling a more systematic picture. Across
+several recent pieces, he’s developed both a vocabulary for what agents
+need and a taxonomy for what they do.</p>
+<p>The vocabulary is simple: agents need three primitives — memory
+(persistent state across sessions), proactivity (the ability to act on a
+schedule without being prompted), and tools (the ability to reach out
+and change things). Remove any one of the three and you don’t have a
+real agent. A chatbot without memory is “perpetually a new hire on their
+very first day.” An agent without proactivity only moves when you push
+it — “you are the metronome.” An agent without tools is “a brain in a
+jar.”</p>
+<p>His taxonomy splits agents into four species. <em>Coding
+harnesses</em> are the simplest — a single agent taking the place of a
+developer, the kind you get when you open Claude Code or Codex.
+<em>Project-scale harnesses</em> add a planner agent that coordinates
+multiple executor agents, the way Cursor builds browsers and compilers.
+<em>Dark factories</em> remove the human from the middle entirely — spec
+goes in, software comes out, evals gate the exit. <em>Auto research</em>
+descends from classical machine learning: agents optimizing for a metric
+through iterative experiments, like Karpathy’s auto-research or Toby
+Lütke’s overnight model optimization runs. And <em>orchestration
+frameworks</em> hand work across specialized roles — researcher to
+drafter, writer to editor — with explicit handoff management.</p>
+<p>The key insight in his taxonomy: these species are genuinely
+different, and using the wrong one for your problem is a common mistake.
+People try to build dark factories when they need coding harnesses, or
+use orchestration frameworks when a single-threaded agent would
+suffice.</p>
+</section>
+<section id="the-missing-species" class="level3">
+<h3>The Missing Species</h3>
+<p>But there’s a gap in Nate’s taxonomy. All four species — and the
+orchestration frameworks that coordinate them — are about <em>agent
+work</em>: how agents do coding tasks, how agents run against evals, how
+agents optimize metrics, how agents hand off to each other. None of them
+addresses: given seventeen things that could be delegated to agents,
+which six do you pick, in what order, with what dependencies between
+them?</p>
+<p>This is the layer Ludics occupies. Ludics isn’t a coding harness (Mag
+doesn’t write code). It isn’t a dark factory (there’s no
+spec-in-software-out pipeline). It isn’t auto research (there’s no
+metric to optimize). And it isn’t an orchestration framework in Nate’s
+sense — he means LangGraph-style agent-to-agent routing for specialized
+roles. Ludics is the thing that <em>decides which of Nate’s four species
+to deploy, on which task, in which slot, in what order</em>.</p>
+<p>Call it meta-orchestration, or human self-management infrastructure,
+or — most honestly — an entropy bound on a complex system.</p>
+<p>The six-slot model isn’t just a cognitive constraint — it’s a limit
+on how much concurrent state the whole human-agent system can maintain
+without degrading. Without a fixed bound on active work, the system
+accumulates process entropy: stale branches, forgotten agent sessions,
+tasks drifting out of alignment with each other, context that nobody —
+human or agent — is actively maintaining. Six slots means six things are
+alive and attended to. Everything else is queued, not rotting. The
+constraint serves the system’s coherence, not just the human’s working
+memory — though it serves that too. Six sits at the upper bound of what
+you can hold in your head, and the empty slots nag at you, creating
+pressure to parallelize the same way Kanban WIP limits do.</p>
+<p>Whether six is the right number, or whether a static limit is the
+right mechanism at all, is genuinely open. A more sophisticated system
+might adapt dynamically — expanding capacity when tasks are independent
+and low-cost to context-switch between, contracting when they’re tightly
+coupled or require deep sustained attention. Ludics bets on the simple
+static constraint because it’s legible, auditable, and behaviorally
+effective. But it’s a bet, not a proof.</p>
+<p>Nate’s framework is bottom-up: assemble the primitives, give the
+agent a task, walk away. Ludics is top-down: start from how much
+concurrent state the system can sustain, impose structure, and then fill
+the slots with whatever agent species fits.</p>
+</section>
+<section id="work-off-the-desk" class="level3">
+<h3>Work Off the Desk</h3>
+<p>Nate’s sharpest contribution isn’t his taxonomy — it’s his criterion.
+He draws a hard line between work that takes something <em>off</em> your
+desk and work that puts more <em>on</em> it. An agent that drafts a
+report you still have to read and edit? Work on your desk. An agent that
+monitors airline prices and alerts you when a route drops below your
+threshold? Work off your desk. An agent that generates a “proactive
+briefing”? Probably work on your desk — “stop making more text for me to
+read.”</p>
+<p>This criterion is genuinely useful, and I want to apply it honestly
+to Ludics — because Mag’s morning briefing is <em>exactly</em> the kind
+of thing Nate would be suspicious of. Every morning at 8:00, Mag reviews
+what happened overnight, generates a briefing with strategic
+suggestions, and pushes it to my phone. Is that work off my desk or
+another document to read?</p>
+<p>The answer depends on what happens downstream. If the briefing is a
+report — here’s what happened, here’s a summary — then Nate is right,
+it’s pseudo-work. I’m reading instead of doing. But the briefing doesn’t
+exist in isolation. It feeds into the flow engine’s ready queue, which
+computes priority-sorted tasks based on dependencies, deadlines, and
+what just unblocked overnight. By the time I sit down, the question
+isn’t “what should I work on?” — it’s “do I agree with the system’s
+recommendation, or do I want to override it?” That’s a decision, not a
+reading assignment. The briefing isn’t a report. It’s a decision
+function.</p>
+<p>The distinction matters because it maps onto Nate’s own “accumulation
+across cycles” idea. He argues that the real value of <code>/loop</code>
+isn’t any single cycle — it’s the compounding across cycles, where each
+iteration builds on the memory of previous iterations. Mag works the
+same way. The institutional memory it builds — learning from
+corrections, consolidating scattered knowledge into structured
+understanding — means that each morning briefing is informed by every
+previous briefing and every correction I’ve made. The recommendations
+get better. The noise decreases. That’s accumulation, not
+repetition.</p>
+<p>But I’ll concede: the briefing <em>could</em> become pseudo-work if I
+stopped acting on it. The forcing function is that the six slots are
+visible. If the briefing says three slots are empty and here’s what
+should fill them, that’s not a document — it’s a nag. The infrastructure
+around the briefing is what makes it work off the desk rather than onto
+it.</p>
+</section>
+<section id="theos-prototype-first-philosophy-and-its-limits"
+class="level3">
+<h3>Theo’s Prototype-First Philosophy and Its Limits</h3>
+<p>Theo’s strongest argument is that prototyping should replace
+planning. Build first, learn, then make a spec if you still need one. At
+Twitch, about half his prototypes got polished and shipped directly. The
+elaborate spec → build → ship pipeline was slower and produced worse
+results than build → learn → spec → build correctly.</p>
+<p>He extends this to agents: if the model is smart enough to fill all
+the specialist roles — CEO, engineer, designer, QA — why define roles?
+Why have multi-step plans at all? Just let the agent build, discover the
+problems, and iterate. He finds markdown files that define how the model
+should behave as “the CEO” or “the senior designer” to be “how devs
+roleplay.”</p>
+<p>For individual features, I think he’s right. But he’s solving at a
+different scale. The prototype-first approach assumes you know which
+feature to prototype. When you have three active projects with
+interdependent deadlines, a dozen open GitHub issues across multiple
+repositories, and a blog series to maintain alongside a research
+framework, the question isn’t “how should I build this feature?” — it’s
+“which of the seventeen things competing for my attention should I even
+think about right now?”</p>
+<p>His critique of multi-step planning is also sharper than it needs to
+be. “There’s no reason for planning to fill your entire context.” True
+for feature specs. Not true for portfolio planning — the cross-project,
+cross-deadline, cross-dependency reasoning that determines what to build
+in what order. Mag’s planning isn’t feature planning. It’s the kind that
+asks: should I preempt the current OCANNL work for a blog deadline? Is
+the concatenation semantics task actually blocked by a design decision I
+haven’t made yet? What would completing this task unblock
+downstream?</p>
+<p>Theo’s observation about developer automations is revealing here. He
+notes that developers tend to find automations unimpressive because they
+already know how to automate things — so they’ve trained their brains to
+ignore the urge. Non-developers, encountering automation for the first
+time, go wild with it. He describes a consultant at a startup with
+thirty-plus automations doing all sorts of monitoring work — someone
+who’d never written code before. Then he admits: “the devs I find who
+are using automations a lot tend to be the less good devs.”</p>
+<p>I read this differently. The better developers are the ones who
+<em>should</em> be using automations more — not for the tasks Theo finds
+unimpressive (summarizing yesterday’s git activity) but for the
+strategic overhead that eats into their three good hours. Yegge has
+talked about a “vampiric” effect of AI-assisted work: it drains your
+System 2 thinking at a much higher rate than traditional coding, because
+the easy stuff is automated and you’re left with a concentrated stream
+of hard decisions. You might only get three productive hours at maximum
+speed. If you have three good hours, you need infrastructure that makes
+those hours count.</p>
+<p>The developer blindspot isn’t that automations are uncool. It’s that
+developers think of automations as “code that runs a task” when the real
+value is “infrastructure that manages the manager.”</p>
+</section>
+<section id="the-platform-absorption-question" class="level3">
+<h3>The Platform Absorption Question</h3>
+<p>In the first article of this series, I wrote: “The honest question is
+whether Ludics will survive contact with the accelerating capabilities
+of the platforms.” Two weeks later, the answer is becoming clear — and
+it’s more interesting than I expected. The platform isn’t just catching
+up to Ludics. It’s converging on the same architecture.</p>
+<p>Start with what’s already shipped. In Nate’s terms, the platform has
+assembled all three Lego bricks natively. Memory: Claude Code’s
+auto-memory remembers project context across sessions; Cowork Projects
+provide persistent memory scoped per project. Proactivity:
+<code>/loop</code> handles autonomous continuation; Cowork scheduled
+tasks run on a cadence; Claude Code’s scheduled tasks run in the cloud
+on Anthropic’s infrastructure, even when your laptop is off. Tools: MCP
+servers, computer use, connectors — the full toolkit. Boris Cherny, the
+creator of Claude Code, runs dozens of parallel agents with
+<code>/loop</code> automations and worktrees — the bottom layers of
+Ludics reimplemented from platform primitives. Claude Code Agent Teams
+shipped with Opus 4.6 — a lead session spawning teammates via a mailbox
+system. Cowork Dispatch lets you assign tasks from your phone. Channels
+provide an open architecture for building custom interfaces into running
+sessions.</p>
+<p>But what’s coming is more striking. A recent leak of Claude Code’s
+source revealed features in development that read like a Ludics feature
+list. A <em>proactive mode</em> where Claude Code runs around the clock,
+deciding on its own whether tasks need doing — responding to Slack
+messages, fixing failing tests, reviewing new files, acting on TODO
+comments. That’s Mag. Not analogous to Mag — it is the same pattern: a
+persistent agent that watches and acts without being prompted.</p>
+<p>A <em>coordinator mode</em> with explicit phases — research,
+synthesis, implementation, validation — where the coordinator never
+touches the codebase directly but delegates everything to worker
+subagents. That’s Ludics’ orchestrator/worker pattern with context
+isolation. <em>Context-preserving subagents</em> that fork the full
+conversation into parallel workers while keeping the main session clean
+— exactly the problem Mag’s skill system solves by running heavy skills
+in forked contexts and returning only summaries. <em>Job templates</em>
+that turn recurring tasks into persistent, reusable definitions with
+<code>claude new</code> and <code>claude list</code> — that’s flow-based
+task management creeping in. <em>Push notifications</em> to your phone
+when tasks complete. <em>Background sessions</em> managed via
+<code>claude --bg</code>, <code>claude ps</code>,
+<code>claude attach</code>, <code>claude kill</code> — literally the
+tmux session management that Ludics wraps. <em>Settings sync</em> across
+machines — a simpler version of Ludics’ federation system. <em>Team
+memory</em> as a shared knowledge base that every team member’s Claude
+contributes to.</p>
+<p>I want to be clear about what this means: it validates the
+architecture. When you build something from first principles and the
+platform independently converges on the same design — phased
+orchestration, context isolation for persistent coordinators, proactive
+scheduled agents, notification channels — that’s evidence the design was
+right. I built Ludics because I needed these patterns and they didn’t
+exist. Now they’re being absorbed into managed infrastructure, which is
+exactly what should happen.</p>
+<p>So: what survives?</p>
+<p>The bottom third of Ludics — agent session management, terminal
+multiplexing, the adapter layer — is already obsolete. Agent Teams,
+background sessions, and Cowork handle this natively. I should have
+retired it months ago.</p>
+<p>The middle third — the 23-phase orchestration engine, the peer-sync
+protocol, the merge voting — is now visibly on the platform’s roadmap.
+Coordinator mode with phases is coming. Whether it will be as
+opinionated as Ludics’ clarify → pushback → plan → work → review → merge
+workflow, or whether it will be more freeform, I don’t know yet. But the
+direction is clear.</p>
+<p>There are two things the platform is not positioned to absorb, and
+they’re different in kind.</p>
+<p>The first is <strong>cross-provider orchestration</strong>. Ludics’
+agent-duo was built on the principle that different models have
+different strengths and that cross-checking catches errors that either
+model alone would miss. The practitioners I follow on X confirm that
+this remains true, though the specific strengths keep shifting. Ben
+Holmes, after extensive use of both Opus 4.6 and GPT 5.4, found that GPT
+is more rigorous — it goes further validating its own work without being
+asked, catches more edge cases, and produces better architectural plans
+without needing an explicit planning mode. Opus produces clearer code —
+better variable names, the right amount of documentation, more
+reviewable output — and is a better conversational collaborator for
+early-stage exploration. His summary: “Opus to make it work, GPT to make
+it good.” Others draw the lines differently, but the pattern is
+consistent: the models have complementary strengths, and the ideal
+workflow would use both. Claude Code, understandably, is not going to
+orchestrate Codex or Gemini agents. This isn’t a criticism — it’s a
+structural fact about vendor platforms. But for practitioners who want
+best-of-N across providers, the orchestration layer has to live outside
+any single provider’s harness. Whether this matters enough to maintain
+custom infrastructure is a genuinely open question. If the frontier
+models continue to improve at self-correction, cross-provider review
+becomes less valuable. If model blind spots remain correlated within a
+provider’s family — if Opus 5 makes the same <em>kind</em> of mistakes
+as Opus 4.6, just fewer of them — it stays important.</p>
+<p>The second is the <strong>human-facing layer</strong> — and this is
+where the gap is structural, not temporal. Proactive mode gives you a
+Mag that watches one codebase. It doesn’t give you a Mag that sees
+across all your projects simultaneously and decides which of your six
+codebases deserves attention today. Coordinator mode organizes agents
+within a task. It doesn’t maintain a dependency graph <em>across</em>
+tasks that computes priority-sorted ready queues, detects deadline
+violations, and identifies which task would unblock the most downstream
+work. Job templates make recurring tasks reusable. They don’t impose a
+fixed limit on how many jobs can be active at once — the entropy bound
+that keeps the whole system coherent.</p>
+<p>No platform feature on the horizon addresses: <em>given everything
+that could be done across all your projects, what should you do next,
+and how many things should you be doing at once?</em></p>
+</section>
+<section id="the-fifth-species" class="level3">
+<h3>The Fifth Species</h3>
+<p>Step back and consider what’s happening across all of these voices.
+Linear is absorbing organizational overhead into a context system. Theo
+is arguing that agents make individual task planning unnecessary. Nate
+is mapping the taxonomy of what agents do and insisting we match species
+to problems. Each is right about their layer.</p>
+<p>But there’s a layer above all of them. Nate’s taxonomy describes what
+agents do. The missing entry describes what the <em>human</em> does — or
+rather, what infrastructure the human needs to manage themselves
+effectively when they’re the bottleneck in a system of many agents.</p>
+<p>Nate comes closest to naming this when he talks about “learning to
+think like a manager” and “learning to trust that the agent is doing the
+work when we walk away.” He describes the psychological shift — the itch
+to go check, the inability to untether — and frames it as a habit to
+overcome. But it’s not just a habit. It’s an engineering problem.
+<em>How</em> do you decide what to delegate? <em>How</em> do you track
+what’s in flight? <em>How</em> do you force yourself to use your full
+capacity instead of collapsing into single-threaded work?</p>
+<p>Nate’s answer is bottom-up: assemble the primitives, find the open
+loops buzzing in the back of your brain, delegate them, walk away. That
+works for individual delegation decisions. It doesn’t scale to managing
+a portfolio of concurrent work across multiple projects with
+interdependent deadlines. For that, you need structure — dependency
+graphs, priority queues, slot constraints, a persistent coordinator that
+remembers what you told it last week.</p>
+<p>Theo’s answer is that the roles themselves are obsolete. If the model
+can be the CEO and the engineer and the designer, why define roles?
+Because roles aren’t just about capability distribution — they’re about
+<em>attention management</em>. The reason organizations have product
+managers is not solely that engineers can’t do product thinking. It’s
+that someone needs to maintain the strategic picture while everyone else
+is heads-down on implementation. That need doesn’t disappear when your
+engineers are agents. If anything, it intensifies — because now you have
+six agents heads-down and one human trying to keep track of all of
+them.</p>
+<p>The fifth species — if we’re extending Nate’s taxonomy — is the human
+orchestration layer. Not an agent that does work, but infrastructure
+that manages the human who manages the agents. It answers: <em>given
+everything that could be done, what should you do next, and how many
+things should you be doing at once?</em></p>
+<p>The slot model is central to this, and it’s worth being precise about
+what it is and isn’t. Six concurrent work streams isn’t primarily a
+claim about human working memory, though it’s consistent with the
+cognitive science. It’s a claim about system coherence. A human-agent
+system with six active threads can maintain alignment between what the
+human knows, what the agents are doing, and what the tasks require. A
+system with twenty active threads can’t — not because the agents are
+incapable, but because the coordination overhead grows faster than the
+capacity. Stale branches accumulate. Agent sessions drift from their
+original intent. Tasks that were supposed to be independent turn out to
+have dependencies that nobody noticed because nobody was attending to
+all twenty threads. The entropy of the system increases until the work
+products degrade.</p>
+<p>There’s a theorem from queuing theory that makes this precise.
+Little’s Law, published by John Little at MIT in 1961, states a
+relationship between three quantities in any stable system where items
+enter, get processed, and leave: the average number of items in the
+system (L), the rate at which items arrive and depart (λ), and the
+average time each item spends in the system (W). The law says: L = λ ×
+W. In plain language: the number of things in flight equals the
+throughput rate times how long each thing takes. Rearrange it and you
+get: W = L / λ — the time each item spends in the system equals the
+number of items in flight divided by the throughput. This means that if
+your throughput is roughly fixed (you can only review and approve so
+many agent outputs per day), then adding more concurrent work doesn’t
+get more done — it just makes each item take longer to finish. The math
+is indifferent to whether the “items” are customers in a coffee shop,
+wafers in a semiconductor fab, or agent-assisted tasks on a developer’s
+desk. Capping the number of items in flight — the WIP limit — directly
+bounds how long each item takes.</p>
+<p>This is the theoretical foundation for Kanban WIP limits in software
+teams, and it applies just as well to a single person managing agent
+threads. But — and this matters — Little’s Law tells you that
+<em>some</em> limit helps. It doesn’t tell you <em>which</em> limit is
+right. The most substantial empirical study I’m aware of, a 2018
+analysis of over 8,000 work items across five teams over four years,
+confirmed that lower WIP correlates with shorter lead times, consistent
+with the theory. But it also found that WIP correlates with raw
+productivity in the opposite direction — lowering WIP reduced throughput
+even as it improved cycle time. The authors concluded that identifying
+an optimal WIP limit is difficult because different performance
+variables respond to WIP changes in contrasting ways. They called for
+replication studies. As far as I know, the question remains open.</p>
+<p>Practitioners converge on heuristics rather than formulas. Common
+starting points for teams are “number of team members plus one” or
+“two-thirds to three-quarters of team size.” For a single person
+managing agent threads, there’s no established heuristic at all — this
+is new territory. Queuing theory supports the idea of dynamic limits
+that adjust to real-time capacity and task coupling, but in practice
+almost everyone uses static limits because they’re simpler to enforce
+and harder to game.</p>
+<p>Is six the right number? Is a static limit the right mechanism?
+Honestly, I don’t know. A more sophisticated system might adjust
+dynamically — opening slots when tasks are independent, closing them
+when work becomes tightly coupled. It might learn from the pattern of
+which slot counts produce the best throughput for a given person and
+workload. Ludics doesn’t do any of that. It bets on the simple, stupid
+constraint because simple constraints are legible and hard to game,
+including gaming by your own bad habits. Little’s Law guarantees that
+bounding WIP bounds cycle time. But the empirical literature on which
+bound is optimal for a given system is surprisingly thin, and for a
+system where the “team” is one human and six AI agents, it’s
+nonexistent. This is a design decision that works, placed alongside an
+admission that better designs might exist.</p>
+<p>There is a version of me six months from now who opens Claude Code,
+types a prompt, and watches proactive mode and coordinator mode do
+everything Ludics does — natively, reliably, without 26,000 lines of
+TypeScript to maintain. That version of me feels foolish. He wasted
+months building scaffolding that the platform was always going to
+absorb, months he should have spent on OCANNL, on the concatenation
+semantics his sponsor is waiting for, on the actual work rather than the
+infrastructure around the work. The people who trusted him were right to
+be impatient.</p>
+<p>There is another version of me six months from now who has intuitions
+he can’t fully articulate. He knows, in his body, why WIP limits matter
+— not because he read about Little’s Law but because he felt eight
+concurrent threads degrade his own cognition. He knows why context
+isolation matters for a persistent coordinator — not from a design
+document but from watching Mag’s strategic memory fill up with codebase
+details until it stopped being able to think across projects. He has
+been through the transition rather than arriving after it, and something
+about that changes what he can see.</p>
+<p>I don’t know which of these people I’m becoming. Both are real
+possibilities. The platform is converging on the architecture I built
+faster than I expected, and the honest reading is that waiting might
+have been the rational choice. I chose not to wait. I chose to build
+through the transition, to learn by maintaining a system that is being
+obsoleted in real time, because I have a suspicion — not a certainty —
+that there is knowledge available only to people who are present for the
+construction, not just the result.</p>
+<p>This is, I recognize, a bet. It’s the kind of bet you make when you
+don’t trust your own reasons — when you suspect the real motivation is
+the developer’s ancient temptation to build tools instead of using them,
+dressed up in language about experiential knowledge and historical
+moments. I can’t fully distinguish the signal from the rationalization.
+But I’ve placed the bet, and I’ll know within a year whether it was a
+good one.</p>
+<p>And that, I think, is what working on the eve of singularity actually
+feels like. Not confidence. Not clarity. The organizational tools are
+being absorbed into context systems. The individual tools are being
+absorbed into agent primitives. The personal tools — the ones that
+manage <em>you</em> — are being improvised by people who don’t fully
+understand what they’re building or whether it will matter. We are all
+making wagers in fog, with the fog thickening. Some of us are just more
+explicit about it.</p>
+<hr />
+<p><em>This is the second non-philosophical article in the series
+“Working on the Eve of Singularity.” The first article, “The Furnace:
+Building Personal AI Infrastructure,” is available at <a
+href="https://lukstafi.github.io">lukstafi.github.io</a>. Sources:
+Linear’s <a href="https://linear.app/next">Issue Tracking Is Dead</a>,
+Theo Browne’s <a href="https://www.youtube.com/@t3dotgg">reaction
+video</a>, Nate B Jones’ series on <a
+href="https://www.youtube.com/@natebj">agent primitives</a>, and Ben
+Holmes’ <a href="https://x.com/BHolmesDev">model comparison
+thread</a>.</em></p>
+</section>
+</section>
+</article>
+<script src="/assets/theme-toggle.js"></script>
+</body>
+</html>
