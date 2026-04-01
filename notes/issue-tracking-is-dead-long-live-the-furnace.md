@@ -126,4 +126,6 @@ And that, I think, is what working on the eve of singularity actually feels like
 
 ---
 
-*This is the second non-philosophical article in the series "Working on the Eve of Singularity." The first article, "The Furnace: Building Personal AI Infrastructure," is available at [lukstafi.github.io](https://lukstafi.github.io). Sources: Linear's [Issue Tracking Is Dead](https://linear.app/next), Theo Browne's [reaction video](https://www.youtube.com/@t3dotgg), Nate B Jones' series on [agent primitives](https://www.youtube.com/@natebj), and Ben Holmes' [model comparison thread](https://x.com/BHolmesDev).*
+*This is the second non-philosophical article in the series "Working on the Eve of Singularity." The first article, "The Furnace: Building Personal AI Infrastructure," is available at [lukstafi.github.io](https://lukstafi.github.io). Sources: Linear's [Issue Tracking Is Dead](https://linear.app/next), Theo Browne's [reaction video](https://www.youtube.com/watch?v=pzUn9wTCgcw), Nate B Jones' series on [agent primitives](https://www.youtube.com/watch?v=YpPcDHc3e9U), and Ben Holmes' [model comparison thread](https://x.com/BHolmesDev/status/2038261641909793224).*
+
+[Bonus link.](https://www.youtube.com/shorts/q-yETrWwAXs)
