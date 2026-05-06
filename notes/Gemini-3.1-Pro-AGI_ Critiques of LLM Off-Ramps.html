@@ -1,0 +1,926 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>The Architecture of Artificial General Intelligence: Evaluating
+the Structural Limitations of Large Language Models and the Transition
+to Experiential Paradigms</title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <link rel="stylesheet" href="/assets/tufte.css">
+  <link rel="stylesheet" href="/assets/pandoc-tufte.css">
+  <link rel="stylesheet" href="/assets/site.css">
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+  <script>(function(){var t=localStorage.getItem('theme-preference');if(t)document.documentElement.setAttribute('data-theme',t);})()</script>
+</head>
+<body>
+<nav class="site-nav">
+  <a href="/">Home</a> &middot; <a href="/about.html">About</a> &middot; <a href="https://lukstafi.substack.com">Substack</a>
+</nav>
+<div class="theme-toggle">
+  <button id="theme-btn" aria-label="Toggle dark mode">&#9788;</button>
+</div>
+<article>
+<section
+id="the-architecture-of-artificial-general-intelligence-evaluating-the-structural-limitations-of-large-language-models-and-the-transition-to-experiential-paradigms"
+class="level1">
+<h1><strong>The Architecture of Artificial General Intelligence:
+Evaluating the Structural Limitations of Large Language Models and the
+Transition to Experiential Paradigms</strong></h1>
+<p>The pursuit of Artificial General Intelligence (AGI) has been
+profoundly accelerated by the advent of Large Language Models (LLMs)
+based on the Transformer architecture. Through the ingestion of
+internet-scale textual data and the application of self-supervised
+next-token prediction, these models have demonstrated unprecedented
+capabilities in natural language processing, code generation, and
+specialized reasoning tasks. However, as scaling laws begin to encounter
+the limits of available human-generated training data, a profound
+architectural debate has emerged within the artificial intelligence
+research community.<br />
+A growing consensus among pioneering researchers—including Yann LeCun,
+Richard Sutton, David Silver, François Chollet, Subbarao Kambhampati,
+and Judea Pearl—suggests that pure, autoregressive LLMs fundamentally
+lack the structural prerequisites for AGI.1 Rather than representing a
+direct path to human-level intelligence, these models are increasingly
+characterized as a technological “off-ramp,” a sophisticated dead end
+constrained by their reliance on static data, their inability to perform
+causal inference, and their lack of physical grounding.7 This report
+provides an exhaustive, peer-level analysis of the theoretical
+shortcomings of pure LLM-based systems and details the proposed
+alternative paradigms—ranging from Joint Embedding Predictive
+Architectures to continuous Reinforcement Learning frameworks—that
+define the next frontier of AGI research.</p>
+<section
+id="the-epistemological-and-architectural-ceilings-of-autoregressive-generation"
+class="level2">
+<h2><strong>The Epistemological and Architectural Ceilings of
+Autoregressive Generation</strong></h2>
+<p>The foundational critique of modern LLMs originates from an analysis
+of their core optimization objective: autoregressive next-token
+prediction. While this mechanism is highly effective for capturing the
+statistical regularities of human language, it fundamentally differs
+from the cognitive processes that underpin human and animal
+intelligence.10</p>
+<section id="the-autoregressive-error-compounding-problem"
+class="level3">
+<h3><strong>The Autoregressive Error Compounding Problem</strong></h3>
+<p>Yann LeCun has rigorously detailed the structural inevitability of
+hallucination and logical failure in autoregressive generative models.
+The architecture of an LLM requires it to generate sequences token by
+token, conditioning each subsequent token on the entire preceding
+sequence of generated tokens.1 Mathematically, if a model has an error
+probability <img
+src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAYCAYAAAAoG9cuAAAAb0lEQVR4XmNgGAXkAm8gXg/E9ugSIFADxP+B2BHK7wDiiQhphAImJDFhID6GxAcruAplswJxGlQMDkBuAAmsBeI2IM5ggJiCAuoY0HRhAzYMuBXFIHNAipKQBRggbnRHFgD56gcDRDEI70WWHAUMALkoFeGORy6IAAAAAElFTkSuQmCC" />
+for generating any given token, the probability of generating a
+perfectly accurate and logically coherent sequence of length <img
+src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABIAAAAYCAYAAAD3Va0xAAAA3UlEQVR4XmNgGAWkgnlA/BmI/0PxAhRZCPjLgJAHYWdUaVSArBAb2AfEKuiC6IARiLcD8XoGiEFBqNJggMsCFJAPxCZQNi5X/UEXwAbeIrE/MEAM4kMSUwPiTiQ+ToDsAlA4gPg3kcSWATEPEh8rAIXPZjQxdO9h8yoGQA4fZDGQ5m4o/xeSHE7wDl0ACmCu0gbiFjQ5rACXs3czQOTuATEnmhwGYAHiveiCUMDEgBlWWAEzEL8B4pPoEkjgGxB/RxdEBquA+CMDJP2A0g0oL2ED+kCcjS44CkYBEAAABi803bhnVOIAAAAASUVORK5CYII=" />
+is <img
+src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEcAAAAYCAYAAACoaOA9AAACPklEQVR4Xu2YzUsVURjGXzQiKQkrMJBoZ/+ACzGD2kSISO2CFhIh+IFiKGm72rQoV7ZwoYLgwoWrFhm18h9wES0UQkGURAQt1Pzoy/fhHPXc586xg/d6vQfuDx5m5jdn5px579wzc69IgQKW15oZzT/y49a9I5/IXRYREDrmbc0fzSD5IdpOpFnTyzICzmp+sExgWEwh3bvnoqbC2U7kmuYbS4duTQvLPOKBZoqlwzkx1whQnHq73meXR4IDcAKXMc2u3Ye0pu7OOzDGcpaWF876W81fu/7b8YnUaHZYEjEU54lmi6UF840LrueCZoB8Gr/k/3NNDMUB/DTaZ4S25zSz4r/TDsAJS1gS+VAcTJ5vNC/FTMJJYJx15C5pbpArE38hDyiVgEZyusUp0vzUTIgpSrH4x4w58qOzjePW7fKm48F32k7jjvg7ckGbNpY5An1/TnBJ4EVvnuVxeSz+jlzQpp2lh8uaqsDw7c6MSur4KsXMFa8c5/JBwq4niEYJOxnadLD0cF3TEJhb9hgf6Bfp1zzX3E7Zm857CbueIKol7GRo08kyB6BfzBmhTGtWWR6XoFlbTJunLHMA+v3CUjnPwoL3mU8sMwED8D0awRUxbYJetbMMvsr84dVq1sjtg7b3WWYCTtjFUszP+RXNombBLpfFPC5zSY8czj0oCorjgwuZMc80Gywj5KFmiWU2QMXPsIwMXMNVltngnuYry4jAy+wky2yCvxKbWEYAfl5ssjwJGllEwCMWBQqcDnvkqn1y4VRgGAAAAABJRU5ErkJggg==" />.
+As <img
+src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABIAAAAYCAYAAAD3Va0xAAAA3UlEQVR4XmNgGAWkgnlA/BmI/0PxAhRZCPjLgJAHYWdUaVSArBAb2AfEKuiC6IARiLcD8XoGiEFBqNJggMsCFJAPxCZQNi5X/UEXwAbeIrE/MEAM4kMSUwPiTiQ+ToDsAlA4gPg3kcSWATEPEh8rAIXPZjQxdO9h8yoGQA4fZDGQ5m4o/xeSHE7wDl0ACmCu0gbiFjQ5rACXs3czQOTuATEnmhwGYAHiveiCUMDEgBlWWAEzEL8B4pPoEkjgGxB/RxdEBquA+CMDJP2A0g0oL2ED+kCcjS44CkYBEAAABi803bhnVOIAAAAASUVORK5CYII=" />
+increases, the probability of remaining on a correct logical trajectory
+decays exponentially toward zero.1<br />
+Because the model lacks an internal, abstract representation of the
+world to ground its outputs, a single erroneous token shifts the
+conditional probability distribution for all subsequent tokens, forcing
+the model into an unrecoverable state of hallucination.13 LeCun asserts
+that this exponential compounding of generation error cannot be
+mitigated simply by scaling up parameter counts or training data; it is
+an intrinsic mathematical flaw of the autoregressive paradigm itself.1
+The model operates without a persistent memory or a grounded physical
+understanding of the environment, relying entirely on the limited
+context window provided during inference.13 Consequently, LeCun
+describes the current hyper-focus on scaling LLMs as a “distraction” and
+an “off-ramp” on the highway to AGI.8 He posits that researchers
+interested in achieving true human-level intelligence should abandon the
+pure LLM paradigm in favor of architectures capable of maintaining
+stable internal states.15</p>
+</section>
+<section id="joint-embedding-predictive-architectures-jepa"
+class="level3">
+<h3><strong>Joint Embedding Predictive Architectures
+(JEPA)</strong></h3>
+<p>To address the limitations of generative autoregression, LeCun and
+his collaborators propose the Objective-Driven AI architecture, powered
+by Joint Embedding Predictive Architectures (JEPA).1 LeCun’s framework
+fundamentally abandons the generative task of predicting missing pixels
+or tokens in raw sensory space.1 The reconstruction of raw inputs forces
+generative models to expend massive computational resources modeling
+irrelevant low-level noise, which detracts from their ability to learn
+abstract semantic representations.16<br />
+In a JEPA, an encoder maps an input (such as a video frame or an image
+patch) into an abstract, high-dimensional latent space.16 A predictor
+module is then tasked with predicting the latent representation of a
+future state, given the latent representation of the current state and
+an intended action.1</p>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: left;">Architectural Feature</th>
+<th style="text-align: left;">Autoregressive LLMs</th>
+<th style="text-align: left;">JEPA / Objective-Driven AI</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>Primary Learning
+Objective</strong></td>
+<td style="text-align: left;">Reconstruct or predict raw data (pixels,
+text tokens).16</td>
+<td style="text-align: left;">Predict future states exclusively in an
+abstract, latent space.16</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Handling of
+Uncertainty</strong></td>
+<td style="text-align: left;">Generates a specific, singular
+probabilistic output, compounding errors over time.1</td>
+<td style="text-align: left;">Absorbs signal variability; successfully
+ignores unpredictable low-level noise.1</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>World Model
+Integration</strong></td>
+<td style="text-align: left;">Implicit, statistically derived purely
+from language distributions.16</td>
+<td style="text-align: left;">Explicit, hierarchical world model capable
+of forward-simulating physical consequences.11</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Computational
+Efficiency</strong></td>
+<td style="text-align: left;">Highly expensive due to the necessity of
+modeling every micro-detail.16</td>
+<td style="text-align: left;">Highly efficient, operating strictly on
+abstracted semantic representations.16</td>
+</tr>
+</tbody>
+</table>
+<p>By operating entirely within a latent representation, JEPAs eliminate
+the exponential compounding of errors that plagues LLMs.1 An autonomous
+agent equipped with a JEPA world model can perform advanced reasoning
+and planning.20 It proposes a sequence of actions, uses the JEPA to
+forward-simulate the abstract outcomes of those actions, and evaluates
+the final predicted state against a hardcoded or learned intrinsic
+objective function.11 If the simulated outcome fails to meet the
+objective, the agent backtracks and optimizes a new action sequence
+before executing any physical movement.19 This hierarchical planning
+capability mirrors human cognitive processes and represents a direct
+architectural response to the planning deficits observed in pure
+transformer networks.6 The deployment of systems like V-JEPA
+(Video-JEPA) demonstrates superior performance in low-shot action
+recognition and representation learning compared to standard generative
+masked autoencoders, validating the efficacy of prediction in latent
+space.1</p>
+</section>
+</section>
+<section
+id="the-illusion-of-reasoning-and-planning-in-next-token-paradigms"
+class="level2">
+<h2><strong>The Illusion of Reasoning and Planning in Next-Token
+Paradigms</strong></h2>
+<p>Beyond the statistical pitfalls of autoregression, a broader
+epistemological critique focuses on the conflation of sophisticated
+pattern retrieval with genuine planning and reasoning. Subbarao
+Kambhampati extensively documents how the fluency of LLMs creates an
+anthropomorphic illusion of intelligence, masking a fundamental
+inability to perform algorithmic search or verification.21</p>
+<section id="approximate-retrieval-versus-veridical-planning"
+class="level3">
+<h3><strong>Approximate Retrieval Versus Veridical
+Planning</strong></h3>
+<p>Despite the superficial appearance of logical deduction in LLM
+outputs, Kambhampati categorizes these systems as “approximate retrieval
+systems” or “n-gram models on steroids”.6 Because LLMs are trained on
+the entirety of civilizational text, they exhibit what Kambhampati terms
+“approximate omniscience”—the capacity to provide an answer to virtually
+any query without possessing a veridical guarantee of its correctness.21
+When prompted to solve a planning problem, the model does not engage in
+algorithmic search, state-space exploration, or rigorous constraint
+satisfaction; rather, it retrieves and interpolates statistical patterns
+that resemble a correct plan found in its training data.6<br />
+Planning, by definition, requires a strict veridical world model where
+actions have deterministic or probabilistically bounded consequences. It
+demands the ability to simulate a sequence of actions, evaluate their
+outcomes against a specific temporal or physical goal, and backtrack if
+a logical constraint is violated.21 Pure LLMs possess no internal state
+simulator and no mechanism for algorithmic backtracking during the
+standard generation phase.6 They act as a massive, unstructured “System
+1” associative memory.24 As a result, they frequently generate plans
+that are syntactically perfect but semantically flawed, violating
+physical laws, temporal logic, or explicit domain constraints.6
+Kambhampati asserts that relying on LLMs for autonomous planning is
+fundamentally misguided because the models are essentially performing
+heuristic guessing rather than verified reasoning.23</p>
+</section>
+<section id="the-llm-modulo-framework" class="level3">
+<h3><strong>The LLM-Modulo Framework</strong></h3>
+<p>While LeCun seeks to replace the LLM entirely at the core of the
+reasoning engine, Kambhampati proposes an integration strategy known as
+the “LLM-Modulo” framework.23 Acknowledging that LLMs are exceptional
+idea generators but catastrophic verifiers, Kambhampati argues for
+strictly decoupling the generation of potential solutions from the
+formal verification of those solutions.24<br />
+In the LLM-Modulo architecture, the system is divided into functional
+components that mimic a neuro-symbolic synergy 28:</p>
+<ol type="1">
+<li><strong>The LLM Generator (System 1):</strong> Acts as an unfettered
+ideation engine, leveraging its vast associative memory to propose
+heuristic solutions, candidate plans, or mathematical
+hypotheses.24<br />
+</li>
+<li><strong>External Symbolic Verifiers (Critics / System 2):</strong>
+Model-based systems—such as formal logic engines, physics simulators, or
+constraint satisfaction solvers—that rigorously evaluate the LLM’s
+proposed plan against grounded reality.24<br />
+</li>
+<li><strong>Backprompt Meta-Controller:</strong> If the verifier detects
+an error (e.g., a physical impossibility or logical contradiction), it
+generates a localized critique and feeds it back into the LLM as a
+structured backprompt, forcing the LLM to refine its output.28</li>
+</ol>
+<p>This approach actively prevents the LLM from executing flawed plans
+autonomously.24 It restricts the LLM to the role of intuition and
+hypothesis generation while offloading rigorous validation to
+deterministic architectures.6 Kambhampati points out that successful
+specialized mathematical AI systems inherently utilize this Modulo
+structure, pairing a neural generator with a strict symbolic evaluator
+to achieve sound proofs.28</p>
+</section>
+</section>
+<section id="fluid-intelligence-and-the-memorization-bottleneck"
+class="level2">
+<h2><strong>Fluid Intelligence and the Memorization
+Bottleneck</strong></h2>
+<p>François Chollet approaches the limitations of LLMs through the lens
+of psychometrics, cognitive science, and program synthesis. He posits
+that the AI community has dangerously conflated “crystallized
+intelligence”—the accumulation of static knowledge and memorized
+heuristics—with “fluid intelligence,” which is the ability to adapt to
+genuinely novel, out-of-distribution (OOD) situations.30</p>
+<section
+id="the-arc-agi-benchmark-and-out-of-distribution-generalization"
+class="level3">
+<h3><strong>The ARC-AGI Benchmark and Out-of-Distribution
+Generalization</strong></h3>
+<p>LLMs are apex engines of crystallized intelligence, capable of
+recalling and synthesizing vast amounts of pre-existing human
+knowledge.14 However, Chollet argues that true AGI requires
+skill-acquisition efficiency: the capacity to learn new concepts
+dynamically with minimal data in entirely unfamiliar environments.4 To
+formalize this measurement, Chollet introduced the Abstraction and
+Reasoning Corpus for Artificial General Intelligence (ARC-AGI).30<br />
+ARC-AGI presents visual, grid-based logic puzzles that rely solely on
+“core knowledge” (e.g., object permanence, basic geometry, topology, and
+counting) universally shared by humans from early childhood.30
+Crucially, every task in the ARC evaluation set is structurally unique
+and previously unseen, preventing models from simply retrieving a
+memorized solution from their training distribution.30</p>
+<table>
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: left;">Intelligence Typology</th>
+<th style="text-align: left;">Cognitive Mechanism</th>
+<th style="text-align: left;">LLM Proficiency</th>
+<th style="text-align: left;">ARC-AGI Requirement</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>Crystallized
+Intelligence</strong></td>
+<td style="text-align: left;">Retrieval of memorized facts, heuristic
+interpolation, and static pattern matching.30</td>
+<td style="text-align: left;"><strong>Superhuman</strong>. Excellent at
+standardized tests and broad knowledge retrieval.33</td>
+<td style="text-align: left;"><strong>Insufficient</strong>. The
+benchmark actively suppresses reliance on prior domain knowledge.30</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Fluid Intelligence</strong></td>
+<td style="text-align: left;">Abstract reasoning, dynamic skill
+acquisition, adaptation to extreme novelty.30</td>
+<td style="text-align: left;"><strong>Sub-human</strong>. Fails when
+statistical priors are rendered obsolete by new constraints.34</td>
+<td style="text-align: left;"><strong>Mandatory</strong>. Requires the
+synthesis of novel logical rules from limited few-shot examples.30</td>
+</tr>
+</tbody>
+</table>
+<p>Despite exponential increases in computational scale and parameter
+counts, pure LLMs consistently fail to achieve high scores on the
+ARC-AGI benchmark.35 The ARC Prize 2024 and 2025 global competitions
+revealed that while frontier models have improved, their base reasoning
+performance remains fundamentally constrained by knowledge coverage.37
+Chollet notes that when LLMs encounter a problem that cannot be solved
+via pattern-matching against their training distribution, their
+performance collapses, exposing their lack of genuine, fluid
+reasoning.34 Scaling an LLM only increases its memorized coverage of the
+latent space; it does not instill the capacity for active inference.37
+Consequently, Chollet asserts that the industry’s fixation on scaling
+LLMs has likely set back genuine AGI progress by five to ten years by
+monopolizing research funding and talent.9</p>
+</section>
+<section id="program-synthesis-and-refinement-loops" class="level3">
+<h3><strong>Program Synthesis and Refinement Loops</strong></h3>
+<p>To bridge the gap in fluid intelligence, Chollet champions paradigms
+centered on discrete program search and program synthesis.9 Instead of
+relying on a static neural network to output a final probabilistic token
+string, Chollet envisions systems that write, execute, and iteratively
+refine code.14<br />
+In this framework, when an AI encounters a novel problem, it does not
+attempt to pattern-match the solution from its weights. Instead, it
+engages in a “refinement loop”.37 It writes a highly compact symbolic
+program designed to solve the specific task, tests the program against
+the environment, and uses the feedback signal to evolutionarily optimize
+the code.37 This approach directly addresses the Out-of-Distribution
+failure modes of LLMs.34 Because the final output is a deterministic
+program rather than a probabilistic string of text, the solution is
+verifiable, logically sound, and independent of the vast memorization
+requirements of standard transformers.4<br />
+Melanie Mitchell aligns with this perspective, noting that true
+intelligence requires abstraction and analogy-making capabilities that
+extend beyond sequence prediction.32 Mitchell argues that systems must
+be able to develop entirely new concepts dynamically—a feat that static
+neural networks struggle to perform without explicit programmatic or
+neuro-symbolic intervention.32</p>
+</section>
+</section>
+<section
+id="the-absence-of-causal-inference-and-the-causal-parrot-critique"
+class="level2">
+<h2><strong>The Absence of Causal Inference and the “Causal Parrot”
+Critique</strong></h2>
+<p>A secondary, yet equally profound, limitation of the pure LLM
+architecture is its fundamental inability to engage in causal reasoning.
+The statistical foundations of deep learning are rooted in correlational
+pattern matching, which is mathematically insufficient for interacting
+safely and intelligently with complex, dynamic environments.42</p>
+<section id="the-ladder-of-causation" class="level3">
+<h3><strong>The Ladder of Causation</strong></h3>
+<p>Judea Pearl’s foundational work on causality provides a rigorous
+framework for diagnosing the cognitive deficits of LLMs.44 Pearl
+categorizes cognitive capabilities into a three-tiered “Ladder of
+Causation,” demonstrating that higher-order reasoning requires
+structurally distinct mathematical models 44:</p>
+<table>
+<colgroup>
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: left;">Causal Level</th>
+<th style="text-align: left;">Reasoning Type</th>
+<th style="text-align: left;">Cognitive Function</th>
+<th style="text-align: left;">Mathematical Representation</th>
+<th style="text-align: left;">LLM Capability</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>1. Association</strong></td>
+<td style="text-align: left;">Seeing / Observing</td>
+<td style="text-align: left;">“What if I see <img
+src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA8AAAAWCAYAAAAfD8YZAAAA2UlEQVR4Xu2RsQ4BQRCGR6PValXiATwBvQehUwiN99BoNDqNRBSCQojEAyhEIkRDiCho+Cez2B3n7tR8yZfMzr9zud0l+pOCE9iHPTiEIyufwS5sw47VdxjAGxyrfsz01zCtsicRkk2sTQsWVM+TC8lwwqyrsPaK/cmQDK9gjuT8X/H49aXqh4LPyMMVHYSBn42HFzoIgi+nRN637kseNkzdJBnmDwWShVNr/enN30jCrW6CK8lwXAdMFNZJNnCtKZJkGx3M4QHu4BGe3Zj2ps851ydYdnb8EHetcjb+0z37twAAAABJRU5ErkJggg==" />?”
+(Pattern matching, correlation).43</td>
+<td style="text-align: left;"><img
+src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADsAAAAVCAYAAAD4g5b1AAAB5UlEQVR4Xu2Xuy9EURDGR1QKEREhFFQKEYlKlCqiEhWNIESp04hCJBqNR6JQKAiFSGj5B/wBm0gkOg0iHhEh4jWTc87uud/uvffcvWfZYn/JlzXfzJ0zsy93iSpUcKUDjRT47OWdHzRS4rtfgDXWM6lDRG+sB/AOs9VBblmNaKakpMsazGJIGyn/DPxx1h14Pig0g3fkkHM0NYWeCImbwfMBnuOdUVKHDGCCqaH8ZVsg9kmp+ma5oPBDjknlhi1vl/Vhxcg2awZNpheNAoTN4Q185Qz9pPx18L9Y++AZ5EmoJnWdXG+Y1l4cLjWpMMs+sR5Z7zrOsBqsOoPkltFkdkgtKkjNkJW7114cLjVFYz6vU5iIQOon0WQW9eMq5Q8tsXwk4sDrvHJJyQ+Q+gk0LSR/Y8Xmbd1jeWEknSUR0jzpAVK/hKaF5EeseF57LrjWFYU0v0IzBrlmD01NE+UPbO7GXHCtS8wCqeazmIjhgNSXWBjSs1v/3aXjk1w6Eu/LbrJeSH3zyn3wK+s7UBFNO0UPZf7NiDb0Y2egIpyovv+GDFWPJqm7K5tTSrZAkto/Y451DZ4sL8Nu6bhKx4PZinjKclnhk1Vrxa2kfiIKdaQGH8ulnSjbZQUcro91xFoB3xXsl4pfUOJ/wLib0xYAAAAASUVORK5CYII=" /></td>
+<td style="text-align: left;"><strong>Mastered</strong>. Highly
+proficient at interpolating statistical text distributions.43</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>2. Intervention</strong></td>
+<td style="text-align: left;">Doing / Acting</td>
+<td style="text-align: left;">“What if I do <img
+src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA8AAAAWCAYAAAAfD8YZAAAA2UlEQVR4Xu2RsQ4BQRCGR6PValXiATwBvQehUwiN99BoNDqNRBSCQojEAyhEIkRDiCho+Cez2B3n7tR8yZfMzr9zud0l+pOCE9iHPTiEIyufwS5sw47VdxjAGxyrfsz01zCtsicRkk2sTQsWVM+TC8lwwqyrsPaK/cmQDK9gjuT8X/H49aXqh4LPyMMVHYSBn42HFzoIgi+nRN637kseNkzdJBnmDwWShVNr/enN30jCrW6CK8lwXAdMFNZJNnCtKZJkGx3M4QHu4BGe3Zj2ps851ydYdnb8EHetcjb+0z37twAAAABJRU5ErkJggg==" />?”
+(Predicting the outcome of an action).44</td>
+<td style="text-align: left;"><img
+src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFkAAAAVCAYAAAAtkUK4AAAB70lEQVR4Xu2YzStEURjGX1lZSJKIBSsLSVnJ0oqsZMVGiCztbGQhZWPjoywsLIiFFFv+AX/AlFJ2Nkg+kki+3rdzzsyZZ+7Huc0V97q/epp5n/e9Z+55ZrpzZ4gyMjK8aUOjDOJcKzV8oVEmca/3J1hhPZLanOiFdQfefn66mGtWPZplksqQDSZQpIWUfwL+KOsGvDjwOofUIJs7RVPj9QZI3QheHODrpIZhUpvrwwZTRaUhN0EdJz+17q9zRv6bOyTVG7S8bdabVSObrCk0mW40PPA7j8SDn1RDLyl/FfwP1i54Bgm/ktRxcrxhUnthuMwkEhPyA+ue9arrHKvOmjNIbxFNZotUwILMDFi9W+2F4TKTOMz1eAIbAcj8OJrMvH5cptKwpJZLTxh4XCo4p+gbk/kxNC2kf2XV5vLRZXl+RD2XRCCbiroxmV9A00L6Q1Y9qz0XXOcShWzqAs0Q5JgdNDUNVBqU+fXogutcYpgjtalpbISwR+rL0Q9Zs1M/79D1UaEdSGpCXmc9kbqTkP8pnlmfRRPBtFJwGOZ2TbSmH9uLJvwJWvffIWHUoknq16DNMUULLsps6plhXYInoUtIG7qu0HV/fiKcLGTgnVVt1c2k/ioVakgFNlJoO5GF7AGG0sM6YC2B7wqul0i+AZmUf8Bj3RaVAAAAAElFTkSuQmCC" /></td>
+<td style="text-align: left;"><strong>Failed</strong>. Cannot
+mathematically distinguish between observation and active
+intervention.44</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>3. Counterfactuals</strong></td>
+<td style="text-align: left;">Imagining</td>
+<td style="text-align: left;">“What if I had acted differently?”
+(Retrospective simulation).43</td>
+<td style="text-align: left;"><img
+src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFsAAAAVCAYAAAApZJKFAAACQElEQVR4Xu2Yz0tUURTHv2ktXERISKKLZtUiRGiTtIpWiqtwZSFaobhsl/3uiuDGjRq0aNEiqUUEFoJgizaB/gGBILhzoyFmhBih1Tmde2funDfvzej8gDszH/gyc77nvIH5vsd5bwaoU6dOYVzQRhk5pY1a4q82yswYqUGboTBN+gEJjbVP2lHeu/R0NlukFm2WmfsIOGyHC1ZzHuJ/Uv4g6ZvyKsEDVEnYK9q05DoRXLcqrxI8ROBh90PC69YNognRsNtUXUkeIfCwVxEf3jykd93zXpN+e7XmJWlEm0SXNo7BYwQetr5yHdcg/ozyD0lvlOfgk9AIOY6Pdwxbr1ieoErC3iV9J/2y9VfSWW/Owb0JbRKvIEEzPNPr9batVyxPEXDYbl/f0Y0EeP62NiFXHTOFaLBc80oqlmcIOOw1RIPJB8/f0qYH9ze92q2VS553XAwCDtutkKPA8+Pa9OB+n1ffs14pMAg87HVt5oGPmdOm5Ryiwbpfo47LpAXIzXQIsutHvX4SBoGGzc+sHEKhX9TxFnITjYM/s9O+77D1h0w7vdsXITuYg/+YaSdiEFjYz0k/IU8e/D/IHulP1kQyKUSvXh/3mMeata8XsyYE9k9qMw8GgYVdCjioZm1Cfl36LCH+xMT5SRjUYNh3SRvK4/A5wBe2PmHrnvQEMGC9q/aV4R2e68TlwqAGw2YOSKe9uh3yFy1zBhLmjUz7PynSF9JN0jLpM3I/s8dhUKNhM3oVXCG9J00qv1QYBBT2P3hBhQm+/DFgAAAAAElFTkSuQmCC" /></td>
+<td style="text-align: left;"><strong>Failed</strong>. Lacks a
+structural causal model to simulate alternate realities or pasts.42</td>
+</tr>
+</tbody>
+</table>
+<p>Current LLMs operate exclusively on Rung 1 of the causal ladder.5
+They map the conditional probabilities of token sequences but possess no
+underlying causal graph linking actions to environmental reactions.5
+When an LLM correctly answers a question about physics or medicine, it
+is not running an internal simulation of the physical world; it is
+retrieving the linguistic sequence most commonly associated with that
+concept in its training data.43 Pearl refers to this phenomenon as the
+creation of “causal parrots”—systems that mimic the syntactic structure
+of causal explanations without any semantic understanding of actual
+cause and effect.42<br />
+Pearl’s Causal Hierarchy Theorem (CHT) posits a definitive mathematical
+boundary: it is fundamentally impossible to answer Level 2
+(Interventional) or Level 3 (Counterfactual) queries relying solely on
+Level 1 (Observational) data.42 Because LLMs are trained entirely on
+purely observational, static text datasets, they are architecturally
+barred from ascending the causal ladder.42 Without the ability to
+simulate the consequences of actions that have not yet been taken, an AI
+system cannot safely perform decision-making, scientific discovery, or
+moral reasoning in the real world.5 Pearl concludes that until
+structural causal models are integrated directly with neural
+architectures, genuine understanding will remain an insurmountable
+barrier for LLMs.5</p>
+</section>
+</section>
+<section id="the-transition-to-the-era-of-experience" class="level2">
+<h2><strong>The Transition to the Era of Experience</strong></h2>
+<p>The reliance on static, human-generated text introduces not only
+epistemological limits but also hard empirical boundaries. Richard
+Sutton and David Silver articulate this paradigm shift by dividing the
+trajectory of AI into two distinct phases: the “Era of Human Data” and
+the “Era of Experience”.45</p>
+<section id="the-imitation-ceiling-and-the-data-wall" class="level3">
+<h3><strong>The Imitation Ceiling and the Data Wall</strong></h3>
+<p>The current AI paradigm is predicated on imitating human behavior by
+training on the entirety of the internet.45 While this has produced
+highly capable systems, Sutton and Silver argue that it imposes an
+absolute “imitation ceiling”.45 An AI trained to predict what a human
+would say can, at best, replicate average or slightly above-average
+human performance. It is restricted to the convex hull of existing human
+knowledge and cannot transcend human limitations to achieve superhuman
+intelligence in novel domains.2<br />
+Furthermore, the industry is rapidly approaching a physical data wall.
+The reservoir of high-quality, human-generated text is finite, and
+researchers estimate that the supply of pre-training data will soon be
+exhausted.45 Ilya Sutskever has explicitly acknowledged this limitation,
+noting that pre-training data is akin to a “fossil fuel” for AI—highly
+potent, responsible for the initial explosion of capabilities, but
+ultimately finite and non-renewable.46 Attempting to train future LLMs
+on the synthetic outputs of current LLMs leads to model collapse,
+severely degrading the data distribution and further cementing the
+necessity of a new paradigm.48 Andrej Karpathy echoes this sentiment,
+warning that the cognitive gaps in LLMs cannot be bridged simply by
+feeding them more text, as LLMs lack the fundamental agency and
+goal-directedness required for true intelligence.25</p>
+</section>
+<section id="reinforcement-learning-and-the-alberta-plan"
+class="level3">
+<h3><strong>Reinforcement Learning and the Alberta Plan</strong></h3>
+<p>To shatter the imitation ceiling, Sutton and Silver advocate for a
+fundamental shift toward Reinforcement Learning (RL) and experiential
+data generation.2 In his seminal essay, “The Bitter Lesson,” Sutton
+argued that AI paradigms based on encoding human knowledge ultimately
+lose to paradigms based on general-purpose computation and search.2 He
+categorizes pure LLMs as static systems that learn in a localized
+training phase and are then deployed as frozen artifacts incapable of
+on-the-job adaptation.2 True intelligence, Sutton argues, requires
+continuous, lifelong learning.2<br />
+This philosophy is formalized in the “Alberta Plan,” a comprehensive
+roadmap for AI research that prioritizes continual, embodied learning
+over static dataset memorization.50 In the “Era of Experience,” an agent
+generates its own data by interacting with an environment, taking
+actions, observing consequences, and updating its policy based on a
+scalar reward signal.45 This mechanism allows the data supply to scale
+infinitely and self-improve dynamically; as the agent becomes more
+intelligent, the data it generates through interaction becomes richer
+and more complex.45<br />
+Silver’s hypothesis, formalized in the paper “Reward is Enough,” asserts
+that the maximization of a scalar reward through interaction with a
+sufficiently complex environment is the sole mechanism required to give
+rise to all facets of general intelligence, including perception,
+planning, and language.3 In this view, LLMs lack a true goal-directed
+architecture.52 They are optimized to mimic communication rather than to
+predict the environmental consequences of a physical action.52</p>
+</section>
+<section id="alphaproof-as-a-vanguard-of-the-experiential-era"
+class="level3">
+<h3><strong>AlphaProof as a Vanguard of the Experiential
+Era</strong></h3>
+<p>The theoretical power of the experiential paradigm was empirically
+validated by DeepMind’s AlphaProof system.45 While standard LLMs
+struggle with formal mathematical reasoning due to the scarcity of
+human-written formal proofs on the internet, AlphaProof bypassed this
+data bottleneck entirely through Reinforcement Learning.54<br />
+By interacting with the Lean formal proof verifier, AlphaProof acted as
+an experiential agent rather than a passive text generator. The formal
+verifier provided absolute ground truth—a definitive reward
+signal—allowing the RL agent to engage in millions of trials without
+human supervision.55 AlphaProof generated over 100 million synthetic
+formal proofs through continuous interaction, effectively creating its
+own superhuman dataset and achieving silver-medal performance at the
+International Mathematical Olympiad (IMO).45 This achievement
+underscores Silver and Sutton’s thesis: superhuman capability is
+achieved not by ingesting more human text, but by setting an agent loose
+in a grounded environment where it can test hypotheses, experience
+failures, and refine its internal models through search.45</p>
+</section>
+</section>
+<section id="grounding-intelligence-robotics-and-physical-affordances"
+class="level2">
+<h2><strong>Grounding Intelligence: Robotics and Physical
+Affordances</strong></h2>
+<p>The necessity of experiential learning is most acute in the domain of
+physical interaction. Sergey Levine extends the critique of ungrounded
+LLMs into the realm of robotics, arguing that true AGI requires an
+understanding of physical affordances—the actionable properties of the
+real world.57<br />
+While Vision-Language-Action (VLA) models have successfully integrated
+LLM backbones into robotic control systems, the text-centric priors of
+LLMs often fail to map onto high-dimensional continuous control
+spaces.57 An LLM might output a perfectly reasoned text sequence
+dictating that a robot should “pick up the cup,” but the translation of
+that linguistic token into the precise torque matrices required by
+robotic actuators demands grounded, sensorimotor data.57<br />
+Levine advocates for cross-embodiment learning and the massive
+collection of real-world physical interactions.60 Much like Sutton’s
+continuous stream of sensation and reward 52, Levine posits that an
+agent must learn the physics of the world through trial and error.57
+Without physical grounding, an AI lacks a genuine understanding of
+object permanence, friction, gravity, and spatial manipulation—concepts
+that humans possess intrinsically before acquiring language, but which
+LLMs attempt to poorly reverse-engineer purely from reading text.61</p>
+</section>
+<section
+id="the-convergence-of-paradigms-inference-time-scaling-and-system-2-reasoning"
+class="level2">
+<h2><strong>The Convergence of Paradigms: Inference-Time Scaling and
+System 2 Reasoning</strong></h2>
+<p>As the structural limitations of autoregressive pre-training have
+become undeniable across the research community, the commercial AI
+sector has begun adopting the theoretical models proposed by Sutton,
+Silver, and Chollet. This convergence is manifesting in a new phase of
+AI development known as inference-time compute scaling.<br />
+Historically, AI capabilities scaled primarily during the pre-training
+phase; researchers poured massive amounts of data and compute into a
+model upfront, yielding a smarter static artifact.46 However, as the
+pre-training data wall approaches, models like OpenAI’s o1 and o3,
+alongside DeepSeek-R1, represent a profound paradigm shift where
+computational resources are dynamically allocated at inference
+(run-time).63<br />
+These “reasoning models” are heavily augmented through Reinforcement
+Learning (RL) to emulate deliberate, System 2 cognitive processes.63
+When presented with a complex query, they do not immediately default to
+fast, System 1 autoregressive token generation. Instead, they utilize
+internal chain-of-thought (CoT) processing and tree-of-thought search
+algorithms to explore multiple latent pathways.64<br />
+Crucially, the RL fine-tuning process teaches the model to deploy
+micro-level verification actions—such as “Wait,” “Hold on,”
+“Alternatively,” or “Let’s re-evaluate”—effectively creating an
+internal, autonomous version of Kambhampati’s LLM-Modulo framework.66 By
+searching through a tree of possibilities, evaluating partial solutions
+against latent constraints, and backtracking upon detecting logical
+failures, these models successfully circumvent the exponential error
+compounding described by Yann LeCun.64<br />
+The empirical success of inference-time scaling—evidenced by massive
+leaps in performance on the ARC-AGI benchmark and elite mathematics
+competitions 63—serves as a vindication of David Silver’s argument for
+experiential search.54 It proves that static pattern matching
+(pre-training) has hit diminishing returns, and that the continuous
+optimization of a reward function via search (RL) is the necessary
+mechanism for bridging the gap between current AI limitations and the
+realization of AGI.64 This development directly challenges the
+traditional LLM roadmap, confirming that intelligence is not merely a
+product of memorized data, but of active, computational
+deliberation.</p>
+</section>
+<section id="conclusion" class="level2">
+<h2><strong>Conclusion</strong></h2>
+<p>The trajectory of artificial intelligence research has definitively
+fractured the initial industry consensus that unbridled scaling of
+autoregressive Large Language Models would organically yield Artificial
+General Intelligence. While LLMs remain unprecedented engines of
+linguistic fluency and crystallized knowledge retrieval, their
+architectural inability to construct causal world models, their
+vulnerability to exponentially compounding logical errors, and their
+lack of grounding in experiential reality expose them as a fundamentally
+incomplete paradigm.<br />
+The research championed by Yann LeCun, Richard Sutton, David Silver,
+François Chollet, Subbarao Kambhampati, and Judea Pearl charts a clear,
+albeit highly divergent, path forward. Achieving AGI will require moving
+far beyond the passive assimilation of human-generated text. It demands
+the implementation of Objective-Driven Architectures capable of
+hierarchical planning and latent-state simulation. It requires a
+transition into the Era of Experience, where autonomous agents utilize
+Reinforcement Learning to gather novel data through interaction with
+mathematically formal or physically grounded environments. Furthermore,
+systems must be endowed with fluid intelligence, utilizing program
+synthesis and active inference to adapt to novel situations rather than
+relying on the retrieval of memorized heuristics.<br />
+Ultimately, pure LLMs function as an “off-ramp” not because they are
+devoid of utility, but because their underlying optimization
+mechanism—predicting the next likely sequence based on historical,
+observational associations—is a cognitive dead end. The systems that
+ultimately achieve general intelligence will not merely regurgitate
+civilizational knowledge; they will possess genuine agency, capable of
+actively probing the world, verifying their internal logic, inferring
+causality, and continuously updating their internal models through the
+rigorous, unyielding feedback of physical and mathematical reality.</p>
+<section id="works-cited" class="level4">
+<h4><strong>Works cited</strong></h4>
+<ol type="1">
+<li>Critiques of World Models - arXiv, accessed April 30, 2026, <a
+href="https://arxiv.org/html/2507.05169v2">https://arxiv.org/html/2507.05169v2</a><br />
+</li>
+<li>Richard Sutton’s Challenge to the LLM Era | by Sulbha Jain | Medium,
+accessed April 30, 2026, <a
+href="https://medium.com/@sulbha.jindal/richard-suttons-challenge-to-the-llm-era-39c71f5d85ff">https://medium.com/<span
+class="citation"
+data-cites="sulbha.jindal/richard-suttons-challenge-to-the-llm-era-39c71f5d85ff">@sulbha.jindal/richard-suttons-challenge-to-the-llm-era-39c71f5d85ff</span></a><br />
+</li>
+<li>Scalar reward is not enough for aligned AGI - LessWrong, accessed
+April 30, 2026, <a
+href="https://www.lesswrong.com/posts/eeEEgNeTepZb6F6NF/scalar-reward-is-not-enough-for-aligned-agi">https://www.lesswrong.com/posts/eeEEgNeTepZb6F6NF/scalar-reward-is-not-enough-for-aligned-agi</a><br />
+</li>
+<li>François Chollet: Why Scaling Alone Isn’t Enough for AGI - YouTube,
+accessed April 30, 2026, <a
+href="https://www.youtube.com/watch?v=k2ZLQC8P7dc&amp;vl=en-US">https://www.youtube.com/watch?v=k2ZLQC8P7dc&amp;vl=en-US</a><br />
+</li>
+<li>Can AI Think “What If”? — The Frontier of Counterfactual Reasoning
+in Large Language Models - note, accessed April 30, 2026, <a
+href="https://note.com/betaitohuman/n/nf47d88b7ffeb">https://note.com/betaitohuman/n/nf47d88b7ffeb</a><br />
+</li>
+<li>Can Large Language Models Reason and Plan? - arXiv, accessed April
+30, 2026, <a
+href="https://arxiv.org/html/2403.04121v2">https://arxiv.org/html/2403.04121v2</a><br />
+</li>
+<li>Love and Loathing in the Time of ChatGPT - 3 Quarks Daily, accessed
+April 30, 2026, <a
+href="https://3quarksdaily.com/3quarksdaily/2023/02/love-and-loathing-in-the-time-of-chatgpt.html">https://3quarksdaily.com/3quarksdaily/2023/02/love-and-loathing-in-the-time-of-chatgpt.html</a><br />
+</li>
+<li>LeCun In 2023: “On the highway towards Human-Level AI, Large
+Language Model is an off-ramp.” Did this age well? : r/singularity -
+Reddit, accessed April 30, 2026, <a
+href="https://www.reddit.com/r/singularity/comments/1mt4b9i/lecun_in_2023_on_the_highway_towards_humanlevel/">https://www.reddit.com/r/singularity/comments/1mt4b9i/lecun_in_2023_on_the_highway_towards_humanlevel/</a><br />
+</li>
+<li>LLMs are a dead end to AGI, says François Chollet - Freethink Media,
+accessed April 30, 2026, <a
+href="https://www.freethink.com/robots-ai/arc-prize-agi">https://www.freethink.com/robots-ai/arc-prize-agi</a><br />
+</li>
+<li>Is the Pre - training Path to AGI Dead? Yann LeCun Uncovers the
+Cognitive Gap LLMs Can’t Cross - 36氪, accessed April 30, 2026, <a
+href="https://eu.36kr.com/en/p/3364112069871367">https://eu.36kr.com/en/p/3364112069871367</a><br />
+</li>
+<li>A Path Towards Autonomous Machine Intelligence … - OpenReview,
+accessed April 30, 2026, <a
+href="https://openreview.net/pdf?id=BZ5a1r-kVsf">https://openreview.net/pdf?id=BZ5a1r-kVsf</a><br />
+</li>
+<li>LLM-JEPA: Large Language Models Meet Joint Embedding Predictive
+Architectures - arXiv, accessed April 30, 2026, <a
+href="https://arxiv.org/html/2509.14252v2">https://arxiv.org/html/2509.14252v2</a><br />
+</li>
+<li>Yann LeCun | LongtermWiki, accessed April 30, 2026, <a
+href="https://ea-crux-project.vercel.app/knowledge-base/people/yann-lecun/">https://ea-crux-project.vercel.app/knowledge-base/people/yann-lecun/</a><br />
+</li>
+<li>Why we’ll never reach AGI with current language models | by Ben
+Ratcliffe | Medium, accessed April 30, 2026, <a
+href="https://medium.com/@benratcliffe_/why-well-never-reach-agi-with-current-language-models-d2571e631cc3">https://medium.com/<span
+class="citation"
+data-cites="benratcliffe">@benratcliffe</span>_/why-well-never-reach-agi-with-current-language-models-d2571e631cc3</a><br />
+</li>
+<li>LeCun: “If you are interested in human-level AI, don’t work on
+LLMs.” : r/agi - Reddit, accessed April 30, 2026, <a
+href="https://www.reddit.com/r/agi/comments/1imqson/lecun_if_you_are_interested_in_humanlevel_ai_dont/">https://www.reddit.com/r/agi/comments/1imqson/lecun_if_you_are_interested_in_humanlevel_ai_dont/</a><br />
+</li>
+<li>JEPA vs LLM: The 2026 Guide to AI’s Next Revolution - CreateBytes,
+accessed April 30, 2026, <a
+href="https://createbytes.com/insights/jepa-vs-llm-ai-collaboration">https://createbytes.com/insights/jepa-vs-llm-ai-collaboration</a><br />
+</li>
+<li>Could someone explain what each of these architectures are that
+LeCun claims could lead to AGI? : r/singularity - Reddit, accessed April
+30, 2026, <a
+href="https://www.reddit.com/r/singularity/comments/1ikpqyk/could_someone_explain_what_each_of_these/">https://www.reddit.com/r/singularity/comments/1ikpqyk/could_someone_explain_what_each_of_these/</a><br />
+</li>
+<li>Objective-Driven AI - Harvard CMSA, accessed April 30, 2026, <a
+href="https://cmsa.fas.harvard.edu/media/lecun-20240328-harvard_reduced.pdf">https://cmsa.fas.harvard.edu/media/lecun-20240328-harvard_reduced.pdf</a><br />
+</li>
+<li>A Path Towards Autonomous Machine Intelligence with Dr. Yann LeCun -
+YouTube, accessed April 30, 2026, <a
+href="https://www.youtube.com/watch?v=EvSe0ktD95k">https://www.youtube.com/watch?v=EvSe0ktD95k</a><br />
+</li>
+<li>A Path Towards Autonomous Machine Intelligence - Temple CIS,
+accessed April 30, 2026, <a
+href="https://cis.temple.edu/tagit/presentations/A%20Path%20Towards%20Autonomous%20Machine%20Intelligence.pdf">https://cis.temple.edu/tagit/presentations/A%20Path%20Towards%20Autonomous%20Machine%20Intelligence.pdf</a><br />
+</li>
+<li>Can LLMs Reason and Plan? - ThinkND - University of Notre Dame,
+accessed April 30, 2026, <a
+href="https://think.nd.edu/can-llms-reason-and-plan/">https://think.nd.edu/can-llms-reason-and-plan/</a><br />
+</li>
+<li>Can LLMs Reason &amp; Plan? - YouTube, accessed April 30, 2026, <a
+href="https://www.youtube.com/watch?v=3F2DpLgQGaI">https://www.youtube.com/watch?v=3F2DpLgQGaI</a><br />
+</li>
+<li><span class="math display">2402.01817</span> LLMs Can’t Plan, But
+Can Help Planning in LLM-Modulo Frameworks - arXiv, accessed April 30,
+2026, <a
+href="https://arxiv.org/abs/2402.01817">https://arxiv.org/abs/2402.01817</a><br />
+</li>
+<li>Position: LLMs Can’t Plan, But Can Help Planning in LLM-Modulo
+Frameworks - arXiv, accessed April 30, 2026, <a
+href="https://arxiv.org/pdf/2402.01817">https://arxiv.org/pdf/2402.01817</a><br />
+</li>
+<li>Will current LLM-style systems get us to AGI? 3 Perspectives on AI
+Development, accessed April 30, 2026, <a
+href="https://publicservicesalliance.org/2026/01/07/ai-doomers-and-boomers-in-2026/">https://publicservicesalliance.org/2026/01/07/ai-doomers-and-boomers-in-2026/</a><br />
+</li>
+<li>Prof. Subbarao Kambhampati - LLMs don’t reason, they memorize
+(ICML2024 2/13) - Apple Podcasts, accessed April 30, 2026, <a
+href="https://podcasts.apple.com/us/podcast/prof-subbarao-kambhampati-llms-dont-reason-they-memorize/id1510472996?i=1000663713079">https://podcasts.apple.com/us/podcast/prof-subbarao-kambhampati-llms-dont-reason-they-memorize/id1510472996?i=1000663713079</a><br />
+</li>
+<li>On the role of Large Language Models in Planning, accessed April 30,
+2026, <a
+href="https://icml.cc/media/icml-2024/Slides/35226_pmm25zL.pdf">https://icml.cc/media/icml-2024/Slides/35226_pmm25zL.pdf</a><br />
+</li>
+<li>LLMs Can’t Plan, But Can Help Planning in LLM-Modulo Frameworks -
+arXiv, accessed April 30, 2026, <a
+href="https://arxiv.org/html/2402.01817v2">https://arxiv.org/html/2402.01817v2</a><br />
+</li>
+<li>Can LLMs Reason &amp; Plan?, accessed April 30, 2026, <a
+href="https://icml.cc/media/icml-2024/Slides/33965.pdf">https://icml.cc/media/icml-2024/Slides/33965.pdf</a><br />
+</li>
+<li>The Evolving Landscape of AI Intelligence: A Comparative Analysis of
+ARC-AGI-1 and ARC-AGI-2 | by Frank Morales Aguilera | AI Simplified in
+Plain English | Medium, accessed April 30, 2026, <a
+href="https://medium.com/ai-simplified-in-plain-english/the-evolving-landscape-of-ai-intelligence-a-comparative-analysis-of-arc-agi-1-and-arc-agi-2-9e8782222c8d">https://medium.com/ai-simplified-in-plain-english/the-evolving-landscape-of-ai-intelligence-a-comparative-analysis-of-arc-agi-1-and-arc-agi-2-9e8782222c8d</a><br />
+</li>
+<li><span class="math display"><em>R</em></span> Reward Is Enough (David
+Silver, Richard Sutton) : r/MachineLearning - Reddit, accessed April 30,
+2026, <a
+href="https://www.reddit.com/r/MachineLearning/comments/nplhy3/r_reward_is_enough_david_silver_richard_sutton/">https://www.reddit.com/r/MachineLearning/comments/nplhy3/r_reward_is_enough_david_silver_richard_sutton/</a><br />
+</li>
+<li>Abstraction and Analogy are the Keys to Robust AI - Melanie Mitchell
+: r/newAIParadigms, accessed April 30, 2026, <a
+href="https://www.reddit.com/r/newAIParadigms/comments/1kt1stg/abstraction_and_analogy_are_the_keys_to_robust_ai/">https://www.reddit.com/r/newAIParadigms/comments/1kt1stg/abstraction_and_analogy_are_the_keys_to_robust_ai/</a><br />
+</li>
+<li>Critiques of World Models - arXiv, accessed April 30, 2026, <a
+href="https://arxiv.org/pdf/2507.05169">https://arxiv.org/pdf/2507.05169</a><br />
+</li>
+<li>280 | François Chollet on Deep Learning and the Meaning of
+Intelligence - Sean Carroll, accessed April 30, 2026, <a
+href="https://www.preposterousuniverse.com/podcast/2024/06/24/280-francois-chollet-on-deep-learning-and-the-meaning-of-intelligence/">https://www.preposterousuniverse.com/podcast/2024/06/24/280-francois-chollet-on-deep-learning-and-the-meaning-of-intelligence/</a><br />
+</li>
+<li>Francois Chollet (Google, Creator of the ARC LLM Benchmark) calls
+current LLMs an offramp in the journey to AGI, says current systems are
+barely intelligent : r/singularity - Reddit, accessed April 30, 2026, <a
+href="https://www.reddit.com/r/singularity/comments/1dp3goh/francois_chollet_google_creator_of_the_arc_llm/">https://www.reddit.com/r/singularity/comments/1dp3goh/francois_chollet_google_creator_of_the_arc_llm/</a><br />
+</li>
+<li>Thoughts on Francois Chollet’s belief that LLMs are far away from
+AGI? - LessWrong, accessed April 30, 2026, <a
+href="https://www.lesswrong.com/posts/x2tCST2dGgJrhX8gN/thoughts-on-francois-chollet-s-belief-that-llms-are-far-away">https://www.lesswrong.com/posts/x2tCST2dGgJrhX8gN/thoughts-on-francois-chollet-s-belief-that-llms-are-far-away</a><br />
+</li>
+<li>ARC Prize 2025: Technical Report - arXiv, accessed April 30, 2026,
+<a
+href="https://arxiv.org/html/2601.10904v1">https://arxiv.org/html/2601.10904v1</a><br />
+</li>
+<li>Congratulations to Francois Chollet on making the most interesting
+and challengi… | Hacker News, accessed April 30, 2026, <a
+href="https://news.ycombinator.com/item?id=42473419">https://news.ycombinator.com/item?id=42473419</a><br />
+</li>
+<li>LLMs won’t lead to AGI - Francois Chollet — EA Forum, accessed April
+30, 2026, <a
+href="https://forum.effectivealtruism.org/posts/um7tDLrjLWKG58vYa/llms-won-t-lead-to-agi-francois-chollet">https://forum.effectivealtruism.org/posts/um7tDLrjLWKG58vYa/llms-won-t-lead-to-agi-francois-chollet</a><br />
+</li>
+<li>Melanie Mitchell: Straight Talk on A.I. Large Language Models -
+YouTube, accessed April 30, 2026, <a
+href="https://www.youtube.com/watch?v=qs-nIIvN23A">https://www.youtube.com/watch?v=qs-nIIvN23A</a><br />
+</li>
+<li>What the F*ck Is Artificial General Intelligence? - arXiv, accessed
+April 30, 2026, <a
+href="https://arxiv.org/html/2503.23923v1">https://arxiv.org/html/2503.23923v1</a><br />
+</li>
+<li>A Brief History of Causality from Homo Sapiens to AGI | by CP Lu,
+PhD | Medium, accessed April 30, 2026, <a
+href="https://cplu.medium.com/would-agi-pray-to-digital-angles-a-brief-history-of-causality-from-plato-and-aristotle-to-pearl-f12faf081b68">https://cplu.medium.com/would-agi-pray-to-digital-angles-a-brief-history-of-causality-from-plato-and-aristotle-to-pearl-f12faf081b68</a><br />
+</li>
+<li>Can LLMs transcend probabilistic pattern matching to achieve genuine
+causal reasoning, or is ‘understanding’ architecturally impossible? |
+ResearchGate, accessed April 30, 2026, <a
+href="https://www.researchgate.net/post/Can_LLMs_transcend_probabilistic_pattern_matching_to_achieve_genuine_causal_reasoning_or_is_understanding_architecturally_impossible">https://www.researchgate.net/post/Can_LLMs_transcend_probabilistic_pattern_matching_to_achieve_genuine_causal_reasoning_or_is_understanding_architecturally_impossible</a><br />
+</li>
+<li>“C”^“2”⁢“P”: Featuring Large Language Models with Causal Reasoning -
+arXiv, accessed April 30, 2026, <a
+href="https://arxiv.org/html/2407.18069v4">https://arxiv.org/html/2407.18069v4</a><br />
+</li>
+<li>Welcome to the Era of Experience - Googleapis.com, accessed April
+30, 2026, <a
+href="https://storage.googleapis.com/deepmind-media/Era-of-Experience%20/The%20Era%20of%20Experience%20Paper.pdf">https://storage.googleapis.com/deepmind-media/Era-of-Experience%20/The%20Era%20of%20Experience%20Paper.pdf</a><br />
+</li>
+<li>Is Deep Learning Actually Hitting a Wall? Evaluating Ilya
+Sutskever’s Recent Claims, accessed April 30, 2026, <a
+href="https://www.lesswrong.com/posts/2MvgBnWDWYdL2XixA/is-deep-learning-actually-hitting-a-wall-evaluating-ilya">https://www.lesswrong.com/posts/2MvgBnWDWYdL2XixA/is-deep-learning-actually-hitting-a-wall-evaluating-ilya</a><br />
+</li>
+<li>Ilya’s full talk at neurips 2024 “pre-training as we know it will
+end” : r/singularity - Reddit, accessed April 30, 2026, <a
+href="https://www.reddit.com/r/singularity/comments/1hdrjvq/ilyas_full_talk_at_neurips_2024_pretraining_as_we/">https://www.reddit.com/r/singularity/comments/1hdrjvq/ilyas_full_talk_at_neurips_2024_pretraining_as_we/</a><br />
+</li>
+<li>Andrej Karpathy — AGI is still a decade away - Dwarkesh Podcast,
+accessed April 30, 2026, <a
+href="https://www.dwarkesh.com/p/andrej-karpathy">https://www.dwarkesh.com/p/andrej-karpathy</a><br />
+</li>
+<li>Is Karpathy being realistic or too cautious about AGI’s timeline? :
+r/OpenAI - Reddit, accessed April 30, 2026, <a
+href="https://www.reddit.com/r/OpenAI/comments/1oalvfu/is_karpathy_being_realistic_or_too_cautious_about/">https://www.reddit.com/r/OpenAI/comments/1oalvfu/is_karpathy_being_realistic_or_too_cautious_about/</a><br />
+</li>
+<li>Richard Sutton – Father of RL thinks LLMs are a dead end, accessed
+April 30, 2026, <a
+href="https://www.dwarkesh.com/p/richard-sutton">https://www.dwarkesh.com/p/richard-sutton</a><br />
+</li>
+<li>The Alberta Plan for AI Research, accessed April 30, 2026, <a
+href="https://arxiv.org/abs/2208.11173">https://arxiv.org/abs/2208.11173</a><br />
+</li>
+<li>Richard Sutton – Father of RL thinks LLMs are a dead end :
+r/artificial - Reddit, accessed April 30, 2026, <a
+href="https://www.reddit.com/r/artificial/comments/1nrfic3/richard_sutton_father_of_rl_thinks_llms_are_a/">https://www.reddit.com/r/artificial/comments/1nrfic3/richard_sutton_father_of_rl_thinks_llms_are_a/</a><br />
+</li>
+<li>Is Richard Sutton Wrong about LLMs? : r/reinforcementlearning -
+Reddit, accessed April 30, 2026, <a
+href="https://www.reddit.com/r/reinforcementlearning/comments/1ojvs6d/is_richard_sutton_wrong_about_llms/">https://www.reddit.com/r/reinforcementlearning/comments/1ojvs6d/is_richard_sutton_wrong_about_llms/</a><br />
+</li>
+<li>AI achieves silver-medal standard solving International Mathematical
+Olympiad problems, accessed April 30, 2026, <a
+href="https://deepmind.google/blog/ai-solves-imo-problems-at-silver-medal-level/">https://deepmind.google/blog/ai-solves-imo-problems-at-silver-medal-level/</a><br />
+</li>
+<li>Formal Mathematical Reasoning: A New Frontier in AI - arXiv,
+accessed April 30, 2026, <a
+href="https://arxiv.org/html/2412.16075v1">https://arxiv.org/html/2412.16075v1</a><br />
+</li>
+<li>“AI achieves silver-medal standard solving International
+Mathematical Olympiad problems” — LessWrong, accessed April 30, 2026, <a
+href="https://www.lesswrong.com/posts/TyCdgpCfX7sfiobsH/ai-achieves-silver-medal-standard-solvinginternational">https://www.lesswrong.com/posts/TyCdgpCfX7sfiobsH/ai-achieves-silver-medal-standard-solvinginternational</a><br />
+</li>
+<li>Prof. Sergey Levine: Robotic Foundation Models - YouTube, accessed
+April 30, 2026, <a
+href="https://www.youtube.com/watch?v=_b-FwaiETwM">https://www.youtube.com/watch?v=_b-FwaiETwM</a><br />
+</li>
+<li>Towards Helpful Robots: Grounding Language in Robotic Affordances -
+Google Research, accessed April 30, 2026, <a
+href="https://research.google/blog/towards-helpful-robots-grounding-language-in-robotic-affordances/">https://research.google/blog/towards-helpful-robots-grounding-language-in-robotic-affordances/</a><br />
+</li>
+<li>A Survey of Robotic Language Grounding: Tradeoffs between Symbols
+and Embeddings, accessed April 30, 2026, <a
+href="https://arxiv.org/html/2405.13245v2">https://arxiv.org/html/2405.13245v2</a><br />
+</li>
+<li>Sporks of AGI - Sergey Levine | Substack, accessed April 30, 2026,
+<a
+href="https://sergeylevine.substack.com/p/sporks-of-agi/comments">https://sergeylevine.substack.com/p/sporks-of-agi/comments</a><br />
+</li>
+<li>Why I don’t think AGI is imminent - dlants.me, accessed April 30,
+2026, <a
+href="https://dlants.me/agi-not-imminent.html">https://dlants.me/agi-not-imminent.html</a><br />
+</li>
+<li>The Power of Scale in Machine Learning - Kempner Institute - Harvard
+University, accessed April 30, 2026, <a
+href="https://kempnerinstitute.harvard.edu/news/the-power-of-scale-in-machine-learning/">https://kempnerinstitute.harvard.edu/news/the-power-of-scale-in-machine-learning/</a><br />
+</li>
+<li>From System 1 to System 2: A Survey of Reasoning Large Language
+Models, accessed April 30, 2026, <a
+href="https://www.computer.org/csdl/journal/tp/2026/03/11267249/2bW5Ng1ygZW">https://www.computer.org/csdl/journal/tp/2026/03/11267249/2bW5Ng1ygZW</a><br />
+</li>
+<li>From the age of scaling to the age of research - Djimit, accessed
+April 30, 2026, <a
+href="https://djimit.nl/from-the-age-of-scaling-to-the-age-of-research/">https://djimit.nl/from-the-age-of-scaling-to-the-age-of-research/</a><br />
+</li>
+<li>Implications of the inference scaling paradigm for AI safety -
+LessWrong, accessed April 30, 2026, <a
+href="https://www.lesswrong.com/posts/HiTjDZyWdLEGCDzqu/implications-of-the-inference-scaling-paradigm-for-ai-safety">https://www.lesswrong.com/posts/HiTjDZyWdLEGCDzqu/implications-of-the-inference-scaling-paradigm-for-ai-safety</a><br />
+</li>
+<li>From System 1 to System 2: A Survey of Reasoning Large Language
+Models - arXiv, accessed April 30, 2026, <a
+href="https://arxiv.org/html/2502.17419v2">https://arxiv.org/html/2502.17419v2</a><br />
+</li>
+<li>AI Hit a Wall and the Solution Was to Teach It to Think Longer | by
+Lucas Rousselet | data from the trenches | Medium, accessed April 30,
+2026, <a
+href="https://medium.com/data-from-the-trenches/ai-hit-a-wall-and-the-solution-was-to-teach-it-to-think-longer-5bccf9c08470">https://medium.com/data-from-the-trenches/ai-hit-a-wall-and-the-solution-was-to-teach-it-to-think-longer-5bccf9c08470</a><br />
+</li>
+<li>A Survey of Test-Time Compute: From Intuitive Inference to
+Deliberate Reasoning - arXiv, accessed April 30, 2026, <a
+href="https://arxiv.org/html/2501.02497v3">https://arxiv.org/html/2501.02497v3</a></li>
+</ol>
+</section>
+</section>
+</section>
+</article>
+<script src="/assets/theme-toggle.js"></script>
+</body>
+</html>
