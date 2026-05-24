@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>Solving the Loop: How the Transformer Is Becoming a Recurrence
+Again</title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <link rel="stylesheet" href="/assets/tufte.css">
+  <link rel="stylesheet" href="/assets/pandoc-tufte.css">
+  <link rel="stylesheet" href="/assets/site.css">
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+  <script>(function(){var t=localStorage.getItem('theme-preference');if(t)document.documentElement.setAttribute('data-theme',t);})()</script>
+</head>
+<body>
+<nav class="site-nav">
+  <a href="/">Home</a> &middot; <a href="/about.html">About</a> &middot; <a href="https://lukstafi.substack.com">Substack</a>
+</nav>
+<div class="theme-toggle">
+  <button id="theme-btn" aria-label="Toggle dark mode">&#9788;</button>
+</div>
+<article>
+<section
+id="solving-the-loop-how-the-transformer-is-becoming-a-recurrence-again"
+class="level1">
+<h1>Solving the Loop: How the Transformer Is Becoming a Recurrence
+Again</h1>
+<p><em>Łukasz Stafiniak and Claude (Anthropic)</em></p>
+<hr />
+<p>The dominant story about the last decade of machine learning is a
+story about scale: more parameters, more data, more context. It is
+mostly true. But running quietly underneath it is a second story that
+inverts the first, and over the past two years that second story has
+become hard to ignore. The Transformer — the architecture that won by
+<em>abolishing</em> recurrence, by replacing the sequential hidden state
+of the RNN with a parallel, position-agnostic attention operation — is
+being decomposed back into recurrences, along two independent axes at
+once, by groups that mostly are not citing each other for the same
+reasons.</p>
+<p>The first axis runs <em>across the sequence</em>. Here the move is to
+replace quadratic softmax attention with a stateful update that
+compresses the past into a fixed-size object carried forward token by
+token — an RNN again, but one that trains in parallel like a
+Transformer. RWKV started this in earnest in 2023; the gated-delta-rule
+architectures and the various linear-attention models that followed are
+its descendants; and the most striking recent instance bolts such a
+state onto a <em>frozen</em> attention model as an auxiliary memory.</p>
+<p>The second axis runs <em>across depth</em>. Here the move is to tie
+the weights of a block and apply it repeatedly, so that a small
+parameter budget buys arbitrary effective depth. Universal Transformers
+proposed this years ago; looped language models have now scaled it to
+trillions of training tokens; the tiny-reasoner architectures have shown
+it can beat frontier models on certain puzzles with a few million
+parameters; and the equilibrium models have made the most radical
+version of it precise — stop unrolling the loop and <em>solve</em> for
+the state it would converge to.</p>
+<p>A companion piece in this series, “The Dynamics That Matter,” took
+these same developments as evidence about <em>minds</em> — about which
+dynamical modes an architecture realizes and what that implies for the
+bounded-privilege view of machine consciousness. This essay asks a
+narrower and more structural question. Set the phenomenology aside. What
+<em>is</em> the formal object these two axes are converging on? The
+claim here is that there is exactly one, and it is old: the fixed point.
+Both the sequence-recurrence and the depth-recurrence turn out to be
+ways of computing the equilibrium of a learned map, and once you see
+that, the proliferation of architectures stops looking like a zoo and
+starts looking like a small number of design decisions about
+<em>which</em> map and <em>how</em> to find its fixed point. Attention,
+on this view, was never the natural endpoint of sequence modeling. It
+was one expensive, memoryless-per-step point in a much larger space of
+stateful, iterative computations, and the field is now exploring the
+rest of that space.</p>
+<p>There is a payoff for the philosophy of computation in seeing it this
+way, worth stating up front. A network that computes
+<code>z* = f(z*; x)</code> — a value left unchanged by its own
+transformation — is computing the <em>denotation</em> of a recursive
+definition in exactly the sense that the theory of computation has meant
+by that phrase since Kleene. “Thinking longer,” in these architectures,
+is literally iteration toward the least fixed point of a recursive
+equation. That reframing is what lets us ask whether the loop is doing
+real work at inference time or merely scaffolding the training of a
+network that has learned to skip it.</p>
+<section id="what-attention-made-us-forget" class="level2">
+<h2>1. What attention made us forget</h2>
+<p>It helps to be precise about what the Transformer gave up, because
+the recent work is best read as an attempt to get those things back
+without paying the old price for them.</p>
+<p>The recurrent network processes a sequence by maintaining a hidden
+state and updating it one element at a time:
+<code>h_t = f(h_{t-1}, x_t)</code>. This has two properties that matter
+here. First, the state is <em>bounded</em> — it is a fixed-size vector,
+and the entire past has to be compressed into it, which is
+simultaneously the RNN’s great limitation (it forgets) and its great
+efficiency (inference costs the same per token no matter how long the
+sequence). Second, the computation is <em>iterative in time</em>: the
+same function is applied over and over, so the network is, structurally,
+a dynamical system being run forward.</p>
+<p>Attention discarded both. By letting every position attend directly
+to every other position, it removed the sequential dependency that made
+RNNs slow to train, and it replaced the bounded state with an
+<em>unbounded</em> one — the key-value cache, which grows linearly with
+the sequence and which the model can consult in full at every step. This
+was an excellent trade for training throughput and for tasks where total
+recall of the context is what you want. But it threw away exactly the
+two things the new work is reaching for. The bounded evolving state is
+gone, replaced by a transcript that only grows. And iteration-as-depth
+is gone: a standard Transformer applies each distinct layer exactly
+once, in a single forward sweep, so its “depth” is fixed at
+architecture-design time and bears no relation to the difficulty of the
+particular input.</p>
+<p>The cost of the first loss is now familiar under the name “context
+rot”: as the cache grows, models attend less reliably, retrieval quality
+dominates, and a model fed a larger context gets more input without
+getting more capable. The cost of the second is subtler and is the one
+the reasoning literature cares about: a fixed-depth feedforward function
+can only express computations of bounded depth, which means there are
+problems — iterative ones, where the answer requires propagating
+constraints an unbounded number of steps — that no single forward pass
+can solve, regardless of width. The two axes of the recurrence revival
+map precisely onto these two losses. Axis A reinstates the bounded
+evolving state; Axis B reinstates iteration-as-depth. The surprise is
+that they turn out to be the same move.</p>
+</section>
+<section id="axis-a-memory-as-test-time-learning" class="level2">
+<h2>2. Axis A: memory as test-time learning</h2>
+<p>Begin with the sequence axis, because its reinterpretation is the
+less obvious of the two and because it sets up the unification.</p>
+<p>RWKV, in 2023, was the first architecture to make the dual nature
+explicit and scale it. Its pitch was a model that is <em>both</em> a
+Transformer and an RNN. During training it can be written as a
+parallelizable computation over the whole sequence, so it trains with
+Transformer-like efficiency; during inference it can be rewritten as a
+recurrence with a fixed-size state, so it generates tokens at constant
+cost per step regardless of context length. The authors scaled it to
+fourteen billion parameters — at the time by far the largest dense RNN
+ever trained — and found it competitive with similarly sized
+Transformers. The mechanism by which they achieved the dual form was a
+linear attention: by removing the softmax that couples all positions
+nonlinearly, the attention computation becomes an associative scan, and
+an associative scan is exactly a linear recurrence in disguise.</p>
+<p>That last fact is the door to the deeper reading, and it was opened
+earlier, in 2021, by Schlag, Irie, and Schmidhuber in a paper whose
+title is a thesis: <em>Linear Transformers Are Secretly Fast Weight
+Programmers</em>. They showed a formal equivalence between linearized
+self-attention and a mechanism Schmidhuber had proposed in the early
+1990s, the fast weight programmer, in which a slow network learns to
+write into the rapidly-changing weights of a second network through
+outer-product updates whose operands we would now call keys and values.
+The state of a linear-attention layer, in other words, is not merely a
+summary of the past; it is a small associative memory, and each token
+<em>programs</em> it.</p>
+<p>The crucial observation in that paper concerns <em>how</em> the token
+programs the memory. The naive linear-attention update is purely
+additive — each new association is added to the state — and the authors
+noted this saturates: the memory has finite capacity, additive writes
+collide, and old associations cannot be corrected. Their fix was to
+replace the additive write with a <em>delta rule</em>: instead of
+blindly adding the new key-value pair, first read what the memory
+currently predicts for that key, and write only the <em>correction</em>.
+This is the Widrow-Hoff learning rule from 1960, the foundational
+error-correcting update of adaptive filtering. The state is no longer
+accumulating; it is <em>learning</em>, online, one error-correcting step
+per token.</p>
+<p>This is the reinterpretation that the modern delta-rule architectures
+— DeltaNet, gated variants, and the broader family that includes the
+selective state-space models — make their organizing principle, and it
+is best stated in the words of the test-time training line of work that
+pushed it furthest. In that framing the hidden state <em>is</em> a small
+machine learning model, and the update rule is a step of self-supervised
+learning; because the state keeps being updated as the sequence streams
+in, the layer is, quite literally, training itself on the test input as
+it reads. The sequence-recurrence is not summarizing the past. It is
+performing gradient-style descent on an associative-memory loss, at
+inference, with the data being the context itself.</p>
+<p>The cleanest demonstration that this is a real, modular primitive is
+the recent δ-mem proposal. Here the delta-rule memory is detached from
+any specific backbone entirely and bolted onto a <em>frozen</em>,
+ordinary attention model as a side channel. The system maintains a tiny
+online state of associative memory, updated by a gated delta rule as
+tokens arrive, and reads it out as a low-rank correction to the frozen
+model’s attention computation. The headline number is striking: with an
+eight-by-eight state matrix — sixty-four numbers of online memory — the
+augmented model improves substantially on memory-heavy benchmarks while
+leaving the backbone’s weights untouched. The result matters less for
+the benchmark gains than for what it proves about modularity. The “learn
+an associative memory online” primitive can be added to a model that was
+never designed for it, which means it is a genuine computational
+building block rather than an architectural accident. Memory and
+computation, which the KV-cache had split apart into a stored transcript
+and a separate retrieval operation, are here reunited: the memory
+<em>is</em> a small ongoing computation.</p>
+<p>There is a Borges story lurking in this section, and it is worth a
+sentence because it names the stakes exactly. Funes the Memorious could
+forget nothing; every leaf of every tree on every occasion he had ever
+seen it remained equally and eternally present, and the result was not
+super-intelligence but its opposite — Funes was “almost incapable of
+general, platonic ideas,” drowned in particulars, unable to think
+because unable to compress. The unbounded KV-cache is a Funesian memory,
+and context rot is the cognitive cost of refusing to forget. The bounded
+online state is the wager that compression — forgetting <em>well</em>,
+by writing only corrections — is a precondition of thought rather than a
+limitation to be engineered away.</p>
+</section>
+<section id="axis-b-computation-as-iteration-and-the-denotational-turn"
+class="level2">
+<h2>3. Axis B: computation as iteration, and the denotational turn</h2>
+<p>The depth axis has a more transparent motivation but a more radical
+destination, and a longer history than the recent literature usually
+admits. Weight-tied iterative computation predates the Transformer: it
+descends from the differentiable-computer program of the mid-2010s — the
+Neural Turing Machine and, following it, the Neural GPU, which learned
+position-by-position arithmetic that generalized to far longer inputs
+purely through the architectural bias of a grid topology applied
+iteratively, with no explicit symbols or registers. (We traced that
+lineage, and what its inductive bias does and does not buy, in an
+earlier article in this series, “The Algebraic Mind Meets the Neural
+World.”) The idea entered the Transformer almost immediately, as
+Universal Transformers, and then largely stalled — not because it was
+wrong but because for several years it was hard to show it beating a
+plain Transformer at scale. The recent “looped” rebranding added no new
+concept; it is a shorter, less grandiose synonym that happened to be the
+label in circulation when the test-time-compute era finally gave
+weight-tied iteration empirical traction. The substance is unchanged
+from the Universal Transformer.</p>
+<p>The basic move is the one those architectures share: take a
+Transformer block, tie its weights across layers, and apply it a
+variable number of times, so that “depth” becomes a runtime quantity
+rather than an architectural constant. A model with one block’s worth of
+parameters can, in principle, perform many steps of computation by
+reapplying that block, and it can perform <em>different</em> numbers of
+steps for different inputs. The looped language models scaled this idea
+to its current high-water mark: the Ouro family — named after the
+ouroboros — trains looped models on trillions of tokens and reports that
+its 1.4-billion and 2.6-billion-parameter models match the benchmark
+performance of standard models several times their size, attributing the
+gain not to greater stored knowledge but to better <em>manipulation</em>
+of knowledge through iterated latent computation. Alongside it, the
+recurrent-depth and tiny-reasoner architectures explored the small-model
+extreme, of which more below.</p>
+<p>But the conceptually decisive contribution on this axis is older and
+quieter than any of the language models: the Deep Equilibrium Model of
+Bai, Kolter, and Koltun, from 2019. Their starting observation is the
+one that this entire essay turns on. They noticed that in many deep
+weight-tied networks, as you apply the same block over and over, the
+hidden state <em>converges</em> — successive iterations change it less
+and less, and it settles toward a fixed point. And if it is going to
+converge to a fixed point anyway, then unrolling the iteration for some
+fixed number of steps is a wasteful way to find that fixed point. Better
+to <em>solve</em> for it directly: treat <code>z = f(z; x)</code> as a
+root-finding problem, hand it to a numerical solver, and get the
+equilibrium in as many or as few steps as the solver needs.</p>
+<p>This buys two things, one practical and one conceptual. The practical
+thing is startling and is the reason the idea keeps coming back: because
+you can differentiate through the fixed point analytically — via the
+implicit function theorem, without storing the intermediate iterations —
+training a DEQ costs <em>constant memory regardless of effective
+depth</em>. An infinitely deep weight-tied network, trained with the
+memory footprint of a single layer. The conceptual thing is what matters
+for the rest of this essay. Solving <code>z = f(z; x)</code> is
+computing a fixed point of <code>f</code>, and computing fixed points is
+not an exotic numerical trick — it is the <em>definition of what a
+recursive program means</em>.</p>
+<p>This is the denotational turn, and it deserves to be made carefully
+because it is the load-bearing idea of the essay. In the semantics of
+programming languages, the meaning of a recursive definition is given by
+a fixed point of the functional associated with it. A <code>while</code>
+loop that terminates denotes the least fixed point of the function
+mapping “approximations of the loop’s behavior” to “better
+approximations”; Kleene’s theorem tells you that you reach that least
+fixed point by iterating the functional from the bottom element, and
+that the limit of that iteration <em>is</em> the meaning of the loop.
+The operational account of the program — actually running the loop, step
+by step, until it stops — and the denotational account — the fixed
+point, computed however you like — agree, and the agreement is the
+foundation of the field.</p>
+<p>Notice what this says about the two ways of running Axis B. The
+looped language model, which unrolls the block a set number of times, is
+the <em>operational</em> semantics of the recursion: it runs the loop.
+The equilibrium model, which solves for the converged state, is the
+<em>denotational</em> semantics: it computes the fixed point directly,
+indifferent to the path taken to reach it. These are not two
+architectures so much as two evaluation strategies for the same
+recursive object, and the equivalence between them is the neural
+analogue of the operational-denotational agreement. When the equilibrium
+models say they are “solving the loop,” they are computing a denotation.
+The blog-post literature on equilibrium models for algorithmic reasoning
+has noticed exactly this, observing that a terminating loop is the
+minimal fixed point of a function and that asking a network to <em>reach
+a fixed point</em> is therefore a more honest inductive bias for
+reasoning than telling it how many steps to take. The network should
+stop changing its answer once the answer is correct — which is to say,
+it should seek the fixed point — rather than halt at a step count chosen
+by the engineer.</p>
+<p>The companion essay reached these architectures from the side of
+dynamical systems and asked what kind of <em>settling</em> they do; this
+essay reaches them from the side of semantics and asks what their
+settling <em>means</em>. The two descriptions are projections of one
+architectural fact onto two different theories, and it is worth saying
+so explicitly to avoid the appearance of re-treading: there, the fixed
+point was one value of a “stability” axis among six that characterize a
+dynamical mode; here, the fixed point is the denotation of a recursive
+definition. Same equilibrium, different question asked of it.</p>
+</section>
+<section id="the-convergence-attractors-as-the-shared-object"
+class="level2">
+<h2>4. The convergence: attractors as the shared object</h2>
+<p>The claim has been that the two axes are one. The bridge that makes
+this concrete, rather than merely suggestive, is a result about what
+looping does to a linear-attention layer — which is to say, a result
+that takes an Axis-A primitive and runs it along the Axis-B
+direction.</p>
+<p>Recall that a linear-attention update is a rank-one modification of
+the state: each step adds (or, with the delta rule, corrects by) an
+outer product of a key and a value, and an outer product has rank one. A
+single such step is therefore a very weak transformation of the state
+matrix. But now <em>loop</em> it — apply the same update map
+<code>T</code> times, as the depth axis prescribes. Composing
+<code>T</code> rank-one corrections can build up a transformation of
+rank as high as <code>T</code>. The looped linear layer is no longer
+making a rank-one nudge; it is realizing a high-rank, and in the limit
+<em>full-rank</em>, linear map. And there is a classical theorem —
+Cartan–Dieudonné — that says any orthogonal transformation in
+<code>d</code> dimensions can be written as a composition of at most
+<code>d</code> reflections, each of which is a rank-one-style operation.
+The upshot, which the linear-recurrence-expressivity literature has made
+rigorous, is that a looped linear-attention layer with enough iterations
+can express transformations that a single pass provably cannot.</p>
+<p>This is not an abstract gain. It is exactly the capability that
+separates the symbolic from the subsymbolic in the one place where that
+ancient debate has a clean mathematical statement: <em>state
+tracking</em>. Merrill and Sabharwal showed that there is a real
+tradeoff between parallelism and expressivity — that the very
+channel-wise, parallelizable structure that makes diagonal state-space
+models and Transformers fast also makes them provably <em>unable</em>,
+at bounded depth, to track the state of a system whose updates are
+non-commutative. The canonical hard case is the symmetric group
+<code>S_n</code>: composing permutations. A bounded-depth parallel model
+cannot in general compute where the elements of a permuted set end up
+after a long sequence of swaps, because permutation composition does not
+commute and the model has no way to maintain and update the running
+product. A looped model can, because looping gives it exactly the
+iterated, sequential, full-rank update that permutation tracking
+requires.</p>
+<p>It is worth being exact about how much this buys, because the
+temptation is to over-read it, and the earlier article already drew the
+boundary that keeps us honest. “The Algebraic Mind Meets the Neural
+World” worked out the expressivity ceiling: a bounded-precision,
+fixed-depth Transformer sits in a restricted circuit class (roughly TC⁰)
+and provably cannot do this kind of state tracking, while a weight-tied
+iterated Transformer is lifted to the expressivity of a <em>finite
+automaton</em> — vastly more capacious, but still not Turing complete,
+since bounded precision forces the state eventually to cycle. The
+Cartan–Dieudonné result is the constructive mechanism for that lift: it
+shows <em>how</em> the rank accumulates with iteration to realize the
+full-rank updates a finite-state tracker needs. So looping does not make
+the network a universal computer; it makes it a much better finite-state
+machine — and non-commutative state tracking is precisely a finite-state
+task. The new claim here is not that iteration grants unbounded power.
+It is that iteration supplies, concretely and through the algebra of
+composed reflections, exactly the bounded-but-non-trivial power that the
+symbolic tradition insisted a subsymbolic substrate could never
+have.</p>
+<p>Consider what that means for the symbolic/subsymbolic question. The
+complaint of the symbolic tradition — Fodor and Pylyshyn’s, and in the
+modern setting Marcus’s — was that connectionist networks cannot do
+genuine variable-binding and rule-following; they approximate, they
+interpolate, but they do not <em>compute</em> over structured
+representations the way a symbol system does. The earlier article argued
+that this complaint had already been answered in principle — that
+Smolensky’s tensor-product mathematics shows a subsymbolic substrate can
+exactly compute structure-sensitive functions, and that Transformer
+attention is an approximate version of the same binding-and-unbinding
+operation. What the looped-linear-attention result adds is a second,
+independent route to the same reconciliation, and a sharper one: where
+the tensor-product story is about <em>representation</em> (structure can
+be embedded in a vector space and recovered), this is about
+<em>process</em> (symbolic competence is what the subsymbolic primitive
+<em>becomes</em> when iterated). A linear-attention layer acquires a
+provably symbolic capability — exact state tracking over a
+non-commutative group — not by encoding structure cleverly but simply by
+being run as a recurrence. The capacity is not bolted on and not merely
+represented; it is dynamically generated by the loop. So the
+reconciliation the algebraic-mind debate kept gesturing at gains a new
+form here: not only can symbols be <em>embedded in</em> a network, they
+can be <em>grown by iterating</em> one. Symbols as the limit of a looped
+network, alongside symbols as the contents of a tensor product.</p>
+<p>With the bridge in place, the three reasoning-side papers fall into a
+single picture, distinguished by what they do with the fixed point
+rather than by belonging to different paradigms.</p>
+<p>The first shapes the <em>landscape</em>. The equilibrium-reasoning
+work treats the looped model as a learned dynamical system and asks the
+obvious next question: a fixed point is only useful if it is the
+<em>right</em> fixed point. The contribution is to make the attractor
+structure itself a training target — to distinguish “favorable”
+attractors, which align with the task’s solution geometry and are
+reachable from sensible initializations, from “spurious” ones, into
+which the dynamics can collapse and sit, perfectly converged and
+perfectly wrong. Once the landscape is shaped, the fixed-point residual
+— how far the current state is from being unchanged by the map — becomes
+a usable diagnostic, a confidence signal read off the dynamics, and
+depth (more iterations within a basin) and breadth (covering more
+basins) become separable scaling knobs.</p>
+<p>The second solves the loop at <em>scale</em>. The attractor-model
+work takes the DEQ move — stop unrolling, solve for the equilibrium with
+implicit differentiation — and makes it work for large-scale language
+modeling, where DEQs had historically been finicky. Its trick is
+architectural: rather than initializing the solver from an uninformative
+state, it uses a standard Transformer backbone to <em>propose</em> a
+good initial guess in the output-embedding space, and then runs the
+equilibrium refinement from there. This keeps the equilibrium living
+directly in the space the model decodes from, so every iterate is
+already a candidate answer, and it stabilizes the solve. The reported
+result is a genuine Pareto improvement over both standard Transformers
+and stable looped baselines, with the constant-memory training that the
+implicit-differentiation backward pass provides — and it surfaces a
+phenomenon §5 returns to.</p>
+<p>The third makes the fixed point <em>plural</em>. The
+generative-recursive-reasoning work, out of the GFlowNet lineage, makes
+a pointed criticism of everything described so far: deterministic
+recursion collapses the entire space of plausible reasoning paths into a
+<em>single</em> attractor. Given the same input, the model follows one
+trajectory to one answer. But many real reasoning problems —
+constraint-satisfaction problems with multiple valid solutions,
+ambiguous inferences, anything where you want to <em>maintain</em>
+hypotheses rather than commit early — demand that the system be able to
+represent and explore <em>several</em> possible solution paths. Their
+proposal makes the recursive transition stochastic, so that the model
+defines a <em>distribution</em> over reasoning trajectories and can
+sample diverse ones in parallel. Reasoning should be deep, in the sense
+of iterated refinement, but also <em>wide</em>, in the sense of
+maintaining multiple latent trajectories at once. This is a direct and
+productive tension with the landscape-shaping view: one paper wants to
+sculpt a single favorable attractor and read confidence off convergence
+to it; the other argues that convergence to a single attractor is
+precisely the failure mode for problems with intrinsically many
+answers.</p>
+<p>What unites all three — and unites them with the sequence axis — is
+that the object being computed is in every case the equilibrium of a
+learned map. The map may run along the sequence (Axis A) or along depth
+(Axis B); it may be solved operationally by unrolling or denotationally
+by root-finding; it may have one favorable fixed point or a distribution
+of them. But the computational primitive is the same throughout: relax a
+state, under a learned transformation, toward a value that the
+transformation leaves fixed. The Transformer is being rebuilt out of
+this primitive from both directions.</p>
+</section>
+<section id="three-frictions" class="level2">
+<h2>5. Three frictions</h2>
+<p>A unifying lens earns its keep only if it also sharpens the
+objections. Each of the following is a place where the fixed-point
+story, taken too smoothly, would mislead.</p>
+<p><strong>The receptive field is leakier than the algebra
+suggests.</strong> The Axis-A-meets-Axis-B result says that looping
+extends a layer’s reach: more loops, higher rank, longer effective
+context for a windowed or sparse attention. The slogan is “compute
+becomes context.” But the looped-transformer literature’s own analysis
+undercuts the naive version. When you add the residual connections that
+every real architecture uses, the <em>effective</em> receptive field —
+the range over which a change in one position actually influences
+another — turns out to be roughly <em>depth-independent</em>, hovering
+near a small multiple of the window width rather than growing toward the
+full sequence as the loop count rises. The combinatorial reach grows
+with iteration; the <em>influence</em> does not, because the residual
+stream keeps re-injecting the local signal and dilutes the propagated
+one. So “compute becomes context” is true as a statement about what
+paths exist in the computation graph, and substantially false as a
+statement about what the trained network actually uses. The honest
+version is narrower: looping buys expressivity of a specific algebraic
+kind (state tracking), not a general conversion of FLOPs into context
+length.</p>
+<p><strong>Convergence is not a correctness certificate.</strong> It is
+tempting to read the fixed-point residual as a free confidence signal:
+if the dynamics have settled, the answer must be good. The
+equilibrium-reasoning work is explicit that this is false in general.
+For an unshaped landscape, a low residual means only that the state
+stopped moving — and a spurious attractor is, by definition, a place
+where the state stops moving at a <em>wrong</em> answer, with total
+confidence. Convergence certifies that the model has finished computing,
+not that it has computed the right thing. The residual becomes a usable
+signal only <em>after</em> the landscape has been deliberately shaped so
+that favorable attractors are the reachable ones, which means the
+diagnostic is a product of training effort, not a guarantee that comes
+for free with the equilibrium formulation. The denotational picture is
+silent here in a way worth admitting: a recursive definition has a
+well-defined least fixed point, but nothing guarantees that the fixed
+point a <em>solver</em> lands on is that one, rather than some other
+equilibrium of the same map.</p>
+<p><strong>The loop may be a training scaffold rather than
+inference-time thought.</strong> This is the deepest friction, and it
+comes from inside the strongest result. The attractor-model work reports
+a phenomenon it calls <em>equilibrium internalization</em>: over the
+course of training, the backbone’s initial proposal drifts closer and
+closer to the eventual fixed point, until by the end of training the
+solver has almost nothing left to do — the equilibrium refinement can be
+largely <em>removed at inference time</em> with little loss in quality.
+The authors read this charitably and convincingly: the equilibrium acts
+as a moving teacher, an automatic curriculum that pulls the feedforward
+backbone toward the answer the loop would have found, so that the
+network self-distills the iterative computation into its own initial
+guess. But turn it over and it carries a sharp edge for the entire
+“latent reasoning” program. If a model can be trained to make its
+reasoning loop unnecessary — if the loop’s role is to <em>teach the
+feedforward path</em> and then retire — then the loop was never
+inference-time computation in the strong sense. It was scaffolding for
+amortization. And this raises the worry, generally, that much of what is
+sold as iterative latent reasoning may be feedforward computation
+wearing a recurrent costume during training and shedding it at
+deployment.</p>
+<p>The tiny-reasoner literature delivers an internal-to-the-field
+version of the same worry. The Hierarchical Reasoning Model justified
+its recursion with fixed-point theorems and a two-network biological
+story. Its successor, the Tiny Recursive Model, systematically
+dismantled that justification — and explicitly <em>abandoned the
+fixed-point framing</em>, reporting that the equilibrium mathematics was
+not what produced the performance. Analysis of the original results
+suggested the gains came mostly from <em>deep supervision</em>
+(improving the answer across outer steps) rather than from the recursion
+converging to any equilibrium within each step. A team building on the
+very architectures we are reading as fixed-point finders concluded that
+the fixed point was the wrong explanation for why they worked. One need
+not agree with them to register the force of the point: the fixed-point
+lens is a real and unifying <em>mathematical</em> description of these
+systems, but it is not automatically the correct <em>causal</em> account
+of why any particular one performs well. We should hold the unification
+as a clarifying structure, not as an empirical claim about mechanism
+that the field has settled — because, on at least one prominent reading
+from within, it has not.</p>
+<p>There is also the unglamorous caveat that the reasoning results live
+almost entirely on puzzle benchmarks — Sudoku, mazes, ARC-style grids —
+at small scale, where the structure is unusually clean and the
+comparison to frontier models is not apples-to-apples. That these tiny
+recursive models beat large ones <em>on these tasks</em> is striking,
+and informative about the value of iteration. It is not yet evidence
+about what happens at frontier scale on open-ended language, and the
+honest verdict there remains open.</p>
+</section>
+<section id="coda-fixed-points-and-the-meaning-of-a-computation"
+class="level2">
+<h2>6. Coda: fixed points and the meaning of a computation</h2>
+<p>Strip away the architectures and a single shift remains. For most of
+the deep-learning era, “what a model computes” has been identified with
+the <em>trace</em> of its computation: the sequence of layer
+activations, or — once chain-of-thought arrived — the literal sequence
+of tokens it emits while “thinking.” The fixed-point architectures
+propose a different identity. What the model computes is the
+<em>equilibrium</em> of its recursive structure, the value its
+transformation leaves unchanged, reached by whatever path the solver
+happens to take. The meaning is the denotation, not the trace.</p>
+<p>This is not a small reframing, and its consequences run in directions
+the field is only starting to feel. Consider faithfulness — the question
+of whether a model’s stated reasoning reflects its actual computation.
+If reasoning is a token trace, faithfulness is about whether the trace
+is honest. But if reasoning is relaxation to a fixed point, the trace is
+merely <em>one operational path</em> to a denotational object, and two
+models that reach the same equilibrium by different paths have, in the
+sense that matters, computed the same thing. The looped-language-model
+claim that latent loop-traces are <em>more</em> faithful to the final
+output than chain-of-thought tokens, and the equilibrium-internalization
+finding that the path can be compressed away entirely, are two faces of
+this: when the meaning is the fixed point, the path is negotiable, and
+our interpretability instruments — which mostly read paths — may be
+measuring the wrong thing. Interpreting a fixed-point computation by
+inspecting its iterations is like interpreting a recursive function by
+single-stepping the debugger: occasionally illuminating, but a category
+error about where the meaning lives.</p>
+<p>If the meaning is a denotation, one can ask what <em>kind</em> of
+object it is, and here a suggestive reading opens that we will only
+gesture at. The residual stream never overwrites; by construction each
+layer <em>adds</em> to it, so information accumulates monotonically up
+the stack. Monotone accumulation of features is the signature of a
+unification-based, constraint grammar rather than a rewrite grammar —
+the residual stream behaves less like a CFG parse chart, where applying
+a rule consumes its children, than like the join operation of a
+feature-structure grammar in the HPSG family, where combining two
+partial descriptions yields the least structure consistent with both.
+Attention, on this reading, merges the feature bundles at the positions
+it attends to; iteration drives the merge toward a fixed point; and the
+equilibrium is the structure consistent with all the constraints the
+weights encode. The obstacle is that attention is a soft, lossy blend
+with no notion of <em>failure</em>, whereas unification is exact and can
+clash — and that obstacle is exactly what dissolves if one swaps hard
+unification for its weighted cousin, Smolensky’s Harmonic Grammar, in
+which well-formedness is graded harmony and a parse is a harmony
+maximizer, equivalently an energy minimizer. On that substitution the
+fixed point of the loop becomes the maximum-harmony feature structure
+given the soft constraints the model has learned, the transient
+superposition of readings early in the stack collapses toward a single
+high-harmony parse as the dynamics settle, and the parsing picture
+rejoins the energy-based reading of these same architectures developed
+in the companion piece. We flag this only as a direction: the connection
+between the residual stream, soft constraint satisfaction, and the
+optimization-based grammars that “The Algebraic Mind Meets the Neural
+World” identified as the third generation of neurocompositional
+computing deserves its own treatment, not a paragraph.</p>
+<p>It would be too neat to claim the brain is a fixed-point finder, and
+this essay will not. The companion piece argued, more carefully than a
+coda can, that whether biological or artificial dynamics realize any
+consciousness-relevant <em>mode</em> is an empirical and
+architecture-dependent question, and that the looped and equilibrium
+models close some axes of that question while leaving others —
+heterogeneity, world-coupling — untouched. The structural observation
+that stands on its own, without any claim about minds, is more modest
+and more secure. There exists a class of problems that are
+<em>intrinsically</em> iterative — whose solutions are defined as fixed
+points, whose answers cannot be reached by any bounded composition of
+operations but only by relaxation to equilibrium. Constraint propagation
+is like this; so is the state tracking that the symmetric group makes
+precise; so, plausibly, is much of what we vaguely call reasoning. For
+those problems, a feedforward network of any fixed depth is solving the
+wrong kind of object, and no amount of width repairs the mismatch. The
+recurrence revival, read at its most sober, is the field rediscovering
+that some computations have a recursive <em>meaning</em> that a single
+forward pass cannot denote — and that the way to compute a recursive
+meaning is, as it has always been, to find the fixed point.</p>
+<p>The Transformer abolished recurrence and won a decade by it. It is
+becoming a recurrence again because some of what it abolished was not
+overhead but substance: a bounded memory that learns as it reads, and a
+loop whose iterations are not steps toward an answer but the very thing
+the answer <em>means</em>. Solving the loop, in the end, is solving for
+a denotation. That the field arrived back at Kleene’s fixed point by way
+of associative memories, orthogonal groups, and Sudoku puzzles is the
+kind of convergence that suggests the object was waiting there all
+along.</p>
+<hr />
+<p><em>This article was co-authored by Łukasz Stafiniak and Claude
+(Anthropic). It continues the series on mind, metaphysics, and
+artificial cognition published at lukstafi.github.io and syndicated at
+lukstafi.substack.com. It is a computation-facing companion to the
+preceding article, “The Dynamics That Matter: Online Learning,
+Consolidation, and the Modes of Machine Mind,” which treats the same
+recurrence revival from the side of dynamical modes and machine
+consciousness; readers interested in the phenomenological stakes should
+turn there. It also draws on an earlier article in the series, “The
+Algebraic Mind Meets the Neural World,” for the symbolic/subsymbolic
+debate, the Neural GPU and Universal Transformer lineage, and the
+expressivity ceiling that the state-tracking result here builds against.
+The technical interlocutors here are the linear-attention and
+fast-weight-programmer lineage (Peng et al. on RWKV; Schlag, Irie, and
+Schmidhuber on fast weight programmers and the delta rule; Sun et al. on
+test-time training; and the δ-mem online-memory proposal), the looped
+and equilibrium architectures (the differentiable-computer lineage of
+Graves et al.’s Neural Turing Machine and Kaiser and Sutskever’s Neural
+GPU; Dehghani et al. on Universal Transformers, with the “looped”
+coinage from Giannou et al.; Bai, Kolter, and Koltun on Deep Equilibrium
+Models; Zhu et al. on Ouro looped language models; the
+equilibrium-reasoning and attractor-model work; and Baek et al. on
+Generative Recursive Reasoning), the tiny-reasoner line (the
+Hierarchical Reasoning Model and Jolicoeur-Martineau’s Tiny Recursive
+Model), and the expressivity results of Merrill and Sabharwal and the
+dense-linear-RNN state-tracking literature. The denotational framing
+draws on Kleene’s fixed-point theorem and the standard semantics of
+recursive definitions.</em></p>
+</section>
+</section>
+</article>
+<script src="/assets/theme-toggle.js"></script>
+</body>
+</html>

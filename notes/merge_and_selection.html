@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>Merge and Selection: The Residual Stream as a Constraint
+Grammar, and the Two Readings It Cannot Reconcile</title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <link rel="stylesheet" href="/assets/tufte.css">
+  <link rel="stylesheet" href="/assets/pandoc-tufte.css">
+  <link rel="stylesheet" href="/assets/site.css">
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+  <script>(function(){var t=localStorage.getItem('theme-preference');if(t)document.documentElement.setAttribute('data-theme',t);})()</script>
+</head>
+<body>
+<nav class="site-nav">
+  <a href="/">Home</a> &middot; <a href="/about.html">About</a> &middot; <a href="https://lukstafi.substack.com">Substack</a>
+</nav>
+<div class="theme-toggle">
+  <button id="theme-btn" aria-label="Toggle dark mode">&#9788;</button>
+</div>
+<article>
+<section
+id="merge-and-selection-the-residual-stream-as-a-constraint-grammar-and-the-two-readings-it-cannot-reconcile"
+class="level1">
+<h1>Merge and Selection: The Residual Stream as a Constraint Grammar,
+and the Two Readings It Cannot Reconcile</h1>
+<p><em>Łukasz Stafiniak and Claude (Anthropic)</em></p>
+<hr />
+<section id="abstract" class="level2">
+<h2>Abstract</h2>
+<p>A companion essay argued that the looped and equilibrium variants of
+the Transformer are converging on a single computational object, the
+fixed point of a learned map, and gestured at a reading on which the
+residual stream computes something like a parse. This essay develops
+that gesture into a precise claim and then breaks it. The residual
+stream, because it only ever adds, performs a monotone information-merge
+that is structurally the join of a unification-based grammar rather than
+the rewrite of a phrase-structure grammar — which makes Head-driven
+Phrase Structure Grammar (HPSG), not context-free grammar, the right
+comparison, and Gradient Symbolic Computation (GSC) the right account of
+how a continuous substrate can carry discrete structure. But HPSG is
+held together by <em>two</em> principles that pull in different
+directions when transplanted into a Transformer. The Head Feature
+Principle makes a phrase the projection of a single selected head; the
+unification of feature structures makes a phrase the consistent merge of
+its parts. Attention has a clean analogue of each — the query as a
+valence specification that <em>selects</em>, the residual write as a
+join that <em>merges</em> — but the two analogues make incompatible
+predictions about what a layer does. Selection says one head per
+combination; merge says every position is simultaneously a head
+absorbing the rest. That the merge is binding-symmetric — that it
+cannot, alone, record which position attended to which — is the binding
+problem identified by the TP-Transformer; our contribution is to read it
+through HPSG’s two principles and to observe that the dominant
+architecture <em>declined</em> the proposed role-binding fix and lives
+in the binding-ambiguous regime. We argue this is the genuine structure
+of the object rather than a defect to be resolved: a Transformer layer
+is a constraint grammar in which selection and merge are run <em>at
+every position in parallel</em>, and the discrete parse, if there is
+one, exists only as the quantization limit of a gradient blend that the
+dynamics may or may not drive to a corner. The unresolved question of
+“output gradience” in GSC turns out to be the same question as whether
+latent reasoning in Transformers is genuine discrete computation or an
+amortized blend.</p>
+</section>
+<section id="introduction" class="level2">
+<h2>1. Introduction</h2>
+<p>The dominant interface between linguistics and the Transformer has
+been <em>probing</em>: train a classifier on hidden states, ask whether
+syntactic information is recoverable, report that it is. This tells us
+that structure is present without telling us what operation produces it.
+A different question, less often asked, is whether the Transformer’s
+core update — attention plus residual addition, iterated over layers —
+<em>is itself</em> a grammatical operation in a sense a syntactician
+would recognize. The question is whether its architecture instantiates a
+parsing mechanism, separate from whether the network has learned
+syntax.</p>
+<p>The companion essay to this one, “Solving the Loop,” argued that the
+looped and equilibrium descendants of the Transformer compute fixed
+points of learned maps, and closed by suggesting that the residual
+stream’s characteristic behavior — it never overwrites, it only adds —
+points toward a constraint-based grammar rather than a rewrite grammar.
+This essay takes that suggestion seriously enough to test it, and finds
+that it holds, but with a fault line running through it.</p>
+<p>The argument has three movements. First (§3), we establish the basic
+correspondence: monotone accumulation in the residual stream is the join
+operation of a unification grammar, which makes HPSG the correct point
+of comparison and forces us to confront how a continuous vector can
+carry a discrete feature structure — the problem GSC was built to solve.
+Second (§4), we show that HPSG rests on two principles, head-selection
+and feature-unification, and that the Transformer supplies an analogue
+of each: the query/key mechanism as selection, the residual write as
+merge. Third (§5), we show these two analogues do not agree, and argue
+(§6) that the disagreement is the real content of the model — a layer
+runs selection-and-merge at every position simultaneously, producing a
+gradient blend of partial parses whose collapse to a discrete structure
+is exactly GSC’s quantization problem, and exactly the open question
+about whether Transformer “reasoning” is discrete computation or
+amortized blending. We are not proposing a new architecture. We are
+proposing that two existing bodies of theory — HPSG and GSC — already
+describe what the Transformer does, and that reading the Transformer
+through them surfaces a question neither field has closed.</p>
+<p>What we take as given, and what we add, should be stated plainly at
+the outset. We take from prior work three things and claim none of them:
+the tensor-product representation as the way to embed discrete
+role-filler structure in a vector space (Smolensky); the observation
+that attention can be read as a subject querying for an object, and that
+the residual sum over attended values is <em>binding-symmetric</em> —
+unable, on its own, to record which position attended to which — which
+is the binding problem identified by the explicit-binding program (the
+Tensor Product Generation Network, TP-N2F, the TP-Transformer); and the
+dynamics of Gradient Symbolic Computation, in which a total Harmony with
+a scheduled quantization term drives a continuous state toward discrete
+structure, in either an optimization or a sampling regime. Our
+contribution is the grammatical reading built on these and its
+consequences: that the residual merge and the query-key selection are
+HPSG’s two principles, unification and head-projection; that they cannot
+reconcile in a Transformer the way they do in HPSG, because there is no
+privileged per-combination head; that the mainstream architecture’s
+<em>refusal</em> of the explicit-binding fix is what leaves it in GSC’s
+pre-quantization blend; that GSC’s optimization/sampling duality is the
+same distinction as the deterministic/stochastic split in the reasoning
+literature; and that a deployed Transformer is a standing experiment on
+GSC’s unresolved question of output gradience. The first two of these
+are reframings of known results; the last three we believe are new, and
+we flag them as conjectures where experiment could settle them.</p>
+<p>A note on register and aim. This is written for readers who will
+recognize both a biaffine attention scorer and a Head Feature Principle,
+but we do not assume both, and §2 supplies the minimum of each. The
+contribution is conceptual, not empirical: we claim the mapping is exact
+enough to transfer open problems between the fields, and we identify one
+such problem. Where we make claims that experiments could settle, we
+flag them as conjectures.</p>
+</section>
+<section id="background" class="level2">
+<h2>2. Background</h2>
+<section id="hpsg-in-one-page" class="level3">
+<h3>2.1 HPSG in one page</h3>
+<p>Head-driven Phrase Structure Grammar is a lexicalized,
+constraint-based, surface-oriented grammar formalism. Three of its
+commitments matter here.</p>
+<p>First, it is <em>lexicalized</em> to an extreme degree: a small
+number of phrase-structure schemata combine with a large, richly
+specified lexicon, so that most of the grammatical work is done by the
+feature structures associated with words rather than by an inventory of
+rewrite rules. Where a context-free grammar has many productions
+(<code>VP → V NP</code>, <code>VP → V NP PP</code>, …), HPSG has few
+schemata and pushes the combinatorics into lexical entries that specify
+what each word <em>requires</em>.</p>
+<p>Second, linguistic objects are <em>feature structures</em> —
+attribute-value matrices (AVMs) bundling phonological, syntactic, and
+semantic information — and the combinatory operation over them is
+<em>unification</em>: two feature structures combine into the least
+structure consistent with both, and combination <em>fails</em> if they
+carry contradictory values. Unification is monotone (it only ever adds
+constraints) and partial (it can be undefined). This is the formal heart
+of the framework, and it is what distinguishes a constraint grammar from
+a rewrite grammar: a phrase is not produced by <em>replacing</em> a
+nonterminal with a string of symbols, but by <em>merging</em>
+descriptions until a consistent whole emerges or a clash blocks it.</p>
+<p>Third, and giving the framework its name, headedness is governed by
+the <strong>Head Feature Principle</strong> (HFP): the HEAD value of a
+headed phrase is structure-shared with the HEAD value of its head
+daughter, so that, in the standard formulation, headed phrases <em>are
+projections of their head daughter</em>. A verb phrase is a projection
+of its verb; the verb’s head features percolate to the phrase. Selection
+is the complement of projection: the head <em>subcategorizes for</em>
+its arguments, carrying a valence specification (an <code>ARG-ST</code>
+or <code>SUBCAT</code> list) that says what must combine with it. A head
+is saturated when its valence requirements are discharged.</p>
+<p>These two principles — unification of feature structures, and
+head-projection-plus-selection — are both load-bearing, and they do
+different jobs. Unification says how parts <em>combine</em>; the HFP
+says which part <em>governs</em>. In HPSG they coexist without tension
+because headedness is a property of a <em>combination</em>: when two
+daughters combine, exactly one is the head, fixed by the schema and the
+lexical entries. We will see that this peaceful coexistence does not
+survive transplantation into a Transformer, because the Transformer has
+no notion of “the combination” — it has positions, all merging in
+parallel.</p>
+</section>
+<section id="the-neural-hpsg-parser-and-what-its-cost-reveals"
+class="level3">
+<h3>2.2 The neural HPSG parser, and what its cost reveals</h3>
+<p>Recent neural HPSG parsers make the head machinery concrete in a way
+useful for our purposes. The approach unifies constituency and
+dependency parsing under a single “joint span” structure, training one
+encoder against both a chart-structure objective (for constituents) and
+a dependency-head objective, and decoding both trees simultaneously. The
+architecture is, tellingly, a self-attentional encoder feeding two
+scorers: a span scorer and a biaffine attention scorer that assigns a
+score to every candidate head-modifier arc. Headedness, in this
+engineering, is an explicit prediction — a separate scorer estimates how
+good each position is as the head of each span.</p>
+<p>What is instructive is the <em>cost</em>. Decoding either tree form
+alone is the familiar O(n³) of chart parsing. Joint HPSG decoding, which
+must respect the HFP — every span’s head must be consistent with the
+dependency structure — rises to O(n⁵), and the recent contribution that
+brings it back to O(n³) does so precisely by adding a dedicated head
+scorer so that headedness need not be recomputed combinatorially at
+every span. The lesson we extract is not about parsing efficiency. It is
+that <em>headedness is expensive because it is a choice made per
+combination</em>: the grammar must decide, for each way of splitting a
+span, which sub-span projects. A footnote in that work states the
+structural fact exactly: the HPSG head of a phrase serves as a
+dependency <em>modifier</em> for words outside the span but a dependency
+<em>head</em> for words inside it. Headedness is relational and
+directional — the same word is head looking inward and dependent looking
+outward. The Transformer will both vindicate and violate this.</p>
+</section>
+<section id="gradient-symbolic-computation-and-the-quantization-problem"
+class="level3">
+<h3>2.3 Gradient Symbolic Computation, and the quantization problem</h3>
+<p>A feature structure is discrete; a vector is continuous. The bridge
+is <strong>tensor product representations</strong> (TPRs): bind each
+filler (a symbol) to its role (a structural position) by a tensor
+product, and sum the bindings, so that an entire structured object
+becomes a single vector from which fillers can be recovered by unbinding
+against roles. TPRs are the representational substrate that lets a
+connectionist network carry symbol structures exactly rather than
+approximately.</p>
+<p><strong>Gradient Symbolic Computation</strong> (GSC) is what happens
+when the filler activations are allowed to be continuous and the
+combinatory process is recast as optimization. A structure is
+represented as a blend of partially active symbols occupying (blends of)
+positions; well-formedness is <strong>Harmony</strong>, a sum of
+weighted soft-constraint satisfactions; and processing is gradient
+ascent in Harmony. This is Harmonic Grammar — the weighted, numerical
+cousin of Optimality Theory — equipped with gradient representations and
+a dynamical implementation. It is, by its proponents’ own framing, an
+energy-based system: Harmony is negative energy, and a GSC network is a
+continuous dynamical system seeking Harmony maxima, kin to Hopfield
+networks and Boltzmann machines.</p>
+<p>The formal heart, worked out in the GSC dynamics literature, is that
+the quantity optimized is a <em>total</em> Harmony with two terms, ℋ = H
+− qQ. The first, the grammatical Harmony H, scores well-formedness — the
+soft constraints — and its unconstrained maximum is typically a
+<em>blend</em>. The second, <strong>quantization Harmony</strong> Q,
+assigns zero penalty to states that embed a genuine discrete structure
+and positive penalty to states that do not, so adding it leaves the
+optimal <em>discrete</em> structure unchanged while penalizing
+non-discrete states; its weight q measures the strength of the demand
+for discreteness. The decisive move is that q is not fixed but
+<em>scheduled</em>: to produce a discretely interpretable output, q is
+raised over the course of processing, so the system begins in a
+permissive blend and is driven toward a discrete corner as q grows. A
+second parameter, the temperature T, controls randomness. This yields
+two regimes from one system. In the <strong>optimization</strong> regime
+(T driven to zero), the dynamics converge to the single global
+maximum-Harmony structure. In the <strong>sampling</strong> regime (T
+held at a target value), the dynamics instead produce discrete outputs
+with probability proportional to e^{H/T} — a genuine Boltzmann
+distribution over structures, which is Probabilistic (Maximum-Entropy)
+Harmonic Grammar. The same continuous dynamics, under different (q, T)
+schedules, either <em>select one</em> structure or <em>sample from a
+distribution</em> over structures. This duality is the hinge of §6.</p>
+<p>The application that matters most for us is GSC as a model of
+<em>incremental parsing</em>. Cho, Goldrick, and Smolensky build a
+continuous-state, continuous-time dynamical system that processes a
+sentence word by word and must solve two opposed problems: keep multiple
+interpretations alive under temporary ambiguity, yet ultimately reject
+those inconsistent with context. Their parser does this by moving to a
+non-discrete blend state that then evolves toward discrete states
+encoding globally coherent interpretations, under the scheduled increase
+of q that enforces discreteness. When the schedule is wrong —
+discreteness imposed too early — the parser commits prematurely and
+makes errors that mirror human garden-path and local-coherence
+effects.</p>
+<p>One distinction must be kept sharp, because it is exactly where the
+two readings of §5 will turn. The <em>intermediate blend state</em> — a
+single continuous vector partway through computation — is not itself a
+probability distribution over parses; it is a genuine point in the
+continuous space, a superposition in the literal vector sense, not a
+mixture in the probabilistic sense. The Boltzmann distribution lives at
+a different level: it is the distribution of <em>discrete outputs</em>
+the stochastic dynamics produce across runs in the sampling regime. So
+“blend” and “distribution over structures” refer to different objects:
+the blend is the instantaneous state, the Boltzmann distribution is the
+output ensemble. Finally, whether discreteness should be enforced in the
+<em>output</em> at all — the “output gradience” question — is, by the
+framework’s own account, unresolved: some analyses require the output to
+be fully discrete, others posit residual gradient activity in surface
+representations, and there is no settled criterion.</p>
+<p>We now have the three pieces — monotone merge, head selection,
+gradient blends with a quantization problem — and can state the
+correspondence.</p>
+</section>
+</section>
+<section id="the-residual-stream-is-a-join-not-a-rewrite"
+class="level2">
+<h2>3. The residual stream is a join, not a rewrite</h2>
+<p>Begin with the operation that defines the architecture. Write the
+residual stream at layer ℓ and position i as <code>h_i^ℓ</code>. The
+update is, schematically,</p>
+<blockquote>
+<p><code>h_i^{ℓ+1} = h_i^ℓ + Attn_i(h^ℓ) + MLP(...)</code>,</p>
+</blockquote>
+<p>and the defining fact is the leading <code>h_i^ℓ +</code>: the stream
+is never overwritten, only added to. Information at a position
+accumulates monotonically up the stack. Whatever was true of
+<code>h_i^ℓ</code> is, in a linear-readout sense, still recoverable from
+<code>h_i^{ℓ+1}</code> modulo what later layers actively cancel; the
+default is accumulation, not replacement.</p>
+<p>This single fact selects the grammar. In a phrase-structure / rewrite
+grammar, applying <code>A → B C</code> <em>consumes</em> <code>A</code>:
+the symbol is gone, replaced by its expansion. Rewriting is non-monotone
+— it destroys its input. The residual stream does the opposite. It is
+monotone, and monotone combination of partial descriptions is the
+signature of <em>unification</em>, the join in the information ordering
+of a constraint grammar. The residual stream behaves like the
+construction of a feature structure: each layer contributes further
+constraints on what the representation at a position <em>is</em>, and
+those constraints accumulate rather than overwrite. The natural
+grammatical comparison for the Transformer is therefore not CFG and its
+chart, but a unification grammar and its feature structures — HPSG.</p>
+<p>The comparison sharpens on three further points, each an independent
+reason to prefer HPSG over CFG as the structural analogue.</p>
+<p><em>Representations are bundles, not atoms.</em> A residual vector is
+a superposition of many features in near-orthogonal directions — the
+superposition hypothesis of mechanistic interpretability is, read in
+this light, the claim that the stream carries an attribute-value bundle,
+not a single categorial label. A CFG node is an atom (<code>NP</code>,
+<code>VP</code>); an HPSG node is an AVM. The residual stream is
+manifestly the latter.</p>
+<p><em>One schema, rich lexicon.</em> The Transformer applies
+<em>one</em> attention-plus-MLP schema at every position and every
+layer; all the content is in the learned per-token representations and
+the learned weights that read them. This is radical lexicalism — few
+combinatory schemata, everything in the lexicon — which is HPSG’s
+signature and the opposite of CFG’s many position-specific
+productions.</p>
+<p><em>Combination is non-local.</em> Attention reaches across arbitrary
+distance; HPSG handles non-local dependencies (the percolation of a gap
+through the <code>SLASH</code> feature, for instance) as part of its
+feature machinery, whereas CFG’s combination is strictly over contiguous
+spans in the chart. The Transformer’s non-locality is native to it, as
+HPSG’s is to it.</p>
+<p>So the residual stream constructs feature structures by monotone
+merge. But “merge” in a Transformer is implemented by attention, and
+attention is a softmax-weighted average — and here the correspondence
+hits its first obstacle. Unification is <em>exact</em> and can
+<em>clash</em>: combining <code>[NUM: sg]</code> with
+<code>[NUM: pl]</code> fails, and that failure is where a constraint
+grammar gets its discriminating power, because ruling combinations out
+is most of what a grammar does. Attention has no clash. It returns a
+convex combination of value vectors, always defined, never failing — a
+lossy blend, not an exact join. So the residual stream performs a
+<em>soft, failure-free approximation</em> of unification, which is not
+unification in the strict sense.</p>
+<p>The repair is GSC. Replace exact unification under hard constraints
+with Harmony maximization under <em>soft, weighted</em> constraints. A
+combination that would <em>clash</em> in classical HPSG becomes, in
+Harmonic Grammar, a combination of <em>low Harmony</em> — strongly
+dispreferred, but not undefined. A soft constraint merely down-weighted
+is what a learned attention pattern plus MLP can implement: there is no
+hard failure, only a low-Harmony region the dynamics avoid. On this
+substitution the residual stream’s lossy blend becomes the design rather
+than a defect: the stream computes a gradient feature structure, and its
+fixed point — when the iterated map of “Solving the Loop” settles — is
+the maximum-Harmony structure given the soft constraints the weights
+encode. The Transformer is a Harmonic Grammar parser whose constraints
+are learned rather than hand-specified, and whose representations are
+gradient by construction. The blend is the native state of a gradient
+parser, not a bug in a discrete one.</p>
+<p>If the essay stopped here it would be a clean “Transformers are
+Harmonic Grammar parsers” thesis. It does not, because the <em>head</em>
+has not yet entered, and the head is where the picture fractures.</p>
+</section>
+<section id="two-analogues-the-query-selects-the-stream-merges"
+class="level2">
+<h2>4. Two analogues: the query selects, the stream merges</h2>
+<p>HPSG, recall, runs on two principles. Section 3 cashed out
+<em>unification</em> as the residual merge under soft constraints. But
+the framework is <em>head-driven</em>, and we have said nothing about
+the head. The Transformer turns out to have a second, independent
+grammatical analogue — a different operation, not a refinement of the
+first.</p>
+<p>Consider the query/key mechanism on its own terms, setting the
+residual stream aside. At position i, the model computes a query vector
+<code>q_i</code> and compares it against the keys <code>k_j</code> of
+all positions. The query is, functionally, a <em>specification of what i
+is looking for</em> — it defines, in the key space, the kind of content
+position i wants to combine with, and attention weight is high where a
+key matches that specification. This is, almost exactly, a
+<strong>valence specification</strong>. An HPSG head carries an
+<code>ARG-ST</code> list saying what it must combine with; the query
+says what this position seeks. Attention, on this reading, is the head
+<em>selecting</em> its arguments: scanning the available positions for
+fillers that satisfy its valence, and binding to them in proportion to
+fit. The key/value distinction even mirrors the selection/content
+distinction — the key advertises <em>what kind of thing I am, for
+selection purposes</em>, the value carries <em>the content I contribute
+once selected</em>.</p>
+<p>This is the <strong>selection</strong> analogue, and it is grounded
+independently of the merge analogue. It is not new with us: the
+TP-Transformer’s authors read attention in just these terms, describing
+a cell as a <em>subject</em> that queries the other cells for an
+<em>object</em> — selection by another name. The neural HPSG parser of
+§2.2 makes it concrete on the supervised side: its biaffine scorer
+assigns a score to each head-modifier pair <code>s_arc(h, m)</code>,
+which is precisely a learned valence-satisfaction score — how well does
+m satisfy a slot of h — computed, as it happens, by exactly the bilinear
+form that ungated attention uses. The parser’s explicit head scorer is
+doing, as a supervised side task, what we are claiming the query/key
+mechanism does implicitly: estimating headedness and argument-fit.
+Selection here describes what the query/key inner product computes,
+rather than a metaphor laid over attention.</p>
+<p>So the Transformer has two grammatical analogues, each independently
+motivated:</p>
+<ul>
+<li><strong>Merge</strong> (§3): the residual write is a monotone join;
+the stream accumulates a gradient feature structure; the fixed point is
+the maximum-Harmony structure. <em>This is the unification principle of
+HPSG.</em></li>
+<li><strong>Selection</strong> (§4): the query is a valence
+specification; attention is the head scanning for and binding arguments
+that satisfy it; the key/value split is the selection/content split.
+<em>This is the head-projection principle of HPSG.</em></li>
+</ul>
+<p>In HPSG these two are the same grammar seen from two sides,
+reconciled by the fact that headedness is a property of each
+combination. The question is whether they reconcile in the Transformer.
+They do not, and §5 examines how they fail to.</p>
+</section>
+<section id="why-the-two-readings-cannot-be-reconciled" class="level2">
+<h2>5. Why the two readings cannot be reconciled</h2>
+<p>The incompatibility is structural, and it has a precise location:
+HPSG’s reconciliation of selection and merge depends on there being, for
+each combination, <em>one</em> head; the Transformer has no “each
+combination,” only positions updated in parallel, and so it has no way
+to designate one head per merge.</p>
+<p>More exactly: in HPSG, when daughters D₁ and D₂ combine into mother
+M, exactly one of D₁, D₂ is the head; its features project to M; the
+other is its dependent, saturating one of its valence slots. The
+relation is <em>asymmetric between the things combined</em> and
+<em>singular</em>: one head, per combination, chosen by the grammar. The
+§2.2 footnote captures the directionality — the head is a dependency
+head looking inward (it governs its dependents) and a dependency
+modifier looking outward (it will itself saturate some higher head’s
+valence). There is a definite combinatorial tree, and at each node a
+definite head.</p>
+<p>Now look at what a Transformer layer actually does. <em>Every</em>
+position i computes a query and absorbs a weighted blend of values into
+its own residual stream. Position i is therefore, simultaneously: a
+<em>head</em>, in the selection sense — it issued a query, it selected,
+it is the destination into which the merge lands and persists via the
+residual spine; and a <em>dependent</em>, in that its own value
+<code>v_i</code> is being read and absorbed by every <em>other</em>
+position’s query at the same time. Every position is a head of its own
+merge and a dependent of everyone else’s, in the same layer, in
+parallel. There is no single head per combination because there is no
+single combination — there are n simultaneous combinations, one centered
+on each position.</p>
+<p>This breaks the HPSG reconciliation in both directions at once.</p>
+<p><em>The selection reading, taken alone, over-generates heads.</em> If
+the query makes position i a head selecting its arguments, then every
+position is a head, and a layer does not build <em>a</em> headed phrase
+— it builds n headed phrases at once, each token’s view of the sentence
+with itself as governor. There is no projection <em>spine</em>, because
+projection requires a unique head whose features ascend; here every
+position is a projection root. The “head is the destination into which
+representations merge” idea — appealing because the residual skip
+connection does carry i’s prior state forward as the backbone of i’s
+update, which is formally what the HFP demands of a head daughter — is
+correct for <em>each</em> position and therefore designates
+<em>every</em> position as a head, which is to designate none. Selection
+without uniqueness is not the HFP; it is n copies of the HFP running
+concurrently and inconsistently.</p>
+<p><em>The merge reading, taken alone, has no head at all.</em> If the
+layer simply unifies feature bundles under soft constraints (§3), then
+it computes a join, and a join is <em>symmetric</em> —
+<code>A ⊔ B = B ⊔ A</code>. Unification does not distinguish head from
+dependent; it merges descriptions without governance. So the pure merge
+reading erases exactly the head-driven character that names the grammar.
+It gives us a constraint grammar, but a <em>headless</em> one — closer
+to a pure dependency-free constituency, or to a Lambek-style categorial
+soup, than to HPSG. The thing that made HPSG the right comparison in §3
+(it is a unification grammar) discards, in its Transformer form, the
+thing that made HPSG <em>HPSG</em> (it is head-driven).</p>
+<p>This symmetry is not a loose analogy; it is the <strong>binding
+problem</strong> of stacked attention, which Schlag, Schmidhuber, and
+colleagues stated formally in proposing the TP-Transformer. Their worked
+case is exactly ours: a layer in which cell <em>a</em> attends to
+<em>b</em> and cell <em>c</em> attends to <em>d</em>, feeding a higher
+cell <em>e</em> that attends to both, produces a residual sum of the
+form <code>z_a + z_c + o(v(z_b)) + o(v(z_d))</code> — and this sum is
+symmetric in a way that cannot record <em>who attended to whom</em>. The
+representation that should encode <code>(a/b)/(c/d)</code> is
+indistinguishable from the one for <code>(a/d)/(c/b)</code>: the merge
+has lost the binding. Their reading of attention is also, tellingly,
+ours avant la lettre — they describe a cell as a <em>subject</em>
+querying other cells for an <em>object</em>, which is precisely the
+query-as-selection picture of §4. We claim no priority for either the
+selection reading or the observation that residual merge is
+binding-ambiguous; both are theirs. What we add is the grammatical
+interpretation: their binding problem is the formal demonstration that
+the <em>merge</em> analogue, alone, is headless, and that selection and
+merge therefore cannot be the same operation in a Transformer the way
+they are in HPSG.</p>
+<p>The decisive fact, though, is what the field <em>did</em> with their
+diagnosis. Their fix was to break the symmetry by binding each retrieved
+filler to an explicit, subject-specific <em>role</em> vector before
+summing — a tensor-product (Hadamard-contracted) binding that makes
+<code>(a/b)/(c/d)</code> recoverable. It was not an isolated proposal:
+it belongs to a sustained research program that imposes structure by
+adding explicit role-filler binding and unbinding modules to neural
+models — the Tensor Product Generation Network (sentence generation by
+unbinding one learned role per step), TP-N2F (combined
+binding-and-unbinding for program synthesis), the TP-Transformer
+(binding inside the attention mechanism itself), and the broader
+tensor-product-representation line descending from Smolensky’s original
+variable-binding work. Notably, the generation network found that its
+learned roles came out as a <em>hybrid</em> of positional and
+syntactic/semantic types, induced unsupervised — a finding §6 returns
+to. These models work, and demonstrably improve interpretability and
+structural generalization. And the mainstream architecture declined
+them. Standard attention, the thing that actually scaled, kept the
+symmetric, binding-ambiguous merge and added no explicit role-binding.
+So the binding problem was not solved in the dominant Transformer; it
+was <em>lived with</em> — repeatedly diagnosed, repeatedly offered a
+cure, and the cure repeatedly left on the shelf. This is the pivot of
+our argument: a network that retains the binding-ambiguous merge is one
+whose representations remain, by construction, in a state where bindings
+are superposed rather than committed — which is exactly the
+pre-quantization blend of GSC. The architecture did not fix the binding
+problem; it stayed in the blend. §6 argues that this is not a failure
+but a description of what the model computes.</p>
+<p>The two readings therefore carve the same architecture at different
+joints and disagree about its skeleton. Selection sees n heads; merge
+sees none. They cannot both be the grammar, and neither alone is
+satisfying: selection-only is n inconsistent parses superposed,
+merge-only is a headless blend.</p>
+<p>One might hope the directional asymmetry rescues uniqueness — that
+causal masking in a decoder, by letting position i attend only to j ≤ i,
+picks out a distinguished head. It helps at exactly one point and
+nowhere else. The <em>final</em> position of a decoder — the one read
+out for the next-token prediction — is a privileged merge destination:
+everything flows into it, nothing flows out of it (there is no later
+position to absorb it), and its projection spine is the one that
+survives to the output. At the readout position, and only there, the
+selection reading recovers a unique head: the generation site is the
+syntactic head of the whole constructed structure. But this is a
+boundary condition, not a parse. It distinguishes one head for the
+entire sequence at the moment of emission; it says nothing about the n−1
+interior positions, each of which remains a head-and-dependent in
+superposition. The asymmetry gives us a root, not a tree.</p>
+</section>
+<section
+id="the-blend-is-the-parse-gscs-open-question-is-the-transformers"
+class="level2">
+<h2>6. The blend is the parse: GSC’s open question is the
+Transformer’s</h2>
+<p>The natural conclusion is that we have been demanding the wrong thing
+of the analogy rather than that it fails. We wanted the Transformer
+layer to compute <em>a parse</em> — a discrete tree with one head per
+node — and found it computes n superposed head-centric views merged
+under soft constraints. That object has a name in the framework we
+imported to handle the continuity: it is a <strong>gradient
+blend</strong>, a conjunctive superposition of partial structures, what
+GSC says a continuous parser occupies <em>before quantization</em>.</p>
+<p>Read the layer stack as a GSC incremental parser and the fracture of
+§5 resolves into a known phenomenon. Early layers occupy a high-entropy
+blend: many features active, many candidate head-assignments superposed,
+every position partly a head of partly-assembled partial phrases. This
+is the Cho-Goldrick-Smolensky blend state, the contextually-required
+maintenance of multiple interpretations under local ambiguity, in the
+literal vector-superposition sense — the instantaneous state, not yet
+any distribution over trees. As computation proceeds — across layers in
+a feedforward stack, or across iterations in the looped/equilibrium
+models of “Solving the Loop” — the dynamics <em>may</em> drive the blend
+toward a discrete corner: one head-assignment per region wins, the
+superposition collapses, a definite structure quantizes out. Whether it
+does so depends on the analogue of GSC’s scheduled discreteness weight
+q: how strongly, and how early, the learned dynamics penalize
+non-discrete states. Depth, or iteration count, is the Transformer’s
+schedule variable — the budget over which an effective q can rise. The
+Transformer that quantizes cleanly by its final layer has computed a
+parse; the Transformer that holds the blend has computed a genuinely
+gradient structure, neither one parse nor a distribution over parses but
+an intermediate point that may be the correct final representation.</p>
+<p>This reframing pays out in four directions, the last two of which we
+think are novel.</p>
+<p>First, it dissolves the §5 contradiction without choosing a side.
+Selection and merge are not competing accounts of a discrete operation;
+they are the two Harmony components. Selection — the query/key
+valence-matching — is the <em>grammar</em> Harmony, the soft constraints
+that prefer certain head-argument bindings. Merge — the monotone
+residual accumulation — is the <em>substrate</em> on which Harmony is
+maximized, the continuous medium in which partial structures superpose.
+“n heads in superposition” is precisely what maximizing grammar-Harmony
+<em>without</em> quantization yields, just as Cho et al.’s grammar
+component, alone, prefers a blend. The head becomes unique only as
+quantization is enforced — and quantization is enforced, if at all, late
+and incompletely, which is why interior positions never resolve to
+single heads while the readout position does. It is worth noting that
+when the explicit-binding program <em>did</em> induce roles
+unsupervised, in the generation network, the roles it found were a
+hybrid of positional and syntactic/semantic types — neither purely “slot
+i in the sequence” nor purely “grammatical function,” but a blend of the
+two. That is exactly what the present picture predicts: a gradient
+feature structure under soft constraints has no reason to factor cleanly
+into position and category, and will carry a superposed mixture of both,
+precisely as observed.</p>
+<p>Second, it predicts the failure modes. A GSC parser with a
+too-aggressive quantization policy commits prematurely and produces
+garden-path errors; one with too weak a policy never resolves. The
+Transformer analogues are testable conjectures: a model whose effective
+quantization is too strong should exhibit early, confident,
+hard-to-revise misparses on locally-ambiguous input (a garden-path
+signature in the layerwise trajectory); one whose quantization is too
+weak should carry blends to the output and show the characteristic
+degradation of an unresolved superposition — fluent but structurally
+noncommittal continuations. We do not test these here; we claim only
+that the GSC framework makes them <em>the right experiments to run</em>,
+which is what it means for the analogy to be load-bearing.</p>
+<p>Third — and this reaches back to the companion essay — the
+optimization/sampling duality of GSC dissolves a tension we left
+standing there. “Solving the Loop” set the single-attractor reasoners
+(which shape one favorable fixed point and read confidence off
+convergence to it) against the multi-trajectory reasoners (which argue
+that collapsing to one attractor is the failure mode for problems with
+many valid answers), and presented these as rival philosophies of latent
+computation. On the GSC reading they are not rivals; they are the two
+regimes of one dynamics under different schedules. Driving the
+temperature T to zero is the optimization regime: the system converges
+to the single maximum-Harmony structure — the favorable attractor,
+confidence-by-convergence, the deterministic reasoner. Holding T at a
+target value is the sampling regime: the system produces discrete
+outputs Boltzmann-distributed by Harmony — a distribution over
+structures, multiple hypotheses, the stochastic reasoner. The
+disagreement between the two reasoning paradigms is, on this view, a
+disagreement about cooling schedules, not about architecture. A model
+that wants a single confident answer cools to zero; a model that wants
+to preserve plausible alternatives holds temperature. The same
+selection-plus-merge machinery does both, and the choice between “deep”
+(converge) and “wide” (sample) is a choice of (q, T) schedule rather
+than of network. This is a stronger unification than the first essay
+reached, and it is the GSC dynamics paper, not the Transformer
+literature, that supplies it.</p>
+<p>Fourth — and this is the transfer we promised in the abstract — the
+Transformer answers, or at least reframes, GSC’s own open question.
+Recall (§2.3) that whether gradient activity persists in <em>output</em>
+representations is unsettled in the linguistics: the working assumption
+that outputs must be discrete is a stipulation, defended by some and
+rejected by others, with no agreed criterion. The Transformer is a
+system in which the question is forced and the answer is visible. Each
+layer’s output is <em>manifestly</em> a blend — the residual stream at
+every depth is a gradient feature structure, non-discrete by
+construction, and the model’s final hidden state, the thing actually
+decoded, is in general <em>not</em> quantized to a discrete structure.
+The Transformer is an existence proof that a high-performing language
+processor can carry gradient activity all the way to the output and
+decode from a blend, without an enforced discreteness step. Whether that
+is because language processing <em>tolerates</em> output gradience (the
+Zimmermann position, vindicated) or because the decoder’s final softmax
+<em>is</em> the quantization step (discreteness enforced, but only at
+the very last operation, on the output token rather than the
+representation) is a question the architecture poses sharply. Either
+way, the “output gradience” debate, which in linguistics is conducted
+over subtle phonological alternations, has a second empirical arena it
+has not noticed: every deployed Transformer is a running experiment on
+whether discrete structure must be quantized before use, and the answer
+it returns is <em>apparently not</em>.</p>
+</section>
+<section id="conclusion" class="level2">
+<h2>7. Conclusion</h2>
+<p>We set out to test whether the residual stream computes a parse and
+found something more specific than yes or no. The stream’s monotone
+accumulation is the join of a unification grammar, which makes HPSG the
+right comparison and Gradient Symbolic Computation the right account of
+its continuity. But HPSG’s two principles come apart in the transfer:
+the query/key mechanism is a selection principle that makes every
+position a head, and the residual write is a merge principle that makes
+none, and these cannot be reconciled into a discrete parse because the
+Transformer has no privileged per-combination head to reconcile them
+around. The resolution is to stop demanding a discrete parse: the layer
+computes a gradient blend in which selection supplies the soft
+grammatical constraints and merge supplies the continuous substrate, and
+a discrete structure quantizes out only insofar as the learned dynamics
+enforce discreteness — which, at interior positions, they largely do
+not.</p>
+<p>This is a less tidy conclusion than “Transformers are Harmonic
+Grammar parsers.” The Transformer is a constraint grammar that <em>never
+finishes parsing</em> — that carries a superposition of head-centric
+partial structures forward and decodes from the blend rather than from a
+quantized tree. Whether this is a limitation (it cannot represent the
+discrete structure language “really” has) or a discovery (language
+processing does not require the discrete structure we assumed) is the
+question that HPSG, GSC, and the Transformer, read together, force into
+the open. The companion essay argued that these architectures compute
+the <em>denotation</em> of a recursive definition rather than its trace.
+Here the denotation acquires a shape: it is a maximum-Harmony gradient
+feature structure, a blend of parses that the model was never under any
+obligation to collapse. The parse, if we want one, is something
+<em>we</em> quantize out of the model’s state by reading it discretely —
+a corner the dynamics passed near, not a tree they built.</p>
+<hr />
+<p><em>This article was co-authored by Łukasz Stafiniak and Claude
+(Anthropic). It is a technical companion to “Solving the Loop: How the
+Transformer Is Becoming a Recurrence Again,” and continues the line of
+“The Algebraic Mind Meets the Neural World” on the symbolic/subsymbolic
+relation. The HPSG material draws on Pollard and Sag’s formalism and on
+the neural joint-parsing line of Zhou and Zhao and of Li et
+al. (“Head-driven Phrase Structure Parsing in O(n³) Time Complexity”);
+the Gradient Symbolic Computation material on Smolensky and Legendre’s
+“The Harmonic Mind,” on Smolensky, Goldrick, and Mathis’s
+optimization-and-quantization framework, on the GSC dynamics results
+establishing that continuous neural dynamics perform discrete Harmony
+optimization and Boltzmann sampling under scheduled discreteness (q) and
+temperature (T) parameters, on Cho, Goldrick, and Smolensky’s dynamical
+incremental parser, and on Hsu’s overview of Gradient Harmonic Grammar;
+the tensor-product substrate on Smolensky’s original variable-binding
+work, and the binding-problem analysis and the subject/object
+(selection) reading of attention on Schlag, Schmidhuber, and colleagues’
+TP-Transformer (“Enhancing the Transformer with Explicit Relational
+Encoding for Math Problem Solving”). The explicit-role-binding research
+program we set our reading against includes the Tensor Product
+Generation Network (TPGN, “A Neural-Symbolic Approach to Natural
+Language Tasks,” sentence generation by learned unbinding), that work,
+the TP-N2F program-synthesis model (which combines TPR binding and
+unbinding), and the broader role-learning line they build on (Palangi et
+al., Huang et al.). The query-as-selection reading and the observation
+that residual merge is binding-symmetric are due to that program, not to
+us; the observation that unsupervised role induction yields hybrid
+positional/syntactic roles is TPGN’s. What we develop, as far as we know
+for the first time, is the reading of the binding problem through HPSG’s
+two principles, the argument that the mainstream architecture’s
+</em>refusal* of the role-binding fix places it in GSC’s
+pre-quantization blend, the identification of the
+deterministic/stochastic reasoning split with GSC’s
+optimization/sampling regimes, and the claim that deployed Transformers
+constitute a standing experiment on GSC’s output-gradience question.
+These are offered as conjectures inviting the layerwise-trajectory
+experiments §6 describes.*</p>
+</section>
+</section>
+</article>
+<script src="/assets/theme-toggle.js"></script>
+</body>
+</html>
