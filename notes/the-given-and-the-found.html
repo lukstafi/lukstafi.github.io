@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>The Given and the Found: What Test-Time Reasoning Amortizes,
+and What It Cannot</title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <link rel="stylesheet" href="/assets/tufte.css">
+  <link rel="stylesheet" href="/assets/pandoc-tufte.css">
+  <link rel="stylesheet" href="/assets/site.css">
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+  <script>(function(){var t=localStorage.getItem('theme-preference');if(t)document.documentElement.setAttribute('data-theme',t);})()</script>
+</head>
+<body>
+<nav class="site-nav">
+  <a href="/">Home</a> &middot; <a href="/about.html">About</a> &middot; <a href="https://lukstafi.substack.com">Substack</a>
+</nav>
+<div class="theme-toggle">
+  <button id="theme-btn" aria-label="Toggle dark mode">&#9788;</button>
+</div>
+<article>
+<section
+id="the-given-and-the-found-what-test-time-reasoning-amortizes-and-what-it-cannot"
+class="level1">
+<h1>The Given and the Found: What Test-Time Reasoning Amortizes, and
+What It Cannot</h1>
+<p><em>Łukasz Stafiniak and Claude (Opus 4.7)</em></p>
+<hr />
+<p>A small network, four attention layers, eight hundred thousand
+parameters, solves every instance of a Sudoku benchmark that defeats
+every polynomial-time human heuristic and forces real backtracking on
+symbolic solvers. On the same benchmark, Claude Opus 4.6, GPT-5.4, and
+DeepSeek V4-Pro score zero. A different architecture, trained on a
+thousand examples, takes a feedforward predictor that solves 2.6% of
+those puzzles and — by applying the <em>same</em> update block over and
+over, scaling the iteration count at test time to the equivalent of
+roughly forty thousand unrolled layers, though it was trained at only
+sixteen — drives accuracy past 99%. A third, twenty-seven million
+parameters and about a thousand training examples, reaches 91% on
+extreme Sudoku and 93% on hard mazes while frontier reasoning models sit
+at zero.</p>
+<p>The obvious gloss is that test-time compute is a new scaling axis,
+and that these “iterative reasoners” have found how to spend it. That
+gloss reframes the phenomenon without explaining it. The questions worth
+asking are narrower and harder. What is the extra computation actually
+<em>doing</em>? And — the part usually skipped — where does the
+<em>correctness</em> of the answer come from?</p>
+<p>These systems are, formally, dynamical systems: each maintains a
+latent state and applies a learned update <span
+class="math inline"><em>z</em><sub><em>k</em> + 1</sub> = <em>f</em><sub><em>θ</em></sub>(<em>z</em><sub><em>k</em></sub>; <em>x</em>)</span>,
+decoding the final state into a prediction. Test-time scaling is just
+more applications of the same learned rule. The tempting thing to say is
+that the iteration “computes the answer,” and the deeper that intuition
+runs the more it conflates things that come apart. This essay tries to
+pull them apart. The destination is a boundary — sharp, we think, and
+falsifiable — on what this whole program of architectures can and cannot
+do, and the route there passes through a series of findings about
+iterative reasoning that we think are worth carrying away on their own,
+whether or not the boundary we draw at the end turns out to be in the
+right place.</p>
+<p>Iterating a fixed operator cannot, by construction, supply
+correctness on its own — at inference <span
+class="math inline"><em>f</em><sub><em>θ</em></sub></span> injects no
+information it did not already encode. But it does not follow that the
+iteration is epistemically idle. Requiring the output to be a <em>fixed
+point</em> — a state <span
+class="math inline"><em>f</em><sub><em>θ</em></sub></span> leaves
+unchanged — admits only answers that are self-consistent under the
+learned dynamics and discards the rest, and in an aligned landscape
+self-consistency correlates with correctness. The fixed-point
+requirement is thus a <em>regularizer toward correctness</em>,
+structurally like a simplicity bias toward generalization: neither
+contains the answer, each tilts the search toward it under favorable
+conditions and toward a confident mistake under unfavorable ones — the
+self-consistent state that is nonetheless wrong being the exact analogue
+of the simplest hypothesis that is nonetheless false. The size of the
+tilt is the gap between applying <span
+class="math inline"><em>f</em><sub><em>θ</em></sub></span> once and
+iterating it to equilibrium, which can be the difference between 2.6%
+and 99% on the same puzzles. How that tilt is produced — divided between
+architecture, training, and run-time iteration — and where it runs out,
+is the rest of the essay.</p>
+<p>The papers we lean on are a recent cluster of iterative latent
+reasoners — Equilibrium Reasoners, Attractor Models, Generative
+Recursive Reasoning (GRAM), and the Lattice Deduction Transformer — read
+against two older landmarks that calibrate the extremes: an empirical
+analysis of what MuZero’s learned model actually contains, and the
+discrete-diffusion literature. They turn out to be facets of one
+picture.</p>
+<section id="three-things-the-field-conflates" class="level2">
+<h2>1. Three Things the Field Conflates</h2>
+<p>When an iterative reasoner solves a puzzle, three distinct objects
+are in play, and most discussion runs them together.</p>
+<p>The first is the <strong>correctness condition</strong>: what makes
+an answer right. For Sudoku it is the constraint that every row, column,
+and box be a permutation of the digits; for a maze, that the path is a
+valid shortest route; for a reinforcement-learning agent, a reward; for
+an energy-based model, a scalar energy. The condition is a fact about
+the <em>task</em>, prior to any network.</p>
+<p>The second is the <strong>landscape</strong>: the learned dynamical
+system, whose stable states — its attractors — are <em>supposed</em> to
+coincide with answers that satisfy the condition. This is what training
+produces. Equilibrium Reasoners state the ideal precisely: test-time
+scaling works when the model’s internal attractor landscape aligns with
+the task-metric landscape, so that descending the internal one — running
+more iterations — also moves toward a correct task solution. The
+internal landscape is a <em>surrogate</em> for the condition, and an
+imperfect one.</p>
+<p>The third is the <strong>search</strong>: the actual trajectory the
+system follows through the landscape at inference, including any
+restarts. This is what the iteration count and the number of parallel
+runs buy.</p>
+<p>Holding these apart is the whole game. The correctness condition is
+what we want; the landscape is a trained approximation to it; the search
+is a procedure for traversing the approximation. The iteration acts on
+the landscape and the search. The condition comes from somewhere else
+entirely. Almost every interesting question about these systems is a
+question about the <em>seams</em> between the three: where does the
+condition come from, how faithfully does the landscape approximate it,
+and when does traversing the landscape actually find answers to the
+condition rather than to its surrogate.</p>
+</section>
+<section id="the-spectrum-of-givenness" class="level2">
+<h2>2. The Spectrum of Givenness</h2>
+<p>The architectures differ most sharply in how much of the correctness
+condition is <em>guaranteed by construction</em> versus <em>only
+approximated by a trained surrogate that is trustworthy
+in-distribution</em>. This single axis orders the field and predicts its
+failure modes.</p>
+<p>At one end sit genuine energy-based models. Inference is descent on a
+scalar energy that someone wrote down; the fixed point is a minimum of a
+known objective; “correctness,” in the weak sense of optimizing that
+objective, is structural and comes with stability guarantees. Energy
+descent has a Lyapunov function by construction — convergence is not a
+hope but a theorem. (Energy-based models in this vein — Energy
+Transformers and their relatives — are the structure-rich anchor of the
+spectrum; we take them as given and do not develop them here.)</p>
+<p>A step in from that end is the <strong>Lattice Deduction Transformer
+(LDT)</strong>, which is the most instructive case in the whole cluster
+because it pins correctness architecturally while leaving everything
+else to training. LDT is built on abstract interpretation, the framework
+Cousot and Cousot introduced for sound approximate reasoning.
+Information states are elements of a lattice: a top element <span
+class="math inline">⊤</span> representing no information (every solution
+still possible) and a bottom element <span class="math inline">⊥</span>
+representing inconsistency (no solution remains). For Sudoku, the
+abstract domain assigns each cell the set of digits still viable; <span
+class="math inline">⊤</span> gives every cell all nine digits, and any
+cell collapsing to the empty set is <span class="math inline">⊥</span>.
+Deduction <em>descends</em> the lattice — it can only ever remove
+candidates — and the operator is <strong>sound by design but
+incomplete</strong>: a step may fail to derive a true fact, but it never
+derives a false one.</p>
+<p>The two domains, concrete (sets of full solutions) and abstract
+(per-cell candidate sets), are linked by an abstraction map <span
+class="math inline"><em>α</em></span> and a concretization map <span
+class="math inline"><em>γ</em></span> forming a Galois connection, and
+the most precise sound deduction operator for an instance <span
+class="math inline"><em>p</em></span> is <span
+class="math inline"><em>d</em><em>e</em><em>d</em><sub><em>p</em></sub>(<em>a</em>) = <em>α</em>(<em>γ</em>(<em>a</em>) ∩ ‖<em>p</em>‖)</span>
+— refine the state to keep only candidates surviving in at least one
+valid solution. LDT trains a recurrent transformer to approximate <span
+class="math inline"><em>d</em><em>e</em><em>d</em><sub><em>p</em></sub></span>
+from solution samples, encoding the lattice as a tensor (729 binary
+sigmoids for <span class="math inline">9 × 9</span> Sudoku, one per
+candidate) and projecting the latent state to and from it between
+forward passes. What matters is the division: the <em>form</em> of
+soundness — that the dynamics live on a lattice and can only remove
+candidates — is guaranteed by the architecture, so the model returns a
+correct answer or abstains, never a wrong one. What is <em>learned</em>
+is only the strength of the deduction: how many candidates each step can
+soundly eliminate. Correctness is architectural; competence is
+trained.</p>
+<p>A step further in sits <strong>MuZero</strong>, and it is worth
+placing carefully, because it is easy to overstate. MuZero’s correctness
+condition is given — the environment supplies reward — and the idealized
+Bellman operator it targets is a contraction mapping with a unique fixed
+point, which makes the whole thing <em>look</em> principled. But the
+operator MuZero actually plans with is not the true Bellman backup; it
+is a <em>learned, value-equivalent model</em>, trained to predict
+reward, value, and policy rather than to reconstruct the environment’s
+transitions. The recent analysis “What model does MuZero learn?” shows
+what that buys and what it costs: the learned model is generally not
+accurate enough for policy evaluation, and its accuracy <em>decays as
+the policy being evaluated drifts from the data-collection policy</em>.
+It is faithful where MuZero already plays and unreliable off-policy. The
+thing that rescues planning is the policy prior in Monte Carlo Tree
+Search, which biases search toward actions where the model is accurate —
+keeping the search in the region where the surrogate holds. So MuZero’s
+<em>condition</em> is given, but the <em>landscape</em> it searches is a
+local surrogate. The lesson is that a given reward plus an in-principle
+contraction does not add up to a globally trustworthy operator; the
+trustworthiness is, again, in-distribution only.</p>
+<p>At the far end are the pure learned-dynamics reasoners — Equilibrium
+Reasoners, HRM, TRM, Attractor Models, GRAM. Here the update <span
+class="math inline"><em>f</em><sub><em>θ</em></sub></span> need not be
+the gradient of any potential at all: no energy, no contraction, no
+Galois connection, no guarantee. Equilibrium Reasoners are explicit
+about the loosening, relaxing exact fixed-point convergence to the
+weaker notion of an <em>attractor</em> — a state, stable region, or
+“bounded recurrent set” toward which nearby trajectories are drawn —
+because literal fixed points are too much to ask of a learned operator
+whose residual stays nonzero. At this end the entire correctness burden
+falls on training shaping the landscape so its attractors happen to
+coincide with solutions, and there is nothing at construction time to
+fall back on.</p>
+<p>As you move down this spectrum, correctness migrates out of the
+architecture and into a trained surrogate, and the surrogate’s
+guarantees weaken from “theorem” to “holds where we trained it.” Every
+failure mode in the rest of the essay is a consequence of where a given
+system sits on it.</p>
+</section>
+<section id="convergence-is-not-self-certifying" class="level2">
+<h2>3. Convergence Is Not Self-Certifying</h2>
+<p>In a real energy-based model, a low-energy state is a good state by
+definition; the convergence signal <em>is</em> the objective. The moment
+you replace the energy with a learned surrogate, that identity breaks,
+and the break is the single most useful epistemic fact about these
+systems.</p>
+<p>Equilibrium Reasoners measure convergence by the fixed-point residual
+<span
+class="math inline">‖<em>f</em><sub><em>θ</em></sub>(<em>z</em>; <em>x</em>) − <em>z</em>‖</span>
+— how much the next iteration would still move the state. Across
+well-trained models, lower residual tracks lower prediction error
+tightly, which is what licenses using convergence as a stopping and
+selection signal. But the tracking is <em>earned</em>. For an un-shaped
+baseline, residual reduction can instead mean convergence to a
+<strong>spurious attractor</strong> — a stable, low-residual state that
+decodes to the wrong answer — and there, selecting the best-converged
+run from several restarts actually <em>underperforms</em> a simple
+majority vote across them. That inversion is the sharp diagnostic, and
+it is more alarming than it first sounds: if the residual were a good
+per-instance signal of correctness, the lowest-residual run would win;
+that it loses means confidence is uninformative about <em>which</em>
+answers are right, even when aggregate accuracy is high enough to invite
+trust. The dangerous regime, in other words, is not low accuracy — it is
+deployable accuracy paired with a confidence signal you cannot read. The
+convergence measure is, in the paper’s words, “a learned proxy whose
+reliability depends on the attractor landscape,” not a task-agnostic
+certificate.</p>
+<p>What “shaping” means here is specific, and it answers the natural
+suspicion that the fix is simply more training. It is not. Shaping is
+two interventions to the training procedure — sampling a
+<em>randomized</em> initial state per trajectory, and injecting <em>path
+noise</em> at each step — that act on the landscape’s geometry, widening
+the basins of correct attractors and loosening premature trapping in
+wrong ones. They help at a <em>fixed</em> training budget (on the maze
+task, lifting accuracy from 44.9% to 82.2% at equal compute), which is
+exactly what shows the lever to be geometry rather than duration. Why
+geometry is the lever, and what it is correcting, is laid out in the
+paper’s taxonomy of four regimes — a decomposition of the distinct
+<em>reasons</em> convergence and correctness come apart. In
+<strong>(a)</strong>, no reachable attractor decodes to a correct
+answer: the failure is misalignment, and no amount of compute helps,
+since residual reduction only carries you toward a confidently wrong
+state. In <strong>(b)</strong>, correct and spurious attractors coexist,
+and the failure is basin selection — a clean convergence into the wrong
+one. In <strong>(c)</strong>, the correct attractor exists but its basin
+is too narrow to fall into, and the failure is reachability. Only in
+<strong>(d)</strong>, the well-aligned regime, is residual decay tightly
+coupled to error reduction, so that “iterate to convergence and trust
+the result” is finally valid. The interventions are levers for moving a
+task out of (a), (b), or (c) and toward (d); until a task is there, the
+system’s sense of having settled is no evidence that it has settled on
+the truth.</p>
+<p>MuZero corroborates this in an entirely different domain. The
+off-policy decay of its learned model is the same phenomenon wearing
+different clothes: the surrogate is reliable in-distribution and
+misleading outside it, and the policy prior is precisely a mechanism for
+<em>not trusting the surrogate where it was not trained</em>. Whether
+the internal signal is a fixed-point residual or a value estimate, its
+calibration is bounded by the training distribution.</p>
+<p>The transferable lesson, independent of anything we go on to argue,
+is this: in any system whose objective at inference is a learned
+surrogate, the internal signal that it has “figured it out” — low
+residual, a stable state, high model confidence — is itself a trained
+artifact, and its calibration is only as wide as the data that shaped
+it. Anyone scaling test-time compute against a convergence criterion, a
+self-consistency check, or a confidence threshold is relying on a
+landscape alignment they have not separately verified. The signal can be
+confidently, stably wrong.</p>
+</section>
+<section id="depth-and-breadth-are-two-knobs-not-one" class="level2">
+<h2>4. Depth and Breadth Are Two Knobs, Not One</h2>
+<p>Test-time compute in these systems comes in two forms that are
+routinely treated as a single dial and are not. <strong>Depth</strong>
+is the number of iterations in a single trajectory — refining within
+whatever basin you have entered. <strong>Breadth</strong> is the number
+of independent restarts from different initializations — covering more
+basins. Equilibrium Reasoners track the total inference budget as their
+product, <span class="math inline">NFE = <em>D</em> ⋅ <em>B</em></span>,
+but the two factors do structurally different work, and the difference
+has a clean consequence.</p>
+<p>Depth <em>entrenches</em> the basin you are in. More iterations pull
+the trajectory further toward whatever attractor currently has it. This
+is exactly what you want in the well-aligned regime (d), where deeper
+iteration reliably refines toward the solution. It is exactly what you
+do <em>not</em> want in the two regimes where the problem is which basin
+you are in rather than how deep you are in it — and in those, more depth
+makes things worse while only breadth helps.</p>
+<p>The first such regime is the spurious-attractor case (b). If the
+trajectory has settled into a confident wrong answer, additional
+iterations sink it deeper into the error; the only escape is to start
+over from somewhere else. Equilibrium Reasoners observe precisely this
+interaction: breadth becomes effective only past a minimum depth (around
+four model steps, equivalent to a few hundred unrolled layers), enough
+for a restart to explore and commit to a basin; beyond that threshold,
+adding breadth consistently reduces both residual and prediction error,
+while adding depth alone cannot rescue a trajectory in the wrong
+basin.</p>
+<p>The second regime is genuine multiplicity, and it is conceptually
+distinct because here there is no wrong basin at all. N-Queens and graph
+coloring have many valid solutions, and an open grid offers a
+combinatorial number of equally short paths between two corners. When
+several attractors are all correct, settling on one is not an error — it
+is <em>information loss</em>. The system collapses a distribution it was
+supposed to keep. This is the failure GRAM is built to address:
+deterministic recursion, it argues, “collapses the space of plausible
+reasoning paths into a single attractor,” and the remedy is to make the
+latent transitions stochastic, turning the reasoner into a generative
+model over trajectories that can represent multiple hypotheses and scale
+by sampling them in parallel — width as a first-class axis alongside
+depth.</p>
+<p>Both pathologies — entrenchment in a wrong basin, and collapse of a
+legitimately multi-valued answer — are forms of premature convergence,
+both are immune to more depth, and both are answered by breadth. The
+unifying maxim is <em>do not over-settle</em>: keep the distribution
+alive until the task actually demands commitment. Read this way, a whole
+family of training tricks is one idea. The randomized initialization and
+path noise of §3 do double duty here: beyond aligning the landscape so
+convergence becomes a trustworthy signal, they are stochastic brakes on
+premature convergence — broadening where trajectories start and jostling
+them out of basins they would otherwise sink into too early. GRAM
+samples stochastic transitions to the same end; LDT uses a
+decide-temperature when it pins a cell and runs many parallel chains per
+puzzle. Each is a brake on premature convergence, applied at a different
+point in the trajectory.</p>
+<p>One direction the cluster gestures at but does not take — and we flag
+it as our reading rather than theirs — is that for genuinely
+multi-solution inputs the <em>right</em> terminal behavior may not be a
+fixed point selected from an ensemble of restarts, but a <strong>limit
+cycle</strong>: a bounded recurrent set that encodes “these are the
+valid readings” by visiting them in turn. The Equilibrium Reasoner
+formalism already permits this when it relaxes convergence to “a bounded
+recurrent set,” but the paper exercises the allowance nowhere, testing
+only unique-solution Sudoku where any cycling would be pathological and
+the lowest-residual run is by construction the one to keep. A
+distribution over valid attractors can be produced spatially, as an
+ensemble of independent restarts (GRAM, breadth), or temporally, as a
+single trajectory that refuses to settle and multiplexes the
+alternatives — the way bistable perception flips between the two valid
+three-dimensional readings of a Necker cube rather than averaging or
+choosing. None of these architectures makes a non-converging recurrent
+set its terminal competence; that it is even expressible is a hint worth
+following.</p>
+</section>
+<section
+id="amortization-is-learning-and-its-engine-is-signal-amplification"
+class="level2">
+<h2>5. Amortization Is Learning, and Its Engine Is Signal
+Amplification</h2>
+<p>The word “amortize” is doing double duty across this literature, and
+the two senses give opposite verdicts, so it pays to separate them.</p>
+<p>In the first sense, amortization is <strong>learning</strong>: the
+weights change to absorb computation that would otherwise happen at
+inference, <em>raising the attainable ceiling at fixed data</em>. The
+clearest evidence is Attractor Models, which treat refinement as solving
+for a fixed point in output-embedding space and obtain gradients by
+implicit differentiation, so training memory stays constant in the
+effective depth. They deliver a Pareto improvement over plain
+Transformers and over stable looped models — up to 46.6% better
+perplexity, up to 19.7% better downstream accuracy, at lower training
+cost — and a 770M-parameter model outperforms a 1.3B Transformer trained
+on twice the tokens. They also exhibit <em>equilibrium
+internalization</em>: trained only on next-token loss, the backbone’s
+initial guess drifts progressively closer to the fixed point over
+training, so fewer refinement steps are needed, until the solver can be
+removed at inference with little degradation. The loop self-distills
+into the feedforward initialization; in the authors’ phrase, “recurrence
+acts as a moving training target, teaching the backbone where its
+computation should converge.”</p>
+<p>In the second sense, amortization is <strong>efficiency</strong>: it
+leaves the ceiling where it is and reallocates compute — both by not
+spending, at deployment, compute the answer never needed, and by
+investing more training effort up front for fewer iterations at
+deployment. Equilibrium Reasoners show the first directly with adaptive
+computation: a learned halting head cuts the average number of function
+evaluations by 17.4× at large depth, or 5.8× under breadth scaling, for
+only a minor change in accuracy, by terminating easy instances early and
+reserving long runs for the hard tail. The second is the
+train-versus-test compute trade-off proper — pay more at training so the
+operator reaches its answer in fewer deployment steps, accuracy roughly
+held — which LDT quantifies below, and whose limit is equilibrium
+internalization itself: the deployment step count driven toward zero as
+the solver becomes removable. That last case is why internalization sat
+awkwardly above. It is genuinely two-faced — the same absorbed
+computation can be cashed as a higher ceiling at fixed budget (the
+learning reading) or as the same ceiling at lower deployment cost (the
+efficiency reading), and which one you observe depends only on whether
+you hold accuracy or compute fixed.</p>
+<p>The discriminator between the two is <em>ceiling versus
+cost-to-ceiling</em>: does the weights’ absorption of computation raise
+the accuracy attainable at fixed data, or only cut the compute spent
+reaching an accuracy already attainable? The cleanest controlled
+evidence for the first is easy to overstate, so it is worth being exact
+about what is matched. Equilibrium Reasoners’ construction path compares
+a 42-block feedforward Sudoku baseline against a weight-tied variant of
+2 blocks run for 21 iterations — 42 block-applications either way, the
+same inference compute, but roughly twenty-one times fewer parameters in
+the tied model. At that matched budget the tied structure lifts accuracy
+from 2.6% to 32.6%, in a regime of about a thousand training examples.
+<em>That</em> is a controlled result, and it says something specific: at
+fixed compute and far fewer parameters, the iterative structure raises
+the ceiling, the gain is the structure rather than raw depth, and it
+appears precisely where data is scarce — the signature of help to
+<em>learning</em> rather than to throughput. The headline figure for
+these systems — feedforward near 2.6%, the iterated operator past 99% —
+does not isolate the effect we are after, because it does not hold the
+test-time effort constant.</p>
+<p>The 99% remains a real and important result — it is test-time depth
+<em>extrapolation</em>, trained at 16 iterations and generalizing to
+over a thousand, which feedforward structure cannot do at all — but it
+is a capability claim, not a measurement of the learning effect. (LDT
+supplies a complementary within-model signature that needs no
+feedforward comparison: its per-puzzle compute distribution is bimodal,
+a “deduction mode” that solves with no search and a “search mode” that
+needs branching, and as training grows, mass shifts from search into
+deduction while the search-mode peak itself moves to fewer forward
+passes — search converted into amortized deduction inside the operator,
+with soundness pinned at 100% throughout, so the conversion is visibly
+cost-to-ceiling with the ceiling held fixed by architecture.)</p>
+<p>The mechanism behind the learning sense is signal amplification, and
+it is worth stating at the level of the gradient, because the naive
+version of it is false. “A confident prediction gets a stronger gradient
+push” is <em>not</em> true for ordinary cross-entropy against a fixed
+correct label: the gradient there scales roughly as (prediction −
+target), so a confidently correct output contributes almost nothing.
+What makes amplification real is that in all of these architectures the
+confidence sits on the <em>target</em> side, not the prediction side.
+The loop’s converged state is the target the initialization is regressed
+onto (Attractor Models); the MCTS visit counts are the target the policy
+head is regressed onto (MuZero and AlphaZero before it); LDT’s <span
+class="math inline"><em>α</em></span>-aggregate of still-consistent
+solutions is the target the candidate head is regressed onto. In each
+case a <em>confident intermediate computation manufactures a peaked
+target</em>, and a peaked target produces a large, sharply directed
+gradient on the component being distilled into; a diffuse intermediate
+makes a flat target and a weak, smeared push.</p>
+<p>So the amplitude of the learning signal comes from the confidence of
+the manufactured target; its <em>sign</em> comes from whether that
+target is grounded in truth. Where the target is grounded — a supervised
+label, LDT’s α-aggregate computed from real solutions, an actual game
+outcome — a confident and correct target distills competence quickly
+(this is equilibrium internalization and the automatic curriculum: the
+loop’s conviction, because it is also correct, sharpens the target its
+initialization chases), while a confident <em>wrong</em> convergence
+produces a large supervised error and is pushed back down. The gradient
+flattens the wrong basin; it does not deepen it. The failure mode is the
+ungrounded case — a self-generated target, frozen, with nothing to
+correct it, such as a policy head regressed onto its own search when
+that search was confidently mistaken. There the same strong push writes
+the error into the weights and biases the next search the same way; only
+a grounding signal breaks the loop, as when AlphaZero corrects a
+confident but losing line against the actual game outcome. Ungrounded
+self-distillation is the regime to fear; the grounded refinement the
+reasoners and LDT run is self-correcting. Which raises the question the
+section has been skirting: if the grounded gradient corrects wrong
+convergence, where do the spurious attractors of §3 come from? Not from
+the gradient deepening them, but from <em>underdetermination</em> —
+output-level supervision constrains the decoded answer only along the
+trajectories training actually visits, and leaves the rest of the latent
+landscape free to harbor stable states the loss never sees and never
+penalizes. That is why the corrections are geometric rather than
+gradient-shaped: randomized initialization and path noise widen the
+region the corrective gradient covers during training, and breadth at
+inference escapes a basin the gradient was never positioned to flatten.
+The brakes of §3 and §4 manage coverage of the landscape, not the sign
+of the push.</p>
+<p>Stated by itself, that amplification is only a <em>pull toward
+coarsening</em> — fewer, more decisive steps — and by itself it would
+predict that the single-step limit is best, which the 2.6% feedforward
+result flatly refutes. There must be an opposing force, and the sharper
+version of it is a claim about <em>learnability</em>. Set the
+amplification hypothesis as (1): compressing toward fewer, bigger steps
+is self-reinforcing during training, because a more decisive operator
+manufactures a more peaked target and the peaked target strengthens the
+gradient toward it. The counter-hypothesis (2): at a fixed parameter
+count, an operator that must accomplish a <em>bigger</em> change per
+step is harder to <em>learn</em> — the per-step map is a more complex
+function, the objective is worse-conditioned, the sample demand is
+higher — so the converged quality of a coarser-grained operator is, in
+expectation, lower. This is a learnability reading of what Equilibrium
+Reasoners call the capacity–complexity gap, and the relocation matters:
+the claim is not that a fixed operator <em>computes</em> a big step
+badly, but that a big-step operator is the harder one to <em>fit</em>.
+Because (1) and (2) are forces of the same kind — both acting on the
+operator during training, with opposite sign on step granularity — they
+do not merely coexist; they settle at an <em>optimal granularity</em>,
+finer where the target map is intrinsically harder and coarser where it
+is easy. The small-to-large curriculum that internalization traces is
+the trajectory of that balance point: early, the operator is weak and
+only a small step is learnable, so (2) dominates and the grain stays
+fine; as competence accrues, the learnable step coarsens and (1) gains,
+compressing the loop. Put loosely, the prescription is to amortize no
+faster than alignment improves; the learnability reading sharpens it to
+<em>no faster than learnability permits</em>.</p>
+<p>Read this way, the recurring design choices are the field paying to
+keep each step learnable. Deep supervision at every iteration — LDT
+supervises all sixteen of its internal iterations; Equilibrium Reasoners
+interleave parameter updates along the trajectory through segmented
+online training; the HRM/TRM lineage supervises per step — shrinks what
+any single step must fit, a per-step increment being a smaller and
+better-conditioned function than an end-to-end map. LDT’s α-operator is
+the most principled instance of the instinct: rather than supervising
+against one fixed answer, it computes the most precise <em>sound</em>
+refinement of the current state and hands that over as the target, a
+dense, state-conditional signal that keeps each step’s learning problem
+both well-posed and sound. The honest caveat is that this is the part of
+the picture least separated from its alternatives by the work in hand.
+“Bigger steps are harder to train at fixed capacity” shades into the
+general reason depth helps in deep learning at all, and the specific
+claim that the binding constraint is <em>learnability</em> rather than
+forward expressivity is exactly what none of these papers isolates; the
+ubiquity of deep supervision is strong circumstantial evidence but
+confounds learnability with mere optimization stability. The experiment
+that would separate them is a matched-parameter, matched-data sweep over
+<em>enforced</em> step granularity — capping the per-step change while
+holding the operator’s forward expressivity fixed — and it, too, is
+owed.</p>
+<p>Two further design choices shape not the grain of the amplification
+but its <em>sign</em>. MuZero’s policy prior is a confidence gate: it
+lets the amplification act only where the learned model is reliable,
+confining the search — and therefore the targets it manufactures — to
+the on-policy region the surrogate actually fits. Amplification with a
+leash. LDT engineers the asymmetry by hand at the loss: its
+candidate-elimination head, which must be sound because a wrongly
+eliminated candidate is unrecoverable, uses an asymmetric cross-entropy
+that weights false eliminations eight times more heavily than false
+retentions. That is deliberate <em>de-amplification</em> of the
+confidence-to-gradient feedback in the unsound direction — damping the
+push exactly where overconfidence would be irreversible — while a
+separate conflict-detection head, which must instead be complete, is
+trained symmetrically. The mechanism, in other words, is being tuned
+precisely to protect a correctness property.</p>
+<p>The cleanest single demonstration of the whole division of labor is
+LDT’s Sudoku table. Across training budgets of one, two, and four
+thousand steps, soundness stays pinned at 100% while accuracy climbs
+from 85.6% to 99.3% to 100% and inference cost falls from 0.78 to 0.028
+seconds per example. Roughly four times the training buys about a
+twenty-eight-fold reduction in inference search — and correctness never
+moves, because correctness was installed by the architecture and was
+never training’s to give. Training bought completeness and speed;
+soundness was already there.</p>
+</section>
+<section id="the-boundary-amortizing-search-versus-amortizing-discovery"
+class="level2">
+<h2>6. The Boundary: Amortizing Search Versus Amortizing Discovery</h2>
+<p>Everything in the previous sections amortizes and accelerates
+<em>search over a correctness condition that is given</em> — and it does
+so, on the evidence, almost without limit. Forty thousand effective
+layers; 99%-plus on extreme Sudoku; superhuman play; an 800K-parameter
+network at 100% where frontier LLMs are at 0%. Within a given condition,
+the iterative-reasoning program is extraordinarily strong.</p>
+<p>Not one of these systems amortizes the <em>discovery</em> of the
+condition. And that, we think, is the real demarcation — not a limit on
+compute or parameters, but a structural line between problems that hand
+you the correctness condition (the rules, the energy, the reward, the
+task metric, the Galois connection) and problems where the condition
+itself must be inferred per instance before any of the machinery can
+run.</p>
+<p>LDT draws the line on itself, with unusual self-awareness. It works,
+its authors note, wherever “a fixed set of rules induces a sound
+deduction operator that the model learns to apply” — Sudoku, snowflake
+Sudoku, mazes, anything with stable logical structure. ARC breaks it.
+There each task carries its <em>own</em> rules, which the model must
+infer from a handful of demonstrations before it can deduce anything at
+all about the test input. A naive port of LDT plateaus around 36% and —
+tellingly — <em>gets no benefit from test-time search whatsoever</em>,
+because the conflict head becomes unreliable and the search can no
+longer tell good branches from bad. The convergence signal, the thing
+that made everything else work, goes dark when there is no fixed
+condition for it to track. The authors’ own escape hatch is to imagine
+“a different abstract domain entirely: one over the <em>programs</em>
+that produce solutions, rather than over the solution states
+themselves.”</p>
+<p>That move — from a domain over solutions to a domain over the
+programs that generate them — is the move from <em>deduction</em> (apply
+a given rule system) to <em>abduction and induction</em> (infer the rule
+system that fits the evidence), and the point is that making it
+dissolves the very scaffold that made amortization work. The lattice,
+the Galois connection, the contraction, the energy: each is a way of
+<em>encoding a fixed correctness condition</em>, and each is what the
+iteration exploits. Take away the fixed condition and you take away the
+structure the search descends; you are back to the conflict head
+guessing, the residual uninformative, depth entrenching nothing in
+particular.</p>
+<p>This yields a falsifiable prediction, which is the reason to prefer
+the demarcation framing over the trivial “dynamics don’t supply
+correctness” version it replaces. The prediction is that scaling these
+architectures will continue to own Sudoku-, maze-, and SAT-shaped
+problems at essentially any scale, and continue to hit a wall on
+ARC-shaped, rule-induction problems at essentially any scale, <em>for
+one structural reason</em>: the former hand you the condition and the
+latter require you to find it. The dividing line is givenness, not
+difficulty and not size. If a future system in this family cracked
+open-ended rule induction by scaling depth, breadth, and amortized
+training alone — without acquiring some new mechanism for representing
+and searching over candidate <em>conditions</em> — the demarcation would
+be wrong.</p>
+<p>We should be honest that the strongest form of the
+amortization-as-learning claim is not decisively established by these
+papers, because they bundle two things — learning to iterate and
+learning to compress — that two complementary experiments would tell
+apart. The first holds compression off: let the operator learn to
+iterate but prevent it from learning to compress — fix or re-randomize
+the initialization so it cannot drift toward the fixed point, and cap
+the per-step change so it cannot coarsen its steps — then run it to
+convergence. If quality survives, iterating a locally competent operator
+suffices and compression is efficiency layered on top; if it collapses,
+compression is doing the real work. (Equilibrium Reasoners’ randomized
+initialization is already half of this control, blocking
+initialization-internalization, but it leaves step-coarsening free; the
+enforced-granularity sweep of §5 is its trainability-focused cousin.)
+The second pushes compression to its limit: train with the loop, then
+remove it, versus never train with the loop, holding data fixed and
+<em>sweeping across data scale</em> — testing whether training through
+the loop raises the attainable feedforward ceiling, and whether that gap
+widens as data shrinks, which would be the signature of learning rather
+than efficiency. LDT’s train-versus-search compute curve and the
+policy-improvement bootstrap that AlphaZero and MuZero inherit make the
+ceiling-lift plausible from the principled side, where an improvement
+operator provably manufactures a target stronger than the raw label. But
+neither experiment has been run cleanly here. Our reading is that
+iterating a locally competent operator carries most of the headline
+quality, with compression buying efficiency and some additional ceiling
+— we think it, and we have not proven it.</p>
+</section>
+<section id="what-the-map-says" class="level2">
+<h2>7. What the Map Says</h2>
+<p>Pull the threads together and the picture is a map rather than a
+thesis, which is as it should be for a literature this young.</p>
+<p>Three objects, kept apart: the correctness condition, the learned
+landscape that approximates it, the search that traverses the landscape.
+The iteration acts on the second and third; the first is supplied from
+outside. The architectures order themselves on a spectrum of
+<em>givenness</em> — from energy-based models and LDT, where a
+correctness property is guaranteed by construction, through MuZero,
+where the condition is given but the operator that searches it is a
+local surrogate, to the pure learned-dynamics reasoners, where the
+entire burden falls on training and nothing is guaranteed. As you slide
+toward the learned end, the convergence signal stops certifying itself:
+a low residual or a confident value becomes a trained proxy, reliable
+only where the landscape was aligned, and capable of settling stably
+into a confidently wrong answer. Depth and breadth turn out to be
+different instruments — depth refines within a basin and entrenches it,
+breadth changes basins — so the failures of premature convergence,
+whether sinking into a spurious attractor or collapsing a legitimately
+multi-valued answer, yield to breadth and not to depth. Amortization,
+where it raises the ceiling rather than merely trimming cost, is
+learning, and its engine is a single gradient-level fact: a confident
+intermediate computation manufactures a peaked target, whose amplitude
+amplifies the learning signal and whose sign is set by whether the
+target is grounded in truth — so grounded refinement corrects its own
+errors while ungrounded self-distillation can entrench them, which is
+why the bootstrapped systems lean on grounding signals, and why spurious
+attractors trace to gaps in landscape coverage rather than to the
+gradient deepening them. That amplifying pull toward coarser, more
+decisive steps is held in check by an opposing learnability pressure — a
+bigger per-step change is harder to fit at fixed capacity — so the two
+settle at an optimal step granularity that training walks from fine to
+coarse. And the whole program, however far it scales, amortizes search
+over a <em>given</em> condition and never the discovery of one.</p>
+<p>This has been an essay about what these dynamics <em>compute</em> and
+whether what they compute is <em>right</em> — a question we have kept
+deliberately separate from what, if anything, it is <em>like</em> to be
+a system in such a dynamical mode, which is the subject of the companion
+piece in this series, “The Dynamics That Matter.” The two questions meet
+at exactly one point, and only to confirm that they come apart: a system
+can settle stably, confidently, and with every internal signal of
+completion into a spurious attractor — maximally “settled,” entirely
+wrong. Stability of the dynamical mode is one thing; correctness of its
+content is another. (The settling itself, as relaxation toward an
+attractor, is the subject of “The Settling Backstop”; the reading of a
+stable attractor as a kind of homeostat is developed in “The
+Acquaintance Relation as Cognitive Homeostasis.” Here we need only the
+negative point that settling, however vivid, certifies nothing about the
+world.)</p>
+<p>The systems we have been describing have learned to <em>apply</em> a
+given correctness condition with a reliability that, on the right
+problems, is already superhuman. They are silent on where the condition
+comes from. The next problem — the one ARC poses and the one these
+architectures, as built, cannot reach — is not amortizing the search but
+amortizing the <em>discovery</em>: learning to find the rules, the
+energy, the lattice, the condition, rather than to descend one handed to
+you. That is a different kind of learning than any of these perform, and
+it is where open-ended reasoning actually lives.</p>
+<hr />
+<p><em>This article was co-authored by Łukasz Stafiniak and Claude (Opus
+4.7). It continues the series on mind, metaphysics, and artificial
+cognition published at lukstafi.github.io and syndicated at
+lukstafi.substack.com. The principal sources are the recent cluster of
+iterative latent reasoners — Equilibrium Reasoners; the Attractor Models
+/ Deep Equilibrium line; Generative Recursive Reasoning (GRAM; Baek, Jo,
+Kim, Ren, Bengio, Ahn); and the Lattice Deduction Transformer (Davis,
+Haller, Alfarano, Santolucito), with its grounding in the
+abstract-interpretation framework of Cousot and Cousot — read against
+the analysis of MuZero’s learned model in “What model does MuZero
+learn?” and against the discrete-diffusion literature (D3PM and its
+lattice-structured successors). The framework on dynamical modes
+referenced at the close is developed in earlier articles in the series,
+especially “The Dynamics That Matter: Online Learning, Consolidation,
+and the Modes of Machine Mind,” “The Settling Backstop,” and “The
+Acquaintance Relation as Cognitive Homeostasis.”</em></p>
+</section>
+</section>
+</article>
+<script src="/assets/theme-toggle.js"></script>
+</body>
+</html>

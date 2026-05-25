@@ -446,6 +446,34 @@ of them. But the computational primitive is the same throughout: relax a
 state, under a learned transformation, toward a value that the
 transformation leaves fixed. The Transformer is being rebuilt out of
 this primitive from both directions.</p>
+<p>There is a third place the same move appears, and noticing it makes
+the unification look less like a coincidence of two axes than like a
+single fact about residual computation. The residual stream of an
+<em>ordinary</em> feedforward Transformer — no looping, no
+linear-attention state — is itself a recurrence over depth: unrolling
+<code>h_l = h_{l-1} + f_{l-1}(h_{l-1})</code> shows that every layer
+receives the same uniformly-weighted sum of all prior layer outputs,
+with the hidden state as the carried state and each layer as one
+additive update. This is the same additive form as a linear-attention
+memory, now running along the layer stack rather than the sequence. The
+AttnRes proposal makes the parallel exact through a structured-matrix
+lens: write the input to layer <code>l</code> as a weighted sum
+<code>∑ M_{i→l} v_i</code> over earlier layer outputs, and the standard
+residual is the all-ones lower-triangular mixing matrix <code>M</code> —
+the depth-wise analogue of a rank-one linear-attention state.
+Multi-stream residual variants raise its semiseparable rank (they are
+depth-wise <em>linear</em> attention with a matrix-valued state);
+replacing the fixed accumulation with learned softmax weights over
+preceding layers makes <code>M</code> dense — depth-wise
+<em>softmax</em> attention, the same linear-to-softmax upgrade that the
+sequence axis underwent, now applied across depth. The structured-matrix
+framework here is the one Mamba-2 introduced to expose state-space
+models and attention as two readings of one semiseparable matrix;
+AttnRes extends it to the depth axis. The point for us is that the
+rank-raising story of §4’s bridge — recurrence is low-rank structured
+mixing, and adding iterations or heads or density raises the rank toward
+the dense limit — is not special to the sequence or the loop. It is what
+residual accumulation <em>is</em>, on every axis a Transformer has.</p>
 </section>
 <section id="three-frictions" class="level2">
 <h2>5. Three frictions</h2>
@@ -471,6 +499,21 @@ statement about what the trained network actually uses. The honest
 version is narrower: looping buys expressivity of a specific algebraic
 kind (state tracking), not a general conversion of FLOPs into context
 length.</p>
+<p>This is worth holding loosely, because the residual stream’s depth
+behavior is itself contested. The horizon-flattening just described —
+distant contributions attenuated by re-injection — is one diagnosis; the
+AttnRes line argues a different pathology of the same mechanism, that
+uniform additive accumulation makes the hidden-state magnitude grow with
+depth and <em>dilutes</em> each layer’s contribution, burying
+early-layer information so it cannot be selectively retrieved (which is
+why a substantial fraction of layers can often be pruned with little
+loss). Both are versions of the claim that fixed residual accumulation
+wastes the depth it is given, and both motivate giving the network
+learned, content-dependent control over how layer outputs combine —
+exactly the depth-wise softmax upgrade above. The friction is therefore
+real enough that it is being actively engineered around; what one should
+not do is treat residual re-injection as simply the neutral way these
+models work.</p>
 <p><strong>Convergence is not a correctness certificate.</strong> It is
 tempting to read the fixed-point residual as a free confidence signal:
 if the dynamics have settled, the answer must be good. The
@@ -649,7 +692,10 @@ Models; Zhu et al. on Ouro looped language models; the
 equilibrium-reasoning and attractor-model work; and Baek et al. on
 Generative Recursive Reasoning), the tiny-reasoner line (the
 Hierarchical Reasoning Model and Jolicoeur-Martineau’s Tiny Recursive
-Model), and the expressivity results of Merrill and Sabharwal and the
+Model), the depth-axis residual line (the Attention Residuals proposal,
+which recasts residual accumulation as depth-wise attention via the
+structured-semiseparable-matrix framework of Dao and Gu’s Mamba-2), and
+the expressivity results of Merrill and Sabharwal and the
 dense-linear-RNN state-tracking literature. The denotational framing
 draws on Kleene’s fixed-point theorem and the standard semantics of
 recursive definitions.</em></p>
