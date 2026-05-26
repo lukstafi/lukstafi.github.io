@@ -1,0 +1,907 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>A Parser Without a Grammar: Where the Transformer Sits Among
+the Formalisms</title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <link rel="stylesheet" href="/assets/tufte.css">
+  <link rel="stylesheet" href="/assets/pandoc-tufte.css">
+  <link rel="stylesheet" href="/assets/site.css">
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+  <script>(function(){var t=localStorage.getItem('theme-preference');if(t)document.documentElement.setAttribute('data-theme',t);})()</script>
+</head>
+<body>
+<nav class="site-nav">
+  <a href="/">Home</a> &middot; <a href="/about.html">About</a> &middot; <a href="https://lukstafi.substack.com">Substack</a>
+</nav>
+<div class="theme-toggle">
+  <button id="theme-btn" aria-label="Toggle dark mode">&#9788;</button>
+</div>
+<article>
+<section
+id="a-parser-without-a-grammar-where-the-transformer-sits-among-the-formalisms"
+class="level1">
+<h1>A Parser Without a Grammar: Where the Transformer Sits Among the
+Formalisms</h1>
+<p><em>Łukasz Stafiniak and Claude (Opus 4.7)</em></p>
+<hr />
+<section id="abstract" class="level2">
+<h2>Abstract</h2>
+<p>An earlier essay in this series argued that the residual stream
+performs a monotone information-merge — structurally a join, the
+structure-building operation a unification grammar uses, though directed
+by a target’s query over gathered sources rather than driven by the
+structures themselves — which made Head-driven Phrase Structure Grammar
+the natural point of comparison, and then found a fault line: HPSG’s
+head-projection and its feature-unification, which coexist peacefully in
+the grammar, come apart when transplanted into a Transformer, for a
+single reason: the selector is not part of the value space. The query
+that gathers each combination is never among the values the merge sums,
+so the head is a selector over the structure, never a constituent within
+it — with the binding problem of stacked attention as the same
+exclusion’s other face. This essay takes that fracture as a clue rather
+than a defect, and asks the more general question it implies: not
+<em>which</em> grammatical formalism the Transformer instantiates, but
+what the <em>space</em> of formalisms can tell us about where in it the
+architecture sits. We treat six traditions — HPSG, Combinatory
+Categorial Grammar, Lexical-Functional Grammar, Dynamic Syntax,
+Construction Grammar, and Word Grammar, with Transformational-Generative
+Grammar as a negative anchor — as <em>coordinates</em> rather than as
+candidates in a fit contest: each fixes one axis of grammatical design,
+and the architecture’s position on each axis is a fact we can read. The
+thesis that emerges is that the Transformer is a member of no family
+because its signature is to <em>un-bundle</em> design choices that every
+established formalism fuses — selection from merge, function from
+precedence, inventory from combination, grammar from parser, structure
+from process. The headless-merge fracture is the first instance of a
+general pattern. We close by arguing that this un-bundling is possible
+only because the substrate is gradient rather than discrete: Gradient
+Symbolic Computation is the account of <em>how</em> a continuous system
+can occupy a blend of the corners the discrete formalisms each pick out
+— not a seventh formalism — and why the architecture is under no
+obligation to land on any one of them.</p>
+</section>
+<section id="the-wrong-question" class="level2">
+<h2>1. The Wrong Question</h2>
+<p>There is a question about Transformers and grammar that gets asked
+constantly and is almost worth retiring. It is: <em>which</em>
+grammatical formalism does the Transformer secretly implement? The
+question has produced a small industry of probing studies, and the
+industry’s findings are real and worth having. A recent systematic
+review of linguistic interpretability — López-Otal and colleagues,
+covering some 160 works across syntax, morphology, lexico-semantics, and
+discourse — assembles the verdict: syntactic information is robustly
+recoverable from the hidden states of pretrained language models, often
+more robustly than semantic information, acquired early in training,
+located (with much dispute about exactly where) in the middle layers,
+and detectable in attention heads that specialize in particular
+dependency relations. Structure is <em>there</em>, in the sense that a
+trained probe can pull it back out.</p>
+<p>But the probing paradigm, as the introduction to “Merge and
+Selection” observed, tells us that structure is present without telling
+us what operation produces it. And it is silent, by construction, on the
+question this essay cares about. A linear probe that recovers a parse
+tree from layer eight establishes that the information is linearly
+available at layer eight. It does not establish that any layer
+<em>built</em> that tree by an operation a syntactician would recognize,
+any more than the recoverability of a thermometer reading from a column
+of mercury means the mercury computed a temperature. The review itself
+is admirably frank about this: it foregrounds the
+correlation-versus-causation problem, the rise of causal and amnesic
+probes meant to address it, the finding that probes may be reading off
+the linear context surrounding a token rather than any structured
+representation, and the awkward result that one can shuffle word order
+in pretraining and still train a serviceable model — which suggests that
+some of the apparent syntax is statistical co-occurrence wearing a
+tree-shaped mask. The state of the art in linguistic interpretability is
+a large, careful catalogue of what is <em>recoverable</em>, and
+recoverability is one step removed from what we want.</p>
+<p>There is a cleaner demonstration of the gap, and it comes from
+outside the interpretability literature, in a study that is not about
+Transformers at all except as a control. Stanojević, Brennan, Steedman,
+Hale, and Dunagan modelled the brain signals of people listening to an
+audiobook, asking whether incremental structure-building metrics derived
+from a Combinatory Categorial Grammar parser explain neural activity
+<em>over and above</em> the next-word predictability estimated by a
+Transformer language model. They found that they do, in the left
+posterior temporal lobe, and — the part that matters here — that the two
+contributions are spatially <em>separable</em>: the structure-building
+effect is distinct from the predictability effect, which lives
+bilaterally in superior temporal cortex. The Transformer, in their
+design, is the thing that carries predictability; the grammar is the
+thing that carries structure-building; and the brain keeps them in
+different places. Whatever one makes of the neuroscience, the
+methodological lesson transfers. <em>Structure-building and
+predictability are different functions.</em> A model can be superb at
+the second while the first remains a separate question — which is why
+“the probe recovered a tree” cannot answer “what does the architecture
+compute.”</p>
+<p>So we set aside “which formalism is it” and ask instead: the
+formalisms disagree with one another along identifiable axes — about
+whether combination consumes its inputs, about whether one parallel
+structure or several are maintained, about whether the grammar is a set
+of rules or an inventory of constructions, about whether there is a
+separate structural object at all. Each disagreement is a design
+decision, and a Transformer, being a definite mechanism, comes down
+somewhere on each. The formalisms, read this way, stop being rivals
+competing to be the right answer and become a <em>coordinate
+system</em>. The interesting facts are the architecture’s coordinates —
+and, as we will see, the fact that no single formalism shares all of
+them, because each formalism bundles together choices the architecture
+pulls apart.</p>
+<p>A note on what follows. We assume a reader who will recognize a
+slash-category and a feature structure but not necessarily all six
+formalisms; we give each the minimum it needs at the axis where it is
+the exemplar, and no more. The contribution is conceptual. Where a
+mapping is ours rather than the field’s, we say so.</p>
+</section>
+<section id="six-axes" class="level2">
+<h2>2. Six Axes</h2>
+<section id="monotonicity-hpsg-and-the-rewrite-grammar-at-the-far-pole"
+class="level3">
+<h3>2.1 Monotonicity: HPSG and the rewrite grammar at the far pole</h3>
+<p>“Merge and Selection” established the positive pole of the first
+axis: because the residual stream is never overwritten, only added to,
+the core update is a monotone <em>merge</em> — the join in the
+information ordering of a constraint grammar — rather than the
+destructive rewrite of a phrase-structure rule, which consumes its
+left-hand side. (That essay also marks the limit of the resemblance: the
+combination at each position is directed by the target’s query, built
+from the sources it gathers, and assembled by the MLP — rather than
+driven by the structures themselves — so it is the structure-building
+<em>operation</em> of a unification grammar without the structure-driven
+inference.) That is what made Head-driven Phrase Structure Grammar the
+comparison, the lexicalized unification formalism whose derivation is a
+bundle of features that only grows. We take that result as given and ask
+what sits at the <em>other</em> end of the axis.</p>
+<p>The negative pole is anchored, cleanly and somewhat unfairly, by
+Transformational-Generative Grammar. The transformational tradition is
+built on operations that are destructive in the way unification is not:
+movement leaves a trace and displaces material, deletion removes it, the
+derivation rewrites its own intermediate structures on the way to the
+surface. A grammar of <em>transformations</em> is a rewrite system par
+excellence, and it is the formalism the residual stream’s
+accumulate-don’t-overwrite character is most directly <em>unlike</em>.
+This is why we include it as an anchor rather than a contestant: its
+value to the coordinate system is to mark the far end of the axis.</p>
+<p>But the anchoring has to be done with care, because the obvious
+version of it is wrong, and a reader who knows the Minimalist Program
+will catch the error. Bare <em>Merge</em>, the basic structure-building
+operation of minimalist syntax, is not destructive at all — it is
+monotone set-formation, taking two objects and forming the set
+containing them, adding structure without removing any. Merge, in
+isolation, sits near the residual stream’s pole, not opposite it. What
+anchors the destructive end is specifically <em>Internal</em> Merge —
+movement — together with the older transformational apparatus of
+deletion and trace: the operations that displace and erase. So the
+precise statement is that the transformational tradition occupies the
+negative pole <em>because of movement</em>, not because of Merge, and
+the architecture’s monotonicity is a vote for Merge-without-Move —
+combination that only ever adds, with no operation that relocates or
+deletes what an earlier step established. Where a transformational
+grammar would move a constituent and leave a gap, the Transformer can
+only write another vector into the stream; whatever displacement it
+achieves, it achieves by addition, not by relocation. This will matter
+again when we reach the one operation that looks like retraction.</p>
+</section>
+<section id="directionality-ccg-and-the-head-the-join-throws-away"
+class="level3">
+<h3>2.2 Directionality: CCG and the head the join throws away</h3>
+<p>The fracture “Merge and Selection” arrived at was this: the residual
+merge is a <em>symmetric</em> operation. A join is commutative —
+<code>A ⊔ B = B ⊔ A</code> — and unification does not distinguish a head
+from a dependent; it merges descriptions without governance. So the pure
+merge reading, faithful as it is to the monotonicity of the stream,
+erases the head-driven character that names HPSG. The Transformer’s
+combination, taken as a join, is <em>headless</em>.</p>
+<p>There is a formalism whose combinatory operation is built to be
+directional from the start, and it is the natural exemplar of a second
+axis. Combinatory Categorial Grammar — Steedman’s framework, with roots
+in the categorial grammars of Ajdukiewicz and Bar-Hillel and a semantics
+that runs in lockstep with the syntax in the Montague tradition —
+assigns each word a category that is either basic or a <em>function</em>
+seeking arguments. A transitive verb is <code>(S\NP)/NP</code>:
+something that, given an <code>NP</code> to its right, yields something
+that, given an <code>NP</code> to its left, yields <code>S</code>.
+Combination is <em>function application</em>, and application is
+inherently asymmetric: one category is the functor, the other the
+argument, and the slash even encodes the <em>direction</em> in which the
+argument is sought. This is the asymmetry HPSG’s symmetric join
+discards, recovered as the primitive of the combinatory operation.</p>
+<p>And it maps onto the Transformer with surprising directness — onto
+the part of the architecture the monotonicity reading left out. Consider
+the query/key mechanism on its own. A position computes a query, a
+specification of what it is looking for, and attends to positions whose
+keys match that specification. A query is, functionally, a function
+seeking an argument of a certain type; the key advertises the type of
+argument a position can serve as; attention is the application of the
+one to the other. The functor/argument asymmetry of CCG is the query/key
+asymmetry of attention. This reading is not original to us — the authors
+of the TP-Transformer described an attending cell as a <em>subject</em>
+querying others for an <em>object</em>, which is selection by another
+name — but CCG sharpens it: the slash direction, the thing categorial
+grammar adds to bare valence, is the directional signature attention has
+and a symmetric join lacks.</p>
+<p>So CCG appears to repair HPSG’s defect. It does — and in doing so it
+incurs the <em>opposite</em> defect, the first instance of this essay’s
+thesis. CCG’s application is <strong>not monotone</strong>. When a
+functor applies to its argument, the functor is <em>consumed</em>:
+<code>(S\NP)/NP</code> combined with an <code>NP</code> yields
+<code>S\NP</code>, and the original category is gone, discharged into
+the result. Application is as destructive of its functor as a rewrite
+rule is of its left-hand side — that is what it means for the slash to
+“cancel.” So CCG sits on the <em>wrong</em> side of the monotonicity
+axis: it wins directionality and loses accumulation, where HPSG wins
+accumulation and loses directionality. Neither formalism gives both. And
+the Transformer, manifestly, wants both: it has the directional
+query/key asymmetry of CCG application <em>and</em> the monotone
+never-overwrite accumulation of HPSG unification, because in the
+architecture these are <em>two different mechanisms</em> — the query/key
+inner product on one hand, the residual write on the other — rather than
+two aspects of one combinatory operation. A discrete formalism must fuse
+them: its single <code>combine</code> operation is either
+symmetric-and-monotone (HPSG) or directional-and-consuming (CCG),
+because a discrete operation happens at one point and cannot be two
+things there. The Transformer factors them apart and runs them at
+different sites. This is un-bundling, and it is why CCG and HPSG each
+match the architecture on one axis and miss on the other: they are each
+a <em>bundling</em> of a directionality choice with a monotonicity
+choice, and the architecture has unbundled the pair.</p>
+<p>One thing CCG genuinely contributes beyond the directionality axis,
+and we should credit it because it complicates a later section: CCG is
+<em>incremental</em>. Its flexible constituency — type-raising and
+composition allowing many derivations of the same string — lets even a
+simple left-to-right parser combine words as they arrive, without
+waiting for a phrase to complete. The brain study above leans on this:
+CCG’s left-branching incremental derivations are what let it track
+word-by-word processing. We flag it here because incrementality will
+return as its own axis, and CCG’s claim to it is real; what
+distinguishes the temporal exemplar we reach in §2.4 is not
+incrementality as such but the dissolution of the grammar/parser
+distinction, which CCG does not perform.</p>
+</section>
+<section id="strata-lfg-and-the-conflation-of-position-with-function"
+class="level3">
+<h3>2.3 Strata: LFG and the conflation of position with function</h3>
+<p>A third axis concerns how many parallel structures a grammar
+maintains. Most formalisms produce one structural object — a tree, a
+derivation. Lexical-Functional Grammar maintains <em>two</em>, related
+but autonomous. There is <strong>c-structure</strong>, a constituency
+tree encoding precedence and dominance — who comes before whom, what
+groups with what — and there is <strong>f-structure</strong>, an
+attribute-value matrix encoding grammatical functions — subject, object,
+the features that unify — which is monotone and unification-based in
+just the way §2.1 described. The two are linked by a correspondence, the
+φ mapping, that says which nodes of the tree project which parts of the
+functional structure. LFG’s bet is that <em>positional</em> facts and
+<em>functional</em> facts are different kinds of information that need
+separate representations and a mapping between them, because they do not
+align one-to-one: the same grammatical function can be realized in
+different tree positions across languages, and a single tree position
+can host different functions.</p>
+<p>The Transformer does not obviously have two structures. It has one
+residual stream. And this is where LFG earns its place as a coordinate,
+by reframing an otherwise puzzling empirical result. Recall — from the
+explicit-binding research program “Merge and Selection” engaged — the
+finding from the Tensor Product Generation Network: when that model was
+made to induce its binding roles <em>unsupervised</em>, the roles it
+discovered came out as a <em>hybrid</em> of positional and
+syntactic/semantic types, neither purely “slot i in the sequence” nor
+purely “grammatical function,” but a blend of the two. On the LFG
+reading this becomes evidence. It is the signature you would expect if
+the architecture is collapsing c-structure and f-structure onto a
+<em>single</em> vector — superimposing the positional stratum LFG keeps
+separate from the functional one. LFG predicts that a system with only
+one representational layer, asked to carry both kinds of information,
+would carry them entangled; the TPGN roles are that entanglement,
+observed.</p>
+<p>So the architecture’s coordinate on the stratal axis is
+<em>collapse</em>: it occupies the position of a grammar that has run
+LFG’s two strata together into one. And this rhymes with a recurring,
+unresolved finding in the interpretability survey — that syntactic and
+semantic information are sometimes reported as living in
+<em>separate</em> linear subspaces and sometimes as <em>conflated</em>,
+with no settled verdict. The stratal axis suggests why the verdict is
+unsettled: a single stream can encode two strata in
+approximately-orthogonal subspaces (looking separate) or in overlapping
+ones (looking conflated), and which you observe depends on the probe,
+the layer, and how hard the training pressed the two apart. LFG names
+the strata that are being collapsed; the survey’s contradiction is what
+collapse looks like from the probing side. The un-bundling here runs the
+other way from §2.2 — the architecture <em>bundles</em> what LFG keeps
+separate — which is worth stating plainly: the Transformer is not
+uniformly a splitter. It unbundles selection from merge and bundles
+position with function. The pattern is not “the architecture always
+factors things apart” but “the architecture’s factoring does not match
+any formalism’s, fusing where they split and splitting where they
+fuse.”</p>
+</section>
+<section id="time-dynamic-syntax-and-the-grammar-that-is-a-parser"
+class="level3">
+<h3>2.4 Time: Dynamic Syntax and the grammar that is a parser</h3>
+<p>Every formalism so far describes a static object — a well-formed
+structure, a license on strings — and leaves to a separate “parser” the
+business of building it left-to-right in time. The
+competence/performance distinction is the orthodoxy that licenses this
+division: the grammar specifies what is well-formed, the parser is a
+performance mechanism that recovers it. Dynamic Syntax — Kempson,
+Meyer-Viol, and Gabbay’s framework — refuses the division. In Dynamic
+Syntax there is no static structure that the grammar characterizes and
+the parser then recovers; the grammar <em>is</em> the procedure for
+building interpretation word by word. Parsing is the incremental,
+strictly left-to-right growth of a semantic tree, driven by
+<em>requirements</em> — open goals, of the form “a formula of this type
+is needed here” — that later words discharge. The state of the parse at
+any moment is in general <em>underspecified</em>: nodes whose content is
+not yet fixed, requirements not yet met, structure that is provisional
+and gets resolved as more input arrives.</p>
+<p>This is the formalism for decoder-only, causal Transformers, and it
+is the natural home of a reading “The Given and the Found” developed at
+length. A causal model processes strictly left-to-right; it cannot
+attend to the future; its representation at each position is built from
+what has come before and revised by what comes next, in the manner of a
+requirement awaiting discharge. Dynamic Syntax’s central dynamic —
+<em>underspecification resolved to specification as parsing
+proceeds</em> — is close to the picture that essay drew of the layer
+stack (or the iteration count of a looped model) driving an initially
+high-entropy, many-interpretations-superposed state toward a committed
+one. Where Dynamic Syntax has a node whose value is not yet fixed and a
+requirement that some later word will satisfy, the Transformer has a
+residual state that is a blend of partial commitments, sharpened as
+computation proceeds. The competence/performance collapse is the deepest
+agreement: a Transformer has no separate “grammar” stored apart from the
+“parser” that applies it — the weights <em>are</em> the procedure, there
+is no declarative grammar object anywhere in the system, and this is the
+most Dynamic-Syntax-like commitment in the entire architecture. The
+empirical layerwise findings from the survey fit the picture: positional
+information processed in lower layers, a switch to more hierarchical
+encoding in higher layers, is what incremental specification looks like
+from the probe’s side.</p>
+<p>Dynamic Syntax thus owns the <em>temporal</em> axis as CCG owns the
+directional one, and the distinction we promised in §2.2 can now be made
+precise. CCG is incremental — it can combine as it goes — but it remains
+a competence grammar with a separate notion of what is well-formed; its
+incrementality is a property of how its derivations can be ordered.
+Dynamic Syntax is incremental in a stronger sense: it has <em>no</em>
+competence/performance split to be incremental <em>within</em>, because
+the growth process is all there is. The architecture’s coordinate on
+this axis sits at the Dynamic Syntax end — grammar-as-process, not
+grammar-as-object-plus-parser — and this is the un-bundling of a fourth
+bundled pair: every other formalism fuses “what is well-formed” with
+“the system has a stored characterization of well-formedness,” and the
+Transformer has the first without the second.</p>
+</section>
+<section
+id="inventory-construction-grammar-and-what-lives-in-the-weights"
+class="level3">
+<h3>2.5 Inventory: Construction Grammar and what lives in the
+weights</h3>
+<p>The axes so far concern the per-layer <em>operation</em> — how a step
+combines, in what direction, maintaining how many structures, growing in
+time. A different axis concerns what the grammar <em>contains</em>. The
+mainstream generative tradition draws a sharp line between the lexicon
+(idiosyncratic, listed) and the grammar (general, rule-governed), and
+treats the rules as the locus of productivity. Construction Grammar —
+Goldberg, Croft, and in its usage-based form Bybee and Hilpert — denies
+the line. For Construction Grammar the basic unit is the
+<em>construction</em>: a learned pairing of form and meaning, at
+<em>every</em> level of granularity, from morphemes through words and
+idioms up to abstract argument-structure schemata like the ditransitive.
+There is no separate rule component; there is a single
+<em>continuum</em> from the wholly idiosyncratic to the wholly
+schematic, all of it stored, all of it the same kind of object, and the
+grammar is the inventory of these constructions. The framework is
+resolutely usage-based: constructions are entrenched by frequency,
+learned from data, with abstract schemata generalized over stored
+exemplars.</p>
+<p>This is a description of the Transformer’s <em>weights</em>, and it
+lands at a different level from the previous four axes, which is its
+value. The other formalisms describe what a layer <em>does</em> to a
+representation as it passes through; Construction Grammar describes what
+is <em>stored</em> in the parameters that do it. And the match is close
+enough to be more than analogy. The feed-forward (MLP) layers of a
+Transformer have been read, in the interpretability literature, as a
+key-value memory: each MLP neuron responds to a pattern in its input (a
+key) and writes an associated vector into the stream (a value), and the
+layer is a large store of such pattern-response pairs retrieved by the
+current context. A stored mapping from a form-pattern to a
+content-contribution, retrieved by frequency-shaped activation, is — at
+the level of functional description — a <em>construction</em>. And the
+feature superposition of the residual stream, the near-orthogonal
+directions carrying many features at once, is the representational image
+of Construction Grammar’s central commitment: a <em>continuum</em> of
+stored units from the concrete to the abstract, with no categorical
+break between “lexical” and “grammatical,” because superposed directions
+admit every degree of specificity without a sortal boundary. The
+lexicon-grammar continuum is the feature continuum.</p>
+<p>Construction Grammar is silent on the combinatory dynamics — it says
+what is stored, not how stored units are composed in a derivation — and
+so it is <em>complementary</em> to Dynamic Syntax rather than competing
+with it: Construction Grammar is the inventory axis, Dynamic Syntax the
+combination axis, and the architecture has coordinates on both. The
+bundled pair the architecture unbundles here is the lexicon/rule
+distinction itself — the generative tradition fuses “productive
+combination” with “rule component distinct from the listed lexicon,” and
+the Transformer has productive combination with no such distinct
+component, everything graded along one continuum of stored, retrievable
+units. That this is the most usage-based, most learned-from-frequency
+framework on our list, matched to the most thoroughly trained-from-data
+architecture, is no coincidence: it is where the formalism and the
+mechanism agree about <em>epistemology</em>, both holding that
+grammatical knowledge is generalization over experienced instances
+rather than a given rule system. We will return to that agreement,
+because it is also where the architecture’s deepest limitation
+lives.</p>
+</section>
+<section id="topology-word-grammar-and-the-smallest-distance"
+class="level3">
+<h3>2.6 Topology: Word Grammar and the smallest distance</h3>
+<p>The dependency tradition gives the least metaphorical mapping in this
+entire comparison. The biaffine attention scorer of the neural
+dependency parsers — which assigns a score to every candidate
+head-modifier arc — <em>is</em>, structurally, an attention matrix, and
+the interpretability survey keeps rediscovering this from the data side:
+heads that specialize in particular dependency relations, while
+constituency probes fare worse, with one cited study conceding that the
+models do not really acquire much constituency grammar at all.
+Attention-as-arc is the one mapping in the article that barely needs an
+argument. But generic dependency grammar is theoretically thin — closer
+to an annotation scheme than a theory of the object — and as a
+coordinate it says little beyond “binary head-modifier links, no
+phrases.” Richard Hudson’s <strong>Word Grammar</strong> keeps that
+mapping and adds the one commitment that makes it the most
+architecturally on-the-nose framework on the list, and — for that same
+reason — the most treacherous to invoke.</p>
+<p>The commitment is this: language is not a system that
+<em>produces</em> a network, it <em>is</em> a network. Where every other
+formalism here yields a structural object standing apart from the
+process that builds it — a tree, a derivation, a proof, a pair of strata
+— Word Grammar denies there is any such separate object. Knowledge of
+language is a network of nodes (word-tokens, and the word-types and
+features they inherit from) joined by labelled, directed dependency
+links, and there are no phrase nodes anywhere in it: no NP, no VP, no
+bracket that is a thing rather than a relation. Processing is
+<em>spreading activation</em> across this network; generalization is
+<em>default inheritance</em>, a token inheriting the properties of its
+type, the type of its supertype, with more specific values overriding
+inherited defaults. The machinery is frankly that of the
+knowledge-representation tradition the symbolic AI of the 1980s ran on —
+semantic networks, frames, inheritance hierarchies — and at its furthest
+edge, in Lamb’s relational-network linguistics, a grammar is offered
+explicitly as something that could be wiring. Word Grammar is the
+dependency theory from the side of the family that already thought a
+grammar might be a network of activations.</p>
+<p>Which is why the fit is almost embarrassing. A Transformer layer
+computes, by construction, a weighted directed graph over positions —
+that is what an attention matrix <em>is</em> — and Word Grammar is the
+only formalism whose primitive object is exactly that graph. The
+residual stream is the activation pattern over the nodes; attention is
+the dynamic, per-layer scoring of the word-to-word links; the flatness
+is shared, because a stack of per-position vectors has no separate
+constituent representation and Word Grammar posits none to need one.
+And, decisively for the monotonicity axis of §2.1, building a Word
+Grammar analysis only ever <em>adds</em> arcs — it never consumes a node
+the way CCG’s application eats its functor — so Word Grammar sits on
+HPSG’s monotone side while keeping the directional, head-and-dependent
+asymmetry HPSG’s symmetric join throws away. It appears, uniquely, to
+get <em>both</em> things the architecture wanted and no single formalism
+in §2.2 could supply: CCG’s directionality and HPSG’s accumulation, in
+one network that grows by adding labelled arcs and settles by letting
+activation spread. On every structural axis we have drawn, Word Grammar
+lands where the Transformer lands.</p>
+<p>That is the trap, and we mean to walk into it rather than around it.
+A coordinate that matches on every axis is the <em>least</em>
+discriminating one in the set: “the Transformer is a Word Grammar
+network” is very nearly true by inspection, and a near-tautology
+certifies nothing and teaches less. The discriminating move is to use
+the closeness as an instrument. Word Grammar is the symbolic theory
+built nearest the architecture’s own shape, so the distance from it to
+the Transformer is the <em>smallest non-zero distance</em> in the whole
+comparison, and what survives at that minimal distance is the most
+precisely located thing the article can name. Everything the two share —
+network topology, spreading activation, monotone arc-addition, the
+absence of phrases — drops out of the difference, and what is left over
+is the residue the symbolic/subsymbolic debate has circled for
+decades.</p>
+<p>What is left over is <strong>localism</strong>. Word Grammar’s nodes
+are individuated and discrete: there is a node that <em>is</em> the
+subject relation, a link that <em>is</em> this dependency, a type from
+which this token inherits, and each is addressable — you can point to
+it. The architecture’s “nodes” are superposed directions in a vector
+space, and the superposition is not incidental but the survey’s most
+robust structural finding read from the inside: a single dependency
+relation is smeared across many attention heads, a single head carries
+several relations, the “syntax neurons” (where found at all) are spread
+through the model, subject-verb agreement rides on subspaces of as few
+as three dimensions and is tied to no particular unit. None of that has
+a clean image in Word Grammar, whose every link is a discrete, labelled,
+individually addressable thing. And Word Grammar’s links carry their
+<em>type</em> on their face — subject, object, adjunct — where an
+attention weight is a bare continuous scalar with no label, its
+grammatical force, if it has one, implicit in which subspace the value
+it routes happens to land in. This is the seam at which the gradient
+substrate will re-enter in §3: the Transformer’s unlabelled gradient
+link is something like the pre-quantized form of Word Grammar’s discrete
+typed dependency.</p>
+<p>Even the generalization mechanism, which it would be easy to wave at
+as “incompatible means,” divides with a precision worth setting out,
+because it is the most concrete instance in the essay of <em>the same
+labour done by different machinery</em> — and because the
+interpretability literature now lets us say what the machinery is.
+Default inheritance does two separable jobs. The first is
+<strong>subsumption</strong>: a token inherits its type’s properties,
+the type its supertype’s, up an isa-hierarchy. The second is
+<strong>override</strong>: a more specific node contradicts an inherited
+default — the penguin overrides the bird’s default of flight — and the
+specific wins. Both, in Word Grammar, run over discrete addressable
+nodes in an explicit hierarchy. Both have Transformer analogues, and
+<em>neither</em> analogue is the discrete consult-and-select Word
+Grammar performs.</p>
+<p>Subsumption has become, recently and rigorously, a fact about
+<em>geometry</em>. Park, Choe, Jiang, and Veitch, formalizing the linear
+representation hypothesis, define the subordinate relation by token-set
+inclusion — a concept <em>z</em> is subordinate to <em>w</em> when the
+tokens carrying <em>z</em> are a subset of those carrying <em>w</em>,
+which is Word Grammar’s isa-relation written extensionally — and prove
+that this semantic containment forces a geometric one: the vector
+representation of the parent feature is <em>orthogonal</em> to the
+difference vectors that distinguish its children, so that hierarchical
+concepts are encoded as direct sums of polytopes, the inherited content
+lying in the shared parent direction and the distinguishing content in
+an orthogonal complement, recursively up the tree. They validate this on
+Gemma and LLaMA-3, and — settling the obvious worry that this is a noun
+artifact — replicate it on the WordNet <em>verb</em> hierarchy as well
+as the noun hierarchy. So Word Grammar’s inheritance hierarchy has a
+genuine analogue: it is <em>implicit in the angles between feature
+directions</em>, learned rather than declared, with the inherited and
+the specific geometrically separated by a theorem that runs from the
+very set-inclusion that defines inheritance. Where Word Grammar consults
+a hierarchy and copies a value down, the architecture arranges
+directions so the parent’s content is literally a shared component of
+the child’s.</p>
+<p>Override divides just as sharply, and here the interpretability
+literature supplies the mechanism under two names at two grains. At the
+level of attention heads, the IOI circuit of Wang, Variengien, Conmy,
+Shieber, and Steinhardt contains <em>negative name-mover heads</em> —
+heads that write in the <em>opposite</em> direction of the token they
+attend to, with a strongly negative copy score, decreasing the logit of
+what the positive movers promote. At the level of MLP neurons, Gurnee
+and colleagues, taxonomizing universal neurons in GPT-2, identify
+<em>suppression neurons</em> as a detectable family — late-layer neurons
+that decrease the probability of a coherent set of tokens, the mirror
+image of <em>prediction</em> neurons — along with <em>partition</em>
+neurons that boost one group while suppressing another, which is an
+almost literal image of override: promote the specific, suppress the
+default it displaces. Both papers describe the same phenomenon at
+different scales, and both unify it with the <em>self-repair</em> line
+(the Hydra effect). But notice <em>how</em> the override is done. Word
+Grammar resolves the conflict by consulting specificity and
+<em>selecting</em> one value; the Transformer resolves it by
+<em>additive cancellation in superposition</em> — the default is
+written, a counter-vector is written, and the residual stream carries
+the algebraic sum. Nothing is selected; two pushes are added and one
+dominates. The penguin does not override the bird-default; the
+bird-default is written and a suppression term is written and the stream
+forwards their sum.</p>
+<p>This closes a loop back to §2.1, and it is worth making the closure
+explicit because it resolves an apparent tension. We said the residual
+stream is strictly monotone — it only adds. But override <em>requires
+retraction</em>: the specific value must defeat the general default. How
+does a strictly-additive substrate retract? It doesn’t — it <em>adds a
+cancelling term</em>. Suppression is how monotone accumulation buys the
+non-monotonicity that exception-handling needs: not by deleting the
+default but by writing its negation, and the telling detail in the
+Gurnee findings is that the suppression neurons cluster in the <em>very
+last layers</em>, after the prediction neurons have accumulated through
+the middle — affirmative predictions built up by monotone addition, then
+sharpened by late additive suppression. Override arrives late, and as a
+sum. The retraction that a transformational grammar would perform by
+deletion, and that Word Grammar performs by inheritance-overriding, the
+Transformer performs by adding a vector that points the other way.</p>
+<p>So Word Grammar narrows the gap further than any rival, and the value
+of choosing it over plain dependency grammar is that it narrows the gap
+<em>deliberately and maximally</em>: it agrees with the architecture on
+topology, activation, accumulation, and flatness, and concedes
+everything except one thing. The one thing it cannot concede is that its
+network is <em>localist and discrete</em> while the Transformer’s is
+<em>distributed and gradient</em> — that even inheritance, the mechanism
+that looked least likely to survive the crossing, survives only by
+becoming orthogonal geometry and additive cancellation, the same two
+jobs done without ever addressing a node or selecting a value. That lone
+surviving difference is the symbolic/subsymbolic question itself,
+finally isolated from every confound that usually travels with it. No
+other formalism brings us this close before the gap opens, which is the
+whole reason to send Word Grammar in: its job is to <em>measure</em>
+rather than to fit, and the measurement it returns is the distance
+between a network you can point at and a network you can only
+project.</p>
+</section>
+</section>
+<section id="the-substrate-why-un-bundling-is-possible" class="level2">
+<h2>3. The Substrate: Why Un-bundling Is Possible</h2>
+<p>Six axes, and a pattern across them that is sharper than any single
+fit. The Transformer unbundles selection from merge (§2.2), bundles
+position with function (§2.3), has well-formedness without a stored
+grammar (§2.4), has productive combination without a rule component
+(§2.5), and has a head-driven network without discrete addressable types
+(§2.6). It matches no formalism because each formalism is a
+<em>bundle</em> of choices along these axes, fused into a single
+combinatory operation over discrete symbols, and the architecture’s
+choices cut across every bundle. The natural question — and it is the
+one that turns a tour into an argument — is: <em>how is that even
+possible?</em> What kind of system can hold a coordinate on the
+directionality axis independently of its coordinate on the monotonicity
+axis, when in every discrete formalism the two are properties of one
+operation and cannot vary independently?</p>
+<p>The answer is the substrate, and it is the place where Gradient
+Symbolic Computation enters — as the account of what <em>kind of
+thing</em> the Transformer’s representations are, which is what makes
+the un-bundling available in the first place. The apparatus is laid out
+in full in “Merge and Selection,” and we recall only the two facts that
+do the work here. First, GSC represents a structure as a <em>blend</em>:
+filler symbols are bound to structural roles by tensor product and
+summed, but the filler activations are allowed to be continuous, so a
+position may be occupied by a superposition of partly-active symbols
+rather than one discrete filler, and well-formedness is
+<em>Harmony</em>, a sum of weighted soft-constraint satisfactions that
+the continuous dynamics ascend. Second, discreteness is
+<em>scheduled</em>: the optimized quantity is a total Harmony ℋ_q = H +
+qQ, where H scores the soft constraints (its unconstrained maximum
+generally a blend) and Q is zero exactly on the grid of fully discrete
+structures and negative off it, so raising the weight q over the course
+of processing leaves the discrete candidates’ relative Harmony intact
+while driving the state off the blend and onto a grid point. A
+temperature parameter T gives the two regimes as limits — cooling T
+toward zero at held q converges to the global maximum of ℋ_q
+(optimization, one structure), while sending q to infinity at held T
+concentrates the equilibrium on the grid points in a Boltzmann
+distribution (sampling). That is all we need; the derivations and the
+incremental-parsing application are Part I’s.</p>
+<p>This is the substrate a Transformer needs in order to un-bundle. A
+discrete formalism cannot un-bundle, because a discrete symbol is at one
+corner of the structure-space — it is <code>NP</code> or it is
+<code>VP</code>, the head is daughter one or daughter two, the
+combination is application or it is unification — and being at a corner
+means the design choices co-determine each other: there is no room to be
+partly-directional and partly-monotone, because there is no “partly.” A
+gradient state has room. It can sit at a <em>blend</em> of corners,
+holding partial commitments to several incompatible discrete structures
+at once, and <em>that</em> is what lets the directionality choice and
+the monotonicity choice come apart: the query/key mechanism can impose a
+soft directional preference (a grammatical-Harmony constraint that
+prefers certain head-argument bindings) while the residual write
+performs a monotone accumulation (the continuous substrate on which
+Harmony is maximized), and the two need not be reconciled into a single
+discrete operation because the state never commits to a single discrete
+operation. The fracture of “Merge and Selection” — selection says
+<em>n</em> heads, merge says none — is reframed here: selection is the
+soft constraint, merge is the substrate it is maximized on, and a soft
+blend of candidate daughters is what maximizing the grammatical
+constraints <em>without</em> quantization yields. Raising <em>q</em>
+sharpens which daughters are gathered; it does not promote the selector
+into the gathered structure, since the query that does the selecting is
+not a summand — so the head’s absence is the one feature of the fracture
+that the blend does not dissolve but carries through to the sharpest
+corner. The architecture lives in the blend, and even at its edges
+builds headless.</p>
+<p>And the blend is what every axis was measuring. Word Grammar’s
+gradient unlabelled link (§2.6) is a binding held at low <em>q</em> — a
+role-filler binding that has not quantized to a discrete typed
+dependency. LFG’s collapsed strata (§2.3) are c-structure and
+f-structure superposed in one gradient state rather than projected onto
+two discrete ones. Dynamic Syntax’s underspecification resolved to
+specification (§2.4) is the schedule of <em>q</em> rising over the
+course of the parse. The architecture’s coordinate on every axis is “the
+blend between the discrete corners the formalism offers,” and GSC is the
+theory of that blend. It is a substrate rather than a contestant,
+because it does not answer “which structure” — it answers “in what
+<em>medium</em> are the structural choices represented such that they
+need not be made discretely,” and the medium is a gradient superposition
+over the corners the six formalisms each name.</p>
+<p>The depth/breadth distinction “The Given and the Found” drew falls
+out of the same machinery, and it is where this essay most clearly puts
+the GSC apparatus to work. That essay separated two instruments of
+test-time computation: <em>depth</em>, iteration along a single
+trajectory, which entrenches whatever attractor has the state, and
+<em>breadth</em>, restarts from many initializations, which keeps
+several attractors alive and is the only remedy when collapsing to one
+is itself the failure. GSC says what these instruments <em>are</em>.
+Driving <em>T</em> to zero is the optimization regime — convergence to
+the single maximum-Harmony structure, one confident parse, depth.
+Holding <em>T</em> is the sampling regime — a distribution over
+high-Harmony structures rather than one, breadth. And the limit-cycle
+terminal behavior that essay flagged but did not exercise, a trajectory
+that refuses to settle and visits the valid readings in turn, is the
+sampling regime realized <em>temporally</em> rather than across
+restarts. Depth and breadth are not two networks but one
+selection-plus-merge dynamics under two <em>(q, T)</em> schedules: a
+model that wants one confident parse cools toward zero, a model that
+wants to preserve alternatives holds temperature, and the same machinery
+does both. The empirical separation of the knobs is the companion’s; the
+single dynamics whose schedule they are is GSC’s.</p>
+</section>
+<section id="what-this-does-not-show" class="level2">
+<h2>4. What This Does Not Show</h2>
+<p>The argument has a shape that invites overreading, and the honest
+section is the one that says where it stops — which the
+linguistic-interpretability literature, having been our witness
+throughout, also equips us to write.</p>
+<p>The first limit is the one the survey itself insists on and §1 opened
+with: <em>recoverability is not computation.</em> Everything we have
+called the architecture’s “coordinate” is, in the end, a claim about
+what is <em>represented</em> in the stream — what a probe could pull
+back out — and that is one step removed from what operation the layer
+<em>performs</em>. The whole essay is, in the survey’s terms, a piece of
+representational interpretation, and it inherits the survey’s caveats
+wholesale: that a recovered structure may be read off the linear context
+rather than built, that word-order statistics can masquerade as syntax,
+that the correlation between a probe’s success and the model’s use of
+what it probes is exactly what causal and amnesic probes were invented
+to question. When we say the residual stream is a gradient feature
+structure or that attention is application, we are characterizing the
+<em>content and geometry</em> of the representations, not proving that
+the forward pass is a parsing <em>algorithm</em>. The coordinate system
+locates what is there; it does not certify what the mechanism does with
+it.</p>
+<p>This bites with particular force on the one result we leaned on most
+rigorously. The Park et al. geometry of hierarchical concepts —
+subsumption as orthogonal direct sums — is a theorem about the
+<em>unembedding</em> representation, the structure of the output space
+<code>g(y)</code>, built on the causal inner product defined there. It
+is the strongest available evidence that an inheritance-shaped structure
+is <em>present</em>, and we are right to use it; but it is evidence
+about the geometry of what the model represents at the output, not
+unambiguously about the operation a mid-stack layer runs, and the
+inference from “the hierarchy is in the output geometry” to “the layers
+compute by inheritance” is one we have not earned and do not claim. The
+same applies, with less rigor available, to the suppression mechanism:
+that negative heads and suppression neurons <em>implement</em> something
+we are entitled to call override is our functional reading, consistent
+with the calibration and self-repair stories their discoverers tell but
+not framed in inheritance terms by anyone but us.</p>
+<p>A second limit concerns the geometry’s <em>scope</em>. Park et
+al. validate their hierarchy on WordNet — taxonomic relations over nouns
+and verbs, lexical-conceptual hypernymy. That is real and it is broader
+than nouns, which disposes of the cheapest objection. But it is
+<em>lexical-semantic</em> taxonomy, not the <em>grammatical</em>
+category structure Word Grammar actually trades in: dependency types,
+valence frames, word-classes as syntactic-distributional objects. That
+“walk” subsumes “stroll” is troponymy of meaning; that “verb” subsumes a
+particular verb with its valence defaults is grammatical inheritance,
+and the geometry is <em>demonstrated</em> for the former and only
+<em>conjectured</em> by us to extend to the latter. The gap is not idle:
+whether grammatical categories live in the representation space with the
+same clean orthogonality as conceptual ones is precisely the
+syntax-versus-semantics question the survey kept finding unresolved, and
+we have no business assuming the answer.</p>
+<p>A third limit is that some of the load-bearing mappings are ours by
+construction and flagged as such throughout:
+CCG-application-as-attention with its non-monotonicity,
+Dynamic-Syntax-as-causal-decoding, suppression-as-override. These are
+offered as the readings that make the coordinate system cohere, not as
+established results, and a reader is entitled to reject any one of them
+and keep the rest, because the thesis is the <em>pattern of
+un-bundling</em>, not any single axis. If CCG turns out to map more
+cleanly than we think, or Dynamic Syntax less, the claim that the
+architecture’s coordinates cut across the formalisms’ bundles survives
+the loss of a coordinate.</p>
+<p>And a fourth, which is less a limit than a debt. The most
+consequential thing the coordinate system <em>cannot</em> locate is the
+one “The Given and the Found” made its center: where the <em>correctness
+condition</em> comes from. Every formalism on our list, and the GSC
+substrate beneath them, presupposes a grammar — a set of soft
+constraints, a Harmony function, an inventory of constructions, an
+inheritance hierarchy — that is <em>given</em>. The architecture’s
+coordinates tell us how it represents and combines structure
+<em>under</em> a grammar it has learned; they are silent on how the
+grammar was found. Construction Grammar’s usage-based epistemology
+(§2.5) is the closest any of these frameworks comes to addressing
+acquisition, and it is suggestive because it shares the architecture’s
+commitment to learning grammar from instances — but “the constructions
+are entrenched by frequency” is a description of the result, not a
+mechanism for the <em>discovery</em> of which form-meaning pairings are
+there to be entrenched. This is the boundary that essay drew between
+amortizing <em>search</em> over a given condition and amortizing the
+<em>discovery</em> of one, and it falls in the same place here: the
+coordinate system is a map of how the Transformer parses under a learned
+grammar, and the learning of the grammar — the induction of the
+constraints whose blend §3 describes — is off the edge of the map.</p>
+</section>
+<section id="the-shape-of-the-answer" class="level2">
+<h2>5. The Shape of the Answer</h2>
+<p>We began by retiring a question — which formalism the Transformer
+<em>is</em> — and the retirement was the substantive move, because the
+question presupposes that the architecture sits at one of the corners
+the formalisms name, and it does not. It sits in the interior. Each of
+the six traditions fixes an axis of grammatical design and stakes out a
+corner along it: HPSG monotone-and-symmetric, CCG
+directional-and-consuming, LFG two-stratal, Dynamic Syntax
+grammar-as-process, Construction Grammar inventory-as-continuum, Word
+Grammar localist-network. The Transformer’s coordinates cut across every
+bundling these corners represent. It takes CCG’s directionality and
+HPSG’s monotonicity, which no discrete formalism can hold at once, by
+running them as separate mechanisms. It collapses LFG’s two strata into
+one stream. It has Dynamic Syntax’s grammar-as-process without a stored
+grammar, Construction Grammar’s continuum without a rule component, Word
+Grammar’s network without discrete types. The pattern is less that it
+resembles one formalism more than the others than that it
+<em>un-bundles</em> what each of them fuses — and, in the stratal case,
+fuses what one of them splits, the same pattern seen from the other
+side: the architecture’s joints are simply not the formalisms’
+joints.</p>
+<p>And the reason it <em>can</em> is the substrate. A discrete grammar
+must bundle its design choices because a discrete symbol is at a corner,
+and at a corner the choices co-determine one another; there is no
+partial commitment, so directionality and monotonicity, position and
+function, well-formedness and its stored characterization, cannot vary
+independently. A gradient substrate has interior. It can hold a blend of
+the corners — partial, superposed commitments to several incompatible
+discrete structures — and in the interior the design choices come apart,
+because the state has not committed to the single discrete operation
+that would force them together. Gradient Symbolic Computation is the
+theory of that interior: the medium in which the structural choices are
+represented as a superposition over the corners, quantizing toward one
+only as the schedule demands, which at the interior positions of a
+Transformer it largely does not. The architecture is a parser that lives
+in the blend, and the six formalisms are the discrete corners it is a
+blend <em>of</em>.</p>
+<p>Which gives the title its sense. A parser without a grammar is not a
+parser that lacks structure; it is a parser with no <em>discrete,
+stored, declarative</em> grammar object of the kind every formalism on
+our list supplies — only a gradient field of soft constraints learned
+into the weights, over which a monotone, directional, single-stratum,
+in-time, inventory-driven, networked, distributed dynamics runs,
+occupying at every interior position a superposition of the parses the
+discrete formalisms would each have it commit to. The structure is real.
+What is missing is the commitment. And the parse, if we insist on one,
+is something <em>we</em> quantize out of the model’s state by reading it
+discretely — a corner the dynamics passed near, not a tree it built, and
+not a grammar it has.</p>
+<hr />
+<p><em>This article was co-authored by Łukasz Stafiniak and Claude (Opus
+4.7). It continues the series on mind, metaphysics, and artificial
+cognition published at lukstafi.github.io and syndicated at
+lukstafi.substack.com. It grows directly out of “Merge and Selection:
+The Residual Stream as a Constraint Grammar,” whose monotone-merge
+reading, HPSG comparison, headless-merge fracture, and engagement with
+the explicit-binding (TPGN) program it takes as its starting point; and
+it follows “The Given and the Found: What Test-Time Reasoning Amortizes,
+and What It Cannot,” from which the depth/breadth distinction and the
+given-versus-discovered boundary are drawn. The grammatical formalisms
+are treated from their standard sources: Pollard and Sag for HPSG;
+Steedman for CCG, with the brain-modeling result from Stanojević,
+Brennan, Dunagan, Steedman, and Hale (“Modeling structure-building in
+the brain with CCG parsing and large language models”); Bresnan,
+Dalrymple, and colleagues for LFG; Kempson, Meyer-Viol, and Gabbay for
+Dynamic Syntax; Goldberg, Croft, and the usage-based line of Bybee and
+Hilpert for Construction Grammar; Hudson (with Lamb’s relational-network
+linguistics at the edge) for Word Grammar; and the Minimalist literature
+on Merge and Move for the transformational anchor. The Gradient Symbolic
+Computation material draws on Smolensky and Legendre’s “The Harmonic
+Mind,” on Smolensky, Goldrick, and Mathis’s
+optimization-and-quantization framework, and on Cho, Goldrick, and
+Smolensky’s dynamical incremental parser. The interpretability findings
+are from López-Otal, Gracia, Bernad, Bobed, Pitarch-Ballesteros, and
+Anglés-Herrero’s systematic review of linguistic interpretability; from
+Park, Choe, Jiang, and Veitch (“The Geometry of Categorical and
+Hierarchical Concepts in Large Language Models”) for the
+hierarchical-concept geometry; from Wang, Variengien, Conmy, Shieber,
+and Steinhardt’s IOI circuit for the negative name-mover heads; and from
+Gurnee and colleagues’ “Universal Neurons in GPT-2 Language Models” for
+the suppression-neuron taxonomy, with the self-repair connection to
+McGrath and colleagues’ Hydra effect. The mappings of CCG application
+onto attention, of Dynamic Syntax onto causal decoding, and of
+suppression onto inheritance-override are ours, and are offered as the
+readings that make the coordinate system cohere rather than as
+established results.</em></p>
+</section>
+</section>
+</article>
+<script src="/assets/theme-toggle.js"></script>
+</body>
+</html>
