@@ -37,10 +37,9 @@ to probe for recoverable syntax. This essay asks a different question:
 whether the architecture’s core update — attention plus residual
 addition, iterated over layers — is <em>itself</em> a grammatical
 operation a syntactician would recognize. We argue it is a monotone
-<em>merge</em>, not a rewrite. Because the residual stream only ever
-adds, never overwrites, it performs a monotone information-merge that is
-structurally the <em>join</em> of a constraint grammar rather than the
-destructive rewrite of a phrase-structure grammar — which makes
+<em>merge</em>: because the residual stream only ever adds, never
+overwrites, it performs the <em>join</em> of a constraint grammar rather
+than the destructive rewrite of a phrase-structure grammar — which makes
 Head-driven Phrase Structure Grammar, not context-free grammar, the
 right point of comparison, and Gradient Symbolic Computation the right
 account of how a continuous vector can carry a discrete feature
@@ -55,34 +54,34 @@ operation thus has the monotone shape of a join without the
 structure-driven matching the word <em>unification</em> names, and the
 three-way split it reveals — target directs, sources supply, MLP
 assembles — is the selection-from-merge factorization the essay turns
-on. We develop both correspondences in full, including the apparatus
-each requires: tensor-product representations and the
+on. We develop both correspondences in full, with the apparatus each
+requires: tensor-product representations and the
 Harmony-with-scheduled-quantization dynamics on the GSC side, and the
-explicit-role-binding research program on the side of how a Transformer
+explicit-role-binding program on the side of how a Transformer
 represents who-combined-with-what. The correspondence then meets a fault
 line that is the real subject of the essay. HPSG is
 <em>head-driven</em>: it rests on two principles, the unification of
 feature structures and the projection-and-selection of a single head per
 combination, which coexist peacefully because each combination is a
 headed merge of determinate daughters. The Transformer supplies a clean
-analogue of each principle — the residual write as the merge, the
-query/key inner product as the selection — but the two cannot be
-reconciled, for a single reason: in a Transformer, the selector is not
-part of the value space. The query that governs each combination is
-never among the value vectors the merge sums, so the head — the one
-element a headed grammar must deposit into the mother — is categorically
-a selector over the soup rather than a constituent in it. The same
-exclusion produces the binding problem of stacked attention as its other
-face. We argue that this irreconcilability is the structure of the
-object rather than a defect to be repaired: a Transformer layer is a
-constraint grammar that runs selection and merge at every position at
-once, and the discrete parse, if there is one, exists only as the
-quantization limit of a gradient blend the dynamics may or may not drive
-to a corner — and even at its sharpest, a tree without its heads. A
-companion essay takes the same fracture as the seed of a more general
-claim about where the architecture sits among grammatical formalisms;
-here we establish the fracture itself, and the two bodies of theory —
-HPSG and GSC — that bring it into focus.</p>
+analogue of each — the residual write as the merge, the query/key inner
+product as the selection — but the two cannot be reconciled, for a
+single reason: in a Transformer, the selector is not part of the value
+space. The query that governs each combination is never among the value
+vectors the merge sums, so the head — the one element a headed grammar
+must deposit into the mother — is categorically a selector over the soup
+rather than a constituent in it, and the same exclusion produces the
+binding problem of stacked attention as its other face. We argue that
+this irreconcilability is the structure of the object rather than a
+defect to be repaired: a Transformer layer is a constraint grammar that
+runs selection and merge at every position at once, and the discrete
+parse, if there is one, exists only as the quantization limit of a
+gradient blend the dynamics may or may not drive to a corner — and even
+at its sharpest, a tree without its heads. A companion essay takes the
+same fracture as the seed of a more general claim about where the
+architecture sits among grammatical formalisms; here we establish the
+fracture itself, and the two bodies of theory — HPSG and GSC — that
+bring it into focus.</p>
 </section>
 <section id="introduction" class="level2">
 <h2>1. Introduction</h2>
@@ -136,23 +135,23 @@ limit of a gradient blend the dynamics need not reach.</p>
 prior work and claim none of them: the tensor-product representation as
 the way to embed role-filler structure in a vector (Smolensky); the
 reading of attention as a <em>subject</em> querying for an
-<em>object</em>, together with the observation that the residual sum
-over attended values is <em>binding-symmetric</em> — unable on its own
-to record which position attended to which — which is the binding
-problem stated by the explicit-binding program (the TP-Transformer and
-its kin); and the dynamics of Gradient Symbolic Computation, in which a
-scheduled quantization term drives a continuous state toward discrete
-structure under either an optimization or a sampling regime. What we add
-is the grammatical reading built on these: that the residual merge and
-the query/key selection are HPSG’s two principles; that they cannot
-reconcile in a Transformer because the head is the selector, which
-drives each combination from query-space but is never written into the
-structure the combination builds; and that the mainstream architecture’s
-<em>declining</em> of the explicit-binding fix is evidence the object
-does not need committed bindings to work. The essay is written for
-readers who will recognize both a biaffine attention scorer and a Head
-Feature Principle, but assumes neither; §2 supplies the minimum of each.
-The contribution is conceptual: we claim the mapping is exact enough to
+<em>object</em>, together with the <em>binding-symmetric</em> character
+of the residual sum — its inability, on its own, to record which
+position attended to which — that the explicit-binding program (the
+TP-Transformer and its kin) states as the binding problem; and the
+dynamics of Gradient Symbolic Computation, in which a scheduled
+quantization term drives a continuous state toward discrete structure
+under an optimization or a sampling regime. Section 2 lays out each in
+the detail it needs. What we add is the grammatical reading built on
+them: that the residual merge and the query/key selection are HPSG’s two
+principles; that they cannot reconcile in a Transformer because the head
+is the selector, which drives each combination from query-space but is
+never written into the structure the combination builds; and that the
+mainstream architecture’s <em>declining</em> of the explicit-binding fix
+is evidence the object does not need committed bindings to work. The
+essay is written for readers who will recognize both a biaffine
+attention scorer and a Head Feature Principle but assumes neither. The
+contribution is conceptual: we claim the mapping is exact enough to
 carry concepts between the fields, and we locate, in the fracture, a
 place where the architecture’s behavior and a long-standing open
 question in the linguistics turn out to be the same thing seen
@@ -411,16 +410,18 @@ formalisms that build a structure by adding constraints that never
 retract, the feature-structure-building grammars rather than the
 symbol-replacing ones. That is a claim about a family, not a single
 member, and the family is large: HPSG, LFG, Word Grammar, and others all
-build monotonically. Which member fits <em>best</em> is the question the
-companion essay takes up, and its answer is not the obvious one. Here we
-deliberately start from the most prominent member, Head-driven Phrase
-Structure Grammar — the canonical head-driven unification grammar, the
-one a syntactician reaches for first — precisely so that the place where
-it <em>fails</em> to fit becomes diagnostic. We are not claiming HPSG is
-the closest grammar to a Transformer; we are using its prominence and
-its sharp two-principle structure as the cleanest instrument for finding
-the fault line, and reading off, from where the instrument breaks, what
-a better fit would have to be.</p>
+build monotonically. Where the architecture sits among the constraint
+grammars is the question the companion essay takes up, and its answer is
+not the obvious one — that it sits at no single member, cutting across
+what each of them bundles together. Here we deliberately start from the
+most prominent member, Head-driven Phrase Structure Grammar — the
+canonical head-driven unification grammar, the one a syntactician
+reaches for first — precisely so that the place where it <em>fails</em>
+to fit becomes diagnostic. We are not claiming HPSG is the closest
+grammar to a Transformer; we are using its prominence and its sharp
+two-principle structure as the cleanest instrument for finding the fault
+line, and reading off, from where the instrument breaks, what a better
+fit would have to be.</p>
 <p>Three features make HPSG the right exemplar to start from, beyond
 mere prominence. <em>Representations are bundles, not atoms.</em> A
 residual vector is a superposition of many features in near-orthogonal
@@ -491,11 +492,10 @@ separate sublayer. The Transformer has unification’s <em>product</em> —
 an accumulated feature structure — without unification’s
 <em>engine</em>, the structure-driven matching a syntactician means by
 the word. This three-way split is not incidental: the target-query that
-catalyzes selection is precisely the <em>selection</em> principle we
-develop in §4, and the source-aggregation is the <em>merge</em>, so the
-very respect in which the operation is not unification is the
-factorization the rest of the essay turns on, visible already in a
-single layer.</p>
+catalyzes selection is the <em>selection</em> principle of §4, the
+source-aggregation the <em>merge</em>, so the very respect in which the
+operation is not unification is the factorization the rest of the essay
+turns on, visible already in a single layer.</p>
 <p>If the essay stopped here it would be a clean “Transformers are
 Harmonic Grammar parsers” thesis. It does not stop here, because the
 <em>head</em> has not yet entered, and the head is where the picture
@@ -700,36 +700,30 @@ aimed at the reparable manifestation and reveals the other by contrast.
 The TP-Transformer binds a <em>target-based role</em> onto a
 <em>source-based value</em>: per head, the blended value gathered from
 the sources is bound (by a Hadamard contraction of the tensor product)
-to a role vector computed from the target, and the role is what the
-network learns to make subject-specific. This tags each gathered
-dependent with the identity of the position that gathered it, which
-restores the pairing and dissolves the bag problem. But the role
-<em>derived from</em> the target rides on its dependents, modulating
-them, while the target’s own content enters the next layer only as
-undifferentiated skip carry-over — present, but not marked as the head
-of this combination, and carrying no record of which daughters it
-governed. The fix repairs the bag and reaches the selection relation
-only obliquely. The diagnosis points to a different remedy for the other
-manifestation, and a cheaper one — ours, and conjectural. What the
-missing manifestation lacks is the <em>selection act</em> itself, and
-the selection act already has a vector: the query. The query
-<code>q_i</code> is exactly the specification of what i sought as
-governor — it is the governance relation, in the one form the
-architecture computes it — and it is discarded after forming the
-attention weights. So the fix is not to learn a new projection of the
-head’s content, which the skip already carries, but to <em>write the
-query into value-space</em>: deposit <code>q_i</code> (or a fixed
-reshaping of it) into i’s residual in a head-typed direction, as a
-marked summand recording i as the governor of this combination. This
-adds no trainable parameters at all — the query is already there,
-computed and then thrown away — where the TP-Transformer’s role-binding
-adds a projection matrix per head. The two fixes are complementary and
-differ in cost: their learned role map repairs the bag; re-using the
+to a role vector computed from the target, which the network learns to
+make subject-specific. This tags each gathered dependent with the
+identity of the position that gathered it, restoring the pairing and
+dissolving the bag problem. But the role <em>derived from</em> the
+target rides on its dependents, while the target’s own content enters
+the next layer only as undifferentiated skip carry-over — present, but
+not marked as the head of this combination, carrying no record of which
+daughters it governed. The fix repairs the bag and reaches the selection
+relation only obliquely. A different and cheaper remedy — ours, and
+conjectural — addresses the other manifestation. What it lacks is the
+<em>selection act</em> itself, and that act already has a vector: the
+query <code>q_i</code> is exactly the specification of what i sought as
+governor, the governance relation in the one form the architecture
+computes it, and it is discarded after forming the attention weights. So
+the fix is not to learn a new projection of the head’s content, which
+the skip already carries, but to <em>write the query into
+value-space</em> — depositing <code>q_i</code> (or a fixed reshaping of
+it) into i’s residual in a head-typed direction, as a marked summand
+recording i as the governor of this combination. This adds no trainable
+parameters, where the TP-Transformer’s role-binding adds a projection
+matrix per head: their learned role map repairs the bag; re-using the
 discarded query records the selection for free. We do not claim the
-architecture should have either; we note only that the two
-manifestations admit two different fixes, that the cheaper of them costs
-nothing, and that the canonical one addressed the bag and left the
-selection relation unrecorded.</p>
+architecture should have either, only that the canonical fix addressed
+the bag and left the selection relation unrecorded.</p>
 <p>So the residual stream is a soup of summed contributions from which
 selectors recover what they need — a workable and powerful arrangement,
 but one in which the selector that does the gathering is never itself
@@ -790,11 +784,10 @@ governor of this combination; quantization sharpens the daughters, not
 that marking.) So the cleanest quantized structure a Transformer can
 reach is a definite combination of definite daughters that is <em>still
 headless</em>: a sharp tree whose every node is the merge of identified
-parts, with no part recorded as the governor that projected it.
-Quantization turns a blurred headless blend into a sharp headless
-structure. The headlessness is orthogonal to the schedule, and that is
-exactly why it is the structural finding rather than an artifact of
-incomplete settling.</p>
+parts, with no part recorded as the governor that projected it. The
+headlessness is orthogonal to the schedule, and that is exactly why it
+is the structural finding rather than an artifact of incomplete
+settling.</p>
 <p>This reframing does three things. First, it dissolves the
 <em>soft</em> half of the §5 incompatibility without choosing a side.
 Selection and merge are not competing accounts of one discrete
@@ -903,13 +896,14 @@ Transformer, read together, force into the open. The parse, if we insist
 on one, is something <em>we</em> quantize out of the model’s state by
 reading it discretely — a corner the dynamics passed near, and even
 there a tree without its heads.</p>
-<p>That the fracture generalizes — that the same un-bundling of two
-principles a discrete grammar fuses recurs across other grammatical
-formalisms, and that the gradient substrate is what makes the
-un-bundling possible — is the argument of the companion essay. Here we
-have established the first and sharpest instance: the head-driven
-grammar whose two principles the architecture holds apart, and the two
-bodies of theory that let us see it doing so.</p>
+<p>That the fracture generalizes — that the same un-bundling recurs
+across the other formalisms, and that the gradient substrate’s part is
+not to make the un-bundling possible (a factorization a discrete grammar
+could perform too) but to hold the un-bundled choices graded and
+superposed, never forced to resolve — is the argument of the companion
+essay. Here we have established the first and sharpest instance: the
+head-driven grammar whose two principles the architecture holds apart,
+and the two bodies of theory that let us see it doing so.</p>
 <hr />
 <p><em>This article was co-authored by Łukasz Stafiniak and Claude (Opus
 4.7). It continues the series on mind, metaphysics, and artificial
