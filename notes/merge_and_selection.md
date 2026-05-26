@@ -1,4 +1,4 @@
-# Merge and Selection: The Residual Stream as a Unification Grammar
+# Merge and Selection: The Residual Stream as a Constraint Grammar, and the Two Readings It Cannot Reconcile
 
 *Łukasz Stafiniak and Claude (Opus 4.7)*
 
