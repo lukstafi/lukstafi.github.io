@@ -22,6 +22,7 @@ for md_file in "$root_dir"/notes/*.md; do
     --to=html5 \
     --standalone \
     --section-divs \
+    --katex \
     --template="$root_dir/assets/tufte.html5" \
     --css="/assets/tufte.css" \
     --css="/assets/pandoc-tufte.css" \

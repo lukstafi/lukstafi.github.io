@@ -10,6 +10,24 @@ and What It Cannot</title>
   <link rel="stylesheet" href="/assets/tufte.css">
   <link rel="stylesheet" href="/assets/pandoc-tufte.css">
   <link rel="stylesheet" href="/assets/site.css">
+  <script defer=""
+  src="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.js"></script>
+  <script>document.addEventListener("DOMContentLoaded", function () {
+ var mathElements = document.getElementsByClassName("math");
+ var macros = [];
+ for (var i = 0; i < mathElements.length; i++) {
+  var texText = mathElements[i].firstChild;
+  if (mathElements[i].tagName == "SPAN") {
+   katex.render(texText.data, mathElements[i], {
+    displayMode: mathElements[i].classList.contains('display'),
+    throwOnError: false,
+    macros: macros,
+    fleqn: false
+   });
+}}});
+  </script>
+  <link rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.css" />
   <!--[if lt IE 9]>
     <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
   <![endif]-->
@@ -51,12 +69,12 @@ asking are narrower and harder. What is the extra computation actually
 <em>correctness</em> of the answer come from?</p>
 <p>These systems are, formally, dynamical systems: each maintains a
 latent state and applies a learned update <span
-class="math inline"><em>z</em><sub><em>k</em> + 1</sub> = <em>f</em><sub><em>θ</em></sub>(<em>z</em><sub><em>k</em></sub>; <em>x</em>)</span>,
-decoding the final state into a prediction. Test-time scaling is just
-more applications of the same learned rule. The tempting thing to say is
-that the iteration “computes the answer,” and the deeper that intuition
-runs the more it conflates things that come apart. This essay tries to
-pull them apart. The destination is a boundary — sharp, we think, and
+class="math inline">z_{k+1} = f_\theta(z_k; x)</span>, decoding the
+final state into a prediction. Test-time scaling is just more
+applications of the same learned rule. The tempting thing to say is that
+the iteration “computes the answer,” and the deeper that intuition runs
+the more it conflates things that come apart. This essay tries to pull
+them apart. The destination is a boundary — sharp, we think, and
 falsifiable — on what this whole program of architectures can and cannot
 do, and the route there passes through a series of findings about
 iterative reasoning that we think are worth carrying away on their own,
@@ -64,26 +82,24 @@ whether or not the boundary we draw at the end turns out to be in the
 right place.</p>
 <p>Iterating a fixed operator cannot, by construction, supply
 correctness on its own — at inference <span
-class="math inline"><em>f</em><sub><em>θ</em></sub></span> injects no
-information it did not already encode. But it does not follow that the
-iteration is epistemically idle. Requiring the output to be a <em>fixed
-point</em> — a state <span
-class="math inline"><em>f</em><sub><em>θ</em></sub></span> leaves
-unchanged — admits only answers that are self-consistent under the
-learned dynamics and discards the rest, and in an aligned landscape
-self-consistency correlates with correctness. The fixed-point
-requirement is thus a <em>regularizer toward correctness</em>,
-structurally like a simplicity bias toward generalization: neither
-contains the answer, each tilts the search toward it under favorable
-conditions and toward a confident mistake under unfavorable ones — the
-self-consistent state that is nonetheless wrong being the exact analogue
-of the simplest hypothesis that is nonetheless false. The size of the
-tilt is the gap between applying <span
-class="math inline"><em>f</em><sub><em>θ</em></sub></span> once and
-iterating it to equilibrium, which can be the difference between 2.6%
-and 99% on the same puzzles. How that tilt is produced — divided between
-architecture, training, and run-time iteration — and where it runs out,
-is the rest of the essay.</p>
+class="math inline">f_\theta</span> injects no information it did not
+already encode. But it does not follow that the iteration is
+epistemically idle. Requiring the output to be a <em>fixed point</em> —
+a state <span class="math inline">f_\theta</span> leaves unchanged —
+admits only answers that are self-consistent under the learned dynamics
+and discards the rest, and in an aligned landscape self-consistency
+correlates with correctness. The fixed-point requirement is thus a
+<em>regularizer toward correctness</em>, structurally like a simplicity
+bias toward generalization: neither contains the answer, each tilts the
+search toward it under favorable conditions and toward a confident
+mistake under unfavorable ones — the self-consistent state that is
+nonetheless wrong being the exact analogue of the simplest hypothesis
+that is nonetheless false. The size of the tilt is the gap between
+applying <span class="math inline">f_\theta</span> once and iterating it
+to equilibrium, which can be the difference between 2.6% and 99% on the
+same puzzles. How that tilt is produced — divided between architecture,
+training, and run-time iteration — and where it runs out, is the rest of
+the essay.</p>
 <p>The papers we lean on are a recent cluster of iterative latent
 reasoners — Equilibrium Reasoners, Attractor Models, Generative
 Recursive Reasoning (GRAM), and the Lattice Deduction Transformer — read
@@ -145,36 +161,35 @@ because it pins correctness architecturally while leaving everything
 else to training. LDT is built on abstract interpretation, the framework
 Cousot and Cousot introduced for sound approximate reasoning.
 Information states are elements of a lattice: a top element <span
-class="math inline">⊤</span> representing no information (every solution
-still possible) and a bottom element <span class="math inline">⊥</span>
-representing inconsistency (no solution remains). For Sudoku, the
-abstract domain assigns each cell the set of digits still viable; <span
-class="math inline">⊤</span> gives every cell all nine digits, and any
-cell collapsing to the empty set is <span class="math inline">⊥</span>.
-Deduction <em>descends</em> the lattice — it can only ever remove
-candidates — and the operator is <strong>sound by design but
-incomplete</strong>: a step may fail to derive a true fact, but it never
-derives a false one.</p>
+class="math inline">\top</span> representing no information (every
+solution still possible) and a bottom element <span
+class="math inline">\bot</span> representing inconsistency (no solution
+remains). For Sudoku, the abstract domain assigns each cell the set of
+digits still viable; <span class="math inline">\top</span> gives every
+cell all nine digits, and any cell collapsing to the empty set is <span
+class="math inline">\bot</span>. Deduction <em>descends</em> the lattice
+— it can only ever remove candidates — and the operator is <strong>sound
+by design but incomplete</strong>: a step may fail to derive a true
+fact, but it never derives a false one.</p>
 <p>The two domains, concrete (sets of full solutions) and abstract
 (per-cell candidate sets), are linked by an abstraction map <span
-class="math inline"><em>α</em></span> and a concretization map <span
-class="math inline"><em>γ</em></span> forming a Galois connection, and
-the most precise sound deduction operator for an instance <span
-class="math inline"><em>p</em></span> is <span
-class="math inline"><em>d</em><em>e</em><em>d</em><sub><em>p</em></sub>(<em>a</em>) = <em>α</em>(<em>γ</em>(<em>a</em>) ∩ ‖<em>p</em>‖)</span>
-— refine the state to keep only candidates surviving in at least one
-valid solution. LDT trains a recurrent transformer to approximate <span
-class="math inline"><em>d</em><em>e</em><em>d</em><sub><em>p</em></sub></span>
-from solution samples, encoding the lattice as a tensor (729 binary
-sigmoids for <span class="math inline">9 × 9</span> Sudoku, one per
-candidate) and projecting the latent state to and from it between
-forward passes. What matters is the division: the <em>form</em> of
-soundness — that the dynamics live on a lattice and can only remove
-candidates — is guaranteed by the architecture, so the model returns a
-correct answer or abstains, never a wrong one. What is <em>learned</em>
-is only the strength of the deduction: how many candidates each step can
-soundly eliminate. Correctness is architectural; competence is
-trained.</p>
+class="math inline">\alpha</span> and a concretization map <span
+class="math inline">\gamma</span> forming a Galois connection, and the
+most precise sound deduction operator for an instance <span
+class="math inline">p</span> is <span
+class="math inline">\mathit{ded}_p(a) = \alpha(\gamma(a) \cap \lVert
+p\rVert)</span> — refine the state to keep only candidates surviving in
+at least one valid solution. LDT trains a recurrent transformer to
+approximate <span class="math inline">\mathit{ded}_p</span> from
+solution samples, encoding the lattice as a tensor (729 binary sigmoids
+for <span class="math inline">9\times9</span> Sudoku, one per candidate)
+and projecting the latent state to and from it between forward passes.
+What matters is the division: the <em>form</em> of soundness — that the
+dynamics live on a lattice and can only remove candidates — is
+guaranteed by the architecture, so the model returns a correct answer or
+abstains, never a wrong one. What is <em>learned</em> is only the
+strength of the deduction: how many candidates each step can soundly
+eliminate. Correctness is architectural; competence is trained.</p>
 <p>A step further in sits <strong>MuZero</strong>, and it is worth
 placing carefully, because it is easy to overstate. MuZero’s correctness
 condition is given — the environment supplies reward — and the idealized
@@ -197,17 +212,17 @@ contraction does not add up to a globally trustworthy operator; the
 trustworthiness is, again, in-distribution only.</p>
 <p>At the far end are the pure learned-dynamics reasoners — Equilibrium
 Reasoners, HRM, TRM, Attractor Models, GRAM. Here the update <span
-class="math inline"><em>f</em><sub><em>θ</em></sub></span> need not be
-the gradient of any potential at all: no energy, no contraction, no
-Galois connection, no guarantee. Equilibrium Reasoners are explicit
-about the loosening, relaxing exact fixed-point convergence to the
-weaker notion of an <em>attractor</em> — a state, stable region, or
-“bounded recurrent set” toward which nearby trajectories are drawn —
-because literal fixed points are too much to ask of a learned operator
-whose residual stays nonzero. At this end the entire correctness burden
-falls on training shaping the landscape so its attractors happen to
-coincide with solutions, and there is nothing at construction time to
-fall back on.</p>
+class="math inline">f_\theta</span> need not be the gradient of any
+potential at all: no energy, no contraction, no Galois connection, no
+guarantee. Equilibrium Reasoners are explicit about the loosening,
+relaxing exact fixed-point convergence to the weaker notion of an
+<em>attractor</em> — a state, stable region, or “bounded recurrent set”
+toward which nearby trajectories are drawn — because literal fixed
+points are too much to ask of a learned operator whose residual stays
+nonzero. At this end the entire correctness burden falls on training
+shaping the landscape so its attractors happen to coincide with
+solutions, and there is nothing at construction time to fall back
+on.</p>
 <p>As you move down this spectrum, correctness migrates out of the
 architecture and into a trained surrogate, and the surrogate’s
 guarantees weaken from “theorem” to “holds where we trained it.” Every
@@ -222,26 +237,24 @@ you replace the energy with a learned surrogate, that identity breaks,
 and the break is the single most useful epistemic fact about these
 systems.</p>
 <p>Equilibrium Reasoners measure convergence by the fixed-point residual
-<span
-class="math inline">‖<em>f</em><sub><em>θ</em></sub>(<em>z</em>; <em>x</em>) − <em>z</em>‖</span>
-— how much the next iteration would still move the state. Across
-well-trained models, lower residual tracks lower prediction error
-tightly, which is what licenses using convergence as a stopping and
-selection signal. But the tracking is <em>earned</em>. For an un-shaped
-baseline, residual reduction can instead mean convergence to a
-<strong>spurious attractor</strong> — a stable, low-residual state that
-decodes to the wrong answer — and there, selecting the best-converged
-run from several restarts actually <em>underperforms</em> a simple
-majority vote across them. That inversion is the sharp diagnostic, and
-it is more alarming than it first sounds: if the residual were a good
-per-instance signal of correctness, the lowest-residual run would win;
-that it loses means confidence is uninformative about <em>which</em>
-answers are right, even when aggregate accuracy is high enough to invite
-trust. The dangerous regime, in other words, is not low accuracy — it is
-deployable accuracy paired with a confidence signal you cannot read. The
-convergence measure is, in the paper’s words, “a learned proxy whose
-reliability depends on the attractor landscape,” not a task-agnostic
-certificate.</p>
+<span class="math inline">\lVert f_\theta(z;x) - z\rVert</span> — how
+much the next iteration would still move the state. Across well-trained
+models, lower residual tracks lower prediction error tightly, which is
+what licenses using convergence as a stopping and selection signal. But
+the tracking is <em>earned</em>. For an un-shaped baseline, residual
+reduction can instead mean convergence to a <strong>spurious
+attractor</strong> — a stable, low-residual state that decodes to the
+wrong answer — and there, selecting the best-converged run from several
+restarts actually <em>underperforms</em> a simple majority vote across
+them. That inversion is the sharp diagnostic, and it is more alarming
+than it first sounds: if the residual were a good per-instance signal of
+correctness, the lowest-residual run would win; that it loses means
+confidence is uninformative about <em>which</em> answers are right, even
+when aggregate accuracy is high enough to invite trust. The dangerous
+regime, in other words, is not low accuracy — it is deployable accuracy
+paired with a confidence signal you cannot read. The convergence measure
+is, in the paper’s words, “a learned proxy whose reliability depends on
+the attractor landscape,” not a task-agnostic certificate.</p>
 <p>What “shaping” means here is specific, and it answers the natural
 suspicion that the fix is simply more training. It is not. Shaping is
 two interventions to the training procedure — sampling a
@@ -292,9 +305,9 @@ is the number of iterations in a single trajectory — refining within
 whatever basin you have entered. <strong>Breadth</strong> is the number
 of independent restarts from different initializations — covering more
 basins. Equilibrium Reasoners track the total inference budget as their
-product, <span class="math inline">NFE = <em>D</em> ⋅ <em>B</em></span>,
-but the two factors do structurally different work, and the difference
-has a clean consequence.</p>
+product, <span class="math inline">\mathrm{NFE} = D \cdot B</span>, but
+the two factors do structurally different work, and the difference has a
+clean consequence.</p>
 <p>Depth <em>entrenches</em> the basin you are in. More iterations pull
 the trajectory further toward whatever attractor currently has it. This
 is exactly what you want in the well-aligned regime (d), where deeper
@@ -444,7 +457,7 @@ confidence sits on the <em>target</em> side, not the prediction side.
 The loop’s converged state is the target the initialization is regressed
 onto (Attractor Models); the MCTS visit counts are the target the policy
 head is regressed onto (MuZero and AlphaZero before it); LDT’s <span
-class="math inline"><em>α</em></span>-aggregate of still-consistent
+class="math inline">\alpha</span>-aggregate of still-consistent
 solutions is the target the candidate head is regressed onto. In each
 case a <em>confident intermediate computation manufactures a peaked
 target</em>, and a peaked target produces a large, sharply directed

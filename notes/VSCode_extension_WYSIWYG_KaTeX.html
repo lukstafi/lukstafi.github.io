@@ -9,6 +9,24 @@
   <link rel="stylesheet" href="/assets/tufte.css">
   <link rel="stylesheet" href="/assets/pandoc-tufte.css">
   <link rel="stylesheet" href="/assets/site.css">
+  <script defer=""
+  src="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.js"></script>
+  <script>document.addEventListener("DOMContentLoaded", function () {
+ var mathElements = document.getElementsByClassName("math");
+ var macros = [];
+ for (var i = 0; i < mathElements.length; i++) {
+  var texText = mathElements[i].firstChild;
+  if (mathElements[i].tagName == "SPAN") {
+   katex.render(texText.data, mathElements[i], {
+    displayMode: mathElements[i].classList.contains('display'),
+    throwOnError: false,
+    macros: macros,
+    fleqn: false
+   });
+}}});
+  </script>
+  <link rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.css" />
   <!--[if lt IE 9]>
     <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
   <![endif]-->
@@ -46,25 +64,22 @@ actions happen in the code pane, but user’s focus is in the preview
 pane. - Add snippets, keybindings for the snippets commands. - Add a
 command to cycle through alternatives of what’s to the left of the
 cursor. Maybe don’t bind it to tab (a la TeXmacs), as it might conflict
-with other uses. - E.g. <span class="math inline"><em>S</em></span>
--&gt; <span class="math inline"><em>Σ</em></span> -&gt; <span
-class="math inline">∑</span> -&gt; <span
-class="math inline"><em>S</em></span>; <span
-class="math inline"><em>P</em></span> -&gt; <span
-class="math inline"><em>Π</em></span> -&gt; <span
-class="math inline">∏</span> -&gt; <span
-class="math inline"><em>P</em></span>; <span
-class="math inline"><em>f</em></span> -&gt; <span
-class="math inline"><em>ϕ</em></span> -&gt; <span
-class="math inline"><em>φ</em></span> -&gt; <span
-class="math inline"><em>f</em></span>… - Add context-sensitive commands
-to extend the object at cursor to the right, bottom, left and up. In
-particular, it should work with tables (builtin markdown), and trees. -
-And also table and tree specific command “delete row”, and
-table-specific “delete column”. - Find out what markdown plugin is best
-for the tree objects – seems it’s best to use <a
-href="http://mermaid.js.org/#/">Mermaid</a>. It doesn’t render on
-GitHub, but there’s: - <a
+with other uses. - E.g. <span class="math inline">S</span> -&gt; <span
+class="math inline">\Sigma</span> -&gt; <span
+class="math inline">\sum</span> -&gt; <span
+class="math inline">S</span>; <span class="math inline">P</span> -&gt;
+<span class="math inline">\Pi</span> -&gt; <span
+class="math inline">\prod</span> -&gt; <span
+class="math inline">P</span>; <span class="math inline">f</span> -&gt;
+<span class="math inline">\phi</span> -&gt; <span
+class="math inline">\varphi</span> -&gt; <span
+class="math inline">f</span>… - Add context-sensitive commands to extend
+the object at cursor to the right, bottom, left and up. In particular,
+it should work with tables (builtin markdown), and trees. - And also
+table and tree specific command “delete row”, and table-specific “delete
+column”. - Find out what markdown plugin is best for the tree objects –
+seems it’s best to use <a href="http://mermaid.js.org/#/">Mermaid</a>.
+It doesn’t render on GitHub, but there’s: - <a
 href="https://github.com/raghur/mermaid-filter">a PanDoc filter</a> - <a
 href="https://github.com/mjbvz/vscode-markdown-mermaid">a VS Code
 extension</a></p>
