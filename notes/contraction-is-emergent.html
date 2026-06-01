@@ -1,0 +1,998 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <meta name="author" content="Łukasz Stafiniak and Claude (Anthropic)">
+  <title>Contraction Is Emergent</title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <style type="text/css">
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="/assets/tufte.css">
+  <link rel="stylesheet" href="/assets/pandoc-tufte.css">
+  <link rel="stylesheet" href="/assets/site.css">
+  <script defer=""
+  src="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.js"></script>
+  <script>document.addEventListener("DOMContentLoaded", function () {
+ var mathElements = document.getElementsByClassName("math");
+ var macros = [];
+ for (var i = 0; i < mathElements.length; i++) {
+  var texText = mathElements[i].firstChild;
+  if (mathElements[i].tagName == "SPAN") {
+   katex.render(texText.data, mathElements[i], {
+    displayMode: mathElements[i].classList.contains('display'),
+    throwOnError: false,
+    macros: macros,
+    fleqn: false
+   });
+}}});
+  </script>
+  <link rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.css" />
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+  <script>(function(){var t=localStorage.getItem('theme-preference');if(t)document.documentElement.setAttribute('data-theme',t);})()</script>
+</head>
+<body>
+<nav class="site-nav">
+  <a href="/">Home</a> &middot; <a href="/about.html">About</a> &middot; <a href="https://lukstafi.substack.com">Substack</a>
+</nav>
+<div class="theme-toggle">
+  <button id="theme-btn" aria-label="Toggle dark mode">&#9788;</button>
+</div>
+<article>
+<header>
+<h1 class="title">Contraction Is Emergent: Projection Inference for
+OCANNL from Scratch</h1>
+<p class="byline">Łukasz Stafiniak and Claude (Anthropic)</p>
+</header>
+<section id="contraction-is-emergent" class="level1">
+<h1>Contraction Is Emergent</h1>
+<p>A companion piece, <a
+href="broadcast-aware-shape-inference.md"><em>Broadcasting Is an
+Order</em></a>, built OCANNL’s shape inference from scratch: what a
+shape is, what it means for one shape to broadcast to another, and how a
+constraint solver fills in the unknown sizes. That account stopped where
+the sizes were known. But knowing the sizes is not enough to generate
+code. A tensor operation compiles to a loop nest, and before any loop
+can be written the compiler has to answer a different set of questions:
+<em>which</em> axes are driven by the same loop variable, <em>which</em>
+are summed away, <em>which</em> are read at a single fixed position no
+matter how the loops run. Sizes do not answer these. Two axes can have
+the same size and have nothing to do with each other; an axis can be
+summed without anyone ever writing the word “sum.” This is the job of
+<strong>projection inference</strong>, and this post develops its core
+from scratch the same way the first developed shapes — leaving out, for
+now, the two genuine complications (strided/convolutional indexing and
+axis concatenation), which get their own follow-up.</p>
+<p>The thesis comes in two halves, and they are worth stating before any
+machinery, because the machinery is short once you have them.</p>
+<p>The first half is a claim about <em>method</em>: <strong>projection
+inference introduces no new constraints.</strong> It re-reads the exact
+constraint set that shape inference already produced. Shape inference
+reads that set as an <em>order</em> — sizes broadcasting up toward
+larger sizes, meeting down toward a bottom. Projection inference reads
+the <em>same</em> set as an <em>equivalence</em> — axes union-found into
+classes that share a loop variable. One elaboration, two algebraic
+readings. This is not merely economical (no second constraint generator
+to keep in sync); it is the load-bearing correctness argument. Indices
+that are derived from the same facts as the sizes cannot silently
+contradict the sizes. If projection inference invented its own
+constraints, the two could drift — an index could iterate an axis the
+shapes say is size one, or fail to contract an axis the shapes made
+equal — and the bug would surface only at runtime as a stride mismatch
+or a wrong answer. Sharing the source makes that class of bug
+unrepresentable.</p>
+<p>The second half is a claim about <em>result</em>: <strong>contraction
+is emergent.</strong> Nowhere does a user, or the system, declare
+“reduce over this axis.” A reduction is a <em>property of the inferred
+output index map</em> — specifically, that the map does not mention some
+loop variable — and it is read off after the fact, never written down.
+The matmul spec <code>a;b=&gt;c</code> says which axes coincide; it
+never says which axis is summed. The sum happens because the coincident
+axis is <em>absent from the output</em>, so the loop that drives it
+writes the same output cell repeatedly, and repeated writes to one cell
+accumulate. We will make this precise, and it will turn out to be the
+cleanest thing in the system.</p>
+<p>One tension stands between these two halves and the algorithm, and it
+is the only genuinely subtle point in the core: <strong>co-iteration is
+strictly finer than size-equality.</strong> Two axes can be forced to
+the same size by a constraint that has nothing to do with the operation
+we are compiling — because they were contracted together <em>somewhere
+else</em> in the program. Shape inference, solving globally, happily
+identifies their sizes. Projection inference must not let that
+identification leak into <em>this</em> operation’s indices. The
+resolution is a discipline we will name and then enforce: <strong>global
+sizes, local identities.</strong> It is the reason projection inference,
+despite reusing the constraints, re-derives and re-solves them per
+operation rather than reading answers off the global environment.</p>
+<p>Let us build the target first, because projections are about a loop
+nest and the loop nest is the thing to hold in mind.</p>
+<section id="what-we-compile-to" class="level2">
+<h2>What we compile to</h2>
+<p>Fix one tensor operation — a single assignment, with a left-hand side
+(LHS) tensor written into and one or more right-hand side (RHS) tensors
+read from. Its compiled form has two parts.</p>
+<p>The first is a <strong>product space</strong> <span
+class="math display">
+P \;=\; R_1 \times \cdots \times R_m, \qquad R_j = \{0, 1, \ldots, n_j -
+1\},
+</span> a Cartesian product of integer ranges. Each factor <span
+class="math inline">R_j</span> has a <strong>loop variable</strong>
+<span class="math inline">s_j</span> ranging over it; iterating <span
+class="math inline">P</span> is iterating the nested loops <span
+class="math inline">s_1, \ldots, s_m</span> in some order. This is the
+iteration domain of the operation — the set of points at which work
+happens.</p>
+<p>The second is, for each participating tensor <span
+class="math inline">T</span>, an <strong>index map</strong> <span
+class="math display">
+\pi_T \;:\; P \longrightarrow \mathrm{Addr}(T)
+</span> sending a point of the product space to a multi-index into <span
+class="math inline">T</span>’s underlying array. We write <span
+class="math inline">\pi_T(p) = (\pi_T^1(p), \ldots,
+\pi_T^{\,r}(p))</span> for a rank-<span class="math inline">r</span>
+tensor, one component per axis. In the core fragment, each component is
+one of just two forms:</p>
+<ul>
+<li><span class="math inline">\mathsf{Iter}(s_j)</span> — this axis of
+<span class="math inline">T</span> is driven by loop variable <span
+class="math inline">s_j</span>; as <span class="math inline">s_j</span>
+runs over <span class="math inline">R_j</span>, this axis runs over its
+positions in lockstep.</li>
+<li><span class="math inline">\mathsf{Fix}(c)</span> — this axis is
+pinned to the constant position <span class="math inline">c</span>,
+regardless of any loop. Position <span class="math inline">0</span> is
+the common case (a broadcast or a size-one axis); a non-zero <span
+class="math inline">c</span> comes from slicing.</li>
+</ul>
+<p>(The full system has two more forms — an affine combination <span
+class="math inline">\sum_i c_i s_i + o</span> for strides and
+convolutions, and a concatenation index — but those are exactly the
+bells and whistles we are deferring. Their absence is what keeps
+everything below provably simple, and we will see precisely why.)</p>
+<p>The operation’s meaning is now a <strong>map-reduce</strong> over
+<span class="math inline">P</span>. For each point <span
+class="math inline">p \in P</span>:</p>
+<ol type="1">
+<li>read each RHS tensor <span class="math inline">T_i</span> at <span
+class="math inline">\pi_{T_i}(p)</span>;</li>
+<li>combine the read values with the operation’s scalar function;</li>
+<li>accumulate the result into the LHS at <span
+class="math inline">\pi_{\mathrm{LHS}}(p)</span>.</li>
+</ol>
+<p>“Accumulate” is the operative word, and it is where contraction
+lives. Consider a loop variable <span class="math inline">s_j</span>
+that the LHS map <em>does not mention</em> — <span
+class="math inline">\pi_{\mathrm{LHS}}</span> has no <span
+class="math inline">\mathsf{Iter}(s_j)</span> in any component. Then as
+<span class="math inline">s_j</span> ranges over <span
+class="math inline">R_j</span> with the other variables held fixed, the
+LHS address <span class="math inline">\pi_{\mathrm{LHS}}(p)</span> does
+not change: every one of those <span class="math inline">n_j</span>
+points writes the <em>same</em> output cell. Writing the same cell
+repeatedly, under an accumulating operator, sums (or maxes, or whatever
+the accumulator is). So:</p>
+<blockquote>
+<p><strong>Reduction characterization.</strong> A product axis <span
+class="math inline">j</span> is a <em>reduction axis</em> exactly when
+<span class="math inline">\pi_{\mathrm{LHS}}</span> is independent of
+<span class="math inline">s_j</span>. There is no separate notion of
+“the reduced axes”; they are precisely the loop variables missing from
+the output index map.</p>
+</blockquote>
+<p>This is the formal content of the second thesis: a reduction is read
+off <span class="math inline">\pi_{\mathrm{LHS}}</span>, not written
+down.</p>
+<p>Two derived properties of the index maps make the same fact
+actionable for the code generator, and OCANNL computes both:</p>
+<ul>
+<li><strong>Surjectivity</strong> of <span
+class="math inline">\pi_{\mathrm{LHS}}</span> — does every LHS cell get
+written by some product point? If not, the cells never addressed would
+keep stale contents, so they must be pre-set to the accumulator’s
+neutral element.</li>
+<li><strong>Injectivity</strong> of <span
+class="math inline">\pi_{\mathrm{LHS}}</span> — does each LHS cell get
+written by at most one product point? If yes, no cell is ever
+accumulated into twice, so the read-modify-write can collapse to a plain
+write. If no, the accumulating read-back is required.</li>
+</ul>
+<p>Injectivity fails exactly when a reduction axis exists — a missing
+loop variable is what makes two distinct product points share an output
+cell. So the characterization is not a curiosity: it is the predicate
+that decides whether the emitted loop body is
+<code>lhs := f(rhs...)</code> or
+<code>lhs := lhs ⊕ f(rhs...)</code>.</p>
+<p>The two properties are less independent than the split suggests, and
+the reason is that OCANNL’s assignments are not in SSA form: an
+assignment reads and writes the same mutable tensor node, and the
+surface syntax controls the prior contents directly — the colon in an
+accumulation like <code>=:+</code> (versus <code>=+</code>) erases the
+node to the neutral element before the map-reduce, while its absence
+accumulates into what was already there. So whether that pre-erase is
+needed turns on <em>both</em> properties at once: a cell must be cleared
+when it is either never written (non-surjective) or written more than
+once (non-injective — the first accumulation would otherwise read an
+uninitialized cell). And the dual decision — whether the accumulation
+can then collapse to a plain write, skipping the read-back — arises only
+in the colon case, where injectivity settles it; without the colon the
+prior contents are deliberately kept and accumulated into, write-once or
+not. We return to the <code>=:+</code> syntax, and to where these
+assignments come from, at the end.</p>
+<p>One structural invariant rounds out the target. A loop variable
+exists to traverse an axis, and an axis of size one has nothing to
+traverse — its only position is <span class="math inline">0</span>. So
+size-one axes never earn a product factor; they are <span
+class="math inline">\mathsf{Fix}(0)</span>. Equivalently:</p>
+<blockquote>
+<p><strong>The product space ranges over exactly the axes of size
+greater than one</strong> (excluding those pinned by a slice to a fixed
+position). Everything of size one is fixed at <span
+class="math inline">0</span>.</p>
+</blockquote>
+<p>With the target fixed, the question becomes: where do <span
+class="math inline">P</span> and the <span
+class="math inline">\pi_T</span> come from? From the constraints — the
+same ones, read again.</p>
+</section>
+<section id="the-same-constraints-read-again" class="level2">
+<h2>The same constraints, read again</h2>
+<p>Recall the constraint language from the shape post. Elaborating a
+program produces a set of atomic constraints over dimensions and rows,
+in two relations:</p>
+<ul>
+<li><strong>Equalities</strong> <span class="math inline">d_1 =
+d_2</span> and <span class="math inline">R_1 = R_2</span>, emitted by
+operations that demand exact matching — einsum contractions, where an
+axis labeled <code>k</code> in the spec is <em>the same axis</em> as the
+operand axis at that position. No broadcasting.</li>
+<li><strong>Inequalities</strong> <span
+class="math inline">d_{\mathrm{sub}} \sqsubseteq
+d_{\mathrm{super}}</span> and <span class="math inline">R_{\mathrm{sub}}
+\sqsubseteq R_{\mathrm{super}}</span>, emitted by operations that permit
+broadcasting — pointwise arithmetic, composition — oriented so the
+operand that may broadcast sits below the result it must fit.</li>
+</ul>
+<p>Shape inference takes these and computes sizes: equalities unify,
+inequalities accumulate as bounds, and the broadcast order’s asymmetry
+(lower bounds solve, upper bounds defer and may collapse to the bottom)
+does the rest. Projection inference takes constraints of the <em>same
+form</em> and computes a loop nest instead — “same form” rather than the
+same terms, because the dimensions here are not quite the ground terms
+of the shape algebra, for a reason worth disposing of first.</p>
+<section id="two-equation-forms" class="level3">
+<h3>Two equation forms</h3>
+<p>A ground dimension in the shape algebra is a size and a basis —
+nothing more. That is all shape inference needed, but it is not enough
+here: two distinct axes of two distinct tensors can both be size <span
+class="math inline">3</span>, and projection inference must be free to
+give them different array indices (they are different axes), so the map
+from a dimension to its projection term — write it <span
+class="math inline">\llbracket \cdot \rrbracket</span> — has to recover
+<em>which</em> axis a dimension is, and the size cannot tell it apart
+from any other size-<span class="math inline">3</span> axis. The
+dimensions projection inference works over therefore carry one extra
+component beyond size and basis: a <strong>projection
+identifier</strong>, a per-axis tag naming that axis instance. The
+identifier is the carrier of axis identity — it, not the size, is what
+<span class="math inline">\llbracket \cdot \rrbracket</span> reads.
+(Where these identifiers come from, and why they are minted fresh, is
+the subject of the locality discipline below; for now, take it that
+every solved axis has one.)</p>
+<p>With identity in hand, the re-reading produces <strong>projection
+equations</strong> in two forms:</p>
+<ul>
+<li><span class="math inline">\mathsf{Eq}(\rho_1, \rho_2)</span> —
+“<span class="math inline">\rho_1</span> and <span
+class="math inline">\rho_2</span> are the same projection”: they share a
+loop variable (or are jointly pinned to the same fixed index). This is
+the co-iteration relation, and it is <em>symmetric</em>.</li>
+<li><span class="math inline">\mathsf{Iter}(\rho)</span> — “<span
+class="math inline">\rho</span> must be iterated”: this axis needs a
+loop variable of its own even if nothing matches it.</li>
+</ul>
+<p>The projection terms <span class="math inline">\rho</span> are
+minimal in the core: a solved axis becomes <span
+class="math inline">\mathsf{Proj}(p)</span>, carrying its projection
+identifier <span class="math inline">p</span>; an axis whose index the
+spec supplies independently of co-iteration becomes <span
+class="math inline">\mathsf{Sol}(\mathit{idx})</span>. The <span
+class="math inline">\mathsf{Sol}</span> form is wider than just
+“size-one, read at <span class="math inline">0</span>”: its index can be
+a fixed constant (a size-zero or size-one axis, or a static slice
+picking a literal position) or an externally-bound iterator symbol (the
+runtime slice index of a <code>@|</code> batch-slice, supplied by an
+enclosing loop and passed in as a kernel argument). What unifies the
+<span class="math inline">\mathsf{Sol}</span> cases is that the
+operation neither infers the index nor ranges over it in its own product
+space — the index comes from outside.</p>
+<p>That is the whole core term language: <span
+class="math inline">\mathsf{Proj}</span> for an axis whose index this
+operation determines, <span class="math inline">\mathsf{Sol}</span> for
+one supplied from outside. There is no variable form. A spec label is
+settled one of two ways: if the spec supplies its index it is <span
+class="math inline">\mathsf{Sol}</span>, and otherwise it labels a
+concrete operand axis and resolves to that axis’s <span
+class="math inline">\mathsf{Proj}</span> — by a mechanism we come to
+with the re-solve below. No core spec leaves a label undetermined, so
+nothing survives as an unknown. (The full system does carry a variable
+term, a binding map, and a deferred-iteration step — but only to serve
+the strided and concatenated cases, where an axis is determined by a
+relation like <span class="math inline">ih = \mathit{stride}\cdot oh +
+wh</span> rather than by direct identity. That is derived-index
+machinery, and it goes with the follow-up.)</p>
+<p>With <span class="math inline">\llbracket d \rrbracket</span> the
+projection term of a dimension <span class="math inline">d</span>, the
+elaboration is six rules. They are the whole of core projection
+inference.</p>
+<p><strong>1. Dimension equality.</strong> <span
+class="math inline">\;d_1 = d_2 \;\rightsquigarrow\;
+\mathsf{Eq}(\llbracket d_1 \rrbracket, \llbracket d_2
+\rrbracket)</span>.</p>
+<p>Einsum’s exact match becomes co-iteration: two axes the spec labeled
+alike are driven by one loop variable. This is the engine of contraction
+— it is what makes the two <code>k</code> axes of a matmul share a
+variable.</p>
+<p><strong>2. Dimension inequality, broadcasting sub.</strong> A
+broadcast inequality whose sub-side axis is size one, <span
+class="math inline">d_{\mathrm{super}} \sqsupseteq (d_{\mathrm{sub}} =
+1)</span>, elaborates to <span class="math display">
+\mathsf{Eq}(\llbracket d_{\mathrm{sub}} \rrbracket,
+\mathsf{Sol}(\mathsf{Fix}(0))).
+</span> The broadcasting axis is <em>pinned to position <span
+class="math inline">0</span></em>: it is read at its single cell for
+every value the larger axis takes. Crucially it is <strong>not</strong>
+unified with the larger axis. This is the cleanest sentence-level link
+between the two passes: in shape land a broadcast inequality is an
+<em>order</em> fact (the small dimension sits below the large, whose
+size dominates); in projection land the same inequality <em>severs</em>
+(the small axis is cut loose and read at <span
+class="math inline">0</span> while the large one iterates alone).
+<strong>Equality unions; broadcasting severs.</strong> An axis that
+broadcasts is precisely an axis that does not get its own loop — it
+rides along, fixed, while its partner drives.</p>
+<p><strong>3. Dimension inequality, otherwise.</strong> <span
+class="math inline">\;d_1 \sqsubseteq d_2 \;\rightsquigarrow\;
+\mathsf{Eq}(\llbracket d_1 \rrbracket, \llbracket d_2
+\rrbracket)</span>.</p>
+<p>When neither side is a broadcasting unit — two genuine, equal,
+iterated axes related by a pointwise inequality — they co-iterate,
+exactly as an equality would have it. So the inequality path and the
+equality path agree wherever broadcasting is not actually happening;
+they diverge only at rule 2, the genuine broadcast.</p>
+<p><strong>4. Row equality.</strong> <span class="math inline">\;R_1 =
+R_2</span>: align the two rows at their outer edges — leading flank
+against leading flank from the front, trailing against trailing from the
+back — and emit a dimension equality (rule 1) per aligned pair. No
+broadcasting; the ranks must already match.</p>
+<p><strong>5. Row inequality.</strong> <span
+class="math inline">\;R_{\mathrm{super}} \sqsupseteq
+R_{\mathrm{sub}}</span>: align the flanks as above, but now the larger
+row may out-rank the smaller. Its surplus interior axes — the ones the
+smaller side does not reach — each emit <span
+class="math inline">\mathsf{Iter}</span>: they iterate on their own,
+broadcast targets with no partner below. Each aligned pair emits a
+dimension inequality (rules 2–3); and at any pair where the sub axis is
+the size-one broadcaster, the pair is rewritten to “<em>super iterates,
+sub pinned to <span class="math inline">0</span></em>” — the row-level
+form of rule 2’s severance.</p>
+<p><strong>6. Terminal markers.</strong> A <em>terminal</em> axis — one
+belonging to a leaf tensor, or to an RHS whose axes might otherwise go
+unmatched — emits <span class="math inline">\mathsf{Iter}(\llbracket d
+\rrbracket)</span> for each of its axes.</p>
+<p>Rule 6 deserves its own sentence, because without it the system would
+be silently incomplete. Rules 1–5 all relate <em>pairs</em> of axes. But
+an axis can exist without a partner: assign a constant into a result and
+the result’s axes have nothing on the RHS to match; a leaf parameter
+read in isolation has no other operand. Such an axis would acquire no
+loop variable, and would never be traversed. The terminal markers are
+the floor that guarantees every axis that genuinely exists gets visited:
+applied to a size-one axis the marker is a harmless no-op (size one
+needs no loop), but applied to a real axis it forces a fresh iterator.
+Together with the size-one invariant, this gives exactly the product
+space we wanted — one factor per axis of size greater than one.</p>
+</section>
+<section id="global-sizes-local-identities" class="level3">
+<h3>Global sizes, local identities</h3>
+<p>Now the subtlety. The constraints we are re-reading were solved
+<em>globally</em> by shape inference: a single environment, accumulated
+over the entire program, that may have identified the sizes of two axes
+because they met in <em>some other</em> operation. Suppose axes <span
+class="math inline">\alpha</span> and <span
+class="math inline">\beta</span> both feed, elsewhere, a reduction that
+forces them to the same size <span class="math inline">n</span>. Shape
+inference records <span class="math inline">\alpha</span> and <span
+class="math inline">\beta</span> as size <span
+class="math inline">n</span> — correctly. But in the operation we are
+now compiling, <span class="math inline">\alpha</span> and <span
+class="math inline">\beta</span> might be entirely independent axes that
+simply happen to be size <span class="math inline">n</span>. If
+projection inference inherited the global identification, it would
+conclude <span class="math inline">\alpha</span> and <span
+class="math inline">\beta</span> co-iterate here, fuse their loops, and
+generate wrong code: an elementwise pairing where there should have been
+an independent double loop.</p>
+<p>This is why co-iteration must be <em>finer</em> than size-equality,
+and why it cannot be read off the global environment. The enforcement is
+a three-step discipline, run <em>per operation</em>:</p>
+<ol type="1">
+<li><strong>Freshen</strong> every projection identifier in the
+operation’s (already size-solved) shapes, so that no <span
+class="math inline">\mathsf{Proj}</span> id is shared with any other
+operation.</li>
+<li><strong>Re-derive</strong> this operation’s constraints — and only
+this operation’s — from those freshened shapes.</li>
+<li><strong>Re-solve</strong> them in a <em>local</em>, initially empty
+environment, so the resulting co-iteration classes contain only
+identifications this operation actually forced.</li>
+</ol>
+<p>Step 3 is easy to mistake for a no-op — every tensor shape is closed
+before projection inference runs (a hard precondition, the analogue of
+shape inference’s “close before you read”), so what is left to solve?
+The answer is the einsum spec. Re-deriving the constraints matches the
+operation’s spec against its operands, and the spec is a shape-shaped
+template carrying fresh variables of both sorts: its ellipsis marks are
+<em>row</em> variables, and its axis labels are <em>dimension</em>
+variables, both minted anew on each derivation. The two are not on the
+same footing, though, and the difference is what makes the re-solve
+necessary rather than merely convenient.</p>
+<p>A fresh <em>dimension</em> variable need not be solved here at all: a
+spec label that the re-solve leaves undetermined could simply be carried
+into projection inference as a projection variable and resolved there,
+by the same union-find that resolves everything else — a dimension
+unknown is exactly the kind of thing the projection solver could absorb.
+A fresh <em>row</em> variable cannot be deferred that way. Until the
+rows are aligned — until it is settled which axes of which operand the
+template’s open stretch covers — there are no per-axis pairings to hand
+to projection inference at all; the row structure has to be fixed
+<em>before</em> the projection equations can even be formed. So the row
+variables are the load-bearing reason for the re-solve, and the
+dimension labels come along for the ride: the same alignment that pins
+the rows also unifies each label with the operand axis it matches, so a
+label <code>i</code> becomes that concrete, already-sized axis and
+inherits its identifier.</p>
+<p>The upshot is that every fresh dimension variable is in fact
+<em>eliminated</em> by the time the solve finishes — a spec label always
+lands on some operand axis, so it ends up a solved dimension carrying
+that axis’s identifier rather than a leftover unknown. This is why the
+core term language needs no variable form: not because a dimension
+variable could not have survived in principle, but because the
+row-alignment that the re-solve must do anyway disposes of them as a
+side effect. The variables exist during the solve and are gone by the
+time the elaboration reads the result.</p>
+<p>So the sizes are taken as given (global, already settled) while the
+identities are recomputed from scratch (local, this operation only).
+<strong>Global sizes, local identities.</strong> It looks like
+duplicated work — we solved these constraints once already — but it is
+not the same work: the first solve answered “how big?”, globally, and
+this one answers “which loop?”, locally, and the second answer is
+genuinely unavailable from the first. The freshening is what discards
+the over-identification; re-deriving from the same constraint
+<em>forms</em> is what keeps the indices faithful to the shapes. And the
+freshening is also the step that made <span
+class="math inline">\llbracket \cdot \rrbracket</span> well-defined:
+stamping each axis of this operation with its own identifier is what
+gives every dimension the identity the elaboration reads.
+Well-definedness of the elaboration and locality of the identities are
+thus one fact, not two — the per-operation fresh identifier is the
+carrier of both. Both halves of the opening thesis are in this one
+move.</p>
+</section>
+</section>
+<section id="solving-union-find-with-pinning" class="level2">
+<h2>Solving: union-find with pinning</h2>
+<p>With the equations in hand, solving is a single pass over them
+maintaining three pieces of state:</p>
+<ul>
+<li>a <strong>union-find</strong> structure <code>classes</code> over
+projection ids, whose find-representative answers “which co-iteration
+class?”;</li>
+<li>a <strong>pin map</strong> <code>pins</code> from a class to a
+concrete <code>axis_index</code>, for classes forced to a literal
+position;</li>
+<li>an <strong>iterate set</strong> <code>I</code> of classes that must
+receive a loop variable.</li>
+</ul>
+<p>The pass interprets each equation:</p>
+<ul>
+<li><span class="math inline">\mathsf{Eq}(\mathsf{Proj}\,p,
+\mathsf{Proj}\,q)</span> — union the classes of <span
+class="math inline">p</span> and <span class="math inline">q</span>. The
+two axes carry their sizes; if those disagree, fail (this is a real bug
+— two axes asserted to share a loop but of different lengths). Otherwise
+record the class’s size.</li>
+<li><span class="math inline">\mathsf{Eq}(\mathsf{Proj}\,p,
+\mathsf{Sol}(\mathit{idx}))</span> — pin the class of <span
+class="math inline">p</span> to <span
+class="math inline">\mathit{idx}</span>. If it is already pinned to a
+different index, fail.</li>
+<li><span class="math inline">\mathsf{Eq}(\mathsf{Sol}\,i,
+\mathsf{Sol}\,j)</span> — check <span class="math inline">i = j</span>;
+fail if not. (No class is created; two literals either agree or they do
+not.)</li>
+<li><span class="math inline">\mathsf{Iter}(\mathsf{Proj}\,p)</span> —
+add the class of <span class="math inline">p</span> to <span
+class="math inline">I</span>.</li>
+<li><span class="math inline">\mathsf{Iter}(\mathsf{Sol}\,\_)</span> — a
+no-op (an externally-supplied index does not iterate in this
+operation).</li>
+</ul>
+<p>When the pass finishes, <strong>close</strong> each class:</p>
+<ul>
+<li>if it is pinned, it takes its pinned index — and <em>pinning
+dominates iteration</em>: a class both pinned and in <span
+class="math inline">I</span> keeps the pin (a sliced or broadcast axis
+is read at its position, not looped, even if some marker also asked it
+to iterate);</li>
+<li>otherwise, if it is in <span class="math inline">I</span>
+<em>and</em> its size is greater than one, it gets a <strong>fresh
+iterator symbol</strong> — a new loop variable, joining the product
+space;</li>
+<li>otherwise (unpinned, and either not iterated or size one), it needs
+no loop variable and reads as <span
+class="math inline">\mathsf{Fix}(0)</span>.</li>
+</ul>
+<p>That is the entire solver. The product space is read off as one
+factor per fresh iterator (with its recorded size); each tensor’s index
+map is read off by mapping each axis to its class’s closed index.</p>
+<p>The contrast with shape closing is sharp and instructive. Shape
+inference’s closing phase must <em>choose a direction</em> — leaves
+commit upward to their largest fitting shape, interiors commit downward
+to the bottom — because the broadcast order has a meaningful bottom to
+default to and a leaf/interior distinction that decides which way to
+fall. It can even <em>collapse</em> two incompatible upper bounds to the
+bottom, a semantically loaded resolution that turns a would-be error
+into a broadcast. Projection closing does none of this. It chooses no
+direction, defaults to no bottom, collapses nothing. It only
+<em>labels</em>: pinned classes wear their pin, iterating classes get a
+fresh name, the rest are <span
+class="math inline">\mathsf{Fix}(0)</span>. An equivalence has no up or
+down — union is symmetric — so there is no policy to state, only a
+supply of fresh symbols. The order-theoretic pass needs a closing
+<em>policy</em>; the equivalence-theoretic pass needs only a
+<em>naming</em>.</p>
+</section>
+<section id="why-the-core-is-canonical" class="level2">
+<h2>Why the core is canonical</h2>
+<p>The reward for deferring the bells and whistles is a clean canonicity
+result.</p>
+<p>Fix one operation and its finite set <span
+class="math inline">E</span> of projection equations. Define:</p>
+<ul>
+<li><span class="math inline">\approx</span> as the least equivalence
+relation on projection ids containing every pair <span
+class="math inline">(p, q)</span> with <span
+class="math inline">\mathsf{Eq}(\mathsf{Proj}\,p, \mathsf{Proj}\,q) \in
+E</span>;</li>
+<li>the pin map as the partial function induced by the equations <span
+class="math inline">\mathsf{Eq}(\mathsf{Proj}\,p,
+\mathsf{Sol}(\mathit{idx}))</span>, lifted to <span
+class="math inline">\approx</span>-classes;</li>
+<li>the iterate set as the <span
+class="math inline">\approx</span>-closure of the classes named by <span
+class="math inline">\mathsf{Iter}</span> markers.</li>
+</ul>
+<blockquote>
+<p><strong>Canonicity.</strong> The solution is forced and unique up to
+renaming of the fresh iterator symbols. There is no guessing and no
+closing direction.</p>
+</blockquote>
+<p>Each ingredient is forced. The relation <span
+class="math inline">\approx</span> is a <em>closure</em> — the least
+equivalence containing the equated pairs — which union-find computes
+directly, independent of the order the equations arrive in. The pin map
+is a <em>checked partial function</em>: each <span
+class="math inline">\mathsf{Eq}(\cdot, \mathsf{Sol})</span> either
+extends it consistently or contradicts it, and the <span
+class="math inline">\mathsf{Sol}</span>-vs-<span
+class="math inline">\mathsf{Sol}</span> equations are pure checks;
+neither selects among alternatives. The iterate set is again a closure.
+The labeling is then a total function of these three: pin if pinned,
+else fresh iterator if iterating and size <span class="math inline">&gt;
+1</span>, else <span class="math inline">\mathsf{Fix}(0)</span>. The
+only freedom anywhere is the <em>identity</em> of the fresh symbols —
+renaming, the same caveat the shape post made for its fresh template
+variables.</p>
+<p>So core projection inference is, in a precise sense, <em>more</em>
+principal than core shape inference: shape inference resolves genuine
+underdetermination at closing (which way does a free variable fall?),
+whereas projection inference only succeeds or reports a conflict — it
+never resolves an ambiguity because it never faces one.</p>
+<p>The follow-up will spend exactly what this scoping bought. The
+affine/convolution and concatenation constructs we deferred are
+precisely the ones whose projection terms are <em>derived indices</em> —
+an input axis indexed by
+<code>stride · output + dilation · kernel − padding</code>, or an axis
+indexed by whichever of several concatenated components is active. A
+derived index cannot be settled by union-find alone, because its value
+depends on the loop variables of <em>other</em> classes, which are not
+known until those classes are themselves solved. Reintroducing them
+forces a <em>stratified</em> solver — first fix the base co-iteration
+classes, then <em>evaluate</em> the derived terms against them, with
+deferred equations that can only be checked once their inputs are solved
+— and with stratification comes the possibility of late-discovered
+conflicts and a genuine product-space coupling (concatenated components
+must iterate sequentially within one factor rather than as independent
+loops). The core, having no derived indices, is a flat union-find with a
+labeling.</p>
+</section>
+<section id="three-worked-examples" class="level2">
+<h2>Three worked examples</h2>
+<p>A single thread runs through these: equality unions, broadcasting
+severs, and contraction is whatever the output forgot to mention.</p>
+<section id="matrix-multiplication" class="level3">
+<h3>Matrix multiplication</h3>
+<p>The einsum <code>a;b=&gt;c</code> over <code>a[i,j]</code>,
+<code>b[j,k]</code>, <code>c[i,k]</code> emits, by rule 1, three
+dimension equalities — the <code>i</code>s match, the <code>j</code>s
+match, the <code>k</code>s match: <span class="math display">
+\mathsf{Eq}(c_i, a_i), \quad \mathsf{Eq}(a_j, b_j), \quad
+\mathsf{Eq}(c_k, b_k).
+</span> Union-find produces three classes, <span class="math inline">I =
+\{c_i, a_i\}</span>, <span class="math inline">J = \{a_j, b_j\}</span>,
+<span class="math inline">K = \{c_k, b_k\}</span>, all iterated (all
+sizes <span class="math inline">&gt; 1</span>), so each gets a fresh
+iterator: <span class="math inline">i^\star, j^\star, k^\star</span>.
+The index maps fall out by reading each axis’s class: <span
+class="math display">
+\pi_c = (\,i^\star,\ k^\star\,), \qquad \pi_a = (\,i^\star,\ j^\star\,),
+\qquad \pi_b = (\,j^\star,\ k^\star\,).
+</span> Now apply the reduction characterization. The product space is
+<span class="math inline">\{i^\star, j^\star, k^\star\}</span>, but
+<span class="math inline">\pi_c</span> mentions <span
+class="math inline">i^\star</span> and <span
+class="math inline">k^\star</span> and <em>not</em> <span
+class="math inline">j^\star</span> — so <span
+class="math inline">j^\star</span> is a reduction axis, though the spec
+named three coincidences and never a sum. As <span
+class="math inline">j^\star</span> runs, <span
+class="math inline">\pi_c</span> stays put, the same <code>c[i,k]</code>
+cell is written for every <code>j</code>, and the accumulator adds them.
+<span class="math inline">\pi_c</span> is non-injective, which is the
+predicate that tells the code generator to emit the accumulating
+read-modify-write.</p>
+</section>
+<section id="pointwise-broadcast" class="level3">
+<h3>Pointwise broadcast</h3>
+<p>Multiply a scalar <code>s</code> by a matrix <code>m[p,q]</code> into
+<code>r[p,q]</code>. The pointwise operation emits inequalities. The
+inequality <span class="math inline">m \sqsubseteq r</span> matches axis
+for axis (rule 3): <span class="math inline">\mathsf{Eq}(r_p,
+m_p)</span> and <span class="math inline">\mathsf{Eq}(r_q, m_q)</span> —
+co-iteration, classes <span class="math inline">P = \{r_p, m_p\}</span>
+and <span class="math inline">Q = \{r_q, m_q\}</span>. The inequality
+<span class="math inline">s \sqsubseteq r</span> is the interesting one:
+<code>s</code> is a scalar, so against <code>r</code>’s two axes its
+sole content is broadcasting units, and rule 5 (with rule 2 at each
+pair) rewrites to <em>super iterates, sub pinned to <span
+class="math inline">0</span></em> — the <code>r</code> axes are already
+iterating via <span class="math inline">P, Q</span>, and
+<code>s</code>’s axes are pinned: <span class="math display">
+\pi_r = \pi_m = (\,p^\star,\ q^\star\,), \qquad \pi_s =
+(\,\mathsf{Fix}(0),\ \mathsf{Fix}(0)\,).
+</span> Note what did <em>not</em> happen: <code>s</code>’s axes were
+not unioned with <span class="math inline">P</span> or <span
+class="math inline">Q</span> — broadcasting severed them and fixed them
+at <span class="math inline">0</span>, so the scalar is read at one cell
+for every <span class="math inline">(p^\star, q^\star)</span> while the
+matrix and result iterate together. Every product axis appears in <span
+class="math inline">\pi_r</span>, so <span
+class="math inline">\pi_r</span> is injective and surjective: no
+reduction, no zero-init, a plain elementwise write.</p>
+</section>
+<section id="summing-by-a-vector-of-ones" class="level3">
+<h3>Summing by a vector of ones</h3>
+<p>The shape post described a deliberate idiom: to sum out an axis,
+multiply by a ones-vector whose length is left to inference, which then
+closes upward to match the axis being reduced. Look at the same idiom
+through the projection lens. To sum axis <code>q</code> of
+<code>m[p,q]</code> into <code>r[p]</code>, multiply <code>m</code> by
+<code>ones[q]</code> and let the contraction land. The constraint that
+<code>ones</code>’s axis matches <code>m</code>’s <code>q</code> axis
+emits (rule 1) <span class="math inline">\mathsf{Eq}(\mathit{ones}_q,
+m_q)</span> — they co-iterate, class <span class="math inline">Q</span>.
+The result <code>r</code> has no <code>q</code> axis, so <span
+class="math inline">\pi_r = (p^\star)</span> mentions <span
+class="math inline">p^\star</span> but not <span
+class="math inline">q^\star</span>, and <span
+class="math inline">q^\star</span> is a reduction axis by the
+characterization. Same idiom, both readings: shape inference
+<em>grew</em> the ones-vector to the right length (closing upward from
+use), and projection inference <em>summed over it</em> (the output omits
+<code>q</code>). The one constant the user declined to size is sized by
+the order; the one sum the user never wrote is induced by the absence.
+The two passes meet on the same line of code, each doing its half,
+neither needing a fact the other did not already imply.</p>
+</section>
+</section>
+<section id="from-what-you-write-to-the-projections" class="level2">
+<h2>From what you write to the projections</h2>
+<p>None of the machinery above is what an OCANNL user writes, and it is
+worth closing the loop to the surface, because the loop closes onto two
+distinct things — and projections live on exactly one of them.</p>
+<p>OCANNL has two intermediate representations. The high-level one is
+<strong>assignments</strong>: the accumulating statements
+<code>lhs &lt;accum-op&gt; f(rhs…)</code> we have been compiling, each
+carrying the <code>projections</code> record this article derived. The
+lowered one is a for-loop language the assignments compile down to, and
+it is not our concern here — by the time it exists the projections have
+been spent, discharged into actual loops and indexed accesses.
+Projections are a property of the <em>high-level</em> IR: one record per
+assignment, the thing that says how that assignment’s loops run and how
+its tensors are indexed. Assignments are what the <code>%cd</code>
+(“code”) syntax builds, and the <code>=:+</code> from the reduction
+discussion was already a glimpse of it — the colon erasing, the
+<code>+</code> accumulating.</p>
+<p>Sitting above both IRs is the tensor frontend. A
+<code>Tensor.t</code> is not a third IR; it is a first-class node in a
+differentiable expression graph, bundling the assignment-level forward
+and backward code with the shape that inference fills in. Tensors are
+ordinary OCaml values: with the right module open, <code>a * b</code> is
+just an infix operator on <code>Tensor.t</code>, and the
+<code>%op</code> (“operation”) syntax is sugar over that — it adds
+conveniences like tensor literals and inline tensor definitions, but the
+expression graph is plain OCaml underneath. When a user writes
+<code>a * b</code>, they are building tensors; the assignments — and
+their projections — are generated underneath.</p>
+<p>The bridge between the two is where projection inference does its
+work. A tensor operator is defined by handing the frontend two
+<code>%cd</code> functions, an <code>op_asn</code> for the forward pass
+and a <code>grad_asn</code> for the backward, each of type roughly <span
+class="math inline">(\ldots) \to \texttt{projections} \to
+\texttt{assignments}</span>: given inferred projections, emit the
+assignment that uses them. Matrix multiplication is, stripped to its
+core, <span class="math display">
+\begin{aligned}
+\texttt{op\_asn} \;&amp;=\; (\texttt{v} \mathrel{\texttt{=:+}}
+\texttt{v1} \mathbin{\texttt{*}} \texttt{v2}), \qquad
+\texttt{compose\_op} = \texttt{Compose}, \\
+\texttt{grad\_asn} \;&amp;=\; (\texttt{g1} \mathrel{\texttt{=+}}
+\texttt{g} \mathbin{\texttt{*}} \texttt{v2}; \;\; \texttt{g2}
+\mathrel{\texttt{=+}} \texttt{v1} \mathbin{\texttt{*}} \texttt{g}).
+\end{aligned}
+</span> The user writes <code>a * b</code>; <code>compose_op</code>
+selects the compose path, which (as the worked example traced) emits the
+constraints whose projection reading is the <code>a;b=&gt;c</code> loop
+nest; that derived <code>projections</code> record is handed to
+<code>op_asn</code>, which produces the single assignment
+<code>v =:+ v1 * v2</code> carrying it. The <code>=:+</code> is now
+fully cashed out: the <code>+</code> is the accumulation that sums the
+contracted <code>j</code>, and the <code>:</code> pre-erases because
+<span class="math inline">\pi_c</span> is non-injective — exactly the
+predicate from the reduction discussion, decided by the projections this
+article derived. The user wrote a product; the contraction, the loop
+nest, and the pre-erase were all inferred.</p>
+<p>The gradient assignments are where the colon’s <em>absence</em> earns
+its keep. Each backward statement reads <code>=+</code>, not
+<code>=:+</code>: it accumulates the incoming gradient <code>g</code>
+into the operand gradients <code>g1</code>, <code>g2</code>
+<em>without</em> erasing them first. The reason is exactly what the
+colon controls — an operand can be used in more than one place in the
+surrounding computation, and its gradient must sum the contributions
+from every use, so the backward pass adds to whatever is already there
+rather than overwriting it. Forward computes <code>c</code> afresh and
+so erases (<code>=:+</code>); backward contributes to a running total
+and so preserves (<code>=+</code>).</p>
+<p>The projections, though, are not simply shared across these
+assignments — each assignment has its own <code>projections</code>
+field, <em>derived</em> from the one the operation inferred. There is a
+single inferred record — the operation’s, the <code>a;b=&gt;c</code>
+product space and its three per-tensor index maps from the worked
+example — and it is the <code>op_asn</code>’s projection, the original.
+Every other assignment’s projection is computed from it by a <em>slot
+transformation</em> keyed to how its tensors are named. The
+<code>%cd</code> syntax reads an identifier’s name as a slot:
+<code>v</code>, <code>t</code>, <code>g</code> (and <code>lhs</code>)
+name the LHS slot; <code>v1</code>, <code>t1</code>, <code>g1</code> the
+first RHS slot; <code>v2</code>, <code>t2</code>, <code>g2</code> the
+second; and each slot says which of the original record’s maps that
+tensor should be indexed by. So in <code>g1 =+ g * v2</code>, the
+assignment’s <em>own</em> left-hand side is <code>g1</code> — but
+<code>g1</code> carries the RHS1 slot, so it is indexed by the
+original’s RHS1 map, the very <span class="math inline">(i,j)</span>
+that operand <code>a</code> used going forward; <code>g</code> reads the
+LHS map <span class="math inline">(i,k)</span>, and <code>v2</code> the
+RHS2 map <span class="math inline">(j,k)</span>. Each gradient
+assignment is the forward operation’s index maps re-addressed: the same
+three maps, the same product space <span
+class="math inline">\{i,j,k\}</span>, only with a different one of them
+serving as the LHS. And that is what moves the contraction. The forward
+LHS map <span class="math inline">(i,k)</span> omitted <span
+class="math inline">j</span>, so forward contracted <span
+class="math inline">j</span>; <code>g1</code>’s LHS map is <span
+class="math inline">(i,j)</span>, which omits <span
+class="math inline">k</span>, so it contracts <span
+class="math inline">k</span> — matching <span
+class="math inline">\partial a = \sum_k g_{ik}\,b_{jk}</span>. The
+companion assignment <code>g2 =+ v1 * g</code> makes <code>g2</code>
+(RHS2 slot) the LHS, map <span class="math inline">(j,k)</span>, which
+omits <span class="math inline">i</span>, so it contracts <span
+class="math inline">i</span> — matching <span
+class="math inline">\partial b = \sum_i a_{ij}\,g_{ik}</span>. The
+reduction characterization does all three: in each case the contracted
+axis is simply the product axis the LHS map leaves out.</p>
+<p>This is why a gradient needs no shape or projection inference of its
+own. The roles are permuted, but the maps are not recomputed — they are
+read out of the one record by slot. One inference; many assignments,
+each a slot-permuted view of it. (The same naming convention does
+heavier lifting when a gradient needs an <em>intermediate</em> tensor of
+a particular shape — a max-pool or tropical-convolution backward must
+record which input position won the argmax, which is an input-shaped
+fact, so the intermediate is named with an <code>_rhs1</code> suffix to
+claim the input slot rather than the output one. That is where slot
+detection stops being bookkeeping and starts being load-bearing, and it
+belongs with the follow-up.)</p>
+<p>Everything so far has been the <em>consumer</em> regime: an
+assignment written inside an operator definition, where a
+<code>projections</code> record is already in context and the assignment
+reads a slot-permuted view of it. The tensor nodes there were introduced
+by tensor-expression construction (<code>a * b</code>), so the shape and
+projection inference was driven by that construction, and the
+assignments only consume its result. But assignments are also written
+<em>outside</em> operator definitions, with no ambient
+<code>projections</code> — and there each assignment is a
+<em>producer</em>: it contributes its own constraint to shape and
+projection inference, exactly as a tensor-expression operator would,
+only written directly at the assignment level. How it contributes is set
+by a <code>~logic</code> annotation: <code>"."</code> for pointwise,
+<code>"@"</code> for compose, <code>"T"</code> for transposing a unary
+op’s input against its output — all three taking the broadcast
+<em>inequality</em> path — and any other string read as a full einsum
+spec, the <em>equality</em> path. With neither a
+<code>projections</code> in context nor a <code>~logic</code> given, the
+contribution defaults to pointwise <code>"."</code>, with a single
+exception for <code>*</code> that we come to below.</p>
+<p>The canonical producer case is an optimizer update. An SGD step over
+a parameter <code>p</code>, simplified to its assignment skeleton, is a
+sequence of standalone assignments:</p>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode ocaml"><code class="sourceCode ocaml"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>{ sgd_delta } =: p.grad + (!.weight_decay *. p);</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>{ sgd_momentum } =: (!.momentum *. sgd_momentum) + sgd_delta;</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>p =- learning_rate *. sgd_delta</span></code></pre></div>
+<p>None of these sits inside an operator definition; there is no
+inherited <code>projections</code>, so each contributes its own
+constraint to inference. Each assignment combines an accumulation
+operator (the <code>=:</code> clearing-then-writing, the <code>=-</code>
+subtracting into the target) with a primitive operation applied to its
+right-hand side — and in the first two lines that primitive is the
+<code>+</code> of <code>Add</code>, taking two operands. Where a
+<code>*.</code> appears it is something else: not a recognized
+assignment primitive but the pointwise tensor multiply, so it introduces
+a tensor sub-expression as an argument, and that sub-expression’s own
+construction drives shape and projection inference. The last line repays
+a closer look, because the same scaling can be written two structurally
+different ways. As written, <code>p =- learning_rate *. sgd_delta</code>
+is a <em>unary</em> assignment: <code>*.</code> is the pointwise tensor
+multiply, so <code>learning_rate *. sgd_delta</code> is a tensor
+sub-expression that builds an intermediate, and the assignment merely
+accumulates that one intermediate into <code>p</code>. Written instead
+as <code>p =- learning_rate * sgd_delta ~logic:"."</code>, it is a
+<em>binary</em> assignment: <code>*</code> is the assignment-level
+arithmetic primitive, with two right-hand operands and no intermediate,
+and the <code>~logic:"."</code> makes the accumulation pointwise. The
+two optimize to identical code once the intermediate is inlined, but
+they are different assignments — one unary over a subexpression, one
+binary over a primitive.</p>
+<p>The <code>~logic:"."</code> is needed only in the binary spelling,
+and the reason is an overload of <code>*</code> it would be nicer not to
+have. The symbol <code>*</code> is context-dependent: in an assignment’s
+outermost operator position it is the arithmetic primitive
+<code>Mul</code>, but everywhere else — in a tensor expression — it is
+<em>compose</em>. (Its pointwise sibling <code>*.</code> has no such
+ambiguity; it is a tensor pointwise operation in every context.) So when
+<code>*</code> appears as the binary operator of an assignment, nothing
+about it pins the projection logic — its tensor-expression reading would
+be compose, not pointwise — and rather than let it default surprisingly
+it is left undetermined, to be told <code>~logic:"."</code>. This is a
+known rough edge of the surface syntax, not a designed feature; it is
+the single exception to the <code>"."</code> default. And
+<code>sgd_delta</code> and <code>sgd_momentum</code> are not
+pre-existing tensors: the <code>{ … }</code> braces are inline
+definitions, introducing fresh intermediate nodes whose shapes are
+<em>inferred</em> from the very constraints these assignments
+contribute. So the producer regime does both jobs at once — it drives
+inference for the assignment’s existing operands <em>and</em> shapes the
+new tensors the assignment introduces.</p>
+<p>This same update is where the predecessor’s opening scalar lives:
+<code>learning_rate *. sgd_delta</code> is the learning-rate scalar
+scaling the parameter delta, broadcasting against it exactly as the
+shape article’s opener described. Its projection reading is the
+pointwise severance of the worked example — the scalar pinned to <span
+class="math inline">\mathsf{Fix}(0)</span>, the delta’s axes iterating.
+The scalar that opened the shape article is a worked instance of this
+one’s broadcast rule.</p>
+<p>The other place projections reach the surface is the einsum spec
+notation that drives the strided and concatenated cases, and it too
+belongs with the follow-up.</p>
+</section>
+<section id="where-this-leaves-us" class="level2">
+<h2>Where this leaves us</h2>
+<p>We took the loop nest as the thing to explain — product space and
+index maps, with reduction defined as the output’s independence of a
+loop variable — and derived it from the constraints shape inference had
+already produced. Reusing that one elaboration, read as an order for
+sizes and as an equivalence for loops, is what both economizes the
+system and guarantees the indices respect the shapes; the locality
+discipline (global sizes, local identities) is what keeps coincidences
+of size elsewhere from fusing loops here.</p>
+<p>The deferred constructs — strided and convolutional indexing, and
+axis concatenation — are exactly the derived-index machinery whose
+absence made the core a flat, canonical union-find. The follow-up
+reintroduces them, and with them the stratified solve-then-evaluate,
+padding-as-fixpoint, and product-space coupling that derived indices
+demand. The core developed here is what those extensions rest on.</p>
+<p>OCANNL is open source, at <a
+href="https://github.com/ahrefs/ocannl"><code>github.com/ahrefs/ocannl</code></a>.</p>
+</section>
+</section>
+</article>
+<script src="/assets/theme-toggle.js"></script>
+</body>
+</html>
