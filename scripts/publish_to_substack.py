@@ -67,6 +67,11 @@ _SYM = {
     r"\cap": "∩", r"\in": "∈", r"\notin": "∉", r"\to": "→", r"\mapsto": "↦",
     r"\subseteq": "⊆", r"\supseteq": "⊇", r"\equiv": "≡", r"\approx": "≈",
     r"\forall": "∀", r"\exists": "∃", r"\land": "∧", r"\lor": "∨",
+    r"\pi": "π", r"\theta": "θ", r"\tau": "τ", r"\omega": "ω", r"\epsilon": "ε",
+    r"\ldots": "…", r"\dots": "…", r"\cdots": "⋯",
+    # stmaryrd brackets (KaTeX on Substack doesn't know these); Unicode here, and
+    # `_latex_block` separately rewrites them for the equation path.
+    r"\llbracket": "⟦", r"\rrbracket": "⟧",
     r"\quad": " ", r"\qquad": "  ", r"\;": " ", r"\,": " ", r"\:": " ", r"\!": "",
 }
 _SUB = {c: s for c, s in zip("0123456789aehijklmnoprstuvx+-=",
@@ -143,6 +148,9 @@ def latex_to_unicode(s: str) -> str:
 def _latex_block(latex: str) -> dict:
     """Substack's block-equation node."""
     node_id = "".join(random.choices(string.ascii_uppercase, k=10))
+    # Substack's KaTeX build lacks the stmaryrd brackets `\llbracket`/`\rrbracket`
+    # (they render as an error), so substitute `[[`/`]]` before emitting.
+    latex = latex.replace(r"\llbracket", "[[").replace(r"\rrbracket", "]]")
     # Editor-created equations are single-line; embedded newlines make Substack's
     # editor choke on first parse (the recoverable "Something has gone wrong"
     # popup). Whitespace is insignificant in LaTeX outside the `\\` row breaks,
