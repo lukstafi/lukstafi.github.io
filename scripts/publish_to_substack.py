@@ -67,7 +67,9 @@ _SYM = {
     r"\cap": "∩", r"\in": "∈", r"\notin": "∉", r"\to": "→", r"\mapsto": "↦",
     r"\subseteq": "⊆", r"\supseteq": "⊇", r"\equiv": "≡", r"\approx": "≈",
     r"\forall": "∀", r"\exists": "∃", r"\land": "∧", r"\lor": "∨",
+    r"\cong": "≅", r"\sqcup": "⊔", r"\sqcap": "⊓",
     r"\pi": "π", r"\theta": "θ", r"\tau": "τ", r"\omega": "ω", r"\epsilon": "ε",
+    r"\iota": "ι",
     r"\ldots": "…", r"\dots": "…", r"\cdots": "⋯",
     # stmaryrd brackets (KaTeX on Substack doesn't know these); Unicode here, and
     # `_latex_block` separately rewrites them for the equation path.
@@ -102,6 +104,10 @@ def _take_group(s: str, i: int):
 
 def latex_to_unicode(s: str) -> str:
     """Best-effort conversion of inline LaTeX to Unicode text."""
+    # Escaped braces `\{` `\}` are literal characters, not grouping delimiters.
+    # Stash them as private-use sentinels so they survive both the group parsing
+    # and the unconditional brace-stripping at the end, then restore them.
+    s = s.replace(r"\{", "").replace(r"\}", "")
     # Font/formatting macros: keep the argument, drop the wrapper.
     s = re.sub(r"\\(?:texttt|text|mathrm|mathbf|mathsf|mathit|operatorname)\{([^{}]*)\}",
                lambda m: m.group(1), s)
@@ -141,6 +147,7 @@ def latex_to_unicode(s: str) -> str:
             out.append(c)
             i += 1
     text = "".join(out).replace("{", "").replace("}", "")
+    text = text.replace("", "{").replace("", "}")
     # Collapse the whitespace that macros like \, and \quad introduce.
     return re.sub(r"[ \t]+", " ", text).strip()
 
