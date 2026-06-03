@@ -1,0 +1,762 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <meta name="author" content="Łukasz Stafiniak and Claude (Anthropic)">
+  <title>Split and Concatenation Are Two Directions of a
+Coproduct</title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <link rel="stylesheet" href="/assets/tufte.css">
+  <link rel="stylesheet" href="/assets/pandoc-tufte.css">
+  <link rel="stylesheet" href="/assets/site.css">
+  <script defer=""
+  src="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.js"></script>
+  <script>document.addEventListener("DOMContentLoaded", function () {
+ var mathElements = document.getElementsByClassName("math");
+ var macros = [];
+ for (var i = 0; i < mathElements.length; i++) {
+  var texText = mathElements[i].firstChild;
+  if (mathElements[i].tagName == "SPAN") {
+   katex.render(texText.data, mathElements[i], {
+    displayMode: mathElements[i].classList.contains('display'),
+    throwOnError: false,
+    macros: macros,
+    fleqn: false
+   });
+}}});
+  </script>
+  <link rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.css" />
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+  <script>(function(){var t=localStorage.getItem('theme-preference');if(t)document.documentElement.setAttribute('data-theme',t);})()</script>
+</head>
+<body>
+<nav class="site-nav">
+  <a href="/">Home</a> &middot; <a href="/about.html">About</a> &middot; <a href="https://lukstafi.substack.com">Substack</a>
+</nav>
+<div class="theme-toggle">
+  <button id="theme-btn" aria-label="Toggle dark mode">&#9788;</button>
+</div>
+<article>
+<header>
+<h1 class="title">Split and Concatenation Are Two Directions of a
+Coproduct: Coupled Iteration in OCANNL</h1>
+<p class="byline">Łukasz Stafiniak and Claude (Anthropic)</p>
+</header>
+<section id="split-and-concatenation-are-two-directions-of-a-coproduct"
+class="level1">
+<h1>Split and Concatenation Are Two Directions of a Coproduct</h1>
+<p>Here is the loop nest that concatenating two vectors compiles to,
+<code>a</code> of length <code>A</code> and <code>b</code> of length
+<code>B</code> placed end to end into <code>out</code> of length
+<code>A + B</code>:</p>
+<pre><code>for i in 0 .. A-1:
+    out[i] = a[i]
+for j in 0 .. B-1:
+    out[A + j] = b[j]</code></pre>
+<p>And here is the gradient — the incoming gradient <code>g</code> on
+the joined axis distributed back to the two sources:</p>
+<pre><code>for i in 0 .. A-1:
+    a.grad[i] += g[i]
+for j in 0 .. B-1:
+    b.grad[j] += g[A + j]</code></pre>
+<p>The two nests are the same arithmetic run in opposite directions.
+Forward, two reads are <em>gathered</em> into one output axis, each
+source written to its own stretch of the result; backward, one gradient
+is <em>scattered</em> back, each stretch read off and returned to its
+source. The offset <code>A</code> — the length of the first component —
+is the only quantity that does any work, and it appears in both, once
+placing a write and once placing a read. This post is about that offset,
+and about the single structure the two nests traverse in opposite
+directions.</p>
+<p>Three companion pieces built the machinery this rests on. <a
+href="broadcast-aware-shape-inference.md"><em>Broadcasting Is an
+Order</em></a> developed shape inference: what a shape is, and how a
+solver fills in the sizes. <a
+href="contraction-is-emergent.md"><em>Contraction Is Emergent</em></a>
+developed projection inference: how the same constraints, re-read as an
+equivalence over axes rather than an order over sizes, become the loop
+nest of an operation, with reductions read off the result rather than
+declared. <a href="convolution-is-a-contraction.md"><em>Convolution Is a
+Contraction</em></a> added the affine index — a third index form, a
+function of loop variables — and with it a stratified
+<em>solve-then-evaluate</em> solver, padding accumulated as a monotonic
+fixpoint and frozen at finalization, and tensor initialization. All
+three deferred one construct, and named it the same way each time: the
+one that <em>enlarges</em> the machinery rather than populating a corner
+of it. This is that construct.</p>
+<section id="what-the-first-three-posts-kept-flat" class="level2">
+<h2>What the first three posts kept flat</h2>
+<p>Every operation in the predecessors compiled to a single nest over a
+<strong>product space</strong> — a Cartesian product of integer ranges,
+one loop variable per factor, the factors independent. A matrix multiply
+iterates <code>{i, j, k}</code>; a pointwise add iterates the result’s
+axes; a convolution iterates output positions and kernel positions, and
+reads its input at an affine combination of the two. The affine index of
+the third post looked like it might break the pattern, since one
+index-map component named two loop variables instead of one — but it did
+not: it added no factor and coupled none, it only read an existing flat
+product at a computed address. The third post said so in as many words:
+<em>the product space stayed flat throughout, one factor per axis, each
+a single range.</em> The first two posts had each flagged, as the thing
+they were deferring, exactly the construct that would not stay flat.</p>
+<p>Concatenation is that construct, and the break is precise. A factor
+stops being a single range and becomes a <strong>disjoint union of
+ranges</strong>, traversed in sequence rather than as a product. In the
+opener, the output axis of length <code>A + B</code> is one factor, but
+iterating it is not one loop — it is the <code>A</code>-loop
+<em>followed by</em> the <code>B</code>-loop, two ranges laid end to
+end, each driving a different source. The product of ranges that carried
+three posts acquires its first <strong>coproduct</strong>.</p>
+<p>It is worth saying immediately why this is the same word a category
+theorist would reach for, because the structure earns the name and the
+rest of the post turns on it. A coproduct of two ranges <span
+class="math inline">R_a</span> and <span class="math inline">R_b</span>
+— their disjoint union <span class="math inline">R_a \sqcup R_b</span> —
+comes equipped with two <strong>injections</strong>, <span
+class="math inline">\iota_a : R_a \hookrightarrow R_a \sqcup R_b</span>
+and <span class="math inline">\iota_b : R_b \hookrightarrow R_a \sqcup
+R_b</span>, that place each summand into the whole without overlap. For
+ranges of integers the injections are exactly the offset maps: <span
+class="math inline">\iota_a(i) = i</span> and <span
+class="math inline">\iota_b(j) = A + j</span>. Those are the two
+addresses in the opener. <strong>Concatenation is the
+injections</strong> — it places each component into its slice of the
+result, offset by the lengths of the components before it. The defining
+property of a coproduct is that an element of the whole comes from
+<em>exactly one</em> summand: the slices tile the result and do not
+overlap. We will see that the disjointness — no position claimed by two
+summands — is not decoration but a checked invariant, the thing that
+separates a well-formed concatenation from an ambiguous one.</p>
+<p>This is the categorical dual of what the predecessors iterated. Their
+domain was a product of ranges, and a contraction (the second post)
+concerns a product factor the output omits, reduced away by the
+assignment’s accumulation. Concatenation introduces the dual construct:
+a coproduct factor. And because the size of a disjoint union is the sum
+of its parts’ sizes, the joined axis comes out exactly as long as its
+components together — the one place a sum appears here, and it is the
+cardinality of the coproduct, nothing more.</p>
+</section>
+<section id="one-term-two-readings" class="level2">
+<h2>One term, two readings</h2>
+<p>The affine index of the third post came from enriching the dimension
+term with a constructor read by two solvers — a size solver that asked
+how big an axis is, and a projection solver that asked which cell it
+addresses — so that size and address could not disagree, because they
+were computed from one source. Concatenation enriches the same term the
+same way. Alongside the third post’s <code>Affine</code>, the dimension
+term gains</p>
+<pre><code>Concat of dim list</code></pre>
+<p>a dimension built by concatenating its components. And it is read
+twice.</p>
+<p>The <strong>size reading</strong> is a sum: once the components are
+known, a <code>Concat</code> resolves to the sum of their dimensions. A
+concatenation of a length-<code>A</code> and a length-<code>B</code>
+axis is a length-<code>(A + B)</code> axis. (When the size solver meets
+a <code>Concat</code> whose components repeat the same variable, it may
+rewrite it internally as a stride-only affine term — <code>n</code>
+copies of a length-<code>d</code> axis being a length-<code>n·d</code>
+axis. That reuses the affine representation for something that is not
+affine as a projection, but the rewrite is confined to size solving and
+never reaches projection inference, so nothing downstream sees the
+discrepancy.)</p>
+<p>The <strong>projection reading</strong> is where the offset lives. As
+an index, a concatenated axis is</p>
+<pre><code>Concat of symbol list</code></pre>
+<p>one iterator symbol per component, and at lowering it resolves to
+whichever component is <em>active</em> at that point in the iteration,
+addressed at that component’s iterator plus the <strong>injection
+offset</strong> — the cumulative size of the components before it. The
+first component reads at its own iterator with offset zero; the second
+at its iterator plus the first component’s length; the <span
+class="math inline">k</span>-th at its iterator plus <span
+class="math inline">\sum_{m&lt;k}</span> (length of component <span
+class="math inline">m</span>).</p>
+<p>One small asymmetry with the broadcast machinery is worth flagging
+now because it will matter at lowering. The second post taught that a
+size-one axis that broadcasts is severed and pinned to
+<code>Fixed_idx 0</code> — it earns no loop, it is read at its single
+cell while its partner iterates. A size-one axis that participates in a
+<code>Concat</code> is <strong>not</strong> collapsed that way. Every
+component of a concatenation keeps a real iterator symbol, even a
+length-one one, because lowering needs those symbols to decide which
+component is active and to compute its offset. Broadcasting throws away
+the loop of a unit axis; concatenation cannot, because the unit is one
+summand of the disjoint union and the bookkeeping needs to know it is
+there.</p>
+</section>
+<section id="the-coupling-a-second-union-find" class="level2">
+<h2>The coupling: a second union-find</h2>
+<p>The second post’s projection inference was a union-find. It read the
+elaborated constraints as an <em>equivalence</em> over axes: two axes
+the spec forced to coincide were unioned into a co-iteration class, one
+loop variable per class, and a reduction was an output that omitted a
+class. Equality unions; broadcasting severs. The whole of it was flat —
+each class became one factor, each factor one range.</p>
+<p>Concatenation adds a second union-find, over the same symbols,
+computing a different relation. After the first pass has settled which
+axes co-iterate and minted iterator symbols for them, the projection
+deriver collects every <code>Concat</code> index and treats it as a
+<strong>hyperedge</strong> over the symbols it names. It then takes the
+<strong>connected components</strong> of that hypergraph. Each component
+becomes one factor of the product space, and the symbols within a
+component are made to iterate <em>sequentially</em> — one after another,
+the result laid out as consecutive loops — rather than nested as an
+independent product would be. The product space is consequently no
+longer an array of single ranges but an array of <em>lists</em> of
+ranges: a factor carries a list of sizes and a list of iterators,
+singletons everywhere except where a concatenation coupled several axes
+into one.</p>
+<p>The two union-finds compute different relations over the same
+symbols. The second post’s groups symbols that are <strong>the same
+loop</strong>: an equivalence, “these axes are driven by one variable.”
+This post’s groups symbols that must occupy <strong>the same factor and
+run consecutively</strong>: “these axes are not the same loop, they are
+different loops that share a slot and take turns.” The first is
+identification, the second is sequencing. An equivalence class collapses
+its members to one iterator; a connected component keeps its members as
+distinct iterators and orders them. Where the second post said
+<em>equality unions, broadcasting severs</em>, this post adds the third
+verb: <strong>concatenation couples</strong>.</p>
+<p>The sequencing is what the disjoint union demands. Iterating <span
+class="math inline">R_a \sqcup R_b</span> means running through <span
+class="math inline">R_a</span> and then through <span
+class="math inline">R_b</span> — not the pairs <span
+class="math inline">R_a \times R_b</span>, which would be their
+Cartesian product, a different operation. So the lowering emits the
+components of a coupled factor as a flat sequence of loops, not a nest.
+At each point one component is being traversed; the others are
+inactive.</p>
+<p>That the components run in sequence is a fact about the lowered IR,
+not about the operation. The components are independent — prefix and
+suffix could be written in either order, or at once — so the consecutive
+loops are an over-specification, a total order imposed on a computation
+that requires only a partial one. This is the lowered IR’s character in
+general, not a quirk of concatenation: it can be read as committing to a
+purely sequential schedule. OCANNL treats that as a separation of
+concerns. The backends — the GPU emitters and optimizers — are meant to
+re-derive the independences latent in the lowered IR and parallelize
+accordingly, and to refuse a computation whose shape does not admit
+efficient execution, rather than to faithfully honor whatever sequential
+reading the IR happens to express. Efficient GPU execution rests on
+order not affecting the result, and the coupling is built so that it
+does not. (This part of OCANNL is not yet fully developed.)</p>
+</section>
+<section id="two-directions-and-the-swap-between-them" class="level2">
+<h2>Two directions, and the swap between them</h2>
+<p>Forward concatenation reads several sources and writes one result,
+placing each source into its slice. Its components are the injections;
+the operation is a <strong>gather</strong> along them. But the same
+<code>Concat</code> index, and the same offsets, describe a whole family
+of operations, distinguished only by which side of the assignment the
+concatenated axis sits on and which components are present:</p>
+<table>
+<thead>
+<tr>
+<th>Spec</th>
+<th>Operation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>a; b =&gt; a^b</code></td>
+<td>concatenate: place two sources end to end</td>
+</tr>
+<tr>
+<td><code>a^b =&gt; a</code></td>
+<td>extract the prefix (slice)</td>
+</tr>
+<tr>
+<td><code>a^b =&gt; b</code></td>
+<td>extract the suffix (slice)</td>
+</tr>
+<tr>
+<td><code>a =&gt; a^b</code></td>
+<td>write the prefix, leave the suffix (partial update)</td>
+</tr>
+<tr>
+<td><code>b =&gt; a^b</code></td>
+<td>write the suffix, leave the prefix (partial update)</td>
+</tr>
+<tr>
+<td><code>a^b^c =&gt; b</code></td>
+<td>extract the middle</td>
+</tr>
+<tr>
+<td><code>b =&gt; a^b^c</code></td>
+<td>write the middle</td>
+</tr>
+</tbody>
+</table>
+<p>Reading the index <em>along</em> the injections — component to its
+offset position in the whole — builds the result: concatenation, and the
+partial updates that write one slice. Reading it <em>against</em> the
+injections — restricting the whole back to one summand’s range — takes a
+part out: the slices and extractions. These are the two directions the
+title names. A coproduct does not come with projections the way a
+product does, so “the other direction” is not a categorical projection;
+it is the partial inverse of an injection, the restriction of the joined
+axis to one component’s image. Split is concatenation read backwards,
+and that is all the relation there is between them: one structure, the
+disjoint union with its offsets, traversed two ways.</p>
+<p>The gradients make the swap literal. The gradient of a gather is a
+scatter: differentiate <code>a; b =&gt; a^b</code> and the incoming
+gradient on the joined axis must be distributed back to <code>a</code>
+and <code>b</code>, each component reading its slice — which is the
+<em>backward</em> direction, an extraction per source. The gradient of a
+slice is the reverse: differentiate <code>a^b =&gt; a</code> and the
+prefix’s gradient must be placed back into the prefix slice of the
+source’s gradient, zero elsewhere — the <em>forward</em> direction, a
+placement. So concatenation and split are not only two directions of one
+structure; each is the gradient of the other. The four operations —
+concatenate, split, and their two gradients — are the injections and
+their reverses, nothing more.</p>
+<p>In the assignment IR this reversal has a name, and the reason it
+needs a dedicated one — rather than the slot permutation the second post
+used for ordinary gradients — is concrete. Every accumulating operation
+in the IR writes a <em>single</em> left-hand side: a <code>Unop</code>,
+<code>Binop</code>, or <code>Block</code> reads its operands and
+accumulates into one tensor. The forward concatenation
+<code>a; b =&gt; a^b</code> fits that mould as a <code>Block</code> —
+its <code>Concat</code> sits on the single written result and selects,
+per position, which one of the several read operands is live (at most
+one, by the disjoint cover). Its gradient does not fit. The incoming
+gradient on the joined axis has to be scattered back to <em>several</em>
+tensors, <code>a</code>’s gradient and <code>b</code>’s, with the
+<code>Concat</code> now choosing per position which one to
+<em>write</em>. That is a masked array of write <em>targets</em>, and no
+single-left-hand-side form expresses it; nor does any permutation of
+buffers within such a form, since a permutation relabels the one write
+target it has and cannot conjure a second. The IR provides exactly one
+construct whose written-to side is an array — <code>Rev_sides</code> —
+and it works by reuse, not re-derivation: it takes the forward
+<code>Block</code>, makes that block’s single left-hand side the tensor
+read from and its operand array the masked tensors written to, and
+carries the <code>Concat</code>, the offsets, and the coupled factor
+over untouched. A gather selects among reads and writes one; its
+gradient reads one and selects among writes; the move between them swaps
+which side is the array, and that is the move a permutation cannot make
+and <code>Rev_sides</code> is.</p>
+<p><code>Block</code> and <code>Rev_sides</code> are the only
+accumulating operations the IR lets carry concatenated axes, and the
+reason is the disjoint cover. A <code>Concat</code> index is
+well-defined as a write only if no result position is claimed by more
+than one source: the sources’ slices must not overlap. The lowering
+enforces this directly. As it walks the coupled factor it determines,
+for each position, which component’s range is being traversed, admits
+only the source whose component is active there, and resolves the
+<code>Concat</code> to that component’s iterator offset by its
+cumulative size. If two sources were ever viable at one position — if
+their slices overlapped — the operation would try to combine both into
+one cell, and the lowering rejects it as ambiguous. It is allowed for
+<em>no</em> source to be active at a position: a concatenation may leave
+gaps, which is how a partial update writes one slice and leaves the rest
+of the target untouched. At most one source per position — exactly one
+where the slices cover the result, none where they leave a gap — is the
+coproduct’s universal property restated as a code-generation check.</p>
+<p>To see the surface syntax, take the single-source slice
+<code>a^b =&gt; a</code> in <code>%cd</code>. The forward extraction
+reads the prefix of the concatenated source into its whole output:</p>
+<pre><code>out =:+ source ~logic:&quot;a^b =&gt; a&quot;</code></pre>
+<p>The leading <code>=:</code> clears <code>out</code> to the
+accumulator’s neutral element and <code>+</code> is the accumulating
+operator — though on a write-once projection like this slice, where
+every output cell is assigned exactly once, the accumulation has nothing
+to do and the line coincides with a plain set,
+<code>out =: source</code>. The lowering knows this: when the projection
+is injective it emits a <code>set</code> and skips the accumulation
+altogether. (The colon-first spelling is the one the second post traced
+to OCaml fixing an assignment operator’s meaning by its first character,
+which is why there is no <code>+=</code>.) The accumulation earns its
+keep in the gradient, which adds rather than erases because
+<code>source</code> is shared with whatever else reads it:</p>
+<pre><code>source.grad =+ out.grad ~logic:&quot;a =&gt; a^b&quot;</code></pre>
+<p>Both of these are <code>Block</code>s — a single-source slice and a
+single-target partial write — and <code>~logic</code> builds each
+projection straight from its spec; neither is reversed.
+<code>Rev_sides</code> is what the gradient builder reaches for in the
+case of the previous paragraph — the multi-source concatenation whose
+gradient scatters to an array of tensors. An operation is defined by a
+pair of builders, a forward <code>op_asn</code> and a backward
+<code>grad_asn</code>, and both are handed the <em>same</em>
+<code>projections</code> (the gradient builder also receiving the
+incoming gradient and the operand tensors). The gradient is therefore
+not re-derived from a written spec: <code>grad_asn</code> already holds
+the forward’s projections, and for a concatenation it builds the
+<code>Rev_sides</code>-tagged assignment directly from them,
+array-valued write side and all. Only the many-target scatter truly
+requires the reversal — a single-target gradient could be a
+<code>Block</code> — though the <code>++^</code> combinator builds every
+concatenation gradient as a <code>Rev_sides</code>, the one-source case
+included.</p>
+</section>
+<section id="the-empty-summand-dimension-zero-and-discardable_vars"
+class="level2">
+<h2>The empty summand: dimension zero and
+<code>discardable_vars</code></h2>
+<p>Concatenation extends the dimension order the first three posts were
+built on.</p>
+<p>The first post’s order had a bottom: <span
+class="math inline">1_\emptyset</span>, the claim-free size-one axis,
+the thing a scalar carries and the thing rank-broadening inserts. It is
+the bottom <em>of broadcasting</em> — the unit that a smaller operand
+becomes when it has to fit a larger one, the identity of the operation
+that fills an axis by replication. In the algebra of sizes under
+broadcasting, <span class="math inline">1_\emptyset</span> is the unit
+of the <strong>product</strong>: replicating along a size-one claim-free
+axis changes nothing, <span class="math inline">A \times 1 \cong
+A</span>.</p>
+<p>Concatenation has a different unit, and it is not one but
+<strong>zero</strong>. The unit of a coproduct is the empty summand:
+<span class="math inline">A \sqcup \emptyset \cong A</span>, joining an
+empty range to a range leaves it unchanged. A length-zero axis is the
+empty range, and so a concatenation that includes an empty component is
+a concatenation with one fewer component — the empty slice contributes
+no positions, places nothing, and the offsets of everything after it are
+unmoved. For the coproduct to have a unit at all, the size domain must
+be allowed to reach zero, which the first post’s domain (sizes <span
+class="math inline">\geq 1</span>, with closing guessing unforced axes
+to <span class="math inline">1</span>) deliberately could not.</p>
+<p>So concatenation requires a controlled extension: in concatenation
+contexts, certain dimension variables are permitted to resolve to
+<strong>zero</strong>, a size that is otherwise illegal. These are the
+components that a specification may discard or leave empty, and the
+system tracks them as a set of <strong>discardable variables</strong>
+(<code>discardable_vars</code> in the code). Permitting that zero is a
+deliberate exception, confined to exactly these variables and named for
+what licenses it: a variable is discardable precisely when its component
+can be dropped. When closing guesses unforced variables to their minimal
+value, an ordinary variable guesses to <span
+class="math inline">1</span> (the product unit, the first post’s policy)
+but a discardable variable guesses to <span class="math inline">0</span>
+(the coproduct unit). The two bottoms sit side by side, each the
+identity of its own operation, and which one an axis falls to is decided
+by whether it is a discardable summand of a concatenation.</p>
+<p>It is worth being exact about what “two bottoms” means, because they
+do not live in one order. The first post’s order is the
+<em>broadcast</em> order: a <span class="math inline">d_1</span>-axis is
+below a <span class="math inline">d_2</span>-axis when the first
+broadcasts into the second, which puts <span
+class="math inline">1</span> at the bottom — a unit axis broadcasts into
+anything — and leaves distinct concrete sizes mutually incomparable.
+Zero does not slot in beneath <span class="math inline">1</span> there.
+A length-zero axis broadcasts into nothing and nothing broadcasts into
+it: you can neither replicate an empty axis to fill a populated one nor
+collapse a populated one to empty. Under broadcasting <span
+class="math inline">0</span> is not lower than <span
+class="math inline">1</span>, it is incomparable to everything, off the
+order. The two units belong to two structures sharing one carrier —
+broadcasting with unit <span class="math inline">1</span>, concatenation
+with unit <span class="math inline">0</span> — so closing an unforced
+axis is not “descend to the bottom of the lattice” but “guess the unit
+of the operation that owns it”: <span class="math inline">1</span> where
+broadcasting left it free, <span class="math inline">0</span> where a
+concatenation left a component free as the empty summand. The
+discardable set records which operation owns which free axis.</p>
+<p>Which components are discardable is a real question. Consider what
+“discardable” should mean. In <code>a^b =&gt; a</code>, the result is
+just the prefix; the suffix <code>b</code> appears in the source spec
+but contributes nothing to the result, so <code>b</code> may be empty —
+it is the part being sliced away, and an extraction of the prefix should
+work whatever the suffix’s size, including zero. In
+<code>a^b =&gt; b</code> symmetrically <code>a</code> is discardable.
+But in <code>a^b =&gt; a^b</code> neither is: both components appear on
+both sides, both carry real data through, neither may vanish. The rule
+has to distinguish “this component is projected away on the other side”
+from “this component is carried through.”</p>
+<p>The precise condition is a quantifier alternation. A variable <span
+class="math inline">v</span>, appearing in one component of a
+<code>Concat</code> on one side of the spec, is discardable when:
+<strong>for every shape on the other side, there exists an axis such
+that for every component of that axis, the complement of <span
+class="math inline">v</span>’s component intersects it</strong> — where
+the complement is the union of variables from the <em>other</em>
+components of <span class="math inline">v</span>’s own concatenation.
+Read operationally: <span class="math inline">v</span>’s component is
+discardable exactly when, on the other side, <span
+class="math inline">v</span>’s siblings already cover some axis
+completely, so that <span class="math inline">v</span> itself is
+redundant there and may be dropped to nothing. The worked cases:</p>
+<ul>
+<li><code>a^b =&gt; a</code>: the complement of <code>b</code> is <span
+class="math inline">\{a\}</span>, and on the result side the single axis
+<code>a</code> is covered by <span class="math inline">\{a\}</span> — so
+<code>b</code> is discardable. (Symmetrically <code>a</code> in
+<code>a^b =&gt; b</code>.)</li>
+<li><code>a^b =&gt; a^b</code>: the complement of <code>b</code> is
+<span class="math inline">\{a\}</span>, but the result axis is itself
+<code>a^b</code>, whose components are <code>a</code> and <code>b</code>
+<em>separately</em>; <span class="math inline">\{a\}</span> covers the
+<code>a</code> component but not the <code>b</code> component, so the
+“for every component” clause fails. Neither variable is discardable —
+correct, both carry through.</li>
+<li><code>a; b =&gt; a^b</code>: two sources, <code>a</code> alone and
+<code>b</code> alone. For <code>b</code> to be discardable its
+complement <span class="math inline">\{a\}</span> would have to cover an
+axis of <em>every</em> source, but the second source is just
+<code>b</code>, which <span class="math inline">\{a\}</span> does not
+touch. Neither is discardable.</li>
+<li><code>a; b =&gt; a^c</code>: here <code>c</code> is <em>not</em>
+discardable, because its complement <span
+class="math inline">\{a\}</span> fails to cover the second source
+<code>b</code>. The slot <code>c</code> is left unconstrained, not
+redundant, and must be solved rather than zeroed.</li>
+<li><code>a; b =&gt; a^b^c</code>: <code>c</code>’s complement is <span
+class="math inline">\{a, b\}</span>, and each source — <code>a</code>
+alone, <code>b</code> alone — is an axis fully covered by <span
+class="math inline">\{a, b\}</span>, so <code>c</code> <em>is</em>
+discardable. The result names a third component that no source fills,
+and it falls to the empty summand: the spec computes <code>a^b</code>
+with a vestigial empty slot.</li>
+</ul>
+<p>The alternation — for all shapes, there exists an axis, for all
+components — is doing exactly the work of asking whether a summand is
+already accounted for elsewhere and may therefore be the empty summand.
+It is the syntactic test for “this is a unit of the coproduct here,” and
+it is what lets one notation express both a concatenation (every
+component carries through, nothing discardable) and a slice or partial
+update (the unwritten components discardable to zero) without a separate
+operator for each. Specifications with integer-sized components —
+<code>3^a =&gt; a</code>, skip three at the front;
+<code>a =&gt; a^3</code>, write all but the last three — are the same
+idea with the discarded summand’s size given rather than inferred: the
+constant component becomes a fresh internal symbol that the projection
+skips, a known-size empty-on-the-result slice.</p>
+<p>The <code>a; b =&gt; a^b^c</code> case is worth pausing on as a
+design question rather than a derivation, because it is the rule at its
+most permissive. The spec is accepted and <code>c</code> falls to
+nothing, which is graceful when the empty slot is meant — a fixed
+template <code>prefix^middle^suffix</code> reused in a call that
+supplies only two of the three parts, the third defaulting to empty —
+and it is the very mechanism that lets the <code>^</code> notation cover
+slices and partial updates with no new operator. But it also accepts a
+typo: a user who wrote <code>c</code> expecting a third source and
+forgot to pass it gets a silently empty component rather than an error.
+Whether that should stay silent, warn, or demand that an intentionally
+empty slot be marked explicitly — some annotation separating “leave this
+empty” from “a source belongs here” — is open, and the coproduct reading
+is neutral on it, since an empty summand is well-defined either way. The
+decision is about how much the surface notation should let inference
+guess on the user’s behalf: the same tension the first post’s closing
+policy raised, now with <span class="math inline">0</span> rather than
+<span class="math inline">1</span> as the value being guessed into
+existence.</p>
+<p>Operationally, a discardable variable is a concatenation component
+the operation does not iterate. A component is discardable just when it
+is projected away on the other side of the spec — written in the
+notation but contributing no indexing to the computation — and an axis
+the operation never reads needs no extent, so its size is free to fall
+to zero. “May be the empty summand” and “is not iterated here” are one
+fact seen from the size end and the projection end. The size is still
+shared across the program, so a discardable variable can be forced
+positive from elsewhere: if the same variable indexes a real axis in
+another operation it takes that size there, while the operation that
+discards it simply never loops over it. Discardability is a verdict on
+an occurrence in a spec, not on the variable globally.</p>
+<p>There is care needed in the solver so that this extension does not
+destabilize the rest. The first post’s closing policy guessed unforced
+axes to the bottom of the order; now there are two bottoms, and guessing
+the wrong one is a bug, not a broadcast. So the discardable set is
+computed up front from the specification’s structure (the quantifier
+test above, run over the spec’s two sides) and consulted at exactly the
+closing stages where minimal-value guessing happens, which guess
+discardable variables to <span class="math inline">0</span> and
+everything else to <span class="math inline">1</span>. And unification
+of <code>Concat</code> terms is mostly structural — two concatenations
+of equal length unify component-wise — with one inequality case held
+open: a concatenation almost all of whose components are discardable can
+be left as an inequality rather than forced to an equation, so the
+solver can still infer the one live component from context. The
+machinery is small, but it is the first place the size domain has more
+than one floor, and the second floor is there because the coproduct
+needs a unit.</p>
+</section>
+<section id="block-matrices-the-coproduct-in-more-than-one-axis"
+class="level2">
+<h2>Block matrices: the coproduct in more than one axis</h2>
+<p>Nothing restricts a single operation to one coupled factor. A
+specification may concatenate along several axes at once, and when it
+does, the coproduct structure reaches into more than one factor of the
+product space — which is exactly a <strong>block matrix</strong> and its
+relatives.</p>
+<p>Take a result whose two axes are each a concatenation: a <span
+class="math inline">2\times2</span> block matrix assembled from four
+sub-blocks is a result indexed <code>r^s, c^t</code> (rows split into
+<code>r</code> then <code>s</code>, columns into <code>c</code> then
+<code>t</code>), with each source block written to one (row-slice,
+column-slice) rectangle. Here two factors are coupled, the row factor
+and the column factor, and the active component must be chosen
+independently in each. The disjoint-cover invariant now lives in two
+dimensions: the rectangles tile the result, and at each point exactly
+one block is active — the pair of active row-component and active
+column-component picks it out. The lowering handles the multi-axis case
+by the same machinery as the single-axis one, the active-component test
+applied per concatenated axis and the offsets accumulated per axis; the
+no-overlap check that guarded one coupled factor now guards the pair,
+rejecting any position where two rectangles are simultaneously
+viable.</p>
+<p>The case worth dwelling on is when the concatenations across
+different axes <strong>share symbols</strong>. If the row split and the
+column split are driven by the <em>same</em> iterators rather than
+independent ones, the active rectangle is constrained to the diagonal —
+the operation writes a block-diagonal or banded result, the off-diagonal
+blocks never active because no point makes two unrelated components
+simultaneously live. Disjoint symbols across the concatenated axes give
+a full block tensor; overlapping symbols give a partially diagonal one.
+That a single mechanism — couple the axes, tile the factors, admit at
+most one summand per cell — produces both block assembly and banded
+structure, with the difference being only whether the couplings share
+iterators, is the clearest measure of how far the coproduct reading
+reaches. It is the same observation the convolution post made about the
+affine index, that one enriched term covered convolution, striding,
+interleaving, and their inverses by varying a coefficient; here one
+coupled-factor mechanism covers concatenation, slicing, block matrices,
+and banded tensors by varying how many axes are coupled and whether they
+share symbols.</p>
+<p>(This is a statement about the <em>operation</em>, not about any
+particular surface syntax. What notation should most conveniently
+<em>describe</em> a block assembly — whether the natural thing for a
+user to write is a blocking spec or a stacking construct — is a separate
+question, returned to below. The machinery underneath is concatenation
+along one or more axes, however it is spelled.)</p>
+</section>
+<section id="a-later-seam" class="level2">
+<h2>A later seam</h2>
+<p>The convolution post gave up one property to get the affine index:
+flatness of the solve. Its index could name loop variables the solver
+had not yet minted, so the solve ran in two strata — fix the base
+co-iteration classes, then evaluate the derived terms against them — and
+a check between two derived terms could fire only after the stratum that
+evaluated its operands, so a conflict could surface later than where the
+constraint was written. Concatenation continues down this road.</p>
+<p>The connected-component decomposition is a structural pass that runs
+<em>after</em> the co-iteration union-find, on its output: it cannot
+group symbols into factors until the symbols exist. And the
+disjoint-cover and ambiguity checks fire later still, at lowering, when
+the offsets are concrete and the lowering can ask, position by position,
+which component is active — an overlap is detected there, when two
+components turn out viable at one cell, not when the spec was parsed. So
+the monotonic-core-with-frozen-seams picture from the convolution post
+(where padding accumulated under monotonic rules and was committed once
+at finalization) gains another seam: the coupling and its tiling check
+are resolved past the point where shapes are closed, on the far side of
+the same finalization boundary. The core stays monotonic; the
+non-monotonic commitments cluster at the seams; concatenation adds
+one.</p>
+</section>
+<section
+id="reaching-the-surface-and-a-note-on-what-to-build-downstream"
+class="level2">
+<h2>Reaching the surface, and a note on what to build downstream</h2>
+<p>At the surface, concatenation is the einsum notation of the
+convolution post with <code>^</code> joining axis components. Under
+<code>%op</code> the operator <code>++^</code> expands to
+<code>concat</code> (also spelled <code>concat_sum</code>): it assembles
+a <code>Block</code> from an array of sources against a spec —
+<code>(a, b, c) ++^ "x, ...; y, ...; z, ... =&gt; x^y^z, ..."</code>
+joins three tensors along their first axis — accumulating by sum, as the
+name records; its <code>Rev_sides</code> gradient likewise adds into the
+source gradients. The capture list from the convolution post carries
+over unchanged: <code>++^</code> takes spec labels whose inferred sizes
+are bound for reuse, the same <code>variable_ref</code> mechanism, now
+reporting the size a component resolved to. Single-source members of the
+family — slices and partial updates — need no special operator; they are
+ordinary <code>%cd</code> assignments whose <code>~logic</code> carries
+a <code>^</code> spec, as with the
+<code>out =:+ source ~logic:"a^b =&gt; a"</code> above. And summed
+placement is only the default: because an operation is nothing but an
+<code>op_asn</code>/<code>grad_asn</code> pair of <code>%cd</code> code
+over a <code>projections</code>, a user can run a concatenation’s
+coupled projection through arbitrary arithmetic instead of an identity
+copy, fusing the join with a computation in one pass. <code>%cd</code>
+gives that directly.</p>
+<p>That leaves stacking, which is a near neighbour of concatenation and
+a good illustration of what the coproduct reading buys downstream, but
+is <em>not</em> a concatenation. Concatenation extends an existing axis:
+it joins length-<code>A</code> and length-<code>B</code> data into one
+length-<code>(A+B)</code> axis, and the components may differ in size.
+Stacking introduces a <em>new</em> leading axis: it takes <code>N</code>
+equally-shaped tensors and produces one tensor with a fresh axis of size
+<code>N</code>, the components stacked along it. In coproduct terms the
+difference is sharp. Concatenation is a coproduct with possibly-unequal
+summands glued into an existing factor. Stacking is the <em>regular</em>
+case — <code>N</code> summands all of the same size — and crucially it
+makes a <em>new</em> factor rather than enlarging one, so its iteration
+is <code>N × (component shape)</code>, a genuine product of the new axis
+with the component, where concatenation’s is a sum within one
+factor.</p>
+<p>The implementation question is how to build stacking on the machinery
+just developed, and the coproduct reading points to an answer. One could
+desugar a stack into a concatenation through the einsum path — give each
+component a fresh size-one axis and concatenate along it, <code>N</code>
+unit slices tiling a new length-<code>N</code> axis — and the
+documentation at one point described doing exactly that. But that routes
+a regular, equal-sized, new-axis operation through the irregular,
+possibly-unequal, existing-axis spec language, and overloads the einsum
+notation to carry it. The cleaner design, which the structure points to,
+is to give stacking its <strong>own shape-logic entry</strong> — it is a
+different operation, with a regularity the spec language does not need
+to express — while having it <strong>share the projection
+machinery</strong> with concatenation, since a stack of <code>N</code>
+equal components along a fresh axis is precisely the regular coupled
+factor, the same connected-component-and-offsets code with all offsets a
+multiple of one component size. A dedicated entry for the size logic,
+shared coupling for the projections: the operations are siblings in
+projection and distinct in shape, and the code follows that exactly
+rather than forcing one to wear the other’s notation. (Tensor literals
+fall out as the scalar base case of stacking, the way the convolution
+post observed the affine index already contained the iterator and the
+fixed index as its degenerate forms — a literal is a stack of
+zero-dimensional components, the brackets that separate output, input,
+and batch axes being stacks along each kind.)</p>
+<p>A surface detail of stacking is worth recording because it is a
+parsing question the coproduct framing does not settle on its own: the
+bracket that introduces a new input axis is the parenthesis-comma form
+<code>(a, b)</code>, which collides syntactically with an ordinary
+multi-argument application. The disambiguation is contextual and rests
+on a structural fact about OCANNL shapes — input axes are always nested
+within output axes — so the parser can tell a stacking construct in axis
+position from an argument list in application position by where it sits.
+The details are not yet pinned down, and they are a syntax concern
+rather than a shape-inference one; the article’s job is the machinery,
+and the machinery does not care whether a given stack was written with
+parentheses, brackets, or array bars.</p>
+</section>
+<section id="where-this-leaves-the-series" class="level2">
+<h2>Where this leaves the series</h2>
+<p>Each of the first three posts found a familiar operation hiding
+inside a humbler one and <em>reused</em> the core rather than extending
+it. Broadcasting was an order, and rank-polymorphism lived in the order
+with no type schemes added. Contraction was emergent, read off an output
+index map that omitted a loop variable, with no “reduce” primitive.
+Convolution was a contraction, the same loop nest with one index made
+affine, and striding and interleaving and their gradients came along for
+free in the same enriched term. The refrain was: the construct populates
+a corner the machinery already had.</p>
+<p>Concatenation is the one that enlarged the machinery, and the
+enlargement can be named precisely. The iteration domain, a pure product
+of ranges through three posts, gains its first coproduct: one factor
+becomes a disjoint union, its components coupled into sequential
+traversal, their offsets the coproduct’s injections, their non-overlap
+its at-most-one-summand condition, and the size domain extended to zero
+— where the first post’s order stopped at one — to give the coproduct a
+unit. Once the domain has a coproduct, the rest is two directions
+through it. Concatenation runs along the injections and places
+components in; split runs against them and reads a component out; the
+gradient of each is the other, the same offsets with the assignment’s
+sides reversed. Block matrices are the coproduct in more than one factor
+at once; banded tensors are that with the couplings sharing iterators.
+One coupled factor, read forwards and backwards, is the whole of what
+concatenation added to a domain that until now knew only products.</p>
+<p>OCANNL is open source, at <a
+href="https://github.com/ahrefs/ocannl"><code>github.com/ahrefs/ocannl</code></a>.</p>
+</section>
+</section>
+</article>
+<script src="/assets/theme-toggle.js"></script>
+</body>
+</html>
