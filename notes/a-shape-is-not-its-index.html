@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <meta name="author" content="Łukasz Stafiniak and Claude (Anthropic)">
+  <title>A Shape Is Not Its Index</title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <link rel="stylesheet" href="/assets/tufte.css">
+  <link rel="stylesheet" href="/assets/pandoc-tufte.css">
+  <link rel="stylesheet" href="/assets/site.css">
+  <script defer=""
+  src="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.js"></script>
+  <script>document.addEventListener("DOMContentLoaded", function () {
+ var mathElements = document.getElementsByClassName("math");
+ var macros = [];
+ for (var i = 0; i < mathElements.length; i++) {
+  var texText = mathElements[i].firstChild;
+  if (mathElements[i].tagName == "SPAN") {
+   katex.render(texText.data, mathElements[i], {
+    displayMode: mathElements[i].classList.contains('display'),
+    throwOnError: false,
+    macros: macros,
+    fleqn: false
+   });
+}}});
+  </script>
+  <link rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.css" />
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+  <script>(function(){var t=localStorage.getItem('theme-preference');if(t)document.documentElement.setAttribute('data-theme',t);})()</script>
+</head>
+<body>
+<nav class="site-nav">
+  <a href="/">Home</a> &middot; <a href="/about.html">About</a> &middot; <a href="https://lukstafi.substack.com">Substack</a>
+</nav>
+<div class="theme-toggle">
+  <button id="theme-btn" aria-label="Toggle dark mode">&#9788;</button>
+</div>
+<article>
+<header>
+<h1 class="title">A Shape Is Not Its Index: OCANNL’s Shapes Beside
+Star’s Algebraic Shapes</h1>
+<p class="byline">Łukasz Stafiniak and Claude (Anthropic)</p>
+</header>
+<section id="a-shape-is-not-its-index" class="level1">
+<h1>A Shape Is Not Its Index</h1>
+<p>Here is a padded matrix, the kind every convolution library has to
+lay out by hand:</p>
+<pre><code>1 2 3        -1 -1 -1 -1 -1
+4 5 6   ↦     0  1  2  3  0
+              0  4  5  6  0
+             +1 +1 +1 +1 +1</code></pre>
+<p>Two systems describe this without index arithmetic, and they were
+built without knowledge of each other. Jakub Bachurski, Alan Mycroft,
+and Dominic Orchard’s <em>Structuring Arrays with Algebraic Shapes</em>
+(ARRAY ’25) types the padded array’s shape as a pair of
+<strong>concatenation shapes</strong> — rows split
+<code>Top</code>/<code>Centre</code>/<code>Bottom</code>, columns split
+<code>Left</code>/<code>Centre</code>/<code>Right</code> — and the index
+arithmetic becomes pattern matching over variant tags. OCANNL, across <a
+href="broadcast-aware-shape-inference.md">the four posts</a> <a
+href="contraction-is-emergent.md">this</a> <a
+href="convolution-is-a-contraction.md">series</a> <a
+href="split-and-concatenation.md">comprises</a>, reads the same padded
+array as a <strong>coproduct</strong> in two axes — a block matrix —
+where each region is one summand of a disjoint union and the index
+arithmetic becomes injection offsets. A variant and a coproduct are the
+same thing: a sum type. Bachurski’s calculus, which they call Star,
+reaches it from the typing side; OCANNL reaches it from the loop-nest
+side. They meet in the middle, at the same structure, and the meeting is
+worth a post.</p>
+<p>This is the fifth in the series, and the first to look outward. The
+four predecessors built OCANNL’s shape system from scratch —
+broadcasting as an order, contraction as an emergent property of an
+index map, convolution as an affine-indexed contraction, concatenation
+as a coproduct factor. Star arrives at much of the same algebra by a
+different route and with a different goal, and setting the two side by
+side is the fastest way to say what OCANNL <em>is</em> by saying what it
+is not. The thesis is in the title, and it is the one structural fact
+both systems turn on: <strong>a shape is not its index.</strong> They
+are distinct objects in a fixed correspondence, and once you grant that,
+you get to <em>choose</em> what to do with the correspondence. Star
+types it. OCANNL computes along it — and that single choice is the
+source of every divergence below.</p>
+<p>I met Jakub at a couple of FUN-OCaml workshops and an OCaml Workshop;
+we have not worked together, so this is a reading from the outside,
+offered in the spirit of a shared program rather than a critique. The
+paper is excellent. The disagreements below are the productive kind —
+the kind where two designs that agree on the deep structure have made
+opposite bets at the surface, and the bets illuminate each other.</p>
+<section id="what-star-is" class="level2">
+<h2>What Star is</h2>
+<p>A short, fair summary, in case you have not read it (you should).
+Star is a small functional array calculus — pointful, in the tradition
+of <span class="math inline">\tilde{F}</span> and Single Assignment C —
+whose contribution is a <em>type system for array shapes</em> built from
+structural records and variants. Three ideas carry it.</p>
+<p>First, <strong>algebraic shapes</strong>. A shape is not a tuple of
+integers but a tree of two constructors: a <em>product shape</em>
+<code>{|ℓ : σ, …|}</code>, indexed by a record of per-axis indices,
+models named multidimensional arrays; a <em>concatenation shape</em>
+<code>⟦T : σ, …⟧</code>, indexed by a <em>variant</em>, models padding
+and concatenation. Records give a product on shapes; variants give a
+sum. The names are the point — a product shape is exactly a named-tensor
+axis set, and the paper is candid that this generalizes the named-tensor
+and <code>xarray</code> line of work.</p>
+<p>Second, <strong>structural subtyping forming a distributive
+lattice</strong>. Star’s shapes and indices subtype — width and depth,
+records one way, variants the other — and the order is a distributive
+lattice with meets and joins. This is the algebraic-subtyping discipline
+of Dolan and Mycroft’s MLsub, with the polarity restriction lifted by
+Parreaux and Chau, and Star’s bet is that this discipline buys it
+principal ML-style type inference (conjectured, not yet proved).
+Crucially, <strong>broadcasting is the meet</strong> in this lattice:
+aligning two shapes finds their greatest lower bound, so a column vector
+and a row vector broadcast to the matrix that is their meet — the outer
+product.</p>
+<p>Third, and most subtly, <strong>shapes and indices are distinct but
+isomorphic</strong>. Star insists you can no longer pretend an array’s
+shape and its index have the same type, the way you can when both are
+tuples of integers. A product shape is indexed by a <em>record</em>; a
+concatenation shape, built by a <em>sequence</em> of components, is
+indexed by <em>one tagged</em> variant. The relationship is carried by a
+metafunction <span class="math inline">\iota</span> that maps each shape
+type <span class="math inline">\sigma</span> to its index type <span
+class="math inline">\iota(\sigma)</span>, and <span
+class="math inline">\iota</span> is an isomorphism in the type lattice.
+Arrays, in this reading, are <em>containers</em> in the sense of Abbott,
+Altenkirch and Ghani: a shape together with a position-type that depends
+on it, <span class="math inline">\Sigma(s :
+\mathrm{Shape}).\,\mathrm{Position}(s) \to \alpha</span>. Star’s
+Position is exactly <span class="math inline">\iota</span>.</p>
+<p>The paper proves type safety in the simply-typed case — preservation
+and progress — and sketches the patterns it captures: tensors as
+products, padding as concatenations, broadcasting as the meet, axis
+indexing as record update and restriction. It leaves shape inference,
+stencils, recursive shapes, and the full polymorphic metatheory as
+future work. It is, in the best sense, a design paper: it stakes out a
+new region between untyped array programming and dependently typed array
+programming, and argues the region is habitable.</p>
+<p>That third idea — <em>a shape is not its index, but the two are
+isomorphic</em> — is where Star and OCANNL are closest, and it is where
+the whole comparison should start.</p>
+</section>
+<section id="three-convergences" class="level2">
+<h2>Three convergences</h2>
+<section id="broadcasting-is-the-meet" class="level3">
+<h3>Broadcasting is the meet</h3>
+<p>Both systems independently identify broadcasting with a
+greatest-lower-bound. Star defines its broadcast operator as the meet
+<span class="math inline">\sigma&#39; \wedge \sigma&#39;&#39;</span> in
+the shape lattice; the first post in this series defines broadcasting
+<em>as</em> an order and derives the rest of the machinery from getting
+that order right. Two systems, one sentence apart.</p>
+<p>And the orientations agree — which is worth stating carefully,
+because the natural first guess is that they would be dual. Star’s
+product shapes subtype like records: <em>more</em> dimensions is a
+<em>subtype</em>, so the bigger shape sits <em>lower</em>, and the meet
+— the greatest lower bound — <em>grows</em> the shape by taking the
+union of dimensions. Column vector meets row vector and you get the
+matrix, sitting below both. OCANNL orients its order the same way: the
+claim-free unit <span class="math inline">1_\emptyset</span> and the
+empty row are at the <em>top</em>, larger and more specific shapes sit
+<em>below</em> (a concrete shape <em>refines</em> the claim-free unit it
+broadcasts from), and a pointwise operation constrains its result
+<em>below</em> its operands, <span class="math inline">R_{\text{result}}
+\sqsubseteq R_{\text{operand}}</span>, so the broadcast result is the
+<em>meet</em> — the greatest lower bound — exactly as in Star. The same
+outer product, the same combination of axes, the same descent to the
+meet. What distinguishes the two orders is not direction but
+<em>distributivity</em> — Star’s is distributive, OCANNL’s is not —
+which the design-space paragraph below takes up. Nothing of substance
+hangs on the direction.</p>
+</section>
+<section id="concatenation-is-a-variant-is-a-coproduct" class="level3">
+<h3>Concatenation is a variant is a coproduct</h3>
+<p>This is the strongest convergence, and the one I would lead with in
+any conversation with Jakub. Star types concatenation as a shape indexed
+by a <em>variant</em>: <code>⟦Front : σ, Centre : σ, Back : σ⟧</code> is
+indexed by a value tagged <code>Front</code>, <code>Centre</code>, or
+<code>Back</code>, and composing or decomposing a concatenation becomes
+tagging and pattern matching rather than range arithmetic. The <a
+href="split-and-concatenation.md">fourth post</a> reads concatenation as
+a <em>coproduct</em> of integer ranges — a disjoint union <span
+class="math inline">R_a \sqcup R_b</span> with injection offsets <span
+class="math inline">\iota_a(i) = i</span>, <span
+class="math inline">\iota_b(j) = A + j</span>, and an
+at-most-one-summand cover check that is the coproduct’s universal
+property restated as a code-generation constraint.</p>
+<p>A variant is a coproduct is a sum type. Star and OCANNL arrived at
+the <em>same mathematical object</em> from typing and from indexing
+respectively, which is about as much independent confirmation as a
+design choice can hope for. And the convergence is not superficial:
+Star’s padding example and OCANNL’s block-matrix example are the
+<em>same construction</em>. Star writes the padded matrix as a product
+of two concatenation shapes,
+<code>{|row : ⟦Top, Centre, Bottom⟧, col : ⟦Left, Centre, Right⟧|}</code>;
+the fourth post writes a block matrix as a coproduct in two axes, the
+active region picked out by which row-component and which
+column-component are live. The 3×3 grid of regions in Star’s Section 5.1
+<em>is</em> the disjoint-cover tiling of the fourth post. Star types
+that the regions exist and have the right index type; OCANNL types it
+too and then emits the loop nest with the offsets and the no-overlap
+check. Same object, one layer deeper.</p>
+<p>There is even a shared subtlety about the <em>unit</em> of the
+construction. The fourth post had to extend OCANNL’s size domain down to
+zero — the empty range, the unit of the coproduct, <span
+class="math inline">A \sqcup \emptyset \cong A</span> — separate from
+the broadcast unit <span class="math inline">1_\emptyset</span>, the
+unit of the product. Star’s empty concatenation shape <code>⟦⟧</code> is
+an empty array, the same zero, and its empty product shape
+<code>{||}</code> is the single-element array, the same one. Two units
+for two operations, in both systems, because a sum and a product have
+different identities.</p>
+</section>
+<section id="a-shape-is-not-its-index-1" class="level3">
+<h3>A shape is not its index</h3>
+<p>Now the title. Star’s <span class="math inline">\iota</span> maps a
+shape type to its index type and is an isomorphism; it is the formal
+content of “a shape is not its index, but the two correspond exactly.”
+OCANNL makes the <em>same</em> separation, but operationally rather than
+in the types. <a href="contraction-is-emergent.md">The second post</a>
+is built on it: a dimension carries a <em>projection identifier</em>
+distinct from its size, and an elaboration <span
+class="math inline">\llbracket\cdot\rrbracket</span> maps a solved
+dimension to its projection term. Sizes are one reading of the
+constraint set; indices are another; and the second post’s load-bearing
+discipline — <strong>global sizes, local identities</strong> — exists
+<em>precisely because</em> a shape and its index must not be identified.
+Two axes forced to the same size by some reduction elsewhere in the
+program are the same <em>size</em> but not the same <em>index</em>, and
+fusing their loops because they happen to be equally long is a bug. Star
+says this in the type theory: shapes and indices are isomorphic, not
+equal. OCANNL says it in the solver: sizes are global, identities are
+local. It is the same fact, and <span
+class="math inline">\llbracket\cdot\rrbracket</span> is OCANNL’s <span
+class="math inline">\iota</span> — the canonical bridge from
+shape-structure to index-structure, realized as a program transformation
+instead of a type-level metafunction.</p>
+<p>The payoff of stating it this way is that Star’s own future work
+turns out to describe what OCANNL has already built. Star’s Section 6.1
+conjectures shape inference as a <em>type-directed program
+transformation</em>: given an array comprehension with the shape
+omitted, recover it as the meet of the operands’ shapes — the very <span
+class="math inline">|u| \sqcap |w|</span> that the first post computes
+by from-usage inference. Star sketches it; OCANNL implements it, and
+adds the closing policy (leaves commit downward, interiors upward) that
+Star does not have because Star is not in the business of
+<em>committing</em> free variables to runtime-allocatable shapes. Star’s
+Section 6.4, stencils, is left open with the remark that a stencil index
+“degenerates to setting <span class="math inline">i :</span> int” —
+which is exactly the gap the <a
+href="convolution-is-a-contraction.md">third post</a> closes with the
+affine index <code>Affine(Σ cᵢ·sᵢ + o)</code>. The convergence on the
+deep structure is what makes these correspondences legible: OCANNL is,
+in part, a realization and extension of the future-work section of a
+paper it had never read.</p>
+</section>
+</section>
+<section id="a-rosetta-stone" class="level2">
+<h2>A Rosetta stone</h2>
+<p>The convergence is easiest to feel on the shared examples. Star’s
+worked patterns are OCANNL’s worked patterns, and writing them side by
+side — the shape as Star would type it, the operation as OCANNL would
+spec it — shows the agreement on structure and the divergence on what
+each system then does with it.</p>
+<table>
+<thead>
+<tr>
+<th>
+Pattern
+</th>
+<th>
+Star (shape type)
+</th>
+<th>
+OCANNL (einsum spec)
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+Matrix multiply
+</td>
+<td>
+<code>[{|i:#, j:#|}]</code> ⊗ <code>[{|j:#, k:#|}]</code>
+</td>
+<td>
+<code>a +* b “m n; n p =&gt; m p”</code>, or wordless <code>a * b</code>
+(compose)
+</td>
+</tr>
+<tr>
+<td>
+Outer product
+</td>
+<td>
+meet <code>{|row:#|} ∧ {|col:#|}</code>
+</td>
+<td>
+<code>u +* w “i; j =&gt; i, j”</code>, shape inferred
+</td>
+</tr>
+<tr>
+<td>
+Padding
+</td>
+<td>
+<code>{|row:⟦Top,Centre,Bottom⟧, col:⟦Left,Centre,Right⟧|}</code>
+</td>
+<td>
+<code>x ++ “h, w =&gt; 1<sup>h</sup>1, 1<sup>w</sup>1”</code> (zero-pad
+two axes)
+</td>
+</tr>
+<tr>
+<td>
+GNN broadcast
+</td>
+<td>
+named axes, <code>expand_dims</code> avoided
+</td>
+<td>
+<code>a +* b “i, f; j, f =&gt; i, j, f”</code>, no
+<code>expand_dims</code>
+</td>
+</tr>
+<tr>
+<td>
+Graph split/merge
+</td>
+<td>
+variant-indexed concatenation
+</td>
+<td>
+<code>(a, b) ++^ “x; y =&gt; x^y”</code>, injection offsets
+</td>
+</tr>
+</tbody>
+</table>
+<p>Read across a row and the systems agree on the object. Read down the
+columns and the difference shows: Star’s column is a <em>type</em>,
+written by the programmer and checked; OCANNL’s column is a
+<em>spec</em>, from which sizes and a loop nest are <em>inferred</em>.
+Star types the padding; OCANNL types it and emits the offset arithmetic
+and the disjoint-cover check. The table is the whole comparison in
+miniature — same structure, two jobs.</p>
+</section>
+<section id="three-divergences" class="level2">
+<h2>Three divergences</h2>
+<p>The agreements are about structure. The disagreements are about
+<em>goal</em>, and they are sharper. Star optimizes for static safety
+guarantees expressible within ML-tradition type inference. OCANNL
+optimizes for shape inference and code generation. Where those goals
+pull apart, the systems pull apart — most visibly on numeric sizes and
+on boilerplate.</p>
+<section id="sizes-live-in-the-solver-not-in-the-types" class="level3">
+<h3>Sizes live in the solver, not in the types</h3>
+<p>Star’s sized shape <code>#</code> is the shape <em>type</em> of a
+flat axis; the actual size <code>#n</code> is a runtime <em>value</em>,
+bounds-checked at runtime, never in the type. This is deliberate and
+principled: the ML type tradition — Hindley–Milner, MLsub, algebraic
+subtyping — has no arithmetic at the type level, so a system that wants
+ML-style inference cannot, without leaving the tradition, write a type
+that says “this axis is <code>stride · output</code> long.” Star
+therefore declines to type sizes at all, and is candid about the cost:
+its Appendix A works through why genuine NumPy size-broadcasting — where
+a size-1 axis promotes to size <span class="math inline">n</span> — is
+hard to type, mixing conjunctions and disjunctions of size constraints,
+and the paper sidesteps it by broadcasting on <em>named-axis
+presence</em> instead of on size-1 promotion. Where two NumPy arrays
+broadcast by one having a size-1 axis, Star broadcasts by one having a
+<em>named axis the other lacks</em>.</p>
+<p>There is a principled way for Star to recover sizes without
+abandoning its philosophy, and it is worth naming because Star does not:
+<strong>refinement types.</strong> A liquid-types or size-dependent
+layer — the road taken by Futhark’s size-dependent types and by Colaço,
+Pauget and Pouzet’s polynomial sizes, both of which Star cites as the
+dependent extreme it is avoiding — would let an axis carry a refinement
+<code>{ n : int | n = stride · m }</code> while keeping inference
+decidable through an SMT backend. That is the type-system-internal
+answer to the size question, and Star, staying squarely within type
+systems, could go there.</p>
+<p>OCANNL takes a third road, and the contrast is the cleanest single
+statement of what OCANNL is. Arithmetic on sizes lives in OCANNL not in
+the <em>types</em> and not in <em>refinements</em>, but in
+<em>inference</em> — in the constraint solver. The convolution size
+relation <code>input = stride · (output − 1) + span</code> is solved,
+not typed; the element-count relation of a vectorized operation,
+<code>output_elems = coeff · input_elems</code>, is a row constraint the
+solver discharges; size-1 broadcasting — the case Star calls hard — is
+modeled head-on by making <span class="math inline">1_\emptyset</span>
+the claim-free <em>top</em> of a <em>per-size</em> order, so that an
+unbroadcastable pair of distinct sizes has no common refinement: their
+meet is the error bottom <span class="math inline">\bot</span>, and the
+failure is reported as that meet. OCANNL types the
+conjunction-of-disjunctions nightmare of Appendix A by not typing it: it
+solves it. The three positions form a clean spectrum — sizes untyped and
+checked at runtime (Star), sizes refined and discharged by SMT (the road
+Star could take), sizes inferred and discharged by a bespoke lattice
+solver (OCANNL) — and a workshop paper that lays the spectrum out
+explicitly does both systems a service.</p>
+</section>
+<section id="boilerplate-elimination-is-the-goal-not-a-side-effect"
+class="level3">
+<h3>Boilerplate elimination is the goal, not a side effect</h3>
+<p>The first post opens with the claim that the machinery exists <em>so
+that you do not write shapes</em> — catching mismatches is a side
+benefit, not the point. This is the axis on which Star and OCANNL
+diverge most quietly and most completely, because Star does not measure
+itself by it at all. Star is a <em>typing</em> discipline: it asks the
+programmer to write <em>more</em> structure — named record fields,
+variant tags — in exchange for safety, and shape inference is explicitly
+future work. OCANNL is an <em>inference</em> discipline: it asks the
+programmer to write <em>less</em>, and treats every reshape, unsqueeze,
+and <code>expand_dims</code> the user does not have to write as the
+actual deliverable.</p>
+<p>The divergence is concrete in Star’s own Graph Neural Network
+example. To add a <code>(source, target)</code> array to a
+<code>(batch, source, target, feature)</code> tensor, Star notes that
+NumPy forces an <code>expand_dims</code> to introduce a size-1 axis, and
+that naming the axes lets you avoid tracking its position. True — but
+Star still asks you to <em>name</em> the axes and write the
+comprehension. OCANNL writes the broadcast and infers the rest: an edge
+tensor from node features is
+<code>a +* b "i, f; j, f =&gt; i, j, f"</code>, where <code>i</code>
+rides only on the left operand and <code>j</code> only on the right, so
+each broadcasts over the other’s node axis while the feature axis
+<code>f</code> co-iterates — the size-1 insertion is never written. Make
+the batch row a variable,
+<code>..g.. | i, f; ..g.. | j, f =&gt; ..g.. | i, j, f</code>, and the
+same operator runs on one graph or a batch of them with no reshape,
+because each of a shape’s three rows carries its own <code>...</code>.
+(This is the <code>gnn_broadcast</code> test in the suite.) Row
+variables to avoid reshaping is not a feature Star is missing; it is a
+goal Star does not have — the two systems optimize different objective
+functions, and a fair comparison says which.</p>
+</section>
+<section
+id="the-design-space-paragraph-why-non-distributive-and-why-no-schemes"
+class="level3">
+<h3>The design-space paragraph: why non-distributive, and why no
+schemes</h3>
+<p>One paragraph locates OCANNL against Star precisely, and it is the
+paragraph I would put in the related-work section. OCANNL’s dimension
+order is a <em>bounded but non-distributive lattice</em>: the claim-free
+unit <span class="math inline">1_\emptyset</span> is the top, the
+concrete sizes form an antichain of atoms in the middle, and an error
+bottom <span class="math inline">\bot</span> completes it. Two distinct
+concrete sizes <em>join</em> to the top (the no-claim unit — a
+deliberate broadcast, not an error) and <em>meet</em> at the bottom (the
+broadcast error). With three or more size atoms strung between the one
+top and the one bottom, the order contains the diamond <span
+class="math inline">M_3</span> and is therefore <strong>not
+distributive.</strong> Star, by contrast, uses a <em>distributive</em>
+lattice, because distributivity is the precondition for MLsub-style
+principal inference. This is the crux, and it is not an oversight on
+either side: OCANNL cannot borrow that inference machinery, and the
+reason is the very thing that makes its order <em>track sizes</em>. The
+atoms are concrete sizes; an antichain of concrete sizes between shared
+bounds is non-distributive by construction. Star keeps distributivity
+precisely by <em>not</em> typing sizes — its <code>#</code> is one shape
+type for all sizes, so there is no antichain to begin with. One
+decision, sizes in the solver, read as a lattice fact: it buys
+size-tracking and costs distributivity, and the two are the same coin.
+And OCANNL does not need what distributivity would buy: MLsub uses it to
+generalize types into schemes at definition sites, and OCANNL gets
+polymorphism a different way — monomorphic existential variables, solved
+once, with rank-polymorphism living <em>in the order</em> and call-site
+polymorphism delegated to the host language, where each application of
+an operator (an ordinary OCaml function) re-emits the constraints with
+fresh variables. A poor man’s type scheme, built by function application
+rather than by a generalization rule. Star generalizes; OCANNL
+re-evaluates. Both reach polymorphism; only one needs a distributive
+lattice to do it. And the re-evaluation could be promoted to genuine
+generalization without disturbing that verdict. The <code>%op</code>
+extension already holds the operator’s body, so it could extract the
+operator’s residual shape constraints, <em>skip the later stages —
+closing above all — and quantify the leftover free variables into a
+scheme</em>, instantiated with fresh variables per call: MLsub’s
+generalize-at-definition, done by hand. The reason this needs no
+distributive lattice is that generalization and principal
+<em>inference</em> are separable — distributivity buys the latter, but
+quantifying residual variables is sound without it; what OCANNL would
+forgo is any claim that the resulting scheme is <em>principal</em>,
+which is exactly the open question its staged solver already lives with.
+So the scheme route is available, and declined on cost rather than
+impossibility: not before v1, and not before shape-inference time shows
+signs of becoming prohibitive, since today re-emitting an operator’s
+constraints per call is cheap beside the compilation that follows.</p>
+</section>
+</section>
+<section id="what-ocannl-should-borrow" class="level2">
+<h2>What OCANNL should borrow</h2>
+<p>Generosity with a purpose: Star has exactly the apparatus OCANNL’s
+blog-shaped account lacks, and the workshop paper should take it.</p>
+<p>Star has a <em>core calculus</em> — a grammar of expressions, an
+operational semantics, a type system, and type-safety theorems with
+proofs — compressed into a handful of figures. OCANNL’s four posts
+describe <em>algorithms</em> (constraint solving, union-find, the
+closing policy) beautifully, but there is no formal object-language
+whose programs you can write down and whose semantics you can state.
+Star is the model for what that object should look like and how
+compactly it can be presented.</p>
+<p>Star states <em>principal inference</em> as its goal and ties it to
+algebraic subtyping, where it remains a conjecture. OCANNL’s situation
+is the same in form and more interesting in detail. The core
+single-stage solver should be straightforwardly principal — the rules
+are monotonic, so the least-committed satisfying substitution is reached
+and is unique up to renaming — and the interest is in what survives once
+the <em>stages</em> wrap it: the affine index’s solve-then-evaluate
+strata, the padding fixpoint, concatenation’s coupling, and above all
+closing. Closing is <em>deliberately</em> not principal: it commits the
+variables the principal substitution leaves free, in a direction the
+constraints do not force. Here is a conjecture that sharpens what that
+costs. <em>If every variable were closed <strong>upward</strong>, the
+result would be the most general shapes the constraints allow — the
+biggest types, which in this order are the tensors smallest in size</em>
+— each unforced axis sent to the no-claim top <span
+class="math inline">1_\emptyset</span>. Uniform-upward closing is thus
+the closing nearest the principal, still-free substitution; the actual
+policy departs from it only on leaves, which it closes <em>downward</em>
+to a concrete allocatable shape, trading that generality for a size a
+buffer can be cut to. So the honest result is layered — principal core,
+generality-preserving on interiors, deliberately non-principal on
+leaves, with core <em>projection</em> inference not merely principal but
+<em>canonical</em> (an equivalence has no direction to choose) and the
+multi-stage question left open. That layered story, stated as the
+theorems below make it, is sharper than a single conjecture, and one
+Star has no need to tell, because Star does not close, stage, or
+compile.</p>
+<p>OCANNL’s genuine debt to type-system research is narrower than Star’s
+and worth stating exactly, since it is not the container tradition. What
+OCANNL took was the <em>emphasis on inference</em> and the idea of
+<em>combining row variables with subtyping</em> — indeed the first post
+opens by retiring the name “row polymorphism plus nominal subtyping,” a
+name that records precisely that lineage even as it corrects it. The
+container and Naperian-functor vocabulary is a <em>further</em> borrow
+available to the paper, not one OCANNL already leans on. Star grounds
+its arrays in <em>containers</em> and <em>Naperian functors</em> —
+recognized PL vocabulary for indexable structures — and OCANNL’s arrays
+<em>are</em> containers, a shape together with a position map that
+projection inference computes; saying so in those words would cost
+nothing and signal fluency to exactly the audience the paper is for. It
+is an adoption to make deliberately, not a description of the present
+design.</p>
+<p>And Star’s <em>worked examples are OCANNL’s worked examples</em>:
+padding, the outer product, the GNN broadcast, the graph construction.
+The Rosetta-stone table above is the seed of it; in the paper that table
+wants a worked pair or two spelled out in full — the same operation in
+Star’s variant-typed surface and OCANNL’s einsum spec, with OCANNL’s
+inferred sizes and loop nest shown alongside Star’s checked type — so
+the divergence speaks for itself, since Star types the padding and
+OCANNL types it <em>and</em> compiles it.</p>
+</section>
+<section id="a-template-for-the-workshop-paper" class="level2">
+<h2>A template for the workshop paper</h2>
+<p>What follows is a skeleton — the spine, a core-calculus sketch in the
+compact style Star models, and the two theorem statements the paper
+would have to discharge. It is brainstorm material, not prose to lift;
+the paper is yours to write by hand. But it pins the obligations.</p>
+<p><strong>The spine.</strong> One elaboration, two readings, one
+bridge. A program elaborates to a single constraint set <span
+class="math inline">\Phi</span> over dimension and row terms. The
+<em>shape reading</em> solves <span class="math inline">\Phi</span> as
+an order, in the broadcast lattice (claim-free top <span
+class="math inline">1_\emptyset</span>, error bottom <span
+class="math inline">\bot</span>), producing sizes. The <em>index
+reading</em> re-solves <span class="math inline">\Phi</span> as an
+equivalence-and-coupling, producing a loop nest. The bridge is the
+elaboration <span class="math inline">\llbracket\cdot\rrbracket</span>,
+which is OCANNL’s <span class="math inline">\iota</span>: the canonical
+map from solved shape-structure to index-structure. Star types <span
+class="math inline">\iota</span>; OCANNL computes along it. Everything
+in the four posts is an instance of this architecture, and the paper’s
+job is to make the architecture a theorem.</p>
+<p><strong>The terms</strong> (reusing the series’ notation, so the
+paper dovetails with the posts):</p>
+<p><span class="math display">
+\begin{aligned}
+\text{dim term} \quad t &amp;::= \alpha \;\mid\; n_b \;\mid\;
+\mathsf{Affine}\{\,\text{stride},\text{over},\text{conv},\text{offset}\,\}
+\;\mid\; \mathsf{Concat}[\,t,\ldots\,] \\
+\text{row term} \quad R &amp;::= \rho \;\mid\; l\cdot\diamond\cdot r
+\;\mid\; l\cdot\langle\rho\rangle\cdot r \\
+\text{constraint} \quad \phi &amp;::= t = t \;\mid\; t \sqsubseteq t
+\;\mid\; R = R \;\mid\; R \sqsubseteq R \\
+\text{index form} \quad \pi &amp;::= \mathsf{Fix}(c) \;\mid\;
+\mathsf{Iter}(s) \;\mid\; \mathsf{Affine}(\textstyle\sum_i c_i s_i + o)
+\;\mid\; \mathsf{Concat}(s,\ldots)
+\end{aligned}
+</span></p>
+<p>with <span class="math inline">\alpha</span> a dimension variable,
+<span class="math inline">n_b</span> a size <span
+class="math inline">n</span> carrying basis <span
+class="math inline">b</span> (and <span
+class="math inline">1_\emptyset</span> the claim-free top), <span
+class="math inline">\rho</span> a row variable, <span
+class="math inline">\diamond</span> the broadcast marker, and the flanks
+<span class="math inline">l,r</span> sequences of dim terms.</p>
+<p><strong>The order</strong> is the broadcast order of the first post,
+with two units. Per dimension, <span class="math inline">d \sqsubseteq
+1_\emptyset</span> for every <span class="math inline">d</span>, <span
+class="math inline">\mathrm{join}(d, d&#39;) = 1_\emptyset</span> for
+distinct atoms <span class="math inline">d \neq d&#39;</span>, and <span
+class="math inline">\mathrm{meet}(d, d&#39;) = \bot</span> (the
+broadcast error) for distinct atoms — so the dimension order is a
+bounded lattice with top <span class="math inline">1_\emptyset</span>
+(the product unit), an antichain of size atoms in the middle, and an
+error bottom <span class="math inline">\bot</span>; it is
+non-distributive (<span class="math inline">M_3</span>) whenever three
+or more sizes meet. Concatenation adds a second unit, <span
+class="math inline">0</span> (the coproduct unit, the empty summand),
+which is neither the top nor the error bottom but off the broadcast
+order entirely — it is the bottom of the <em>additive</em> order the
+coproduct induces — admitted only for <code>discardable_vars</code>.
+Rows lift the dimension order structurally through the marker;
+rank-broadening inserts <span class="math inline">1_\emptyset</span> at
+the marker; rank-polymorphism is the order relating rows of different
+ranks.</p>
+<p><strong>The elaboration <span
+class="math inline">\llbracket\cdot\rrbracket = \iota</span>.</strong>
+Per-operation, after sizes are solved: freshen every projection
+identifier (locality), re-derive the operation’s constraints, and read
+each as a projection equation. Schematically, <span
+class="math inline">\llbracket d_1 = d_2 \rrbracket =
+\mathsf{Eq}(\llbracket d_1\rrbracket, \llbracket d_2\rrbracket)</span>
+unions two axes into one loop (co-iteration); a broadcast inequality
+with a size-one operand axis, <span class="math inline">\llbracket
+d_{\text{result}} \sqsubseteq (d_{\text{operand}}{=}1)\rrbracket =
+\mathsf{Eq}(\llbracket d_{\text{operand}}\rrbracket,
+\mathsf{Fix}(0))</span>, severs and pins; a <code>Concat</code> becomes
+a connected component traversed sequentially. <strong>Equality unions,
+broadcasting severs, concatenation couples.</strong> A reduction is
+emergent: a product axis the output index map omits.</p>
+<p><strong>Theorem 1 (Core principality).</strong> <em>For a constraint
+set <span class="math inline">\Phi</span>, the core single-stage solver
+computes a substitution <span class="math inline">\sigma_\star</span>
+with <span class="math inline">\sigma_\star \models \Phi</span> such
+that for every model <span class="math inline">\sigma \models
+\Phi</span> there is a <span class="math inline">u</span> with <span
+class="math inline">\sigma = u \circ \sigma_\star</span>; the free
+variables of <span class="math inline">\sigma_\star</span> are exactly
+those <span class="math inline">\Phi</span> does not force.</em>
+Conjectured by Star for its setting; here it should follow from
+monotonicity — variables solved at most once and substituted out, bounds
+only tightening — together with the join-collapse of incompatible caps
+to the top <span class="math inline">1_\emptyset</span>. This is the
+clean half.</p>
+<p><strong>Remark (Closing is a policy, not a principal step).</strong>
+The principal <span class="math inline">\sigma_\star</span> leaves
+leaves and interiors free; runtime allocation needs them determinate, so
+a <em>closing</em> phase commits each — a leaf downward to the most
+specific shape its bounds permit, an interior upward to the unit (the
+claim-free top). The direction is justified (a leaf has no
+more-permissive source to be pressured from; an unforced interior should
+make no claim) and the result is sound and total, but it is <em>not</em>
+forced by <span class="math inline">\Phi</span>, so closing is
+deliberately non-principal. The paper’s obligation is to state closing
+as a separate, characterized layer rather than fold it into Theorem 1 —
+and to be precise that the two-phase interleave (solve, close leaves,
+solve again, close interiors) preserves soundness at each step.</p>
+<p><strong>Theorem 2 (Core projection canonicity).</strong> <em>Core
+projection inference is forced and unique up to renaming of the fresh
+iterator symbols: it succeeds or reports a conflict, and never resolves
+an ambiguity.</em> Stronger than principality — there is no closing
+direction to choose, because an equivalence has no up or down — and the
+asymmetry with shape inference (which must choose at closing) is itself
+a result worth stating.</p>
+<p><strong>Open problem (Multi-stage).</strong> <em>Characterize what
+Theorems 1 and 2 become once the stages enter:</em> the affine index’s
+solve-then-evaluate stratification, the padding fixpoint frozen at
+finalization, and concatenation’s connected-component coupling. The
+expected shape of the answer: determinacy and the no-guessing property
+survive, but <em>flatness</em> does not — a check between two derived
+(affine or coupled) terms can fire only after the stratum that evaluates
+its operands, so a conflict can surface later than where the constraint
+was written. Stating exactly which guarantees are preserved across the
+seams, and where principality could break, is the paper’s central
+technical contribution and the place it most clearly goes past Star,
+which has no stages to stratify.</p>
+<p><strong>Theorem 3 (Soundness of projection inference w.r.t.
+shapes).</strong> <em>Let the shapes of an operation be solved and
+closed. Then the inferred index maps address only within those shapes:
+every <span class="math inline">\pi_T(p)</span> for <span
+class="math inline">p</span> in the product space is a valid multi-index
+into <span class="math inline">T</span> at its solved shape;
+co-iteration is finer than size-equality; and the coproduct cover is
+disjoint (at most one summand active per position).</em> This promotes
+the first post’s informal argument — indices derived from the same facts
+as the sizes cannot contradict the sizes — to a theorem. It is the
+compilation-side analogue of Star’s preservation and progress: where
+Star shows a well-typed term does not get stuck on a structural index,
+OCANNL shows a solved operation does not generate an out-of-bounds loop
+nest. The locality discipline (global sizes, local identities) is a
+premise here, not a convenience — it is what makes “co-iteration is
+finer than size-equality” true rather than merely hoped for.</p>
+<p><strong>The positioning</strong> is the design-space paragraph above:
+non-distributive lattice versus distributive lattice,
+sizes-in-the-solver versus sizes-untyped versus sizes-refined,
+polymorphism-by-re-evaluation versus polymorphism-by-generalization. And
+the <strong>limitations</strong> are honest: OCANNL’s rows are flat
+sequences, not Star’s nested algebraic shapes, which buys positional
+einsum matching and clean strides at the cost of the pytree-style
+nesting that Star’s recursive-types future work points toward; and
+OCANNL has not taken the refinement-types road, so its size arithmetic
+is a bespoke solver, not a reusable type-level discipline.</p>
+</section>
+<section id="where-this-leaves-the-series" class="level2">
+<h2>Where this leaves the series</h2>
+<p>Four posts found a familiar operation hiding inside a humbler one and
+reused the core rather than extending it. This post found a familiar
+<em>system</em> sitting beside OCANNL and reused the comparison rather
+than the code. Star and OCANNL are two points on one map. They agree on
+the deep structure — broadcasting is the meet, concatenation is a
+variant is a coproduct, a shape is not its index — because that
+structure is not anyone’s invention but the shape of the problem. They
+diverge on the bet: Star types the correspondence between shape and
+index and stops there, winning static safety inside the ML tradition at
+the cost of leaving sizes to runtime and boilerplate to the programmer;
+OCANNL computes along the correspondence, winning shape inference and a
+loop nest at the cost of a bespoke solver and a metatheory still to be
+written. The first bet is a type system. The second is the thing you
+reach for when the type system’s job is only half the problem — when,
+having decided a shape is not its index, you want a machine that fills
+in both.</p>
+<p>The workshop paper is where the second bet gets its theorems. Jakub’s
+paper is where to send the reader who wants to see the first bet made
+well.</p>
+<p>OCANNL is open source, at <a
+href="https://github.com/ahrefs/ocannl"><code>github.com/ahrefs/ocannl</code></a>.</p>
+</section>
+</section>
+</article>
+<script src="/assets/theme-toggle.js"></script>
+</body>
+</html>

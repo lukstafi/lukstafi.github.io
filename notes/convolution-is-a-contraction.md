@@ -138,7 +138,7 @@ The conversion is a unary primitive, written `uint4x32_to_prec_uniform` in the `
 
 ## Initialization seeds shapes from data
 
-A tensor's cells must start somewhere. In OCANNL the starting value is a `Fetch` --- a reset of an array by a computation or a data read --- or a `Data` init carrying an array literal. Both are *terminal* shape logic: a leaf of the expression graph, with no sub-tensor to take a shape from, so whatever shape information exists must come from the initializer itself. This is the from-usage inference of the first post seen from its other end. There, a leaf's shape was forced upward by its uses; here, an initializer can pin a leaf's shape from below, and the two meet in the closing policy.
+A tensor's cells must start somewhere. In OCANNL the starting value is a `Fetch` --- a reset of an array by a computation or a data read --- or a `Data` init carrying an array literal. Both are *terminal* shape logic: a leaf of the expression graph, with no sub-tensor to take a shape from, so whatever shape information exists must come from the initializer itself. This is the from-usage inference of the first post seen from its other end. There, a leaf's shape was driven toward the specific by its uses; here, an initializer can pin a leaf's shape directly from its data, and the two meet in the closing policy.
 
 ### Shape: pin exactly, or constrain the count
 
@@ -148,7 +148,7 @@ An initializer that knows its axes emits `Exact`. `Keep_shape_no_padding` and `P
 
 An initializer that knows only its size emits `Total_elems`. `Reshape` carries an array but lets its elements be laid into whatever axes inference assigns, so it constrains only the product: `Total_elems { numerator = Num_elems n }`, where `n` is the element count. `Constant_fill` --- a small array unrolled into the cells, the rightmost axis contiguous --- does the same. These are shape-polymorphic data: the same numbers fill a vector, a matrix, or a batch of either, as the surrounding computation decides, and `Total_elems` is what lets the count be honored while the axes stay free. It is the row constraint of the vectorized operation again, with a bare count for a numerator instead of a coefficient times a variable.
 
-The remaining fetch-ops --- `Constant`, `Constant_bits`, `Range_over_offsets`, `Embed_symbol`, `Embed_dim`, `Embed_self_id` --- assert no shape at all; they mark the shape terminal and let the closing policy of the first post finish it, upward to the uses' least upper bound, or downward to the unit shape if nothing pins it. A constant fills whatever shape it lands in, exactly as the scalar that opened the first post did.
+The remaining fetch-ops --- `Constant`, `Constant_bits`, `Range_over_offsets`, `Embed_symbol`, `Embed_dim`, `Embed_self_id` --- assert no shape at all; they mark the shape terminal and let the closing policy of the first post finish it, downward to the uses' greatest lower bound, or upward to the unit shape if nothing pins it. A constant fills whatever shape it lands in, exactly as the scalar that opened the first post did.
 
 ### Projection: the index is the data's layout
 

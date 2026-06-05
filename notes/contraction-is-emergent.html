@@ -136,19 +136,19 @@ machinery, because the machinery is short once you have them.</p>
 <p>The first half is a claim about <em>method</em>: <strong>projection
 inference introduces no new constraints.</strong> It re-reads the exact
 constraint set that shape inference already produced. Shape inference
-reads that set as an <em>order</em> — sizes broadcasting up toward
-larger sizes, meeting down toward a bottom. Projection inference reads
-the <em>same</em> set as an <em>equivalence</em> — axes union-found into
-classes that share a loop variable. One elaboration, two algebraic
-readings. This is not merely economical (no second constraint generator
-to keep in sync); it is the load-bearing correctness argument. Indices
-that are derived from the same facts as the sizes cannot silently
-contradict the sizes. If projection inference invented its own
-constraints, the two could drift — an index could iterate an axis the
-shapes say is size one, or fail to contract an axis the shapes made
-equal — and the bug would surface only at runtime as a stride mismatch
-or a wrong answer. Sharing the source makes that class of bug
-unrepresentable.</p>
+reads that set as an <em>order</em> — sizes refining toward the
+specific, incompatible demands generalizing up toward a claim-free top.
+Projection inference reads the <em>same</em> set as an
+<em>equivalence</em> — axes union-found into classes that share a loop
+variable. One elaboration, two algebraic readings. This is not merely
+economical (no second constraint generator to keep in sync); it is the
+load-bearing correctness argument. Indices that are derived from the
+same facts as the sizes cannot silently contradict the sizes. If
+projection inference invented its own constraints, the two could drift —
+an index could iterate an axis the shapes say is size one, or fail to
+contract an axis the shapes made equal — and the bug would surface only
+at runtime as a stride mismatch or a wrong answer. Sharing the source
+makes that class of bug unrepresentable.</p>
 <p>The second half is a claim about <em>result</em>: <strong>contraction
 is emergent.</strong> Nowhere does a user, or the system, declare
 “reduce over this axis.” A reduction is a <em>property of the inferred
@@ -314,16 +314,18 @@ operations that demand exact matching — einsum contractions, where an
 axis labeled <code>k</code> in the spec is <em>the same axis</em> as the
 operand axis at that position. No broadcasting.</li>
 <li><strong>Inequalities</strong> <span
-class="math inline">d_{\mathrm{sub}} \sqsubseteq
-d_{\mathrm{super}}</span> and <span class="math inline">R_{\mathrm{sub}}
-\sqsubseteq R_{\mathrm{super}}</span>, emitted by operations that permit
-broadcasting — pointwise arithmetic, composition — oriented so the
-operand that may broadcast sits below the result it must fit.</li>
+class="math inline">d_{\mathrm{result}} \sqsubseteq
+d_{\mathrm{operand}}</span> and <span
+class="math inline">R_{\mathrm{result}} \sqsubseteq
+R_{\mathrm{operand}}</span>, emitted by operations that permit
+broadcasting — pointwise arithmetic, composition — oriented so the more
+committed result refines the broadcastable operand and sits below
+it.</li>
 </ul>
 <p>Shape inference takes these and computes sizes: equalities unify,
 inequalities accumulate as bounds, and the broadcast order’s asymmetry
-(lower bounds solve, upper bounds defer and may collapse to the bottom)
-does the rest. Projection inference takes constraints of the <em>same
+(pins solve, permissive caps defer and may collapse up to the top) does
+the rest. Projection inference takes constraints of the <em>same
 form</em> and computes a loop nest instead — “same form” rather than the
 same terms, because the dimensions here are not quite the ground terms
 of the shape algebra, for a reason worth disposing of first.</p>
@@ -400,20 +402,21 @@ class="math inline">\;d_1 = d_2 \;\rightsquigarrow\;
 alike are driven by one loop variable. This is the engine of contraction
 — it is what makes the two <code>k</code> axes of a matmul share a
 variable.</p>
-<p><strong>2. Dimension inequality, broadcasting sub.</strong> A
-broadcast inequality whose sub-side axis is size one, <span
-class="math inline">d_{\mathrm{super}} \sqsupseteq (d_{\mathrm{sub}} =
-1)</span>, elaborates to <span class="math display">
-\mathsf{Eq}(\llbracket d_{\mathrm{sub}} \rrbracket,
+<p><strong>2. Dimension inequality, broadcasting operand.</strong> A
+broadcast inequality whose operand-side axis is size one, <span
+class="math inline">d_{\mathrm{result}} \sqsubseteq
+(d_{\mathrm{operand}} = 1)</span>, elaborates to <span
+class="math display">
+\mathsf{Eq}(\llbracket d_{\mathrm{operand}} \rrbracket,
 \mathsf{Sol}(\mathsf{Fix}(0))).
 </span> The broadcasting axis is <em>pinned to position <span
 class="math inline">0</span></em>: it is read at its single cell for
 every value the larger axis takes. Crucially it is <strong>not</strong>
 unified with the larger axis. This is the cleanest sentence-level link
 between the two passes: in shape land a broadcast inequality is an
-<em>order</em> fact (the small dimension sits below the large, whose
-size dominates); in projection land the same inequality <em>severs</em>
-(the small axis is cut loose and read at <span
+<em>order</em> fact (the size-one unit sits above the specific axis,
+which it broadcasts to fill); in projection land the same inequality
+<em>severs</em> (the small axis is cut loose and read at <span
 class="math inline">0</span> while the large one iterates alone).
 <strong>Equality unions; broadcasting severs.</strong> An axis that
 broadcasts is precisely an axis that does not get its own loop — it
@@ -433,16 +436,16 @@ against leading flank from the front, trailing against trailing from the
 back — and emit a dimension equality (rule 1) per aligned pair. No
 broadcasting; the ranks must already match.</p>
 <p><strong>5. Row inequality.</strong> <span
-class="math inline">\;R_{\mathrm{super}} \sqsupseteq
-R_{\mathrm{sub}}</span>: align the flanks as above, but now the larger
-row may out-rank the smaller. Its surplus interior axes — the ones the
-smaller side does not reach — each emit <span
+class="math inline">\;R_{\mathrm{result}} \sqsubseteq
+R_{\mathrm{operand}}</span>: align the flanks as above, but now the
+larger row (the result) may out-rank the smaller. Its surplus interior
+axes — the ones the operand side does not reach — each emit <span
 class="math inline">\mathsf{Iter}</span>: they iterate on their own,
 broadcast targets with no partner below. Each aligned pair emits a
-dimension inequality (rules 2–3); and at any pair where the sub axis is
-the size-one broadcaster, the pair is rewritten to “<em>super iterates,
-sub pinned to <span class="math inline">0</span></em>” — the row-level
-form of rule 2’s severance.</p>
+dimension inequality (rules 2–3); and at any pair where the operand axis
+is the size-one broadcaster, the pair is rewritten to “<em>result
+iterates, operand pinned to <span class="math inline">0</span></em>” —
+the row-level form of rule 2’s severance.</p>
 <p><strong>6. Terminal markers.</strong> A <em>terminal</em> axis — one
 belonging to a leaf tensor, or to an RHS whose axes might otherwise go
 unmatched — emits <span class="math inline">\mathsf{Iter}(\llbracket d
@@ -604,13 +607,13 @@ factor per fresh iterator (with its recorded size); each tensor’s index
 map is read off by mapping each axis to its class’s closed index.</p>
 <p>The contrast with shape closing is sharp and instructive. Shape
 inference’s closing phase must <em>choose a direction</em> — leaves
-commit upward to their largest fitting shape, interiors commit downward
-to the bottom — because the broadcast order has a meaningful bottom to
+commit downward to their most specific fitting shape, interiors commit
+upward to the top — because the broadcast order has a meaningful top to
 default to and a leaf/interior distinction that decides which way to
-fall. It can even <em>collapse</em> two incompatible upper bounds to the
-bottom, a semantically loaded resolution that turns a would-be error
-into a broadcast. Projection closing does none of this. It chooses no
-direction, defaults to no bottom, collapses nothing. It only
+fall. It can even <em>collapse</em> two incompatible caps to the top, a
+semantically loaded resolution that turns a would-be error into a
+broadcast. Projection closing does none of this. It chooses no
+direction, defaults to no pole, collapses nothing. It only
 <em>labels</em>: pinned classes wear their pin, iterating classes get a
 fresh name, the rest are <span
 class="math inline">\mathsf{Fix}(0)</span>. An equivalence has no up or
@@ -723,12 +726,12 @@ read-modify-write.</p>
 <h3>Pointwise broadcast</h3>
 <p>Multiply a scalar <code>s</code> by a matrix <code>m[p,q]</code> into
 <code>r[p,q]</code>. The pointwise operation emits inequalities. The
-inequality <span class="math inline">m \sqsubseteq r</span> matches axis
+inequality <span class="math inline">r \sqsubseteq m</span> matches axis
 for axis (rule 3): <span class="math inline">\mathsf{Eq}(r_p,
 m_p)</span> and <span class="math inline">\mathsf{Eq}(r_q, m_q)</span> —
 co-iteration, classes <span class="math inline">P = \{r_p, m_p\}</span>
 and <span class="math inline">Q = \{r_q, m_q\}</span>. The inequality
-<span class="math inline">s \sqsubseteq r</span> is the interesting one:
+<span class="math inline">r \sqsubseteq s</span> is the interesting one:
 <code>s</code> is a scalar, so against <code>r</code>’s two axes its
 sole content is broadcasting units, and rule 5 (with rule 2 at each
 pair) rewrites to <em>super iterates, sub pinned to <span
@@ -751,7 +754,7 @@ reduction, no zero-init, a plain elementwise write.</p>
 <h3>Summing by a vector of ones</h3>
 <p>The shape post described a deliberate idiom: to sum out an axis,
 multiply by a ones-vector whose length is left to inference, which then
-closes upward to match the axis being reduced. Look at the same idiom
+closes downward to match the axis being reduced. Look at the same idiom
 through the projection lens. To sum axis <code>q</code> of
 <code>m[p,q]</code> into <code>r[p]</code>, multiply <code>m</code> by
 <code>ones[q]</code> and let the contraction land. The constraint that
@@ -764,7 +767,7 @@ class="math inline">p^\star</span> but not <span
 class="math inline">q^\star</span>, and <span
 class="math inline">q^\star</span> is a reduction axis by the
 characterization. Same idiom, both readings: shape inference
-<em>grew</em> the ones-vector to the right length (closing upward from
+<em>grew</em> the ones-vector to the right length (closing downward from
 use), and projection inference <em>summed over it</em> (the output omits
 <code>q</code>). The one constant the user declined to size is sized by
 the order; the one sum the user never wrote is induced by the absence.

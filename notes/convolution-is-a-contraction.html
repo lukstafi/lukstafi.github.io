@@ -396,8 +396,9 @@ read — or a <code>Data</code> init carrying an array literal. Both are
 sub-tensor to take a shape from, so whatever shape information exists
 must come from the initializer itself. This is the from-usage inference
 of the first post seen from its other end. There, a leaf’s shape was
-forced upward by its uses; here, an initializer can pin a leaf’s shape
-from below, and the two meet in the closing policy.</p>
+driven toward the specific by its uses; here, an initializer can pin a
+leaf’s shape directly from its data, and the two meet in the closing
+policy.</p>
 <section id="shape-pin-exactly-or-constrain-the-count" class="level3">
 <h3>Shape: pin exactly, or constrain the count</h3>
 <p>The terminal initializers split by how much they say about the shape,
@@ -428,10 +429,10 @@ coefficient times a variable.</p>
 <code>Constant_bits</code>, <code>Range_over_offsets</code>,
 <code>Embed_symbol</code>, <code>Embed_dim</code>,
 <code>Embed_self_id</code> — assert no shape at all; they mark the shape
-terminal and let the closing policy of the first post finish it, upward
-to the uses’ least upper bound, or downward to the unit shape if nothing
-pins it. A constant fills whatever shape it lands in, exactly as the
-scalar that opened the first post did.</p>
+terminal and let the closing policy of the first post finish it,
+downward to the uses’ greatest lower bound, or upward to the unit shape
+if nothing pins it. A constant fills whatever shape it lands in, exactly
+as the scalar that opened the first post did.</p>
 </section>
 <section id="projection-the-index-is-the-datas-layout" class="level3">
 <h3>Projection: the index is the data’s layout</h3>

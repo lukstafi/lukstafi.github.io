@@ -101,18 +101,21 @@ why it is the only unbased element.</p>
 for an axis of any size: a scalar added to a matrix is implicitly
 replicated to fill it. We capture exactly this as an order on <span
 class="math inline">D</span>. Define <span class="math inline">d_1
-\sqsubseteq d_2</span> (“<span class="math inline">d_1</span> broadcasts
-to <span class="math inline">d_2</span>”) to hold precisely when <span
+\sqsubseteq d_2</span> (“<span class="math inline">d_1</span> refines
+<span class="math inline">d_2</span>”, equivalently “<span
+class="math inline">d_2</span> broadcasts to fill <span
+class="math inline">d_1</span>”) to hold precisely when <span
 class="math display">
-d_1 = 1_\emptyset \quad\text{or}\quad d_1 = d_2.
-</span> That is the whole definition. The unbased unit broadcasts to
-anything; every dimension broadcasts to itself; nothing else is
-related.</p>
+d_2 = 1_\emptyset \quad\text{or}\quad d_1 = d_2.
+</span> That is the whole definition. The unbased unit is refined by
+anything; every dimension refines itself; nothing else is related. The
+claim-free unit thus sits at the <em>top</em>: it makes no claim, so
+every concrete axis is a more specific instance of it.</p>
 <p>Two properties of this order matter for what comes later.</p>
 <p>First, <span class="math inline">1_\emptyset</span> is the unique
-bottom: <span class="math inline">1_\emptyset \sqsubseteq d</span> for
+top: <span class="math inline">d \sqsubseteq 1_\emptyset</span> for
 every <span class="math inline">d</span>, and it is the only element
-with that property. What makes it bottom is not its size but that it
+with that property. What makes it the top is not its size but that it
 makes <em>no claim</em> — it carries no basis, asserts nothing about
 what its axis means or even that the axis is really there, and so it
 fits anywhere. This is the genuine shape-content of a scalar: a learning
@@ -122,8 +125,8 @@ not size-1-ness, is what licenses broadcasting.</p>
 <p>The contrast that makes this vivid is three dimensions, all of size
 one:</p>
 <ul>
-<li><span class="math inline">1_\emptyset</span> — claim-free, the
-bottom. Broadcasts to anything. This is what a scalar carries, and what
+<li><span class="math inline">1_\emptyset</span> — claim-free, the top.
+Broadcasts to anything. This is what a scalar carries, and what
 rank-broadening inserts (below).</li>
 <li><span class="math inline">1_{\texttt{default}}</span> — a unit axis
 the user wrote explicitly without naming a basis. It is a
@@ -151,23 +154,80 @@ to a larger size of its own kind.</p>
 inference catch an <strong>unspecified hidden dimension</strong>.
 Because an explicit user unit is the atom <span
 class="math inline">1_{\texttt{default}}</span> rather than the
-claim-free bottom, when it meets an axis of unknown size that size is
+claim-free top, when it meets an axis of unknown size that size is
 <em>resolved</em> — the unknown is forced to <span
 class="math inline">1</span>, the value the user actually wrote. A
 claim-free unit could not do this: it would broadcast to whatever the
 other axis turned out to be, leaving the unknown unresolved and silently
 conjuring an axis the user never specified.</p>
 <p>Second, <span class="math inline">D</span> under <span
-class="math inline">\sqsubseteq</span> is a <strong>meet-semilattice
-with bottom but not a join-semilattice.</strong> Any two dimensions have
-a greatest lower bound: <span class="math inline">\mathrm{meet}(d, d) =
-d</span>, and <span class="math inline">\mathrm{meet}(d_1, d_2) =
-1_\emptyset</span> when <span class="math inline">d_1 \neq d_2</span> —
-two distinct atoms meet at the claim-free bottom, the only thing below
-both. But two distinct atoms have <em>no</em> upper bound at all. There
-is no dimension that both <span
+class="math inline">\sqsubseteq</span> is a <strong>join-semilattice
+with top</strong>, which we complete to a bounded lattice by adjoining
+an error bottom <span class="math inline">\bot</span>. Any two
+dimensions have a least upper bound: <span
+class="math inline">\mathrm{join}(d, d) = d</span>, and <span
+class="math inline">\mathrm{join}(d_1, d_2) = 1_\emptyset</span> when
+<span class="math inline">d_1 \neq d_2</span> — two distinct atoms join
+at the claim-free top, the only thing above both. Their <em>meet</em> is
+where broadcasting lives: <span class="math inline">\mathrm{meet}(d, d)
+= d</span> and <span class="math inline">\mathrm{meet}(d, 1_\emptyset) =
+d</span>, but two distinct atoms have no common refinement among the
+genuine dimensions, so <span class="math inline">\mathrm{meet}(d_1, d_2)
+= \bot</span> — the broadcast error. There is no dimension that <span
 class="math inline">3_{\texttt{default}}</span> and <span
-class="math inline">5_{\texttt{default}}</span> broadcast to.</p>
+class="math inline">5_{\texttt{default}}</span> both refine, which is
+exactly the statement that they do not broadcast together. With three or
+more atoms sharing the one top <span
+class="math inline">1_\emptyset</span> and the one bottom <span
+class="math inline">\bot</span>, this lattice contains the diamond <span
+class="math inline">M_3</span> and is therefore <strong>not
+distributive</strong> — a fact that will matter the moment one asks
+whether the order could be handed to an off-the-shelf subtyping
+inference engine.</p>
+<p>The <em>direction</em> of this order is a genuine choice, worth
+pausing on, because the obvious reading runs the other way. Broadcasting
+is idempotent — <span class="math inline">\mathrm{broadcast}(d, d) =
+d</span> — so it is a semilattice operation, and an idempotent
+commutative operation carries two canonical orders, each the reverse of
+the other. One is the divisibility order the monoid induces: <span
+class="math inline">d_1</span> sits below <span
+class="math inline">d_2</span> exactly when broadcasting <span
+class="math inline">d_1</span> against something yields <span
+class="math inline">d_2</span>. That is the literal “<span
+class="math inline">d_1</span> broadcasts to <span
+class="math inline">d_2</span>” reading; it places the unit <span
+class="math inline">1_\emptyset</span> at the <em>bottom</em> and makes
+broadcasting a <em>join</em>, and it is the orientation earlier versions
+of this series used. The other is the semilattice order used just above,
+in which <span class="math inline">1_\emptyset</span> is the
+<em>top</em> and broadcasting is the <em>meet</em>. We take the second,
+for three reasons. It matches the subtyping convention — <span
+class="math inline">\top</span> for “no constraint,” <span
+class="math inline">\bot</span> for contradiction — so broadcasting
+reads as a greatest-lower-bound the way a type theorist expects. It
+<em>completes</em> the structure to a proper bounded lattice: a genuine
+size clash becomes a meet that falls to the error bottom <span
+class="math inline">\bot</span>, rather than an absent join the system
+has to handle out of band. And it pulls the two ways an axis can resist
+broadcasting onto opposite poles — incompatible demands joining
+<em>up</em> to the no-claim top (a deliberate broadcast), a true clash
+meeting <em>down</em> to <span class="math inline">\bot</span> (an
+error) — where the divisibility reading crowded both near the unit. What
+we give up is operational transparency, and a symmetry. The divisibility
+reading is the more immediate one, and it is the <em>only</em> order the
+other operations on sizes can offer, because neither is idempotent: a <a
+href="split-and-concatenation.md">later post’s</a> concatenation is a
+coproduct with unit the empty range <span class="math inline">0</span>,
+the ordinary product of axes has unit <span
+class="math inline">1</span>, and under divisibility each unit sits at
+the <em>bottom</em> of its order (<span class="math inline">1</span>
+divides everything, <span class="math inline">0</span> is a summand of
+everything). What singles out broadcasting is that it alone is
+idempotent, so it alone also carries a meet order — and reading that
+order is what lifts <span class="math inline">1_\emptyset</span> to the
+top, even though in its other guise, as the product unit, the same
+element would sit at the bottom beside <span
+class="math inline">0</span>.</p>
 </section>
 <section id="rows" class="level2">
 <h2>Rows</h2>
@@ -201,15 +261,18 @@ nothing unknown about a row.)</p>
 <h3>The order on rows</h3>
 <p>Take two rows <span class="math inline">l_1\cdot\diamond\cdot
 r_1</span> and <span class="math inline">l_2\cdot\diamond\cdot
-r_2</span>. The smaller one may have lower rank; broadcasting makes up
-the difference by inserting unit axes <em>at the marker</em>.
-Concretely, <span class="math inline">l_1\cdot\diamond\cdot r_1
-\sqsubseteq l_2\cdot\diamond\cdot r_2</span> holds when:</p>
+r_2</span>. The more specific one may have higher rank; broadcasting
+makes up the difference by inserting unit axes <em>at the marker</em> of
+the smaller. Concretely, the higher-rank row refines the lower-rank one
+— <span class="math inline">l_2\cdot\diamond\cdot r_2 \sqsubseteq
+l_1\cdot\diamond\cdot r_1</span> when the lower-rank row <span
+class="math inline">l_1\cdot\diamond\cdot r_1</span> is the smaller —
+and this holds when:</p>
 <ol type="1">
 <li>the flanks fit, <span class="math inline">|l_1| \leq |l_2|</span>
 and <span class="math inline">|r_1| \leq |r_2|</span>; and</li>
-<li>the <strong>rank-broadened expansion</strong> of the smaller row
-pointwise-broadcasts to the catenation of the larger.</li>
+<li>the catenation of the higher-rank row pointwise-refines the
+<strong>rank-broadened expansion</strong> of the smaller row.</li>
 </ol>
 <p>The expansion is the operational heart of the definition. Let <span
 class="math inline">k = (|l_2| + |r_2|) - (|l_1| + |r_1|)</span> be the
@@ -218,25 +281,25 @@ at the marker of the smaller row: <span class="math display">
 \widehat{l_1\cdot\diamond\cdot r_1} \;=\; l_1 \cdot
 \underbrace{1_\emptyset, \ldots, 1_\emptyset}_{k} \cdot r_1
 </span> This is now a flat sequence of length <span
-class="math inline">|l_2| + |r_2|</span>. The order holds iff it
-broadcasts pointwise to <span class="math inline">l_2 \cdot r_2</span>:
-<span class="math display">
-\widehat{l_1\cdot\diamond\cdot r_1}[i] \;\sqsubseteq\; (l_2 \cdot
-r_2)[i] \quad\text{for every } i.
+class="math inline">|l_2| + |r_2|</span>. The order holds iff <span
+class="math inline">l_2 \cdot r_2</span> refines it pointwise: <span
+class="math display">
+(l_2 \cdot r_2)[i] \;\sqsubseteq\; \widehat{l_1\cdot\diamond\cdot
+r_1}[i] \quad\text{for every } i.
 </span></p>
 <p>A worked instance. Does <span
-class="math inline">[3]\cdot\diamond\cdot[4] \sqsubseteq
-[3]\cdot\diamond\cdot[5,4]</span>? (Bare sizes carry <span
+class="math inline">[3]\cdot\diamond\cdot[5,4] \sqsubseteq
+[3]\cdot\diamond\cdot[4]</span>? (Bare sizes carry <span
 class="math inline">\texttt{default}</span>, suppressed here for
-legibility; nothing below turns on it.) The smaller row has rank 2, the
-larger rank 3, so <span class="math inline">k = 1</span>: insert one
-unit at the marker, giving the expansion <span class="math inline">[3,
-1_\emptyset, 4]</span>. Compare pointwise against <span
-class="math inline">[3, 5, 4]</span>: we need <span
-class="math inline">3 \sqsubseteq 3</span> (yes, equal), <span
-class="math inline">1_\emptyset \sqsubseteq 5</span> (yes, the unit
-broadcasts), <span class="math inline">4 \sqsubseteq 4</span> (yes). It
-holds.</p>
+legibility; nothing below turns on it.) The lower-rank row has rank 2,
+the higher-rank rank 3, so <span class="math inline">k = 1</span>:
+insert one unit at the marker of the smaller, giving the expansion <span
+class="math inline">[3, 1_\emptyset, 4]</span>. Compare pointwise: the
+higher-rank <span class="math inline">[3, 5, 4]</span> must refine it,
+so we need <span class="math inline">3 \sqsubseteq 3</span> (yes,
+equal), <span class="math inline">5 \sqsubseteq 1_\emptyset</span> (yes,
+a concrete size refines the claim-free unit), <span
+class="math inline">4 \sqsubseteq 4</span> (yes). It holds.</p>
 <p>Note that the inserted unit is the <em>claim-free</em> <span
 class="math inline">1_\emptyset</span>, not <span
 class="math inline">1_{\texttt{default}}</span>. Rank-broadening mints
@@ -254,10 +317,10 @@ choose: rank growth happens at the marker, the flanks stay anchored, and
 the order is well-defined. OCANNL broadcasts <em>in the middle</em>.</p>
 <p>And the larger row’s interior axes — the <span
 class="math inline">5</span> in the example — are essentially
-unconstrained by the inequality. Since <span
-class="math inline">1_\emptyset \sqsubseteq d</span> for every <span
-class="math inline">d</span>, whatever sits opposite an inserted unit is
-automatically dominated. The interior of the larger row can be any
+unconstrained by the inequality. Since <span class="math inline">d
+\sqsubseteq 1_\emptyset</span> for every <span
+class="math inline">d</span>, whatever sits opposite an inserted unit
+automatically refines it. The interior of the larger row can be any
 sizes, any bases; broadcasting will reach them from units. This is a
 <em>consequence</em> of the dimension lattice, not a separate clause —
 the kind of consolidation we are after.</p>
@@ -266,18 +329,18 @@ the kind of consolidation we are after.</p>
 <h3>Scalars and the empty row</h3>
 <p>The smallest row is the empty one, <span
 class="math inline">[]\cdot\diamond\cdot[]</span> — rank zero, no axes.
-It is the least element of the row order: rank-broaden it by <span
+It is the greatest element of the row order: rank-broaden it by <span
 class="math inline">k</span> and you get <span
-class="math inline">k</span> claim-free units, which broadcast up to any
-row of rank <span class="math inline">k</span>, so <span
-class="math inline">[]\cdot\diamond\cdot[]\sqsubseteq R</span> for every
-row <span class="math inline">R</span>. Nothing is below it, and it is
-below everything.</p>
+class="math inline">k</span> claim-free units, which any row of rank
+<span class="math inline">k</span> refines, so <span
+class="math inline">R \sqsubseteq []\cdot\diamond\cdot[]</span> for
+every row <span class="math inline">R</span>. Nothing is above it, and
+it is above everything.</p>
 <p>This is the shape of a scalar. A learning rate, for instance, has no
 axes of its own — it multiplies into a parameter of any shape, and what
-makes that possible is exactly that its row is below every other row in
+makes that possible is exactly that its row is above every other row in
 the broadcast order. So the empty row is not a syntactic curiosity; it
-is the actual home of a category of real tensors, and the bottom of the
+is the actual home of a category of real tensors, and the top of the
 order needs to be reachable and well-behaved for them. We will see, when
 we get to inference, that scalars also <em>arrive</em> at the empty row
 through their use sites — but that is a story for later.</p>
@@ -287,15 +350,16 @@ class="math inline">[]\cdot\diamond\cdot[1_\emptyset]</span> — rank one,
 a single claim-free unit — broadcasts to anything as well. But it is
 <em>not</em> the empty row: it has rank one, and the empty row has rank
 zero, and the order knows the difference. The empty row is strictly
-below it (<span class="math inline">[]\cdot\diamond\cdot[] \sqsubseteq
-[]\cdot\diamond\cdot[1_\emptyset]</span>, by inserting one unit; the
-reverse fails, since rank one cannot broadcast down to rank zero). We
-could imagine identifying the two — they are interchangeable as
-broadcast <em>targets</em> — but doing so would force the whole
-inference logic onto equivalence classes: least elements would be
-least-up-to-equivalence, and every comparison would carry the quotient
-around. Keeping them distinct is what lets inference stay a clean
-computation over terms. (Explicit scalar literals are seeded at <span
+above it (<span class="math inline">[]\cdot\diamond\cdot[1_\emptyset]
+\sqsubseteq []\cdot\diamond\cdot[]</span>, by inserting one unit; the
+reverse fails, since the one-axis row makes a claim the empty row does
+not — that an axis is there). We could imagine identifying the two —
+they are interchangeable as broadcast <em>targets</em> — but doing so
+would force the whole inference logic onto equivalence classes: greatest
+elements would be greatest-up-to-equivalence, and every comparison would
+carry the quotient around. Keeping them distinct is what lets inference
+stay a clean computation over terms. (Explicit scalar literals are
+seeded at <span
 class="math inline">[]\cdot\diamond\cdot[1_\emptyset]</span> by
 convention — a fixed shape — which is harmless precisely because nothing
 is left unknown for inference to drive anywhere.)</p>
@@ -441,12 +505,15 @@ demand exact matching — einsum contractions, where an axis labeled
 corresponding position in the operand. No broadcasting is permitted; the
 template binds the operand axis exactly.</li>
 <li><strong>Inequality</strong> constraints come from operations that
-permit broadcasting — pointwise arithmetic, composition — where a
-smaller operand may broadcast up to a larger. We orient them so that
-<span class="math inline">R_{\text{sub}} \sqsubseteq
-R_{\text{super}}</span>: the sub-tensor (the operand that may be
-broadcast) is below, the super-tensor (the result it must fit) is
-above.</li>
+permit broadcasting — pointwise arithmetic, composition — where a more
+permissive operand may broadcast to fill a more committed result. We
+orient them so that <span class="math inline">R_{\text{result}}
+\sqsubseteq R_{\text{operand}}</span>: the result (the more specific
+shape) refines the broadcastable operand and so sits below it, while the
+operand — free to broadcast, nearer the no-claim top — sits above. (The
+names record roles, not heights: the “operand” is the side that may be
+replicated, which is exactly why it is the more permissive of the
+two.)</li>
 </ul>
 <p>A substitution <span class="math inline">\sigma</span>
 <strong>models</strong> <span class="math inline">\Phi</span>, written
@@ -520,54 +587,57 @@ comment.</p>
 class="math inline">n_b = n_b</span> discharges; a clash of sizes, or of
 two distinct bases, fails; a variable against a term solves the variable
 and substitutes the term — size, basis, and all. (The formalization
-treats the claim-free bottom as the basis <span
+treats the claim-free top as the basis <span
 class="math inline">1_\emptyset</span> and every other axis as carrying
-a definite basis; the implementation spells the bottom’s tag
+a definite basis; the implementation spells the top’s tag
 <code>broadcastable_when_1</code>, a name that states its own rule.)</p>
 </section>
 <section id="dimension-inequality-an-asymmetry-that-is-the-lattice"
 class="level3">
 <h3>Dimension inequality: an asymmetry that <em>is</em> the lattice</h3>
-<p>The inequality rules are where the meet-semilattice-with-no-joins
-shape of the dimension order becomes visible as solver behavior. The two
-directions are not symmetric, and the asymmetry is forced by the order,
-not chosen.</p>
-<p>A <strong>lower bound solves immediately.</strong> Confronted with
-<span class="math inline">\alpha \sqsupseteq d</span> for a non-bottom
-<span class="math inline">d</span> — the variable must be <em>at
-least</em> <span class="math inline">d</span> — there is nothing to
-defer: <span class="math inline">d</span> has no proper superiors, so
-the variable is forced to <span class="math inline">d</span> and we emit
-<span class="math inline">\alpha = d</span>. A lower bound at an atom is
-not a bound to remember; it is an equation. (The sole non-solving case
-is <span class="math inline">\alpha \sqsupseteq 1_\emptyset</span>,
-which says nothing, since everything is <span
-class="math inline">\sqsupseteq</span> the bottom.)</p>
-<p>An <strong>upper bound is recorded, not solved.</strong> Confronted
-with <span class="math inline">\alpha \sqsubseteq d</span> — the
-variable is <em>at most</em> <span class="math inline">d</span> — the
+<p>The inequality rules are where the lattice shape of the dimension
+order becomes visible as solver behavior. The two directions are not
+symmetric, and the asymmetry is forced by the order, not chosen.</p>
+<p>A bound that <strong>pins the variable to a concrete atom solves
+immediately.</strong> Confronted with <span class="math inline">\alpha
+\sqsubseteq d</span> for a non-top <span class="math inline">d</span> —
+the variable must <em>refine</em> the concrete claim <span
+class="math inline">d</span> — there is nothing to defer: below an atom
+lies only <span class="math inline">\bot</span>, so the only legal
+refinement of <span class="math inline">d</span> is <span
+class="math inline">d</span> itself, and we emit <span
+class="math inline">\alpha = d</span>. A pin at an atom is not a bound
+to remember; it is an equation. (The sole non-solving case is <span
+class="math inline">\alpha \sqsubseteq 1_\emptyset</span>, which says
+nothing, since everything refines the top.)</p>
+<p>A bound that merely <strong>caps the variable from the permissive
+side is recorded, not solved.</strong> Confronted with <span
+class="math inline">\alpha \sqsupseteq d</span> — the variable is <em>at
+least as permissive as</em> <span class="math inline">d</span> — the
 variable is left open, with <span class="math inline">d</span>
-remembered as its least upper bound. It cannot be solved yet: <span
+remembered as a lower bound. It cannot be solved yet: <span
 class="math inline">\alpha</span> could still turn out to be <span
-class="math inline">1_\emptyset</span> (which is <span
-class="math inline">\sqsubseteq d</span>) or <span
+class="math inline">1_\emptyset</span> (the no-claim top, which is <span
+class="math inline">\sqsupseteq d</span>) or <span
 class="math inline">d</span> itself, and only later constraints decide.
-So upper bounds accumulate; lower bounds discharge.</p>
-<p>And here is the payoff. Suppose a second, <em>incompatible</em> upper
-bound arrives: <span class="math inline">\alpha \sqsubseteq
-d&#39;</span> with <span class="math inline">d&#39; \neq d</span>. The
-variable must now be below both <span class="math inline">d</span> and
-<span class="math inline">d&#39;</span> — below their meet. But two
-distinct atoms meet at the bottom: <span
-class="math inline">\mathrm{meet}(d, d&#39;) = 1_\emptyset</span>. So
-the LUB collapses, and the variable is solved to <span
-class="math inline">1_\emptyset</span>. Read back into shapes: an axis
-pushed toward two incompatible sizes does not raise an error — it
-broadcasts, becoming the claim-free unit, which is exactly what should
-fit under both. This is deliberate broadcast semantics: the same fact as
-“<span class="math inline">3</span> and <span
+So caps accumulate; pins discharge.</p>
+<p>And here is the payoff. Suppose a second, <em>incompatible</em> cap
+arrives: <span class="math inline">\alpha \sqsupseteq d&#39;</span> with
+<span class="math inline">d&#39; \neq d</span>. The variable must now be
+above both <span class="math inline">d</span> and <span
+class="math inline">d&#39;</span> — above their join. But two distinct
+atoms join at the top: <span class="math inline">\mathrm{join}(d,
+d&#39;) = 1_\emptyset</span>. So the cap collapses upward, and the
+variable is solved to <span class="math inline">1_\emptyset</span>. Read
+back into shapes: an axis pushed toward two incompatible sizes does not
+raise an error — it broadcasts, becoming the claim-free unit, which is
+exactly what fits either demand. This is deliberate broadcast semantics:
+the same fact as “<span class="math inline">3</span> and <span
 class="math inline">5</span> have no common broadcast target,” now
-resolving an axis instead of rejecting the program.</p>
+resolving an axis to <em>no claim</em> instead of rejecting the program.
+(A genuine size <em>clash</em> still errors — but that arrives on the
+equality path, as a meet landing at <span
+class="math inline">\bot</span>, not through these caps.)</p>
 </section>
 <section
 id="row-equality-and-inequality-lifting-the-order-through-the-marker"
@@ -584,44 +654,45 @@ the aligned dimensions match; inequality (from pointwise and compose,
 broadcasting allowed) emits a dimension <em>inequality</em> per aligned
 pair and lets the dimension rules above take over.</p>
 <p>The structurally interesting case is a row inequality <span
-class="math inline">\text{sub} \sqsubseteq \text{super}</span> where the
-smaller side is open, <span
-class="math inline">l\cdot\langle\rho\rangle\cdot r</span>, and the
-larger side supplies more axes than the flanks consume. The per-axis
-inequalities fire on the overlapping flank portions; what remains of the
-larger row — its interior, after the outer-matched prefix and suffix are
-stripped — becomes the <strong>least upper bound recorded on <span
-class="math inline">\rho</span></strong>. This is the bipartite cut: the
-larger row’s material is partitioned into <em>matched flank</em>
-(constrained pointwise, against the outer edges) and <em>interior
-residue</em> (handed to the row variable as its LUB). There is no third
-part and no choice of where to cut, because the flanks anchor at the
-outer edges and the marker is the only interior — the same “broadcasting
-in the middle” that made the row order well-defined now makes the cut
-unique.</p>
-<p>When instead the <em>larger</em> side has too few axes to accommodate
-the smaller side’s known flanks — the inequality <span
-class="math inline">\text{sub} \sqsubseteq \text{super}</span> requires
-that super provide at least <span class="math inline">|l| + |r|</span>
-axes, but super has fewer than that — the asymmetry between the two
-sides becomes the deciding factor. If super is itself open, carrying its
-own row variable, that variable can be made to stand for a wider row,
-and the rule does exactly that: it substitutes super’s variable by a
-fresh template with enough additional axes (themselves fresh dimension
+class="math inline">R_{\text{result}} \sqsubseteq
+R_{\text{operand}}</span> where the operand — the smaller, broadcastable
+side — is open, <span class="math inline">l\cdot\langle\rho\rangle\cdot
+r</span>, and the result supplies more axes than the flanks consume. The
+per-axis inequalities fire on the overlapping flank portions; what
+remains of the result row — its interior, after the outer-matched prefix
+and suffix are stripped — becomes the <strong>greatest lower bound
+recorded on <span class="math inline">\rho</span></strong>. This is the
+bipartite cut: the result row’s material is partitioned into <em>matched
+flank</em> (constrained pointwise, against the outer edges) and
+<em>interior residue</em> (handed to the row variable as its GLB). There
+is no third part and no choice of where to cut, because the flanks
+anchor at the outer edges and the marker is the only interior — the same
+“broadcasting in the middle” that made the row order well-defined now
+makes the cut unique.</p>
+<p>When instead the <em>result</em> side has too few axes to accommodate
+the operand’s known flanks — the inequality <span
+class="math inline">R_{\text{result}} \sqsubseteq
+R_{\text{operand}}</span> requires that the result provide at least
+<span class="math inline">|l| + |r|</span> axes, but the result has
+fewer than that — the asymmetry between the two sides becomes the
+deciding factor. If the result is itself open, carrying its own row
+variable, that variable can be made to stand for a wider row, and the
+rule does exactly that: it substitutes the result’s variable by a fresh
+template with enough additional axes (themselves fresh dimension
 variables, under a fresh row variable spliced in at the marker) to bring
-super up to the required rank. The emitted equality solves super’s old
-variable to this template, the work recurses, and because the variable
-is now solved-and-substituted it never regrows. (The implementation
-memoizes templates so that re-deriving the same deficit reuses the same
-fresh variables rather than minting alpha-variants that equality would
-only have to reconcile later; this is an efficiency measure with no
-effect on the result, which is principal up to renaming of fresh
-variables.)</p>
-<p>If super is <em>closed</em> and still too short — no row variable to
-grow, no broadcasting that could make up the difference on the smaller
-side either, since the smaller side’s known flank-axes already exceed
-super’s rank — it is a genuine rank mismatch, and the inequality
-fails.</p>
+the result up to the required rank. The emitted equality solves the
+result’s old variable to this template, the work recurses, and because
+the variable is now solved-and-substituted it never regrows. (The
+implementation memoizes templates so that re-deriving the same deficit
+reuses the same fresh variables rather than minting alpha-variants that
+equality would only have to reconcile later; this is an efficiency
+measure with no effect on the result, which is principal up to renaming
+of fresh variables.)</p>
+<p>If the result is <em>closed</em> and still too short — no row
+variable to grow, no broadcasting that could make up the difference on
+the operand side either, since the operand’s known flank-axes already
+exceed the result’s rank — it is a genuine rank mismatch, and the
+inequality fails.</p>
 </section>
 <section id="what-the-formalism-leaves-out" class="level3">
 <h3>What the formalism leaves out</h3>
@@ -652,15 +723,15 @@ the runtime needs them committed before any tensor can be allocated.
 Closing therefore picks a direction for each remaining variable, and the
 direction depends on whether the variable belongs to a leaf or an
 interior shape.</p>
-<p><strong>Leaf variables commit upward</strong>, to the largest shape
-their accumulated upper bounds permit. This is the engine of from-usage
+<p><strong>Leaf variables commit downward</strong>, to the most specific
+shape their accumulated bounds permit. This is the engine of from-usage
 inference: a data tensor’s shape is pinned by how it is consumed (a
 matmul fixing a feature width, an external fact fixing the row count),
-and closing commits the tensor upward to exactly that. The same upward
-closing gives a parameter its shape from the surrounding computation,
-with no annotation on the weight itself. A leaf goes up because a leaf
-has no other source of shape information — its uses are all the
-constraint there is.</p>
+and closing commits the tensor downward to exactly that. The same
+downward closing gives a parameter its shape from the surrounding
+computation, with no annotation on the weight itself. A leaf goes down
+because a leaf has no other source of shape information — its uses are
+all the constraint there is, and they press it toward the specific.</p>
 <p>Closing a leaf is not a passive read: it instantiates the leaf’s
 variable, which in turn populates the inequalities that variable
 participated in with new ground values, which can constrain interior
@@ -668,26 +739,26 @@ variables that solving left free. So closing the leaves is followed by
 <em>another round of solving</em>, propagating the now-determinate leaf
 shapes through the constraint set.</p>
 <p><strong>Interior variables that remain free after that second round
-commit downward</strong>, to the bottom of their respective orders. A
-free interior variable at this point means no path through the
-constraints ever forced its shape; the smallest fitting commitment is
-correct, since nothing is asking for more. So an unforced interior row
-variable becomes the empty row, an unforced interior dimension variable
-becomes <span class="math inline">1_\emptyset</span>, and the
+commit upward</strong>, to the top of their respective orders. A free
+interior variable at this point means no path through the constraints
+ever forced its shape; the most permissive commitment is correct, since
+nothing is asking for more. So an unforced interior row variable becomes
+the empty row, an unforced interior dimension variable becomes <span
+class="math inline">1_\emptyset</span> (the claim-free top), and the
 substitution is now total.</p>
 <p>Inside each direction, the per-variable rule is uniform across
-dimension and row variables. Upward closing on a leaf needs an
-accumulated upper bound to close <em>to</em>; that bound is built
-piecewise out of the inequalities the leaf participated in, and at any
-axis position where no use ever supplied a ground value, the bound has a
+dimension and row variables. Downward closing on a leaf needs an
+accumulated bound to close <em>to</em>; that bound is built piecewise
+out of the inequalities the leaf participated in, and at any axis
+position where no use ever supplied a ground value, the bound has a
 <strong>hole</strong>. Holes are common — a bound only carries
 information at the positions where the bounding shape is itself known,
 and in from-usage inference most shapes are pinned incrementally, so at
 closing time a leaf is typically known in places and holey in others.
 Holes get a fallback, and this is the one place the leaf’s <em>kind</em>
-matters. For an ordinary leaf the fallback is the least value: a
-dimension hole guesses to <span class="math inline">1</span>, a row hole
-closes to no-further-axes (the empty row). For a
+matters. For an ordinary leaf the fallback is the claim-free top: a
+dimension hole guesses to <span class="math inline">1_\emptyset</span>,
+a row hole closes to no-further-axes (the empty row). For a
 <strong>parameter</strong> the fallback is an <em>error</em> — “you
 forgot to specify the hidden dimension” — because a learnable weight
 whose shape nothing determined is almost certainly a construction
@@ -697,29 +768,30 @@ The parameter distinction is semantic (set when the tensor is built as a
 parameter, a subset of the syntactic leaves) and it changes behavior
 only at the holes.</p>
 <p>This finally places the scalar precisely. A learning rate is a leaf
-used at many conflicting sites; its accumulated upper bounds meet
-downward (by the lattice’s meet-of-distinct-atoms-is-bottom rule), and
-wherever no known use reached it, the hole fallback applies — both roads
-lead to the small shape, the first by meet-to-bottom, the second by
-guess-to-<span class="math inline">1</span>/empty.</p>
+used at many conflicting sites; its accumulated caps join upward (by the
+lattice’s join-of-distinct-atoms-is-top rule), and wherever no known use
+reached it, the hole fallback applies — both roads lead to the
+claim-free shape, the first by join-to-top, the second by guess-to-<span
+class="math inline">1_\emptyset</span>/empty.</p>
 <p>Literals are a separate matter, and they do <em>not</em> grow: when a
 scalar or tensor literal is written through the syntax extension,
 parsing supplies its precise shape directly, so there is no
-underdetermined variable for closing to resolve upward. The
-upward-closing path is reached only by shapes left <em>deliberately</em>
-unpinned — and that is a feature, not an accident. To sum out an axis,
-for instance, one can multiply by a vector of ones whose length should
-match the axis being reduced; writing that vector through the ordinary
-OCaml constructor rather than the syntax extension declines the parser’s
-precision, leaves the length a variable, and lets inference close it up
-to the axis it meets. The vector is never materialized: the inlining
-optimization folds it into the reduction at code-generation time, so the
-shape-polymorphic helper costs nothing at runtime. Upward closing plus
-inlining is thus the mechanism behind a deliberate idiom — “a constant
-whose shape the context decides” — not a wart to apologize for. (The
-price, paid only when one opts into it, is that an unpinned constant
-with a single undemanding use can close to a larger shape than it
-strictly needs; inlining is what makes that price zero.)</p>
+underdetermined variable for closing to resolve downward. The
+downward-closing path is reached only by shapes left
+<em>deliberately</em> unpinned — and that is a feature, not an accident.
+To sum out an axis, for instance, one can multiply by a vector of ones
+whose length should match the axis being reduced; writing that vector
+through the ordinary OCaml constructor rather than the syntax extension
+declines the parser’s precision, leaves the length a variable, and lets
+inference close it down to the axis it meets. The vector is never
+materialized: the inlining optimization folds it into the reduction at
+code-generation time, so the shape-polymorphic helper costs nothing at
+runtime. Downward closing plus inlining is thus the mechanism behind a
+deliberate idiom — “a constant whose shape the context decides” — not a
+wart to apologize for. (The price, paid only when one opts into it, is
+that an unpinned constant with a single undemanding use can close to a
+larger shape than it strictly needs; inlining is what makes that price
+zero.)</p>
 </section>
 <section id="from-the-algebra-to-what-you-write" class="level2">
 <h2>From the algebra to what you write</h2>
@@ -800,30 +872,34 @@ the replacement is now earned rather than asserted. The system is
 because an open row term is a one-hole context and substitution is
 context composition; <em>broadcast-aware</em>, because the order on
 those sequences is the broadcast order — with <span
-class="math inline">1_\emptyset</span> as its bottom and the absent
-joins above the atoms turning what would be errors into a missing join
-the system handles by other means. Each word of the old name was wrong
-in an instructive way — “nominal” hid that the order reads off values
-not names, “subtyping” oversold one particular coercion order as the
-general thing, “row polymorphism” imported record intuitions (unordered
-fields, a rest-variable at one end) that the ordered, two-flanked rows
-violate.</p>
+class="math inline">1_\emptyset</span> as its top, where incompatible
+broadcast demands generalize to no-claim rather than erroring, and a
+genuine size clash is the meet that lands at the error bottom. Each word
+of the old name was wrong in an instructive way — “nominal” hid that the
+order reads off values not names, “subtyping” oversold one particular
+coercion order as the general thing, “row polymorphism” imported record
+intuitions (unordered fields, a rest-variable at one end) that the
+ordered, two-flanked rows violate.</p>
 <p>What the formalization revealed is that almost everything reduces to
-one small order theory applied twice. The dimension lattice — bottom
-<span class="math inline">1_\emptyset</span>, incomparable atoms above
-it, meets that collapse to the bottom and joins that simply do not exist
-— is the whole story of per-axis broadcasting, and its missing joins
-<em>are</em> the broadcast errors. Rows lift that same order
-structurally, with the marker naming where rank grows so that
-broadcasting happens in the middle and the order stays well-defined.
-Inference is principal solving by variable elimination, with the
-lattice’s asymmetry (lower bounds solve, upper bounds defer and
-collapse) falling straight out of “no joins above the atoms.” The one
-place the picture inverts — leaves closed upward to their largest
-fitting shape — is not a second algebra but a closing phase, justified
-by the fact that a leaf has no below to be pressured from, and it is
-exactly what lets a weight or a data tensor have its shape inferred from
-use.</p>
+one small order theory applied twice. The dimension lattice — top <span
+class="math inline">1_\emptyset</span>, incomparable atoms below it,
+joins that collapse to the top and meets that exist only as the error
+bottom — is the whole story of per-axis broadcasting, and its meets of
+distinct atoms <em>are</em> the broadcast errors. (Three or more atoms
+strung between a shared top and bottom make the lattice non-distributive
+— the diamond <span class="math inline">M_3</span> — which is the
+precise reason a size-aware order cannot simply borrow the
+distributive-lattice inference that algebraic subtyping relies on.) Rows
+lift that same order structurally, with the marker naming where rank
+grows so that broadcasting happens in the middle and the order stays
+well-defined. Inference is principal solving by variable elimination,
+with the lattice’s asymmetry (pins solve, permissive caps defer and
+collapse upward) falling straight out of “distinct atoms join to the
+top.” The one place the picture inverts — leaves closed downward to
+their most specific fitting shape — is not a second algebra but a
+closing phase, justified by the fact that a leaf has no more-permissive
+source to be pressured from, and it is exactly what lets a weight or a
+data tensor have its shape inferred from use.</p>
 <p>OCANNL is open source, at <a
 href="https://github.com/ahrefs/ocannl"><code>github.com/ahrefs/ocannl</code></a>.</p>
 </section>

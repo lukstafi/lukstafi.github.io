@@ -400,16 +400,22 @@ class="level2">
 <code>discardable_vars</code></h2>
 <p>Concatenation extends the dimension order the first three posts were
 built on.</p>
-<p>The first post’s order had a bottom: <span
+<p>The first post’s order had a top: <span
 class="math inline">1_\emptyset</span>, the claim-free size-one axis,
 the thing a scalar carries and the thing rank-broadening inserts. It is
-the bottom <em>of broadcasting</em> — the unit that a smaller operand
-becomes when it has to fit a larger one, the identity of the operation
-that fills an axis by replication. In the algebra of sizes under
-broadcasting, <span class="math inline">1_\emptyset</span> is the unit
-of the <strong>product</strong>: replicating along a size-one claim-free
-axis changes nothing, <span class="math inline">A \times 1 \cong
-A</span>.</p>
+the top <em>of broadcasting</em> — the no-claim unit inserted to make up
+rank, the identity of the operation that fills an axis by replication.
+In the algebra of sizes under broadcasting, <span
+class="math inline">1_\emptyset</span> is the unit of the
+<strong>product</strong>: replicating along a size-one claim-free axis
+changes nothing, <span class="math inline">A \times 1 \cong A</span> —
+but that isomorphism is categorical, a fact about element counts, not an
+operational identity in the einsum sense. A <em>materialized</em>
+size-one axis still occupies a position and so shifts axis alignment,
+which is exactly why the first post keeps the rank-zero empty row and
+the rank-one <span
+class="math inline">[]\cdot\diamond\cdot[1_\emptyset]</span> distinct:
+same data, different operands.</p>
 <p>Concatenation has a different unit, and it is not one but
 <strong>zero</strong>. The unit of a coproduct is the empty summand:
 <span class="math inline">A \sqcup \emptyset \cong A</span>, joining an
@@ -429,33 +435,39 @@ system tracks them as a set of <strong>discardable variables</strong>
 (<code>discardable_vars</code> in the code). Permitting that zero is a
 deliberate exception, confined to exactly these variables and named for
 what licenses it: a variable is discardable precisely when its component
-can be dropped. When closing guesses unforced variables to their minimal
-value, an ordinary variable guesses to <span
+can be dropped. When closing guesses unforced variables to the unit of
+the operation that owns them, an ordinary variable guesses to <span
 class="math inline">1</span> (the product unit, the first post’s policy)
 but a discardable variable guesses to <span class="math inline">0</span>
-(the coproduct unit). The two bottoms sit side by side, each the
-identity of its own operation, and which one an axis falls to is decided
-by whether it is a discardable summand of a concatenation.</p>
-<p>It is worth being exact about what “two bottoms” means, because they
-do not live in one order. The first post’s order is the
-<em>broadcast</em> order: a <span class="math inline">d_1</span>-axis is
-below a <span class="math inline">d_2</span>-axis when the first
-broadcasts into the second, which puts <span
-class="math inline">1</span> at the bottom — a unit axis broadcasts into
-anything — and leaves distinct concrete sizes mutually incomparable.
-Zero does not slot in beneath <span class="math inline">1</span> there.
-A length-zero axis broadcasts into nothing and nothing broadcasts into
-it: you can neither replicate an empty axis to fill a populated one nor
-collapse a populated one to empty. Under broadcasting <span
-class="math inline">0</span> is not lower than <span
-class="math inline">1</span>, it is incomparable to everything, off the
-order. The two units belong to two structures sharing one carrier —
-broadcasting with unit <span class="math inline">1</span>, concatenation
-with unit <span class="math inline">0</span> — so closing an unforced
-axis is not “descend to the bottom of the lattice” but “guess the unit
-of the operation that owns it”: <span class="math inline">1</span> where
-broadcasting left it free, <span class="math inline">0</span> where a
-concatenation left a component free as the empty summand. The
+(the coproduct unit). The two units sit side by side, each the identity
+of its own operation, and which one an axis falls to is decided by
+whether it is a discardable summand of a concatenation.</p>
+<p>It is worth being exact about what “two units” means, because they do
+not live in one order. The first post’s order is the <em>broadcast</em>
+order: a <span class="math inline">d_1</span>-axis refines a <span
+class="math inline">d_2</span>-axis when the second broadcasts to fill
+the first, which puts <span class="math inline">1_\emptyset</span> at
+the <strong>top</strong> — the claim-free unit, refined by anything —
+leaves distinct concrete sizes mutually incomparable in the middle, and
+(once completed to a lattice) puts the broadcast <em>error</em> at the
+bottom. Zero is none of these. A length-zero axis broadcasts into
+nothing and nothing broadcasts into it: you can neither replicate an
+empty axis to fill a populated one nor collapse a populated one to
+empty. Under broadcasting <span class="math inline">0</span> is neither
+above nor below <span class="math inline">1</span>, and it is not the
+error bottom either — it is incomparable to everything, off the
+broadcast order entirely (though it is the bottom of the
+<em>additive</em> order the coproduct itself induces, where <span
+class="math inline">0</span> is a summand of every range: the familiar
+pattern of an empty product sitting at a top and an empty sum at a
+bottom). The two units belong to two structures sharing one carrier —
+broadcasting with unit <span class="math inline">1_\emptyset</span> (its
+top), concatenation with unit <span class="math inline">0</span> (off
+the broadcast order) — so closing an unforced axis is not “fall to a
+distinguished element of one lattice” but “guess the unit of the
+operation that owns it”: <span class="math inline">1_\emptyset</span>
+where broadcasting left it free, <span class="math inline">0</span>
+where a concatenation left a component free as the empty summand. The
 discardable set records which operation owns which free axis.</p>
 <p>Which components are discardable is a real question. Consider what
 “discardable” should mean. In <code>a^b =&gt; a</code>, the result is
@@ -558,22 +570,22 @@ another operation it takes that size there, while the operation that
 discards it simply never loops over it. Discardability is a verdict on
 an occurrence in a spec, not on the variable globally.</p>
 <p>There is care needed in the solver so that this extension does not
-destabilize the rest. The first post’s closing policy guessed unforced
-axes to the bottom of the order; now there are two bottoms, and guessing
-the wrong one is a bug, not a broadcast. So the discardable set is
-computed up front from the specification’s structure (the quantifier
+destabilize the rest. The first post’s closing policy guessed each
+unforced axis to a unit; now there are two units to choose between, and
+guessing the wrong one is a bug, not a broadcast. So the discardable set
+is computed up front from the specification’s structure (the quantifier
 test above, run over the spec’s two sides) and consulted at exactly the
-closing stages where minimal-value guessing happens, which guess
-discardable variables to <span class="math inline">0</span> and
-everything else to <span class="math inline">1</span>. And unification
-of <code>Concat</code> terms is mostly structural — two concatenations
-of equal length unify component-wise — with one inequality case held
-open: a concatenation almost all of whose components are discardable can
-be left as an inequality rather than forced to an equation, so the
-solver can still infer the one live component from context. The
-machinery is small, but it is the first place the size domain has more
-than one floor, and the second floor is there because the coproduct
-needs a unit.</p>
+closing stages where unit-guessing happens, which guess discardable
+variables to <span class="math inline">0</span> and everything else to
+<span class="math inline">1</span>. And unification of
+<code>Concat</code> terms is mostly structural — two concatenations of
+equal length unify component-wise — with one inequality case held open:
+a concatenation almost all of whose components are discardable can be
+left as an inequality rather than forced to an equation, so the solver
+can still infer the one live component from context. The machinery is
+small, but it is the first place the size domain has more than one unit
+to default to, and the second unit is there because the coproduct needs
+one.</p>
 </section>
 <section id="block-matrices-the-coproduct-in-more-than-one-axis"
 class="level2">
