@@ -67,9 +67,9 @@ The convergence is easiest to feel on the shared examples. Star's worked pattern
   <tbody>
     <tr><td>Matrix multiply</td><td><code>[{|i:#, j:#|}]</code> ⊗ <code>[{|j:#, k:#|}]</code></td><td><code>a +* b "m n; n p =&gt; m p"</code>, or wordless <code>a * b</code> (compose)</td></tr>
     <tr><td>Outer product</td><td>meet <code>{|row:#|} ∧ {|col:#|}</code></td><td><code>u +* w "i; j =&gt; i, j"</code>, shape inferred</td></tr>
-    <tr><td>Padding</td><td><code>{|row:⟦Top,Centre,Bottom⟧, col:⟦Left,Centre,Right⟧|}</code></td><td><code>x ++ "h, w =&gt; 1^h^1, 1^w^1"</code> (zero-pad two axes)</td></tr>
+    <tr><td>Padding</td><td><code>{|row:⟦Top,Centre,Bottom⟧, col:⟦Left,Centre,Right⟧|}</code></td><td><code>x ++ "h, w =&gt; 1&#94;h&#94;1, 1&#94;w&#94;1"</code> (zero-pad two axes)</td></tr>
     <tr><td>GNN broadcast</td><td>named axes, <code>expand_dims</code> avoided</td><td><code>a +* b "i, f; j, f =&gt; i, j, f"</code>, no <code>expand_dims</code></td></tr>
-    <tr><td>Graph split/merge</td><td>variant-indexed concatenation</td><td><code>(a, b) ++^ "x; y =&gt; x^y"</code>, injection offsets</td></tr>
+    <tr><td>Graph split/merge</td><td>variant-indexed concatenation</td><td><code>(a, b) ++^ "x; y =&gt; x&#94;y"</code>, injection offsets</td></tr>
   </tbody>
 </table>
 

@@ -115,22 +115,23 @@ OCANNL from Scratch</h1>
 <section id="contraction-is-emergent" class="level1">
 <h1>Contraction Is Emergent</h1>
 <p>A companion piece, <a
-href="https://lukstafi.github.io/notes/broadcast-aware-shape-inference.html"><em>Broadcasting Is an
-Order</em></a>, built OCANNL’s shape inference from scratch: what a
-shape is, what it means for one shape to broadcast to another, and how a
-constraint solver fills in the unknown sizes. That account stopped where
-the sizes were known. But knowing the sizes is not enough to generate
-code. A tensor operation compiles to a loop nest, and before any loop
-can be written the compiler has to answer a different set of questions:
-<em>which</em> axes are driven by the same loop variable, <em>which</em>
-are summed away, <em>which</em> are read at a single fixed position no
-matter how the loops run. Sizes do not answer these. Two axes can have
-the same size and have nothing to do with each other; an axis can be
-summed without anyone ever writing the word “sum.” This is the job of
-<strong>projection inference</strong>, and this post develops its core
-from scratch the same way the first developed shapes — leaving out, for
-now, the two genuine complications (strided/convolutional indexing and
-axis concatenation), which get their own follow-up.</p>
+href="https://lukstafi.github.io/notes/broadcast-aware-shape-inference.html"><em>Broadcasting
+Is an Order</em></a>, built OCANNL’s shape inference from scratch: what
+a shape is, what it means for one shape to broadcast to another, and how
+a constraint solver fills in the unknown sizes. That account stopped
+where the sizes were known. But knowing the sizes is not enough to
+generate code. A tensor operation compiles to a loop nest, and before
+any loop can be written the compiler has to answer a different set of
+questions: <em>which</em> axes are driven by the same loop variable,
+<em>which</em> are summed away, <em>which</em> are read at a single
+fixed position no matter how the loops run. Sizes do not answer these.
+Two axes can have the same size and have nothing to do with each other;
+an axis can be summed without anyone ever writing the word “sum.” This
+is the job of <strong>projection inference</strong>, and this post
+develops its core from scratch the same way the first developed shapes —
+leaving out, for now, the two genuine complications
+(strided/convolutional indexing and axis concatenation), which get their
+own follow-up.</p>
 <p>The thesis comes in two halves, and they are worth stating before any
 machinery, because the machinery is short once you have them.</p>
 <p>The first half is a claim about <em>method</em>: <strong>projection

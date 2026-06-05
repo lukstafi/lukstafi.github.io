@@ -62,17 +62,20 @@ and Dominic Orchard’s <em>Structuring Arrays with Algebraic Shapes</em>
 <code>Top</code>/<code>Centre</code>/<code>Bottom</code>, columns split
 <code>Left</code>/<code>Centre</code>/<code>Right</code> — and the index
 arithmetic becomes pattern matching over variant tags. OCANNL, across <a
-href="https://lukstafi.github.io/notes/broadcast-aware-shape-inference.html">the four posts</a> <a
-href="https://lukstafi.github.io/notes/contraction-is-emergent.html">this</a> <a
-href="https://lukstafi.github.io/notes/convolution-is-a-contraction.html">series</a> <a
-href="https://lukstafi.github.io/notes/split-and-concatenation.html">comprises</a>, reads the same padded
-array as a <strong>coproduct</strong> in two axes — a block matrix —
-where each region is one summand of a disjoint union and the index
-arithmetic becomes injection offsets. A variant and a coproduct are the
-same thing: a sum type. Bachurski’s calculus, which they call Star,
-reaches it from the typing side; OCANNL reaches it from the loop-nest
-side. They meet in the middle, at the same structure, and the meeting is
-worth a post.</p>
+href="https://lukstafi.github.io/notes/broadcast-aware-shape-inference.html">the
+four posts</a> <a
+href="https://lukstafi.github.io/notes/contraction-is-emergent.html">this</a>
+<a
+href="https://lukstafi.github.io/notes/convolution-is-a-contraction.html">series</a>
+<a
+href="https://lukstafi.github.io/notes/split-and-concatenation.html">comprises</a>,
+reads the same padded array as a <strong>coproduct</strong> in two axes
+— a block matrix — where each region is one summand of a disjoint union
+and the index arithmetic becomes injection offsets. A variant and a
+coproduct are the same thing: a sum type. Bachurski’s calculus, which
+they call Star, reaches it from the typing side; OCANNL reaches it from
+the loop-nest side. They meet in the middle, at the same structure, and
+the meeting is worth a post.</p>
 <p>This is the fifth in the series, and the first to look outward. The
 four predecessors built OCANNL’s shape system from scratch —
 broadcasting as an order, contraction as an emergent property of an
@@ -184,10 +187,10 @@ by a <em>variant</em>: <code>⟦Front : σ, Centre : σ, Back : σ⟧</code> is
 indexed by a value tagged <code>Front</code>, <code>Centre</code>, or
 <code>Back</code>, and composing or decomposing a concatenation becomes
 tagging and pattern matching rather than range arithmetic. The <a
-href="https://lukstafi.github.io/notes/split-and-concatenation.html">fourth post</a> reads concatenation as
-a <em>coproduct</em> of integer ranges — a disjoint union <span
-class="math inline">R_a \sqcup R_b</span> with injection offsets <span
-class="math inline">\iota_a(i) = i</span>, <span
+href="https://lukstafi.github.io/notes/split-and-concatenation.html">fourth
+post</a> reads concatenation as a <em>coproduct</em> of integer ranges —
+a disjoint union <span class="math inline">R_a \sqcup R_b</span> with
+injection offsets <span class="math inline">\iota_a(i) = i</span>, <span
 class="math inline">\iota_b(j) = A + j</span>, and an
 at-most-one-summand cover check that is the coproduct’s universal
 property restated as a code-generation constraint.</p>
@@ -223,9 +226,10 @@ different identities.</p>
 shape type to its index type and is an isomorphism; it is the formal
 content of “a shape is not its index, but the two correspond exactly.”
 OCANNL makes the <em>same</em> separation, but operationally rather than
-in the types. <a href="https://lukstafi.github.io/notes/contraction-is-emergent.html">The second post</a>
-is built on it: a dimension carries a <em>projection identifier</em>
-distinct from its size, and an elaboration <span
+in the types. <a
+href="https://lukstafi.github.io/notes/contraction-is-emergent.html">The
+second post</a> is built on it: a dimension carries a <em>projection
+identifier</em> distinct from its size, and an elaboration <span
 class="math inline">\llbracket\cdot\rrbracket</span> maps a solved
 dimension to its projection term. Sizes are one reading of the
 constraint set; indices are another; and the second post’s load-bearing
@@ -254,11 +258,11 @@ Star does not have because Star is not in the business of
 Section 6.4, stencils, is left open with the remark that a stencil index
 “degenerates to setting <span class="math inline">i :</span> int” —
 which is exactly the gap the <a
-href="https://lukstafi.github.io/notes/convolution-is-a-contraction.html">third post</a> closes with the
-affine index <code>Affine(Σ cᵢ·sᵢ + o)</code>. The convergence on the
-deep structure is what makes these correspondences legible: OCANNL is,
-in part, a realization and extension of the future-work section of a
-paper it had never read.</p>
+href="https://lukstafi.github.io/notes/convolution-is-a-contraction.html">third
+post</a> closes with the affine index <code>Affine(Σ cᵢ·sᵢ + o)</code>.
+The convergence on the deep structure is what makes these
+correspondences legible: OCANNL is, in part, a realization and extension
+of the future-work section of a paper it had never read.</p>
 </section>
 </section>
 <section id="a-rosetta-stone" class="level2">
@@ -314,8 +318,7 @@ Padding
 <code>{|row:⟦Top,Centre,Bottom⟧, col:⟦Left,Centre,Right⟧|}</code>
 </td>
 <td>
-<code>x ++ “h, w =&gt; 1<sup>h</sup>1, 1<sup>w</sup>1”</code> (zero-pad
-two axes)
+<code>x ++ “h, w =&gt; 1^h^1, 1^w^1”</code> (zero-pad two axes)
 </td>
 </tr>
 <tr>

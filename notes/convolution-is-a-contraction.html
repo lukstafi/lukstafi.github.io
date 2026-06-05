@@ -53,18 +53,18 @@ that axis is summed away. They differ in one place: <code>a[i, j]</code>
 reads at a pair of loop variables, <code>x[o + k]</code> at their sum.
 This post is about that one difference.</p>
 <p>Two companion pieces built the machinery underneath. <a
-href="https://lukstafi.github.io/notes/broadcast-aware-shape-inference.html"><em>Broadcasting Is an
-Order</em></a> developed shape inference: what a shape is, and how a
-solver fills in the sizes. <a
-href="https://lukstafi.github.io/notes/contraction-is-emergent.html"><em>Contraction Is Emergent</em></a>
-developed projection inference: how the same constraints, re-read as an
-equivalence over axes rather than an order over sizes, become the loop
-nest of an operation, with reductions read off the result rather than
-declared. Both deferred two constructs: strided and convolutional
-indexing, and axis concatenation. This post takes the first.
-Concatenation changes the shape of the iteration domain and is left to a
-sequel; convolution leaves the domain alone and changes only what is
-read inside it.</p>
+href="https://lukstafi.github.io/notes/broadcast-aware-shape-inference.html"><em>Broadcasting
+Is an Order</em></a> developed shape inference: what a shape is, and how
+a solver fills in the sizes. <a
+href="https://lukstafi.github.io/notes/contraction-is-emergent.html"><em>Contraction
+Is Emergent</em></a> developed projection inference: how the same
+constraints, re-read as an equivalence over axes rather than an order
+over sizes, become the loop nest of an operation, with reductions read
+off the result rather than declared. Both deferred two constructs:
+strided and convolutional indexing, and axis concatenation. This post
+takes the first. Concatenation changes the shape of the iteration domain
+and is left to a sequel; convolution leaves the domain alone and changes
+only what is read inside it.</p>
 <section id="the-third-index-form" class="level2">
 <h2>The third index form</h2>
 <p>The second post compiled an operation to a product space — a
