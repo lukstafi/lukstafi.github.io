@@ -67,7 +67,7 @@ _SYM = {
     r"\cap": "∩", r"\in": "∈", r"\notin": "∉", r"\to": "→", r"\mapsto": "↦",
     r"\subseteq": "⊆", r"\supseteq": "⊇", r"\equiv": "≡", r"\approx": "≈",
     r"\forall": "∀", r"\exists": "∃", r"\land": "∧", r"\lor": "∨",
-    r"\cong": "≅", r"\sqcup": "⊔", r"\sqcap": "⊓",
+    r"\cong": "≅", r"\sqcup": "⊔", r"\sqcap": "⊓", r"\wedge": "∧", r"\bot": "⊥", r"\top": "⊤",
     r"\pi": "π", r"\theta": "θ", r"\tau": "τ", r"\omega": "ω", r"\epsilon": "ε",
     r"\iota": "ι",
     r"\ldots": "…", r"\dots": "…", r"\cdots": "⋯",
@@ -114,6 +114,7 @@ def latex_to_unicode(s: str) -> str:
     s = re.sub(r"\\mathcal\{([A-Z])\}", lambda m: _MATHCAL.get(m.group(1), m.group(1)), s)
     s = re.sub(r"\\(?:widehat|hat)\{([^{}]*)\}", lambda m: m.group(1) + "̂", s)
     s = re.sub(r"\\(?:overline|bar)\{([^{}]*)\}", lambda m: m.group(1) + "̄", s)
+    s = re.sub(r"\\(?:widetilde|tilde)\{([^{}]*)\}", lambda m: m.group(1) + "̃", s)
     # Negated relations.
     s = s.replace(r"\not\sqsubseteq", "⋢").replace(r"\not\sqsupseteq", "⋣")
     s = s.replace(r"\neq", "≠")

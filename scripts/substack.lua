@@ -118,10 +118,49 @@ local function merge_text(nodes)
   return out
 end
 
+-- Pandoc passes raw HTML inline tags (<code>, </code>, etc.) as RawInline
+-- elements when they appear inside raw-HTML blocks. Convert <code>...</code>
+-- sequences into proper Code inlines so the rest of the pipeline handles them.
+local function preprocess_inlines(inlines)
+  local out = {}
+  local i = 1
+  while i <= #inlines do
+    local el = inlines[i]
+    if el.tag == "RawInline" and el.format == "html" then
+      local tag = el.text:match("^%s*(.-)%s*$"):lower()
+      if tag == "<code>" then
+        i = i + 1
+        local buf = {}
+        while i <= #inlines do
+          local inner = inlines[i]
+          if inner.tag == "RawInline" and inner.format == "html"
+              and inner.text:match("^%s*(.-)%s*$"):lower() == "</code>" then
+            i = i + 1; break
+          end
+          if inner.tag == "Str" then buf[#buf + 1] = inner.text
+          elseif inner.tag == "Space" then buf[#buf + 1] = " "
+          else buf[#buf + 1] = stringify(inner)
+          end
+          i = i + 1
+        end
+        out[#out + 1] = pandoc.Code(table.concat(buf))
+      else
+        -- other raw HTML inlines (e.g. <br />) — skip the tag itself
+        i = i + 1
+      end
+    else
+      out[#out + 1] = el
+      i = i + 1
+    end
+  end
+  return out
+end
+
 -- Convert a list of Pandoc inlines into ProseMirror inline nodes. `marks` is the
 -- stack of active marks (each a table like {type="strong"} or a link).
 local inlines_to_nodes
 inlines_to_nodes = function(inlines, marks)
+  inlines = preprocess_inlines(inlines)
   marks = marks or {}
   local nodes = {}
   for _, el in ipairs(inlines) do
@@ -241,6 +280,64 @@ local function para_blocks(inlines)
   return blocks
 end
 
+-- Check if a block is a specific raw HTML tag (opening or closing).
+local function raw_html_tag(blk, name, closing)
+  if blk.tag ~= "RawBlock" or blk.format ~= "html" then return false end
+  local txt = blk.text:match("^%s*(.-)%s*$"):lower()
+  if closing then
+    return txt == "</" .. name .. ">"
+  else
+    return txt == "<" .. name .. ">" or txt:match("^<" .. name .. "[%s/>]") ~= nil
+  end
+end
+
+-- Pandoc emits each HTML tag as its own RawBlock, with cell content as normal
+-- Para/Plain blocks in between. Group the flat sequence into synthetic HtmlTable
+-- blocks so blocks_to_nodes can convert them to ProseMirror table nodes.
+local function preprocess_blocks(blocks)
+  local out = {}
+  local i = 1
+  while i <= #blocks do
+    local blk = blocks[i]
+    if raw_html_tag(blk, "table", false) then
+      local rows, cur_row, cell_is_header, cell_blocks = {}, nil, false, {}
+      i = i + 1
+      while i <= #blocks do
+        local b = blocks[i]
+        if raw_html_tag(b, "table", true) then
+          i = i + 1; break
+        elseif raw_html_tag(b, "tr", false) then
+          cur_row = {}
+        elseif raw_html_tag(b, "tr", true) then
+          if cur_row then rows[#rows + 1] = cur_row end; cur_row = nil
+        elseif raw_html_tag(b, "th", false) then
+          cell_is_header = true; cell_blocks = {}
+        elseif raw_html_tag(b, "td", false) then
+          cell_is_header = false; cell_blocks = {}
+        elseif raw_html_tag(b, "th", true) or raw_html_tag(b, "td", true) then
+          if cur_row then
+            cur_row[#cur_row + 1] = {
+              tag = cell_is_header and "HtmlTh" or "HtmlTd",
+              content = cell_blocks,
+            }
+          end
+          cell_blocks = {}
+        elseif b.tag == "RawBlock" and b.format == "html" then
+          -- skip other structural tags: thead, tbody, etc.
+        else
+          cell_blocks[#cell_blocks + 1] = b
+        end
+        i = i + 1
+      end
+      out[#out + 1] = { tag = "HtmlTable", rows = rows }
+    else
+      out[#out + 1] = blk
+      i = i + 1
+    end
+  end
+  return out
+end
+
 local function list_items(items)
   local out = {}
   for i, item in ipairs(items) do
@@ -250,6 +347,7 @@ local function list_items(items)
 end
 
 blocks_to_nodes = function(blocks)
+  blocks = preprocess_blocks(blocks)
   local nodes = {}
   for _, blk in ipairs(blocks) do
     local t = blk.tag
@@ -286,8 +384,32 @@ blocks_to_nodes = function(blocks)
       for _, n in ipairs(blocks_to_nodes(blk.content)) do
         nodes[#nodes + 1] = n
       end
+    elseif t == "HtmlTable" then
+      -- Substack has no native table support; render each row as a paragraph
+      -- with cells joined by " | ". Header cells are bolded.
+      local function cell_inlines(cell)
+        local ils = {}
+        for _, b in ipairs(cell.content) do
+          if b.tag == "Para" or b.tag == "Plain" then
+            for _, il in ipairs(b.content) do ils[#ils + 1] = il end
+          end
+        end
+        return ils
+      end
+      for _, row in ipairs(blk.rows) do
+        local parts = {}
+        for ci, cell in ipairs(row) do
+          local ils = cell_inlines(cell)
+          if cell.tag == "HtmlTh" and #ils > 0 then
+            ils = { pandoc.Strong(ils) }
+          end
+          for _, il in ipairs(ils) do parts[#parts + 1] = il end
+          if ci < #row then parts[#parts + 1] = pandoc.Str(" | ") end
+        end
+        nodes[#nodes + 1] = { type = "paragraph", content = inlines_to_nodes(parts, {}) }
+      end
     elseif t == "RawBlock" then
-      -- skip raw HTML/TeX blocks
+      -- skip remaining raw HTML/TeX blocks (not part of a table)
     else
       -- Tables and anything else: best-effort plain-text paragraph.
       local txt = stringify(blk)
