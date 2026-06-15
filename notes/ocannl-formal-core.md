@@ -1,6 +1,6 @@
 # The Formal Core of OCANNL's Shape and Projection Inference
 
-Working notes toward the workshop/FProPer paper. Definitions, theorems, and proofs for the core fragment (no `Affine`, no `Concat`), following the template in *A Shape Is Not Its Index*. Proof-status labels: **[proved]**, **[sketch]** (believed routine, gaps flagged), **[open]**. Full proof write-outs live in the companion appendix, `docs/formal-core-appendix.md` (cited as **A.1**–**A.10**); this document stays statement-level.
+Working notes toward the workshop/FProPer paper. Definitions, theorems, and proofs for the core fragment (no `Affine`, no `Concat`), following the template in *A Shape Is Not Its Index*. Proof-status labels: **[proved]**, **[sketch]** (believed routine, gaps flagged), **[open]**. Full proof write-outs live in the companion appendix, [The Formal Core of OCANNL — Proof Appendix](https://lukstafi.github.io/notes/formal-core-appendix.html) (cited as **A.1**–**A.10**); this document stays statement-level.
 
 Notation follows the blog series: $1_\emptyset$ the claim-free unit, $\sqsubseteq$ the broadcast order, $\diamond$ the marker, $\alpha$ dimension variables, $\rho$ row variables.
 
