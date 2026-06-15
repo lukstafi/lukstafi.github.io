@@ -3,6 +3,8 @@ title: "A Range Is Not Its Shape: Reading Rangeify-Era tinygrad from OCANNL"
 author: "Łukasz Stafiniak and Claude (Anthropic)"
 ---
 
+*Writing of this article was interrupted by the ban of Claude Fable.*
+
 # A Range Is Not Its Shape
 
 The [previous essay](https://lukstafi.github.io/notes/a-tensor-is-not-its-storage.html) placed tinygrad on a design-space map and left it as the most striking point on one axis: the framework that had just crossed from carrying movement as stride metadata to expressing it as loop structure, arriving — from the opposite direction — at the representation OCANNL was built on. That essay ended by calling OCANNL "the borrower, pulled by tinygrad toward a representation it does not yet have," and moved on. This essay does not move on. It goes inside tinygrad, reads the rangeify-era machinery in detail, and asks the prospector's question: which of tinygrad's solutions are worth porting to OCANNL, in what form, and in what order.
