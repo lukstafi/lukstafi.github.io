@@ -1,0 +1,1005 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>The Formal Core of OCANNL — Proof Appendix</title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <link rel="stylesheet" href="/assets/tufte.css">
+  <link rel="stylesheet" href="/assets/pandoc-tufte.css">
+  <link rel="stylesheet" href="/assets/site.css">
+  <script defer=""
+  src="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.js"></script>
+  <script>document.addEventListener("DOMContentLoaded", function () {
+ var mathElements = document.getElementsByClassName("math");
+ var macros = [];
+ for (var i = 0; i < mathElements.length; i++) {
+  var texText = mathElements[i].firstChild;
+  if (mathElements[i].tagName == "SPAN") {
+   katex.render(texText.data, mathElements[i], {
+    displayMode: mathElements[i].classList.contains('display'),
+    throwOnError: false,
+    macros: macros,
+    fleqn: false
+   });
+}}});
+  </script>
+  <link rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.css" />
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+  <script>(function(){var t=localStorage.getItem('theme-preference');if(t)document.documentElement.setAttribute('data-theme',t);})()</script>
+</head>
+<body>
+<nav class="site-nav">
+  <a href="/">Home</a> &middot; <a href="/about.html">About</a> &middot; <a href="https://lukstafi.substack.com">Substack</a>
+</nav>
+<div class="theme-toggle">
+  <button id="theme-btn" aria-label="Toggle dark mode">&#9788;</button>
+</div>
+<article>
+<section id="the-formal-core-of-ocannl-proof-appendix" class="level1">
+<h1>The Formal Core of OCANNL — Proof Appendix</h1>
+<p>Companion to <code>docs/blog/ocannl-formal-core.md</code> (referred
+to as <em>the core</em>). The core keeps statements, proof ideas, status
+labels, and the running implementation audit; this appendix holds the
+full write-outs, keyed to the core’s numbering. Notation is the core’s
+throughout: <span class="math inline">1_\emptyset</span> the claim-free
+unit, <span class="math inline">\sqsubseteq</span> the broadcast order
+(lower = more material), <span class="math inline">\diamond</span> the
+marker, <span class="math inline">\approx</span> the flat equivalence of
+Def. 2.9 and the satisfaction relation of row-equality constraints (Def.
+3.4), <span class="math inline">\sqsubseteq^1</span> the one-shot order
+(<span class="math inline">X \sqsubseteq^1 Y \iff
+\mathrm{flat}(X)^\bullet \sqsubseteq Y</span>).</p>
+<p>Status of the core’s obligations after this appendix:</p>
+<table>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr>
+<th>Obligation</th>
+<th>Status</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Lemma 5.1 assembly (per-rule, semantic/policy split)</td>
+<td><strong>proved</strong> (A.1)</td>
+</tr>
+<tr>
+<td>Def. 4.3(c) split-surplus case</td>
+<td><strong>corrected</strong> — the calculus now defers, matching the
+implementation (A.1.3)</td>
+</tr>
+<tr>
+<td>Lemma 5.2.2 rank conservativity, rule by rule</td>
+<td><strong>proved</strong> (A.2)</td>
+</tr>
+<tr>
+<td>Thm. 5.2(a) lineage bookkeeping bound</td>
+<td><strong>proved</strong> (A.3)</td>
+</tr>
+<tr>
+<td>Confluence across fair strategies (Thm. 5.6 caveat)</td>
+<td><strong>discharged by decision</strong> — strategy fixed (A.4)</td>
+</tr>
+<tr>
+<td>Prop. 6.2 re-solve termination case split</td>
+<td><strong>proved, strengthened</strong> — re-solves always terminate
+(A.5)</td>
+</tr>
+<tr>
+<td>Prop. 6.4(iii) <span
+class="math inline">\sqsubseteq^1</span>-greatestness</td>
+<td><strong>proved</strong>, with a rank-policy qualification (A.6)</td>
+</tr>
+<tr>
+<td>Remark 6.7(i) order-robustness of closing</td>
+<td><strong>proved</strong> at dimension sort (A.7)</td>
+</tr>
+<tr>
+<td>Remark 2.15(iv) inference-policy-vs-checking</td>
+<td><strong>proved</strong> (A.8)</td>
+</tr>
+<tr>
+<td>Detection Lemma (Thm. 5.2(b))</td>
+<td><strong>open</strong> — structured reduction, D1 proved, D3 the
+residual gap (A.9)</td>
+</tr>
+<tr>
+<td>Marker-provenance invariant; surface discharge</td>
+<td><strong>open</strong> — statement recorded (A.10)</td>
+</tr>
+<tr>
+<td>Lemma 7.7 elaboration bookkeeping vs <code>shape.ml</code></td>
+<td><strong>open</strong> — implementation-facing, deferred</td>
+</tr>
+<tr>
+<td>§8 conjectures (8.2, 8.3, 8.4)</td>
+<td><strong>open</strong> — staged-extension work, deferred</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<section
+id="a.1-lemma-5.1-solution-preservation-with-a-policy-coordinate-full-proof"
+class="level2">
+<h2>A.1 Lemma 5.1 (Solution preservation, with a policy coordinate) —
+full proof</h2>
+<p>Recall the denotation <span class="math inline">\widehat{C} = \Phi
+\cup \mathrm{eqns}(\sigma) \cup \mathrm{constr}(B)</span>, with <span
+class="math inline">\mathrm{eqns}(\sigma)</span> read as <span
+class="math inline">\approx</span>-constraints at row sort. We must
+show, per rule: <em>semantic steps</em> preserve <span
+class="math inline">\mathrm{Sol}(\widehat{C})</span> exactly up to
+extension on fresh variables, and fail only when <span
+class="math inline">\mathrm{Sol}(\widehat{C}) = \emptyset</span>;
+<em>policy steps</em> are sound (new solutions restrict to old) and lose
+only solutions that some policy commitment forecloses.</p>
+<p>Throughout, “the rule preserves <span
+class="math inline">\mathrm{Sol}</span>” means: <span
+class="math inline">\widehat{C}_{\mathrm{old}}</span> and <span
+class="math inline">\widehat{C}_{\mathrm{new}}</span> have the same
+solutions after restricting the new ones to the old variables, and every
+old solution extends. Substitution steps (<span
+class="math inline">\sigma := [x \mapsto T]\circ\sigma</span> with
+re-emission) preserve the denotation <em>literally</em>: the binding
+moves <span class="math inline">x = T</span> from <span
+class="math inline">\Phi</span> into <span
+class="math inline">\mathrm{eqns}(\sigma)</span>, the re-emissions move
+each stored bound from <span
+class="math inline">\mathrm{constr}(B)</span> back into <span
+class="math inline">\Phi</span> instantiated at <span
+class="math inline">T</span> — which is the same constraint modulo the
+equation <span class="math inline">x = T</span> that is itself in the
+denotation — and substitution through <span
+class="math inline">\Phi</span> rewrites constraints modulo the same
+equation. So for every rule it suffices to analyze the
+<em>consumption</em> of the triggering constraint.</p>
+<section id="a.1.1-dimension-rules-def.-4.2-all-semantic"
+class="level3">
+<h3>A.1.1 Dimension rules (Def. 4.2) — all semantic</h3>
+<ul>
+<li><strong>DE-refl, DI-top, DI-refl</strong>: the consumed constraint
+is valid (<span class="math inline">t = t</span>; <span
+class="math inline">d \sqsubseteq 1_\emptyset</span> by Def. 1.2;
+reflexivity); removing a valid constraint preserves <span
+class="math inline">\mathrm{Sol}</span>.</li>
+<li><strong>DE-clash, DI-ground (failing case)</strong>: the consumed
+constraint is unsatisfiable on its own (two distinct ground atoms are
+never equal; Def. 1.2 fails); <span
+class="math inline">\mathrm{Sol}(\widehat{C}) = \emptyset</span>.</li>
+<li><strong>DE-bind</strong>: replaces the constraint <span
+class="math inline">\alpha = t</span> by the binding; preservation is
+the substitution discipline above. The occurs concern is vacuous:
+dimension terms in the core fragment are atoms or variables.</li>
+<li><strong>DI-pin</strong> (<span class="math inline">\alpha
+\sqsubseteq d</span>, <span class="math inline">d</span> an atom): by
+Def. 1.2, <span class="math inline">e \sqsubseteq d</span> iff <span
+class="math inline">e = d</span>. So the constraint is
+<em>equivalent</em> to <span class="math inline">\alpha = d</span>: same
+solution set, and the replacement is an entailed equality.</li>
+<li><strong>DI-pin-top</strong> (<span class="math inline">1_\emptyset
+\sqsubseteq \alpha</span>): by Def. 1.2, <span
+class="math inline">1_\emptyset \sqsubseteq e</span> iff <span
+class="math inline">e = 1_\emptyset</span>. Same form as DI-pin.</li>
+<li><strong>DI-cap</strong>: recording moves the constraint into <span
+class="math inline">\mathrm{constr}(B)</span> — denotation unchanged.
+Discarding a duplicate removes a constraint implied by an identical one.
+The collapse (<span class="math inline">\mathrm{lb}(\alpha) = d&#39; \ne
+d</span>): the denotation contains <span class="math inline">d
+\sqsubseteq \alpha</span> and <span class="math inline">d&#39;
+\sqsubseteq \alpha</span> with <span class="math inline">d \ne
+d&#39;</span> atoms; by Prop. 1.3 the join of two distinct atoms is
+<span class="math inline">1_\emptyset</span>, and the only elements
+above both are upper bounds of the join, i.e. <span
+class="math inline">\{1_\emptyset\}</span>; so both constraints together
+are equivalent to <span class="math inline">\alpha = 1_\emptyset</span>,
+an entailed equality.</li>
+<li><strong>DI-adj</strong>: deferral into <span
+class="math inline">B</span> — denotation unchanged.</li>
+</ul>
+</section>
+<section id="a.1.2-row-equality-def.-4.3-cases-a-b-d" class="level3">
+<h3>A.1.2 Row equality (Def. 4.3, cases a, b, d)</h3>
+<p>Fix the constraint <span class="math inline">l_1 \cdot \langle \rho_1
+\rangle \cdot r_1 \approx l_2 \cdot \langle \rho_2 \rangle \cdot
+r_2</span> (degenerate row-variable-free sides allowed). Its ground
+meaning under Def. 3.4 is the word equation <span
+class="math inline">\gamma l_1 \cdot \mathrm{flat}(\gamma\rho_1) \cdot
+\gamma r_1 = \gamma l_2 \cdot \mathrm{flat}(\gamma\rho_2) \cdot \gamma
+r_2</span> in <span class="math inline">D^*</span> — flat,
+marker-blind.</p>
+<p><strong>(a) Both sides closed.</strong> The word equation between two
+ground-length words holds iff lengths (ranks) agree and the flat zip
+holds pointwise. The rule fails exactly on rank disagreement and
+otherwise emits exactly the zip: equivalent reformulation, semantic.
+(The former marked-equality clause “fail on marker mismatch” rejected
+<span class="math inline">\approx</span>-satisfiable instances; it is
+gone, and the implementation never had it — <code>unify_row</code>’s
+closed–closed path compares flat.)</p>
+<p><strong>(b) One side open, the other closed.</strong> Write the open
+side <span class="math inline">l \cdot \langle\rho\rangle \cdot
+r</span>, the closed content <span class="math inline">w =
+\mathrm{flat}(C)</span>. The word equation is <span
+class="math inline">\gamma l \cdot x \cdot \gamma r = w</span> with
+<span class="math inline">x = \mathrm{flat}(\gamma\rho)</span>. Since
+<span class="math inline">|\gamma l| = |l|</span> and <span
+class="math inline">|\gamma r| = |r|</span> are known, solutions exist
+iff <span class="math inline">|l| + |r| \le |w|</span> — the
+total-overflow complement — and then <span class="math inline">x</span>
+is <em>uniquely</em> the middle <span class="math inline">m</span> of
+<span class="math inline">w</span>, with <span
+class="math inline">\gamma l</span>, <span class="math inline">\gamma
+r</span> zipped against <span class="math inline">w</span>’s outer
+edges. So the rule’s failure condition and its emitted dimension
+equalities and entailed flat content are exact: semantic. The
+<em>binding</em> <span class="math inline">\rho \mapsto m_l \cdot
+\diamond \cdot m_r</span> additionally selects a placement among the
+<span class="math inline">|m| + 1</span> split positions, which the
+<span class="math inline">\approx</span>-semantics leaves free and Prop.
+2.10(ii) makes pairwise <span
+class="math inline">\sqsubseteq</span>-incomparable: the placement
+coordinate is the policy step, sound (the committed representative is a
+genuine choice of <span class="math inline">x = m</span>), and lossy
+exactly when a stored <em>marked</em> inequality discriminates the
+placement (Remark 2.11). <em>(The implementation’s asymmetric trailing
+guard — fail when <span class="math inline">|r| &gt; |r_C|</span>, the
+closed side’s structural trailing flank — is a conservative deviation:
+it rejects some instances with <span class="math inline">|l| + |r| \le
+|w|</span> that are <span
+class="math inline">\approx</span>-satisfiable. Being
+placement-sensitive on the closed side’s split, it is a policy-rejection
+site; pinned by the mirror-orientation case in
+<code>test/einsum/test_row_self_reference.ml</code>.)</em></p>
+<p><strong>(d) Same variable both sides.</strong> After cancelling the
+aligned overlaps the residue is <span class="math inline">x \cdot t = s
+\cdot x</span> with <span class="math inline">s, t</span> the surplus
+words and <span class="math inline">x =
+\mathrm{flat}(\gamma\rho)</span>. <em>Unequal surplus totals</em>:
+lengths give <span class="math inline">|x| + |t| \ne |s| + |x|</span>,
+no solution — the occurs failure is semantic. <em>Equal totals</em>
+(rotational): by Lyndon–Schützenberger, solutions are exactly <span
+class="math inline">x \in (uv)^* u</span> where <span
+class="math inline">s = uv</span>, <span class="math inline">t =
+vu</span> ranges over the conjugacy splittings; the deferral leaves the
+constraint in flight (denotation unchanged — semantic as a step), and
+the <em>eventual upward close</em> at the guessing stage commits <span
+class="math inline">x = [\,]</span>, which is a solution iff <span
+class="math inline">s = t</span>: a policy step, sound, and lossy
+exactly on the nontrivial conjugate instances. This is the explicitly
+accepted incompleteness of Def. 4.3(d).</p>
+</section>
+<section
+id="a.1.3-row-equality-case-c-both-open-distinct-variables-the-corrected-rule"
+class="level3">
+<h3>A.1.3 Row equality, case (c) — both open, distinct variables:
+<strong>the corrected rule</strong></h3>
+<p>Cancel the aligned overlaps (outer-edge zips — semantic, as in (b)).
+Two configurations remain.</p>
+<p><strong>(c-nested) Both surpluses on one side</strong> — say side 2’s
+term carries surplus flanks <span class="math inline">m_l</span>
+(leading) and <span class="math inline">m_r</span> (trailing) relative
+to side 1’s. The residue is <span class="math inline">x_1 = m_l^\gamma
+\cdot x_2 \cdot m_r^\gamma</span> — for <em>every</em> grounding, by
+cancelling the common outer flanks of the flat words. The content of the
+binding <span class="math inline">\rho_1 \mapsto m_l \cdot
+\langle\rho_2\rangle \cdot m_r</span> is therefore entailed: semantic,
+with the placement-inheritance policy coordinate exactly as in (b).</p>
+<p><strong>(c-split) Surpluses split across the sides</strong> — side 1
+in surplus on one flank, side 2 on the other. After cancellation the
+residue is the <strong>two-variable word equation</strong> <span
+class="math display">s \cdot x_1 = x_2 \cdot t, \qquad |s|, |t| &gt;
+0,</span> (<span class="math inline">s</span> side 1’s leading-flank
+surplus, <span class="math inline">t</span> side 2’s trailing-flank
+surplus, in the orientation of the pinning test; the mirror orientation
+is symmetric). Its solution set over <span
+class="math inline">D^*</span> is:</p>
+<ul>
+<li>the <strong>principal family</strong> <span class="math inline">x_2
+= s \cdot w,\ x_1 = w \cdot t</span> for arbitrary <span
+class="math inline">w \in D^*</span>; and</li>
+<li>the <strong>sporadic solutions</strong>: <span
+class="math inline">x_2</span> a <em>proper prefix</em> of <span
+class="math inline">s</span>, say <span class="math inline">s = x_2
+\cdot u</span> with <span class="math inline">u \ne \varepsilon</span>,
+and then <span class="math inline">u \cdot x_1 = t</span>, i.e. <span
+class="math inline">u</span> a prefix of <span
+class="math inline">t</span> and <span class="math inline">x_1</span>
+its complement — at most <span class="math inline">|s|</span> of them,
+one per proper-prefix split of <span class="math inline">s</span> that
+matches <span class="math inline">t</span>.</li>
+</ul>
+<p><em>(Proof of the dichotomy: compare <span
+class="math inline">|x_2|</span> with <span
+class="math inline">|s|</span>. If <span class="math inline">|x_2| \ge
+|s|</span>, then <span class="math inline">s</span> is a prefix of <span
+class="math inline">x_2</span>, giving the family; if <span
+class="math inline">|x_2| &lt; |s|</span>, then <span
+class="math inline">x_2</span> is a proper prefix of <span
+class="math inline">s</span> and the rest is forced. The two cases are
+exhaustive and the parameters are free exactly as stated.)</em></p>
+<p>A fresh-variable binding <span class="math inline">\rho_2 \mapsto
+s\cdot\langle\rho&#39;\rangle</span>, <span class="math inline">\rho_1
+\mapsto \langle\rho&#39;\rangle\cdot t</span> — the rule as previously
+written in the core — captures exactly the principal family. Under the
+former <em>marked</em> equality semantics this was exact: the marked
+reading equates the flank words on each side of the markers separately,
+which forces <span class="math inline">x_2</span> to absorb <span
+class="math inline">s</span> and excludes the sporadic solutions. Under
+the adopted <span class="math inline">\approx</span>-semantics the
+sporadic solutions are genuine, and the binding would foreclose them — a
+<em>rank</em> commitment (<span
+class="math inline">\mathrm{rank}(\gamma\rho_2) \ge |s|</span>),
+strictly stronger than a placement choice.</p>
+<p><strong>The implementation does not bind here.</strong>
+<code>unify_row</code>’s cross-surplus branch
+(<code>beg_handled = false</code>, <code>row.ml</code> ~2242) re-emits
+the residual equation and commits nothing: <strong>deferral into
+closing</strong>, with the same profile as the rotational case (d): if
+either variable is solved by other constraints, the substituted check
+(case (b), exact) decides; otherwise the guessing stage closes one
+variable upward — the least-material disjunct, which for <span
+class="math inline">x_2 = [\,]</span> is precisely the <em>outermost
+sporadic</em> solution — and the re-emitted equation decides the rest.
+Pinned by <code>test/einsum/test_row_self_reference.ml</code>: the store
+<span class="math inline">\{[5]\cdot\langle\rho_1\rangle \approx
+\langle\rho_2\rangle\cdot[5,3],\ \langle\rho_2\rangle \approx
+[\,]\}</span>, satisfiable only sporadically (<span
+class="math inline">\gamma\rho_1 = [3]</span>, <span
+class="math inline">\gamma\rho_2 = [\,]</span>), succeeds in both
+constraint orders.</p>
+<p><strong>The corrected rule (c-split), now official in the
+core:</strong> defer; on substitution, re-check exactly; at closing, the
+upward close of either variable selects the corresponding extremal
+solution and the re-emitted equation validates it. The policy coordinate
+is <em>which</em> solution of the two-variable equation the closing
+selects (a finite choice — the <span class="math inline">\le |s|</span>
+sporadic splits — plus the family parameter <span
+class="math inline">w</span>, itself pinned by whatever closes <span
+class="math inline">\rho&#39;</span>-content later); the deferral step
+itself is semantic.</p>
+<p><em>Soundness and the policy classification, assembled:</em> every
+rule above either (i) replaces a constraint by an equivalent set —
+semantic, <span class="math inline">\mathrm{Sol}</span> preserved
+exactly; (ii) moves constraints between <span
+class="math inline">\Phi</span> and <span
+class="math inline">B</span>/<span class="math inline">\sigma</span> —
+denotation-preserving; or (iii) commits a representative beyond
+entailment — the placement coordinate of (b)/(c-nested) bindings, and
+the closing-stage resolution of the deferred equations of (d) and
+(c-split). Steps of kind (iii) are sound (the committed value satisfies
+the consumed constraint, so any solution of the new denotation satisfies
+the old), and their failures are policy rejections. <span
+class="math inline">\square</span></p>
+</section>
+<section id="a.1.4-row-inequality-def.-4.3-cases-iiv-all-semantic"
+class="level3">
+<h3>A.1.4 Row inequality (Def. 4.3, cases i–iv) — all semantic</h3>
+<p>The ground meaning of <span class="math inline">R_{\mathrm{res}}
+\sqsubseteq R_{\mathrm{op}}</span> is Def. 2.3: flanks-fit plus
+pointwise refinement of the expansion, anchored at the outer edges.</p>
+<ul>
+<li><strong>Aligned-overlap dimension emissions</strong>: positions
+covered by both sides’ explicit flanks compare pointwise in any
+grounding (Def. 2.3(ii) at those positions, which by Lemma 2.4 depend on
+the grounding only through the compared dimensions): equivalent
+reformulation.</li>
+<li><strong>(i) operand open, result covers the flanks</strong>: the
+remaining conditions say exactly that <span
+class="math inline">\gamma\rho_{\mathrm{op}}</span>, expanded into the
+gap, is pointwise above the result’s interior residue — i.e. residue
+<span class="math inline">\sqsubseteq \gamma\rho_{\mathrm{op}}</span> in
+the row order (Lemma 2.4 again: the conditions factor through the
+order). Recording the residue as a cap moves this into <span
+class="math inline">\mathrm{constr}(B)</span>:
+denotation-preserving.</li>
+<li><strong>(ii) operand closed, result rank within bounds</strong>: the
+operand’s interior expansion positions are <span
+class="math inline">1_\emptyset</span>; conditions of the form <span
+class="math inline">\_ \sqsubseteq 1_\emptyset</span> are valid and
+discarded.</li>
+<li><strong>(iii) result closed and shorter than the operand’s known
+flanks</strong>: flanks-fit requires <span
+class="math inline">\mathrm{rank}(\gamma R_{\mathrm{res}}) \ge
+|l_{\mathrm{op}}| + |r_{\mathrm{op}}|</span>; the left side is fixed,
+the right side can only grow under substitution (explicit flanks extend
+inward only): unsatisfiable, semantic failure.</li>
+<li><strong>(iv) deficit rule</strong>: for every solution <span
+class="math inline">\gamma</span>, flanks-fit forces <span
+class="math inline">\mathrm{rank}(\gamma\rho_{\mathrm{res}}) \ge
+k</span>, and <span class="math inline">\gamma\rho_{\mathrm{res}}</span>
+decomposes uniquely (marker-sensitively — the marker of <span
+class="math inline">\gamma\rho_{\mathrm{res}}</span> falls in the middle
+segment, since the template splices the fresh row variable at the
+marker) into <span class="math inline">k_l</span> leading dimensions, a
+middle, and <span class="math inline">k_r</span> trailing dimensions
+matching the template; instantiate the fresh variables by that
+decomposition. Conversely any solution of the grown configuration
+restricts. Exact, up to extension on fresh variables. The guarded
+failure (Def. 4.5) is semantic by Prop. 4.6’s soundness direction: a
+positive cycle witnesses rank-unsatisfiability of entailed facts.</li>
+</ul>
+<p>This completes Lemma 5.1. The policy steps are:
+<strong>placements</strong> at (b)/(c-nested) bindings, and
+<strong>deferred-equation resolutions</strong> at closing for (d) and
+(c-split). <span class="math inline">\square</span></p>
+<hr />
+</section>
+</section>
+<section id="a.2-lemma-5.2.2-rank-conservativity-rule-by-rule"
+class="level2">
+<h2>A.2 Lemma 5.2.2 (Rank conservativity) — rule by rule</h2>
+<p><strong>Statement.</strong> Every non-<span
+class="math inline">\mathsf{fail}</span> rule maps a configuration whose
+denotation has a rank model (Def. 5.2.1) to one with a rank model
+agreeing on the old row variables, extended on fresh ones.</p>
+<p><em>Proof.</em> Let <span class="math inline">r</span> be a rank
+model of <span
+class="math inline">\lfloor\widehat{C}_{\mathrm{old}}\rfloor</span>.</p>
+<ul>
+<li><strong>Dimension rules</strong> (all of Def. 4.2): no row
+constraint is created, consumed, or rewritten at row positions; <span
+class="math inline">\lfloor\widehat{C}\rfloor</span> at row sort is
+unchanged (dimension substitution alters flank <em>content</em>, never
+flank <em>length</em>). Take <span class="math inline">r</span>
+unchanged.</li>
+<li><strong>Row equality (a)</strong>: consumes a constraint
+contributing only variable-free rank facts (both ranks fixed; the
+non-fail case has them equal); emits dimension constraints only. <span
+class="math inline">r</span> unchanged.</li>
+<li><strong>Row equality (b)</strong>: the consumed constraint
+contributes <span class="math inline">\mathrm{rank}(\rho) = |w| - |l| -
+|r| = |m|</span> (both directions of the equality). The binding
+contributes, via <span class="math inline">\mathrm{eqns}(\sigma)</span>,
+exactly <span class="math inline">\mathrm{rank}(\rho) = |m|</span>;
+substituting <span class="math inline">\rho</span>’s ground value
+through other constraints shifts their facts by constants in a way that
+preserves <span class="math inline">r</span>’s satisfaction (each
+occurrence <span class="math inline">l&#39;\cdot\langle\rho\rangle\cdot
+r&#39;</span> becomes a term whose explicit flank length grew by exactly
+<span class="math inline">|m|</span> — wait, by <span
+class="math inline">|m_l| + |m_r| = |m| = r(\rho)</span> — so every fact
+in which <span class="math inline">\rho</span>’s host term participated
+keeps the same numeric content under <span
+class="math inline">r</span>). <span class="math inline">r</span>
+unchanged.</li>
+<li><strong>Row equality (c-nested)</strong>: the consumed constraint
+contributes <span class="math inline">\mathrm{rank}(\rho_1) =
+\mathrm{rank}(\rho_2) + |m_l| + |m_r|</span>; the binding contributes
+the same fact; substitution as in (b). <span
+class="math inline">r</span> unchanged. (No fresh variables in the
+corrected rule.)</li>
+<li><strong>Row equality (c-split) and (d, rotational)</strong>:
+deferral — the constraint stays in <span
+class="math inline">\Phi</span>; denotation unchanged; <span
+class="math inline">r</span> unchanged. (Their <em>closing-stage</em>
+resolutions are policy commitments; conservativity for the closing
+pipeline is addressed in A.5, where the committed ground values either
+satisfy <span class="math inline">r</span>’s constraints or fail
+finitely.)</li>
+<li><strong>Row inequality (i)</strong>: moves pointwise conditions into
+a cap; the cap’s rank fact (residue rank bounds <span
+class="math inline">\mathrm{rank}(\rho_{\mathrm{op}})</span> from below…
+in the order’s direction: <span
+class="math inline">\mathrm{rank}(\gamma\rho_{\mathrm{op}}) \le
+\mathrm{rank}(\mathrm{residue})</span>, an upper fact when the residue
+is closed, a difference fact when open) is the same fact the consumed
+constraint contributed. <span class="math inline">r</span>
+unchanged.</li>
+<li><strong>Row inequality (ii)/(iii)</strong>: variable-free or
+failing; non-fail cases discard valid conditions. <span
+class="math inline">r</span> unchanged.</li>
+<li><strong>Row inequality (iv), deficit</strong>: the consumed
+constraint’s fact gives <span class="math inline">r(\rho_{\mathrm{res}})
+\ge k</span> (flanks-fit against the operand’s known flanks). Extend
+<span class="math inline">r</span> to the fresh row variable by <span
+class="math inline">r(\rho&#39;) := r(\rho_{\mathrm{res}}) - k \ge
+0</span>; the binding’s fact (<span
+class="math inline">\mathrm{rank}(\rho_{\mathrm{res}}) =
+\mathrm{rank}(\rho&#39;) + k</span>) holds by construction, and
+substitution preserves numeric content as in (b). Fresh dimension
+variables carry no rank facts.</li>
+<li><strong>Re-emission on binding</strong>: each re-emitted bound was
+in <span class="math inline">\mathrm{constr}(B)</span>, hence its fact
+was in <span
+class="math inline">\lfloor\widehat{C}_{\mathrm{old}}\rfloor</span> and
+<span class="math inline">r</span> satisfies it; instantiation at the
+bound value preserves numeric content as in (b).</li>
+</ul>
+<p>In every case the new configuration’s rank abstraction is satisfied
+by <span class="math inline">r</span> (extended). <span
+class="math inline">\square</span></p>
+<p><em>Remark.</em> The previously drafted (c-split) fresh-variable
+binding would <strong>break</strong> this lemma: its facts include <span
+class="math inline">\mathrm{rank}(\rho_2) \ge |s|</span>, not implied by
+the consumed constraint’s single difference fact, so a rank model with
+<span class="math inline">r(\rho_2) &lt; |s|</span> — which exists
+precisely when the sporadic solutions are the live ones — could not be
+extended. This is the metatheoretic fingerprint of the same
+incompleteness that A.1.3 identifies semantically, and an independent
+reason the deferral is the right rule.</p>
+<hr />
+</section>
+<section id="a.3-theorem-5.2a-the-lineage-bookkeeping-bound"
+class="level2">
+<h2>A.3 Theorem 5.2(a) — the lineage bookkeeping bound</h2>
+<p><strong>Claim (the bracketed gap).</strong> The number of
+row-inequality lineages ever live in a run is bounded by a function of
+<span class="math inline">|\Phi_0|</span>, where a <em>lineage</em> is
+the identity of a row-inequality constraint tracked through residue
+formation, storage as a cap, re-emission, and substitution.</p>
+<p><em>Proof.</em> Define the lineage of a row inequality as follows:
+each row inequality in <span class="math inline">\Phi_0</span> starts
+one; the residue cap recorded by rule (i) <em>continues</em> the lineage
+of the consumed constraint, as does its re-emission upon the host
+variable’s binding, as does the reprocessed constraint after a deficit
+step or any substitution. New row inequalities are <em>created</em> (not
+continued) at exactly two points: (1) re-emission of a stored adjacency
+— but an adjacency re-emission re-expresses the <em>same</em> stored
+inequality, continuing its lineage; (2) closing commitments re-emitting
+stored constraints — again continuations. Inspecting Defs. 4.2–4.3:
+<strong>no rule emits a row inequality that does not continue the
+lineage of its consumed constraint</strong> — dimension rules emit
+dimension constraints; equality rules emit dimension equalities and
+(deferred) row <em>equalities</em>; the deficit rule reprocesses the
+same constraint; rule (i) stores its own residue. Row
+<em>equalities</em> similarly: no rule creates a row equality except as
+a continuation ((c-split)/(d) deferrals re-emit the consumed equation;
+case (b)/(c-nested) consume theirs into bindings) — so row-equality
+lineages are also <span class="math inline">\le</span> their count in
+<span class="math inline">\Phi_0</span> plus the closing pipeline’s
+per-variable commitments (one per variable, each variable closed at most
+once).</p>
+<p>It remains to bound storage/re-emission multiplicity per lineage: a
+cap is stored on one variable and re-emitted when that variable binds —
+at most once, since a variable binds at most once and is then
+substituted out (the re-emitted continuation may be stored again, on a
+<em>different, currently unsolved</em> variable; each
+storage–re-emission round strictly advances the host along the
+substitution order, and hosts are drawn from the variables ever minted).
+This does not yet bound rounds by <span
+class="math inline">|\Phi_0|</span> — hosts can be fresh mints — but it
+does not need to: the potential argument of Thm. 5.2(a) charges each
+<em>deficit step</em> of a lineage against the strict decrease of <span
+class="math inline">\psi(c) = \hat r(\text{current result
+variable})</span>, and <span class="math inline">\psi</span> never
+increases along any continuation (deficit decreases it by <span
+class="math inline">\ge 1</span>; equality splices keep <span
+class="math inline">\hat r</span> equal or smaller; storage and
+re-emission do not change the result term). So per lineage the deficit
+steps are <span class="math inline">\le \psi_0(c)</span>, and the
+lineage <em>count</em> (bounded above by <span
+class="math inline">|\Phi_0|</span> + one per closing commitment, itself
+bounded by the variable count at closing time) bounds total deficit
+steps. With deficits finite, mints are finite; with mints finite,
+bindings are finite; between bindings the lexicographic measure (row
+constraints, dimension constraints) strictly decreases as in the core’s
+proof. <span class="math inline">\square</span></p>
+<p><em>(What made this routine is the observation that lineages are
+never <strong>forked</strong>: every rule emits at most one row-sort
+descendant of its consumed row-sort constraint. If a future rule forks —
+e.g. a backtracking branch materializing several sporadic solutions of
+A.1.3 — the bound becomes per-branch.)</em></p>
+<hr />
+</section>
+<section
+id="a.4-confluence-across-fair-strategies-discharged-by-decision"
+class="level2">
+<h2>A.4 Confluence across fair strategies — discharged by decision</h2>
+<p>The core’s Thm. 5.6 caveat offered two routes: a Newman-style
+local-confluence argument, or fixing one strategy. <strong>The paper
+fixes the strategy</strong>: the implementation’s — a per-round queue
+fixpoint over the constraint list with per-round accumulation reversal,
+wrapped in the staged pipeline of §10 (Stage 1 online unify/propagate;
+commitments confined to on-demand stages 2–7). With the strategy fixed,
+Thm. 5.6’s uniqueness-up-to-renaming needs no cross-strategy argument,
+and the policy commitments (placements, deferred-equation resolutions,
+closing) are <em>deterministic functions of the input constraint
+order</em> — which is the precise content of Remark 2.15(v)’s
+“principality up to <span class="math inline">\approx</span>, placement
+as order-sensitive policy.”</p>
+<p>Cross-strategy confluence (up to <span
+class="math inline">\approx</span> and modulo policy) remains
+true-by-expectation and <strong>[open]</strong>; nothing in the paper
+depends on it. The semantic-step core is confluent for satisfiability
+outright by Lemma 5.1 (each semantic step preserves <span
+class="math inline">\mathrm{Sol}</span> exactly, so any two runs
+preserve the same invariant); what varies across strategies is only
+which policy representative is reached — Remark 6.7(iii) in the
+core.</p>
+<hr />
+</section>
+<section
+id="a.5-proposition-6.2-the-re-solve-termination-case-split-strengthened"
+class="level2">
+<h2>A.5 Proposition 6.2 — the re-solve termination case split,
+strengthened</h2>
+<p><strong>Claim.</strong> Every re-solve launched by a closing
+commitment terminates; consequently the closing interleave terminates,
+and on rank-breaking commitments it terminates in <span
+class="math inline">\mathsf{fail}</span> finitely.</p>
+<p><em>Proof.</em> A closing commitment binds one variable to a
+<em>ground</em> value. Partition the post-commitment denotation’s rank
+abstraction into the <strong>variable–variable fragment</strong>
+(difference facts between still-open row variables) and the
+<strong>absolute fragment</strong> (facts with at least one ground
+side).</p>
+<ol type="1">
+<li><p><em>The variable–variable fragment retains a rank model.</em>
+Ground commitments add no variable-to-variable facts: substituting a
+ground value into a stored constraint leaves at most one variable in it,
+and re-emitted bounds are single-variable or ground. The pre-closing
+solved form’s denotation had a rank model (Prop. 5.4’s <span
+class="math inline">\gamma_\uparrow</span> induces one), and the var–var
+fragment is a subset of facts entailed then, extended only
+conservatively by subsequent semantic steps (Lemma A.2).</p></li>
+<li><p><em>Deficit steps in the re-solve are bounded.</em> The potential
+argument of Thm. 5.2(a) needs <span class="math inline">\hat r</span>
+only on <strong>open-result lineages</strong> (<span
+class="math inline">\psi = 0</span> on closed results by definition).
+Open-result lineages’ facts live in the var–var fragment plus absolute
+lower bounds from ground operands; a model of the var–var fragment
+extends to the open-result potentials (absolute <em>upper</em> facts may
+be violated — but <span class="math inline">\psi</span> does not consult
+them; their violation surfaces as finite failures, not growth). So <span
+class="math inline">\psi</span> is well-defined and the deficit count is
+bounded as in A.3.</p></li>
+<li><p><em>Everything else is finite.</em> With deficits bounded, mints
+and bindings are finite; between bindings the lexicographic measure
+decreases; ground-sided constraints are each processed in boundedly many
+steps (cases (a)/(b)/(ii)/(iii) and the dimension rules consume or fail;
+the one-shot closed-operand deficit grows a bounded amount
+once).</p></li>
+</ol>
+<p>So the re-solve terminates unconditionally. If the commitment broke
+rank-satisfiability (necessarily through the absolute fragment, by (1)),
+the run cannot reach solved form — a solved form would yield, via <span
+class="math inline">\gamma_\uparrow</span>, a solution and hence a rank
+model of the whole — so it fails, in the finite time just established.
+Soundness of the interleave is the core’s existing argument. <span
+class="math inline">\square</span></p>
+<p><em>(This strengthens the core’s Prop. 6.2: termination of the
+re-solves is <strong>not</strong> conditional on the committed system
+retaining a rank model — only success is. The Detection Lemma is not
+needed here because closing commitments are ground: the unbounded-growth
+mechanism of Example 4.5a requires variable–variable feeding, which
+ground commitments cannot create.)</em></p>
+<hr />
+</section>
+<section
+id="a.6-proposition-6.4iii-sqsubseteq1-greatestness-written-out"
+class="level2">
+<h2>A.6 Proposition 6.4(iii) — <span
+class="math inline">\sqsubseteq^1</span>-greatestness, written out</h2>
+<p><strong>Statement (with the precise qualification).</strong> Let a
+run succeed with solved form <span class="math inline">\langle\emptyset;
+\sigma_\star; B_\star\rangle</span> and let <span
+class="math inline">\gamma_\uparrow</span> be Prop. 5.4’s solution. Let
+<span class="math inline">\Phi_0^{\mathrm{rk}}</span> be <span
+class="math inline">\Phi_0</span> plus the run’s <em>deferred-equation
+resolutions</em> (the (c-split)/(d) closing commitments of A.1.3 —
+rank-level policy). Then for every <span class="math inline">\gamma \in
+\mathrm{Sol}(\Phi_0^{\mathrm{rk}})</span> and every <span
+class="math inline">x \in V</span>: <span class="math display">\gamma(x)
+\sqsubseteq^{1} \gamma_\uparrow(x) \text{ at row sort}, \qquad \gamma(x)
+\sqsubseteq \gamma_\uparrow(x) \text{ at dimension sort.}</span>
+Placement commitments need no exclusion — <span
+class="math inline">\sqsubseteq^1</span> is marker-blind on its lower
+side, which is exactly why the one-shot order is the right comparison.
+Rank commitments do: a solution realizing a foreclosed
+sporadic/conjugate branch can have <em>smaller rank</em> than <span
+class="math inline">\gamma_\uparrow</span>’s committed value at a
+variable (the pinning test’s <span class="math inline">\gamma\rho_1 =
+[3]</span> against a family value <span
+class="math inline">w\cdot[5,3]</span>), and no marker-blind order
+repairs a rank gap. On deferral-free runs <span
+class="math inline">\Phi_0^{\mathrm{rk}} = \Phi_0</span> and the
+statement is unconditional.</p>
+<p><em>Proof.</em> <strong>Dimension sort.</strong> If <span
+class="math inline">x</span> is unsolved in <span
+class="math inline">\sigma_\star</span>: <span
+class="math inline">\gamma_\uparrow(x) = 1_\emptyset</span>, the top. If
+solved, <span class="math inline">\sigma_\star(x)</span> is (by
+idempotence) a ground atom or an unsolved variable: in the first case
+the binding content is entailed (Lemma 5.1’s semantic component —
+dimension bindings have no policy coordinate), so <span
+class="math inline">\gamma(x)</span> equals it, <span
+class="math inline">= \gamma_\uparrow(x)</span>; in the second, <span
+class="math inline">\gamma_\uparrow(x) = 1_\emptyset</span> again.</p>
+<p><strong>Row sort.</strong> Let <span class="math inline">x</span> be
+a row variable. If unsolved: <span
+class="math inline">\gamma_\uparrow(x) =
+[\,]\cdot\diamond\cdot[\,]</span>, and for any ground row <span
+class="math inline">X</span>, <span
+class="math inline">\mathrm{flat}(X)^\bullet \sqsubseteq
+[\,]\cdot\diamond\cdot[\,]</span> — flanks fit vacuously (the marked
+side has none) and every position of the expansion is <span
+class="math inline">1_\emptyset</span>. If solved with <span
+class="math inline">T = \sigma_\star(x)</span>: the <em>flat
+content</em> of the binding is entailed for solutions of <span
+class="math inline">\Phi_0^{\mathrm{rk}}</span> — for (b)/(c-nested)
+bindings by Lemma 5.1’s semantic component; for values that passed
+through deferred-equation commitments, by membership in <span
+class="math inline">\Phi_0^{\mathrm{rk}}</span> — so <span
+class="math inline">\mathrm{flat}(\gamma(x)) =
+\mathrm{flat}(\hat\gamma(T))</span> for an extension <span
+class="math inline">\hat\gamma</span> of <span
+class="math inline">\gamma</span> over the fresh variables (choosing the
+extension Lemma 5.1 provides). It remains to show <span
+class="math inline">\mathrm{flat}(\hat\gamma(T))^\bullet \sqsubseteq
+\gamma_\uparrow(T)</span>, by induction on <span
+class="math inline">T</span>:</p>
+<ul>
+<li><span class="math inline">T</span> closed, <span
+class="math inline">T = e_1 \cdots e_n</span> at flat positions (each
+<span class="math inline">e_i</span> a ground atom, <span
+class="math inline">1_\emptyset</span>, or a dimension variable): <span
+class="math inline">\gamma_\uparrow(T)</span> has the same rank with
+positions <span class="math inline">\gamma_\uparrow(e_i)</span>; flanks
+fit (equal ranks, rigid lower side), and pointwise <span
+class="math inline">\hat\gamma(e_i) \sqsubseteq
+\gamma_\uparrow(e_i)</span> by the dimension-sort case.</li>
+<li><span class="math inline">T = l\cdot\langle\rho&#39;\rangle\cdot
+r</span> open: <span class="math inline">\gamma_\uparrow(T) =
+\gamma_\uparrow(l)\cdot\diamond\cdot\gamma_\uparrow(r)</span> (the
+middle empty, <span class="math inline">\gamma_\uparrow\rho&#39; =
+[\,]\cdot\diamond\cdot[\,]</span>; if <span
+class="math inline">\rho&#39;</span> is itself solved, recurse through
+<span class="math inline">\sigma_\star</span>’s idempotent closure
+first). <span class="math inline">\mathrm{flat}(\hat\gamma(T)) =
+\hat\gamma(l)\cdot\mathrm{flat}(\hat\gamma\rho&#39;)\cdot\hat\gamma(r)</span>
+has rank <span class="math inline">\ge |l| + |r|</span>: flanks fit.
+Pointwise against the expansion <span
+class="math inline">\gamma_\uparrow(l)\cdot
+1_\emptyset^{\,k}\cdot\gamma_\uparrow(r)</span>: flank positions by the
+dimension-sort case; middle positions sit under <span
+class="math inline">1_\emptyset</span>. <span
+class="math inline">\square</span></li>
+</ul>
+<hr />
+</section>
+<section id="a.7-remark-6.7i-order-robustness-of-closing-written-out"
+class="level2">
+<h2>A.7 Remark 6.7(i) — order-robustness of closing, written out</h2>
+<p><strong>Statement.</strong> At dimension sort, with cap stores
+transitively closed at commitment time (the fixpoint-before-commit
+discipline: every ground bound has been forwarded across the
+variable–variable adjacency to fixpoint) and no holes among the
+committed variables’ caps, the leaf-downward closing of Def. 6.1 never
+fails on a store whose pre-closing denotation is satisfiable — in any
+commitment order consistent with the discipline.</p>
+<p><em>Proof.</em> By the discipline, for each leaf <span
+class="math inline">v</span> the cap set <span
+class="math inline">\mathrm{caps}(v)</span> at commitment time contains
+every ground bound reachable into <span class="math inline">v</span>: in
+particular, <span class="math inline">u \sqsubseteq v</span> in the
+adjacency implies <span class="math inline">\mathrm{caps}(u) \subseteq
+\mathrm{caps}(v)</span> (each ground bound arriving at <span
+class="math inline">u</span> was forwarded), and a <em>later</em>
+commitment of <span class="math inline">u</span> adds nothing new to
+<span class="math inline">v</span>’s caps, because <span
+class="math inline">u</span>’s committed value is <span
+class="math inline">J_u := \bigvee \mathrm{caps}(u)</span>, and the fact
+<span class="math inline">J_u \sqsubseteq v</span> is implied by <span
+class="math inline">\mathrm{caps}(u) \subseteq \mathrm{caps}(v)</span>
+(<span class="math inline">J_u \sqsubseteq J_v \sqsubseteq
+\gamma(v)</span> for any candidate). So the commitments are
+order-independent in value: each leaf gets <span
+class="math inline">J_v</span>, regardless of sequence — closing under
+the discipline <em>is</em> the simultaneous assignment <span
+class="math inline">\gamma_J(v) = J_v</span> on leaves.</p>
+<p>It remains to show <span class="math inline">\gamma_J</span> extends
+to a solution when one exists, i.e. no re-check fails. Let <span
+class="math inline">\gamma</span> be a solution of the pre-closing
+denotation. Constraint forms at dimension sort after solving (Def. 5.3):
+ground caps <span class="math inline">c \sqsubseteq v</span> —
+satisfied, <span class="math inline">c \sqsubseteq J_v</span> by the
+join; adjacencies <span class="math inline">u \sqsubseteq v</span> —
+satisfied, <span class="math inline">J_u \sqsubseteq J_v</span> by
+monotonicity of join under <span class="math inline">\mathrm{caps}(u)
+\subseteq \mathrm{caps}(v)</span>; pins of either direction do not
+survive into solved form (Def. 5.3: no pending pins — DI-pin and
+DI-pin-top fire during solving). Mixed leaf–interior adjacencies: a
+leaf-commitment re-emission against an interior variable is a ground cap
+or a ground pin on the interior, handled by the (semantic) solving rules
+before step 3; step 3’s upward closes then discharge against tops as in
+Prop. 6.2. Holes are excluded by hypothesis; with holes the commitment
+is a guess and Prop. 6.5’s caveat applies instead. <span
+class="math inline">\square</span></p>
+<p><em>(Row sort: the same argument gives the flat content — cap-set
+inclusion and join monotonicity hold per Prop. 2.7 on ground parts — but
+the row join must additionally choose a placement and an extent beyond
+the caps (no-further-axes), both policy coordinates; route them to
+Remark 6.7(ii)(a). The implementation’s discipline is architectural —
+Stage 1 only propagates; commitments are confined to stages 2–7 — per
+<code>docs/shape_inference.md</code> and the §10 audit.)</em></p>
+<hr />
+</section>
+<section id="a.8-remark-2.15iv-the-inference-policy-vs-checking-theorem"
+class="level2">
+<h2>A.8 Remark 2.15(iv) — the inference-policy-vs-checking theorem</h2>
+<p><strong>Theorem.</strong> Let <span
+class="math inline">\Phi_{\mathrm{eq}}</span> be a constraint set whose
+einsum-derived members are the equivalence constraints <span
+class="math inline">\{T_i \approx R_i\}</span> (tensor row <span
+class="math inline">T_i</span> against grounded-template row <span
+class="math inline">R_i</span>, per Remark 2.15), and let <span
+class="math inline">\Phi_{\sqsubseteq}</span> be the same set with each
+einsum equivalence replaced by its checking sandwich — <span
+class="math inline">\mathrm{res} \sqsubseteq^1 T_{\mathrm{res}}</span>
+and <span class="math inline">T_{\mathrm{opnd}} \sqsubseteq^1
+\mathrm{opnd}</span> in the core’s formulation, i.e. the one-shot
+inequalities with the template in the middle. Then:</p>
+<ol type="1">
+<li><em>(Per-constraint strengthening)</em> <span class="math inline">X
+\approx Y</span> implies <span class="math inline">X \sqsubseteq^1
+Y</span> and <span class="math inline">Y \sqsubseteq^1 X</span>.
+<em>Proof:</em> <span class="math inline">\approx</span> is mutual <span
+class="math inline">\sqsubseteq^1</span> — proved inline at the core’s
+Remark 2.15(ii); the forward direction alone is Prop. 2.13’s
+rigid-below-marked at equal rank with equal content. <span
+class="math inline">\square</span></li>
+<li><em>(System-level)</em> <span
+class="math inline">\mathrm{Sol}(\Phi_{\mathrm{eq}}) \subseteq
+\mathrm{Sol}(\Phi_{\sqsubseteq})</span>. <em>Proof:</em> pointwise by
+(1) — each replaced constraint is weakened, the rest are shared. <span
+class="math inline">\square</span></li>
+<li><em>(Solver outputs are checking-correct)</em> If the staged solve
+of <span class="math inline">\Phi_{\mathrm{eq}}</span> succeeds, its
+committed total grounding <span
+class="math inline">\gamma_{\mathrm{close}}</span> satisfies <span
+class="math inline">\Phi_{\sqsubseteq}</span>. <em>Proof:</em> <span
+class="math inline">\gamma_{\mathrm{close}} \in
+\mathrm{Sol}(\Phi_{\mathrm{eq}})</span> by Prop. 6.2 (soundness of
+closing over Lemma 5.1), then (2). <span
+class="math inline">\square</span></li>
+<li><em>(The strengthening is proper, and is the inference policy)</em>
+In general <span class="math inline">\mathrm{Sol}(\Phi_{\mathrm{eq}})
+\subsetneq \mathrm{Sol}(\Phi_{\sqsubseteq})</span>: the sandwich leaves
+the result row free below the template (<span
+class="math inline">\mathrm{res}</span> may be more material —
+rank-broader — than <span class="math inline">T_{\mathrm{res}}</span>
+requires) and operands free above; the equivalence pins ranks and
+transports dimension content bidirectionally. This is a commitment of
+the same nature as Def. 6.1’s closing — selected for inference value
+(rank pinning is what determines hidden and parameter dimensions),
+justified against the checking semantics by (3): nothing the inference
+system accepts violates the sandwich. <span
+class="math inline">\square</span></li>
+</ol>
+<p><em>(What this does not claim: completeness relative to checking — a
+program could satisfy <span
+class="math inline">\Phi_{\sqsubseteq}</span> under some grounding yet
+be rejected under <span class="math inline">\Phi_{\mathrm{eq}}</span>.
+That is the intended behavior — einsum equivalences are the stricter,
+inference-friendly reading — and the residual obligation about
+<strong>which</strong> programs separate the two readings belongs with
+the surface-language work of A.10.)</em></p>
+<hr />
+</section>
+<section
+id="a.9-the-detection-lemma-structured-reduction-the-residual-open-gap"
+class="level2">
+<h2>A.9 The Detection Lemma — structured reduction (the residual open
+gap)</h2>
+<p><strong>Statement (to prove).</strong> Every infinite run inserts, at
+some finite stage, an edge closing a positive-weight cycle in the
+persistent rank graph <span class="math inline">G</span> of Def.
+4.5.</p>
+<p><strong>D1 (Infinite runs have infinitely many open–open deficit
+steps). [proved]</strong> An infinite run has infinitely many binding
+events (between bindings the lexicographic measure of Thm. 5.2(a)’s
+proof strictly decreases through finitely many constraint-consumptions).
+Each variable binds at most once, so infinitely many variables are
+minted. Mints occur only at the deficit rule (row equalities are
+finitely many forever, by A.3’s no-forking accounting, and
+(b)/(c-nested) mint nothing — the corrected (c-split) and (d) defer).
+Deficit steps against <em>closed</em> operands are bounded: each grows
+its lineage’s result by a fixed amount toward a fixed rank, once (Def.
+4.5(iii)’s one-shot remark), and lineages are finitely many (A.3). Hence
+infinitely many deficit steps fire with <em>open</em> operands — each
+recording a kind-(iii) positive edge and minting along its lineage’s
+kind-(i) chain. <span class="math inline">\square</span></p>
+<p><strong>D2 (Deficit accounting along the feeding relation).
+[sketch]</strong> For lineages <span class="math inline">A</span>
+(result side) and <span class="math inline">B</span> (operand side at
+the moment of firing), say <span class="math inline">A \leftarrow
+B</span> (“<span class="math inline">A</span> fed by <span
+class="math inline">B</span>”). A deficit on <span
+class="math inline">A</span> fires only when <span
+class="math inline">A</span>’s operand flank is longer than <span
+class="math inline">A</span>’s current result flanks; the operand flank
+grows only by (a) its <span class="math inline">\Phi_0</span>-initial
+surplus, or (b) substitution of a binding made on <span
+class="math inline">B</span>’s chain — each unit of <span
+class="math inline">B</span>’s growth lengthens the operand side of any
+lineage reading <span class="math inline">B</span> by at most that unit
+(substitution preserves flank totals elsewhere; only the bound
+variable’s expansion inserts material). Hence, as running totals: <span
+class="math inline">\mathrm{deficit}(A) \le S_0(A) + \sum_{B : A
+\leftarrow B} \mathrm{growth}(B)</span>, and <span
+class="math inline">\mathrm{growth}(B) = \mathrm{deficit}(B)</span>.
+Since lineages are finite in number and <span
+class="math inline">S_0</span> is finite, unbounded total deficit forces
+a cycle <span class="math inline">A_1 \leftarrow A_2 \leftarrow \cdots
+\leftarrow A_n \leftarrow A_1</span> in the (time-dependent) feeding
+relation around which deficit circulates unboundedly. <strong>[The
+time-dependence is the unfinished part: feeding edges appear and move as
+substitutions re-target operands; the inequality must be stated against
+a fixed finite quotient — e.g. lineage pairs — with the growth
+bookkeeping per pair.]</strong></p>
+<p><strong>D3 (Circulation transports into a <span
+class="math inline">G</span>-cycle). [open — the residual gap]</strong>
+Around one circulation of the feeding cycle, compose: the kind-(iii)
+cross edge recorded at each deficit (current result vertex <span
+class="math inline">\to</span> current operand vertex, weight <span
+class="math inline">=</span> the deficit), the kind-(i) chain edges
+along each lineage between the operand vertex used and the result vertex
+of the next firing (weights <span class="math inline">=</span> growth
+amounts), and the kind-(ii) zero-weight anchors tying mints to the
+operand vertices they were measured against. <em>Claim:</em> the
+composite is a closed directed walk in <span
+class="math inline">G</span> whose total weight equals the net
+circulation, which is positive for at least one circulation of an
+unboundedly-fed cycle; hence the guard fires at the edge completing it.
+The core’s §5 hand-trace verifies this on the three-variable cycle
+(closed walk of weight 3 at the third constraint’s first deficit). What
+is missing is the general bookkeeping: that the anchors always supply
+the return path (each mint’s kind-(ii) edge points to the operand
+vertex, which lies on the <em>next</em> lineage’s chain — direction must
+be checked against the sign discipline), and that the walk’s weight
+telescopes to the circulation rather than cancelling. <strong>[This is
+where the proof lives or dies; the sign discipline of Def. 4.5 (no edges
+for nonpositive entailments) is what makes the telescoping plausible —
+only positive growth is ever recorded — but also what could starve the
+return path in configurations where the feeding surplus sits in case-(i)
+residues, which record nothing.]</strong></p>
+<p><em>Status: reduced to D2’s quotient bookkeeping and D3’s transport
+argument. A counterexample hunt is also sensible: a configuration
+circulating deficit exclusively through case-(i) residues (which record
+no edges) would refute D3 as stated and force a fourth edge kind. The
+hunt should start from Example 4.5a variants with the growth laundered
+through caps.</em></p>
+<hr />
+</section>
+<section
+id="a.10-marker-provenance-and-the-surface-discharge-statements"
+class="level2">
+<h2>A.10 Marker provenance and the surface discharge — statements</h2>
+<p><strong>Invariant (to prove).</strong> In every configuration
+reachable from a surface-program-generated <span
+class="math inline">\Phi_0</span>: the marker placement of every closed
+row and every solved value’s split traces to a <em>declared origin</em>
+— an external (left-marked) row, a spec ellipsis position, or the slice
+operation’s left-flank prepend (§10’s audited origin list). Inductive
+obligations: each rule of Defs. 4.2–4.3 either preserves placements
+(substitution, zips), inherits them (the (b)/(c-nested)
+inherit-the-split policy — provenance-faithful by construction), or
+defers ((c-split), (d)); closing’s joins and upward closes use the
+left-edge default, itself a declared-origin form.</p>
+<p><strong>Surface discharge (conjecture, Cor. 5.5).</strong>
+Provenance-respecting constraint sets never present a
+<em>placement-discriminating</em> store: no marked inequality whose
+satisfaction depends on which <span
+class="math inline">\approx</span>-representative an equality binding
+committed. The probe (Remark 2.11’s witness) requires an equality
+pinning a row’s content together with a marked inequality carrying a
+<em>different</em> split of overlapping content — the §10 origin audit
+suggests einsum equalities and the pointwise sandwich cannot produce the
+mismatched pair, but the slice’s left flank is the suspect to check
+first (it is the one surface construct that manufactures nontrivial
+leading flanks). <strong>[open — needs the surface-language grammar
+formalized; deferred together with Lemma 7.7’s elaboration
+audit.]</strong></p>
+</section>
+</section>
+</article>
+<script src="/assets/theme-toggle.js"></script>
+</body>
+</html>
