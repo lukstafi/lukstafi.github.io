@@ -220,6 +220,8 @@ The question is whether it is bounded, useful bureaucracy.
 
 Every system that learns from failure risks becoming a museum of old wounds. Every postmortem wants to become a checklist. Every checklist wants to become policy. Every policy wants to become unconditional. Eventually the organization is not safer, just slower and more theatrical.
 
+In Ludics, this pressure has a specifically agentic source. The natural move is to make the future target less ambiguous by adding another prompt instruction. The impulse is understandable: turn judgment into doctrine, and doctrine into execution.
+
 The competent-SWE filter is an anti-bureaucratic device. It prevents every plausible lesson from becoming a prompt line. The pattern-reference bar is another anti-bureaucratic device: if a new pattern cannot name the concern, state the principle, explain why it exists, show an example, and describe when not to apply, it is not a pattern. It belongs in a lint, a runtime assertion, a one-off task, or nowhere.
 
 That last category matters: nowhere.
@@ -229,28 +231,6 @@ A mature memory system must be allowed to forget. Not every failure deserves pre
 The SWE Textbook works because it is not the top of the hierarchy. It is a holding area, a compression layer, a publication seed, a place for recognition-shaped knowledge. It lets the system say: this was real; this was too general for always-loaded prompts; this may still be useful later.
 
 The ledger is not a rulebook. A rulebook says: obey these. A ledger says: these are the mistakes we paid for; decide carefully which ones still matter.
-
-## A moment in time
-
-There is another reason to keep the article modest.
-
-Ludics is vibe-coded. It reflects a moment in time: a particular author's habits, a particular stack, a particular phase of Claude and GPT Codex models, a particular state of platform support. Some parts are already being obsoleted. Some docs are compensation for model failures that stronger models may make rarer. Some orchestration machinery exists because the platform did not yet provide the right lifecycle APIs. Some of the AC-rigor obsession may eventually be mechanized by better test-generation or proof-carrying workflows.
-
-The lesson is not that everyone should build this machinery.
-
-The lesson is that when agents become competent enough to participate in real engineering, the bottleneck shifts. It is not enough to ask whether the agent can write code. You have to ask what the system does with its mistakes.
-
-Does every failure become a prompt warning? Then the prompts rot.
-
-Does every failure become a ticket? Then the tracker fills with process confetti.
-
-Does every failure disappear after the reviewer approves the fix? Then the same class recurs.
-
-Does every lesson become a document? Then the documents become unreadable.
-
-Ludics' current answer is imperfect but concrete: classify the lesson. Route it. Promote rarely. Mechanize when possible. Capture when useful. Skip deliberately. Compress into writing when the pattern becomes interesting enough.
-
-That is the memory economy.
 
 ## The ledger
 
