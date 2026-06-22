@@ -59,6 +59,23 @@ appended automatically — the URL is derived from the note's path (e.g.
 `--no-footer` or customise with `--site-url` / `--footer-prefix`. Run with
 `--help` for all options.
 
+### Prompt companion pages
+
+Each AI-authored article has a companion `notes/<base>.prompts.md` holding the
+human-side prompts that steered it — the questions, framing, and
+course-corrections — so the author's contribution is delineated from the
+writing. These are stubs (`*Prompts not yet transcribed.*`) until filled in.
+
+The links are injected automatically, never written into the article bodies:
+
+- **HTML:** `build_notes_html.sh` appends a footer link from each article to its
+  `<base>.prompts.html`, and a backlink from the prompts page to the article,
+  whenever the companion `.prompts.md` exists.
+- **Substack:** `publish_to_substack.py` appends a prompts-link footer beside the
+  web-version backlink (disable with `--no-prompts-link`).
+- **Home page:** `index.html` only carries a `prompts ↗` badge for the most
+  recent article; the page doubles as a checklist of which stubs are filled in.
+
 ### Local preview
 
 ```bash

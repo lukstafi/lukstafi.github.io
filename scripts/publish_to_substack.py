@@ -51,6 +51,7 @@ LUA_WRITER = SCRIPT_DIR / "substack.lua"
 PANDOC_FROM = "markdown+tex_math_dollars+tex_math_single_backslash"
 SITE_BASE_URL = "https://lukstafi.github.io"
 FOOTER_PREFIX = "Read this on the web (with typeset math): "
+PROMPTS_FOOTER_PREFIX = "The prompts behind this essay (the human-side contribution): "
 
 # --- inline LaTeX -> Unicode -------------------------------------------------
 # Substack has no inline-math node, so inline `$...$` is rendered as Unicode
@@ -304,6 +305,20 @@ def website_url(md_path: Path, site_url: str) -> str:
     return f"{site_url.rstrip('/')}/{rel_html}"
 
 
+def prompts_url(md_path: Path, site_url: str) -> str | None:
+    """URL of the companion prompts page, or None if there is no companion.
+
+    For notes/foo.md the companion is notes/foo.prompts.md (built to
+    notes/foo.prompts.html). A *.prompts.md page has no companion of its own.
+    """
+    if md_path.name.endswith(".prompts.md"):
+        return None
+    companion = md_path.with_name(md_path.stem + ".prompts.md")
+    if not companion.exists():
+        return None
+    return website_url(companion, site_url)
+
+
 def footer_node(url: str, prefix: str) -> dict:
     """A trailing paragraph linking to the article's web version.
 
@@ -353,6 +368,11 @@ def main() -> None:
                         help=f"Website base URL for the footer link (default: {SITE_BASE_URL})")
     parser.add_argument("--footer-prefix", default=FOOTER_PREFIX,
                         help="Text shown before the footer link")
+    parser.add_argument("--no-prompts-link", action="store_true",
+                        help="Do not append the companion 'prompts behind this "
+                             "essay' link footer")
+    parser.add_argument("--prompts-footer-prefix", default=PROMPTS_FOOTER_PREFIX,
+                        help="Text shown before the prompts-link footer")
     parser.add_argument("--section", help="Substack section name to file the post under")
     parser.add_argument("--dry-run", action="store_true",
                         help="Print the draft JSON and exit (no network, no credentials)")
@@ -371,6 +391,11 @@ def main() -> None:
     if not args.no_footer:
         url = website_url(md_path, args.site_url)
         doc["body"]["content"].append(footer_node(url, args.footer_prefix))
+    if not args.no_prompts_link:
+        p_url = prompts_url(md_path, args.site_url)
+        if p_url:
+            doc["body"]["content"].append(
+                footer_node(p_url, args.prompts_footer_prefix))
     title = args.title or doc.get("title") or md_path.stem
     subtitle = args.subtitle if args.subtitle is not None else doc.get("subtitle", "")
 
