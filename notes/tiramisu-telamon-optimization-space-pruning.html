@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>Two Ways to Tame a Schedule Space: Tiramisu, Telamon, and
+Pruning without Regrets</title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <link rel="stylesheet" href="/assets/tufte.css">
+  <link rel="stylesheet" href="/assets/pandoc-tufte.css">
+  <link rel="stylesheet" href="/assets/site.css">
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+  <script>(function(){var t=localStorage.getItem('theme-preference');if(t)document.documentElement.setAttribute('data-theme',t);})()</script>
+</head>
+<body>
+<nav class="site-nav">
+  <a href="/">Home</a> &middot; <a href="/about.html">About</a> &middot; <a href="https://lukstafi.substack.com">Substack</a>
+</nav>
+<div class="theme-toggle">
+  <button id="theme-btn" aria-label="Toggle dark mode">&#9788;</button>
+</div>
+<article>
+<section
+id="two-ways-to-tame-a-schedule-space-tiramisu-telamon-and-pruning-without-regrets"
+class="level1">
+<h1>Two Ways to Tame a Schedule Space: Tiramisu, Telamon, and Pruning
+without Regrets</h1>
+<p><em>A comparative deep dive into three papers on generating fast
+tensor kernels — and what they teach a from-scratch deep learning
+compiler like <a
+href="https://github.com/ahrefs/ocannl">OCANNL</a>.</em></p>
+<hr />
+<p>The gap between a naive loop nest and a vendor-library kernel is
+routinely an order of magnitude, sometimes two. Everyone in the
+compilers-for-tensor-code business agrees on the diagnosis: the best
+implementation of <code>gemm</code> or a convolution is separated from
+the textbook code by a long chain of transformations — tiling, fusion,
+vectorization, memory placement, communication staging — and the space
+of such chains is astronomically large. Where the schools part ways is
+on what to <em>do</em> about the space.</p>
+<p>This post reads three papers side by side, two of which form a single
+research arc:</p>
+<ol type="1">
+<li><strong>Tiramisu</strong> — Baghdadi et al., <a
+href="https://arxiv.org/abs/1804.10694"><em>Tiramisu: A Polyhedral
+Compiler for Expressing Fast and Portable Code</em></a> (arXiv
+1804.10694, CGO 2019). A polyhedral compiler with a scheduling language,
+from the Halide lineage at MIT.</li>
+<li><strong>Telamon</strong> — Beaugnon, Pouille, Pouzet, Pienaar,
+Cohen, <a
+href="https://doi.org/10.1145/3033019.3033023"><em>Optimization Space
+Pruning without Regrets</em></a> (CC 2017). A branch-and-bound search
+over GPU kernel implementations, with a provable no-regret pruning
+guarantee.</li>
+<li><strong>The CSP generalization</strong> — Beaugnon, Clément,
+Tollenaere, Cohen, <a href="https://arxiv.org/abs/1904.03383"><em>On the
+Representation of Partially Specified Implementations and its
+Application to the Optimization of Linear Algebra Kernels on
+GPU</em></a> (arXiv 1904.03383, 2019). Telamon’s ad-hoc IR rebuilt as a
+constraint satisfaction problem over a “semantic backbone.”</li>
+</ol>
+<p>They make an instructive pairing because they attack the same problem
+from opposite ends. Tiramisu is about <strong>mechanism</strong>: make
+every transformation expressible, composable, and correct, and let a
+human (or a later autoscheduler) supply the policy. Telamon is about
+<strong>policy</strong>: make the space of implementations itself a
+first-class mathematical object, so that a search algorithm can reason
+about <em>regions</em> of it — including bounding, with certainty, how
+fast any implementation in a region could possibly be.</p>
+<section
+id="tiramisu-a-scheduling-language-over-a-four-layer-polyhedral-ir"
+class="level2">
+<h2>Tiramisu: a scheduling language over a four-layer polyhedral IR</h2>
+<p>Tiramisu is a C++-embedded DSL in the Halide tradition: the user
+writes a pure, architecture-independent <em>algorithm</em> (computations
+over iteration domains, communicating by producer–consumer
+relationships, no memory), plus a separate list of <em>scheduling
+commands</em> that determine how the algorithm becomes code. The pitch
+over Halide is twofold: the representation is polyhedral rather than
+interval-based, and the scheduling language reaches further down the
+stack than any predecessor — all the way to explicit communication.</p>
+<p>The command vocabulary has four groups: classic loop-nest
+transformations (<code>tile</code>, <code>split</code>,
+<code>interchange</code>, <code>shift</code>, <code>compute_at</code>,
+<code>unroll</code>, and a raw <code>set_schedule</code> that accepts an
+arbitrary affine map in ISL syntax); hardware mapping
+(<code>parallelize</code>, <code>vectorize</code>, <code>gpu</code>,
+<code>distribute</code>); data commands (<code>store_in</code> for
+layout remapping, buffer allocation placement,
+<code>cache_shared_at</code>/<code>cache_local_at</code> for GPU
+scratchpad staging, <code>host_to_device</code> copies); and
+synchronization (<code>barrier_at</code>, plus point-to-point
+<code>send</code>/<code>receive</code> with async/blocking properties
+for distributed execution). The bolded novelty in the paper is precisely
+the last two groups: buffer-hierarchy mapping, communication, and
+synchronization <em>as schedulable operations</em> — a copy or a barrier
+is an operation with an automatically inferred iteration domain that can
+itself be tiled, ordered, and distributed.</p>
+<p>The four-layer IR is the paper’s organizing idea, and it is best
+understood as a discipline for <em>phase ordering of concerns</em>:</p>
+<ul>
+<li><strong>Layer I — abstract algorithm.</strong> Computations with
+iteration domains (integer sets), values flowing through
+producer–consumer edges. No order, no memory, no processors.</li>
+<li><strong>Layer II — computation management.</strong> A schedule has
+been applied: every computation instance now has time dimensions
+(lexicographic order = execution order) and processor dimensions (tags
+like <code>cpu</code>, <code>gpuB</code>, <code>gpuT</code>,
+<code>node</code>, <code>vec(s)</code>, <code>unroll</code>). Still no
+memory.</li>
+<li><strong>Layer III — data management.</strong> Access relations map
+each computation instance to buffer elements; allocations appear. Layout
+is any affine relation — struct-of-arrays, transposition, modulo storage
+(<code>c(i%2, j%2)</code>), contraction to scalars.</li>
+<li><strong>Layer IV — communication management.</strong> Copies,
+sends/receives, barriers, and allocation statements are placed into the
+time-processor domain.</li>
+</ul>
+<p>The rationale is the classic phase-ordering complaint, inverted into
+an architecture. If your IR bakes memory in from the start (as
+LLVM-level or even Halide-level representations do), then every
+scheduling decision must first <em>undo</em> memory-based dependencies —
+the compiler needs array privatization, expansion, renaming — and the
+literature Tiramisu cites for this is long and gnarly. By deciding
+order-and-place before layout, and layout before communication, each
+pass gets to assume the later concerns are still fluid. The scheduling
+commands are the user-facing façade over transformations between these
+layers; ISL supplies the machinery (composition of affine maps,
+dependence analysis for legality checking, Cloog-style code generation
+at the end, lowering through Halide’s backend to LLVM/CUDA/MPI).</p>
+<p>What does the polyhedral foundation buy over Halide, concretely? The
+paper’s evaluation is unusually honest about isolating this: on four
+image-processing benchmarks scheduled identically by Halide experts,
+Tiramisu merely <em>matches</em> Halide. The wins come exactly where the
+representation differs: a 3.77× speedup on a four-stage pipeline
+(<code>nb</code>) because Halide’s conservative fusion legality rule
+(never fuse loops updating the same buffer — it cannot prove correctness
+in the interval representation) forbids a fusion that Tiramisu’s exact
+dependence analysis licenses; a cyclic-dataflow filter
+(<code>edgeDetector</code>) and a triangular iteration domain (Halide
+bug ticket #2373) that Halide cannot express or miscompiles; distributed
+stencils where Halide over-approximates halo exchange while Tiramisu’s
+<code>send</code>/<code>receive</code> transfer exactly two rows.
+Against MKL, Tiramisu matches <code>sgemm</code> (with the full
+Goto-style bag of tricks: two-level tiling, packing, register blocking,
+full/partial tile separation — tile sizes found by autotuning) and beats
+the library by up to 2.3× on convolution blocks by specializing filter
+sizes at compile time. Against fully automatic polyhedral compilers
+(Pluto, PENCIL, Polly), the schedule-language camp wins on performance
+essentially everywhere it matters, because the Pluto scheduling
+heuristic optimizes a proxy (locality distance + outer parallelism) that
+ignores layout, control overhead, and redundant computation.</p>
+<p>The thing Tiramisu deliberately does <em>not</em> do — in this paper
+— is choose the schedule. Policy is the user’s job. (The group’s later
+work, the Tiramisu autoscheduler of Baghdadi et al. 2021, bolts a
+learned cost model and beam search on top; that lineage runs through
+today’s ML-guided autoschedulers.)</p>
+</section>
+<section id="telamon-search-spaces-you-can-bound" class="level2">
+<h2>Telamon: search spaces you can bound</h2>
+<p>The Telamon paper starts from the other end: assume the space of
+implementations is <em>given</em>, and ask how to find the best point in
+it without evaluating more than a sliver of it. The distinctive
+contribution is a guarantee: branch-and-bound pruning that
+<strong>provably never discards the best implementation</strong> —
+“without regrets.”</p>
+<p>Two ingredients make this work, and they are co-designed:</p>
+<p><strong>An IR whose instances denote sets of
+implementations.</strong> A Telamon IR instance is a list of
+instructions and iteration dimensions where every open decision
+explicitly lists its remaining alternatives: each dimension can still be
+a for-loop, unrolled, vectorized, a thread dimension, or a block
+dimension; each memory access lists its available cache directives; each
+pair of dimensions carries a set of possible orderings
+(before/after/inner/outer/fused, kept transitively closed in an
+adjacency matrix); each point-to-point communication between dimensions
+lists its placements (register, shared, global). Taking a decision =
+restricting one list to a singleton, and the IR propagates: alternatives
+incompatible with the new decision are deleted elsewhere. Crucially,
+lists only ever <em>shrink</em> — every optimization that could ever
+apply is visible from the root. A fully constrained instance is a
+program; a partially constrained one is a region of the search space.
+(One confessed gap: strip-mining is not a decision inside the IR — you
+enumerate tiling structures as multiple root instances. For their
+<code>sgemm</code> space this meant 250,000 roots, which cost all of one
+extra second, because the model prunes almost all of them
+immediately.)</p>
+<p><strong>A performance model that lower-bounds partial
+implementations.</strong> For an IR instance X with candidates x ∈ X,
+the model computes B(X) ≤ T(x) for <em>all</em> x. The trick that makes
+bounding sets (not just points) possible: wherever a choice is open,
+assume the <em>locally optimal</em> alternative, independently for every
+instruction and resource — even if the resulting combination of
+assumptions is globally infeasible. Incoherent optimism is fine: it can
+only lower the bound, never break its validity. The model itself is a
+hierarchical roofline: lower-bound each instruction’s pressure on ALUs,
+memory units, dispatchers, and MSHRs; bound thread time by max(resource
+pressure / per-thread throughput, longest dependency chain); bound block
+time by intra-block contention with a “waste ratio” for partial warps;
+bound kernel time by device-wide contention and by occupancy (blocks in
+flight limited by shared memory). Missing bottlenecks (they model no
+caches, no register pressure!) cost accuracy, never correctness — actual
+GPU runs of the leaves catch what the model misses, so the model only
+needs to be good enough to prune, not to predict.</p>
+<p>The search is then textbook best-first branch-and-bound (expand the
+node with the lowest bound; run leaves on the GPU; prune any node whose
+bound exceeds the incumbent’s measured time), with decision order chosen
+by impact heuristic: dimension kinds first, then memory placement, then
+ordering, then cache directives.</p>
+<p>The numbers are striking for 2017. Their <code>sgemm</code> space
+contains 2.7 × 10⁹ implementations; exhaustive enumeration of the tree
+alone (no codegen, no runs) took 5+ hours on 24 threads, and evaluating
+everything would take 149 days. Telamon finds the best implementation in
+<strong>13 minutes</strong>, running only 17,664 candidates on the GPU
+and visiting only 121,335 tree nodes. 77% of all candidates die in cuts
+at the top two levels of the tree — the bound is loose on partial
+implementations, but <em>loose is enough</em> when a cut near the root
+kills millions of candidates at once. The generated code beats PPCG
+everywhere, sits within 11–38% of cuBLAS at 1024×1024 (the gap traced,
+via the model, to texture memory their space doesn’t contain), and beats
+cuBLAS by <strong>4.2× on average at 256×256</strong> — libraries ship a
+few implementations per function; a search adapts to the input size.</p>
+<p>That last diagnostic deserves emphasis, because it is the paper’s
+subtlest gift: the bound is <em>interpretable</em>. Which inequality
+produced B(X) tells you which bottleneck binds — a resource shared
+across the device, contention within a block, a dependency chain within
+a thread — for an entire region of the space at once, independent of the
+decisions not yet taken. That is how they discovered texture memory was
+the missing dimension in their space, and it is a capability no
+black-box learned cost model offers: performance counters explain one
+implementation; an analytic bound on a partial implementation explains a
+<em>subspace</em>.</p>
+</section>
+<section
+id="the-2019-paper-partial-implementations-as-constraint-satisfaction"
+class="level2">
+<h2>The 2019 paper: partial implementations as constraint
+satisfaction</h2>
+<p>Two years later, Beaugnon and colleagues generalized the recipe. The
+CC’17 IR hard-coded its decision kinds and their interaction logic; the
+2019 paper factors that into a formalism plus a code generator, and
+swaps exact branch-and-bound for statistical search.</p>
+<p>The factorization: a <strong>semantic backbone</strong> describes
+<em>what</em> to compute — objects (instructions, dimensions, memory
+regions) and properties over them — and is essentially constant during
+search. A <strong>decision vector</strong> describes <em>how</em>: one
+CSP variable per choice instance (the domain of <code>cache(inst)</code>
+is {L1, L2, read-only, none}; <code>order(lhs, rhs)</code> ranges over
+before/after/inner/outer/merged; <code>size(dim)</code> over precomputed
+divisors; <code>mem_space(region)</code> over global/shared), with
+constraints — universally quantified disjunctions over at most two
+choices — enforcing transitivity of ordering, data dependencies, and
+hardware limits via <em>counters</em> (running sums for shared-memory
+bytes, thread counts). A candidate is the partially instantiated vector;
+code generation needs a fully instantiated one. A small DSL (their
+<code>exh</code> language, compiled to Rust) generates the sets,
+domains, and propagators — under 10 lines to expose a new property;
+<em>quotient sets</em> handle the classes-of-fused-loops bookkeeping;
+monotonic <em>triggers</em> lower constructs lazily (deciding a
+communication goes through memory materializes the load/store
+instructions and their decisions) without ever invalidating existing
+variables.</p>
+<p>Three properties of this representation do the heavy lifting:</p>
+<ul>
+<li><strong>Decisions commute.</strong> The candidate reached by
+deciding A then B is the candidate reached by deciding B then A. There
+is no phase ordering <em>at all</em> — and no “enabling transformation”
+problem, their explicit critique of rewrite-rule systems (SPIRAL, LGen,
+LIFT), where a profitable rewrite can be invisible until another rewrite
+exposes it, and different rule orders reach the same point along
+exponentially many paths.</li>
+<li><strong>The structure need not be coherent until the end.</strong>
+Their outer-product example has <code>load A</code> nested in dᵐ,
+<code>load B</code> in dⁿ, and the multiply in both — an impossible loop
+structure that is nonetheless a legal <em>candidate</em>, because the
+ordering decisions that would force a contradiction are still open. A
+conventional IR must pick a nesting; a decision vector can stay
+uncommitted.</li>
+<li><strong>The vector has fixed size</strong> — pleasant for feature
+extraction, cheap to clone (essential for tree search), trivial to
+serialize.</li>
+</ul>
+<p>The search side is where ambition retreats, informatively. The spaces
+are now 10¹¹–10²¹ candidates (they strip-mine every dimension and give
+every instruction its own loop nest with point-to-point communication
+between them — far more decisions than CC’17). Exact branch-and-bound
+cannot close such spaces, so exploration is Monte Carlo tree search (a
+Threshold-Ascent-on-Graphs bandit, following De Mesmay’s SPIRAL work),
+with the CC’17 lower-bound model retained in two supporting roles:
+hard-pruning children whose bound exceeds the incumbent, and biasing
+Monte Carlo rollouts with probability ∝ max(T_best − bound, 0). The
+guarantee quietly changes character: pruning still never discards
+anything better than the incumbent — that much survives — but nobody
+claims to find the optimum anymore, and the paper reports real variance
+across search repetitions (“a real issue,” they admit). Results on a
+Kepler GPU: 1.47× over cuBLAS on <code>axpy</code>, 2.42× on a skinny
+matmul (256×256×32), 0.78× on square 1024³ matmul (texture memory and
+register-bank tricks again out of space), and 66.7× over a naive kernel
+for a strided matmul that cuBLAS simply doesn’t cover — the
+“specialization beats libraries off the beaten path” lesson again.</p>
+<p>Two experiments stand out as generalizable methodology. First,
+dead-end rates: random descents hit contradictions ≤14% of the time on
+most spaces — constraint propagation is doing its job, and they stress
+that the CSP is used to <em>represent</em> the space, not to solve for
+feasibility. Second, decision ordering: although decisions commute
+semantically, the <em>tree</em> built over them differs by order. Making
+high-impact decisions first (layout, then sizes, then dimension kinds…)
+lets the model prune 24× of the tree’s top levels; the reverse order
+manages only 1.8×, and the search ran out of memory. Commutativity
+doesn’t mean order doesn’t matter — it means order is a <em>tuning knob
+of the search</em> rather than a semantic straitjacket.</p>
+</section>
+<section id="the-comparison" class="level2">
+<h2>The comparison</h2>
+<table>
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+</colgroup>
+<thead>
+<tr>
+<th></th>
+<th>Tiramisu</th>
+<th>Telamon (CC’17)</th>
+<th>Beaugnon et al. 2019</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A “schedule” is…</td>
+<td>a program: a sequence of commands applied to a polyhedral IR</td>
+<td>a path from root to leaf in a decision tree over one IR
+instance</td>
+<td>a fully instantiated decision vector; partial vectors are
+first-class</td>
+</tr>
+<tr>
+<td>Who decides</td>
+<td>the user (or a later autoscheduler)</td>
+<td>best-first branch-and-bound with admissible bounds</td>
+<td>MCTS + lower-bound pruning; experts may pre-set decisions</td>
+</tr>
+<tr>
+<td>Legality</td>
+<td>exact polyhedral dependence analysis validates user schedules</td>
+<td>alternatives lists + propagation keep candidates consistent by
+construction</td>
+<td>CSP constraints + generated propagators; rare dead ends,
+backtrack</td>
+</tr>
+<tr>
+<td>Phase ordering</td>
+<td>disciplined: four layers fix the order of concern classes (order →
+layout → communication)</td>
+<td>dissolved: all decisions visible from the root, taken in any
+order</td>
+<td>dissolved and formalized: decisions commute</td>
+</tr>
+<tr>
+<td>Performance model</td>
+<td>none (user intuition; autotuning for numeric parameters)</td>
+<td>analytic lower bound on partial implementations; hierarchical
+roofline</td>
+<td>same model, demoted from oracle to filter and rollout bias</td>
+</tr>
+<tr>
+<td>Guarantee</td>
+<td>none claimed</td>
+<td>optimum of the space, certainly</td>
+<td>never prune better-than-incumbent; no optimality claim</td>
+</tr>
+<tr>
+<td>Scope of space</td>
+<td>everything the commands express: CPU, GPU, distributed, FPGA;
+layout; non-affine extensions</td>
+<td>static-control linear algebra kernels on one GPU; no strip-mining
+in-IR</td>
+<td>same domain, richer decisions (tiling in-space via <code>size</code>
+choices)</td>
+</tr>
+<tr>
+<td>Interpretability</td>
+<td>the schedule <em>is</em> the explanation</td>
+<td>binding inequality names the bottleneck of a whole subspace</td>
+<td>same, demonstrated as space-design feedback</td>
+</tr>
+</tbody>
+</table>
+<p>The deepest contrast is what each system considers the primary
+artifact. For Tiramisu it is the <em>transformation</em>: the paper’s
+contributions are new commands (communication, memory hierarchy) and the
+layered IR that makes commands composable without stepping on each
+other. For the Telamon line it is the <em>space</em>: the CC’17 paper’s
+IR exists to make regions boundable, and the 2019 paper goes as far as
+saying the compiler “is not limited to a set of predefined high-level
+transformations — it does not even have to be aware of them”; tiling,
+interchange, and fusion are emergent patterns in an assignment of
+pairwise decisions, not operations anyone wrote.</p>
+<p>Both are reactions to the same enemy — the phase-ordering /
+enabling-transformation swamp of rewrite-based compilation — and their
+answers are duals. Tiramisu <em>sequences</em> concerns so that
+transformations within a layer can assume later concerns are undecided
+(schedule before layout before communication: exactly the ordering that
+makes each class of decision maximally free). The Telamon line
+<em>abolishes</em> sequencing by making all decisions simultaneously
+visible and commutative. Notice that Tiramisu’s four layers reappear
+inside Telamon’s decision vocabulary as <em>kinds of variables</em> —
+dimension kinds and ordering (Layer II), memory placement and layout of
+temporaries (Layer III), communication placement and
+synchronization-inducing thread-dimension ordering (Layer IV) — but
+stripped of any ordering among them. And notice, conversely, that when
+the 2019 paper needed its search to work, the impact-ordered decision
+heuristic (layout first, then sizes, then kinds…) crept back in as
+<em>search</em> policy: phases return as heuristics because some
+decisions really are more consequential than others.</p>
+<p>There is also an honest scaling story across the two Beaugnon papers.
+Admissible branch-and-bound found the true optimum of a 10⁹ space in 13
+minutes; at 10²¹, with a bound that cannot be tightened without
+micro-architectural documentation that doesn’t exist, exact search is
+gone and what remains of the guarantee is a safe filter inside a
+statistical searcher. The residual value is real — cutting the first ten
+tree levels shrinks the space by 2–3 orders of magnitude, and the filter
+provably costs nothing — but “without regrets” as an end-to-end property
+did not survive contact with richer spaces. The transferable lesson:
+<strong>an admissible lower bound scales as a pruning filter and an
+explanation device, not as a complete search strategy.</strong>
+Meanwhile the model’s other virtue — bottleneck attribution over
+subspaces — scales perfectly, because it never depended on closing the
+search.</p>
+<p>Aftermath, briefly. Tiramisu the system lived on (FPGA backend,
+sparse and recurrent workloads, and the learned-cost-model autoscheduler
+at MLSys 2021), and its ideas are visible wherever scheduling became an
+IR — most prominently MLIR’s transform dialect. Telamon was Beaugnon’s
+thesis and the repository is archived; but its ideas have aged
+remarkably well: Ansor/TVM’s sketch-then-fill search rediscovers “make
+coarse structural decisions first, treat the rest as a fillable
+subspace”; equality saturation (egg and descendants) attacks
+rewrite-ordering by keeping all rewrites like Telamon keeps all
+decisions; and every autotuner that prunes with a roofline is doing a
+coarse version of B(X) ≤ T(x).</p>
+</section>
+<section id="lessons-for-ocannl" class="level2">
+<h2>Lessons for OCANNL</h2>
+<p>This section is why the deep dive exists (<a
+href="https://github.com/ahrefs/ocannl/issues/267">ahrefs/ocannl#267</a>).
+OCANNL sits, by construction, between the two schools, and each paper
+reads like a commentary on a different piece of it.</p>
+<p><strong>OCANNL already has a four-layer separation — it just grew it
+independently.</strong> The <code>%op</code>/<code>%cd</code> surface
+plus shape inference builds a pure, memory-free algorithm over iteration
+domains (Layer I; einsum specs and row variables play the role of ISL
+sets, with inference instead of explicit domains). Lowering to
+<code>Low_level</code> fixes execution order; the schedule IR’s optops
+(<code>Split</code>, <code>Swap</code>, <code>Retype</code>,
+<code>Unroll</code>, <code>Partition</code>, <code>Stage</code>,
+<code>Privatize</code>, <code>Tensorize</code>,
+<code>Fuse_epilogue</code>) retype loops onto hardware axes — Layer II,
+as a Halide/Tiramisu-style command vocabulary applied at the
+<code>lowered_transform</code> seam. Memory modes
+(<code>Virtual</code>/<code>Local</code>/<code>On_device</code>),
+placement decisions on the optimization context, and
+<code>Stage</code>’s shared-tile staging are Layer III. Streams, events,
+merge buffers, and explicit <code>to_host</code>/<code>from_host</code>
+are Layer IV — OCANNL shares Tiramisu’s conviction that communication
+must be explicit and schedulable rather than inferred-and-hidden. The
+validation Tiramisu offers is that this ordering of concerns is not an
+accident of our history but the ordering that keeps each phase maximally
+free; the warning it offers is about what we still lack at each layer:
+no affine skewing (our
+<code>Split</code>/<code>Swap</code>/<code>Partition</code> vocabulary
+is sub-polyhedral; the gh-494 affine legality engine could license
+skewing when a use case appears, e.g. wavefront schedules for scan-like
+patterns), no general <code>store_in</code>-style layout remapping (we
+have exactly one layout decision today — the XOR swizzle on staged
+shared tiles), and no cross-node communication scheduling (multidev CPU
+exists; a Tiramisu-grade
+<code>send</code>/<code>recv</code>-as-schedulable-operation story does
+not).</p>
+<p><strong>Telamon’s central theorem is directly actionable for OCANNL’s
+autotuner.</strong> OCANNL’s cost model (gh-491) computes exactly a
+roofline lower bound — <code>Cost_model.roofline_seconds</code>,
+documented “rank with it, do not predict” — and the autotuner currently
+uses it as a keep-fraction pre-filter, i.e., a <em>relative</em>
+heuristic. Telamon’s message is that a lower bound can do strictly more:
+prune, with certainty, any candidate whose bound exceeds the
+<em>incumbent’s measured time</em>. That is an absolute, no-regret
+filter — it never discards a candidate that could have won — and it
+composes with beam search as well as it composed with MCTS in the 2019
+paper. One caveat must be engineered away first: admissibility requires
+the bound to be a true lower bound, and our byte/op counts are
+deliberately <em>upper</em> bounds (guards-taken, union-of-accesses,
+non-injective fallbacks). The model already tracks exactness
+(<code>fp_approx</code>, <code>flops_approx</code>,
+<code>opaque</code>), so incumbent-pruning can be enabled where counts
+are exact, or the analysis can carry dual (lower, upper) counts — lower
+bounds for pruning, upper bounds for ranking. Cheap to add, and it
+converts timing budget into search depth on precisely the workloads
+where tuning is slowest.</p>
+<p><strong>The bound-as-explanation idea is worth stealing
+outright.</strong> Telamon reports <em>which</em> inequality binds —
+compute throughput, per-block contention, occupancy, dependency chain —
+and uses it to find missing dimensions of the search space (texture
+memory). OCANNL’s decline diagnostics
+(<code>schedule_log_declines</code>) explain why transforms didn’t
+apply; the dual diagnostic — “this candidate’s roofline arm is
+bandwidth, at 78% of envelope” per tuned kernel, aggregated over the
+cache — would tell us which <em>sketch families are missing</em>,
+turning per-workload tuning logs into compiler-development signal.
+Telamon’s hierarchical refinement (per-thread, per-block, per-device
+bounds with occupancy) is also the natural next step beyond our
+two-constant envelope when the flat roofline stops discriminating
+between candidates.</p>
+<p><strong>The 2019 paper names a disease OCANNL has, and its cure’s
+price.</strong> Optop pipelines do not commute — <code>Stage</code>
+composes with <code>Tensorize</code> only in one order,
+<code>Privatize</code> is incompatible with <code>Tensorize</code>,
+sketch composition has cost us real bugs (index-pairing poisoning,
+scope-alpha collisions). Because a beam over transform sequences is
+exactly the rewrite-system regime Beaugnon criticizes, valuable
+compositions are unreachable incrementally — a bare
+<code>Tensorize</code> loses its beam round before the Grid retypes that
+would justify it can join — which is why OCANNL grew sketch seeding.
+It’s the same mitigation the 2019 paper endorses (“an expert programmer
+can even manually set decisions upfront”), and Ansor arrived at it
+independently; sketches are partial assignments by another name. The
+principled cure — reformulating the schedule space as a decision vector
+(per-loop kind, per-pair order, per-tnode placement) with legality
+constraints supplied by the affine engine, making sketches literally
+pre-constrained candidates and making all decisions commute — is a
+beautiful target but a rewrite of the autotuner’s core representation;
+the 2019 paper is the design document to reach for <em>if</em>
+beam-plus-sketches hits a wall it cannot seed its way past. Their
+decision-ordering experiment (24× vs 1.8× prunable, out-of-memory on the
+bad order) is also a transferable warning for us today: the order in
+which a beam considers transform kinds is a search knob worth measuring,
+not an implementation accident.</p>
+<p><strong>Finally, all three papers vindicate an economic premise
+OCANNL is built on: specialization beats libraries off the beaten
+path.</strong> Telamon beats cuBLAS 4.2× at small sizes and 66.7× on
+strided shapes the library doesn’t cover; Tiramisu beats MKL 2.3× by
+fixing convolution filter sizes at compile time. A compiler that tunes
+per shape and per digest, cache-persistently, is playing the game these
+papers proved winnable — the flip side, which all three also demonstrate
+against cuBLAS/MKL at flagship sizes, is that the last 20–30% on the
+benchmark the vendor cares about lives in space dimensions (texture
+paths, register allocation, undocumented micro-architecture) that a
+portable search space doesn’t contain. Choosing not to chase that tail
+at v0.9 is a defensible reading of both papers’ evaluation sections.</p>
+</section>
+<section id="references" class="level2">
+<h2>References</h2>
+<ul>
+<li>Riyadh Baghdadi, Jessica Ray, Malek Ben Romdhane, Emanuele Del
+Sozzo, Abdurrahman Akkas, Yunming Zhang, Patricia Suriana, Shoaib Kamil,
+Saman Amarasinghe. <em>Tiramisu: A Polyhedral Compiler for Expressing
+Fast and Portable Code.</em> CGO 2019. <a
+href="https://arxiv.org/abs/1804.10694">arXiv:1804.10694</a>.</li>
+<li>Ulysse Beaugnon, Antoine Pouille, Marc Pouzet, Jacques Pienaar,
+Albert Cohen. <em>Optimization Space Pruning without Regrets.</em> CC
+2017. <a href="https://doi.org/10.1145/3033019.3033023">DOI
+10.1145/3033019.3033023</a>.</li>
+<li>Ulysse Beaugnon, Basile Clément, Nicolas Tollenaere, Albert Cohen.
+<em>On the Representation of Partially Specified Implementations and its
+Application to the Optimization of Linear Algebra Kernels on GPU.</em>
+2019. <a
+href="https://arxiv.org/abs/1904.03383">arXiv:1904.03383</a>.</li>
+<li>Related lineage: Ragan-Kelley et al., <em>Halide</em> (PLDI 2013);
+Baghdadi et al., <em>A Deep Learning Based Cost Model for Automatic Code
+Optimization</em> (MLSys 2021); Zheng et al., <em>Ansor</em> (OSDI
+2020); Tate et al., <em>Equality Saturation</em> (POPL 2009); Lai &amp;
+Seznec, <em>Performance Upper Bound Analysis of SGEMM</em> (CGO
+2013).</li>
+</ul>
+</section>
+</section>
+</article>
+<script src="/assets/theme-toggle.js"></script>
+</body>
+</html>
