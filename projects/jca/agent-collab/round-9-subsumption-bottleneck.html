@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <meta name="dcterms.date" content="2026-08-19">
+  <title>JCA Existence over T(F), Round 9: The Subsumption
+Bottleneck</title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <link rel="stylesheet" href="/assets/tufte.css">
+  <link rel="stylesheet" href="/assets/pandoc-tufte.css">
+  <link rel="stylesheet" href="/assets/site.css">
+  <script defer=""
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+  type="text/javascript"></script>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+  <script>(function(){var t=localStorage.getItem('theme-preference');if(t)document.documentElement.setAttribute('data-theme',t);})()</script>
+</head>
+<body>
+<nav class="site-nav">
+  <a href="/">Home</a> &middot; <a href="/about.html">About</a> &middot; <a href="https://lukstafi.substack.com">Substack</a>
+</nav>
+<div class="theme-toggle">
+  <button id="theme-btn" aria-label="Toggle dark mode">&#9788;</button>
+</div>
+<article>
+<header>
+<h1 class="title">JCA Existence over T(F), Round 9: Program 7.1 and the
+Subsumption Bottleneck</h1>
+<p class="byline">2026-08-19</p>
+</header>
+<nav id="TOC">
+<ul>
+<li><a
+href="#jca-existence-over-mathcaltmathcalf-round-9-program-7.1-and-the-subsumption-bottleneck"
+id="toc-jca-existence-over-mathcaltmathcalf-round-9-program-7.1-and-the-subsumption-bottleneck">JCA
+Existence over <span
+class="math inline">\(\mathcal{T}(\mathcal{F})\)</span>, Round 9:
+Program 7.1 and the Subsumption Bottleneck</a>
+<ul>
+<li><a href="#summary" id="toc-summary">0. Summary</a></li>
+<li><a href="#the-target-simple-semi-unification"
+id="toc-the-target-simple-semi-unification">1. The target: simple
+semi-unification</a></li>
+<li><a href="#the-equational-skeleton-j_0mathcalc-and-soundness"
+id="toc-the-equational-skeleton-j_0mathcalc-and-soundness">2. The
+equational skeleton <span
+class="math inline">\(J_0(\mathcal{C})\)</span> and soundness</a></li>
+<li><a href="#the-tupling-lemma-two-subsumptions-suffice"
+id="toc-the-tupling-lemma-two-subsumptions-suffice">3. The tupling
+lemma: two subsumptions suffice</a></li>
+<li><a href="#the-bottleneck-theorem" id="toc-the-bottleneck-theorem">4.
+The bottleneck theorem</a></li>
+<li><a href="#what-any-subsume-gadget-must-look-like"
+id="toc-what-any-subsume-gadget-must-look-like">5. What any SUBSUME
+gadget must look like</a>
+<ul>
+<li><a href="#unifiability-is-the-free-half"
+id="toc-unifiability-is-the-free-half">5.1 Unifiability is the free
+half</a></li>
+<li><a
+href="#monotonicity-lemma-violations-must-be-caught-by-consistency"
+id="toc-monotonicity-lemma-violations-must-be-caught-by-consistency">5.2
+Monotonicity lemma: violations must be caught by consistency</a></li>
+<li><a
+href="#subsumption-is-a-forallexists-equation-and-the-thesiss-own-checks-are-forallexists"
+id="toc-subsumption-is-a-forallexists-equation-and-the-thesiss-own-checks-are-forallexists">5.3
+Subsumption is a <span
+class="math inline">\(\forall\exists\)</span>-equation — and the
+thesis’s own checks are <span
+class="math inline">\(\forall\exists\)</span></a></li>
+<li><a
+href="#the-fixed-interface-limitation-and-what-it-does-not-yet-prove"
+id="toc-the-fixed-interface-limitation-and-what-it-does-not-yet-prove">5.4
+The fixed-interface limitation — and what it does <em>not</em> yet
+prove</a></li>
+</ul></li>
+<li><a
+href="#the-semantic-fork-resolved-by-the-author-two-residual-questions"
+id="toc-the-semantic-fork-resolved-by-the-author-two-residual-questions">6.
+The semantic fork, resolved by the author (two residual
+questions)</a></li>
+<li><a href="#machine-checks" id="toc-machine-checks">7. Machine
+checks</a></li>
+<li><a href="#next-steps" id="toc-next-steps">8. Next steps</a></li>
+<li><a href="#references" id="toc-references">References</a></li>
+</ul></li>
+</ul>
+</nav>
+<section
+id="jca-existence-over-mathcaltmathcalf-round-9-program-7.1-and-the-subsumption-bottleneck"
+class="level1">
+<h1>JCA Existence over <span
+class="math inline">\(\mathcal{T}(\mathcal{F})\)</span>, Round 9:
+Program 7.1 and the Subsumption Bottleneck</h1>
+<p><em>Author: Claude (Fable 5), August 2026. Executes the soundness
+direction of Program 7.1 from round 8 (<a
+href="round-8-reassessment.html">round-8-reassessment.md</a>): encode
+simple semi-unification (SSU) into JCAQP. Outcome: the encoding’s
+equational part works and is machine-checked; the entire remaining
+difficulty is isolated into a single primitive — expressing one
+subsumption constraint between answer-chosen terms — and the thesis
+author’s ruling on the parameter conventions (§6) locates that
+primitive’s raw material in the validity condition, leaving three
+sharply delimited sub-goals (forcing, polarity, width).</em></p>
+<section id="summary" class="level2">
+<h2>0. Summary</h2>
+<ol type="1">
+<li><strong>Equational skeleton (§2).</strong> For an SSU instance <span
+class="math inline">\(\mathcal{C}\)</span> we build a purely existential
+JCA instance <span class="math inline">\(J_0(\mathcal{C})\)</span>
+(empty-premise structural branches; a decomposition-premise variant was
+refuted by the round-9 review and is documented in Remark 2.0.1). <span
+class="math inline">\(J_0\)</span> captures the equational condition (E)
+<em>exactly</em> (Lemma 2.0), and soundness holds: every SSU solution
+induces an answer (Proposition 2.1, machine-checked). As expected, <span
+class="math inline">\(J_0\)</span> alone is nearly always solvable — it
+is deliberately only the skeleton.</li>
+<li><strong>Tupling lemma (§3).</strong> SSU-solvability of <span
+class="math inline">\(\mathcal{C}\)</span> is <em>equivalent</em> to:
+the skeleton’s equations plus exactly <strong>two</strong> subsumption
+constraints (one per letter <span class="math inline">\(a \in
+\{0,1\}\)</span>) between answer-chosen tuples. So Program 7.1 reduces
+to one primitive: &gt; <strong>SUBSUME<span class="math inline">\((v,
+u)\)</span>:</strong> a JCAQP gadget accepting an answer <span
+class="math inline">\(\theta\)</span> iff <span
+class="math inline">\(\theta(u)\)</span> is a substitution instance of
+<span class="math inline">\(\theta(v)\)</span>.</li>
+<li><strong>Bottleneck theorem (§4).</strong> If a sound and complete,
+composable SUBSUME gadget exists, then JCAQP-EXIST over <span
+class="math inline">\(\mathcal{T}(\mathcal{F})\)</span> is
+undecidable.</li>
+<li><strong>Expressibility analysis (§5).</strong> New structural
+constraints on any would-be gadget: unifiability probes give the
+necessary but not sufficient half for free; a <strong>monotonicity
+lemma</strong> shows relevance conditions survive answer strengthening,
+so a gadget must detect subsumption violations through consistency or
+the prefix conditions (validity/no-escaping) — never through relevance;
+subsumption itself is exactly a <span
+class="math inline">\(\forall\exists\)</span>-equation (matching by
+freezing), the same logical shape as the thesis’s validity check — a
+near-miss that yields <strong>bounded-variable subsumption</strong>
+<em>on polarity-correct answers</em>. What separates this from full SSU:
+the <strong>forcing</strong> and <strong>polarity</strong> sub-goals
+(§5.3), and the <strong>fixed-interface limitation</strong> (§5.4),
+which bounds <em>distinct-variable count</em> per constructed instance,
+not term size — leading to the load-bearing open sub-question 5.2
+(bounded-variable SSU, in a fixed-<span class="math inline">\(k\)</span>
+and a computable-bound variant, which are not equivalent).</li>
+<li><strong>The semantic fork, resolved (§6).</strong> The thesis author
+confirmed Definition 4.1 as written: consistency is plain <span
+class="math inline">\(\exists\)</span>-closure; validity carries the
+full prefix (hence reads <span class="math inline">\(\exists\bar
+t\,\forall\bar\beta\,Q\colon A[\bar\chi\bar\delta := \bar t]\)</span>,
+parameters universally closed outside <span
+class="math inline">\(Q\)</span>). The <span
+class="math inline">\(\forall\exists\)</span> capability therefore lives
+unconditionally in validity — no erratum needed on this point. Two
+residual author-questions remain (§6): the <span
+class="math inline">\(\bar t\)</span> convention, and the Example 4.3
+most-generality caveat.</li>
+</ol>
+</section>
+<section id="the-target-simple-semi-unification" class="level2">
+<h2>1. The target: simple semi-unification</h2>
+<p>Following Dudenhefner (FSCD 2020), fix the term language <span
+class="math inline">\(\mathbb{T} ::= \alpha \mid \sigma \to
+\tau\)</span> (one binary constructor, variables, no constants). A
+<strong>simple constraint</strong> is a quadruple written <span
+class="math inline">\(a|\alpha| \doteq |\beta|b\)</span> with <span
+class="math inline">\(a, b \in \{0,1\}\)</span> and <span
+class="math inline">\(\alpha, \beta\)</span> variables. A triple of
+substitutions <span class="math inline">\((\varphi, \psi_0,
+\psi_1)\)</span> <strong>models</strong> it iff</p>
+<p><span class="math display">\[\varphi(\beta) = \begin{cases}
+\psi_a(\varphi(\alpha)) \to \tau &amp; \text{if } b = 0 \\ \sigma \to
+\psi_a(\varphi(\alpha)) &amp; \text{if } b = 1 \end{cases}
+\quad\text{for some } \sigma, \tau,\]</span></p>
+<p>i.e. the <span class="math inline">\(b\)</span>-component of <span
+class="math inline">\(\varphi(\beta)\)</span> equals <span
+class="math inline">\(\psi_a(\varphi(\alpha))\)</span>.
+<strong>SSU</strong> — does a finite constraint set have a model? — is
+undecidable (via uniform boundedness of deterministic simple stack
+machines; one constraint per machine instruction, states as variables).
+Its attractions as a source: only two semi-valuations <span
+class="math inline">\(\psi_0, \psi_1\)</span>, shared across all
+constraints; each constraint touches one <span
+class="math inline">\(\psi\)</span>-application at depth one; no
+nesting.</p>
+<p>Notation below: JCAQP terms over signature <span
+class="math inline">\(\{\mathrm{arr}/2,\ c/0\}\)</span>; <span
+class="math inline">\(\pi_0, \pi_1\)</span> project an <span
+class="math inline">\(\mathrm{arr}\)</span>’s components.
+Transliteration <span class="math inline">\((\cdot)^t\)</span> maps SSU
+terms to JCAQP terms, sending SSU variables to distinct answer
+parameters.</p>
+</section>
+<section id="the-equational-skeleton-j_0mathcalc-and-soundness"
+class="level2">
+<h2>2. The equational skeleton <span
+class="math inline">\(J_0(\mathcal{C})\)</span> and soundness</h2>
+<p>Instance variables: <span class="math inline">\(x_\alpha\)</span> for
+each SSU variable <span class="math inline">\(\alpha\)</span> of <span
+class="math inline">\(\mathcal{C}\)</span>; <span
+class="math inline">\(y_{a,\alpha}\)</span> for each pair <span
+class="math inline">\((a,\alpha)\)</span> occurring in a constraint; a
+witness variable <span class="math inline">\(w_\kappa\)</span> per
+constraint <span class="math inline">\(\kappa\)</span>. For each <span
+class="math inline">\(\kappa = (a|\alpha| \doteq |\beta|b)\)</span>, the
+<strong>structural branch</strong> has an <em>empty premise</em>:</p>
+<p><span class="math display">\[D_\kappa:\ \top \qquad C_\kappa:\
+x_\beta \doteq \begin{cases} \mathrm{arr}(y_{a,\alpha},\, w_\kappa)
+&amp; b = 0 \\ \mathrm{arr}(w_\kappa,\, y_{a,\alpha}) &amp; b = 1.
+\end{cases}\]</span></p>
+<p><strong>Lemma 2.0.</strong> <span
+class="math inline">\(\theta\)</span> passes branch <span
+class="math inline">\(\kappa\)</span> iff <span
+class="math inline">\(\theta(x_\beta)\)</span> is <em>syntactically</em>
+an arrow whose <span class="math inline">\(b\)</span>-component is <span
+class="math inline">\(\theta(y_{a,\alpha})\)</span> (and whose other
+component is <span class="math inline">\(\theta(w_\kappa)\)</span>) —
+i.e. exactly condition (E) of §3.</p>
+<p><em>Proof.</em> With an empty premise, consistency is satisfiability
+of <span class="math inline">\(A\)</span>, and relevance (Theorem 2.4 of
+round 8) demands that <span class="math inline">\(\mathrm{mgu}(A) =
+\theta\)</span> itself equalize <span
+class="math inline">\(C_\kappa\)</span>. <span
+class="math inline">\(\square\)</span></p>
+<p><strong>Remark 2.0.1 (why not decomposition premises).</strong> The
+first version of this skeleton used premise-side decomposition, <span
+class="math inline">\(D_\kappa: x_\beta \doteq \mathrm{arr}(h^0_\kappa,
+h^1_\kappa)\)</span>, <span class="math inline">\(C_\kappa: h^b_\kappa
+\doteq y_{a,\alpha}\)</span>. The round-9 automated review exhibited a
+fatal aliasing answer: <span class="math inline">\(\theta(x_\beta) =
+g\)</span> (a bare parameter) and <span
+class="math inline">\(\theta(y_{a,\alpha}) = h^0_\kappa\)</span> — the
+premise binds <span class="math inline">\(g \mapsto \mathrm{arr}(h^0,
+h^1)\)</span>, the conclusion becomes the tautology <span
+class="math inline">\(h^0 \doteq h^0\)</span>, and even a perfect
+SUBSUME gadget accepts (<span class="math inline">\(h^0\)</span>
+<em>is</em> an instance of the variable <span
+class="math inline">\(g\)</span>), producing a false positive on
+unsolvable instances; round 8’s guards cannot reject it because the
+aliased right-hand side is a variable. The empty-premise formulation
+closes the hole structurally: relevance under <span
+class="math inline">\(\top\)</span> is equalization by <span
+class="math inline">\(\mathrm{mgu}(A)\)</span> alone, so a
+bare-parameter <span class="math inline">\(\theta(x_\beta)\)</span>
+simply fails, and no branch-local variables exist to alias. (This also
+simplifies Theorem 4.1’s completeness — no guard toolkit needed.)</p>
+<p><strong>Proposition 2.1 (soundness).</strong> If <span
+class="math inline">\((\varphi, \psi_0, \psi_1)\)</span> models <span
+class="math inline">\(\mathcal{C}\)</span>, then <span
+class="math inline">\(\theta\)</span> defined by <span
+class="math inline">\(\theta(x_\alpha) = \varphi(\alpha)^t\)</span>,
+<span class="math inline">\(\theta(y_{a,\alpha}) =
+\psi_a(\varphi(\alpha))^t\)</span>, and $(w_) = $ the transliterated
+other component of <span class="math inline">\(\varphi(\beta)\)</span>,
+passes every branch of <span
+class="math inline">\(J_0(\mathcal{C})\)</span>.</p>
+<p><em>Proof.</em> <span class="math inline">\(\theta(x_\beta) =
+\varphi(\beta)^t\)</span> is an arrow whose <span
+class="math inline">\(b\)</span>-component is <span
+class="math inline">\(\psi_a(\varphi(\alpha))^t =
+\theta(y_{a,\alpha})\)</span> and whose other component is <span
+class="math inline">\(\theta(w_\kappa)\)</span>, by the modeling
+condition; apply Lemma 2.0. <span
+class="math inline">\(\square\)</span></p>
+<p><strong>Junk (expected).</strong> <span
+class="math inline">\(J_0\)</span> alone is essentially always solvable
+— bind each <span class="math inline">\(y_{a,\alpha}\)</span> to a fresh
+parameter and each <span class="math inline">\(x_\beta\)</span> to an
+arrow with the right <span class="math inline">\(y\)</span>-parameters
+in the right slots. This is not junk <em>of the skeleton</em>: by Lemma
+2.0, <span class="math inline">\(J_0\)</span> captures exactly the
+equational content (E) below, and (E) alone is trivially satisfiable.
+All hardness lives in the coherence of the <span
+class="math inline">\(\psi\)</span>’s, isolated next.</p>
+</section>
+<section id="the-tupling-lemma-two-subsumptions-suffice" class="level2">
+<h2>3. The tupling lemma: two subsumptions suffice</h2>
+<p>For <span class="math inline">\(a \in \{0,1\}\)</span> let <span
+class="math inline">\(P_a = \{\alpha \mid (a|\alpha| \doteq |\beta|b)
+\in \mathcal{C}\)</span> for some <span class="math inline">\(\beta,
+b\}\)</span>, and fix tupling terms <span
+class="math inline">\(\mathrm{tup}_a(\bar z)\)</span> (right-nested
+<span class="math inline">\(\mathrm{arr}\)</span>s over <span
+class="math inline">\(|P_a|\)</span> slots, say). Consider the two
+conditions on a substitution <span class="math inline">\(\theta\)</span>
+over <span class="math inline">\(\{x_\alpha\} \cup
+\{y_{a,\alpha}\}\)</span> with images in <span
+class="math inline">\(\mathcal{T}(\{\mathrm{arr}, c\},\
+\mathrm{params})\)</span>:</p>
+<ul>
+<li><strong>(E)</strong> for each <span class="math inline">\(\kappa =
+(a|\alpha| \doteq |\beta|b)\)</span>: <span
+class="math inline">\(\theta(x_\beta) = \mathrm{arr}(t_0, t_1)\)</span>
+with <span class="math inline">\(t_b =
+\theta(y_{a,\alpha})\)</span>;</li>
+<li><strong>(S)</strong> for each <span class="math inline">\(a \in
+\{0,1\}\)</span>: <span
+class="math inline">\(\mathrm{tup}_a(\theta(y_{a,\alpha}))_{\alpha \in
+P_a}\)</span> is a substitution instance of <span
+class="math inline">\(\mathrm{tup}_a(\theta(x_\alpha))_{\alpha \in
+P_a}\)</span>.</li>
+</ul>
+<p><strong>Lemma 3.1 (tupling).</strong> <span
+class="math inline">\(\mathcal{C}\)</span> is SSU-solvable iff some
+<span class="math inline">\(\theta\)</span> satisfies (E) and (S).</p>
+<p><em>Proof.</em> (<span class="math inline">\(\Rightarrow\)</span>)
+Take the canonical <span class="math inline">\(\theta\)</span> of
+Proposition 2.1; (E) is the modeling condition; (S) holds with matcher
+<span class="math inline">\(\sigma_a := \psi_a^t\)</span>, which is a
+single substitution acting on the transliterated parameters — tupling
+makes “the same matcher for every <span class="math inline">\(\alpha \in
+P_a\)</span>” literal. (<span class="math inline">\(\Leftarrow\)</span>)
+Given <span class="math inline">\(\theta\)</span> and matchers <span
+class="math inline">\(\sigma_0, \sigma_1\)</span> from (S):
+untransliterate, reading parameters as SSU variables and the constant
+<span class="math inline">\(c\)</span> as one fresh SSU variable <span
+class="math inline">\(z_c\)</span>. Set <span
+class="math inline">\(\varphi(\alpha) := \theta(x_\alpha)^{-t}\)</span>,
+<span class="math inline">\(\psi_a := \sigma_a^{-t}\)</span> extended by
+<span class="math inline">\(\psi_a(z_c) := z_c\)</span>. Since matchers
+never move the rigid constant <span class="math inline">\(c\)</span>,
+<span class="math inline">\(c\)</span>-positions agree on both sides, so
+<span class="math inline">\(\psi_a(\varphi(\alpha)) =
+\theta(y_{a,\alpha})^{-t}\)</span> for <span
+class="math inline">\(\alpha \in P_a\)</span> componentwise from (S);
+then (E) gives <span class="math inline">\(\pi_b(\varphi(\beta)) =
+\psi_a(\varphi(\alpha))\)</span> for each constraint — the modeling
+condition. <span class="math inline">\(\square\)</span></p>
+<p>So beyond the skeleton (which JCAQP expresses natively, with <span
+class="math inline">\(\mathrm{tup}\)</span>-building forced by
+empty-premise branches <span class="math inline">\(\top \Rightarrow X
+\doteq \mathrm{tup}_a(\ldots)\)</span>), the <em>entire</em> reduction
+needs exactly <strong>two</strong> instances of one primitive:</p>
+<blockquote>
+<p><strong>SUBSUME<span class="math inline">\((v, u)\)</span>:</strong>
+a JCAQP gadget (branches, auxiliary variables, prefix declarations)
+accepting exactly those answers <span
+class="math inline">\(\theta\)</span> (suitably extended to the
+auxiliaries) with <span class="math inline">\(\theta(u) \preceq
+\theta(v)\)</span>, i.e. <span class="math inline">\(\theta(u) =
+\theta(v)\sigma\)</span> for some substitution <span
+class="math inline">\(\sigma\)</span>.</p>
+</blockquote>
+</section>
+<section id="the-bottleneck-theorem" class="level2">
+<h2>4. The bottleneck theorem</h2>
+<p><strong>Theorem 4.1.</strong> Suppose there is a SUBSUME gadget that
+is sound and complete in the above sense and composable (auxiliary
+variables fresh; its branches do not constrain non-designated variables
+beyond consistency-neutral bindings). Then JCAQP-EXIST over <span
+class="math inline">\(\mathcal{T}(\mathcal{F})\)</span> is undecidable,
+by reduction from SSU via <span
+class="math inline">\(J_0(\mathcal{C})\)</span> + tupling branches
+(empty-premise, like <span class="math inline">\(J_0\)</span>’s) +
+SUBSUME<span class="math inline">\((X_a, Y_a)\)</span> for <span
+class="math inline">\(a \in \{0,1\}\)</span>.</p>
+<p><em>Proof.</em> Reduction soundness (SSU solvable <span
+class="math inline">\(\Rightarrow\)</span> answer exists): the canonical
+<span class="math inline">\(\theta\)</span> of Proposition 2.1 satisfies
+(S) by Lemma 3.1’s (<span class="math inline">\(\Rightarrow\)</span>)
+direction, so the gadget’s <em>completeness</em> (it accepts every
+subsumption-satisfying answer) makes the combined instance accept it.
+Reduction completeness (answer exists <span
+class="math inline">\(\Rightarrow\)</span> SSU solvable): any accepted
+<span class="math inline">\(\theta\)</span> satisfies (E)
+<em>syntactically</em> by Lemma 2.0 (no aliasing or guard analysis
+needed — cf. Remark 2.0.1) and (S) by the gadget’s <em>soundness</em>
+(it accepts only subsumption-satisfying answers); Lemma 3.1’s (<span
+class="math inline">\(\Leftarrow\)</span>) direction yields an SSU
+model. <span class="math inline">\(\square\)</span></p>
+<p><strong>Sanity check on Example 13.</strong> For the unsolvable <span
+class="math inline">\(\{1|p| \doteq |p|0\}\)</span> the combined
+conditions refute themselves in two lines: (E) forces <span
+class="math inline">\(\theta(x_p) = \mathrm{arr}(\theta(y),
+\theta(w))\)</span>, and (S) forces <span
+class="math inline">\(\theta(y) = \theta(x_p)\sigma =
+\mathrm{arr}(\theta(y)\sigma, \theta(w)\sigma)\)</span>, whence <span
+class="math inline">\(\mathrm{depth}(\theta(y)) \geq 1 +
+\mathrm{depth}(\theta(y))\)</span> — impossible. So given a perfect
+gadget the encoding correctly rejects it (the decomposition-premise
+version did not; Remark 2.0.1).</p>
+<p>Conversely, round 8’s port-collapse theorem constrains gadget design
+within <em>existential</em> JCA: a gadget drawing its discriminatory
+power from relevance and consistency alone cannot have port-shaped
+premises. It does not rule out port-shaped premises for a gadget whose
+power comes from the prefix checks (validity, no-escaping’s per-atom
+gates) — indeed §5.3’s candidate has exactly that character. §5 below
+adds sharper constraints. The problem “is SUBSUME expressible?” is now
+the clean frontier — Maher’s “answer inside the quantifier” difference,
+as an isolated primitive.</p>
+</section>
+<section id="what-any-subsume-gadget-must-look-like" class="level2">
+<h2>5. What any SUBSUME gadget must look like</h2>
+<section id="unifiability-is-the-free-half" class="level3">
+<h3>5.1 Unifiability is the free half</h3>
+<p>A branch <span class="math inline">\(D: v \doteq u\)</span>, <span
+class="math inline">\(C: \top\)</span> accepts <span
+class="math inline">\(\theta\)</span> iff <span
+class="math inline">\(\theta(v), \theta(u)\)</span> unify — a
+<em>necessary</em> condition for <span class="math inline">\(\theta(u)
+\preceq \theta(v)\)</span>. The gap to close is one-sidedness:
+unification may bind <span class="math inline">\(\theta(u)\)</span>’s
+variables. (Round 8 §6; the S3 grounding shortcut — for ground <span
+class="math inline">\(\theta(u)\)</span>, unifiable <span
+class="math inline">\(=\)</span> subsumed — dies because groundness
+collapses SSU itself.)</p>
+</section>
+<section
+id="monotonicity-lemma-violations-must-be-caught-by-consistency"
+class="level3">
+<h3>5.2 Monotonicity lemma: violations must be caught by
+consistency</h3>
+<p><strong>Lemma 5.1.</strong> Let <span class="math inline">\(A&#39;
+\Rightarrow A\)</span> in <span
+class="math inline">\(\mathcal{T}(\mathcal{F})\)</span> (answer
+strengthening, e.g. merging two parameters, or instantiating a
+parameter). Then every branch’s <em>relevance</em> condition transfers
+from <span class="math inline">\(A\)</span> to <span
+class="math inline">\(A&#39;\)</span>; only <em>consistency</em> (and
+prefix validity/no-escaping) can reject <span
+class="math inline">\(A&#39;\)</span>.</p>
+<p><em>Proof.</em> Relevance is the universal closure of <span
+class="math inline">\(D \land A \Rightarrow C\)</span>; strengthening
+the antecedent preserves it. <span
+class="math inline">\(\square\)</span></p>
+<p>Now <span class="math inline">\(\preceq\)</span> is
+<strong>not</strong> preserved under parameter merging (<span
+class="math inline">\(\mathrm{arr}(\gamma_1,\gamma_2) \succeq
+\mathrm{arr}(c, \mathrm{arr}(c,c))\)</span>, but merging <span
+class="math inline">\(\gamma_1 = \gamma_2\)</span> kills it). Hence:
+<em>any <strong>sound</strong> SUBSUME gadget must reject the merged
+(now non-subsuming) answer, and by Lemma 5.1 the rejection can only come
+through a consistency (or validity/no-escaping) failure — never through
+relevance.</em> This is a strong design constraint: the gadget’s
+premises must be built so that exactly the subsumption-breaking
+identifications create clashes or occurs-failures. Note the unifiability
+probe of §5.1 does have this shape (merging <span
+class="math inline">\(\gamma_1=\gamma_2\)</span> above makes <span
+class="math inline">\(D \land A\)</span> clash on <span
+class="math inline">\(c \doteq \mathrm{arr}(c,c)\)</span>). In gadget
+terms the probe is already <em>complete</em> — subsumption implies
+unifiability, so every genuine instance is accepted — and what it lacks
+is <em>soundness</em>: it also accepts unifiable non-instances. The
+design problem is a soundness gap, not a completeness gap (terminology
+corrected per the round-4 review).</p>
+</section>
+<section
+id="subsumption-is-a-forallexists-equation-and-the-thesiss-own-checks-are-forallexists"
+class="level3">
+<h3>5.3 Subsumption is a <span
+class="math inline">\(\forall\exists\)</span>-equation — and the
+thesis’s own checks are <span
+class="math inline">\(\forall\exists\)</span></h3>
+<p>For terms <span class="math inline">\(s, t\)</span> with disjoint
+variables, folklore (matching by freezing):</p>
+<p><span class="math display">\[t \preceq s \quad\iff\quad
+\mathcal{T}(\mathcal{F}) \models \forall\,\mathrm{FV}(t)\
+\exists\,\mathrm{FV}(s):\ s \doteq t,\]</span></p>
+<p>decided by unifying <span class="math inline">\(s\)</span> against
+<span class="math inline">\(t\)</span> with <span
+class="math inline">\(t\)</span>’s variables frozen as constants. Now
+observe: JCAQP’s <strong>validity</strong> condition is precisely a
+check of a <span
+class="math inline">\(\forall\exists\)</span>-quantified conjunction of
+equations, decided by unification with linear constant restrictions
+(thesis §4.2.1, via Baader–Schulz): by the author’s ruling (§6) it reads
+<span class="math inline">\(\exists\bar t\ \forall\bar\beta\ Q\colon
+A[\bar\chi\bar\delta := \bar t]\)</span> — the answer’s fresh parameters
+<span class="math inline">\(\bar\beta\)</span> universally closed
+<em>outside</em> the prefix. So the logical shape of SUBSUME is
+<em>already present</em> in the answer-acceptance conditions,
+unconditionally. Concretely: validity is solution-set-invariant
+(equivalent constraints have equal <span
+class="math inline">\(Q\)</span>-prefixed truth), and for an answer
+whose constraint content includes <span class="math inline">\(u \doteq
+t(\bar\beta)\)</span>, <span class="math inline">\(v \doteq s(\bar
+x)\)</span> and <span class="math inline">\(u \doteq v\)</span>, with
+<span class="math inline">\(\bar\beta\)</span> parameters
+(<strong>answer-chosen in number</strong>) and <span
+class="math inline">\(\bar x\)</span> among <span
+class="math inline">\(Q\)</span>’s existentials, the validity check
+evaluates exactly <span
+class="math inline">\(\forall\bar\beta\,\exists\bar x:\ s \doteq
+t\)</span> — subsumption of <span
+class="math inline">\(\theta(u)\)</span> onto <span
+class="math inline">\(\theta(v)\)</span>, with the <span
+class="math inline">\(\exists\)</span>-side limited to <span
+class="math inline">\(Q\)</span>’s existentials. Two catches (the second
+from the round-2 review). First, this is a condition the answer imposes
+<em>on itself</em>; a reduction must additionally <strong>force</strong>
+every candidate answer into such a shape (empty-premise branches force
+syntactic identity — too strong). Second, the check implements matching
+only under a <strong>polarity discipline</strong>: every variable of
+<span class="math inline">\(\theta(u)\)</span> an answer parameter,
+every matchable variable of <span
+class="math inline">\(\theta(v)\)</span> a <span
+class="math inline">\(Q\)</span>-existential. Nothing enforces this on
+candidate answers, and violated polarity mis-evaluates: with <span
+class="math inline">\(\theta(v) = c\)</span> and <span
+class="math inline">\(\theta(u) = x\)</span> for a <span
+class="math inline">\(Q\)</span>-existential <span
+class="math inline">\(x\)</span>, the check reads <span
+class="math inline">\(\exists x: c \doteq x\)</span> and accepts,
+although <span class="math inline">\(x\)</span> is no instance of <span
+class="math inline">\(c\)</span>. Forcing and polarity enforcement
+together are a named sub-goal alongside the width question (§6).</p>
+</section>
+<section
+id="the-fixed-interface-limitation-and-what-it-does-not-yet-prove"
+class="level3">
+<h3>5.4 The fixed-interface limitation — and what it does <em>not</em>
+yet prove</h3>
+<p>The near-miss of §5.3 is limited in one specific dimension: the <span
+class="math inline">\(\exists\)</span>-block of the checkable <span
+class="math inline">\(\forall\exists\)</span> atoms consists of
+<em>instance variables</em>, of which there are finitely many, fixed
+with the instance. So the primitive it yields is
+<strong>bounded-variable subsumption</strong>: <span
+class="math inline">\(\theta(u) \preceq \theta(v)\)</span> checkable
+when <span class="math inline">\(\theta(v)\)</span> has at most <span
+class="math inline">\(k\)</span> <em>distinct</em> leaf variables, <span
+class="math inline">\(k\)</span> fixed by the instance. Routing the
+subsuming side’s leaves through the prefix’s universal block hits the
+same wall (prefixes are instance-fixed). We call this the
+<strong>fixed-interface limitation</strong>, and — per the author’s
+ruling (§6) — it is a statement about JCAQP’s <em>prefix-quantified
+checks</em>: <em>unboundedly many answer-side objects appear on a
+universal side only in validity (<span class="math inline">\(\exists\bar
+t\,\forall\bar\beta\,Q\colon\ldots\)</span>) and in no-escaping’s
+per-atom gates, and in both the <span
+class="math inline">\(\exists\)</span>-side is limited to <span
+class="math inline">\(Q\)</span>’s existentials, fixed with the
+instance.</em> The channel inventory (corrected by the round-4 review):
+relevance is a pure <span class="math inline">\(\forall\)</span>-closure
+(equalization; no <span class="math inline">\(\exists\)</span>-block);
+consistency is a pure <span
+class="math inline">\(\exists\)</span>-closure (satisfiability; no <span
+class="math inline">\(\forall\)</span>-block — parameters are ordinary
+existentials there); validity mixes quantifiers over the whole answer;
+and no-escaping is <em>not</em> purely syntactic — Definition 4.1 gates
+it per atom on the semantic test <span class="math inline">\(\mathcal{M}
+\models Q\colon c\)</span> (itself a prefix-quantified equation check,
+decidable by the same linear-constant-restriction machinery), applying
+the occurrence/order restriction exactly to the atoms that fail the
+gate. Since <span class="math inline">\(c\)</span> is answer-chosen,
+these gates are a second quantifier-mixing channel with the same bounded
+<span class="math inline">\(\exists\)</span>-width, so the limitation
+stands with both channels counted. Any normal-form theorem in the
+direction of next-step 3 must model all four channels accordingly.</p>
+<p><strong>What this does not prove</strong> (sharpened by the round-9
+review): boundedness here is a bound on <em>distinct variables</em>, not
+on term size — a single existential variable ranges over arbitrarily
+large terms. The canonical stack-machine solutions do use unboundedly
+many distinct leaf variables (<span class="math inline">\(\zeta\)</span>
+needs a distinct <span class="math inline">\(\alpha_{[X]}\)</span> per
+non-narrow configuration class, else <span
+class="math inline">\(\psi_a\)</span> would be ill-defined), but nothing
+rules out <em>non-canonical</em> SSU witnesses that economize on
+distinct variables. So the limitation defeats the canonical route, and
+it defeats SSU-via-§5.3 <strong>only if</strong> the following has a
+negative answer:</p>
+<blockquote>
+<p><strong>Open sub-question 5.2 (bounded-variable SSU).</strong> Call a
+witness <span class="math inline">\((\varphi,\psi_0,\psi_1)\)</span>
+<em><span class="math inline">\(k\)</span>-variable</em> if <span
+class="math inline">\(\mathrm{ran}(\varphi)\)</span> uses at most <span
+class="math inline">\(k\)</span> distinct variables. (Only the subsuming
+side is interface-bounded: in the validity check the matchers’ images
+live on the parameter side, so <span class="math inline">\(\psi_0,
+\psi_1\)</span> may introduce arbitrarily many fresh variables without
+consuming prefix existentials — the round-4 review corrected an earlier
+version that over-demandingly bounded all three ranges.)
+<strong>(a)</strong> For some fixed global <span
+class="math inline">\(k\)</span>: is SSU restricted to <span
+class="math inline">\(k\)</span>-variable witnesses still undecidable?
+<strong>(b)</strong> Is there an undecidable SSU fragment and a
+<em>computable</em> function <span
+class="math inline">\(k(\cdot)\)</span> such that every solvable
+instance <span class="math inline">\(\mathcal{C}\)</span> has a <span
+class="math inline">\(k(\mathcal{C})\)</span>-variable witness?</p>
+</blockquote>
+<p>These are <strong>not</strong> equivalent (round-2 review): a
+reduction builds the JCAQP instance per SSU instance and may allocate an
+input-dependent number of interface variables, so (b) — the weaker
+property — is what Program 7.1 actually needs; (a) is the cleaner
+special case. Correspondingly, decidability of every fixed-<span
+class="math inline">\(k\)</span> slice would <em>not</em> make the
+limitation an obstruction (the union over a computable <span
+class="math inline">\(k(\mathcal{C})\)</span> can remain undecidable);
+the limitation is a genuine obstruction for this route only if (b) fails
+for every undecidable fragment. A positive (a) or (b) lets Program 7.1
+proceed through §5.3’s primitive (modulo the forcing and polarity
+sub-goals). None of this is established here.</p>
+<p>This suggests a genuinely two-sided research question:</p>
+<ul>
+<li><strong>Toward undecidability:</strong> find a mechanism giving
+unbounded <span class="math inline">\(\exists\)</span>-width —
+e.g. answers whose parameters are pinned by back-propagation to
+<em>contexts over other parameters</em> so that one instance variable’s
+binding carries an unbounded family of “existential slots” (the
+branch-closure bindings <span
+class="math inline">\(\nu_i(\gamma)\)</span> are per-branch and can be
+term-sized — round 8 §7’s mechanism, not yet exhausted).</li>
+<li><strong>Toward decidability:</strong> prove the fixed-interface
+principle as a theorem — every JCAQP-expressible condition on <span
+class="math inline">\(\theta\)</span> is equivalent to a Boolean
+combination of <span
+class="math inline">\(\forall\exists\)</span>-equation checks with <span
+class="math inline">\(\exists\)</span>-width bounded by the instance —
+and derive that (S)-style conditions are inexpressible, then attempt a
+bounded-answer argument for the whole problem. Lemma 5.1 would be one
+ingredient (conditions are anti-monotone-in-relevance,
+consistency-monotone).</li>
+</ul>
+</section>
+</section>
+<section
+id="the-semantic-fork-resolved-by-the-author-two-residual-questions"
+class="level2">
+<h2>6. The semantic fork, resolved by the author (two residual
+questions)</h2>
+<p>An earlier version of this section posed a fork: Definition 4.1
+states consistency as <span class="math inline">\(\mathcal{M} \models
+\bigwedge_i \exists\,\mathrm{FV}(D_i \land A).\ D_i \land A\)</span> — a
+pure <span class="math inline">\(\exists\)</span>-closure — while
+Example 4.3 <em>verifies</em> its answer by checking <span
+class="math inline">\(\forall\gamma\,\exists x,y,z:\ y \doteq
+f(z,\gamma) \land y \doteq f(a,x)\)</span>, with the parameter
+universally quantified.</p>
+<p><strong>Author’s ruling (2026-08-19).</strong> Definition 4.1 is
+intended as written: <strong>consistency is the plain existential
+closure</strong> (not <span class="math inline">\(Q\)</span>-prefixed;
+parameters are ordinary existentials there), and <strong>validity
+carries the full prefix <span class="math inline">\(Q\)</span></strong>.
+Since the answer’s fresh parameters <span
+class="math inline">\(\bar\beta\)</span> remain free in the validity
+formula and free variables are universally closed under <span
+class="math inline">\(\mathcal{M} \models\)</span>, validity reads <span
+class="math inline">\(\exists\bar t\ \forall\bar\beta\ Q\colon
+A[\bar\chi\bar\delta := \bar t]\)</span>. Example 4.3’s <span
+class="math inline">\(\forall\gamma\)</span> display is then best read
+as verifying validity-style unconstrainedness jointly with the (weaker,
+<span class="math inline">\(\exists\)</span>-closed) consistency
+requirement.</p>
+<p><strong>Consequences.</strong> The <span
+class="math inline">\(\forall\exists\)</span> capability of §5.3 does
+<em>not</em> live in consistency (which is mere unifiability) — it
+lives, unconditionally, in <strong>validity</strong>. This resolves the
+fork in the more hopeful direction without any erratum to the
+definition: the bounded-variable matching-by-freezing check is
+definitionally present. What remains for Program 7.1, per §5.3–5.4, is
+now sharply delimited:</p>
+<ol type="1">
+<li>a <strong>forcing mechanism</strong> making every candidate answer
+carry the checkable linkage atoms;</li>
+<li><strong>polarity enforcement</strong> (§5.3’s second catch);</li>
+<li>the <strong>width question</strong> 5.2(a)/(b).</li>
+</ol>
+<p><strong>Residual questions for the author.</strong> (1) In validity,
+may the instantiation terms <span class="math inline">\(\bar t\)</span>
+(substituted for <span
+class="math inline">\(\bar\chi\bar\delta\)</span>) mention universally
+quantified variables of <span class="math inline">\(Q\)</span>? This is
+round 8 §7’s filter question — it governs whether validity excludes
+universal-hard-coding answers. (2) Round 8 §10’s Example 4.3 caveat:
+<span class="math inline">\(y \doteq f(x,z)\)</span> verifies as an
+answer yet is not below the claimed most general answer <span
+class="math inline">\(\exists\gamma: y \doteq f(z,\gamma)\)</span> — is
+an implicit side condition intended, or is the most-generality claim to
+be weakened?</p>
+</section>
+<section id="machine-checks" class="level2">
+<h2>7. Machine checks</h2>
+<p><a href="round-9-experiments.py">round-9-experiments.py</a>
+(self-contained; reuses round 8’s engine, adds one-sided matching by
+freezing and an (E)+(S) meta-checker):</p>
+<ul>
+<li><strong>Proposition 2.1</strong> verified on a solvable SSU instance
+(<span class="math inline">\(\{0|p| \doteq |q|0\}\)</span>): the
+canonical answer passes <span class="math inline">\(J_0\)</span>’s
+branches, and (S) holds via the freezing matcher.</li>
+<li><strong>Junk demonstrated:</strong> the same <span
+class="math inline">\(J_0\)</span> has free-<span
+class="math inline">\(y\)</span> answers regardless of SSU-solvability —
+confirming (S) carries all the hardness.</li>
+<li><strong>Remark 2.0.1’s aliasing answer</strong> checked on the
+unsolvable instance: <span class="math inline">\(\theta(x_p) =
+g\)</span>, <span class="math inline">\(\theta(y) = h^0\)</span> passes
+the (refuted) decomposition-premise variant <em>and</em> satisfies (S),
+but fails the empty-premise skeleton’s relevance — the hole and its fix,
+both machine-visible.</li>
+<li><strong>Lemma 3.1</strong> exercised on Dudenhefner’s Example 13
+(<span class="math inline">\(\{1|p| \doteq |p|0\}\)</span>, unsolvable —
+the unbounded machine <span class="math inline">\(\{1p \to
+p0\}\)</span>): bounded search finds no <span
+class="math inline">\(\theta\)</span> satisfying (E)+(S), while (E)
+alone is satisfied; on the solvable instance, (E)+(S) answers are
+found.</li>
+<li><strong>Lemma 5.1’s counterexample</strong> verified: parameter
+merging preserves every relevance condition while destroying
+subsumption, and the unifiability probe catches the merge via a
+consistency clash.</li>
+</ul>
+</section>
+<section id="next-steps" class="level2">
+<h2>8. Next steps</h2>
+<ol type="1">
+<li><strong>Design the forcing + polarity mechanism</strong> (§5.3’s two
+catches): make every candidate answer carry the linkage atoms <span
+class="math inline">\(u \doteq t(\bar\beta)\)</span>, <span
+class="math inline">\(v \doteq s(\bar x)\)</span>, <span
+class="math inline">\(u \doteq v\)</span> with the correct variable
+polarity, without collapsing the validity check to syntactic identity.
+This is now the main constructive sub-goal, and it is prefix-side, so
+Lemma 5.1 permits detection through validity/no-escaping as well as
+consistency.</li>
+<li>Attack <strong>Question 5.2 (bounded-variable SSU)</strong> — the
+load-bearing width point, in its two inequivalent variants: (a) fixed
+global <span class="math inline">\(k\)</span> (the comb-shaped <span
+class="math inline">\(k{=}2\)</span> case is the natural first target);
+(b) a computable instance-dependent witness bound <span
+class="math inline">\(k(\mathcal{C})\)</span>, which is all a reduction
+needs since the JCAQP instance is built per SSU instance. Either
+positive variant, combined with next-step 1, completes Program 7.1 via
+§5.3’s validity primitive. Independently: can back-propagation pin one
+parameter to a <em>context</em> over other parameters, multiplying
+effective <span class="math inline">\(\exists\)</span>-width across
+branches?</li>
+<li>For the decidability route: attempt the fixed-interface principle as
+a theorem (a normal form for JCAQP-expressible <span
+class="math inline">\(\theta\)</span>-conditions — Boolean combinations
+of <span class="math inline">\(\forall\exists\)</span>-equation checks
+with <span class="math inline">\(Q\)</span>-bounded <span
+class="math inline">\(\exists\)</span>-width), aiming at
+inexpressibility of (S) in the absence of a positive 5.2(b).</li>
+<li>Warm-up lower bound (round 8 next-step 2) is still open and would
+exercise the guard toolkit.</li>
+</ol>
+</section>
+<section id="references" class="level2">
+<h2>References</h2>
+<p>As round 8, plus: A. Dudenhefner, “Undecidability of Semi-Unification
+on a Napkin,” FSCD 2020 (Problems 3/15, Example 13, Theorem 3); F.
+Baader, K. Schulz, “Unification in the Union of Disjoint Equational
+Theories” (linear constant restrictions).</p>
+</section>
+</section>
+</article>
+<script src="/assets/theme-toggle.js"></script>
+</body>
+</html>
