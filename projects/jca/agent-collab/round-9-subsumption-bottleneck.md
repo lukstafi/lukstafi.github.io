@@ -9,11 +9,11 @@ date: 2026-08-19
 
 ## 0. Summary
 
-1. **Equational skeleton (§2).** For an SSU instance $\mathcal{C}$ we build a purely existential JCA instance $J_0(\mathcal{C})$ (decomposition branches). Soundness holds: every SSU solution induces an answer (Proposition 2.1, machine-checked). As expected, $J_0$ alone is nearly always solvable — it is deliberately only the skeleton.
+1. **Equational skeleton (§2).** For an SSU instance $\mathcal{C}$ we build a purely existential JCA instance $J_0(\mathcal{C})$ (empty-premise structural branches; a decomposition-premise variant was refuted by the round-9 review and is documented in Remark 2.0.1). $J_0$ captures the equational condition (E) *exactly* (Lemma 2.0), and soundness holds: every SSU solution induces an answer (Proposition 2.1, machine-checked). As expected, $J_0$ alone is nearly always solvable — it is deliberately only the skeleton.
 2. **Tupling lemma (§3).** SSU-solvability of $\mathcal{C}$ is *equivalent* to: the skeleton's equations plus exactly **two** subsumption constraints (one per letter $a \in \{0,1\}$) between answer-chosen tuples. So Program 7.1 reduces to one primitive:
    > **SUBSUME$(v, u)$:** a JCAQP gadget accepting an answer $\theta$ iff $\theta(u)$ is a substitution instance of $\theta(v)$.
 3. **Bottleneck theorem (§4).** If a sound and complete, composable SUBSUME gadget exists, then JCAQP-EXIST over $\mathcal{T}(\mathcal{F})$ is undecidable.
-4. **Expressibility analysis (§5).** New structural constraints on any would-be gadget: unifiability probes give the necessary but not sufficient half for free; a **monotonicity lemma** shows relevance conditions survive answer strengthening, so a gadget must detect subsumption violations *through consistency alone*; subsumption itself is exactly a $\forall\exists$-equation (matching by freezing), which is the same logical shape as the thesis's validity and (parameter-universal) consistency checks — a striking near-miss blocked only by the **fixed-interface principle**: the $\exists$-side of the checkable $\forall\exists$ atoms is limited to the instance's finitely many variables, while SSU needs unboundedly many.
+4. **Expressibility analysis (§5).** New structural constraints on any would-be gadget: unifiability probes give the necessary but not sufficient half for free; a **monotonicity lemma** shows relevance conditions survive answer strengthening, so a gadget must detect subsumption violations *through consistency alone*; subsumption itself is exactly a $\forall\exists$-equation (matching by freezing), which is the same logical shape as the thesis's validity and (parameter-universal) consistency checks — a striking near-miss that yields **bounded-variable subsumption** natively. What blocks full SSU is the **fixed-interface limitation** (§5.4): the $\exists$-side of the checkable atoms is limited to the instance's finitely many *distinct* variables. Whether that is a real barrier is now a crisp open sub-question ($k$-variable SSU, Question 5.2): distinct-variable count, not term size, is what the interface bounds — a distinction sharpened by the round-9 review.
 5. **A semantic fork in the thesis (§6).** Definition 4.1's consistency condition is a pure $\exists$-closure, but Example 4.3 verifies consistency with the answer parameter quantified *universally* ($\forall\gamma\,\exists x,y,z$), operationalizing "parameters are required to be unconstrained". The two readings give JCAQP different expressive power, and the gap matters exactly at the bottleneck. This is a question for the thesis author.
 
 ## 1. The target: simple semi-unification
@@ -28,17 +28,21 @@ Notation below: JCAQP terms over signature $\{\mathrm{arr}/2,\ c/0\}$; $\pi_0, \
 
 ## 2. The equational skeleton $J_0(\mathcal{C})$ and soundness
 
-Instance variables: $x_\alpha$ for each SSU variable $\alpha$ of $\mathcal{C}$; $y_{a,\alpha}$ for each pair $(a,\alpha)$ occurring in a constraint; branch-local $h^0_\kappa, h^1_\kappa$ per constraint $\kappa$. For each $\kappa = (a|\alpha| \doteq |\beta|b)$, the **decomposition branch**:
+Instance variables: $x_\alpha$ for each SSU variable $\alpha$ of $\mathcal{C}$; $y_{a,\alpha}$ for each pair $(a,\alpha)$ occurring in a constraint; a witness variable $w_\kappa$ per constraint $\kappa$. For each $\kappa = (a|\alpha| \doteq |\beta|b)$, the **structural branch** has an *empty premise*:
 
-$$D_\kappa:\ x_\beta \doteq \mathrm{arr}(h^0_\kappa, h^1_\kappa) \qquad C_\kappa:\ h^b_\kappa \doteq y_{a,\alpha}.$$
+$$D_\kappa:\ \top \qquad C_\kappa:\ x_\beta \doteq \begin{cases} \mathrm{arr}(y_{a,\alpha},\, w_\kappa) & b = 0 \\ \mathrm{arr}(w_\kappa,\, y_{a,\alpha}) & b = 1. \end{cases}$$
 
-By round 8's Theorem 2.4, an answer $\theta$ passes branch $\kappa$ iff $\theta(x_\beta)$ unifies with a fresh arrow (consistency; automatic unless occurs-check pathologies) and the closure equalizes $h^b_\kappa \doteq y_{a,\alpha}$ — for arrow-shaped $\theta(x_\beta)$ this says exactly $\pi_b(\theta(x_\beta)) \equiv \theta(y_{a,\alpha})$.
+**Lemma 2.0.** $\theta$ passes branch $\kappa$ iff $\theta(x_\beta)$ is *syntactically* an arrow whose $b$-component is $\theta(y_{a,\alpha})$ (and whose other component is $\theta(w_\kappa)$) — i.e. exactly condition (E) of §3.
 
-**Proposition 2.1 (soundness).** If $(\varphi, \psi_0, \psi_1)$ models $\mathcal{C}$, then $\theta$ defined by $\theta(x_\alpha) = \varphi(\alpha)^t$, $\theta(y_{a,\alpha}) = \psi_a(\varphi(\alpha))^t$ passes every branch of $J_0(\mathcal{C})$.
+*Proof.* With an empty premise, consistency is satisfiability of $A$, and relevance (Theorem 2.4 of round 8) demands that $\mathrm{mgu}(A) = \theta$ itself equalize $C_\kappa$. $\square$
 
-*Proof.* $\theta(x_\beta) = \varphi(\beta)^t$ is an arrow whose $b$-component is $\psi_a(\varphi(\alpha))^t = \theta(y_{a,\alpha})$ by the modeling condition; the branch mgu binds only the fresh $h$'s. $\square$
+**Remark 2.0.1 (why not decomposition premises).** The first version of this skeleton used premise-side decomposition, $D_\kappa: x_\beta \doteq \mathrm{arr}(h^0_\kappa, h^1_\kappa)$, $C_\kappa: h^b_\kappa \doteq y_{a,\alpha}$. The round-9 automated review exhibited a fatal aliasing answer: $\theta(x_\beta) = g$ (a bare parameter) and $\theta(y_{a,\alpha}) = h^0_\kappa$ — the premise binds $g \mapsto \mathrm{arr}(h^0, h^1)$, the conclusion becomes the tautology $h^0 \doteq h^0$, and even a perfect SUBSUME gadget accepts ($h^0$ *is* an instance of the variable $g$), producing a false positive on unsolvable instances; round 8's guards cannot reject it because the aliased right-hand side is a variable. The empty-premise formulation closes the hole structurally: relevance under $\top$ is equalization by $\mathrm{mgu}(A)$ alone, so a bare-parameter $\theta(x_\beta)$ simply fails, and no branch-local variables exist to alias. (This also simplifies Theorem 4.1's completeness — no guard toolkit needed.)
 
-**Junk (expected).** $J_0$ alone is essentially always solvable — e.g. bind each $y_{a,\alpha}$ to a fresh parameter and each $x_\beta$ to an arrow with the right $y$-parameters in the right slots; or alias $y_{a,\alpha} \doteq h^b_\kappa$. Guards (round 8, Remark 3.2) exclude the $h$-aliasing family, but the free-$y$ junk is not junk *of the skeleton* at all: $J_0$ correctly captures the equational content (E) below, and (E) alone is trivially satisfiable. All hardness lives in the coherence of the $\psi$'s, isolated next.
+**Proposition 2.1 (soundness).** If $(\varphi, \psi_0, \psi_1)$ models $\mathcal{C}$, then $\theta$ defined by $\theta(x_\alpha) = \varphi(\alpha)^t$, $\theta(y_{a,\alpha}) = \psi_a(\varphi(\alpha))^t$, and $\theta(w_\kappa) = $ the transliterated other component of $\varphi(\beta)$, passes every branch of $J_0(\mathcal{C})$.
+
+*Proof.* $\theta(x_\beta) = \varphi(\beta)^t$ is an arrow whose $b$-component is $\psi_a(\varphi(\alpha))^t = \theta(y_{a,\alpha})$ and whose other component is $\theta(w_\kappa)$, by the modeling condition; apply Lemma 2.0. $\square$
+
+**Junk (expected).** $J_0$ alone is essentially always solvable — bind each $y_{a,\alpha}$ to a fresh parameter and each $x_\beta$ to an arrow with the right $y$-parameters in the right slots. This is not junk *of the skeleton*: by Lemma 2.0, $J_0$ captures exactly the equational content (E) below, and (E) alone is trivially satisfiable. All hardness lives in the coherence of the $\psi$'s, isolated next.
 
 ## 3. The tupling lemma: two subsumptions suffice
 
@@ -58,9 +62,11 @@ So beyond the skeleton (which JCAQP expresses natively, with $\mathrm{tup}$-buil
 
 ## 4. The bottleneck theorem
 
-**Theorem 4.1.** Suppose there is a SUBSUME gadget that is sound and complete in the above sense and composable (auxiliary variables fresh; its branches do not constrain non-designated variables beyond consistency-neutral bindings). Then JCAQP-EXIST over $\mathcal{T}(\mathcal{F})$ is undecidable, by reduction from SSU via $J_0(\mathcal{C})$ + tupling branches + SUBSUME$(X_a, Y_a)$ for $a \in \{0,1\}$.
+**Theorem 4.1.** Suppose there is a SUBSUME gadget that is sound and complete in the above sense and composable (auxiliary variables fresh; its branches do not constrain non-designated variables beyond consistency-neutral bindings). Then JCAQP-EXIST over $\mathcal{T}(\mathcal{F})$ is undecidable, by reduction from SSU via $J_0(\mathcal{C})$ + tupling branches (empty-premise, like $J_0$'s) + SUBSUME$(X_a, Y_a)$ for $a \in \{0,1\}$.
 
-*Proof.* Lemma 3.1 plus Proposition 2.1 for soundness; completeness of the combined instance is exactly the gadget's completeness applied to (S), with (E) enforced by the skeleton (junk shapes for (E) are excluded by the guard toolkit of round 8 §3/§5.3 — the residual analysis mirrors round 8's port-aliasing case). $\square$
+*Proof.* Soundness: Proposition 2.1 plus Lemma 3.1's ($\Rightarrow$) direction and the gadget's soundness. Completeness: any accepted $\theta$ satisfies (E) *syntactically* by Lemma 2.0 (no aliasing or guard analysis needed — cf. Remark 2.0.1) and (S) by the gadget's completeness; Lemma 3.1's ($\Leftarrow$) direction yields an SSU model. $\square$
+
+**Sanity check on Example 13.** For the unsolvable $\{1|p| \doteq |p|0\}$ the combined conditions refute themselves in two lines: (E) forces $\theta(x_p) = \mathrm{arr}(\theta(y), \theta(w))$, and (S) forces $\theta(y) = \theta(x_p)\sigma = \mathrm{arr}(\theta(y)\sigma, \theta(w)\sigma)$, whence $\mathrm{depth}(\theta(y)) \geq 1 + \mathrm{depth}(\theta(y))$ — impossible. So given a perfect gadget the encoding correctly rejects it (the decomposition-premise version did not; Remark 2.0.1).
 
 Conversely, round 8's port-collapse theorem says a SUBSUME gadget cannot have port-shaped premises, and §5 below adds sharper constraints. The problem "is SUBSUME expressible?" is now the clean frontier — Maher's "answer inside the quantifier" difference, as an isolated primitive.
 
@@ -86,9 +92,15 @@ $$t \preceq s \quad\iff\quad \mathcal{T}(\mathcal{F}) \models \forall\,\mathrm{F
 
 decided by unifying $s$ against $t$ with $t$'s variables frozen as constants. Now observe: JCAQP's **validity** condition ($\mathcal{M} \models Q\colon A[\ldots]$) and — under the parameter-universal reading of §6 — its **consistency** condition are precisely checks of $\forall\exists$-quantified conjunctions of equations, decided by unification with linear constant restrictions (thesis §4.2.1, via Baader–Schulz). So the logical shape of SUBSUME is *already present* in the answer-acceptance conditions. Concretely, under the $\forall$-parameter reading, a single branch with premise $v \doteq u$ where $\theta(u)$'s leaves are answer parameters ($\forall$, and — crucially — **answer-chosen in number**) and $\theta(v)$'s leaves are instance variables ($\exists$ inside the consistency closure) has as its consistency condition exactly $\forall\bar\beta\,\exists \bar x:\ \theta(v) \doteq \theta(u)$ — subsumption of $\theta(u)$ onto $\theta(v)$.
 
-### 5.4 The fixed-interface obstruction
+### 5.4 The fixed-interface limitation — and what it does *not* yet prove
 
-The near-miss of §5.3 fails for SSU for one reason only: the $\exists$-block of the checkable $\forall\exists$ atoms consists of *instance variables*, of which there are finitely many, fixed with the instance — while the subsuming side in (S), $\mathrm{tup}_a(\theta(x_\alpha))$, has answer-chosen leaves whose number is *not computable from the SSU instance* (it grows with the stack machine's uniform bound — that is the whole content of the undecidability). Dually, routing the subsuming side's leaves through the prefix's universal block hits the same wall: prefixes are instance-fixed. Every route we tried lands on this **fixed-interface principle**: *unboundedly many answer-side objects can enter the acceptance conditions only through the parameter block $\bar\beta$, and $\bar\beta$ sits on the $\forall$-side of every check (validity, parameter-universal consistency), never on the $\exists$-side.*
+The near-miss of §5.3 is limited in one specific dimension: the $\exists$-block of the checkable $\forall\exists$ atoms consists of *instance variables*, of which there are finitely many, fixed with the instance. So the primitive it yields is **bounded-variable subsumption**: $\theta(u) \preceq \theta(v)$ checkable when $\theta(v)$ has at most $k$ *distinct* leaf variables, $k$ fixed by the instance. Routing the subsuming side's leaves through the prefix's universal block hits the same wall (prefixes are instance-fixed). We call this the **fixed-interface limitation**: *unboundedly many answer-side objects enter the acceptance conditions only through the parameter block $\bar\beta$, which sits on the $\forall$-side of every check (validity, parameter-universal consistency), never on the $\exists$-side.*
+
+**What this does not prove** (sharpened by the round-9 review): boundedness here is a bound on *distinct variables*, not on term size — a single existential variable ranges over arbitrarily large terms. The canonical stack-machine solutions do use unboundedly many distinct leaf variables ($\zeta$ needs a distinct $\alpha_{[X]}$ per non-narrow configuration class, else $\psi_a$ would be ill-defined), but nothing rules out *non-canonical* SSU witnesses that economize on distinct variables. So the limitation defeats the canonical route, and it defeats SSU-via-§5.3 **only if** the following has a negative answer:
+
+> **Open sub-question 5.2 ($k$-variable SSU).** For fixed $k$, is SSU restricted to solutions in which $\mathrm{ran}(\varphi) \cup \mathrm{ran}(\psi_0) \cup \mathrm{ran}(\psi_1)$ uses at most $k$ distinct variables still undecidable? (Equivalently: does some undecidable SSU fragment admit a computable bound on the distinct-variable count of some witness whenever one exists?)
+
+If $k$-variable SSU is undecidable for some fixed $k$, the fixed-interface limitation dissolves and Program 7.1 goes through §5.3's primitive under the $\forall$-parameter reading; if instead $k$-variable SSU is decidable for every $k$, the limitation is a genuine obstruction for this route. Either resolution is progress; neither is established here.
 
 This suggests a genuinely two-sided research question:
 
@@ -112,13 +124,14 @@ Which readings are intended (and which does InvarGenT implement)? The answer det
 
 - **Proposition 2.1** verified on a solvable SSU instance ($\{0|p| \doteq |q|0\}$): the canonical answer passes $J_0$'s branches, and (S) holds via the freezing matcher.
 - **Junk demonstrated:** the same $J_0$ has free-$y$ answers regardless of SSU-solvability — confirming (S) carries all the hardness.
+- **Remark 2.0.1's aliasing answer** checked on the unsolvable instance: $\theta(x_p) = g$, $\theta(y) = h^0$ passes the (refuted) decomposition-premise variant *and* satisfies (S), but fails the empty-premise skeleton's relevance — the hole and its fix, both machine-visible.
 - **Lemma 3.1** exercised on Dudenhefner's Example 13 ($\{1|p| \doteq |p|0\}$, unsolvable — the unbounded machine $\{1p \to p0\}$): bounded search finds no $\theta$ satisfying (E)+(S), while (E) alone is satisfied; on the solvable instance, (E)+(S) answers are found.
 - **Lemma 5.1's counterexample** verified: parameter merging preserves every relevance condition while destroying subsumption, and the unifiability probe catches the merge via a consistency clash.
 
 ## 8. Next steps
 
 1. Resolve the §6 semantic fork with the thesis author; restate Definition 4.1 accordingly.
-2. Under the $\forall$-reading: attack the width barrier — can back-propagation pin one parameter to a *context* over $k$ other parameters, effectively multiplying $\exists$-width across branches? A concrete micro-goal: express SUBSUME$(v,u)$ where $\theta(v)$ is restricted to right-combs of unbounded length but only two distinct leaf variables (the SSU instances from stack machines are not far from comb-shaped).
+2. Attack **Question 5.2 ($k$-variable SSU)** directly — it is now the load-bearing open point. Either exhibit an undecidable SSU (or stack-machine) fragment whose witnesses can be normalized to boundedly many distinct variables (then, under the $\forall$-reading, Program 7.1 completes via §5.3's native bounded-variable primitive — the comb-shaped $k{=}2$ case is the natural first target), or prove $k$-variable SSU decidable for each $k$ (then the fixed-interface limitation is a real obstruction and the decidability route gains a lemma). Independently: can back-propagation pin one parameter to a *context* over other parameters, multiplying effective $\exists$-width across branches?
 3. Under the $\exists$-reading: attempt the fixed-interface principle as a theorem (a normal form for JCAQP-expressible $\theta$-conditions), aiming at inexpressibility of (S) — the decidability route.
 4. Warm-up lower bound (round 8 next-step 2) is still open and would exercise the guard toolkit.
 

@@ -72,9 +72,11 @@ Subsumption is a <span
 class="math inline">\(\forall\exists\)</span>-equation — and the
 thesis’s own checks are <span
 class="math inline">\(\forall\exists\)</span></a></li>
-<li><a href="#the-fixed-interface-obstruction"
-id="toc-the-fixed-interface-obstruction">5.4 The fixed-interface
-obstruction</a></li>
+<li><a
+href="#the-fixed-interface-limitation-and-what-it-does-not-yet-prove"
+id="toc-the-fixed-interface-limitation-and-what-it-does-not-yet-prove">5.4
+The fixed-interface limitation — and what it does <em>not</em> yet
+prove</a></li>
 </ul></li>
 <li><a href="#a-semantic-fork-in-the-thesis-question-for-the-author"
 id="toc-a-semantic-fork-in-the-thesis-question-for-the-author">6. A
@@ -107,8 +109,11 @@ conventions on which the primitive’s fate appears to turn.</em></p>
 <li><strong>Equational skeleton (§2).</strong> For an SSU instance <span
 class="math inline">\(\mathcal{C}\)</span> we build a purely existential
 JCA instance <span class="math inline">\(J_0(\mathcal{C})\)</span>
-(decomposition branches). Soundness holds: every SSU solution induces an
-answer (Proposition 2.1, machine-checked). As expected, <span
+(empty-premise structural branches; a decomposition-premise variant was
+refuted by the round-9 review and is documented in Remark 2.0.1). <span
+class="math inline">\(J_0\)</span> captures the equational condition (E)
+<em>exactly</em> (Lemma 2.0), and soundness holds: every SSU solution
+induces an answer (Proposition 2.1, machine-checked). As expected, <span
 class="math inline">\(J_0\)</span> alone is nearly always solvable — it
 is deliberately only the skeleton.</li>
 <li><strong>Tupling lemma (§3).</strong> SSU-solvability of <span
@@ -133,12 +138,15 @@ so a gadget must detect subsumption violations <em>through consistency
 alone</em>; subsumption itself is exactly a <span
 class="math inline">\(\forall\exists\)</span>-equation (matching by
 freezing), which is the same logical shape as the thesis’s validity and
-(parameter-universal) consistency checks — a striking near-miss blocked
-only by the <strong>fixed-interface principle</strong>: the <span
-class="math inline">\(\exists\)</span>-side of the checkable <span
-class="math inline">\(\forall\exists\)</span> atoms is limited to the
-instance’s finitely many variables, while SSU needs unboundedly
-many.</li>
+(parameter-universal) consistency checks — a striking near-miss that
+yields <strong>bounded-variable subsumption</strong> natively. What
+blocks full SSU is the <strong>fixed-interface limitation</strong>
+(§5.4): the <span class="math inline">\(\exists\)</span>-side of the
+checkable atoms is limited to the instance’s finitely many
+<em>distinct</em> variables. Whether that is a real barrier is now a
+crisp open sub-question (<span class="math inline">\(k\)</span>-variable
+SSU, Question 5.2): distinct-variable count, not term size, is what the
+interface bounds — a distinction sharpened by the round-9 review.</li>
 <li><strong>A semantic fork in the thesis (§6).</strong> Definition
 4.1’s consistency condition is a pure <span
 class="math inline">\(\exists\)</span>-closure, but Example 4.3 verifies
@@ -192,52 +200,78 @@ class="math inline">\(J_0(\mathcal{C})\)</span> and soundness</h2>
 each SSU variable <span class="math inline">\(\alpha\)</span> of <span
 class="math inline">\(\mathcal{C}\)</span>; <span
 class="math inline">\(y_{a,\alpha}\)</span> for each pair <span
-class="math inline">\((a,\alpha)\)</span> occurring in a constraint;
-branch-local <span class="math inline">\(h^0_\kappa, h^1_\kappa\)</span>
-per constraint <span class="math inline">\(\kappa\)</span>. For each
-<span class="math inline">\(\kappa = (a|\alpha| \doteq
-|\beta|b)\)</span>, the <strong>decomposition branch</strong>:</p>
-<p><span class="math display">\[D_\kappa:\ x_\beta \doteq
-\mathrm{arr}(h^0_\kappa, h^1_\kappa) \qquad C_\kappa:\ h^b_\kappa \doteq
-y_{a,\alpha}.\]</span></p>
-<p>By round 8’s Theorem 2.4, an answer <span
+class="math inline">\((a,\alpha)\)</span> occurring in a constraint; a
+witness variable <span class="math inline">\(w_\kappa\)</span> per
+constraint <span class="math inline">\(\kappa\)</span>. For each <span
+class="math inline">\(\kappa = (a|\alpha| \doteq |\beta|b)\)</span>, the
+<strong>structural branch</strong> has an <em>empty premise</em>:</p>
+<p><span class="math display">\[D_\kappa:\ \top \qquad C_\kappa:\
+x_\beta \doteq \begin{cases} \mathrm{arr}(y_{a,\alpha},\, w_\kappa)
+&amp; b = 0 \\ \mathrm{arr}(w_\kappa,\, y_{a,\alpha}) &amp; b = 1.
+\end{cases}\]</span></p>
+<p><strong>Lemma 2.0.</strong> <span
 class="math inline">\(\theta\)</span> passes branch <span
 class="math inline">\(\kappa\)</span> iff <span
-class="math inline">\(\theta(x_\beta)\)</span> unifies with a fresh
-arrow (consistency; automatic unless occurs-check pathologies) and the
-closure equalizes <span class="math inline">\(h^b_\kappa \doteq
-y_{a,\alpha}\)</span> — for arrow-shaped <span
-class="math inline">\(\theta(x_\beta)\)</span> this says exactly <span
-class="math inline">\(\pi_b(\theta(x_\beta)) \equiv
-\theta(y_{a,\alpha})\)</span>.</p>
+class="math inline">\(\theta(x_\beta)\)</span> is <em>syntactically</em>
+an arrow whose <span class="math inline">\(b\)</span>-component is <span
+class="math inline">\(\theta(y_{a,\alpha})\)</span> (and whose other
+component is <span class="math inline">\(\theta(w_\kappa)\)</span>) —
+i.e. exactly condition (E) of §3.</p>
+<p><em>Proof.</em> With an empty premise, consistency is satisfiability
+of <span class="math inline">\(A\)</span>, and relevance (Theorem 2.4 of
+round 8) demands that <span class="math inline">\(\mathrm{mgu}(A) =
+\theta\)</span> itself equalize <span
+class="math inline">\(C_\kappa\)</span>. <span
+class="math inline">\(\square\)</span></p>
+<p><strong>Remark 2.0.1 (why not decomposition premises).</strong> The
+first version of this skeleton used premise-side decomposition, <span
+class="math inline">\(D_\kappa: x_\beta \doteq \mathrm{arr}(h^0_\kappa,
+h^1_\kappa)\)</span>, <span class="math inline">\(C_\kappa: h^b_\kappa
+\doteq y_{a,\alpha}\)</span>. The round-9 automated review exhibited a
+fatal aliasing answer: <span class="math inline">\(\theta(x_\beta) =
+g\)</span> (a bare parameter) and <span
+class="math inline">\(\theta(y_{a,\alpha}) = h^0_\kappa\)</span> — the
+premise binds <span class="math inline">\(g \mapsto \mathrm{arr}(h^0,
+h^1)\)</span>, the conclusion becomes the tautology <span
+class="math inline">\(h^0 \doteq h^0\)</span>, and even a perfect
+SUBSUME gadget accepts (<span class="math inline">\(h^0\)</span>
+<em>is</em> an instance of the variable <span
+class="math inline">\(g\)</span>), producing a false positive on
+unsolvable instances; round 8’s guards cannot reject it because the
+aliased right-hand side is a variable. The empty-premise formulation
+closes the hole structurally: relevance under <span
+class="math inline">\(\top\)</span> is equalization by <span
+class="math inline">\(\mathrm{mgu}(A)\)</span> alone, so a
+bare-parameter <span class="math inline">\(\theta(x_\beta)\)</span>
+simply fails, and no branch-local variables exist to alias. (This also
+simplifies Theorem 4.1’s completeness — no guard toolkit needed.)</p>
 <p><strong>Proposition 2.1 (soundness).</strong> If <span
 class="math inline">\((\varphi, \psi_0, \psi_1)\)</span> models <span
 class="math inline">\(\mathcal{C}\)</span>, then <span
 class="math inline">\(\theta\)</span> defined by <span
 class="math inline">\(\theta(x_\alpha) = \varphi(\alpha)^t\)</span>,
 <span class="math inline">\(\theta(y_{a,\alpha}) =
-\psi_a(\varphi(\alpha))^t\)</span> passes every branch of <span
+\psi_a(\varphi(\alpha))^t\)</span>, and $(w_) = $ the transliterated
+other component of <span class="math inline">\(\varphi(\beta)\)</span>,
+passes every branch of <span
 class="math inline">\(J_0(\mathcal{C})\)</span>.</p>
 <p><em>Proof.</em> <span class="math inline">\(\theta(x_\beta) =
 \varphi(\beta)^t\)</span> is an arrow whose <span
 class="math inline">\(b\)</span>-component is <span
 class="math inline">\(\psi_a(\varphi(\alpha))^t =
-\theta(y_{a,\alpha})\)</span> by the modeling condition; the branch mgu
-binds only the fresh <span class="math inline">\(h\)</span>’s. <span
+\theta(y_{a,\alpha})\)</span> and whose other component is <span
+class="math inline">\(\theta(w_\kappa)\)</span>, by the modeling
+condition; apply Lemma 2.0. <span
 class="math inline">\(\square\)</span></p>
 <p><strong>Junk (expected).</strong> <span
 class="math inline">\(J_0\)</span> alone is essentially always solvable
-— e.g. bind each <span class="math inline">\(y_{a,\alpha}\)</span> to a
-fresh parameter and each <span class="math inline">\(x_\beta\)</span> to
-an arrow with the right <span
-class="math inline">\(y\)</span>-parameters in the right slots; or alias
-<span class="math inline">\(y_{a,\alpha} \doteq h^b_\kappa\)</span>.
-Guards (round 8, Remark 3.2) exclude the <span
-class="math inline">\(h\)</span>-aliasing family, but the free-<span
-class="math inline">\(y\)</span> junk is not junk <em>of the
-skeleton</em> at all: <span class="math inline">\(J_0\)</span> correctly
-captures the equational content (E) below, and (E) alone is trivially
-satisfiable. All hardness lives in the coherence of the <span
+— bind each <span class="math inline">\(y_{a,\alpha}\)</span> to a fresh
+parameter and each <span class="math inline">\(x_\beta\)</span> to an
+arrow with the right <span class="math inline">\(y\)</span>-parameters
+in the right slots. This is not junk <em>of the skeleton</em>: by Lemma
+2.0, <span class="math inline">\(J_0\)</span> captures exactly the
+equational content (E) below, and (E) alone is trivially satisfiable.
+All hardness lives in the coherence of the <span
 class="math inline">\(\psi\)</span>’s, isolated next.</p>
 </section>
 <section id="the-tupling-lemma-two-subsumptions-suffice" class="level2">
@@ -317,15 +351,29 @@ variables fresh; its branches do not constrain non-designated variables
 beyond consistency-neutral bindings). Then JCAQP-EXIST over <span
 class="math inline">\(\mathcal{T}(\mathcal{F})\)</span> is undecidable,
 by reduction from SSU via <span
-class="math inline">\(J_0(\mathcal{C})\)</span> + tupling branches +
+class="math inline">\(J_0(\mathcal{C})\)</span> + tupling branches
+(empty-premise, like <span class="math inline">\(J_0\)</span>’s) +
 SUBSUME<span class="math inline">\((X_a, Y_a)\)</span> for <span
 class="math inline">\(a \in \{0,1\}\)</span>.</p>
-<p><em>Proof.</em> Lemma 3.1 plus Proposition 2.1 for soundness;
-completeness of the combined instance is exactly the gadget’s
-completeness applied to (S), with (E) enforced by the skeleton (junk
-shapes for (E) are excluded by the guard toolkit of round 8 §3/§5.3 —
-the residual analysis mirrors round 8’s port-aliasing case). <span
-class="math inline">\(\square\)</span></p>
+<p><em>Proof.</em> Soundness: Proposition 2.1 plus Lemma 3.1’s (<span
+class="math inline">\(\Rightarrow\)</span>) direction and the gadget’s
+soundness. Completeness: any accepted <span
+class="math inline">\(\theta\)</span> satisfies (E)
+<em>syntactically</em> by Lemma 2.0 (no aliasing or guard analysis
+needed — cf. Remark 2.0.1) and (S) by the gadget’s completeness; Lemma
+3.1’s (<span class="math inline">\(\Leftarrow\)</span>) direction yields
+an SSU model. <span class="math inline">\(\square\)</span></p>
+<p><strong>Sanity check on Example 13.</strong> For the unsolvable <span
+class="math inline">\(\{1|p| \doteq |p|0\}\)</span> the combined
+conditions refute themselves in two lines: (E) forces <span
+class="math inline">\(\theta(x_p) = \mathrm{arr}(\theta(y),
+\theta(w))\)</span>, and (S) forces <span
+class="math inline">\(\theta(y) = \theta(x_p)\sigma =
+\mathrm{arr}(\theta(y)\sigma, \theta(w)\sigma)\)</span>, whence <span
+class="math inline">\(\mathrm{depth}(\theta(y)) \geq 1 +
+\mathrm{depth}(\theta(y))\)</span> — impossible. So given a perfect
+gadget the encoding correctly rejects it (the decomposition-premise
+version did not; Remark 2.0.1).</p>
 <p>Conversely, round 8’s port-collapse theorem says a SUBSUME gadget
 cannot have port-shaped premises, and §5 below adds sharper constraints.
 The problem “is SUBSUME expressible?” is now the clean frontier —
@@ -419,26 +467,61 @@ class="math inline">\(\forall\bar\beta\,\exists \bar x:\ \theta(v)
 class="math inline">\(\theta(u)\)</span> onto <span
 class="math inline">\(\theta(v)\)</span>.</p>
 </section>
-<section id="the-fixed-interface-obstruction" class="level3">
-<h3>5.4 The fixed-interface obstruction</h3>
-<p>The near-miss of §5.3 fails for SSU for one reason only: the <span
+<section
+id="the-fixed-interface-limitation-and-what-it-does-not-yet-prove"
+class="level3">
+<h3>5.4 The fixed-interface limitation — and what it does <em>not</em>
+yet prove</h3>
+<p>The near-miss of §5.3 is limited in one specific dimension: the <span
 class="math inline">\(\exists\)</span>-block of the checkable <span
 class="math inline">\(\forall\exists\)</span> atoms consists of
 <em>instance variables</em>, of which there are finitely many, fixed
-with the instance — while the subsuming side in (S), <span
-class="math inline">\(\mathrm{tup}_a(\theta(x_\alpha))\)</span>, has
-answer-chosen leaves whose number is <em>not computable from the SSU
-instance</em> (it grows with the stack machine’s uniform bound — that is
-the whole content of the undecidability). Dually, routing the subsuming
-side’s leaves through the prefix’s universal block hits the same wall:
-prefixes are instance-fixed. Every route we tried lands on this
-<strong>fixed-interface principle</strong>: <em>unboundedly many
-answer-side objects can enter the acceptance conditions only through the
-parameter block <span class="math inline">\(\bar\beta\)</span>, and
-<span class="math inline">\(\bar\beta\)</span> sits on the <span
-class="math inline">\(\forall\)</span>-side of every check (validity,
-parameter-universal consistency), never on the <span
+with the instance. So the primitive it yields is
+<strong>bounded-variable subsumption</strong>: <span
+class="math inline">\(\theta(u) \preceq \theta(v)\)</span> checkable
+when <span class="math inline">\(\theta(v)\)</span> has at most <span
+class="math inline">\(k\)</span> <em>distinct</em> leaf variables, <span
+class="math inline">\(k\)</span> fixed by the instance. Routing the
+subsuming side’s leaves through the prefix’s universal block hits the
+same wall (prefixes are instance-fixed). We call this the
+<strong>fixed-interface limitation</strong>: <em>unboundedly many
+answer-side objects enter the acceptance conditions only through the
+parameter block <span class="math inline">\(\bar\beta\)</span>, which
+sits on the <span class="math inline">\(\forall\)</span>-side of every
+check (validity, parameter-universal consistency), never on the <span
 class="math inline">\(\exists\)</span>-side.</em></p>
+<p><strong>What this does not prove</strong> (sharpened by the round-9
+review): boundedness here is a bound on <em>distinct variables</em>, not
+on term size — a single existential variable ranges over arbitrarily
+large terms. The canonical stack-machine solutions do use unboundedly
+many distinct leaf variables (<span class="math inline">\(\zeta\)</span>
+needs a distinct <span class="math inline">\(\alpha_{[X]}\)</span> per
+non-narrow configuration class, else <span
+class="math inline">\(\psi_a\)</span> would be ill-defined), but nothing
+rules out <em>non-canonical</em> SSU witnesses that economize on
+distinct variables. So the limitation defeats the canonical route, and
+it defeats SSU-via-§5.3 <strong>only if</strong> the following has a
+negative answer:</p>
+<blockquote>
+<p><strong>Open sub-question 5.2 (<span
+class="math inline">\(k\)</span>-variable SSU).</strong> For fixed <span
+class="math inline">\(k\)</span>, is SSU restricted to solutions in
+which <span class="math inline">\(\mathrm{ran}(\varphi) \cup
+\mathrm{ran}(\psi_0) \cup \mathrm{ran}(\psi_1)\)</span> uses at most
+<span class="math inline">\(k\)</span> distinct variables still
+undecidable? (Equivalently: does some undecidable SSU fragment admit a
+computable bound on the distinct-variable count of some witness whenever
+one exists?)</p>
+</blockquote>
+<p>If <span class="math inline">\(k\)</span>-variable SSU is undecidable
+for some fixed <span class="math inline">\(k\)</span>, the
+fixed-interface limitation dissolves and Program 7.1 goes through §5.3’s
+primitive under the <span
+class="math inline">\(\forall\)</span>-parameter reading; if instead
+<span class="math inline">\(k\)</span>-variable SSU is decidable for
+every <span class="math inline">\(k\)</span>, the limitation is a
+genuine obstruction for this route. Either resolution is progress;
+neither is established here.</p>
 <p>This suggests a genuinely two-sided research question:</p>
 <ul>
 <li><strong>Toward undecidability:</strong> find a mechanism giving
@@ -526,6 +609,12 @@ branches, and (S) holds via the freezing matcher.</li>
 class="math inline">\(J_0\)</span> has free-<span
 class="math inline">\(y\)</span> answers regardless of SSU-solvability —
 confirming (S) carries all the hardness.</li>
+<li><strong>Remark 2.0.1’s aliasing answer</strong> checked on the
+unsolvable instance: <span class="math inline">\(\theta(x_p) =
+g\)</span>, <span class="math inline">\(\theta(y) = h^0\)</span> passes
+the (refuted) decomposition-premise variant <em>and</em> satisfies (S),
+but fails the empty-premise skeleton’s relevance — the hole and its fix,
+both machine-visible.</li>
 <li><strong>Lemma 3.1</strong> exercised on Dudenhefner’s Example 13
 (<span class="math inline">\(\{1|p| \doteq |p|0\}\)</span>, unsolvable —
 the unbounded machine <span class="math inline">\(\{1p \to
@@ -544,16 +633,21 @@ consistency clash.</li>
 <ol type="1">
 <li>Resolve the §6 semantic fork with the thesis author; restate
 Definition 4.1 accordingly.</li>
-<li>Under the <span class="math inline">\(\forall\)</span>-reading:
-attack the width barrier — can back-propagation pin one parameter to a
-<em>context</em> over <span class="math inline">\(k\)</span> other
-parameters, effectively multiplying <span
-class="math inline">\(\exists\)</span>-width across branches? A concrete
-micro-goal: express SUBSUME<span class="math inline">\((v,u)\)</span>
-where <span class="math inline">\(\theta(v)\)</span> is restricted to
-right-combs of unbounded length but only two distinct leaf variables
-(the SSU instances from stack machines are not far from
-comb-shaped).</li>
+<li>Attack <strong>Question 5.2 (<span
+class="math inline">\(k\)</span>-variable SSU)</strong> directly — it is
+now the load-bearing open point. Either exhibit an undecidable SSU (or
+stack-machine) fragment whose witnesses can be normalized to boundedly
+many distinct variables (then, under the <span
+class="math inline">\(\forall\)</span>-reading, Program 7.1 completes
+via §5.3’s native bounded-variable primitive — the comb-shaped <span
+class="math inline">\(k{=}2\)</span> case is the natural first target),
+or prove <span class="math inline">\(k\)</span>-variable SSU decidable
+for each <span class="math inline">\(k\)</span> (then the
+fixed-interface limitation is a real obstruction and the decidability
+route gains a lemma). Independently: can back-propagation pin one
+parameter to a <em>context</em> over other parameters, multiplying
+effective <span class="math inline">\(\exists\)</span>-width across
+branches?</li>
 <li>Under the <span class="math inline">\(\exists\)</span>-reading:
 attempt the fixed-interface principle as a theorem (a normal form for
 JCAQP-expressible <span

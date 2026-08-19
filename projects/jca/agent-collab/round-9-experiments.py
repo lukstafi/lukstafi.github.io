@@ -138,6 +138,18 @@ def ssu_certificate(constraints, theta):
 # ---------- J0 skeleton branches ----------
 
 def J0(constraints):
+    """Empty-premise structural branches (Lemma 2.0): relevance demands
+    syntactic equalization by mgu(A) itself, enforcing (E) exactly."""
+    branches = []
+    for k, (a, al, be, b) in enumerate(constraints):
+        w, y = V('w_%d' % k), V('y_%d_%s' % (a, al))
+        rhs = arr(y, w) if b == 0 else arr(w, y)
+        branches.append(([], [(V('x_' + be), rhs)]))
+    return branches
+
+def J0_decomp(constraints):
+    """The REFUTED decomposition-premise variant (Remark 2.0.1), kept only
+    to demonstrate the aliasing hole found by the round-9 review."""
     branches = []
     for k, (a, al, be, b) in enumerate(constraints):
         h0, h1 = V('h0_%d' % k), V('h1_%d' % k)
@@ -188,7 +200,8 @@ print('=== 1. Proposition 2.1: canonical answer passes J0 (solvable SSU) ===')
 # Solvable instance: single constraint 0|p| = |q|0.
 # SSU model: phi(p) = g, psi_0(g) = d, phi(q) = arr(d, e).
 solvable = [(0, 'p', 'q', 0)]
-theta_can = {'x_p': V('g'), 'y_0_p': V('d'), 'x_q': arr(V('d'), V('e'))}
+theta_can = {'x_p': V('g'), 'y_0_p': V('d'), 'x_q': arr(V('d'), V('e')),
+             'w_0': V('e')}
 ok, rep = is_answer(theta_eqs(theta_can), J0(solvable))
 print('canonical answer passes J0 branches:', ok, rep)
 print('(E)+(S) certificate holds:', ssu_certificate(solvable, theta_can))
@@ -198,11 +211,23 @@ print('=== 2. J0 alone admits junk; (S) carries the hardness ===')
 # Unsolvable instance (Dudenhefner Example 13): 1|p| = |p|0,
 # i.e. the unbounded machine {1p -> p0}.
 unsolvable = [(1, 'p', 'p', 0)]
-theta_junk = {'x_p': arr(V('d'), V('e')), 'y_1_p': V('d')}
+theta_junk = {'x_p': arr(V('d'), V('e')), 'y_1_p': V('d'), 'w_0': V('e')}
 ok, rep = is_answer(theta_eqs(theta_junk), J0(unsolvable))
 print('junk answer passes J0 branches (unsolvable SSU!):', ok, rep)
 print('junk fails (S):', not check_S(unsolvable, theta_junk),
       ' (E) holds:', check_E(unsolvable, theta_junk))
+
+print()
+print('=== 2b. Remark 2.0.1: the aliasing hole and its fix ===')
+# Review-found junk for the decomposition variant: x_p a bare parameter,
+# y aliased to the branch-local h0. It passes those branches AND (S).
+theta_alias = {'x_p': V('g'), 'y_1_p': V('h0_0')}
+ok_old, rep_old = is_answer(theta_eqs(theta_alias), J0_decomp(unsolvable))
+print('aliasing answer passes REFUTED decomposition variant:', ok_old, rep_old)
+print('...and satisfies (S) (h0 is an instance of the variable g):',
+      check_S(unsolvable, theta_alias))
+ok_new, rep_new = is_answer(theta_eqs(theta_alias), J0(unsolvable))
+print('empty-premise skeleton rejects it via relevance:', not ok_new, rep_new)
 
 print()
 print('=== 3. Lemma 3.1 on both instances (bounded search for (E)+(S)) ===')
