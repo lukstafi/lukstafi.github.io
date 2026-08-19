@@ -361,14 +361,20 @@ class="math inline">\(J_0(\mathcal{C})\)</span> + tupling branches
 (empty-premise, like <span class="math inline">\(J_0\)</span>’s) +
 SUBSUME<span class="math inline">\((X_a, Y_a)\)</span> for <span
 class="math inline">\(a \in \{0,1\}\)</span>.</p>
-<p><em>Proof.</em> Soundness: Proposition 2.1 plus Lemma 3.1’s (<span
-class="math inline">\(\Rightarrow\)</span>) direction and the gadget’s
-soundness. Completeness: any accepted <span
-class="math inline">\(\theta\)</span> satisfies (E)
+<p><em>Proof.</em> Reduction soundness (SSU solvable <span
+class="math inline">\(\Rightarrow\)</span> answer exists): the canonical
+<span class="math inline">\(\theta\)</span> of Proposition 2.1 satisfies
+(S) by Lemma 3.1’s (<span class="math inline">\(\Rightarrow\)</span>)
+direction, so the gadget’s <em>completeness</em> (it accepts every
+subsumption-satisfying answer) makes the combined instance accept it.
+Reduction completeness (answer exists <span
+class="math inline">\(\Rightarrow\)</span> SSU solvable): any accepted
+<span class="math inline">\(\theta\)</span> satisfies (E)
 <em>syntactically</em> by Lemma 2.0 (no aliasing or guard analysis
-needed — cf. Remark 2.0.1) and (S) by the gadget’s completeness; Lemma
-3.1’s (<span class="math inline">\(\Leftarrow\)</span>) direction yields
-an SSU model. <span class="math inline">\(\square\)</span></p>
+needed — cf. Remark 2.0.1) and (S) by the gadget’s <em>soundness</em>
+(it accepts only subsumption-satisfying answers); Lemma 3.1’s (<span
+class="math inline">\(\Leftarrow\)</span>) direction yields an SSU
+model. <span class="math inline">\(\square\)</span></p>
 <p><strong>Sanity check on Example 13.</strong> For the unsolvable <span
 class="math inline">\(\{1|p| \doteq |p|0\}\)</span> the combined
 conditions refute themselves in two lines: (E) forces <span
@@ -514,12 +520,24 @@ class="math inline">\(k\)</span> <em>distinct</em> leaf variables, <span
 class="math inline">\(k\)</span> fixed by the instance. Routing the
 subsuming side’s leaves through the prefix’s universal block hits the
 same wall (prefixes are instance-fixed). We call this the
-<strong>fixed-interface limitation</strong>: <em>unboundedly many
-answer-side objects enter the acceptance conditions only through the
-parameter block <span class="math inline">\(\bar\beta\)</span>, which
-sits on the <span class="math inline">\(\forall\)</span>-side of every
-check (validity, parameter-universal consistency), never on the <span
-class="math inline">\(\exists\)</span>-side.</em></p>
+<strong>fixed-interface limitation</strong>, and — per the author’s
+ruling (§6) — it is a statement about <em>validity specifically</em>,
+JCAQP’s only acceptance channel that mixes quantifiers: <em>unboundedly
+many answer-side objects appear on a universal side only in validity
+(<span class="math inline">\(\exists\bar
+t\,\forall\bar\beta\,Q\colon\ldots\)</span>), whose <span
+class="math inline">\(\exists\)</span>-side is limited to <span
+class="math inline">\(Q\)</span>’s existentials, fixed with the
+instance.</em> The other channels contribute no <span
+class="math inline">\(\forall\exists\)</span> checks at all: relevance
+is a pure <span class="math inline">\(\forall\)</span>-closure
+(equalization; no <span class="math inline">\(\exists\)</span>-block),
+consistency is a pure <span
+class="math inline">\(\exists\)</span>-closure (satisfiability; no <span
+class="math inline">\(\forall\)</span>-block — parameters are ordinary
+existentials there), and no-escaping is syntactic. Any normal-form
+theorem in the direction of next-step 3 must account for all four
+channels in exactly this way.</p>
 <p><strong>What this does not prove</strong> (sharpened by the round-9
 review): boundedness here is a bound on <em>distinct variables</em>, not
 on term size — a single existential variable ranges over arbitrarily
