@@ -78,9 +78,11 @@ id="toc-the-fixed-interface-limitation-and-what-it-does-not-yet-prove">5.4
 The fixed-interface limitation — and what it does <em>not</em> yet
 prove</a></li>
 </ul></li>
-<li><a href="#a-semantic-fork-in-the-thesis-question-for-the-author"
-id="toc-a-semantic-fork-in-the-thesis-question-for-the-author">6. A
-semantic fork in the thesis (question for the author)</a></li>
+<li><a
+href="#the-semantic-fork-resolved-by-the-author-two-residual-questions"
+id="toc-the-semantic-fork-resolved-by-the-author-two-residual-questions">6.
+The semantic fork, resolved by the author (two residual
+questions)</a></li>
 <li><a href="#machine-checks" id="toc-machine-checks">7. Machine
 checks</a></li>
 <li><a href="#next-steps" id="toc-next-steps">8. Next steps</a></li>
@@ -100,9 +102,10 @@ href="round-8-reassessment.html">round-8-reassessment.md</a>): encode
 simple semi-unification (SSU) into JCAQP. Outcome: the encoding’s
 equational part works and is machine-checked; the entire remaining
 difficulty is isolated into a single primitive — expressing one
-subsumption constraint between answer-chosen terms — and the round
-closes with a precise semantic question about the thesis’s parameter
-conventions on which the primitive’s fate appears to turn.</em></p>
+subsumption constraint between answer-chosen terms — and the thesis
+author’s ruling on the parameter conventions (§6) locates that
+primitive’s raw material in the validity condition, leaving three
+sharply delimited sub-goals (forcing, polarity, width).</em></p>
 <section id="summary" class="level2">
 <h2>0. Summary</h2>
 <ol type="1">
@@ -134,28 +137,31 @@ undecidable.</li>
 constraints on any would-be gadget: unifiability probes give the
 necessary but not sufficient half for free; a <strong>monotonicity
 lemma</strong> shows relevance conditions survive answer strengthening,
-so a gadget must detect subsumption violations <em>through consistency
-alone</em>; subsumption itself is exactly a <span
+so a gadget must detect subsumption violations through consistency or
+the prefix conditions (validity/no-escaping) — never through relevance;
+subsumption itself is exactly a <span
 class="math inline">\(\forall\exists\)</span>-equation (matching by
-freezing), which is the same logical shape as the thesis’s validity and
-(parameter-universal) consistency checks — a striking near-miss that
-yields <strong>bounded-variable subsumption</strong> natively. What
-blocks full SSU is the <strong>fixed-interface limitation</strong>
-(§5.4): the <span class="math inline">\(\exists\)</span>-side of the
-checkable atoms is limited to the instance’s finitely many
-<em>distinct</em> variables. Whether that is a real barrier is now a
-crisp open sub-question (<span class="math inline">\(k\)</span>-variable
-SSU, Question 5.2): distinct-variable count, not term size, is what the
-interface bounds — a distinction sharpened by the round-9 review.</li>
-<li><strong>A semantic fork in the thesis (§6).</strong> Definition
-4.1’s consistency condition is a pure <span
-class="math inline">\(\exists\)</span>-closure, but Example 4.3 verifies
-consistency with the answer parameter quantified <em>universally</em>
-(<span class="math inline">\(\forall\gamma\,\exists x,y,z\)</span>),
-operationalizing “parameters are required to be unconstrained”. The two
-readings give JCAQP different expressive power, and the gap matters
-exactly at the bottleneck. This is a question for the thesis
-author.</li>
+freezing), the same logical shape as the thesis’s validity check — a
+near-miss that yields <strong>bounded-variable subsumption</strong>
+<em>on polarity-correct answers</em>. What separates this from full SSU:
+the <strong>forcing</strong> and <strong>polarity</strong> sub-goals
+(§5.3), and the <strong>fixed-interface limitation</strong> (§5.4),
+which bounds <em>distinct-variable count</em> per constructed instance,
+not term size — leading to the load-bearing open sub-question 5.2
+(bounded-variable SSU, in a fixed-<span class="math inline">\(k\)</span>
+and a computable-bound variant, which are not equivalent).</li>
+<li><strong>The semantic fork, resolved (§6).</strong> The thesis author
+confirmed Definition 4.1 as written: consistency is plain <span
+class="math inline">\(\exists\)</span>-closure; validity carries the
+full prefix (hence reads <span class="math inline">\(\exists\bar
+t\,\forall\bar\beta\,Q\colon A[\bar\chi\bar\delta := \bar t]\)</span>,
+parameters universally closed outside <span
+class="math inline">\(Q\)</span>). The <span
+class="math inline">\(\forall\exists\)</span> capability therefore lives
+unconditionally in validity — no erratum needed on this point. Two
+residual author-questions remain (§6): the <span
+class="math inline">\(\bar t\)</span> convention, and the Example 4.3
+most-generality caveat.</li>
 </ol>
 </section>
 <section id="the-target-simple-semi-unification" class="level2">
@@ -445,27 +451,51 @@ variables, folklore (matching by freezing):</p>
 <p>decided by unifying <span class="math inline">\(s\)</span> against
 <span class="math inline">\(t\)</span> with <span
 class="math inline">\(t\)</span>’s variables frozen as constants. Now
-observe: JCAQP’s <strong>validity</strong> condition (<span
-class="math inline">\(\mathcal{M} \models Q\colon A[\ldots]\)</span>)
-and — under the parameter-universal reading of §6 — its
-<strong>consistency</strong> condition are precisely checks of <span
-class="math inline">\(\forall\exists\)</span>-quantified conjunctions of
+observe: JCAQP’s <strong>validity</strong> condition is precisely a
+check of a <span
+class="math inline">\(\forall\exists\)</span>-quantified conjunction of
 equations, decided by unification with linear constant restrictions
-(thesis §4.2.1, via Baader–Schulz). So the logical shape of SUBSUME is
-<em>already present</em> in the answer-acceptance conditions.
-Concretely, under the <span
-class="math inline">\(\forall\)</span>-parameter reading, a single
-branch with premise <span class="math inline">\(v \doteq u\)</span>
-where <span class="math inline">\(\theta(u)\)</span>’s leaves are answer
-parameters (<span class="math inline">\(\forall\)</span>, and —
-crucially — <strong>answer-chosen in number</strong>) and <span
-class="math inline">\(\theta(v)\)</span>’s leaves are instance variables
-(<span class="math inline">\(\exists\)</span> inside the consistency
-closure) has as its consistency condition exactly <span
-class="math inline">\(\forall\bar\beta\,\exists \bar x:\ \theta(v)
-\doteq \theta(u)\)</span> — subsumption of <span
+(thesis §4.2.1, via Baader–Schulz): by the author’s ruling (§6) it reads
+<span class="math inline">\(\exists\bar t\ \forall\bar\beta\ Q\colon
+A[\bar\chi\bar\delta := \bar t]\)</span> — the answer’s fresh parameters
+<span class="math inline">\(\bar\beta\)</span> universally closed
+<em>outside</em> the prefix. So the logical shape of SUBSUME is
+<em>already present</em> in the answer-acceptance conditions,
+unconditionally. Concretely: validity is solution-set-invariant
+(equivalent constraints have equal <span
+class="math inline">\(Q\)</span>-prefixed truth), and for an answer
+whose constraint content includes <span class="math inline">\(u \doteq
+t(\bar\beta)\)</span>, <span class="math inline">\(v \doteq s(\bar
+x)\)</span> and <span class="math inline">\(u \doteq v\)</span>, with
+<span class="math inline">\(\bar\beta\)</span> parameters
+(<strong>answer-chosen in number</strong>) and <span
+class="math inline">\(\bar x\)</span> among <span
+class="math inline">\(Q\)</span>’s existentials, the validity check
+evaluates exactly <span
+class="math inline">\(\forall\bar\beta\,\exists\bar x:\ s \doteq
+t\)</span> — subsumption of <span
 class="math inline">\(\theta(u)\)</span> onto <span
-class="math inline">\(\theta(v)\)</span>.</p>
+class="math inline">\(\theta(v)\)</span>, with the <span
+class="math inline">\(\exists\)</span>-side limited to <span
+class="math inline">\(Q\)</span>’s existentials. Two catches (the second
+from the round-2 review). First, this is a condition the answer imposes
+<em>on itself</em>; a reduction must additionally <strong>force</strong>
+every candidate answer into such a shape (empty-premise branches force
+syntactic identity — too strong). Second, the check implements matching
+only under a <strong>polarity discipline</strong>: every variable of
+<span class="math inline">\(\theta(u)\)</span> an answer parameter,
+every matchable variable of <span
+class="math inline">\(\theta(v)\)</span> a <span
+class="math inline">\(Q\)</span>-existential. Nothing enforces this on
+candidate answers, and violated polarity mis-evaluates: with <span
+class="math inline">\(\theta(v) = c\)</span> and <span
+class="math inline">\(\theta(u) = x\)</span> for a <span
+class="math inline">\(Q\)</span>-existential <span
+class="math inline">\(x\)</span>, the check reads <span
+class="math inline">\(\exists x: c \doteq x\)</span> and accepts,
+although <span class="math inline">\(x\)</span> is no instance of <span
+class="math inline">\(c\)</span>. Forcing and polarity enforcement
+together are a named sub-goal alongside the width question (§6).</p>
 </section>
 <section
 id="the-fixed-interface-limitation-and-what-it-does-not-yet-prove"
@@ -503,25 +533,33 @@ distinct variables. So the limitation defeats the canonical route, and
 it defeats SSU-via-§5.3 <strong>only if</strong> the following has a
 negative answer:</p>
 <blockquote>
-<p><strong>Open sub-question 5.2 (<span
-class="math inline">\(k\)</span>-variable SSU).</strong> For fixed <span
-class="math inline">\(k\)</span>, is SSU restricted to solutions in
-which <span class="math inline">\(\mathrm{ran}(\varphi) \cup
-\mathrm{ran}(\psi_0) \cup \mathrm{ran}(\psi_1)\)</span> uses at most
-<span class="math inline">\(k\)</span> distinct variables still
-undecidable? (Equivalently: does some undecidable SSU fragment admit a
-computable bound on the distinct-variable count of some witness whenever
-one exists?)</p>
+<p><strong>Open sub-question 5.2 (bounded-variable SSU).</strong> Call a
+witness <span class="math inline">\((\varphi,\psi_0,\psi_1)\)</span>
+<em><span class="math inline">\(k\)</span>-variable</em> if <span
+class="math inline">\(\mathrm{ran}(\varphi) \cup \mathrm{ran}(\psi_0)
+\cup \mathrm{ran}(\psi_1)\)</span> uses at most <span
+class="math inline">\(k\)</span> distinct variables.
+<strong>(a)</strong> For some fixed global <span
+class="math inline">\(k\)</span>: is SSU restricted to <span
+class="math inline">\(k\)</span>-variable witnesses still undecidable?
+<strong>(b)</strong> Is there an undecidable SSU fragment and a
+<em>computable</em> function <span
+class="math inline">\(k(\cdot)\)</span> such that every solvable
+instance <span class="math inline">\(\mathcal{C}\)</span> has a <span
+class="math inline">\(k(\mathcal{C})\)</span>-variable witness?</p>
 </blockquote>
-<p>If <span class="math inline">\(k\)</span>-variable SSU is undecidable
-for some fixed <span class="math inline">\(k\)</span>, the
-fixed-interface limitation dissolves and Program 7.1 goes through §5.3’s
-primitive under the <span
-class="math inline">\(\forall\)</span>-parameter reading; if instead
-<span class="math inline">\(k\)</span>-variable SSU is decidable for
-every <span class="math inline">\(k\)</span>, the limitation is a
-genuine obstruction for this route. Either resolution is progress;
-neither is established here.</p>
+<p>These are <strong>not</strong> equivalent (round-2 review): a
+reduction builds the JCAQP instance per SSU instance and may allocate an
+input-dependent number of interface variables, so (b) — the weaker
+property — is what Program 7.1 actually needs; (a) is the cleaner
+special case. Correspondingly, decidability of every fixed-<span
+class="math inline">\(k\)</span> slice would <em>not</em> make the
+limitation an obstruction (the union over a computable <span
+class="math inline">\(k(\mathcal{C})\)</span> can remain undecidable);
+the limitation is a genuine obstruction for this route only if (b) fails
+for every undecidable fragment. A positive (a) or (b) lets Program 7.1
+proceed through §5.3’s primitive (modulo the forcing and polarity
+sub-goals). None of this is established here.</p>
 <p>This suggests a genuinely two-sided research question:</p>
 <ul>
 <li><strong>Toward undecidability:</strong> find a mechanism giving
@@ -545,55 +583,60 @@ consistency-monotone).</li>
 </ul>
 </section>
 </section>
-<section id="a-semantic-fork-in-the-thesis-question-for-the-author"
+<section
+id="the-semantic-fork-resolved-by-the-author-two-residual-questions"
 class="level2">
-<h2>6. A semantic fork in the thesis (question for the author)</h2>
-<p>Definition 4.1 states consistency as <span
-class="math inline">\(\mathcal{M} \models \bigwedge_i
-\exists\,\mathrm{FV}(D_i \land A).\ D_i \land A\)</span> — a pure <span
-class="math inline">\(\exists\)</span>-closure, under which answer
-parameters <span class="math inline">\(\bar\beta\)</span> are ordinary
-existentials. But Example 4.3 <em>verifies</em> its answer <span
-class="math inline">\(\exists\gamma: y \doteq f(z,\gamma)\)</span> by
-checking <span class="math inline">\(\forall\gamma\,\exists x,y,z:\ y
-\doteq f(z,\gamma) \land y \doteq f(a,x)\)</span> — the parameter
-universally quantified, operationalizing the surrounding prose “the
-variables <span class="math inline">\(\bar\beta\)</span> … are free
-parameters of the answer, they are required to be unconstrained”. The
-two readings differ:</p>
-<ul>
-<li><strong><span class="math inline">\(\exists\)</span>-reading (Def.
-4.1 as written):</strong> parameters are plain fresh variables;
-consistency is unification; §5.3’s gadget has no <span
-class="math inline">\(\forall\)</span>-side at all and expresses nothing
-beyond unifiability.</li>
-<li><strong><span class="math inline">\(\forall\)</span>-reading
-(Example 4.3 as practiced):</strong> consistency per branch is a <span
-class="math inline">\(\forall\bar\beta\exists\)</span>-check — matching
-by freezing — and JCAQP acquires a <em>bounded-<span
-class="math inline">\(\exists\)</span>-width subsumption primitive</em>
-natively. Program 7.1 then needs only the width barrier broken, not the
-primitive built from scratch.</li>
-</ul>
-<p>A second instance of the same fork (surfaced by the round-8 review
-exchange): the validity condition <span
-class="math inline">\(\mathcal{M} \models Q\colon A[\bar\chi\bar\delta
-:= \bar t]\)</span> excludes universal-hard-coding answers (e.g. <span
-class="math inline">\(\gamma \doteq (\alpha&#39;,\beta&#39;)\)</span> in
-the GADT <code>Pair</code> example, on which no-escaping is vacuous
-since each atom is <span class="math inline">\(Q\)</span>-valid) only if
-the instantiation terms <span class="math inline">\(\bar t\)</span> are
-barred from mentioning universals — also not fixed by the section’s
-text.</p>
-<p>Which readings are intended (and which does InvarGenT implement)? The
-answer determines whether the bottleneck is “build a one-sided primitive
-from two-sided parts” (hard, maybe impossible) or “amplify the width of
-an existing one-sided primitive” (a different, more hopeful game). If
-the intended reading is the <span class="math inline">\(\forall\)</span>
-one, Definition 4.1’s consistency clause should be restated with the
-parameter block quantified universally in front, and the <span
-class="math inline">\(\bar t\)</span> convention made explicit — worth
-an erratum either way.</p>
+<h2>6. The semantic fork, resolved by the author (two residual
+questions)</h2>
+<p>An earlier version of this section posed a fork: Definition 4.1
+states consistency as <span class="math inline">\(\mathcal{M} \models
+\bigwedge_i \exists\,\mathrm{FV}(D_i \land A).\ D_i \land A\)</span> — a
+pure <span class="math inline">\(\exists\)</span>-closure — while
+Example 4.3 <em>verifies</em> its answer by checking <span
+class="math inline">\(\forall\gamma\,\exists x,y,z:\ y \doteq
+f(z,\gamma) \land y \doteq f(a,x)\)</span>, with the parameter
+universally quantified.</p>
+<p><strong>Author’s ruling (2026-08-19).</strong> Definition 4.1 is
+intended as written: <strong>consistency is the plain existential
+closure</strong> (not <span class="math inline">\(Q\)</span>-prefixed;
+parameters are ordinary existentials there), and <strong>validity
+carries the full prefix <span class="math inline">\(Q\)</span></strong>.
+Since the answer’s fresh parameters <span
+class="math inline">\(\bar\beta\)</span> remain free in the validity
+formula and free variables are universally closed under <span
+class="math inline">\(\mathcal{M} \models\)</span>, validity reads <span
+class="math inline">\(\exists\bar t\ \forall\bar\beta\ Q\colon
+A[\bar\chi\bar\delta := \bar t]\)</span>. Example 4.3’s <span
+class="math inline">\(\forall\gamma\)</span> display is then best read
+as verifying validity-style unconstrainedness jointly with the (weaker,
+<span class="math inline">\(\exists\)</span>-closed) consistency
+requirement.</p>
+<p><strong>Consequences.</strong> The <span
+class="math inline">\(\forall\exists\)</span> capability of §5.3 does
+<em>not</em> live in consistency (which is mere unifiability) — it
+lives, unconditionally, in <strong>validity</strong>. This resolves the
+fork in the more hopeful direction without any erratum to the
+definition: the bounded-variable matching-by-freezing check is
+definitionally present. What remains for Program 7.1, per §5.3–5.4, is
+now sharply delimited:</p>
+<ol type="1">
+<li>a <strong>forcing mechanism</strong> making every candidate answer
+carry the checkable linkage atoms;</li>
+<li><strong>polarity enforcement</strong> (§5.3’s second catch);</li>
+<li>the <strong>width question</strong> 5.2(a)/(b).</li>
+</ol>
+<p><strong>Residual questions for the author.</strong> (1) In validity,
+may the instantiation terms <span class="math inline">\(\bar t\)</span>
+(substituted for <span
+class="math inline">\(\bar\chi\bar\delta\)</span>) mention universally
+quantified variables of <span class="math inline">\(Q\)</span>? This is
+round 8 §7’s filter question — it governs whether validity excludes
+universal-hard-coding answers. (2) Round 8 §10’s Example 4.3 caveat:
+<span class="math inline">\(y \doteq f(x,z)\)</span> verifies as an
+answer yet is not below the claimed most general answer <span
+class="math inline">\(\exists\gamma: y \doteq f(z,\gamma)\)</span> — is
+an implicit side condition intended, or is the most-generality claim to
+be weakened?</p>
 </section>
 <section id="machine-checks" class="level2">
 <h2>7. Machine checks</h2>
@@ -631,28 +674,34 @@ consistency clash.</li>
 <section id="next-steps" class="level2">
 <h2>8. Next steps</h2>
 <ol type="1">
-<li>Resolve the §6 semantic fork with the thesis author; restate
-Definition 4.1 accordingly.</li>
-<li>Attack <strong>Question 5.2 (<span
-class="math inline">\(k\)</span>-variable SSU)</strong> directly — it is
-now the load-bearing open point. Either exhibit an undecidable SSU (or
-stack-machine) fragment whose witnesses can be normalized to boundedly
-many distinct variables (then, under the <span
-class="math inline">\(\forall\)</span>-reading, Program 7.1 completes
-via §5.3’s native bounded-variable primitive — the comb-shaped <span
-class="math inline">\(k{=}2\)</span> case is the natural first target),
-or prove <span class="math inline">\(k\)</span>-variable SSU decidable
-for each <span class="math inline">\(k\)</span> (then the
-fixed-interface limitation is a real obstruction and the decidability
-route gains a lemma). Independently: can back-propagation pin one
+<li><strong>Design the forcing + polarity mechanism</strong> (§5.3’s two
+catches): make every candidate answer carry the linkage atoms <span
+class="math inline">\(u \doteq t(\bar\beta)\)</span>, <span
+class="math inline">\(v \doteq s(\bar x)\)</span>, <span
+class="math inline">\(u \doteq v\)</span> with the correct variable
+polarity, without collapsing the validity check to syntactic identity.
+This is now the main constructive sub-goal, and it is prefix-side, so
+Lemma 5.1 permits detection through validity/no-escaping as well as
+consistency.</li>
+<li>Attack <strong>Question 5.2 (bounded-variable SSU)</strong> — the
+load-bearing width point, in its two inequivalent variants: (a) fixed
+global <span class="math inline">\(k\)</span> (the comb-shaped <span
+class="math inline">\(k{=}2\)</span> case is the natural first target);
+(b) a computable instance-dependent witness bound <span
+class="math inline">\(k(\mathcal{C})\)</span>, which is all a reduction
+needs since the JCAQP instance is built per SSU instance. Either
+positive variant, combined with next-step 1, completes Program 7.1 via
+§5.3’s validity primitive. Independently: can back-propagation pin one
 parameter to a <em>context</em> over other parameters, multiplying
 effective <span class="math inline">\(\exists\)</span>-width across
 branches?</li>
-<li>Under the <span class="math inline">\(\exists\)</span>-reading:
-attempt the fixed-interface principle as a theorem (a normal form for
-JCAQP-expressible <span
-class="math inline">\(\theta\)</span>-conditions), aiming at
-inexpressibility of (S) — the decidability route.</li>
+<li>For the decidability route: attempt the fixed-interface principle as
+a theorem (a normal form for JCAQP-expressible <span
+class="math inline">\(\theta\)</span>-conditions — Boolean combinations
+of <span class="math inline">\(\forall\exists\)</span>-equation checks
+with <span class="math inline">\(Q\)</span>-bounded <span
+class="math inline">\(\exists\)</span>-width), aiming at
+inexpressibility of (S) in the absence of a positive 5.2(b).</li>
 <li>Warm-up lower bound (round 8 next-step 2) is still open and would
 exercise the guard toolkit.</li>
 </ol>
