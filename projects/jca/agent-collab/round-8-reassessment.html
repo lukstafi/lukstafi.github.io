@@ -795,10 +795,26 @@ unification engine plus the Theorem 2.4 answer checker). Results:</p>
 class="math inline">\(\exists\gamma: y \doteq f(z,\gamma)\)</span>
 verifies; a brute-force search over single-equation candidates
 additionally finds the parameter-free answers <span
-class="math inline">\(y \doteq f(z,x)\)</span>, <span
-class="math inline">\(y \doteq f(x,z)\)</span>, <span
-class="math inline">\(y \doteq f(z,z)\)</span> — all instances of the
-most general answer, as predicted.</li>
+class="math inline">\(y \doteq f(z,x)\)</span> and <span
+class="math inline">\(y \doteq f(z,z)\)</span> (instances of the
+thesis’s most general answer, obtained by substituting for <span
+class="math inline">\(\gamma\)</span>) — and also <span
+class="math inline">\(y \doteq f(x,z)\)</span>, which verifies as an
+answer but is <strong>not</strong> an instance of <span
+class="math inline">\(\exists\gamma: y \doteq f(z,\gamma)\)</span> under
+the thesis’s generality relation (Def. 4.1’s “more general”: no
+substitution for <span class="math inline">\(\gamma\)</span> alone
+yields <span class="math inline">\(f(x,z)\)</span> from <span
+class="math inline">\(f(z,\gamma)\)</span>, and <span
+class="math inline">\(y \doteq f(x,z)\)</span> does not entail any such
+instance since it does not entail <span class="math inline">\(x \doteq
+z\)</span>). Unless Example 4.3 carries an implicit side condition
+excluding such answers, its claim that <span
+class="math inline">\(\exists\gamma: y \doteq f(z,\gamma)\)</span> is
+<em>the</em> most general answer appears to need a caveat — a
+<strong>candidate thesis erratum</strong> surfaced by machine search
+(spotted in the round-8 automated review of an earlier, wrongly grouped
+version of this bullet).</li>
 <li><strong>Theorem 3.1</strong>: on 100 random port-shaped instances,
 whenever <span class="math inline">\(C^*\)</span> unifies, <span
 class="math inline">\(A := C^*\)</span> verifies as an answer (direction
@@ -815,12 +831,21 @@ class="math inline">\(y \doteq f^{201}(a)\)</span>) is not — a
 difference at depth <span class="math inline">\(200\)</span> decided by
 an instance of depth <span class="math inline">\(0\)</span>, refuting
 the round-7 reach bound concretely.</li>
-<li><strong>GADT <code>Pair</code></strong>: the expected answer
-verifies for relevance/consistency; the checker also confirms that the
-back-propagation-only alternative <span class="math inline">\(\tau
-\doteq \mathrm{Term}((\alpha&#39;&#39;,\beta&#39;&#39;))\)</span> passes
-relevance/consistency and is excluded only by the prefix conditions —
-consistent with §7’s reading of where the prefix’s power resides.</li>
+<li><strong>GADT <code>Pair</code></strong> (with the thesis’s
+conclusion <span class="math inline">\(\gamma \doteq (\alpha&#39;&#39;,
+\beta&#39;&#39;)\)</span>): the expected answer verifies; dropping the
+answer’s <span class="math inline">\(\gamma\)</span>-routing (<span
+class="math inline">\(\tau \doteq
+\mathrm{Term}((\alpha&#39;&#39;,\beta&#39;&#39;))\)</span> alone)
+<strong>fails relevance</strong> because <span
+class="math inline">\(\gamma\)</span> never gets pinned — direct
+confirmation of §7’s reading that the mechanism is premise-driven
+pinning of the parameter <span class="math inline">\(\gamma\)</span>
+against branch universals; adding <span class="math inline">\(\gamma
+\doteq (\alpha&#39;&#39;,\beta&#39;&#39;)\)</span> back yields a
+passing, less general answer. (An earlier version of this experiment
+mis-encoded the conclusion as the answer’s own atoms; corrected after
+automated review.)</li>
 </ul>
 </section>
 <section id="literature-status-sweep-of-20152026-performed-2026-08-19"

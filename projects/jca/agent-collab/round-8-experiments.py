@@ -141,7 +141,13 @@ def search_answers(branches, max_eqs=2, n_params=1, verbose=False,
     given, restrict both sides of answer equations to those variables (plus
     params)."""
     terms, vs = instance_material(branches)
-    params = ['P%d' % k for k in range(n_params)]
+    taken = set(vs)
+    params, i = [], 0
+    while len(params) < n_params:
+        name = 'P%d' % i
+        if name not in taken:
+            params.append(name)
+        i += 1
     if allowed_vars is not None:
         vs = [v for v in vs if v in allowed_vars]
     names = list(vs) + params
@@ -154,7 +160,9 @@ def search_answers(branches, max_eqs=2, n_params=1, verbose=False,
     rhs_pool = sorted(rhs_pool, key=str)
     atoms = [(V(x), r) for x in vs for r in rhs_pool if x not in term_vars(r)]
     found = []
-    for k in range(1, max_eqs + 1):
+    # k = 0 includes the empty conjunction (top), a legitimate minimal answer
+    # when every branch already entails its conclusion.
+    for k in range(0, max_eqs + 1):
         for combo in itertools.combinations(atoms, k):
             ok, _ = is_answer(list(combo), branches)
             if ok:
@@ -247,15 +255,22 @@ print("A'_N (x=f^%d(a), y=f^%d(a)) answer:" % (N, N + 1), ok2,
 
 print()
 print('=== 4. GADT Pair example (prefix mechanism, relevance/consistency only) ===')
+# Thesis Section 4.2.4.1: premise tau = Term((a',b')), conclusion
+# gamma = (a'',b'') -- the conclusion constrains gamma, NOT a''/b'' directly.
 tau, gam = V('tau'), V('gamma2')
 ap, bp, app, bpp = V("a'"), V("b'"), V("a''"), V("b''")
 branch_pair = [([(tau, F('Term', F('pair', ap, bp)))],
-                [(app, ap), (bpp, bp)])]
+                [(gam, F('pair', app, bpp))])]
 theta_pair = [(tau, F('Term', gam)), (app, ap), (bpp, bp)]
 ok, rep = is_answer(theta_pair, branch_pair)
 print('expected answer tau=Term(gamma) & a\'\'=a\' & b\'\'=b\':', ok, rep)
-# the fully maximal-style answer via back-propagation only:
+# Without routing tau through gamma, gamma stays unpinned and relevance
+# must fail -- the mechanism is premise-driven pinning of the parameter.
 theta_bp = [(tau, F('Term', F('pair', app, bpp)))]
 ok, rep = is_answer(theta_bp, branch_pair)
-print('alt answer tau=Term(pair(a\'\',b\'\')):', ok, rep,
-      ' (valid for relevance/consistency; would fail no-escaping/validity under prefix)')
+print('alt answer tau=Term(pair(a\'\',b\'\')) alone:', ok, rep,
+      ' <- gamma unpinned, relevance fails as expected')
+# Adding the gamma binding back yields a passing (less general) answer.
+theta_bp2 = theta_bp + [(gam, F('pair', app, bpp))]
+ok, rep = is_answer(theta_bp2, branch_pair)
+print('alt answer tau=Term(pair(a\'\',b\'\')) & gamma=pair(a\'\',b\'\'):', ok, rep)
