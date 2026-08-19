@@ -8,13 +8,16 @@ C_i theta nu_i is trivial, where nu_i = mgu(D_i theta).
 
 Checks performed:
   1. Thesis Example 4.3: theta = {y -> f(z, gamma)} is an answer;
-     and brute-force search confirms no answer exists without a fresh
-     parameter (over depth-1 candidates), while the known answer is found.
+     brute-force search also finds three parameter-free answers
+     (y=f(z,x), y=f(z,z), y=f(x,z)) -- the last is NOT an instance of the
+     thesis's claimed most general answer; see the notes' Section 10.
   2. Port collapse (Theorem 3.1): random port-shaped instances have a
      port-free answer iff C* unifies (tested by brute-force enumeration).
-  3. Counterexample 4.1: with answer x=f^N(z), y=f^N(w), premise x=y is
-     consistent; with y=f^{N+1}(a) it is not -- for N far beyond the
-     instance depth, refuting the Bounded Reach Lemma of round 7.
+  3. Counterexample 4.1: branch x=y => z=w; the answer x=f^N(z), y=f^N(w)
+     passes relevance, while x=f^N(z), y=f^{N+1}(w) stays consistent but
+     fails relevance -- so satisfaction of the implication itself depends
+     on structure at depth N, far beyond the instance depth, refuting the
+     Bounded Reach Lemma of round 7 as literally stated.
   4. GADT Pair example: relevance/consistency of the expected answer.
 """
 
@@ -238,7 +241,7 @@ for trial in range(100):
 print('trials: %d, refutations of Theorem 3.1: %d' % (total, refuted))
 
 print()
-print('=== 3. Counterexample 4.1 (unbounded reach) ===')
+print('=== 3. Counterexample 4.1 (unbounded reach of relevance) ===')
 def fN(n, base):
     t = base
     for _ in range(n):
@@ -246,12 +249,16 @@ def fN(n, base):
     return t
 N = 200
 D = [(x, y)]
-C = [(x, y)]
-ok1, _ = is_answer([(x, fN(N, V('z'))), (y, fN(N, V('w')))], [(D, C)])
-ok2, _ = is_answer([(x, fN(N, a)), (y, fN(N + 1, a))], [(D, C)])
-print('A_N  (x=f^%d(z), y=f^%d(w)) answer:' % (N, N), ok1)
-print("A'_N (x=f^%d(a), y=f^%d(a)) answer:" % (N, N + 1), ok2,
-      ' <- differs only at depth %d >> instance depth 0' % N)
+C = [(z, V('w'))]
+ok1, rep1 = is_answer([(x, fN(N, z)), (y, fN(N, V('w')))], [(D, C)])
+ok2, rep2 = is_answer([(x, fN(N, z)), (y, fN(N + 1, V('w')))], [(D, C)])
+print('A_N  (x=f^%d(z), y=f^%d(w)) answer:' % (N, N), ok1, rep1)
+print("A'_N (x=f^%d(z), y=f^%d(w)) answer:" % (N, N + 1), ok2, rep2,
+      ' <- consistent, but relevance fails: implication satisfaction'
+      ' depends on depth %d >> instance depth 0' % N)
+# Consistency exhibits the same unbounded reach (ground clash at depth N):
+ok3, rep3 = is_answer([(x, fN(N, a)), (y, fN(N + 1, a))], [(D, C)])
+print("A''_N (x=f^%d(a), y=f^%d(a)) answer:" % (N, N + 1), ok3, rep3)
 
 print()
 print('=== 4. GADT Pair example (prefix mechanism, relevance/consistency only) ===')

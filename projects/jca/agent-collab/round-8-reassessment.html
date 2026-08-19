@@ -127,13 +127,17 @@ circumvented by renaming premise variables, but the price is that the
 encoding lands in the collapsing fragment. Hardness, if it exists
 anywhere, must come from <strong>back-propagation</strong> — premises
 sharing variables with the answer and conclusions.</li>
-<li><strong>The quantifier prefix supplies a matching-like mechanism
-that the earlier rounds overlooked</strong> (§7): with a <span
-class="math inline">\(\forall\exists\)</span> prefix, branch premises
-can pin answer parameters to branch-specific terms over universal
-variables — exactly the mechanism of the thesis’s GADT <code>Pair</code>
-example. The round-7 verdict “semi-unification is structurally
-incompatible with JCAQP” is not justified for nontrivial prefixes.</li>
+<li><strong>The quantifier prefix may supply a matching-like mechanism
+that the earlier rounds overlooked</strong> (§7): branch premises pin
+answer parameters to branch-specific terms over universal variables —
+the mechanism of the thesis’s GADT <code>Pair</code> example. The
+pinning itself is relevance-level back-propagation (prefix-independent);
+the prefix’s specific contribution is the validity/no-escaping
+<em>filter</em> on answers, whose exact bite depends on parameter
+conventions Definition 4.1 leaves open (§7). The round-7 verdict
+“semi-unification is structurally incompatible with JCAQP” is not
+justified for nontrivial prefixes — but the positive claim awaits the
+filter’s semantics.</li>
 </ol>
 <p>Net effect: the question is <strong>more open than round 7
 concluded</strong> — in particular the undecidability route via
@@ -414,29 +418,43 @@ class="math inline">\(d\)</span> = max depth of instance terms].</p>
 </blockquote>
 <p><strong>Counterexample 4.1.</strong> Signature <span
 class="math inline">\(\{f/1, a\}\)</span>; instance variables <span
-class="math inline">\(x, y\)</span>; single branch <span
+class="math inline">\(x, y, z, w\)</span>; single branch <span
 class="math inline">\(D: x \doteq y\)</span>, <span
-class="math inline">\(C: x \doteq y\)</span> (or any trivial conclusion
-— the point is consistency). Candidate answers <span
+class="math inline">\(C: z \doteq w\)</span>. Candidate answers <span
 class="math inline">\(A_N: x \doteq f^N(z) \land y \doteq
 f^N(w)\)</span> and <span class="math inline">\(A&#39;_N: x \doteq
-f^N(a) \land y \doteq f^{N+1}(a)\)</span>. Here <span
+f^N(z) \land y \doteq f^{N+1}(w)\)</span>. Here <span
 class="math inline">\(k = 2\)</span>, <span class="math inline">\(d =
-0\)</span>, <span class="math inline">\(n = 2\)</span>, so the claimed
+0\)</span>, <span class="math inline">\(n = 4\)</span>, so the claimed
 reach bound is <span class="math inline">\(O(1)\)</span>, independent of
-<span class="math inline">\(N\)</span>. But consistency of <span
-class="math inline">\(D \land A\)</span> requires unifying <span
-class="math inline">\(x\)</span>’s and <span
-class="math inline">\(y\)</span>’s images in full: <span
-class="math inline">\(A_N\)</span> is consistent with <span
-class="math inline">\(D\)</span>, <span
-class="math inline">\(A&#39;_N\)</span> is not, and the two differ only
-at depth <span class="math inline">\(N\)</span>. Every position of the
-answer’s terms affects satisfaction. The lemma’s proof step “unification
-with depth-<span class="math inline">\(d\)</span> terms can reach at
-most depth <span class="math inline">\(d\)</span> into each substituted
-term” is false: unifying two <em>variables</em> merges their entire
-(unboundedly deep) bindings.</p>
+<span class="math inline">\(N\)</span>. Both candidates are consistent
+with <span class="math inline">\(D\)</span> (for <span
+class="math inline">\(A&#39;_N\)</span> the branch mgu binds <span
+class="math inline">\(z \mapsto f(w)\)</span>). But <em>satisfaction of
+the implication</em> — exactly what the lemma quantifies over —
+distinguishes them: for <span class="math inline">\(A_N\)</span> the
+branch mgu identifies <span class="math inline">\(z\)</span> with <span
+class="math inline">\(w\)</span> and <span
+class="math inline">\(C\)</span> is equalized (<span
+class="math inline">\(A_N\)</span> is an answer); for <span
+class="math inline">\(A&#39;_N\)</span> it binds <span
+class="math inline">\(z \mapsto f(w)\)</span> and <span
+class="math inline">\(C\)</span> fails. The two candidates differ only
+at depth <span class="math inline">\(N\)</span>. So positions at depth
+<span class="math inline">\(N\)</span>, far beyond the claimed bound,
+determine whether the implication is satisfied. The lemma’s proof step
+“unification with depth-<span class="math inline">\(d\)</span> terms can
+reach at most depth <span class="math inline">\(d\)</span> into each
+substituted term” is false: unifying two <em>variables</em> (<span
+class="math inline">\(x \doteq y\)</span>) merges their entire,
+unboundedly deep bindings, and the leaf constraints this produces feed
+directly into relevance. (Consistency exhibits the same unbounded reach
+— replace the bindings by <span class="math inline">\(f^N(a)\)</span> vs
+<span class="math inline">\(f^{N+1}(a)\)</span> for a clash at depth
+<span class="math inline">\(N\)</span>; an earlier version of this
+counterexample used only that consistency form, which refutes
+answerhood-based barrier arguments but not the lemma as literally
+stated. The relevance form is due to the round-2 automated review.)</p>
 <p><strong>Consequences.</strong></p>
 <ol type="1">
 <li>The “No Traversal Theorem” and its corollary (round 7 §25.2), which
@@ -648,14 +666,50 @@ different branches instantiate the universals independently. This is
 functionally a <em>per-branch matching substitution applied to the
 answer</em> — the exact ingredient §6 identifies as missing, in its
 <span class="math inline">\(\forall\)</span>-polarity form.</p>
+<p>Two clarifications before drawing conclusions (the first prompted by
+the round-2 automated review):</p>
+<ul>
+<li><strong>The pinning itself is pure relevance, not a prefix
+effect.</strong> Relevance universally closes <em>every</em> variable
+regardless of <span class="math inline">\(Q\)</span> (§1), so the
+mechanism just described is ordinary premise back-propagation, equally
+available in existential JCA — and the §10 machine check exercises only
+that part (its checker takes no prefix). What the prefix adds is a
+<em>filter</em> on answers: validity and no-escaping are meant to
+exclude answers that discharge the conclusion by hard-coding the
+universals, e.g. <span class="math inline">\(\tau \doteq
+\mathrm{Term}((\alpha&#39;,\beta&#39;)) \land \gamma \doteq
+(\alpha&#39;,\beta&#39;)\)</span>.</li>
+<li><strong>Whether the filter actually bites is delicate under
+Definition 4.1 as literally stated.</strong> For that hard-coding
+answer, each atom <span class="math inline">\(c\)</span> satisfies <span
+class="math inline">\(\mathcal{M} \models Q\colon c\)</span> (e.g. <span
+class="math inline">\(\forall\alpha&#39;\beta&#39;\,\exists\gamma:
+\gamma \doteq (\alpha&#39;,\beta&#39;)\)</span> is true), so the
+no-escaping condition is vacuous on it; and the validity condition <span
+class="math inline">\(\mathcal{M} \models Q\colon A[\bar\chi\bar\delta
+:= \bar t]\)</span> excludes it only if the instantiation terms <span
+class="math inline">\(\bar t\)</span> are barred from mentioning
+universal variables — a convention the section’s text does not fix. So
+the prefix-specific exclusion power that Program 7.1 needs is <em>not
+yet demonstrated</em>; it turns on the exact parameter conventions (the
+same fork as the <span class="math inline">\(\forall\)</span>-vs-<span
+class="math inline">\(\exists\)</span> reading of parameters in
+consistency, cf. Example 4.3’s <span
+class="math inline">\(\forall\gamma\)</span> check), which the thesis
+author should adjudicate before the program proceeds.</li>
+</ul>
 <p>Three observations:</p>
 <ol type="1">
 <li><p>Rounds 1–7 analyzed the prefix almost exclusively through the
-no-escaping condition (as a <em>restriction</em>). The above shows it is
-also an <em>expressiveness</em> mechanism: universals + back-propagation
-= per-branch instantiation of the answer. The round-7 claim that JCAQP
-lacks any matching-like primitive is wrong for nontrivial
-prefixes.</p></li>
+no-escaping condition (as a <em>restriction</em>). The above suggests
+the prefix package (universals in premises + the answer filter) can also
+act as an <em>expressiveness</em> mechanism — per-branch instantiation
+of the answer with junk excluded by the filter. The round-7 claim that
+JCAQP lacks any matching-like primitive is therefore not established for
+nontrivial prefixes; but by the clarifications above, neither is its
+negation — the question reduces to the filter’s exact
+semantics.</p></li>
 <li><p>The polarity is dual to SUP’s: SUP asks for <em>some</em> matcher
 per branch; the prefix mechanism quantifies matchers
 <em>universally</em> (relevance must hold for all values of <span
@@ -825,12 +879,15 @@ unfalsified).</li>
 class="math inline">\(N = 200\)</span>, <span
 class="math inline">\(A_N\)</span> (<span class="math inline">\(x \doteq
 f^{200}(z), y \doteq f^{200}(w)\)</span>) is an answer to the branch
-<span class="math inline">\(x \doteq y \Rightarrow x \doteq y\)</span>
+<span class="math inline">\(x \doteq y \Rightarrow z \doteq w\)</span>,
 while <span class="math inline">\(A&#39;_N\)</span> (<span
-class="math inline">\(y \doteq f^{201}(a)\)</span>) is not — a
-difference at depth <span class="math inline">\(200\)</span> decided by
+class="math inline">\(y \doteq f^{201}(w)\)</span>) stays consistent but
+<strong>fails relevance</strong> — satisfaction of the implication
+itself is decided at depth <span class="math inline">\(200\)</span> by
 an instance of depth <span class="math inline">\(0\)</span>, refuting
-the round-7 reach bound concretely.</li>
+the round-7 reach bound as literally stated (the consistency-only
+variant <span class="math inline">\(f^{200}(a)\)</span> vs <span
+class="math inline">\(f^{201}(a)\)</span> is also checked).</li>
 <li><strong>GADT <code>Pair</code></strong> (with the thesis’s
 conclusion <span class="math inline">\(\gamma \doteq (\alpha&#39;&#39;,
 \beta&#39;&#39;)\)</span>): the expected answer verifies; dropping the
@@ -842,9 +899,18 @@ class="math inline">\(\gamma\)</span> never gets pinned — direct
 confirmation of §7’s reading that the mechanism is premise-driven
 pinning of the parameter <span class="math inline">\(\gamma\)</span>
 against branch universals; adding <span class="math inline">\(\gamma
-\doteq (\alpha&#39;&#39;,\beta&#39;&#39;)\)</span> back yields a
-passing, less general answer. (An earlier version of this experiment
-mis-encoded the conclusion as the answer’s own atoms; corrected after
+\doteq (\alpha&#39;&#39;,\beta&#39;&#39;)\)</span> back yields a second
+passing answer, <strong>incomparable</strong> with the expected one
+under Definition 4.1’s generality relation: the expected answer forces
+<span class="math inline">\(\alpha&#39;&#39; \doteq \alpha&#39; \land
+\beta&#39;&#39; \doteq \beta&#39;\)</span> but leaves <span
+class="math inline">\(\gamma\)</span> otherwise free, the alternative
+fixes <span class="math inline">\(\gamma\)</span> from <span
+class="math inline">\(\alpha&#39;&#39;, \beta&#39;&#39;\)</span> but
+leaves those unrelated to <span class="math inline">\(\alpha&#39;,
+\beta&#39;\)</span>, and neither entails (an instance of) the other. (An
+earlier version of this experiment mis-encoded the conclusion as the
+answer’s own atoms and mis-ordered the two answers; both corrected after
 automated review.)</li>
 </ul>
 </section>
