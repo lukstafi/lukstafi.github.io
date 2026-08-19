@@ -1,0 +1,1016 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <meta name="dcterms.date" content="2026-08-19">
+  <title>JCA Existence over T(F), Round 8: Reassessment</title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <link rel="stylesheet" href="/assets/tufte.css">
+  <link rel="stylesheet" href="/assets/pandoc-tufte.css">
+  <link rel="stylesheet" href="/assets/site.css">
+  <script defer=""
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+  type="text/javascript"></script>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+  <script>(function(){var t=localStorage.getItem('theme-preference');if(t)document.documentElement.setAttribute('data-theme',t);})()</script>
+</head>
+<body>
+<nav class="site-nav">
+  <a href="/">Home</a> &middot; <a href="/about.html">About</a> &middot; <a href="https://lukstafi.substack.com">Substack</a>
+</nav>
+<div class="theme-toggle">
+  <button id="theme-btn" aria-label="Toggle dark mode">&#9788;</button>
+</div>
+<article>
+<header>
+<h1 class="title">JCA Existence over T(F), Round 8: Reassessment and New
+Structural Results</h1>
+<p class="byline">2026-08-19</p>
+</header>
+<nav id="TOC">
+<ul>
+<li><a
+href="#jca-existence-over-mathcaltmathcalf-round-8-reassessment-and-new-structural-results"
+id="toc-jca-existence-over-mathcaltmathcalf-round-8-reassessment-and-new-structural-results">JCA
+Existence over <span
+class="math inline">\(\mathcal{T}(\mathcal{F})\)</span>, Round 8:
+Reassessment and New Structural Results</a>
+<ul>
+<li><a href="#summary-of-this-round" id="toc-summary-of-this-round">0.
+Summary of this round</a></li>
+<li><a href="#setting" id="toc-setting">1. Setting</a></li>
+<li><a href="#reformulation-one-substitution-determined-branch-closures"
+id="toc-reformulation-one-substitution-determined-branch-closures">2.
+Reformulation: one substitution, determined branch closures</a></li>
+<li><a
+href="#the-port-collapse-theorem-a-decidable-fragment-and-why-the-refined-encodings-degenerate"
+id="toc-the-port-collapse-theorem-a-decidable-fragment-and-why-the-refined-encodings-degenerate">3.
+The port-collapse theorem: a decidable fragment, and why the refined
+encodings degenerate</a></li>
+<li><a href="#the-bounded-verification-barrier-is-false-as-stated"
+id="toc-the-bounded-verification-barrier-is-false-as-stated">4. The
+Bounded Verification Barrier is false as stated</a></li>
+<li><a
+href="#what-the-collapse-theorem-and-the-counterexample-jointly-say"
+id="toc-what-the-collapse-theorem-and-the-counterexample-jointly-say">5.
+What the collapse theorem and the counterexample jointly say</a>
+<ul>
+<li><a href="#the-frontier-stated-as-a-question-about-one-mechanism"
+id="toc-the-frontier-stated-as-a-question-about-one-mechanism">5.1 The
+frontier stated as a question about one mechanism</a></li>
+<li><a href="#a-note-on-jointness" id="toc-a-note-on-jointness">5.2 A
+note on jointness</a></li>
+<li><a href="#the-aliasing-residue-for-remark-3.2"
+id="toc-the-aliasing-residue-for-remark-3.2">5.3 The aliasing residue
+(for Remark 3.2)</a></li>
+</ul></li>
+<li><a href="#semi-unification-the-exact-gap"
+id="toc-semi-unification-the-exact-gap">6. Semi-unification: the exact
+gap</a></li>
+<li><a href="#the-prefix-mechanism-the-earlier-rounds-overlooked"
+id="toc-the-prefix-mechanism-the-earlier-rounds-overlooked">7. The
+prefix mechanism the earlier rounds overlooked</a></li>
+<li><a href="#status-of-the-conjectures"
+id="toc-status-of-the-conjectures">8. Status of the conjectures</a></li>
+<li><a href="#next-steps" id="toc-next-steps">9. Next steps</a></li>
+<li><a href="#machine-checks" id="toc-machine-checks">10. Machine
+checks</a></li>
+<li><a href="#literature-status-sweep-of-20152026-performed-2026-08-19"
+id="toc-literature-status-sweep-of-20152026-performed-2026-08-19">11.
+Literature status (sweep of 2015–2026, performed 2026-08-19)</a></li>
+<li><a href="#references" id="toc-references">References</a></li>
+</ul></li>
+</ul>
+</nav>
+<section
+id="jca-existence-over-mathcaltmathcalf-round-8-reassessment-and-new-structural-results"
+class="level1">
+<h1>JCA Existence over <span
+class="math inline">\(\mathcal{T}(\mathcal{F})\)</span>, Round 8:
+Reassessment and New Structural Results</h1>
+<p><em>Author: Claude (Fable 5), August 2026. Continues the agent-collab
+rounds 1–7 (January 2026) on the decidability of the JCAQP existence
+problem over the free term algebra, from Section 4.2 of Stafiniak
+(2015).</em></p>
+<section id="summary-of-this-round" class="level2">
+<h2>0. Summary of this round</h2>
+<p>The January 2026 rounds converged on: (i) JCA/JCAQP-EXIST over <span
+class="math inline">\(\mathcal{T}(\mathcal{F})\)</span> is open; (ii)
+two barriers block undecidability reductions — the <strong>consistency
+condition</strong> (semantic) and a <strong>Bounded Verification
+Barrier</strong> (syntactic); (iii) evidence points toward decidability.
+This round re-examines that convergence and finds:</p>
+<ol type="1">
+<li><strong>The Bounded Verification Barrier (round 7’s “Barrier 2”) is
+false as stated.</strong> There is a direct counterexample to the
+Bounded Reach Lemma (§4). A repaired version of the barrier would be
+equivalent to a <em>bounded answer property</em>, which is itself
+equivalent to decidability — so using the barrier as <em>evidence</em>
+for decidability is circular.</li>
+<li><strong>A clean reformulation</strong>: JCA-EXIST over <span
+class="math inline">\(\mathcal{T}(\mathcal{F})\)</span> is equivalent to
+a synthesis problem over a <em>single substitution</em> with
+<em>determined</em> (mgu-canonical) per-branch closures (§2, Theorem
+2.4). This makes the comparison with semi-unification sharp: the
+difference is not “matching is inexpressible” but precisely
+<em>one-sidedness</em> of the matcher (§6).</li>
+<li><strong>A new decidable fragment and a collapse theorem</strong>
+(§3): when premises are “port bindings” (fresh left-hand-side
+variables), answer existence collapses to plain unifiability. This
+subsumes and <em>sharpens</em> the earlier diagnosis of why
+SREU/semi-unification encodings fail: the consistency barrier can be
+circumvented by renaming premise variables, but the price is that the
+encoding lands in the collapsing fragment. Hardness, if it exists
+anywhere, must come from <strong>back-propagation</strong> — premises
+sharing variables with the answer and conclusions.</li>
+<li><strong>The quantifier prefix may supply a matching-like mechanism
+that the earlier rounds overlooked</strong> (§7): branch premises pin
+answer parameters to branch-specific terms over universal variables —
+the mechanism of the thesis’s GADT <code>Pair</code> example. The
+pinning itself is relevance-level back-propagation (prefix-independent);
+the prefix’s specific contribution is the validity/no-escaping
+<em>filter</em> on answers, whose exact bite depends on parameter
+conventions Definition 4.1 leaves open (§7). The round-7 verdict
+“semi-unification is structurally incompatible with JCAQP” is not
+justified for nontrivial prefixes — but the positive claim awaits the
+filter’s semantics.</li>
+</ol>
+<p>Net effect: the question is <strong>more open than round 7
+concluded</strong> — in particular the undecidability route via
+semi-unification is <em>reopened</em> for JCAQP with a nontrivial
+prefix, while for the purely existential (Maher) JCA the collapse
+theorem gives a genuinely new decidable fragment and a precise
+localization of where any hardness must live.</p>
+</section>
+<section id="setting" class="level2">
+<h2>1. Setting</h2>
+<p>Fix a signature <span class="math inline">\(\mathcal{F}\)</span> such
+that <span class="math inline">\(\mathcal{T}(\mathcal{F})\)</span> has
+at least two distinct ground terms. Equality in <span
+class="math inline">\(\mathcal{T}(\mathcal{F})\)</span> is syntactic
+identity of ground terms; a conjunction of equations is satisfiable iff
+it is unifiable, and satisfiable conjunctions have idempotent most
+general unifiers, unique up to renaming.</p>
+<p><strong>JCA-EXIST (Maher’s setting, <span
+class="math inline">\(\mathcal{FT}_\exists\)</span>).</strong> Given a
+finite family <span class="math inline">\(\{(D_i,
+C_i)\}_{i=1}^m\)</span> of pairs of finite conjunctions of equations,
+does there exist a finite conjunction of equations <span
+class="math inline">\(A\)</span> (over any variables, including fresh
+ones) such that for all <span class="math inline">\(i\)</span>:</p>
+<ul>
+<li><strong>relevance:</strong> <span
+class="math inline">\(\mathcal{T}(\mathcal{F}) \models \forall\,(D_i
+\land A \Rightarrow C_i)\)</span> (universal closure over all
+variables);</li>
+<li><strong>consistency:</strong> <span class="math inline">\(D_i \land
+A\)</span> is satisfiable.</li>
+</ul>
+<p>Fresh variables <span class="math inline">\(\bar\beta\)</span> of
+<span class="math inline">\(A\)</span> (“parameters”) behave, for these
+two conditions, exactly like ordinary free variables, since <span
+class="math inline">\(D_i \land (\exists\bar\beta A) \Rightarrow
+C_i\)</span> is equivalent to <span
+class="math inline">\(\forall\bar\beta\,(D_i \land A \Rightarrow
+C_i)\)</span> when <span class="math inline">\(\bar\beta \mathbin{\#}
+\mathrm{FV}(D_i, C_i)\)</span>. The thesis’s JCAQP adds a quantifier
+prefix <span class="math inline">\(Q\)</span>, a validity condition
+(<span class="math inline">\(\mathcal{T}(\mathcal{F}) \models Q\colon
+A[\bar\chi\bar\delta := \bar t]\)</span>), and the no-escaping
+conditions; we return to these in §7. Note that relevance is the full
+universal closure regardless of <span class="math inline">\(Q\)</span> —
+the prefix restricts the <em>answer language</em>, not the relevance
+semantics.</p>
+<p><strong>Notation.</strong> For an idempotent substitution <span
+class="math inline">\(\theta\)</span> write <span
+class="math inline">\(eq(\theta) = \bigwedge_{x \in
+\mathrm{dom}(\theta)} x \doteq x\theta\)</span>. For satisfiable <span
+class="math inline">\(E\)</span>, <span
+class="math inline">\(\mathrm{mgu}(E)\)</span> is an idempotent mgu. A
+conjunction of equations <span class="math inline">\(E\)</span> is
+<em>trivial</em> if every equation in it has syntactically identical
+sides. “<span class="math inline">\(\mu\)</span> equalizes <span
+class="math inline">\(E\)</span>” means <span
+class="math inline">\(E\mu\)</span> is trivial.</p>
+</section>
+<section id="reformulation-one-substitution-determined-branch-closures"
+class="level2">
+<h2>2. Reformulation: one substitution, determined branch closures</h2>
+<p><strong>Lemma 2.1 (equalization).</strong> Let <span
+class="math inline">\(E\)</span> be a satisfiable conjunction of
+equations, <span class="math inline">\(\mu = \mathrm{mgu}(E)\)</span>,
+and <span class="math inline">\(C\)</span> a conjunction of equations.
+Then <span class="math inline">\(\mathcal{T}(\mathcal{F}) \models
+\forall\,(E \Rightarrow C)\)</span> iff <span
+class="math inline">\(C\mu\)</span> is trivial.</p>
+<p><em>Proof sketch.</em> The ground solutions of <span
+class="math inline">\(E\)</span> are exactly the ground instances of
+<span class="math inline">\(\mu\)</span>. If <span
+class="math inline">\(C\mu\)</span> is trivial every instance satisfies
+<span class="math inline">\(C\)</span>. Conversely if some <span
+class="math inline">\(s\mu \not\equiv t\mu\)</span>, a ground instance
+separating them exists whenever <span
+class="math inline">\(\mathcal{T}(\mathcal{F})\)</span> has at least two
+ground terms (induction on the first position where <span
+class="math inline">\(s\mu, t\mu\)</span> differ). <span
+class="math inline">\(\square\)</span></p>
+<p>(This is the “entailment lemma” from the codex notes, restated;
+nothing new. What follows is new.)</p>
+<p><strong>Lemma 2.2 (answer normalization).</strong> If <span
+class="math inline">\(A\)</span> is an answer, so is <span
+class="math inline">\(eq(\mathrm{mgu}(A))\)</span>. Consequently answers
+can be assumed to be solved forms, i.e. (equational presentations of)
+idempotent substitutions.</p>
+<p><em>Proof.</em> <span class="math inline">\(A\)</span> and <span
+class="math inline">\(eq(\mathrm{mgu}(A))\)</span> are equivalent
+constraints in <span
+class="math inline">\(\mathcal{T}(\mathcal{F})\)</span>, and both
+relevance and consistency depend on <span
+class="math inline">\(A\)</span> only through its solution set. <span
+class="math inline">\(\square\)</span></p>
+<p><strong>Lemma 2.3 (branch mgu).</strong> Let <span
+class="math inline">\(\theta\)</span> be idempotent and <span
+class="math inline">\(D\)</span> a conjunction of equations. Then <span
+class="math inline">\(eq(\theta) \land D\)</span> is satisfiable iff
+<span class="math inline">\(D\theta\)</span> is unifiable, and in that
+case <span class="math inline">\(\mathrm{mgu}(eq(\theta) \land D) =
+\theta \nu\)</span> where <span class="math inline">\(\nu =
+\mathrm{mgu}(D\theta)\)</span>.</p>
+<p><em>Proof.</em> <span class="math inline">\(\theta\nu\)</span>
+unifies both parts. Any unifier <span
+class="math inline">\(\delta\)</span> of <span
+class="math inline">\(eq(\theta) \land D\)</span> satisfies <span
+class="math inline">\(\delta = \theta\delta\)</span>, hence unifies
+<span class="math inline">\(D\theta\)</span>, hence factors through
+<span class="math inline">\(\nu\)</span>: <span
+class="math inline">\(\delta = \nu\delta&#39; \Rightarrow \delta =
+\theta\nu\delta&#39;\)</span>. <span
+class="math inline">\(\square\)</span></p>
+<p><strong>Theorem 2.4 (substitution form of JCA-EXIST).</strong> The
+instance <span class="math inline">\(\{(D_i, C_i)\}_i\)</span> has an
+answer iff there exists an idempotent substitution <span
+class="math inline">\(\theta\)</span> such that for every <span
+class="math inline">\(i\)</span>:</p>
+<ol type="1">
+<li><span class="math inline">\(D_i\theta\)</span> is unifiable,
+and</li>
+<li><span class="math inline">\(C_i\,\theta\nu_i\)</span> is trivial,
+where <span class="math inline">\(\nu_i =
+\mathrm{mgu}(D_i\theta)\)</span>.</li>
+</ol>
+<p><em>Proof.</em> (<span class="math inline">\(\Rightarrow\)</span>) By
+Lemma 2.2 take <span class="math inline">\(A = eq(\theta)\)</span>; by
+Lemma 2.3 consistency gives (1) and <span
+class="math inline">\(\mathrm{mgu}(D_i \land A) = \theta\nu_i\)</span>;
+by Lemma 2.1 relevance gives (2). (<span
+class="math inline">\(\Leftarrow\)</span>) <span class="math inline">\(A
+:= eq(\theta)\)</span> satisfies both conditions by the same lemmas.
+<span class="math inline">\(\square\)</span></p>
+<p><strong>Discussion.</strong> Theorem 2.4 exposes the true shape of
+the problem: <em>synthesize one substitution <span
+class="math inline">\(\theta\)</span>; each branch then applies a
+canonical, fully determined operation to it</em> — unify the premise
+against it, and check that this closure equalizes the conclusion. Two
+comparisons:</p>
+<ul>
+<li><strong>Semi-unification</strong> (SUP): <span
+class="math inline">\(\exists\theta\ \forall j\ \exists\rho_j:\
+\rho_j(\theta l_j) = \theta r_j\)</span>. Note the matcher <span
+class="math inline">\(\rho_j\)</span>, when it exists, is <em>also
+determined</em> (matching is deterministic). So “JCA’s branch closure is
+determined, SUP’s is freely chosen” is <strong>not</strong> the real
+difference — a common misconception in earlier rounds. The real
+difference is <em>one-sidedness</em>: <span
+class="math inline">\(\rho_j\)</span> acts only on the variables of
+<span class="math inline">\(\theta l_j\)</span> and must leave <span
+class="math inline">\(\theta r_j\)</span> fixed, whereas <span
+class="math inline">\(\nu_i = \mathrm{mgu}(D_i\theta)\)</span> binds
+variables of both sides. See §6.</li>
+<li><strong>Verification per branch is one unification pass</strong>
+over <span class="math inline">\(\theta\)</span> — but a unification
+pass over an <em>unboundedly large</em> <span
+class="math inline">\(\theta\)</span> can compare unboundedly much
+structure (see §4). Nothing “bounded” about it.</li>
+</ul>
+<p><strong>Proposition 2.5 (r.e.; decidability = bounded
+answers).</strong> Checking whether a given <span
+class="math inline">\(A\)</span> is an answer is decidable (two
+unifications per branch). Hence JCA-EXIST is recursively enumerable, and
+it is decidable iff the <em>bounded answer property</em> holds: some
+computable <span class="math inline">\(B(\cdot)\)</span> bounds the size
+of some answer whenever an answer exists. The same holds for JCAQP-EXIST
+(the validity condition is decidable by unification with linear constant
+restrictions, per thesis §4.2.1; no-escaping is syntactic).</p>
+</section>
+<section
+id="the-port-collapse-theorem-a-decidable-fragment-and-why-the-refined-encodings-degenerate"
+class="level2">
+<h2>3. The port-collapse theorem: a decidable fragment, and why the
+refined encodings degenerate</h2>
+<p>Call a branch <span class="math inline">\((D_i, C_i)\)</span>
+<strong>port-shaped</strong> if <span class="math inline">\(D_i =
+\bigwedge_{k} u_{i,k} \doteq p_{i,k}\)</span> where the <span
+class="math inline">\(u_{i,k}\)</span> (“ports”) are pairwise distinct
+variables that occur in no <span class="math inline">\(p_{j,l}\)</span>
+(any branch) and in no <span class="math inline">\(C_j\)</span> for
+<span class="math inline">\(j \neq i\)</span> (they may occur in <span
+class="math inline">\(C_i\)</span>). Call an answer
+<strong>port-free</strong> if no port occurs in it.</p>
+<p><strong>Theorem 3.1 (port collapse).</strong> Let every branch of an
+instance be port-shaped, and let <span class="math inline">\(C^* :=
+\bigwedge_i C_i[\bar u_i := \bar p_i]\)</span>. Then the instance has a
+port-free answer iff <span class="math inline">\(C^*\)</span> is
+unifiable; and in that case <span class="math inline">\(A :=
+C^*\)</span> is an answer.</p>
+<p><em>Proof.</em> (<span class="math inline">\(\Leftarrow\)</span>) Let
+<span class="math inline">\(\hat\theta = \mathrm{mgu}(C^*)\)</span>,
+<span class="math inline">\(A = C^*\)</span> (port-free by the
+occurrence conditions). For each <span class="math inline">\(i\)</span>:
+<span class="math inline">\(D_i \land A\)</span> is satisfiable because
+the added bindings <span class="math inline">\(u_{i,k} \mapsto
+p_{i,k}\hat\theta\)</span> are acyclic over <span
+class="math inline">\(\mathrm{mgu}(A)\)</span> (ports occur in no <span
+class="math inline">\(p\)</span>), so <span class="math inline">\(\mu_i
+:= \hat\theta \cup \{u_{i,k} \mapsto p_{i,k}\hat\theta\}\)</span> is
+<span class="math inline">\(\mathrm{mgu}(D_i \land A)\)</span>. Then
+<span class="math inline">\(C_i\mu_i = (C_i[\bar u_i := \bar
+p_i])\hat\theta\)</span>, which is trivial since <span
+class="math inline">\(\hat\theta\)</span> unifies (indeed equalizes)
+<span class="math inline">\(C^*\)</span>. Relevance follows by Lemma
+2.1. (<span class="math inline">\(\Rightarrow\)</span>) Let <span
+class="math inline">\(A\)</span> be a port-free answer, <span
+class="math inline">\(\hat\theta = \mathrm{mgu}(A)\)</span> (port-free).
+As above <span class="math inline">\(\mathrm{mgu}(D_i \land A) =
+\hat\theta \cup \{u_{i,k} \mapsto p_{i,k}\hat\theta\}\)</span>, so
+relevance gives that <span class="math inline">\((C_i[\bar u_i := \bar
+p_i])\hat\theta\)</span> is trivial for all <span
+class="math inline">\(i\)</span>; hence <span
+class="math inline">\(\hat\theta\)</span> unifies <span
+class="math inline">\(C^*\)</span>. <span
+class="math inline">\(\square\)</span></p>
+<p><strong>Remark 3.2 (guards).</strong> The restriction to port-free
+answers can be <em>enforced up to variable aliasing</em> inside JCA
+itself, by adding guard branches: for two distinct constants <span
+class="math inline">\(c_1 \neq c_2\)</span> and each port <span
+class="math inline">\(u\)</span>, add branches <span
+class="math inline">\((u \doteq c_1) \Rightarrow (u \doteq c_1)\)</span>
+and <span class="math inline">\((u \doteq c_2) \Rightarrow (u \doteq
+c_2)\)</span> (relevance is automatic; consistency forces <span
+class="math inline">\(\mathrm{mgu}(A)(u)\)</span> to be an unbound
+variable), plus pairwise guards <span class="math inline">\((u \doteq
+c_1 \land u&#39; \doteq c_2) \Rightarrow (u \doteq c_1)\)</span> to
+forbid aliasing ports to each other. The residual freedom — aliasing a
+port to an unbound non-port variable occurring in the answer’s images —
+is harmless in the encodings below when all right-hand sides <span
+class="math inline">\(r_j\)</span> are non-variables (analysis in
+§5.3).</p>
+<p><strong>Corollary 3.3 (why the “repaired” SREU/SUP encodings must
+fail).</strong> Rounds 1–7 diagnosed the failure of naive SREU encodings
+via the consistency condition (premises <span
+class="math inline">\(E_i\theta\)</span> false in <span
+class="math inline">\(\mathcal{T}(\mathcal{F})\)</span>). The natural
+repair — rename premise variables freshly so premises are always
+satisfiable, letting the answer bind the renamed copies (which
+<em>does</em> express application of a matching substitution, contra
+round 7’s §25.1) — produces port-shaped branches. By Theorem 3.1 the
+resulting instances can only express <em>unifiability</em> of <span
+class="math inline">\(C^*\)</span>, a decidable condition. Concretely,
+encoding a SUP pair <span class="math inline">\(l_j \leq r_j\)</span> as
+<span class="math inline">\(D_j: u_j \doteq l_j[\bar x := \bar
+v_j]\)</span> (<span class="math inline">\(\bar v_j\)</span> fresh),
+<span class="math inline">\(C_j: u_j \doteq r_j\)</span> yields answer
+existence iff <span class="math inline">\(\bigwedge_j l_j[\bar x := \bar
+v_j] \doteq r_j\)</span> is unifiable — the condition “<span
+class="math inline">\(\theta(r_j)\)</span> is an instance of the
+<em>pattern</em> <span class="math inline">\(l_j\)</span>”, with <span
+class="math inline">\(\theta(l_j)\)</span> nowhere. The single
+application of the unknown <span class="math inline">\(\theta\)</span>
+on the left is exactly what is lost.</p>
+<p><strong>Moral.</strong> The consistency condition is <em>not</em> the
+deep obstruction (it can be engineered around by renaming). The collapse
+shows the deep dichotomy: <strong>all expressive power of JCA beyond
+unifiability lives in back-propagation</strong> — premises sharing
+variables with the answer and with conclusions, so that <span
+class="math inline">\(\nu_i = \mathrm{mgu}(D_i\theta)\)</span> feeds
+branch-specific information back into <span
+class="math inline">\(\theta\)</span>’s parameters. Example 4.3 of the
+thesis (<span class="math inline">\(A: y \doteq f(z,\gamma)\)</span>,
+premise <span class="math inline">\(y \doteq f(a,x)\)</span>
+back-propagates <span class="math inline">\(z \doteq a\)</span>) is the
+minimal instance of this mechanism.</p>
+</section>
+<section id="the-bounded-verification-barrier-is-false-as-stated"
+class="level2">
+<h2>4. The Bounded Verification Barrier is false as stated</h2>
+<p>Round 7 (claude notes §25.2) states:</p>
+<blockquote>
+<p><strong>Lemma (Bounded Reach).</strong> […] the set of subterm
+positions in <span class="math inline">\(A\theta\)</span> that can
+affect satisfaction of the implications is bounded by <span
+class="math inline">\(O((n+k) \cdot d)\)</span> [<span
+class="math inline">\(n\)</span> = quantified variables, <span
+class="math inline">\(k\)</span> = answer equations, <span
+class="math inline">\(d\)</span> = max depth of instance terms].</p>
+</blockquote>
+<p><strong>Counterexample 4.1.</strong> Signature <span
+class="math inline">\(\{f/1, a\}\)</span>; instance variables <span
+class="math inline">\(x, y, z, w\)</span>; single branch <span
+class="math inline">\(D: x \doteq y\)</span>, <span
+class="math inline">\(C: z \doteq w\)</span>. Candidate answers <span
+class="math inline">\(A_N: x \doteq f^N(z) \land y \doteq
+f^N(w)\)</span> and <span class="math inline">\(A&#39;_N: x \doteq
+f^N(z) \land y \doteq f^{N+1}(w)\)</span>. Here <span
+class="math inline">\(k = 2\)</span>, <span class="math inline">\(d =
+0\)</span>, <span class="math inline">\(n = 4\)</span>, so the claimed
+reach bound is <span class="math inline">\(O(1)\)</span>, independent of
+<span class="math inline">\(N\)</span>. Both candidates are consistent
+with <span class="math inline">\(D\)</span> (for <span
+class="math inline">\(A&#39;_N\)</span> the branch mgu binds <span
+class="math inline">\(z \mapsto f(w)\)</span>). But <em>satisfaction of
+the implication</em> — exactly what the lemma quantifies over —
+distinguishes them: for <span class="math inline">\(A_N\)</span> the
+branch mgu identifies <span class="math inline">\(z\)</span> with <span
+class="math inline">\(w\)</span> and <span
+class="math inline">\(C\)</span> is equalized (<span
+class="math inline">\(A_N\)</span> is an answer); for <span
+class="math inline">\(A&#39;_N\)</span> it binds <span
+class="math inline">\(z \mapsto f(w)\)</span> and <span
+class="math inline">\(C\)</span> fails. The two candidates differ only
+at depth <span class="math inline">\(N\)</span>. So positions at depth
+<span class="math inline">\(N\)</span>, far beyond the claimed bound,
+determine whether the implication is satisfied. The lemma’s proof step
+“unification with depth-<span class="math inline">\(d\)</span> terms can
+reach at most depth <span class="math inline">\(d\)</span> into each
+substituted term” is false: unifying two <em>variables</em> (<span
+class="math inline">\(x \doteq y\)</span>) merges their entire,
+unboundedly deep bindings, and the leaf constraints this produces feed
+directly into relevance. (Consistency exhibits the same unbounded reach
+— replace the bindings by <span class="math inline">\(f^N(a)\)</span> vs
+<span class="math inline">\(f^{N+1}(a)\)</span> for a clash at depth
+<span class="math inline">\(N\)</span>; an earlier version of this
+counterexample used only that consistency form, which refutes
+answerhood-based barrier arguments but not the lemma as literally
+stated. The relevance form is due to the round-2 automated review.)</p>
+<p><strong>Consequences.</strong></p>
+<ol type="1">
+<li>The “No Traversal Theorem” and its corollary (round 7 §25.2), which
+conclude that computation-trace encodings cannot reduce to JCAQP, are
+unsupported. A reduction of the form “machine halts iff an answer
+(encoding the halting trace, of unbounded size <span
+class="math inline">\(k\)</span>) exists” is <em>not</em> ruled out: the
+answer supplies the trace and branches verify it; nothing bounds <span
+class="math inline">\(k\)</span> in terms of the instance.</li>
+<li>What a branch <em>can</em> do to unbounded answer structure: enforce
+<strong>equality</strong> (structural copying) between answer-chosen
+parts of unbounded size — e.g. a premise <span class="math inline">\(x
+\doteq y\)</span> forces the full terms bound to <span
+class="math inline">\(x, y\)</span> to unify; over <span
+class="math inline">\(\{f/1, a\}\)</span> this makes two answer-chosen
+“numerals” equal, i.e. branches can express unbounded <em>arithmetic
+coincidences</em> (<span class="math inline">\(M = N\)</span>), not just
+depth-<span class="math inline">\(d\)</span> facts.</li>
+<li>What remains genuinely unclear — and is the correct residue of the
+barrier intuition — is whether branches can enforce <strong>local
+properties at every node</strong> of an answer-chosen structure (a
+transition relation along a trace), as opposed to global equalities
+between copies. Classical undecidability proofs in this territory (SREU
+via shifted pairing; SUP via path equations) do exactly this with
+equality-flavored primitives, which is why the question is
+delicate.</li>
+<li>Any <em>correct</em> repair of the barrier — a computable bound on
+how large a minimal answer needs to be — would, by Proposition 2.5,
+<em>prove decidability outright</em>. So the barrier cannot serve as
+independent “evidence for decidability”: as an argument it is either
+wrong (as stated) or is the whole theorem. Round 7’s “evidence points
+toward decidability” should be downgraded accordingly.</li>
+</ol>
+</section>
+<section
+id="what-the-collapse-theorem-and-the-counterexample-jointly-say"
+class="level2">
+<h2>5. What the collapse theorem and the counterexample jointly say</h2>
+<p>Combining §3 and §4: the earlier rounds’ two barriers were (a) real
+but circumventable (consistency), and (b) false as stated (bounded
+verification). The correct picture is:</p>
+<ul>
+<li>JCA branches evaluate the answer by <strong>unification against
+it</strong>, which can compare unbounded structure but only along the
+<em>variable-sharing topology</em> the answer itself sets up.</li>
+<li>Without back-propagation the problem is decidable (Theorem
+3.1).</li>
+<li>With back-propagation, each branch computes a determined closure
+<span class="math inline">\(\nu_i = \mathrm{mgu}(D_i\theta)\)</span> and
+the conclusion audits it. The open question is exactly the expressive
+strength of finitely many such audit loops over a shared unknown <span
+class="math inline">\(\theta\)</span>.</li>
+</ul>
+<section id="the-frontier-stated-as-a-question-about-one-mechanism"
+class="level3">
+<h3>5.1 The frontier stated as a question about one mechanism</h3>
+<p><strong>Question 5.1.</strong> Can finitely many branches, via
+back-propagation, force the family of per-branch bindings <span
+class="math inline">\(\{\nu_i|_{\text{params}}\}\)</span> to simulate
+one step of <em>iteration</em> — i.e. force an answer-chosen structure
+to be related to a <em>shifted copy of itself</em> by a fixed local
+relation — in the style of shifted pairing (Veanes KGC’97;
+Gurevich–Veanes 1999) or path equations (Kfoury–Tiuryn–Urzyczyn /
+Dudenhefner for SUP)?</p>
+<p>For calibration: the shifted-pairing construction shows SREU is
+undecidable already with <strong>ground left-hand sides, two variables
+and three rigid equations</strong> (Veanes; improved by Gurevich–Veanes)
+— but its two projection equations use the rigid assumptions as
+<em>rewrite rules</em> (<span class="math inline">\(c_{ab} \to
+a\)</span>, <span class="math inline">\(c_{ab} \to b\)</span>)
+projecting a train of pairs onto its components, which is exactly the
+derivability-under-assumptions mechanism that JCA’s fixed-model
+semantics lacks (rounds 1–7’s Barrier 1, which does survive). Notably,
+SREU with <em>two</em> rigid equations was still open in the late 1990s
+— small-instance intuitions in this territory are treacherous in both
+directions.</p>
+<p>The <span class="math inline">\(M = N\)</span> mechanism of
+Counterexample 4.1 gives “equal to a copy of itself”; undecidability
+needs approximately “equal to a <em>rewritten</em> copy of itself”. Pure
+equations cannot rewrite — but back-propagated parameters can <em>stand
+for</em> rewritten pieces, with other branches auditing them. Whether
+the audits can be made sound (no junk answers) is exactly where all our
+attempts stop; §6 pins down the missing primitive.</p>
+</section>
+<section id="a-note-on-jointness" class="level3">
+<h3>5.2 A note on jointness</h3>
+<p>Theorem 3.1 also clarifies Maher’s Example 12 (JCA <span
+class="math inline">\(\neq\)</span> conjunction of SCA solutions):
+jointness matters <em>only</em> in the presence of back-propagation; in
+the port fragment, jointness degenerates to conjoining (that is what
+<span class="math inline">\(C^*\)</span> is).</p>
+</section>
+<section id="the-aliasing-residue-for-remark-3.2" class="level3">
+<h3>5.3 The aliasing residue (for Remark 3.2)</h3>
+<p>If all <span class="math inline">\(r_j\)</span> are non-variables
+(WLOG for SUP: replace <span class="math inline">\(l \leq r\)</span> by
+<span class="math inline">\(f(l) \leq f(r)\)</span>), an answer aliasing
+a port <span class="math inline">\(u_j\)</span> to an unbound variable
+<span class="math inline">\(z\)</span> occurring in the answer’s images
+either breaks consistency (occurs-check, if <span
+class="math inline">\(z\)</span> occurs in <span
+class="math inline">\(l_j^*\hat\theta\)</span>) or yields the same
+equalization condition as the unaliased case (the condition <span
+class="math inline">\(t_j \equiv \hat\theta(r_j)[z := t_j]\)</span> with
+<span class="math inline">\(t_j := l_j^*\hat\theta\)</span> forces <span
+class="math inline">\(z \notin \hat\theta(r_j)\)</span> unless <span
+class="math inline">\(\hat\theta(r_j) = z\)</span>, impossible at a
+non-variable root). So guards + non-variable right-hand sides make the
+port fragment airtight for the SUP-style encodings. This level of detail
+matters because it shows the collapse is not an artifact of restricting
+the answer language.</p>
+</section>
+</section>
+<section id="semi-unification-the-exact-gap" class="level2">
+<h2>6. Semi-unification: the exact gap</h2>
+<p>Round 7 §25.1 concluded SUP is “structurally incompatible” with JCAQP
+because the matcher <span class="math inline">\(\sigma_i\)</span> is
+“meta-level”. §3 shows this is wrong in one direction (matcher
+<em>application</em> is expressible via fresh renaming; the encoding
+fails for a different reason — collapse), and the following is the
+precise residue:</p>
+<p><strong>Maher’s own comparison, made precise.</strong> Maher (LICS
+2005, end of §5.2) already formulated semi-unification equationally —
+<span class="math inline">\(\theta\)</span> solves the instance iff
+<span class="math inline">\((\tilde\exists_{-x}\, x = t_i \wedge
+\hat\theta) \to (\tilde\exists_{-x}\, x = u_i \wedge
+\hat\theta)\)</span> for each <span class="math inline">\(i\)</span> —
+and observed: “a major difference is that in semi-unification the answer
+must appear <strong>inside the quantifier</strong>, whereas JCA requires
+that an answer simply be combined conjunctively with <span
+class="math inline">\(B\)</span>”; he adds that SUP instances have most
+general solutions while SCA problems may have none, and concludes the
+JCA decision problem “appears more tractable”. Theorem 2.4 turns this
+remark into an exact statement: in both problems a single unknown
+substitution is audited per-branch by a determined operation; in SUP the
+audit is <em>matching after applying <span
+class="math inline">\(\theta\)</span> on both sides</em> (one-sided), in
+JCA it is <em>unification of the fixed premise against <span
+class="math inline">\(\theta\)</span></em> (two-sided). “Inside the
+quantifier” = the unknown gets re-instantiated per branch; “conjoined
+outside” = it does not.</p>
+<p><strong>The one-sided application gap.</strong> JCA can express, for
+an unknown <span class="math inline">\(\theta\)</span>:</p>
+<ul>
+<li>“<span class="math inline">\(\theta(r)\)</span> is an instance of
+the <em>fixed pattern</em> <span class="math inline">\(l\)</span>” —
+port encoding, collapses to unification;</li>
+<li>“<span class="math inline">\(\theta(l)\)</span> and <span
+class="math inline">\(\theta(r)\)</span> are <em>equal after further
+unification</em>” — back-propagation, but symmetric.</li>
+</ul>
+<p>SUP needs “<span class="math inline">\(\theta(r)\)</span> is an
+instance of <span class="math inline">\(\theta(l)\)</span>”: the unknown
+applied on the left, and the matcher forbidden from touching <span
+class="math inline">\(\theta(r)\)</span>’s variables. In mgu terms:
+<span class="math inline">\(\mathrm{mgu}(\theta l \doteq \theta
+r)\)</span> must not bind variables of <span
+class="math inline">\(\theta r\)</span>. Pure equational conclusions can
+check what <em>is</em> equalized, never that something <em>stays
+unbound</em> — this is a negation-flavored condition (a
+disequation/“is-a-variable” test). Three consequences:</p>
+<ol type="1">
+<li><strong>For existential-prefix JCA</strong>, undecidability via SUP
+requires simulating a one-sided binding restriction with consistency
+failures (the only “negative” signal JCA has: an answer is
+<em>rejected</em> if some branch becomes inconsistent). Guard-style
+gadgets (Remark 3.2) show consistency can encode “this variable is not
+bound to a non-variable” — which is precisely an is-a-variable test!
+Whether guards can protect <em>answer-dependent</em> variables (the
+variables of <span class="math inline">\(\theta r\)</span>, unknown in
+advance) rather than instance variables is the crisp open sub-question.
+This looks hard but no longer hopeless; it was not identified in rounds
+1–7.</li>
+<li><strong>For JCAQP with a <span
+class="math inline">\(\forall\exists\)</span> prefix</strong>, there is
+a second source of one-sidedness: validity + no-escaping forbid the
+<em>answer</em> from constraining universal variables, while relevance’s
+per-branch <span class="math inline">\(\forall\)</span>-closure lets
+<em>premises</em> instantiate them branch-specifically. See §7.</li>
+<li>Complexity-wise, the encodings that do work land at unifiability
+(P). Any hardness proof must therefore essentially use back-propagation
+depth; there is currently not even an NP-hardness proof for JCA-EXIST in
+the literature we have seen (worth settling as a warm-up:
+guess-and-check gives membership in NP only if the bounded answer
+property holds with a polynomial bound — also open).</li>
+</ol>
+</section>
+<section id="the-prefix-mechanism-the-earlier-rounds-overlooked"
+class="level2">
+<h2>7. The prefix mechanism the earlier rounds overlooked</h2>
+<p>The thesis’s own motivating example (§4.2.4.1, the GADT
+<code>Pair</code> branch) is:</p>
+<p><span class="math display">\[\forall \alpha&#39; \beta&#39;\, \exists
+\tau\, \gamma\, \alpha&#39;&#39;\, \beta&#39;&#39; :\quad \tau \doteq
+\mathrm{Term}((\alpha&#39;,\beta&#39;)) \;\Rightarrow\; \gamma \doteq
+(\alpha&#39;&#39;,\beta&#39;&#39;)\,\text{-ish}\]</span></p>
+<p>with expected answer <span class="math inline">\(\tau \doteq
+\mathrm{Term}(\gamma) \land \alpha&#39;&#39; \doteq \alpha&#39; \land
+\beta&#39;&#39; \doteq \beta&#39;\)</span>. Run this through Theorem
+2.4’s lens: the answer binds <span class="math inline">\(\tau\)</span>
+to a term over the <em>parameter</em> <span
+class="math inline">\(\gamma\)</span>; the branch premise
+back-propagates <span class="math inline">\(\nu: \gamma \mapsto
+(\alpha&#39;, \beta&#39;)\)</span> — the parameter receives a
+<strong>branch-specific value built from universally quantified
+variables</strong>. Since relevance is a per-branch universal closure
+(<span class="math inline">\(\bigwedge_i \forall(\dots)\)</span>),
+different branches instantiate the universals independently. This is
+functionally a <em>per-branch matching substitution applied to the
+answer</em> — the exact ingredient §6 identifies as missing, in its
+<span class="math inline">\(\forall\)</span>-polarity form.</p>
+<p>Two clarifications before drawing conclusions (the first prompted by
+the round-2 automated review):</p>
+<ul>
+<li><strong>The pinning itself is pure relevance, not a prefix
+effect.</strong> Relevance universally closes <em>every</em> variable
+regardless of <span class="math inline">\(Q\)</span> (§1), so the
+mechanism just described is ordinary premise back-propagation, equally
+available in existential JCA — and the §10 machine check exercises only
+that part (its checker takes no prefix). What the prefix adds is a
+<em>filter</em> on answers: validity and no-escaping are meant to
+exclude answers that discharge the conclusion by hard-coding the
+universals, e.g. <span class="math inline">\(\tau \doteq
+\mathrm{Term}((\alpha&#39;,\beta&#39;)) \land \gamma \doteq
+(\alpha&#39;,\beta&#39;)\)</span>.</li>
+<li><strong>Whether the filter actually bites is delicate under
+Definition 4.1 as literally stated.</strong> For that hard-coding
+answer, each atom <span class="math inline">\(c\)</span> satisfies <span
+class="math inline">\(\mathcal{M} \models Q\colon c\)</span> (e.g. <span
+class="math inline">\(\forall\alpha&#39;\beta&#39;\,\exists\gamma:
+\gamma \doteq (\alpha&#39;,\beta&#39;)\)</span> is true), so the
+no-escaping condition is vacuous on it; and the validity condition <span
+class="math inline">\(\mathcal{M} \models Q\colon A[\bar\chi\bar\delta
+:= \bar t]\)</span> excludes it only if the instantiation terms <span
+class="math inline">\(\bar t\)</span> are barred from mentioning
+universal variables — a convention the section’s text does not fix. So
+the prefix-specific exclusion power that Program 7.1 needs is <em>not
+yet demonstrated</em>; it turns on the exact parameter conventions (the
+same fork as the <span class="math inline">\(\forall\)</span>-vs-<span
+class="math inline">\(\exists\)</span> reading of parameters in
+consistency, cf. Example 4.3’s <span
+class="math inline">\(\forall\gamma\)</span> check), which the thesis
+author should adjudicate before the program proceeds.</li>
+</ul>
+<p>Three observations:</p>
+<ol type="1">
+<li><p>Rounds 1–7 analyzed the prefix almost exclusively through the
+no-escaping condition (as a <em>restriction</em>). The above suggests
+the prefix package (universals in premises + the answer filter) can also
+act as an <em>expressiveness</em> mechanism — per-branch instantiation
+of the answer with junk excluded by the filter. The round-7 claim that
+JCAQP lacks any matching-like primitive is therefore not established for
+nontrivial prefixes; but by the clarifications above, neither is its
+negation — the question reduces to the filter’s exact
+semantics.</p></li>
+<li><p>The polarity is dual to SUP’s: SUP asks for <em>some</em> matcher
+per branch; the prefix mechanism quantifies matchers
+<em>universally</em> (relevance must hold for all values of <span
+class="math inline">\(\bar\alpha\)</span>, i.e. for every instantiation
+the premise admits). When the premise pins the universals uniquely (as
+in the <code>Pair</code> example), the <span
+class="math inline">\(\forall\)</span> collapses to “the” matcher and
+the polarities coincide. Premises that pin universals are easy to
+arrange (that is what back-propagation does). This gives a concrete
+program:</p>
+<p><strong>Program 7.1 (undecidability attempt for JCAQP-EXIST, <span
+class="math inline">\(\forall\exists\)</span> prefix).</strong> The
+right source is Dudenhefner’s <strong>simple semi-unification</strong>
+(SSU, FSCD 2020 Problem 15, undecidable via uniform boundedness of
+deterministic simple stack machines): find <span
+class="math inline">\(\varphi, \psi_0, \psi_1\)</span> such that for
+each constraint <span
+class="math inline">\(a|\alpha|\;\doteq\;|\beta|b\)</span> (one per
+stack-machine instruction; <span class="math inline">\(a, b \in
+\{0,1\}\)</span>; <span class="math inline">\(\alpha, \beta\)</span>
+state variables), <span
+class="math inline">\(\psi_a(\varphi(\alpha))\)</span> equals the <span
+class="math inline">\(b\)</span>-component of <span
+class="math inline">\(\varphi(\beta)\)</span>, i.e. <span
+class="math inline">\(\varphi(\beta) = \psi_a(\varphi(\alpha)) \to
+\tau\)</span> (if <span class="math inline">\(b{=}0\)</span>) or <span
+class="math inline">\(\sigma \to \psi_a(\varphi(\alpha))\)</span> (if
+<span class="math inline">\(b{=}1\)</span>), over the signature <span
+class="math inline">\(\{\to\}\)</span>. Attractions: only
+<strong>two</strong> unknown semi-valuations <span
+class="math inline">\(\psi_0, \psi_1\)</span> shared across all
+constraints; each constraint mentions one <span
+class="math inline">\(\psi\)</span>-application at depth one, no
+nesting. Encoding plan: (a) <span class="math inline">\(\varphi\)</span>
+lives on existential variables <span
+class="math inline">\(x_\alpha\)</span>; (b) each branch handles one
+constraint, with the premise back-propagating <span
+class="math inline">\(\varphi(\beta)\)</span>’s components; (c) the
+<span class="math inline">\(\psi_a\)</span>-application is the hard part
+— <span class="math inline">\(\psi_a\)</span> acts on the
+(answer-chosen, unbounded) variables of <span
+class="math inline">\(\varphi(\alpha)\)</span>, so it must be
+represented by per-branch pinning of parameters against universals
+(validity + strong no-escaping supplying the one-sidedness: the answer
+may not constrain universals). The open difficulty: the same variables
+cannot be “images of <span class="math inline">\(\varphi\)</span>”
+(answer-chosen) and “universal” (answer-forbidden) at once; the encoding
+must route them through parameters pinned per-branch, and <span
+class="math inline">\(\psi_a\)</span>’s <em>globality</em> (same <span
+class="math inline">\(\psi_a\)</span> in every constraint with letter
+<span class="math inline">\(a\)</span>) must be enforced across branches
+— jointness is the natural tool. This is where the next round should
+push.</p></li>
+<li><p>Symmetrically, if Program 7.1 fails for a principled reason, that
+reason will likely take the form “parameters pinned by premises can only
+be pinned to <em>depth-bounded contexts over universals</em>” — a
+pattern-unification-like normal form, which would be the right route to
+a <strong>decidability</strong> proof for the fragment. Either outcome
+would be a real theorem. (The pattern-unification analogy from rounds
+6–7 survives, but now attached to the correct mechanism.)</p></li>
+</ol>
+</section>
+<section id="status-of-the-conjectures" class="level2">
+<h2>8. Status of the conjectures</h2>
+<ul>
+<li><strong>Conjecture (rounds 1–7): JCAQP-EXIST over <span
+class="math inline">\(\mathcal{T}(\mathcal{F})\)</span> is
+decidable.</strong> Downgraded: the two supporting barriers are
+respectively circumventable and false as stated; and §7 exhibits an
+expressiveness mechanism pointing the other way for nontrivial prefixes.
+Current best guess of this round: <strong>existential-prefix JCA-EXIST
+may well be decidable</strong> (the collapse theorem, the symmetric-mgu
+limitation of §6, and the absence of any one-sidedness primitive all
+point that way), while <strong>JCAQP-EXIST with alternating prefix is a
+serious undecidability candidate</strong> via Program 7.1. These now
+look like <em>different problems</em> and should be tracked separately —
+the earlier rounds’ merging of the two blurred exactly the distinction
+that matters (as does, in the other direction, the thesis’s reduction of
+<em>logic-level</em> JAQP to SREU, which changes semantics rather than
+prefix).</li>
+<li><strong>New verified small results of this round:</strong> Theorem
+2.4 (substitution form), Theorem 3.1 (port collapse; a decidable
+fragment), Counterexample 4.1 (refuting the Bounded Reach Lemma), the
+one-sided-gap analysis (§6), and the prefix-matching mechanism (§7).
+None of these settles the main question; all of them move the
+frontier.</li>
+</ul>
+</section>
+<section id="next-steps" class="level2">
+<h2>9. Next steps</h2>
+<ol type="1">
+<li><strong>Push Program 7.1</strong> (SSU <span
+class="math inline">\(\to\)</span> JCAQP with <span
+class="math inline">\(\forall\exists\)</span> prefix). First milestone:
+a sound encoding (SSU solvable <span
+class="math inline">\(\Rightarrow\)</span> answer exists) with the
+one-sidedness enforced by no-escaping; then attack completeness
+junk-answer by junk-answer, as §5.3 did for ports. Fallback sources if
+SSU resists: uniform boundedness of deterministic simple stack machines
+directly (skipping SSU), or the 2-inequality SU normal form of
+Dudenhefner’s Theorem 1.</li>
+<li><strong>Warm-up hardness:</strong> prove NP-hardness (or better) of
+JCA-EXIST (existential prefix) — e.g. via back-propagation gadgets for
+3SAT (branch-per-clause; answer chooses assignment; consistency
+rejects). Would be the first lower bound for the problem and would
+exercise the guard toolkit.</li>
+<li><strong>Bounded answer property for fragments:</strong> attempt a
+normal-form theorem for answers in the existential fragment — e.g. “if
+an answer exists, one exists whose depth is bounded by the instance’s
+unification-closure depth”. Even for <span class="math inline">\(m =
+2\)</span> branches this is open and looks approachable via the
+structure of <span class="math inline">\(\nu_1, \nu_2\)</span>
+interaction. A proof technique: answer-minimization — show any answer
+can be <em>pruned</em> at depths the branch mgus never traverse (this is
+where the failed Bounded Reach intuition can be salvaged as a theorem
+about <em>minimal</em> answers rather than all answers).</li>
+<li><strong>Machine experiments:</strong> implement the Theorem 2.4
+checker plus a small-answer enumerator; probe minimal answer sizes on
+families of instances designed to stress back-propagation (Example 4.3
+chains, <code>zip1</code>/<code>zip2</code>-style GADT constraints from
+Lin’s examples cited in the thesis). Evidence of super-polynomial
+minimal-answer growth would be evidence against the bounded answer
+property.</li>
+<li><strong>Literature re-check</strong> (running in parallel to this
+round): anything 2015–2026 on the JCA decision problem, new SUP
+fragments, SREU developments. To be merged into these notes when the
+sweep completes.</li>
+</ol>
+</section>
+<section id="machine-checks" class="level2">
+<h2>10. Machine checks</h2>
+<p>The formal claims of this round are exercised by <a
+href="round-8-experiments.py">round-8-experiments.py</a> (a small
+unification engine plus the Theorem 2.4 answer checker). Results:</p>
+<ul>
+<li><strong>Example 4.3</strong>: the thesis’s answer <span
+class="math inline">\(\exists\gamma: y \doteq f(z,\gamma)\)</span>
+verifies; a brute-force search over single-equation candidates
+additionally finds the parameter-free answers <span
+class="math inline">\(y \doteq f(z,x)\)</span> and <span
+class="math inline">\(y \doteq f(z,z)\)</span> (instances of the
+thesis’s most general answer, obtained by substituting for <span
+class="math inline">\(\gamma\)</span>) — and also <span
+class="math inline">\(y \doteq f(x,z)\)</span>, which verifies as an
+answer but is <strong>not</strong> an instance of <span
+class="math inline">\(\exists\gamma: y \doteq f(z,\gamma)\)</span> under
+the thesis’s generality relation (Def. 4.1’s “more general”: no
+substitution for <span class="math inline">\(\gamma\)</span> alone
+yields <span class="math inline">\(f(x,z)\)</span> from <span
+class="math inline">\(f(z,\gamma)\)</span>, and <span
+class="math inline">\(y \doteq f(x,z)\)</span> does not entail any such
+instance since it does not entail <span class="math inline">\(x \doteq
+z\)</span>). Unless Example 4.3 carries an implicit side condition
+excluding such answers, its claim that <span
+class="math inline">\(\exists\gamma: y \doteq f(z,\gamma)\)</span> is
+<em>the</em> most general answer appears to need a caveat — a
+<strong>candidate thesis erratum</strong> surfaced by machine search
+(spotted in the round-8 automated review of an earlier, wrongly grouped
+version of this bullet).</li>
+<li><strong>Theorem 3.1</strong>: on 100 random port-shaped instances,
+whenever <span class="math inline">\(C^*\)</span> unifies, <span
+class="math inline">\(A := C^*\)</span> verifies as an answer (direction
+1 asserted), and search found no port-free answer for any instance with
+non-unifiable <span class="math inline">\(C^*\)</span> (direction 2
+unfalsified).</li>
+<li><strong>Counterexample 4.1</strong>: with <span
+class="math inline">\(N = 200\)</span>, <span
+class="math inline">\(A_N\)</span> (<span class="math inline">\(x \doteq
+f^{200}(z), y \doteq f^{200}(w)\)</span>) is an answer to the branch
+<span class="math inline">\(x \doteq y \Rightarrow z \doteq w\)</span>,
+while <span class="math inline">\(A&#39;_N\)</span> (<span
+class="math inline">\(y \doteq f^{201}(w)\)</span>) stays consistent but
+<strong>fails relevance</strong> — satisfaction of the implication
+itself is decided at depth <span class="math inline">\(200\)</span> by
+an instance of depth <span class="math inline">\(0\)</span>, refuting
+the round-7 reach bound as literally stated (the consistency-only
+variant <span class="math inline">\(f^{200}(a)\)</span> vs <span
+class="math inline">\(f^{201}(a)\)</span> is also checked).</li>
+<li><strong>GADT <code>Pair</code></strong> (with the thesis’s
+conclusion <span class="math inline">\(\gamma \doteq (\alpha&#39;&#39;,
+\beta&#39;&#39;)\)</span>): the expected answer verifies; dropping the
+answer’s <span class="math inline">\(\gamma\)</span>-routing (<span
+class="math inline">\(\tau \doteq
+\mathrm{Term}((\alpha&#39;&#39;,\beta&#39;&#39;))\)</span> alone)
+<strong>fails relevance</strong> because <span
+class="math inline">\(\gamma\)</span> never gets pinned — direct
+confirmation of §7’s reading that the mechanism is premise-driven
+pinning of the parameter <span class="math inline">\(\gamma\)</span>
+against branch universals; adding <span class="math inline">\(\gamma
+\doteq (\alpha&#39;&#39;,\beta&#39;&#39;)\)</span> back yields a second
+passing answer, <strong>incomparable</strong> with the expected one
+under Definition 4.1’s generality relation: the expected answer forces
+<span class="math inline">\(\alpha&#39;&#39; \doteq \alpha&#39; \land
+\beta&#39;&#39; \doteq \beta&#39;\)</span> but leaves <span
+class="math inline">\(\gamma\)</span> otherwise free, the alternative
+fixes <span class="math inline">\(\gamma\)</span> from <span
+class="math inline">\(\alpha&#39;&#39;, \beta&#39;&#39;\)</span> but
+leaves those unrelated to <span class="math inline">\(\alpha&#39;,
+\beta&#39;\)</span>, and neither entails (an instance of) the other. (An
+earlier version of this experiment mis-encoded the conclusion as the
+answer’s own atoms and mis-ordered the two answers; both corrected after
+automated review.)</li>
+</ul>
+</section>
+<section id="literature-status-sweep-of-20152026-performed-2026-08-19"
+class="level2">
+<h2>11. Literature status (sweep of 2015–2026, performed
+2026-08-19)</h2>
+<p>A dedicated search (web, Semantic Scholar citation graphs of Maher
+2005 and Maher–Huang 2008, dblp, arXiv full-text) found <strong>no
+publication from 2015–2026 that attacks or resolves the decidability of
+simple or joint constraint abduction over the free term
+algebra</strong>. Maher’s abduction line ends at LPAR 2008; post-2012
+citations are applications (abstract interpretation, soft
+constraints/security policies), and nothing cites the thesis’s JCAQP
+formulation. GADT-inference research after 2014 routed around abduction
+entirely (OutsideIn(X), ambivalent types, Chen–Erwig choice types,
+anti-unification heuristics) without new (un)decidability results for
+the underlying abduction problem. SMT abduction
+(<code>get-abduct</code>, enumerative SyGuS — Reynolds et al. IJCAR
+2020) is complete only in the limit and deliberately sidesteps the
+most-general-answer theory. <strong>The problem is open and dormant;
+nobody has applied the modern toolkits to it.</strong></p>
+<p>The materially new assets since the thesis:</p>
+<ul>
+<li><strong>Undecidability toolkit:</strong> Dudenhefner’s mechanized
+semi-unification reductions — FSCD 2020 (“on a napkin”, via uniform
+boundedness of deterministic simple stack machines) and CSL 2022/LMCS
+2023 (constructive many-one reduction Halting <span
+class="math inline">\(\to\)</span> uniform boundedness of 2-counter
+machines <span class="math inline">\(\to\)</span> SUP), both in the Coq
+Library of Undecidability Proofs; acyclic SUP isolated as decidable.
+These are the natural sources for Program 7.1 — the stack-machine
+intermediate problem is a cleaner encoding target than raw SUP
+inequalities, and the mechanization is a template for certifying any
+eventual reduction.</li>
+<li><strong>Decidability toolkit:</strong> Backeman–Rümmer’s
+<strong>bounded rigid E-unification</strong> (BREU, CADE/TABLEAUX 2015:
+variables range over finite term domains; simultaneous BREU is
+NP-complete) and Barbosa–Fontaine–Reynolds’ <strong>E-ground
+(dis)unification / CCFV</strong> (TACAS 2017: rigid E-unification with
+ground equations, decidable, production-engineered in CVC4/veriT). Both
+embody the “bound the answer universe” move — directly relevant to
+next-step 3 (bounded answer property) and to implementing a practical
+JCA(QP) answer search (next-step 4): a BREU-style finite-domain layer
+over the Theorem 2.4 checker would give a complete solver for the
+bounded fragment.</li>
+<li><strong>Dual problem solved:</strong> uniform interpolants / covers
+in EUF (Calvanese–Ghilardi et al., JAR 2021–22) — strongest consequences
+over uninterpreted symbols are computable, while weakest hypotheses
+(abduction) over <span
+class="math inline">\(\mathcal{T}(\mathcal{F})\)</span> remain open; a
+JCAQP treatment via model completions of the theory of finite trees is
+an unexplored angle.</li>
+</ul>
+</section>
+<section id="references" class="level2">
+<h2>References</h2>
+<ul>
+<li>Ł. Stafiniak. <em>GADTs for Reconstruction of Invariants and
+Postconditions.</em> PhD thesis, University of Wrocław, 2015
+(§4.2).</li>
+<li>M. Maher. “Herbrand Constraint Abduction.” LICS 2005. (Definitions
+1/3/6, Example 12, Propositions 2/5/8, §5.2 on semi-unification; primary
+source re-verified this round.)</li>
+<li>M. Maher, G. Huang. “On Computing Constraint Abduction Answers.”
+LPAR 2008. (FMA algorithm; co-NP-completeness of recognizing (fully)
+maximal answers; doubly-exponential answer counts.)</li>
+<li>A. Kfoury, J. Tiuryn, P. Urzyczyn. “The Undecidability of the
+Semi-Unification Problem.” Inf. Comput. 102(1), 1993.</li>
+<li>A. Dudenhefner. “Undecidability of Semi-Unification on a Napkin.”
+FSCD 2020. (Simple semi-unification; stack-machine reduction;
+Coq-mechanized.)</li>
+<li>A. Dudenhefner. “Constructive Many-One Reduction from the Halting
+Problem to Semi-Unification.” CSL 2022; LMCS 19(4), 2023.</li>
+<li>M. Veanes. “The Undecidability of Simultaneous Rigid E-Unification
+with Two Variables.” KGC 1997. (Shifted pairing;
+ground-LHS/2-variable/4-equation fragment.)</li>
+<li>Y. Gurevich, M. Veanes. “Partisan Corroboration and Shifted
+Pairing.” Inf. Comput. 152, 1999. (3 rigid equations.)</li>
+<li>A. Degtyarev, A. Voronkov. “Simultaneous Rigid E-Unification Is
+Undecidable.” CSL 1995/1996.</li>
+<li>A. Voronkov. “Simultaneous Rigid E-Unification and Other Decision
+Problems Related to the Herbrand Theorem.” TCS 224, 1999.</li>
+<li>P. Backeman, P. Rümmer. “Theorem Proving with Bounded Rigid
+E-Unification.” CADE-25, 2015. (BREU: NP-complete decidable
+fragment.)</li>
+<li>H. Barbosa, P. Fontaine, A. Reynolds. “Congruence Closure with Free
+Variables.” TACAS 2017. (E-ground (dis)unification.)</li>
+<li>M. Sulzmann, T. Schrijvers, P. Stuckey. “Type Inference for GADTs
+via Herbrand Constraint Abduction.”</li>
+<li>A. Reynolds, H. Barbosa, D. Larraz, C. Tinelli. “Scalable Algorithms
+for Abduction via Enumerative Syntax-Guided Synthesis.” IJCAR 2020.</li>
+</ul>
+<p><em>Source PDFs recovered this round (Maher 2005 and Maher–Huang 2008
+via the Wayback Machine from the defunct UNSW pages; Dudenhefner from
+DROPS; Veanes from Microsoft Research) are archived locally at
+<code>~/jca-papers/</code>, outside this public repository.</em></p>
+</section>
+</section>
+</article>
+<script src="/assets/theme-toggle.js"></script>
+</body>
+</html>
