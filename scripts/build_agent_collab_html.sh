@@ -53,6 +53,11 @@ build_html \
   "$collab_dir/collab-paper-codex.html" \
   "JCAQP Undecidability Analysis - Codex"
 
+build_html \
+  "$collab_dir/round-8-reassessment.md" \
+  "$collab_dir/round-8-reassessment.html" \
+  "JCA Existence over T(F), Round 8: Reassessment"
+
 # Build all review files
 reviews_dir="$collab_dir/reviews"
 if [[ -d "$reviews_dir" ]]; then
