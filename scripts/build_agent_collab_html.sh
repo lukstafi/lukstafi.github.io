@@ -58,6 +58,11 @@ build_html \
   "$collab_dir/round-8-reassessment.html" \
   "JCA Existence over T(F), Round 8: Reassessment"
 
+build_html \
+  "$collab_dir/round-9-subsumption-bottleneck.md" \
+  "$collab_dir/round-9-subsumption-bottleneck.html" \
+  "JCA Existence over T(F), Round 9: The Subsumption Bottleneck"
+
 # Build all review files
 reviews_dir="$collab_dir/reviews"
 if [[ -d "$reviews_dir" ]]; then
