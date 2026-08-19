@@ -439,8 +439,12 @@ identifications create clashes or occurs-failures. Note the unifiability
 probe of §5.1 does have this shape (merging <span
 class="math inline">\(\gamma_1=\gamma_2\)</span> above makes <span
 class="math inline">\(D \land A\)</span> clash on <span
-class="math inline">\(c \doteq \mathrm{arr}(c,c)\)</span>) — it is the
-completeness gap, not the mechanism, that is missing.</p>
+class="math inline">\(c \doteq \mathrm{arr}(c,c)\)</span>). In gadget
+terms the probe is already <em>complete</em> — subsumption implies
+unifiability, so every genuine instance is accepted — and what it lacks
+is <em>soundness</em>: it also accepts unifiable non-instances. The
+design problem is a soundness gap, not a completeness gap (terminology
+corrected per the round-4 review).</p>
 </section>
 <section
 id="subsumption-is-a-forallexists-equation-and-the-thesiss-own-checks-are-forallexists"
@@ -521,23 +525,30 @@ class="math inline">\(k\)</span> fixed by the instance. Routing the
 subsuming side’s leaves through the prefix’s universal block hits the
 same wall (prefixes are instance-fixed). We call this the
 <strong>fixed-interface limitation</strong>, and — per the author’s
-ruling (§6) — it is a statement about <em>validity specifically</em>,
-JCAQP’s only acceptance channel that mixes quantifiers: <em>unboundedly
-many answer-side objects appear on a universal side only in validity
-(<span class="math inline">\(\exists\bar
-t\,\forall\bar\beta\,Q\colon\ldots\)</span>), whose <span
+ruling (§6) — it is a statement about JCAQP’s <em>prefix-quantified
+checks</em>: <em>unboundedly many answer-side objects appear on a
+universal side only in validity (<span class="math inline">\(\exists\bar
+t\,\forall\bar\beta\,Q\colon\ldots\)</span>) and in no-escaping’s
+per-atom gates, and in both the <span
 class="math inline">\(\exists\)</span>-side is limited to <span
 class="math inline">\(Q\)</span>’s existentials, fixed with the
-instance.</em> The other channels contribute no <span
-class="math inline">\(\forall\exists\)</span> checks at all: relevance
-is a pure <span class="math inline">\(\forall\)</span>-closure
-(equalization; no <span class="math inline">\(\exists\)</span>-block),
+instance.</em> The channel inventory (corrected by the round-4 review):
+relevance is a pure <span class="math inline">\(\forall\)</span>-closure
+(equalization; no <span class="math inline">\(\exists\)</span>-block);
 consistency is a pure <span
 class="math inline">\(\exists\)</span>-closure (satisfiability; no <span
 class="math inline">\(\forall\)</span>-block — parameters are ordinary
-existentials there), and no-escaping is syntactic. Any normal-form
-theorem in the direction of next-step 3 must account for all four
-channels in exactly this way.</p>
+existentials there); validity mixes quantifiers over the whole answer;
+and no-escaping is <em>not</em> purely syntactic — Definition 4.1 gates
+it per atom on the semantic test <span class="math inline">\(\mathcal{M}
+\models Q\colon c\)</span> (itself a prefix-quantified equation check,
+decidable by the same linear-constant-restriction machinery), applying
+the occurrence/order restriction exactly to the atoms that fail the
+gate. Since <span class="math inline">\(c\)</span> is answer-chosen,
+these gates are a second quantifier-mixing channel with the same bounded
+<span class="math inline">\(\exists\)</span>-width, so the limitation
+stands with both channels counted. Any normal-form theorem in the
+direction of next-step 3 must model all four channels accordingly.</p>
 <p><strong>What this does not prove</strong> (sharpened by the round-9
 review): boundedness here is a bound on <em>distinct variables</em>, not
 on term size — a single existential variable ranges over arbitrarily
@@ -554,9 +565,13 @@ negative answer:</p>
 <p><strong>Open sub-question 5.2 (bounded-variable SSU).</strong> Call a
 witness <span class="math inline">\((\varphi,\psi_0,\psi_1)\)</span>
 <em><span class="math inline">\(k\)</span>-variable</em> if <span
-class="math inline">\(\mathrm{ran}(\varphi) \cup \mathrm{ran}(\psi_0)
-\cup \mathrm{ran}(\psi_1)\)</span> uses at most <span
-class="math inline">\(k\)</span> distinct variables.
+class="math inline">\(\mathrm{ran}(\varphi)\)</span> uses at most <span
+class="math inline">\(k\)</span> distinct variables. (Only the subsuming
+side is interface-bounded: in the validity check the matchers’ images
+live on the parameter side, so <span class="math inline">\(\psi_0,
+\psi_1\)</span> may introduce arbitrarily many fresh variables without
+consuming prefix existentials — the round-4 review corrected an earlier
+version that over-demandingly bounded all three ranges.)
 <strong>(a)</strong> For some fixed global <span
 class="math inline">\(k\)</span>: is SSU restricted to <span
 class="math inline">\(k\)</span>-variable witnesses still undecidable?
