@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <meta name="dcterms.date" content="2026-09-05">
+  <title>JCA Existence over T(F), Round 10: Witness
+Generalization</title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <link rel="stylesheet" href="/assets/tufte.css">
+  <link rel="stylesheet" href="/assets/pandoc-tufte.css">
+  <link rel="stylesheet" href="/assets/site.css">
+  <script defer=""
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+  type="text/javascript"></script>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+  <script>(function(){var t=localStorage.getItem('theme-preference');if(t)document.documentElement.setAttribute('data-theme',t);})()</script>
+</head>
+<body>
+<nav class="site-nav">
+  <a href="/">Home</a> &middot; <a href="/about.html">About</a> &middot; <a href="https://lukstafi.substack.com">Substack</a>
+</nav>
+<div class="theme-toggle">
+  <button id="theme-btn" aria-label="Toggle dark mode">&#9788;</button>
+</div>
+<article>
+<header>
+<h1 class="title">JCA Existence over T(F), Round 10: Witness
+Generalization and the Remaining Decision Problem</h1>
+<p class="byline">2026-09-05</p>
+</header>
+<nav id="TOC">
+<ul>
+<li><a
+href="#jca-existence-over-mathcal-tmathcal-f-round-10-witness-generalization-and-the-remaining-decision-problem"
+id="toc-jca-existence-over-mathcal-tmathcal-f-round-10-witness-generalization-and-the-remaining-decision-problem">JCA
+Existence over <span class="math inline">\(\mathcal T(\mathcal
+F)\)</span>, Round 10: Witness Generalization and the Remaining Decision
+Problem</a>
+<ul>
+<li><a href="#outcome-and-scope" id="toc-outcome-and-scope">1. Outcome
+and scope</a></li>
+<li><a href="#specify-the-problem-before-trying-to-decide-it"
+id="toc-specify-the-problem-before-trying-to-decide-it">2. Specify the
+problem before trying to decide it</a>
+<ul>
+<li><a href="#the-common-equational-core"
+id="toc-the-common-equational-core">2.1 The common equational
+core</a></li>
+<li><a href="#prefix-variants-are-not-interchangeable"
+id="toc-prefix-variants-are-not-interchangeable">2.2 Prefix variants are
+not interchangeable</a></li>
+<li><a href="#a-dependency-tree-formulation"
+id="toc-a-dependency-tree-formulation">2.3 A dependency-tree
+formulation</a></li>
+</ul></li>
+<li><a href="#trying-the-subsumption-attack-again"
+id="toc-trying-the-subsumption-attack-again">3. Trying the subsumption
+attack again</a>
+<ul>
+<li><a href="#shared-variables-a-missing-completeness-condition"
+id="toc-shared-variables-a-missing-completeness-condition">3.1 Shared
+variables: a missing completeness condition</a></li>
+<li><a
+href="#linkage-equations-erase-the-distinction-they-were-meant-to-test"
+id="toc-linkage-equations-erase-the-distinction-they-were-meant-to-test">3.2
+Linkage equations erase the distinction they were meant to test</a></li>
+</ul></li>
+<li><a href="#a-different-attack-one-witness-per-branch"
+id="toc-a-different-attack-one-witness-per-branch">4. A different
+attack: one witness per branch</a>
+<ul>
+<li><a href="#pattern-answers" id="toc-pattern-answers">4.1 Pattern
+answers</a></li>
+<li><a href="#simultaneous-least-general-generalization"
+id="toc-simultaneous-least-general-generalization">4.2 Simultaneous
+least general generalization</a></li>
+<li><a href="#exact-witness-theorem" id="toc-exact-witness-theorem">4.3
+Exact witness theorem</a></li>
+<li><a href="#exact-synthesis-formulation-and-positive-semialgorithm"
+id="toc-exact-synthesis-formulation-and-positive-semialgorithm">4.4
+Exact synthesis formulation and positive semialgorithm</a></li>
+</ul></li>
+<li><a href="#a-fragment-where-the-attempt-does-terminate"
+id="toc-a-fragment-where-the-attempt-does-terminate">5. A fragment where
+the attempt does terminate</a></li>
+<li><a href="#trying-to-extend-the-decision-procedure"
+id="toc-trying-to-extend-the-decision-procedure">6. Trying to extend the
+decision procedure</a>
+<ul>
+<li><a href="#fixed-default-witnesses-do-not-suffice"
+id="toc-fixed-default-witnesses-do-not-suffice">6.1 Fixed default
+witnesses do not suffice</a></li>
+<li><a href="#two-witnesses-do-not-bound-the-number-of-lgg-variables"
+id="toc-two-witnesses-do-not-bound-the-number-of-lgg-variables">6.2 Two
+witnesses do not bound the number of lgg variables</a></li>
+<li><a href="#naive-finite-state-abstraction-loses-sharing"
+id="toc-naive-finite-state-abstraction-loses-sharing">6.3 Naive
+finite-state abstraction loses sharing</a></li>
+<li><a href="#the-exact-missing-boundedness-statement"
+id="toc-the-exact-missing-boundedness-statement">6.4 The exact missing
+boundedness statement</a></li>
+</ul></li>
+<li><a href="#why-prefix-validity-needs-a-different-witness-theorem"
+id="toc-why-prefix-validity-needs-a-different-witness-theorem">7. Why
+prefix validity needs a different witness theorem</a></li>
+<li><a href="#what-has-and-has-not-been-solved"
+id="toc-what-has-and-has-not-been-solved">8. What has and has not been
+solved</a></li>
+<li><a href="#executable-checks-and-provenance"
+id="toc-executable-checks-and-provenance">9. Executable checks and
+provenance</a></li>
+</ul></li>
+</ul>
+</nav>
+<section
+id="jca-existence-over-mathcal-tmathcal-f-round-10-witness-generalization-and-the-remaining-decision-problem"
+class="level1">
+<h1>JCA Existence over <span class="math inline">\(\mathcal T(\mathcal
+F)\)</span>, Round 10: Witness Generalization and the Remaining Decision
+Problem</h1>
+<p><em>Author: Codex. Research attempt requested by Łukasz Stafiniak,
+following the reactions added to <a
+href="round-9-subsumption-bottleneck.html">round 9</a>. This note proves
+the explicitly stated lemmas below, but does not settle unrestricted JCA
+or JCAQP existence. The accompanying <a
+href="round-10-experiments.py">experiments</a> check examples and finite
+instances; they are not a formal verification of the general proofs. No
+priority claim is made for the anti-unification consequences.</em></p>
+<section id="outcome-and-scope" class="level2">
+<h2>1. Outcome and scope</h2>
+<p>The main result of this attempt is an exact alternative formulation
+of <strong>ordinary equational JCA existence</strong>: choose one ground
+solution of each branch’s premise and conclusion, compute their
+simultaneous least general generalization, and test that generalization
+as an answer. If an answer exists, some such choice succeeds (Theorem
+4.2). The number of witnesses is exactly the number of branches. Their
+sizes remain unbounded.</p>
+<p>This yields a decision procedure when each branch’s premise and
+conclusion together determine all instance variables to ground terms
+(Theorem 5.1). It also gives a different complete positive semialgorithm
+for unrestricted JCA and a precise missing lemma for a decision
+procedure: a computable bound on the sizes of a successful set of
+witnesses.</p>
+<p>The undecidability attempt through SUBSUME does not close. Besides
+the parameter-semantic discrepancy, there are two concrete problems with
+round 9’s proposed implementation: shared-variable subsumption need not
+imply unifiability, and putting the comparison equation inside the
+answer identifies the represented terms before the proposed check can
+compare them. Neither observation proves SUBSUME inexpressible.</p>
+<p>I focus the main proof on ordinary JCA because it is a common,
+unambiguous core of the variants under discussion. I do not silently
+transfer the witness theorem to answers subject to universal
+quantification or syntactic scope restrictions.</p>
+</section>
+<section id="specify-the-problem-before-trying-to-decide-it"
+class="level2">
+<h2>2. Specify the problem before trying to decide it</h2>
+<section id="the-common-equational-core" class="level3">
+<h3>2.1 The common equational core</h3>
+<p>Fix, once and for all, the finite signature <span
+class="math inline">\(\mathcal F=\{f/2,a/0,b/0\}\)</span> and the
+algebra of <strong>finite ground terms</strong> over it, with syntactic
+equality. In particular <span class="math inline">\(a\ne b\)</span>. The
+signature does not grow with the input, and rational/infinite trees are
+not allowed.</p>
+<p>An instance <span class="math inline">\(I\)</span> consists of
+finitely many branches <span class="math inline">\((D_i,C_i)\)</span>,
+<span class="math inline">\(1\le i\le m\)</span>, each a pair of finite
+conjunctions of equations. Let <span
+class="math inline">\(X=(x_1,\ldots,x_n)\)</span> list every variable
+occurring in the instance. We ask for a finite conjunction <span
+class="math inline">\(A(X,B)\)</span>, with finitely many fresh
+variables <span class="math inline">\(B\)</span>, such that</p>
+<p><span class="math display">\[
+\mathcal T(\mathcal F)\models
+\forall X\,\forall B\;(D_i\land A\Rightarrow C_i),
+\qquad
+\mathcal T(\mathcal F)\models
+\exists X\,\exists B\;(D_i\land A)
+\quad\text{for every }i.
+\]</span></p>
+<p>Call this <strong>JCA-EXIST</strong>. No freshness restriction
+forbids <span class="math inline">\(A\)</span> from mentioning a
+variable merely because it first appeared in a premise. Fresh variables
+are existentially hidden when describing the answer’s set of instance
+assignments:</p>
+<p><span class="math display">\[S_A=\{\bar g\in\mathcal T(\mathcal
+F)^n:\exists B\;A(\bar g,B)\}.\]</span></p>
+<p>Thus relevance means <span class="math inline">\(S_A\cap
+S_{D_i}\subseteq S_{C_i}\)</span> and consistency means <span
+class="math inline">\(S_A\cap S_{D_i}\ne\varnothing\)</span>. This set
+formulation is legitimate because <span class="math inline">\(B\)</span>
+occurs in neither <span class="math inline">\(D_i\)</span> nor <span
+class="math inline">\(C_i\)</span>.</p>
+<p>If <span class="math inline">\(m=0\)</span>, <span
+class="math inline">\(\top\)</span> is an answer; below assume <span
+class="math inline">\(m\ge1\)</span>. An inconsistent <span
+class="math inline">\(D_i\)</span> makes the instance unsolvable under
+this definition. Dropping inconsistent branches, as a type-inference
+preprocessing policy might do, is a different input convention and must
+be stated separately.</p>
+</section>
+<section id="prefix-variants-are-not-interchangeable" class="level3">
+<h3>2.2 Prefix variants are not interchangeable</h3>
+<p>The <a href="../thesis_section_4_2.md">extracted §4.2</a> and <a
+href="../lukstafi-phd-thesis.tm">original TeXmacs source</a>, §4.2.1,
+disagree on two material details. In the original notation, validity
+substitutes the fresh answer parameters <span
+class="math inline">\(\bar\alpha\)</span> as well as <span
+class="math inline">\(\bar\beta\)</span>, and its unification
+construction puts the substituted variables into a final existential
+block. The extraction leaves fresh parameters unsubstituted. The
+no-escaping order is also <span class="math inline">\(\le_Q\)</span> in
+the original versus <span class="math inline">\(\not\le_Q\)</span> in
+the extraction. See the reactions in round 9 §6. We should preserve the
+author’s later intended semantics without calling it a literal
+transcription of the older source.</p>
+<p>For a precise <strong>parameter-free prefix variant</strong> of this
+note, take <span class="math inline">\(X=U\mathbin{\dot\cup}E\)</span>,
+a prefix <span class="math inline">\(Q\)</span> on <span
+class="math inline">\(X\)</span>, and impose, in addition to §2.1,</p>
+<p><span class="math display">\[\mathcal T(\mathcal F)\models\forall
+B\;Q:A.\]</span></p>
+<p>Here there are no designated invariant parameters <span
+class="math inline">\(\chi\)</span> or prior parameters <span
+class="math inline">\(\delta\)</span>, so the corresponding no-escaping
+clauses have no atoms to inspect. This is a specified mathematical
+problem, not a claim that the full implementation has this exact
+interface. In particular, it has no unspecified meta-level substitution
+convention.</p>
+<p>Ordinary JCA embeds in this variant by using <span
+class="math inline">\(Q=\exists X\)</span>. Lemma 4.1 gives a pattern
+answer <span class="math inline">\(X=p(B)\)</span>, and <span
+class="math inline">\(\forall B\exists X:X=p(B)\)</span> is true.
+Conversely every answer to the prefix variant satisfies ordinary
+relevance and consistency. Hence ordinary JCA is a genuine lower-bound
+target for this variant.</p>
+<p>To add invariant parameters, a problem specification must also say
+exactly which variables may be replaced in validity, which variables may
+occur in their replacement terms, and whether weak or strong no-escaping
+is required. A meta-level choice of the syntactic term <span
+class="math inline">\(f(u,u)\)</span> is compatible with its occurrence
+under <span class="math inline">\(\forall u\)</span>; “choose the term
+first” does not mean “choose a ground value independent of <span
+class="math inline">\(u\)</span>.”</p>
+</section>
+<section id="a-dependency-tree-formulation" class="level3">
+<h3>2.3 A dependency-tree formulation</h3>
+<p>For a tree-scoped analogue, record the universal variables <span
+class="math inline">\(U\)</span>, existential variables <span
+class="math inline">\(E\)</span>, and an allowed dependency set <span
+class="math inline">\(\operatorname{Dep}(e)\subseteq U\)</span> for each
+<span class="math inline">\(e\in E\)</span>. A concrete
+<strong>term-witness</strong> validity condition is: there exist finite
+terms</p>
+<p><span class="math display">\[w_e\in\mathcal T(\mathcal
+F,B\cup\operatorname{Dep}(e))\quad(e\in E)\]</span></p>
+<p>such that <span class="math inline">\(A[E:=w]\)</span> is a syntactic
+identity under universally variable <span class="math inline">\(U\cup
+B\)</span>. For linear prefixes, let <span
+class="math inline">\(\operatorname{Dep}(e)\)</span> contain precisely
+the preceding universals. This makes the permitted witnesses explicit;
+it is not a quantification over arbitrary semantic functions.</p>
+<p>Dependencies from different subtrees must remain distinguishable. For
+example, independent scopes can give <span
+class="math inline">\(\operatorname{Dep}(e)=\{u\}\)</span> and <span
+class="math inline">\(\operatorname{Dep}(d)=\{v\}\)</span>. No single
+linear prefix realizes exactly those two sets: it would require both
+<span class="math inline">\(u&lt;e&lt;v\)</span> and <span
+class="math inline">\(v&lt;d&lt;u\)</span>. An implementation can retain
+a linear comparison for some operations while also retaining ancestry
+for others.</p>
+<p>This is what the inspected implementation suggests:
+<code>~/invargent/src/Infer.ml:1251</code> builds <code>cmp_v</code> and
+<code>upward_of</code>; <code>src/Terms.ml:1445</code> checks quantifier
+violations; <code>src/Invariants.ml:1198</code> selects parameters using
+ancestry. These are code observations, not a proof that the proposed
+dependency-set semantics exactly matches every code path. In particular,
+scope FIXME comments remain in the implementation.</p>
+</section>
+</section>
+<section id="trying-the-subsumption-attack-again" class="level2">
+<h2>3. Trying the subsumption attack again</h2>
+<p>Semi-unification uses valuations applied homomorphically
+<strong>once</strong> to a term. A valuation may map <span
+class="math inline">\(p\)</span> to a term containing <span
+class="math inline">\(p\)</span>; that is not an infinite-tree equation.
+This convention is explicit in Dudenhefner’s Definitions 1–2 and Example
+4. His restricted simple constraints retain undecidability. <a
+href="https://www.ps.uni-saarland.de/Publications/documents/Dudenhefner_2020_Semi-unification.pdf">Dudenhefner,
+FSCD 2020</a></p>
+<section id="shared-variables-a-missing-completeness-condition"
+class="level3">
+<h3>3.1 Shared variables: a missing completeness condition</h3>
+<p>Take <span class="math inline">\(s=p\)</span> and <span
+class="math inline">\(t=f(p,p)\)</span>. There is a matcher <span
+class="math inline">\(\sigma(p)=f(p,p)\)</span> with <span
+class="math inline">\(s\sigma=t\)</span>. But <span
+class="math inline">\(s\doteq t\)</span> has no finite-tree unifier. The
+idempotent answer substitution <span
+class="math inline">\(\theta(v)=p\)</span>, <span
+class="math inline">\(\theta(u)=f(p,p)\)</span> realizes these images
+without an occurs violation in the answer itself.</p>
+<p>Therefore round 9’s consistency probe <span
+class="math inline">\(D=(v\doteq u)\)</span>, <span
+class="math inline">\(C=\top\)</span> can reject a genuine subsumption
+pair. The familiar freezing test is correct after separating the roles
+of the pattern variables from target variables. For example, rename the
+pattern to <span class="math inline">\(p&#39;\)</span> and freeze the
+target’s <span class="math inline">\(p\)</span>; then match <span
+class="math inline">\(p&#39;\)</span> against <span
+class="math inline">\(f(\widehat p,\widehat p)\)</span>. A fixed gadget
+must somehow perform the equivalent of that separation on the variables
+of an answer-chosen term. Naming finitely many fresh instance variables
+does not already accomplish it for arbitrary answers.</p>
+</section>
+<section
+id="linkage-equations-erase-the-distinction-they-were-meant-to-test"
+class="level3">
+<h3>3.2 Linkage equations erase the distinction they were meant to
+test</h3>
+<p><strong>Proposition 3.1.</strong> If a satisfiable equational answer
+<span class="math inline">\(A\)</span> entails <span
+class="math inline">\(u\doteq v\)</span> and <span
+class="math inline">\(\theta=\operatorname{mgu}(A)\)</span>, then <span
+class="math inline">\(\theta(u)=\theta(v)\)</span> syntactically.</p>
+<p><em>Proof.</em> An mgu equalizes every equation entailed by its
+solved constraint. Alternatively, if the images differed, a ground
+substitution separating them would give a model of <span
+class="math inline">\(A\)</span> falsifying <span
+class="math inline">\(u=v\)</span>. <span
+class="math inline">\(\square\)</span></p>
+<p>In particular, the atoms</p>
+<p><span class="math display">\[u\doteq t(B),\qquad v\doteq s(E),\qquad
+u\doteq v\]</span></p>
+<p>may cause a prefix check to solve <span
+class="math inline">\(s(E)=t(B)\)</span>, but after normalizing <span
+class="math inline">\(A\)</span> the port images are identical. They do
+not present two preserved images <span
+class="math inline">\(\theta(v)\)</span> and <span
+class="math inline">\(\theta(u)\)</span> between which a nontrivial
+matching relation is tested. A reduction could introduce separate
+representation and checking ports, but must then prove faithful copying
+and separation rather than assuming them.</p>
+<p><strong>Result of this attack.</strong> The logical shape <span
+class="math inline">\(\forall\exists(s=t)\)</span> is not enough. The
+reduction needs a representation theorem: two terms survive as
+independently represented terms, the pattern variables have independent
+matching copies, and the test cannot alter the target. I have not
+constructed such a gadget. Proposition 3.1 rules out this particular
+in-answer linkage construction; it does not rule out gadgets using
+branch premises, scoped copies, or another representation.</p>
+</section>
+</section>
+<section id="a-different-attack-one-witness-per-branch" class="level2">
+<h2>4. A different attack: one witness per branch</h2>
+<section id="pattern-answers" class="level3">
+<h3>4.1 Pattern answers</h3>
+<p>A tuple pattern <span
+class="math inline">\(p=(p_1,\ldots,p_n)\)</span> has terms over <span
+class="math inline">\(\mathcal F\)</span> and fresh variables <span
+class="math inline">\(B\)</span>, with no variables from <span
+class="math inline">\(X\)</span>. Its instances are</p>
+<p><span
+class="math display">\[\operatorname{Inst}(p)=\{p\rho:\rho:B\to\mathcal
+T(\mathcal F)\}.\]</span></p>
+<p>It presents the answer <span class="math inline">\(A_p=\bigwedge_j
+x_j\doteq p_j\)</span>. Tuple notation is meta-notation; it does not
+extend the fixed signature. Variable sharing across coordinates is
+essential.</p>
+<p><strong>Lemma 4.1 (projection to a pattern).</strong> Every ordinary
+JCA answer has the same set <span class="math inline">\(S_A\)</span> as
+a pattern answer <span class="math inline">\(A_p\)</span>.</p>
+<p><em>Proof.</em> Consistency of at least one branch makes <span
+class="math inline">\(A\)</span> satisfiable. Compute an idempotent mgu
+<span class="math inline">\(\mu\)</span> of <span
+class="math inline">\(A\)</span> and form <span
+class="math inline">\((\mu(x_1),\ldots,\mu(x_n))\)</span>. Rename all
+residual variables appearing in that tuple to distinct fresh variables,
+preserving their sharing. Ground instances of this tuple are exactly the
+restrictions to <span class="math inline">\(X\)</span> of ground
+solutions of <span class="math inline">\(A\)</span>. Residual variables
+not appearing in the tuple can be grounded arbitrarily to extend any
+such instance to a solution of <span class="math inline">\(A\)</span>.
+Since the input branches use only <span
+class="math inline">\(X\)</span>, relevance and consistency depend only
+on this projection. <span class="math inline">\(\square\)</span></p>
+<p>This is existential projection of an ordinary answer. It is not a
+claim that replacing original universal variables with new answer
+parameters preserves prefix validity.</p>
+</section>
+<section id="simultaneous-least-general-generalization" class="level3">
+<h3>4.2 Simultaneous least general generalization</h3>
+<p>Given ground tuples <span
+class="math inline">\(g_1,\ldots,g_m\)</span> of the same length, define
+<span
+class="math inline">\(h=\operatorname{lgg}(g_1,\ldots,g_m)\)</span>
+simultaneously across <strong>all coordinates</strong>:</p>
+<ol type="1">
+<li>If the <span class="math inline">\(m\)</span> terms at a position
+have the same root constructor, retain it and recurse on corresponding
+children.</li>
+<li>Otherwise replace the ordered vector of those <span
+class="math inline">\(m\)</span> subterms by a fresh variable. Reuse
+that variable whenever exactly the same vector appears anywhere else in
+the tuples.</li>
+</ol>
+<p>Each <span class="math inline">\(g_i\)</span> is an instance of <span
+class="math inline">\(h\)</span>. Moreover, if every <span
+class="math inline">\(g_i\)</span> is an instance of a pattern <span
+class="math inline">\(p\)</span>, then <span
+class="math inline">\(h\)</span> is an instance of <span
+class="math inline">\(p\)</span>. This is the usual
+least-general-generalization property: for each repeated variable of
+<span class="math inline">\(p\)</span>, all of its positions receive the
+same vector of witness terms and hence the same generalized term;
+constructors of <span class="math inline">\(p\)</span> occur in every
+witness and are retained. The argument applies to any finite number of
+witnesses and to tuples using one shared memo table. For the classical
+construction and terminology see <a
+href="https://homepages.inf.ed.ac.uk/gdp/publications/MI6_further_note.pdf">Plotkin,
+<em>A Further Note on Inductive Generalization</em></a>.</p>
+</section>
+<section id="exact-witness-theorem" class="level3">
+<h3>4.3 Exact witness theorem</h3>
+<p><strong>Theorem 4.2 (finite witness hull).</strong> An ordinary JCA
+instance with <span class="math inline">\(m\ge1\)</span> has an answer
+iff there are ground tuples <span class="math inline">\(g_i\)</span>
+satisfying <span class="math inline">\(D_i\land C_i\)</span>, one for
+each branch, such that <span class="math inline">\(A_h\)</span> is an
+answer, where</p>
+<p><span
+class="math display">\[h=\operatorname{lgg}(g_1,\ldots,g_m).\]</span></p>
+<p>More strongly: given any pattern answer <span
+class="math inline">\(A_p\)</span>, choosing any <span
+class="math inline">\(g_i\in\operatorname{Inst}(p)\cap S_{D_i}\)</span>
+produces such an answer <span class="math inline">\(A_h\)</span> with
+<span
+class="math inline">\(\operatorname{Inst}(h)\subseteq\operatorname{Inst}(p)\)</span>.</p>
+<p><em>Proof.</em> Given an answer, use Lemma 4.1 to obtain <span
+class="math inline">\(p\)</span>. Consistency supplies a ground <span
+class="math inline">\(g_i\)</span> in each indicated intersection.
+Relevance makes <span class="math inline">\(C_i(g_i)\)</span> true.
+Since <span class="math inline">\(p\)</span> generalizes every <span
+class="math inline">\(g_i\)</span>, the lgg property gives <span
+class="math inline">\(h=p\sigma\)</span> for some substitution <span
+class="math inline">\(\sigma\)</span>, hence <span
+class="math inline">\(\operatorname{Inst}(h)\subseteq\operatorname{Inst}(p)\)</span>.
+This inclusion preserves relevance: every instance of <span
+class="math inline">\(h\)</span> satisfying <span
+class="math inline">\(D_i\)</span> is an instance of <span
+class="math inline">\(p\)</span> satisfying <span
+class="math inline">\(D_i\)</span>, so satisfies <span
+class="math inline">\(C_i\)</span>. Consistency is preserved because the
+particular <span class="math inline">\(g_i\)</span> remains an instance
+of <span class="math inline">\(h\)</span>. The reverse direction is
+immediate: an accepted <span class="math inline">\(A_h\)</span> is an
+answer. <span class="math inline">\(\square\)</span></p>
+<p>The theorem exploits a useful asymmetry. Strengthening can normally
+destroy consistency, but here an explicitly retained witness for every
+branch prevents that. It need not preserve maximal generality, and none
+is required for existence.</p>
+</section>
+<section id="exact-synthesis-formulation-and-positive-semialgorithm"
+class="level3">
+<h3>4.4 Exact synthesis formulation and positive semialgorithm</h3>
+<p>Write <span class="math inline">\(S_i=S_{D_i\land C_i}\)</span>. The
+decision problem is exactly</p>
+<p><span class="math display">\[
+\exists(g_1,\ldots,g_m)\in\prod_i S_i:\quad
+\forall i\;
+\operatorname{Inst}(\operatorname{lgg}(g_1,\ldots,g_m))\cap S_{D_i}
+\subseteq S_{C_i}.
+\]</span></p>
+<p>Consistency need not be checked again in this formula: <span
+class="math inline">\(g_i\)</span> is its certificate. Crucially, it is
+<strong>not</strong> enough that <span
+class="math inline">\(S_i\)</span> is nonempty for every <span
+class="math inline">\(i\)</span>.</p>
+<p>A complete positive semialgorithm follows:</p>
+<pre><code>Reject if some D_i and C_i together are not unifiable.
+For total ground-witness size N = 0, 1, 2, ...:
+    Enumerate all m-tuples of ground assignments of total size N.
+    Retain choices g_i satisfying D_i and C_i for every i.
+    h := simultaneous lgg(g_1, ..., g_m)
+    Accept with answer X = h if every D_i and X = h entails C_i.</code></pre>
+<p>Each size level is finite over the fixed signature. Unification and
+equalization decide the tests. Theorem 4.2 gives termination on every
+solvable instance; it gives <strong>no termination guarantee on
+unsolvable instances</strong>. Direct answer enumeration already showed
+recursive enumerability in round 8. The contribution here is the witness
+normalization and the restricted decision procedure it supports, not a
+new computability upper bound.</p>
+</section>
+</section>
+<section id="a-fragment-where-the-attempt-does-terminate"
+class="level2">
+<h2>5. A fragment where the attempt does terminate</h2>
+<p><strong>Theorem 5.1 (ground-determined branch solutions).</strong>
+Suppose that for each <span class="math inline">\(i\)</span>, either
+<span class="math inline">\(D_i\land C_i\)</span> is inconsistent, or
+its mgu maps every variable in <span class="math inline">\(X\)</span> to
+a ground term. Then JCA-EXIST is decidable:</p>
+<ol type="1">
+<li>Reject if some <span class="math inline">\(D_i\land C_i\)</span> is
+inconsistent.</li>
+<li>Otherwise let <span class="math inline">\(g_i\)</span> be its unique
+ground tuple on <span class="math inline">\(X\)</span>.</li>
+<li>Compute <span
+class="math inline">\(h=\operatorname{lgg}(g_1,\ldots,g_m)\)</span> and
+accept iff <span class="math inline">\(A_h\)</span> passes every
+branch.</li>
+</ol>
+<p><em>Proof.</em> The syntactic hypothesis is decidable by unification.
+In the consistent case each <span class="math inline">\(S_i\)</span> is
+the singleton <span class="math inline">\(\{g_i\}\)</span>. Thus Theorem
+4.2 has exactly one possible witness choice. If the test fails, no
+answer exists; if it passes, it supplies an answer. <span
+class="math inline">\(\square\)</span></p>
+<p>Use a shared DAG if desired; no polynomial tree-size bound is
+asserted, because expanding unification substitutions can be
+expensive.</p>
+<p>For a positive example on <span
+class="math inline">\(X=(x,y)\)</span>, take</p>
+<p><span class="math display">\[D_1=(x=a),\ C_1=(y=a),\qquad
+D_2=(x=b),\ C_2=(y=b).\]</span></p>
+<p>The witnesses <span class="math inline">\((a,a)\)</span> and <span
+class="math inline">\((b,b)\)</span> have lgg <span
+class="math inline">\((p,p)\)</span>, giving <span
+class="math inline">\(\exists p:(x=p\land y=p)\)</span>, equivalently
+<span class="math inline">\(x=y\)</span>. There is no single ground
+answer consistent with both premises; the pattern is necessary.</p>
+<p>For a negative example take two empty premises with conclusions <span
+class="math inline">\(x=a\)</span> and <span
+class="math inline">\(x=b\)</span>. The unique witnesses are <span
+class="math inline">\(a,b\)</span>, their lgg is a variable, and it
+entails neither conclusion. The algorithm correctly rejects. Both
+individual branches are solvable, so this is a jointness test, not
+merely an inconsistency check.</p>
+<p>As another complete special case, one branch has an answer iff <span
+class="math inline">\(D_1\land C_1\)</span> is satisfiable: choose a
+ground solution as the answer. This observation is about ordinary
+existence without restrictions on answer variables, not about maximal
+answers or prefix validity.</p>
+</section>
+<section id="trying-to-extend-the-decision-procedure" class="level2">
+<h2>6. Trying to extend the decision procedure</h2>
+<section id="fixed-default-witnesses-do-not-suffice" class="level3">
+<h3>6.1 Fixed default witnesses do not suffice</h3>
+<p>One tempting algorithm is to compute <span
+class="math inline">\(\operatorname{mgu}(D_i\land C_i)\)</span> and
+ground every remaining variable to <span
+class="math inline">\(a\)</span>. It fails even on this small solvable
+instance, with <span class="math inline">\(X=(x,y,z)\)</span>:</p>
+<p><span class="math display">\[D_1=(x=a),\ C_1=(y=b),\qquad
+D_2=(x=b),\ C_2=(z=b).\]</span></p>
+<p>Default grounding gives <span
+class="math inline">\(g_1=(a,b,a)\)</span> and <span
+class="math inline">\(g_2=(b,a,b)\)</span>. Their simultaneous lgg is
+<span class="math inline">\((p,q,p)\)</span>. Under <span
+class="math inline">\(D_1\)</span>, <span
+class="math inline">\(p=a\)</span> leaves <span
+class="math inline">\(q\)</span> unconstrained, so <span
+class="math inline">\(y=b\)</span> is not entailed. Yet <span
+class="math inline">\(A=(y=b\land z=b)\)</span> is an answer. Witnesses
+<span class="math inline">\((a,b,b)\)</span> and <span
+class="math inline">\((b,b,b)\)</span> recover it via lgg <span
+class="math inline">\((p,b,b)\)</span>.</p>
+<p>Thus the witnesses must be chosen <em>jointly</em>. Computing one
+arbitrary representative of each branch solution set is not a decision
+procedure. This example also explains why strengthening to ground
+witnesses before coordinating branches can discard the useful sharing
+pattern.</p>
+</section>
+<section id="two-witnesses-do-not-bound-the-number-of-lgg-variables"
+class="level3">
+<h3>6.2 Two witnesses do not bound the number of lgg variables</h3>
+<p>For <span class="math inline">\(j=1,\ldots,N\)</span>, choose
+pairwise distinct ground terms <span class="math inline">\(t_j\)</span>
+and form right-associated <span class="math inline">\(f\)</span>-lists,
+terminated by <span class="math inline">\(a\)</span>, whose
+corresponding elements are</p>
+<p><span class="math display">\[\text{first list: }a,a,\ldots,a,
+\qquad
+\text{second list: }f(t_1,a),f(t_2,a),\ldots,f(t_N,a).\]</span></p>
+<p>At element <span class="math inline">\(j\)</span> the root mismatch
+produces a variable indexed by <span
+class="math inline">\((a,f(t_j,a))\)</span>. These vectors are all
+distinct, so the lgg has <span class="math inline">\(N\)</span> distinct
+variables. This refutes a bound depending only on the <strong>number of
+samples</strong>. It does not refute a computable bound on some
+successful witnesses for each input: the exhibited large samples might
+be unnecessary for that input.</p>
+</section>
+<section id="naive-finite-state-abstraction-loses-sharing"
+class="level3">
+<h3>6.3 Naive finite-state abstraction loses sharing</h3>
+<p>Suppose a candidate finite-state search summarizes disagreement
+vectors only by root symbols. It will merge <span
+class="math inline">\((a,f(a,a))\)</span> and <span
+class="math inline">\((a,f(b,a))\)</span>, creating repeated-variable
+constraints that the lgg did not have. Conversely, allocating a
+different variable at every disagreement occurrence loses necessary
+equality information when a vector repeats. For example, lgg of <span
+class="math inline">\((a,a)\)</span> and <span
+class="math inline">\((b,b)\)</span> is <span
+class="math inline">\((p,p)\)</span>, not <span
+class="math inline">\((p,q)\)</span>; replacing it by the latter loses
+the answer <span class="math inline">\(x=y\)</span> from §5.</p>
+<p>This exposes the missing information in a simple tree-automaton
+approach: equality of whole witness-subterm vectors at distant
+positions. It is not a proof against richer automata with equality
+constraints or a more careful finite quotient. I have not supplied such
+a quotient or an emptiness algorithm for it.</p>
+</section>
+<section id="the-exact-missing-boundedness-statement" class="level3">
+<h3>6.4 The exact missing boundedness statement</h3>
+<p><strong>Question 6.1.</strong> Is there a total computable function
+<span class="math inline">\(W\)</span> such that every solvable instance
+<span class="math inline">\(I\)</span> has a successful witness family
+from Theorem 4.2 of total ground-tree size at most <span
+class="math inline">\(W(|I|)\)</span>?</p>
+<p>For this fixed signature, a positive answer is
+<strong>equivalent</strong> to decidability of ordinary JCA:</p>
+<ul>
+<li>Given <span class="math inline">\(W\)</span>, exhaust the finite
+witness search through that bound and reject if it finds no answer.</li>
+<li>Given a decider, enumerate the finitely many instance encodings of
+length at most <span class="math inline">\(n\)</span>. For each solvable
+one, run the positive witness search until it succeeds, and take the
+maximum resulting size (or zero if none is solvable). This computes a
+suitable <span class="math inline">\(W(n)\)</span>.</li>
+</ul>
+<p>Thus “there should be a finite witness bound” is not independent
+evidence for decidability; proving a computable bound would be the main
+theorem. The one-witness-per-branch result bounds the number of samples,
+not their size, and does not evade round 8’s warning about circular
+bounded-answer arguments.</p>
+</section>
+</section>
+<section id="why-prefix-validity-needs-a-different-witness-theorem"
+class="level2">
+<h2>7. Why prefix validity needs a different witness theorem</h2>
+<p>Even without designated invariant parameters, the strengthening step
+in Theorem 4.2 need not preserve <span class="math inline">\(\forall
+B\,Q:A\)</span>. Consider <span class="math inline">\(Q=\forall u\exists
+x\)</span> and a single branch <span
+class="math inline">\(\top\Rightarrow\top\)</span>. The answer <span
+class="math inline">\(\top\)</span> is valid. A ground witness <span
+class="math inline">\((u,x)=(a,a)\)</span> has a one-sample lgg equal to
+that ground tuple; the resulting answer <span
+class="math inline">\(u=a\land x=a\)</span> is not valid under <span
+class="math inline">\(Q\)</span>.</p>
+<p>This is a counterexample to transferring the
+<strong>construction</strong>, not to existence in this instance. The
+prefix problem still has the original answer. One would need witnesses
+that leave <span class="math inline">\(U\)</span> symbolic and preserve
+uniform dependence across all universal assignments, together with a
+replacement for the least-general-generalization argument. For tree
+scopes, each existential witness must additionally respect its
+particular dependency set.</p>
+<p>There is a second complication when no-escaping is present: its
+definition inspects individual atoms, so arbitrary normalization into an
+equivalent conjunction is not automatically admissibility-preserving.
+Ordinary JCA’s solution-set proof is deliberately not used to bypass
+that check.</p>
+</section>
+<section id="what-has-and-has-not-been-solved" class="level2">
+<h2>8. What has and has not been solved</h2>
+<p>The results defended here are the projection lemma, the finite
+witness hull theorem, and the decision procedure for ground-determined
+branch solutions. The subsumption and default-witness counterexamples
+are explicit finite refutations of particular constructions. The general
+fixed-signature JCA problem remains unresolved by this attempt, as do
+the specified prefix variant and any fully specified
+invariant-parameter/tree-scoped extension. A literature check supplied
+the cited standard tools and semi-unification result; it is not a claim
+of an exhaustive current-status survey.</p>
+<p>The next decisive task on the decidability route is to represent the
+successful witness families of §4.4 with a structure whose emptiness is
+decidable, preserving repeated-subterm-vector equality. On the
+undecidability route it is to construct a representation-preserving
+comparison between two answer-chosen terms, with separate matching
+variables, before relying on the quantifier shape of a check. The
+source-semantic reconciliation is necessary for the prefix route but
+does not resolve either ordinary-JCA task.</p>
+</section>
+<section id="executable-checks-and-provenance" class="level2">
+<h2>9. Executable checks and provenance</h2>
+<p>Run
+<code>python3 projects/jca/agent-collab/round-10-experiments.py</code>
+from the repository root. It checks Example 4.3’s counterexample, the
+shared-variable matching failure, the linkage collapse, both examples
+for Theorem 5.1, the default-witness failure, unbounded lgg-variable
+counts for two samples, and finite generated cases of the witness
+theorem. Matching applies a substitution once; unification recursively
+resolves acyclic bindings. These must not be conflated.</p>
+<p>The experiments are limited to ordinary finite-term JCA. They do not
+implement the thesis’s prefix checks or certify the whole InvarGenT
+implementation. All author-question reactions are based on the local
+source and code inspection; the research results above are this note’s
+own arguments.</p>
+<p>Recorded run: all named checks passed; 2,401 equality-only instances
+supplied 2,095 accepted-answer witness-hull checks and 1,633 fragment
+decisions agreeing with bounded pattern search. An additional 45 cases
+checked nested constructors and repeated variables. These finite checks
+support implementation confidence, while the proofs carry the unbounded
+claims.</p>
+</section>
+</section>
+</article>
+<script src="/assets/theme-toggle.js"></script>
+</body>
+</html>
