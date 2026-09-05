@@ -108,6 +108,22 @@ primitive’s raw material in the validity condition, leaving three
 sharply delimited sub-goals (forcing, polarity, width).</em></p>
 <section id="summary" class="level2">
 <h2>0. Summary</h2>
+<blockquote>
+<p><strong>Codex reaction, 2026-09-05 — status of this round.</strong>
+The original argument is preserved below, with reactions beside the
+affected claims. Reading the original <a
+href="../lukstafi-phd-thesis.tm">TeXmacs thesis source</a>, rather than
+only the <a href="../thesis_section_4_2.md">extracted §4.2</a>, reveals
+substantive differences in the substitution domain and no-escaping
+order. Thus the assertions below that the validity-based matching
+primitive is present “unconditionally” need qualification. The answers
+to the two author-questions are recorded in §6. A separate <a
+href="round-10-witness-generalization.html">round 10 attempt</a>
+formulates explicit variants, checks two further obstacles to SUBSUME,
+and develops a witness/anti-unification approach to ordinary JCA. These
+are research reactions, not a new ruling attributed to the thesis
+author.</p>
+</blockquote>
 <ol type="1">
 <li><strong>Equational skeleton (§2).</strong> For an SSU instance <span
 class="math inline">\(\mathcal{C}\)</span> we build a purely existential
@@ -411,6 +427,26 @@ variables. (Round 8 §6; the S3 grounding shortcut — for ground <span
 class="math inline">\(\theta(u)\)</span>, unifiable <span
 class="math inline">\(=\)</span> subsumed — dies because groundness
 collapses SSU itself.)</p>
+<blockquote>
+<p><strong>Codex reaction, 2026-09-05 — shared variables invalidate
+necessity.</strong> This necessary-condition claim requires the pattern
+and target variables to be disjoint. Under the valuation convention of
+semi-unification, <span class="math inline">\(p\)</span> matches <span
+class="math inline">\(\mathrm{arr}(p,p)\)</span> by the single
+application <span
+class="math inline">\(p\mapsto\mathrm{arr}(p,p)\)</span>, but the
+equation <span class="math inline">\(p\doteq\mathrm{arr}(p,p)\)</span>
+fails the occurs check. An idempotent answer can have exactly these two
+images: <span class="math inline">\(v\mapsto p\)</span>, <span
+class="math inline">\(u\mapsto\mathrm{arr}(p,p)\)</span>. Renaming the
+pattern’s variables apart repairs the mathematical test, but performing
+that renaming on an unbounded answer-chosen term is additional work for
+a gadget, not a free input transformation. Consequently the probe is not
+complete for unrestricted SUBSUME, and §5.2’s corresponding completeness
+assertion needs the same qualification. This does not affect Lemma 5.1
+itself or its ground-target example. See round 10 §3 and its executable
+checks.</p>
+</blockquote>
 </section>
 <section
 id="monotonicity-lemma-violations-must-be-caught-by-consistency"
@@ -517,6 +553,24 @@ id="the-fixed-interface-limitation-and-what-it-does-not-yet-prove"
 class="level3">
 <h3>5.4 The fixed-interface limitation — and what it does <em>not</em>
 yet prove</h3>
+<blockquote>
+<p><strong>Codex reaction, 2026-09-05 — a second obstruction in
+§5.3.</strong> If <span class="math inline">\(u\doteq v\)</span> is an
+atom of the answer <span class="math inline">\(A\)</span>, then <span
+class="math inline">\(\theta=\mathrm{mgu}(A)\)</span> already satisfies
+<span class="math inline">\(\theta(u)=\theta(v)\)</span>. The displayed
+<span class="math inline">\(s(\bar x)\)</span> and <span
+class="math inline">\(t(\bar\beta)\)</span> can be different
+<em>before</em> solving the answer, but they are not independently
+preserved images of these ports <em>after</em> solving it. Thus the
+proposed three linkage atoms do not yet implement nontrivial subsumption
+between normalized answer images, even with the stated polarity. A
+successful construction must distinguish the terms being represented
+from a separate check on copies of those terms, and prove that the check
+preserves the representation. The bounded-interface discussion below is
+conditional on resolving this representation issue as well as the
+source-semantic discrepancy in §6.</p>
+</blockquote>
 <p>The near-miss of §5.3 is limited in one specific dimension: the <span
 class="math inline">\(\exists\)</span>-block of the checkable <span
 class="math inline">\(\forall\exists\)</span> atoms consists of
@@ -649,6 +703,34 @@ class="math inline">\(\forall\gamma\)</span> display is then best read
 as verifying validity-style unconstrainedness jointly with the (weaker,
 <span class="math inline">\(\exists\)</span>-closed) consistency
 requirement.</p>
+<blockquote>
+<p><strong>Codex reaction, 2026-09-05 — distinguish the recorded
+clarification from the source.</strong> The original TeXmacs source,
+§4.2.1, calls fresh answer parameters <span
+class="math inline">\(\bar\alpha\)</span> and writes validity as <span
+class="math inline">\(\mathcal M\models Q:A[\bar\alpha\bar\beta:=\bar
+t]\)</span>: <strong>fresh parameters are among the substituted
+variables</strong>. The paragraph after Example 4.3 correspondingly uses
+<span class="math inline">\(\mathcal
+U_{\bar\alpha\bar\beta}(Q:A)\)</span> and moves these variables to a
+trailing existential block. The extraction instead substitutes <span
+class="math inline">\(\bar\chi\bar\delta\)</span>, leaving its fresh
+<span class="math inline">\(\bar\beta\)</span> untouched. The original
+also uses <span class="math inline">\(\le_Q\)</span> in both no-escaping
+clauses, whereas the extraction uses <span
+class="math inline">\(\not\le_Q\)</span>; §2.1 of the original defines
+<span class="math inline">\(x\le_Q y\)</span> as <span
+class="math inline">\(\neg(y&lt;_Q x)\)</span>. These are substantive
+differences, not just changed Greek letters. Preserve the author’s
+recorded clarification as intended semantics if desired, but its
+extension to an outer universal block of fresh parameters cannot be
+described as a direct transcription of the original definition. In
+particular, the source does not by itself establish §5.4’s claim that
+the existential side contains only instance-fixed variables. Here <span
+class="math inline">\(\exists\bar t\)</span> denotes a meta-level choice
+of finite syntactic terms, not an ordinary first-order quantifier over a
+tuple of ground values.</p>
+</blockquote>
 <p><strong>Consequences.</strong> The <span
 class="math inline">\(\forall\exists\)</span> capability of §5.3 does
 <em>not</em> live in consistency (which is mere unifiability) — it
@@ -675,6 +757,63 @@ answer yet is not below the claimed most general answer <span
 class="math inline">\(\exists\gamma: y \doteq f(z,\gamma)\)</span> — is
 an implicit side condition intended, or is the most-generality claim to
 be weakened?</p>
+<blockquote>
+<p><strong>Codex reaction to question (1), 2026-09-05 — yes for validity
+witnesses.</strong> The trailing-existential construction immediately
+after Example 4.3 permits witnesses containing preceding universal
+variables. For example, with <span class="math inline">\(Q=\forall
+u\)</span> and a substituted parameter <span
+class="math inline">\(p\)</span>, the atom <span
+class="math inline">\(p\doteq f(u,u)\)</span> passes validity with <span
+class="math inline">\(t_p=f(u,u)\)</span>. A meta-level choice of this
+syntactic term does not make it independent of <span
+class="math inline">\(u\)</span>. This is a statement about validity
+alone; the answer must still pass no-escaping. It therefore does
+<strong>not</strong> establish that validity excludes every
+universal-hard-coding answer.</p>
+<p><strong>Implementation qualification.</strong> In the inspected
+<code>~/invargent</code> checkout, <code>src/Terms.ml</code>,
+<code>quant_viol</code> (lines 1437–1460), permits invariant parameters
+to be bound but checks their dependencies on non-parameter universals.
+<code>src/Infer.ml</code>, <code>prenexize</code> (lines 1251–1351),
+records both quantifier-block comparisons (<code>cmp_v</code>) and tree
+ancestry (<code>upward_of</code>); <code>src/Invariants.ml</code> uses
+ancestry when selecting parameters relative to an invariant anchor. This
+agrees with the author’s warning that the implementation tracks
+tree-shaped dependencies. It is not evidence that all admissibility
+checks can be replaced by one unrestricted trailing existential block.
+The source also contains scope-related FIXME comments, so these
+observations are not a correctness proof for every implementation
+path.</p>
+</blockquote>
+<blockquote>
+<p><strong>Codex reaction to question (2), 2026-09-05 — weaken the
+claim.</strong> Set <span class="math inline">\(B=(y\doteq
+f(x,z))\)</span>. For <span class="math inline">\(k=a\)</span> and
+separately <span class="math inline">\(k=b\)</span>, <span
+class="math inline">\(B\land y\doteq f(k,x)\)</span> implies <span
+class="math inline">\(x=k\)</span> and <span
+class="math inline">\(z=x\)</span>, hence <span
+class="math inline">\(z=k\)</span>. Each branch is consistent at <span
+class="math inline">\(x=z=k\)</span>, <span
+class="math inline">\(y=f(k,k)\)</span>. Validity is existential
+satisfiability and both no-escaping variants are vacuous here. However,
+<span class="math inline">\(x=a\)</span>, <span
+class="math inline">\(z=b\)</span>, <span
+class="math inline">\(y=f(a,b)\)</span> satisfies <span
+class="math inline">\(B\)</span> and falsifies <span
+class="math inline">\(y\doteq f(z,t)\)</span> for every <span
+class="math inline">\(t\)</span>. Thus <span
+class="math inline">\(B\)</span> is not below the claimed answer under
+the stated generality relation. Neither a dependency tree nor strong
+no-escaping removes this all-existential counterexample. The safe edit
+to Example 4.3 is “<strong>an answer</strong> is …”; any stronger claim
+requires a proof or an explicit additional answer-language restriction.
+Its subsequent SCA list is also not exhaustive: <span
+class="math inline">\(B\)</span> is below neither listed answer (and it
+does not imply <span class="math inline">\(z=a\)</span>). No such
+additional restriction was found in the cited definition or example.</p>
+</blockquote>
 </section>
 <section id="machine-checks" class="level2">
 <h2>7. Machine checks</h2>

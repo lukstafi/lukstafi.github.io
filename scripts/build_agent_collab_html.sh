@@ -63,6 +63,11 @@ build_html \
   "$collab_dir/round-9-subsumption-bottleneck.html" \
   "JCA Existence over T(F), Round 9: The Subsumption Bottleneck"
 
+build_html \
+  "$collab_dir/round-10-witness-generalization.md" \
+  "$collab_dir/round-10-witness-generalization.html" \
+  "JCA Existence over T(F), Round 10: Witness Generalization"
+
 # Build all review files
 reviews_dir="$collab_dir/reviews"
 if [[ -d "$reviews_dir" ]]; then
