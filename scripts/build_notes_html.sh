@@ -19,6 +19,10 @@ for md_file in "$root_dir"/notes/*.md; do
 
   # Derive title from first H1 heading in the file
   title="$(grep -m1 '^# ' "$md_file" | sed 's/^# //; s/\*\*//g' || true)"
+  # Fall back to the YAML frontmatter title for articles carrying no H1.
+  if [ -z "$title" ]; then
+    title="$(awk 'NR==1 && $0!="---"{exit} NR>1 && $0=="---"{exit} NR>1 && /^title:/{sub(/^title:[[:space:]]*/,""); gsub(/^"|"$/,""); print; exit}' "$md_file")"
+  fi
   [ -z "$title" ] && title="$base_name"
 
   # Build the optional after-body link.
@@ -57,7 +61,7 @@ for md_file in "$root_dir"/notes/*.md; do
     --css="/assets/pandoc-tufte.css" \
     --css="/assets/site.css" \
     --include-before-body="$root_dir/assets/nav.html" \
-    "${include_args[@]}" \
+    ${include_args[@]+"${include_args[@]}"} \
     --metadata=pagetitle:"$title" \
     "$md_file" \
     -o "$html_file"
