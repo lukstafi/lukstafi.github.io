@@ -408,6 +408,56 @@ blocks_to_nodes = function(blocks)
         end
         nodes[#nodes + 1] = { type = "paragraph", content = inlines_to_nodes(parts, {}) }
       end
+    elseif t == "Table" then
+      -- Substack has no native table support; render each row as a paragraph
+      -- with cells joined by " | ". Header cells are bolded.
+      local function cell_inlines(cell)
+        local ils = {}
+        for _, b in ipairs(cell.contents) do
+          if b.tag == "Para" or b.tag == "Plain" then
+            if #ils > 0 then ils[#ils + 1] = pandoc.Space() end
+            for _, il in ipairs(b.content) do ils[#ils + 1] = il end
+          else
+            local txt = stringify(b)
+            if txt ~= "" then
+              if #ils > 0 then ils[#ils + 1] = pandoc.Space() end
+              ils[#ils + 1] = pandoc.Str(txt)
+            end
+          end
+        end
+        return ils
+      end
+      local function row_node(row, is_header)
+        local parts = {}
+        for ci, cell in ipairs(row.cells) do
+          local ils = cell_inlines(cell)
+          if is_header and #ils > 0 then ils = { pandoc.Strong(ils) } end
+          for _, il in ipairs(ils) do parts[#parts + 1] = il end
+          if ci < #row.cells then parts[#parts + 1] = pandoc.Str(" | ") end
+        end
+        return { type = "paragraph", content = inlines_to_nodes(parts, {}) }
+      end
+      for _, row in ipairs(blk.head.rows) do
+        nodes[#nodes + 1] = row_node(row, true)
+      end
+      for _, body in ipairs(blk.bodies) do
+        for _, row in ipairs(body.head) do
+          nodes[#nodes + 1] = row_node(row, true)
+        end
+        for _, row in ipairs(body.body) do
+          nodes[#nodes + 1] = row_node(row, false)
+        end
+      end
+      for _, row in ipairs(blk.foot.rows) do
+        nodes[#nodes + 1] = row_node(row, false)
+      end
+      local caption = stringify(blk.caption)
+      if caption ~= "" then
+        nodes[#nodes + 1] = {
+          type = "paragraph",
+          content = inlines_to_nodes({ pandoc.Emph({ pandoc.Str(caption) }) }, {}),
+        }
+      end
     elseif t == "RawBlock" then
       -- skip remaining raw HTML/TeX blocks (not part of a table)
     else
