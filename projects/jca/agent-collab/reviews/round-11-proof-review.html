@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <meta name="dcterms.date" content="2026-09-21">
+  <title>Agent Collaboration Review: round-11-proof-review</title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <link rel="stylesheet" href="/assets/tufte.css">
+  <link rel="stylesheet" href="/assets/pandoc-tufte.css">
+  <link rel="stylesheet" href="/assets/site.css">
+  <script defer=""
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+  type="text/javascript"></script>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+  <script>(function(){var t=localStorage.getItem('theme-preference');if(t)document.documentElement.setAttribute('data-theme',t);})()</script>
+</head>
+<body>
+<nav class="site-nav">
+  <a href="/">Home</a> &middot; <a href="/about.html">About</a> &middot; <a href="https://lukstafi.substack.com">Substack</a>
+</nav>
+<div class="theme-toggle">
+  <button id="theme-btn" aria-label="Toggle dark mode">&#9788;</button>
+</div>
+<article>
+<header>
+<h1 class="title">Independent Proof Review of JCA Round 11</h1>
+<p class="byline">2026-09-21</p>
+</header>
+<nav id="TOC">
+<ul>
+<li><a href="#independent-proof-review-of-jca-round-11"
+id="toc-independent-proof-review-of-jca-round-11">Independent proof
+review of JCA Round 11</a>
+<ul>
+<li><a href="#verdict-and-scope" id="toc-verdict-and-scope">Verdict and
+scope</a></li>
+<li><a href="#the-ten-audited-findings"
+id="toc-the-ten-audited-findings">The ten audited findings</a>
+<ul>
+<li><a href="#flattening-preserves-existence-and-branch-count"
+id="toc-flattening-preserves-existence-and-branch-count">1. Flattening
+preserves existence and branch count</a></li>
+<li><a href="#functional-extension-commutes-with-simultaneous-lgg"
+id="toc-functional-extension-commutes-with-simultaneous-lgg">2.
+Functional extension commutes with simultaneous lgg</a></li>
+<li><a href="#the-four-variable-two-branch-constructor-obstruction"
+id="toc-the-four-variable-two-branch-constructor-obstruction">3. The
+four-variable, two-branch constructor obstruction</a></li>
+<li><a href="#binary-code-guards-force-unbounded-tuple-pattern-depth"
+id="toc-binary-code-guards-force-unbounded-tuple-pattern-depth">4.
+Binary-code guards force unbounded tuple-pattern depth</a></li>
+<li><a href="#exponential-expanded-witness-trees"
+id="toc-exponential-expanded-witness-trees">5. Exponential expanded
+witness trees</a></li>
+<li><a
+href="#binary-witnesses-and-np-membership-for-constant-test-premises"
+id="toc-binary-witnesses-and-np-membership-for-constant-test-premises">6.
+Binary witnesses and NP membership for constant-test premises</a></li>
+<li><a href="#exact-additive-joint-witness-depth"
+id="toc-exact-additive-joint-witness-depth">7. Exact additive joint
+witness depth</a></li>
+<li><a
+href="#np-hardness-and-np-completeness-of-the-constant-test-fragment"
+id="toc-np-hardness-and-np-completeness-of-the-constant-test-fragment">8.
+NP-hardness and NP-completeness of the constant-test fragment</a></li>
+<li><a href="#at-most-one-uncovered-coordinate"
+id="toc-at-most-one-uncovered-coordinate">9. At most one uncovered
+coordinate</a></li>
+<li><a
+href="#constructor-free-completeness-with-at-most-three-variables"
+id="toc-constructor-free-completeness-with-at-most-three-variables">10.
+Constructor-free completeness with at most three variables</a></li>
+</ul></li>
+<li><a href="#draft-issue-excluded-from-the-final-results"
+id="toc-draft-issue-excluded-from-the-final-results">Draft issue
+excluded from the final results</a></li>
+<li><a href="#remaining-scope" id="toc-remaining-scope">Remaining
+scope</a></li>
+</ul></li>
+</ul>
+</nav>
+<section id="independent-proof-review-of-jca-round-11" class="level1">
+<h1>Independent proof review of JCA Round 11</h1>
+<p><em>Reviewer: a Codex subagent assigned to skeptical proof review
+independently of the agents proposing the results. Reviewed the research
+drafts and the integrated <a
+href="../round-11-witness-bounds.html">Round 11 note</a>, including its
+appendices. This is a mathematical review, not machine-checked
+verification or an independent literature survey.</em></p>
+<section id="verdict-and-scope" class="level2">
+<h2>Verdict and scope</h2>
+<p>The ten claims below pass this review under the exact ordinary-JCA
+semantics of <a
+href="../round-10-witness-generalization.html#the-common-equational-core">Round
+10, §2.1</a>: finite terms over the fixed signature <span
+class="math inline">\(\{f/2,a/0,b/0\}\)</span>, branchwise relevance and
+consistency, and fresh answer parameters existentially hidden when
+projecting onto instance variables. No unresolved proof defect was found
+in the integrated note, including Appendices A and B.</p>
+<p>The review found one invalid auxiliary-variable shortcut in a
+research draft. The final note omits that shortcut; its actual
+flattening theorem already uses the correct construction. The review
+also prompted explicit qualification of answer-depth statements as
+statements about <strong>tuple-pattern answers</strong>.</p>
+</section>
+<section id="the-ten-audited-findings" class="level2">
+<h2>The ten audited findings</h2>
+<section id="flattening-preserves-existence-and-branch-count"
+class="level3">
+<h3>1. Flattening preserves existence and branch count</h3>
+<p>The common system <span class="math inline">\(G\)</span> must include
+definitions for all original compound subterms and occur in every
+transformed premise. Under this construction, every original ground
+assignment has a unique extension satisfying <span
+class="math inline">\(G\)</span>. Both directions of the existence proof
+follow.</p>
+<p>The backward direction correctly includes <span
+class="math inline">\(G\)</span> in the projected original answer and
+treats its auxiliary variables as fresh answer parameters. This accounts
+for arbitrary references to auxiliaries in a transformed answer. Merely
+deleting those variables would not be justified. The stated structural
+size bound <span class="math inline">\(O(m|I|)\)</span> and preservation
+of branch count are correct.</p>
+<p><strong>Limit:</strong> this is an ordinary-JCA result, without
+prefix or scope restrictions. Preserving two branches does not reduce
+arbitrary branch counts to two.</p>
+</section>
+<section id="functional-extension-commutes-with-simultaneous-lgg"
+class="level3">
+<h3>2. Functional extension commutes with simultaneous lgg</h3>
+<p>For a term <span class="math inline">\(t(X)\)</span> and a common
+memo table, generalizing the vector <span
+class="math inline">\((t[g_i])_i\)</span> gives <span
+class="math inline">\(t[H]\)</span>, where <span
+class="math inline">\(H\)</span> is the simultaneous lgg of the original
+tuples. Structural induction is valid: constructors are retained, and
+occurrences of an original variable reuse its generalized coordinate,
+including its internal sharing.</p>
+<p>The extended hull consequently satisfies <span
+class="math inline">\(G\)</span> and projects exactly to <span
+class="math inline">\(H\)</span>. Original witness families are
+successful exactly when their functional extensions are successful.</p>
+<p><strong>Limit:</strong> the shared disagreement-vector table is
+essential. This assertion does not justify independent generalization of
+coordinates with unrelated parameter names.</p>
+</section>
+<section id="the-four-variable-two-branch-constructor-obstruction"
+class="level3">
+<h3>3. The four-variable, two-branch constructor obstruction</h3>
+<p>For <span class="math inline">\(x=y\Rightarrow u=a\land v=b\)</span>
+and <span class="math inline">\(u=b\land v=a\Rightarrow\top\)</span>,
+the displayed constructor answer and depth-one witnesses are valid. In
+any flat answer, the <span class="math inline">\(u,v\)</span>
+coordinates must be two distinct parameters. One consistent equation
+between flat terms cannot force both parameters to two different
+constants. Constructor-free equational answers also normalize to flat
+tuple patterns, so changing the answer presentation does not evade the
+obstruction.</p>
+<p>The minimum total witness tree size is exactly <span
+class="math inline">\(16\)</span>. In every successful hull, the <span
+class="math inline">\(u,v\)</span> coordinates are parameters. If at
+most one of <span class="math inline">\(x,y\)</span> were compound,
+Lemma A.1 would produce a flat answer, contradicting the obstruction.
+Thus both hull coordinates are constructor-headed, and all four
+corresponding coordinates of the two witnesses have at least three nodes
+each. The four <span class="math inline">\(u,v\)</span> witness
+coordinates are forced one-node constants. This gives <span
+class="math inline">\(4\cdot3+4=16\)</span>, attained by the displayed
+family.</p>
+<p><strong>Limit:</strong> the exact minimum witness depth one and total
+tree size <span class="math inline">\(16\)</span> concern this instance.
+They give no general bound for two branches.</p>
+</section>
+<section id="binary-code-guards-force-unbounded-tuple-pattern-depth"
+class="level3">
+<h3>4. Binary-code guards force unbounded tuple-pattern depth</h3>
+<p>The guards force <span class="math inline">\(k=2^r-1\)</span>
+distinct parameter coordinates. Every such parameter must occur in one
+of the two coordinates compared by the central premise; otherwise it
+remains independently assignable to <span
+class="math inline">\(b\)</span>. Two binary terms of depth at most
+<span class="math inline">\(d\)</span> contain at most <span
+class="math inline">\(2^{d+1}\)</span> leaves, giving <span
+class="math inline">\(d\ge r-1\)</span>. The balanced-tree construction
+gives depth at most <span class="math inline">\(r\)</span>, and the
+lower bound transfers to successful witnesses because lgg cannot exceed
+their maximum depth.</p>
+<p><strong>Limits:</strong> branch and variable counts grow. The result
+does not refute a computable bound in total input size or establish
+fixed-two-branch unboundedness. For answers, the lower bound concerns
+normalized tuple patterns: arbitrary equational presentations can name
+subterms using fresh auxiliaries and depth-one equations.</p>
+</section>
+<section id="exponential-expanded-witness-trees" class="level3">
+<h3>5. Exponential expanded witness trees</h3>
+<p>The doubling-chain example fixes unique ground witnesses for both
+branches. The total expanded tree size</p>
+<p><span class="math display">\[2^{k+3}-2k-6\]</span></p>
+<p>is correct. Input structural size is <span
+class="math inline">\(O(k)\)</span>; with binary variable identifiers,
+the stated <span class="math inline">\(O(k\log k)\)</span> bit-length
+bound still yields superpolynomial witness trees.</p>
+<p><strong>Limits:</strong> the empty answer already works. Shared DAGs
+need only <span class="math inline">\(O(k)\)</span> nodes and witness
+depth is <span class="math inline">\(k\)</span>. This is not an
+answer-size, DAG-size, or noncomputable-bound result.</p>
+</section>
+<section
+id="binary-witnesses-and-np-membership-for-constant-test-premises"
+class="level3">
+<h3>6. Binary witnesses and NP membership for constant-test
+premises</h3>
+<p>Consistency ensures that every premise-tested coordinate of an answer
+pattern is a parameter or constant. Each substituted premise therefore
+only binds parameters to <span class="math inline">\(a\)</span> or <span
+class="math inline">\(b\)</span>. Replacing all remaining
+constructor-headed coordinates by <span class="math inline">\(a\)</span>
+preserves relevance: simple/simple conclusion equations are unchanged,
+compound/compound equations become <span
+class="math inline">\(a=a\)</span>, and a mixed simple/compound equation
+could not have been entailed originally.</p>
+<p>Grounding unforced parameters with <span
+class="math inline">\(a\)</span> gives binary branch witnesses. The
+<span class="math inline">\(mn\)</span>-bit witness matrix is a
+polynomial certificate, and its flat lgg and branch checks are
+computable in polynomial time.</p>
+<p><strong>Limit:</strong> the argument needs constant-test premises.
+Arbitrary constructor-free premises are excluded by finding 3.</p>
+</section>
+<section id="exact-additive-joint-witness-depth" class="level3">
+<h3>7. Exact additive joint witness depth</h3>
+<p>For the two-branch family using <span
+class="math inline">\(F(t)=f(a,t)\)</span> and <span
+class="math inline">\(K(t)=f(b,t)\)</span>, the minimum successful joint
+witness depth is exactly <span class="math inline">\(h+k\)</span>,
+although individual minimum depths are <span
+class="math inline">\(h\)</span> and <span
+class="math inline">\(k\)</span>.</p>
+<p>The critical independence arguments are sound. The <span
+class="math inline">\(x\)</span>-coordinate disagreement key contains
+<span class="math inline">\(K^k(t)\)</span>, which is larger than every
+subterm of <span class="math inline">\(t\)</span>, so that parameter
+cannot recur in the <span class="math inline">\(y\)</span> hull. An
+early right-spine stop creates another parameter occurring only once,
+permitting the stated countermodel. The exact success condition on the
+terminal and side subterms follows from their shared disagreement
+keys.</p>
+<p><strong>Limits:</strong> successful choices need not be unique. This
+refutes a maximum-of-individual-depths bound, not a sum bound or a bound
+in input size.</p>
+</section>
+<section
+id="np-hardness-and-np-completeness-of-the-constant-test-fragment"
+class="level3">
+<h3>8. NP-hardness and NP-completeness of the constant-test
+fragment</h3>
+<p>The graph 3-colouring reduction is correct, including its treatment
+of arbitrary constructor answers. The common-<span
+class="math inline">\(a\)</span> branch and variation guard make every
+vertex coordinate a parameter with both <span
+class="math inline">\(a\)</span> and <span
+class="math inline">\(b\)</span> instances. The common premise binds at
+most three parameter classes to <span class="math inline">\(a\)</span>,
+and relevance forces every vertex coordinate into one of those classes.
+An edge guard forces its endpoints into different classes. Conversely a
+proper colouring supplies the stated pattern answer and all branch
+witnesses.</p>
+<p>Together with finding 6, this proves NP-completeness of the specified
+fragment and NP-hardness of unrestricted ordinary JCA. Splitting the
+variation guard into one branch per vertex preserves the proof and
+bounds premise size by three atoms.</p>
+<p><strong>Limits:</strong> this gives no upper bound for unrestricted
+JCA and makes no claim of novelty in the complexity literature.</p>
+</section>
+<section id="at-most-one-uncovered-coordinate" class="level3">
+<h3>9. At most one uncovered coordinate</h3>
+<p>The abstraction lemma in Appendix A is valid. Abstract the sole
+distinct constructor-root term by <span class="math inline">\(q\)</span>
+and solve the flat premise by union-find. Original consistency excludes
+both a constant in the <span class="math inline">\(q\)</span> class and
+occurrence of <span class="math inline">\(q\)</span> in the restored
+compound term. Restoring that term therefore identifies no distinct
+flat-class representatives, preserving exactly the constructor-free
+equality consequences.</p>
+<p>Every constant-covered coordinate of a successful witness hull is
+flat, since some witness has a constant there. Thus at most one
+uncovered coordinate permits the abstraction lemma, yielding a flat
+answer and binary witnesses of total size <span
+class="math inline">\(mn\)</span>. The four-variable obstruction has
+exactly two uncovered coordinates and makes this threshold sharp.</p>
+<p><strong>Limits:</strong> abstraction need only preserve premises
+consistent with the original pattern. Exceeding the coverage threshold
+does not imply undecidability or rule out other finite bounds.</p>
+</section>
+<section id="constructor-free-completeness-with-at-most-three-variables"
+class="level3">
+<h3>10. Constructor-free completeness with at most three variables</h3>
+<p>Appendix B’s case analysis is sound. Its one-compound case follows
+from the audited abstraction lemma. With two compound coordinates <span
+class="math inline">\(P,Q\)</span> and a flat parameter <span
+class="math inline">\(r\)</span>, the listed possible additional
+equality consequences are exhaustive. If unifying <span
+class="math inline">\(P,Q\)</span> forces <span
+class="math inline">\(r=c\)</span>, the replacement <span
+class="math inline">\((r,c,r)\)</span> preserves every originally
+accepted branch. Otherwise <span class="math inline">\((s,s,r)\)</span>
+suffices. The constant-third-coordinate and three-compound cases are
+also valid.</p>
+<p>Consequently at most three instance variables admit flat answers
+whenever an answer exists. The canonical pattern counts <span
+class="math inline">\(3,10,37\)</span> are correct. Together with the
+one-branch observation, the four-variable, two-branch constructor
+obstruction is minimal in both counts.</p>
+<p><strong>Limit:</strong> this is specific to constructor-free input
+and the stated two-constant signature. Finite profile experiments
+support the case analysis but do not replace its unbounded proof.</p>
+</section>
+</section>
+<section id="draft-issue-excluded-from-the-final-results"
+class="level2">
+<h2>Draft issue excluded from the final results</h2>
+<p>A draft suggested replacing a branch-local equality <span
+class="math inline">\(u=v\)</span> by fresh equations <span
+class="math inline">\(z=f(u,a)\land z=f(v,a)\)</span>. Existential
+equivalence of those conjunctions does <strong>not</strong> alone
+establish a JCA reduction: auxiliary coordinates can become branch
+selectors.</p>
+<p>For example, the original branches <span
+class="math inline">\(x=y\Rightarrow u=a\)</span> and <span
+class="math inline">\(x=y\Rightarrow u=b\)</span> are jointly
+unsolvable. Encoding their premises independently with <span
+class="math inline">\(z_1,z_2\)</span> admits the answer</p>
+<p><span class="math display">\[x=y=f(a,b),\quad u=p,\quad
+z_1=f(f(p,q),a),\quad z_2=f(f(q,p),a).\]</span></p>
+<p>The two transformed premises respectively force <span
+class="math inline">\((p,q)=(a,b)\)</span> and <span
+class="math inline">\((b,a)\)</span>.</p>
+<p>This shortcut is <strong>omitted from the final note</strong>, rather
+than retained as a result. A repair would put all chosen base
+definitions into the common <span class="math inline">\(G\)</span> in
+every premise and carry them into the projected answer. The actual
+flattening theorem already follows that discipline and is
+unaffected.</p>
+</section>
+<section id="remaining-scope" class="level2">
+<h2>Remaining scope</h2>
+<p>The integrated note establishes the stated finite fragments and lower
+bounds. It does not decide unrestricted ordinary JCA, unrestricted
+two-branch JCA, the general two-branch constructor-free fragment, or any
+prefix/scoped variant. A computable successful-witness bound for those
+broader cases remains unproved.</p>
+</section>
+</section>
+</article>
+<script src="/assets/theme-toggle.js"></script>
+</body>
+</html>

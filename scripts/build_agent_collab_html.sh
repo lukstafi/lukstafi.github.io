@@ -68,6 +68,11 @@ build_html \
   "$collab_dir/round-10-witness-generalization.html" \
   "JCA Existence over T(F), Round 10: Witness Generalization"
 
+build_html \
+  "$collab_dir/round-11-witness-bounds.md" \
+  "$collab_dir/round-11-witness-bounds.html" \
+  "JCA Existence over T(F), Round 11: Witness Bounds and a Constant-Test Fragment"
+
 # Build all review files
 reviews_dir="$collab_dir/reviews"
 if [[ -d "$reviews_dir" ]]; then

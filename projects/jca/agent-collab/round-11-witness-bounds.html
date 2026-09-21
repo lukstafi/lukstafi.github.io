@@ -1,0 +1,948 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <meta name="dcterms.date" content="2026-09-21">
+  <title>JCA Existence over T(F), Round 11: Witness Bounds and a
+Constant-Test Fragment</title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <style type="text/css">
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="/assets/tufte.css">
+  <link rel="stylesheet" href="/assets/pandoc-tufte.css">
+  <link rel="stylesheet" href="/assets/site.css">
+  <script defer=""
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+  type="text/javascript"></script>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+  <script>(function(){var t=localStorage.getItem('theme-preference');if(t)document.documentElement.setAttribute('data-theme',t);})()</script>
+</head>
+<body>
+<nav class="site-nav">
+  <a href="/">Home</a> &middot; <a href="/about.html">About</a> &middot; <a href="https://lukstafi.substack.com">Substack</a>
+</nav>
+<div class="theme-toggle">
+  <button id="theme-btn" aria-label="Toggle dark mode">&#9788;</button>
+</div>
+<article>
+<header>
+<h1 class="title">JCA Existence over T(F), Round 11: Witness Bounds and
+a Constant-Test Fragment</h1>
+<p class="byline">2026-09-21</p>
+</header>
+<nav id="TOC">
+<ul>
+<li><a
+href="#jca-existence-over-mathcal-tmathcal-f-round-11-witness-bounds-and-a-constant-test-fragment"
+id="toc-jca-existence-over-mathcal-tmathcal-f-round-11-witness-bounds-and-a-constant-test-fragment">JCA
+Existence over <span class="math inline">\(\mathcal T(\mathcal
+F)\)</span>, Round 11: Witness Bounds and a Constant-Test Fragment</a>
+<ul>
+<li><a href="#what-this-attempt-establishes"
+id="toc-what-this-attempt-establishes">1. What this attempt
+establishes</a></li>
+<li><a href="#setting-and-the-witness-criterion"
+id="toc-setting-and-the-witness-criterion">2. Setting and the witness
+criterion</a></li>
+<li><a href="#a-decidable-constant-test-fragment"
+id="toc-a-decidable-constant-test-fragment">3. A decidable constant-test
+fragment</a>
+<ul>
+<li><a href="#matching-lower-bound" id="toc-matching-lower-bound">3.1
+Matching lower bound</a></li>
+</ul></li>
+<li><a
+href="#two-constructor-free-branches-can-require-a-constructor-answer"
+id="toc-two-constructor-free-branches-can-require-a-constructor-answer">4.
+Two constructor-free branches can require a constructor answer</a></li>
+<li><a
+href="#constructor-free-inputs-can-force-arbitrarily-deep-tuple-pattern-answers"
+id="toc-constructor-free-inputs-can-force-arbitrarily-deep-tuple-pattern-answers">5.
+Constructor-free inputs can force arbitrarily deep tuple-pattern
+answers</a></li>
+<li><a href="#shallow-syntax-is-a-normal-form-not-a-restricted-fragment"
+id="toc-shallow-syntax-is-a-normal-form-not-a-restricted-fragment">6.
+Shallow syntax is a normal form, not a restricted fragment</a></li>
+<li><a href="#joint-witness-depths-can-add"
+id="toc-joint-witness-depths-can-add">7. Joint witness depths can
+add</a></li>
+<li><a href="#tree-size-can-be-exponential-even-for-the-empty-answer"
+id="toc-tree-size-can-be-exponential-even-for-the-empty-answer">8. Tree
+size can be exponential even for the empty answer</a></li>
+<li><a href="#executable-checks-and-remaining-questions"
+id="toc-executable-checks-and-remaining-questions">9. Executable checks
+and remaining questions</a></li>
+<li><a
+href="#appendix-a.-constant-coverage-permits-some-variable-equality-premises"
+id="toc-appendix-a.-constant-coverage-permits-some-variable-equality-premises">Appendix
+A. Constant coverage permits some variable-equality premises</a></li>
+<li><a
+href="#appendix-b.-four-variables-are-necessary-for-the-constructor-obstruction"
+id="toc-appendix-b.-four-variables-are-necessary-for-the-constructor-obstruction">Appendix
+B. Four variables are necessary for the constructor obstruction</a></li>
+</ul></li>
+</ul>
+</nav>
+<section
+id="jca-existence-over-mathcal-tmathcal-f-round-11-witness-bounds-and-a-constant-test-fragment"
+class="level1">
+<h1>JCA Existence over <span class="math inline">\(\mathcal T(\mathcal
+F)\)</span>, Round 11: Witness Bounds and a Constant-Test Fragment</h1>
+<p><em>Author: Codex, with parallel research and independent proof
+review by Codex subagents. This note records a twenty-minute
+investigation following <a
+href="round-10-witness-generalization.html">Round 10</a>. The results
+concern ordinary finite-term JCA only. The proofs below are mathematical
+arguments, not machine-checked formal proofs; the <a
+href="round-11-experiments.py">executable checks</a> are finite tests.
+No priority claim or comprehensive literature-status claim is
+made.</em></p>
+<section id="what-this-attempt-establishes" class="level2">
+<h2>1. What this attempt establishes</h2>
+<p>The main result is that ordinary JCA with <strong>constant-test
+premises and constructor-free conclusions is NP-complete</strong>. If an
+answer exists, there are successful witnesses using only <span
+class="math inline">\(a\)</span> and <span
+class="math inline">\(b\)</span>, giving the upper bound. A direct
+graph-colouring reduction gives the matching lower bound, and therefore
+an NP-hardness lower bound for unrestricted ordinary JCA as well.</p>
+<p>The boundary is substantive. Allowing a single variable-equality
+premise can require constructors in every answer, already with two
+branches and no constructors anywhere in the input. With more branches,
+constructor-free inputs can force unbounded tuple-pattern answer and
+witness depth.</p>
+<p>Three further observations constrain the next search:</p>
+<ul>
+<li>Depth-one input is a normal form of unrestricted ordinary JCA, by a
+branch-count-preserving flattening transformation. Shallow syntax alone
+does not give an easier fragment.</li>
+<li>In an explicit two-branch family, the minimum witness depths needed
+jointly add, rather than taking the maximum of the depths needed
+separately.</li>
+<li>Expanded ground-tree witnesses can have exponential size even when
+the empty answer works. Tree size, shared-DAG size, answer size, and
+depth must be kept separate.</li>
+</ul>
+<p>None of these results decides unrestricted JCA, unrestricted
+two-branch JCA, or the prefix variants.</p>
+</section>
+<section id="setting-and-the-witness-criterion" class="level2">
+<h2>2. Setting and the witness criterion</h2>
+<p>Use precisely <a
+href="round-10-witness-generalization.html#the-common-equational-core">Round
+10, §2.1</a>: the fixed signature is <span
+class="math inline">\(\mathcal F=\{f/2,a/0,b/0\}\)</span>, terms are
+finite, and equality is syntactic equality in its ground term algebra.
+There are <span class="math inline">\(m\ge1\)</span> branches <span
+class="math inline">\((D_i,C_i)\)</span>, and <span
+class="math inline">\(X=(x_1,\ldots,x_n)\)</span> lists the instance
+variables. An equational answer <span
+class="math inline">\(A(X,B)\)</span> may use fresh parameters <span
+class="math inline">\(B\)</span>. For each branch it must satisfy</p>
+<p><span class="math display">\[D_i\land A\models C_i,\qquad D_i\land
+A\text{ is satisfiable}.\]</span></p>
+<p>Entailment here universally closes free variables. Fresh answer
+variables are existentially hidden when projecting the answer’s solution
+set onto <span class="math inline">\(X\)</span>.</p>
+<p>By Round 10’s projection lemma, an answer can be represented as a
+tuple pattern <span class="math inline">\(P=(P_1,\ldots,P_n)\)</span>
+with fresh variables only, presenting <span
+class="math inline">\(X=P\)</span>. By its witness-hull theorem, answer
+existence is equivalent to the existence of ground tuples <span
+class="math inline">\(g_i\models D_i\land C_i\)</span> whose
+simultaneous least general generalization <span
+class="math inline">\(H=\operatorname{lgg}(g_1,\ldots,g_m)\)</span> is
+an answer. Generalization uses <strong>one shared disagreement-vector
+table across all coordinates</strong>.</p>
+<p>Depth is the number of constructor edges on a longest path, with
+variables and constants at depth zero. Tree size counts every
+occurrence, including repeated occurrences and repeated tuple
+coordinates.</p>
+</section>
+<section id="a-decidable-constant-test-fragment" class="level2">
+<h2>3. A decidable constant-test fragment</h2>
+<p><strong>Theorem 3.1.</strong> Suppose every premise is a conjunction
+of tests <span class="math inline">\(x=a\)</span> or <span
+class="math inline">\(x=b\)</span>, and every conclusion is a
+conjunction of equations between instance variables and the constants
+<span class="math inline">\(a,b\)</span>. Then:</p>
+<ol type="1">
+<li>If an answer exists, a constructor-free tuple-pattern answer
+exists.</li>
+<li>If an answer exists, a successful witness family exists with every
+coordinate in <span class="math inline">\(\{a,b\}\)</span>, of total
+tree size <span class="math inline">\(mn\)</span>.</li>
+<li>Existence is decidable by enumerating these finite witness families.
+The fragment has an NP upper bound.</li>
+</ol>
+<p>Empty premises and conclusions are allowed. Inconsistent premises are
+rejected under the ordinary consistency requirement.</p>
+<p><em>Proof of (1).</em> Let <span class="math inline">\(P\)</span> be
+any pattern answer. If a coordinate <span
+class="math inline">\(P_x\)</span> is tested against a constant in any
+premise, consistency forces it to be either a constant or a single
+parameter: an <span class="math inline">\(f\)</span>-headed term cannot
+unify with <span class="math inline">\(a\)</span> or <span
+class="math inline">\(b\)</span>. Therefore, after substituting <span
+class="math inline">\(P\)</span> into any premise, its consistent mgu
+<span class="math inline">\(\nu_i\)</span> only binds parameters to
+<span class="math inline">\(a\)</span> or <span
+class="math inline">\(b\)</span>. It introduces no constructors and does
+not identify two still-unbound parameters.</p>
+<p>Construct <span class="math inline">\(Q\)</span> by replacing
+<strong>each <span class="math inline">\(f\)</span>-headed
+coordinate</strong> of <span class="math inline">\(P\)</span> by <span
+class="math inline">\(a\)</span>, leaving all variable and constant
+coordinates unchanged. No tested coordinate changes, so every
+substituted premise and its mgu are unchanged. In particular,
+consistency is preserved.</p>
+<p>Consider a conclusion equation. If neither side was an <span
+class="math inline">\(f\)</span>-headed coordinate, the substituted
+equation and its image under <span class="math inline">\(\nu_i\)</span>
+are unchanged, hence remain equal. If both sides were <span
+class="math inline">\(f\)</span>-headed coordinates, the new equation is
+<span class="math inline">\(a=a\)</span>. The remaining case, one <span
+class="math inline">\(f\)</span>-headed side and one simple side, could
+not have been entailed by the original answer: under <span
+class="math inline">\(\nu_i\)</span> the first side remains <span
+class="math inline">\(f\)</span>-headed, while the second remains a
+parameter or a constant. This exhausts the constructor-free conclusion
+syntax. Thus <span class="math inline">\(Q\)</span> is an answer. <span
+class="math inline">\(\square\)</span></p>
+<p><em>Proof of (2).</em> For each branch, choose a solution of <span
+class="math inline">\(Q\land D_i\)</span> by retaining its forced
+constant bindings and setting every remaining parameter to <span
+class="math inline">\(a\)</span>. Each resulting tuple <span
+class="math inline">\(g_i\)</span> belongs to <span
+class="math inline">\(\{a,b\}^n\)</span>. Round 10’s witness-hull
+theorem makes their simultaneous lgg an answer. There are <span
+class="math inline">\(mn\)</span> constant coordinates, each of tree
+size one. <span class="math inline">\(\square\)</span></p>
+<p><em>Algorithm and (3).</em> Reject a branch whose premise and
+conclusion together are inconsistent. Enumerate the at most <span
+class="math inline">\(2^{mn}\)</span> binary witness families, discard
+those that do not satisfy their respective <span
+class="math inline">\(D_i\land C_i\)</span>, compute each simultaneous
+lgg, and test answerhood by unification and equalization. Accept a
+passing hull; reject after exhaustion. Completeness follows from (2).
+For the NP upper bound, guess the <span
+class="math inline">\(mn\)</span> bits of a witness family. Its lgg is a
+flat tuple of at most <span class="math inline">\(n\)</span>
+coordinates, and all checks take polynomial time. No optimal
+running-time claim is made. <span
+class="math inline">\(\square\)</span></p>
+<section id="matching-lower-bound" class="level3">
+<h3>3.1 Matching lower bound</h3>
+<p><strong>Theorem 3.2.</strong> The fragment of Theorem 3.1 is
+NP-complete. Consequently unrestricted ordinary JCA existence is
+NP-hard.</p>
+<p><em>Proof.</em> Membership was proved above. For hardness, reduce
+graph 3-colourability, using its standard NP-completeness (<a
+href="https://doi.org/10.1016/0304-3975%2876%2990059-1">Garey, Johnson,
+and Stockmeyer, 1976</a>). Given a finite undirected graph <span
+class="math inline">\((V,E)\)</span>, introduce variables <span
+class="math inline">\(c_1,c_2,c_3\)</span> and <span
+class="math inline">\(x_v\)</span> for every vertex. Construct</p>
+<p><span class="math display">\[B_0:\quad c_1=a\land c_2=a\land c_3=a
+\ \Rightarrow\ \bigwedge_{v\in V}x_v=a,\]</span> <span
+class="math display">\[B_1:\quad \bigwedge_{v\in V}x_v=b\ \Rightarrow\
+\top,\]</span> <span class="math display">\[B_{uv}:\quad x_u=a\land
+x_v=b\ \Rightarrow\ \top
+\quad(\{u,v\}\in E),\]</span></p>
+<p>choosing either orientation of each edge. The construction has <span
+class="math inline">\(O(|V|+|E|)\)</span> structural size and meets the
+fragment’s restrictions.</p>
+<p>Given a proper colouring <span
+class="math inline">\(\chi:V\to\{1,2,3\}\)</span>, use fresh distinct
+parameters <span class="math inline">\(p_1,p_2,p_3\)</span> and the flat
+answer <span class="math inline">\(c_j=p_j\)</span>, <span
+class="math inline">\(x_v=p_{\chi(v)}\)</span>. The main premise sets
+all three parameters to <span class="math inline">\(a\)</span>. The
+variation guard <span class="math inline">\(B_1\)</span> sets every used
+parameter to <span class="math inline">\(b\)</span>. Each edge guard
+consistently assigns <span class="math inline">\(a,b\)</span> to two
+different parameters. All branches pass.</p>
+<p>Conversely, normalize any answer, including one originally containing
+constructors, to a tuple pattern <span class="math inline">\(P\)</span>.
+The main branch requires each vertex coordinate to have an instance
+<span class="math inline">\(a\)</span>, and the variation guard requires
+an instance <span class="math inline">\(b\)</span>. Thus <span
+class="math inline">\(P_{x_v}\)</span> is a parameter <span
+class="math inline">\(q_v\)</span>. Main-premise consistency makes each
+<span class="math inline">\(P_{c_j}\)</span> either <span
+class="math inline">\(a\)</span> or a parameter. Substituting the main
+premise into <span class="math inline">\(P\)</span> therefore binds at
+most three distinct parameters to <span
+class="math inline">\(a\)</span>. Relevance forces each <span
+class="math inline">\(q_v\)</span> to be one of those parameters, since
+otherwise it remains free. Every edge guard requires <span
+class="math inline">\(q_u\ne q_v\)</span> syntactically, or its premise
+would require the same parameter to equal both <span
+class="math inline">\(a\)</span> and <span
+class="math inline">\(b\)</span>. The at most three parameter classes
+give a proper colouring. <span
+class="math inline">\(\square\)</span></p>
+<p>One can replace <span class="math inline">\(B_1\)</span> by a
+separate branch <span
+class="math inline">\(x_v=b\Rightarrow\top\)</span> for each vertex.
+Then every premise has at most three atoms, with the same proof. This is
+an explicit reduction, not a claim that the complexity classification is
+new in the literature.</p>
+<p>This supplies the warm-up hardness result sought in <a
+href="round-8-reassessment.html#next-steps">Round 8, §9</a>. It also
+corrects the suggestion in that round’s §6 that hardness must
+essentially use back-propagation depth: this reduction uses only
+parameter aliasing and constant tests. Unbounded constructor structure
+is not needed for NP-hardness.</p>
+<p>The witness-bound proof relies on <strong>constant tests</strong>,
+not merely constructor-free premises. The next example pinpoints the
+difference.</p>
+</section>
+</section>
+<section
+id="two-constructor-free-branches-can-require-a-constructor-answer"
+class="level2">
+<h2>4. Two constructor-free branches can require a constructor
+answer</h2>
+<p>Use <span class="math inline">\(X=(x,y,u,v)\)</span> and</p>
+<p><span class="math display">\[D_0=(x=y),\quad C_0=(u=a\land
+v=b),\]</span> <span class="math display">\[D_1=(u=b\land v=a),\quad
+C_1=\top.\]</span></p>
+<p><strong>Proposition 4.1.</strong> This instance has an answer, but no
+constructor-free answer. Its minimum successful witness depth is exactly
+one, and its minimum total witness tree size is exactly <span
+class="math inline">\(16\)</span>.</p>
+<p><em>Existence.</em> With fresh <span
+class="math inline">\(p,q\)</span>, take</p>
+<p><span class="math display">\[P=(f(p,q),\ f(a,b),\ p,\
+q).\]</span></p>
+<p>In branch 0 the premise decomposes into <span
+class="math inline">\(p=a,q=b\)</span>, giving the conclusion and a
+consistency witness. Branch 1 is consistent at <span
+class="math inline">\(p=b,q=a\)</span> and has no conclusion to
+check.</p>
+<p><em>Impossibility of a flat answer.</em> In any constructor-free
+tuple-pattern answer <span class="math inline">\(Q\)</span>, the
+coordinates for <span class="math inline">\(u,v\)</span> must each admit
+both <span class="math inline">\(a\)</span> and <span
+class="math inline">\(b\)</span>: branch 0 requires values <span
+class="math inline">\((a,b)\)</span> and branch 1 requires <span
+class="math inline">\((b,a)\)</span>. They must therefore be two
+distinct parameters <span class="math inline">\(r,s\)</span>. The only
+additional equation in branch 0 is <span
+class="math inline">\(Q_x=Q_y\)</span>, with each side a constant or a
+single parameter. A consistent such equation does nothing, identifies
+two parameters, or binds one parameter to one constant. It cannot force
+both distinct parameters to the distinct constants <span
+class="math inline">\(r=a,s=b\)</span>. Hence relevance fails. A
+constructor-free equational answer also normalizes to a constructor-free
+tuple pattern, so fresh variables or a different equational presentation
+do not evade the argument.</p>
+<p><em>Witness depth.</em> A successful family with depth zero would
+have a flat lgg, which was just excluded. The depth-one witnesses</p>
+<p><span class="math display">\[g_0=(f(a,b),f(a,b),a,b),\qquad
+g_1=(f(b,a),f(a,b),b,a)\]</span></p>
+<p>have lgg <span class="math inline">\(P\)</span>, proving the upper
+bound. Their total tree size is <span class="math inline">\(16\)</span>.
+For the matching size lower bound, the <span
+class="math inline">\(u,v\)</span> coordinates of every answer hull are
+parameters, as above. If at most one of its <span
+class="math inline">\(x,y\)</span> coordinates were compound, Lemma A.1
+below would turn it into a flat answer, a contradiction. Thus both are
+compound, and the <span class="math inline">\(x,y\)</span> coordinates
+in both witnesses have constructor roots and size at least three. Their
+four terms contribute at least <span class="math inline">\(12\)</span>
+nodes, while the four <span class="math inline">\(u,v\)</span> values
+contribute four more. <span class="math inline">\(\square\)</span></p>
+<p>The executable checks exhaust all eight binary witness pairs
+satisfying the two branch premise/conclusion conjunctions, and all <span
+class="math inline">\(6^4=1,296\)</span> flat tuples over <span
+class="math inline">\(a,b\)</span> and four parameter names. All fail;
+the constructor answer passes. The proof, rather than this finite
+enumeration, explains why the candidate set covers all flat answers.</p>
+</section>
+<section
+id="constructor-free-inputs-can-force-arbitrarily-deep-tuple-pattern-answers"
+class="level2">
+<h2>5. Constructor-free inputs can force arbitrarily deep tuple-pattern
+answers</h2>
+<p>The preceding example is not an unbounded-depth result with two
+branches. The following family obtains unbounded depth by increasing
+both the branch count and the number of variables.</p>
+<p>Fix <span class="math inline">\(r\ge2\)</span>, put <span
+class="math inline">\(k=2^r-1\)</span>, and index variables <span
+class="math inline">\(u_s\)</span> by the nonzero vectors <span
+class="math inline">\(s\in\{0,1\}^r\)</span>. There are also variables
+<span class="math inline">\(x,y\)</span>. Let <span
+class="math inline">\(c(0)=a,c(1)=b\)</span>. Use the branches</p>
+<p><span class="math display">\[B_0:\quad x=y\ \Rightarrow\
+\bigwedge_{s\ne0}u_s=a,\]</span> <span class="math display">\[G_j:\quad
+\bigwedge_{s\ne0}u_s=c(s_j)\ \Rightarrow\ \top
+\quad(1\le j\le r).\]</span></p>
+<p><strong>Proposition 5.1.</strong> This instance is solvable. Every
+tuple-pattern answer, and every successful witness family, has maximum
+coordinate depth at least <span class="math inline">\(r-1\)</span>. An
+answer and witnesses of depth at most <span
+class="math inline">\(r\)</span> exist.</p>
+<p><em>Lower bound.</em> In any answer pattern <span
+class="math inline">\(P\)</span>, the coordinate for <span
+class="math inline">\(u_s\)</span> has an instance <span
+class="math inline">\(a\)</span> by relevance and consistency at <span
+class="math inline">\(B_0\)</span>, and an instance <span
+class="math inline">\(b\)</span> by a guard at a nonzero bit of <span
+class="math inline">\(s\)</span>. Thus <span
+class="math inline">\(P_{u_s}\)</span> is a parameter <span
+class="math inline">\(p_s\)</span>. Distinct bit vectors are separated
+by a guard, so these parameters are pairwise distinct.</p>
+<p>Every <span class="math inline">\(p_s\)</span> must occur in <span
+class="math inline">\(P_x\)</span> or <span
+class="math inline">\(P_y\)</span>. Otherwise unifying <span
+class="math inline">\(P_x=P_y\)</span> leaves <span
+class="math inline">\(p_s\)</span> free, and a ground solution with
+<span class="math inline">\(p_s=b\)</span> contradicts <span
+class="math inline">\(B_0\)</span>’s conclusion. Consequently the two
+binary terms <span class="math inline">\(P_x,P_y\)</span> together
+contain at least <span class="math inline">\(k\)</span> distinct
+variable leaves. If their depths are at most <span
+class="math inline">\(d\)</span>, they have at most <span
+class="math inline">\(2^{d+1}\)</span> leaves, so</p>
+<p><span class="math display">\[d\ge\lceil\log_2
+k\rceil-1=r-1.\]</span></p>
+<p>The lgg of a successful witness family is an answer and cannot be
+deeper than its deepest input coordinate, proving the witness lower
+bound.</p>
+<p><em>Upper bound.</em> Choose a balanced binary <span
+class="math inline">\(f\)</span>-tree <span
+class="math inline">\(T\)</span> with <span
+class="math inline">\(k\)</span> leaves. Set <span
+class="math inline">\(P_x=T((p_s)_s)\)</span>, <span
+class="math inline">\(P_y=T((a)_s)\)</span>, and <span
+class="math inline">\(P_{u_s}=p_s\)</span>. The central premise forces
+all parameters to <span class="math inline">\(a\)</span>; every guard
+has its specified parameter assignment as a consistency witness. The
+tree has depth <span class="math inline">\(\lceil\log_2
+k\rceil=r\)</span>. Choosing those assignments gives witnesses with the
+same depth bound. <span class="math inline">\(\square\)</span></p>
+<p>This rules out a witness-depth bound depending <strong>only on
+input-term depth</strong>, even when that depth is zero. It does not
+challenge a computable bound depending on the whole input size. The
+answer-depth claim concerns normalized tuple patterns: a general
+equational answer can name subterms with fresh auxiliary variables and
+use depth-one equations to describe a deep pattern.</p>
+</section>
+<section id="shallow-syntax-is-a-normal-form-not-a-restricted-fragment"
+class="level2">
+<h2>6. Shallow syntax is a normal form, not a restricted fragment</h2>
+<p><strong>Proposition 6.1 (flattening).</strong> Any ordinary JCA
+instance can be transformed effectively into an equisolvable instance
+with all input terms of depth at most one, preserving the number of
+branches and the fixed signature. Structural output size is <span
+class="math inline">\(O(m|I|)\)</span>, hence polynomial and linear for
+fixed branch count, up to variable-name encoding.</p>
+<p><em>Construction.</em> Introduce a fresh variable <span
+class="math inline">\(y_t\)</span> for each distinct compound subterm
+<span class="math inline">\(t=f(s,u)\)</span> appearing anywhere in the
+instance. Write <span
+class="math inline">\(\operatorname{rep}(x)=x\)</span>, <span
+class="math inline">\(\operatorname{rep}(a)=a\)</span>, <span
+class="math inline">\(\operatorname{rep}(b)=b\)</span>, and <span
+class="math inline">\(\operatorname{rep}(t)=y_t\)</span> for compound
+<span class="math inline">\(t\)</span>. Form the common acyclic
+definitions</p>
+<p><span
+class="math display">\[G(X,Y)=\bigwedge_{t=f(s,u)}y_t=f(\operatorname{rep}(s),\operatorname{rep}(u)).\]</span></p>
+<p>Replace each original atom <span class="math inline">\(s=t\)</span>
+by <span
+class="math inline">\(\operatorname{rep}(s)=\operatorname{rep}(t)\)</span>,
+writing <span class="math inline">\(E^{\mathrm{flat}}\)</span> for this
+transformation. Replace each branch by</p>
+<p><span class="math display">\[(G\land D_i^{\mathrm{flat}},\
+C_i^{\mathrm{flat}}).\]</span></p>
+<p>The <strong>whole common <span class="math inline">\(G\)</span> is
+included in every premise</strong>, including definitions originating in
+other branches or in conclusions.</p>
+<p><em>Proof.</em> Every ground assignment to <span
+class="math inline">\(X\)</span> has a unique extension to <span
+class="math inline">\(Y\)</span> satisfying <span
+class="math inline">\(G\)</span>, given by <span
+class="math inline">\(y_t=t[X]\)</span>. Under <span
+class="math inline">\(G\)</span>, an original equation and its flattened
+version are equivalent. An original answer therefore answers the
+flattened instance unchanged, with consistency witnesses extended by
+these definitions.</p>
+<p>Conversely, if <span class="math inline">\(A&#39;(X,Y,B)\)</span>
+answers the flattened instance, take</p>
+<p><span class="math display">\[A(X,Y,B)=G(X,Y)\land
+A&#39;(X,Y,B)\]</span></p>
+<p>as an answer to the original instance, now treating <span
+class="math inline">\(Y\cup B\)</span> as fresh answer variables. Its
+branch consistency witnesses are supplied by the transformed branches.
+Under <span class="math inline">\(D_i\land A\)</span>, the definitions
+give <span class="math inline">\(D_i^{\mathrm{flat}}\)</span>,
+transformed relevance gives <span
+class="math inline">\(C_i^{\mathrm{flat}}\)</span>, and the definitions
+give <span class="math inline">\(C_i\)</span>. Thus arbitrary answer
+references to auxiliary variables are accounted for; one must not simply
+erase them. Counting definitions and their copies proves the size bound.
+<span class="math inline">\(\square\)</span></p>
+<p><strong>Witness correspondence.</strong> Functional extension
+commutes with simultaneous lgg. If <span
+class="math inline">\(H=\operatorname{lgg}(g_1,\ldots,g_m)\)</span>,
+then for every original term <span
+class="math inline">\(t(X)\)</span>,</p>
+<p><span
+class="math display">\[\operatorname{lgg}(t[g_1],\ldots,t[g_m])=t[H],\]</span></p>
+<p>where all coordinates use the same memo table. Induct on <span
+class="math inline">\(t\)</span>: constructors are common roots and are
+retained; variable occurrences reuse the generalized coordinate. Thus
+the lgg of the extended tuples is <span
+class="math inline">\((H,(t[H])_t)\)</span>, up to renaming, and entails
+<span class="math inline">\(G\)</span>. Original successful witness
+families correspond exactly to successful extended families.</p>
+<p>In particular, a computable bound for all shallow
+<strong>two-branch</strong> instances would decide unrestricted
+<strong>two-branch</strong> JCA. This reduction does not reduce an
+arbitrary number of branches to two.</p>
+</section>
+<section id="joint-witness-depths-can-add" class="level2">
+<h2>7. Joint witness depths can add</h2>
+<p>Let <span class="math inline">\(F(t)=f(a,t)\)</span> and <span
+class="math inline">\(K(t)=f(b,t)\)</span>. For <span
+class="math inline">\(h,k\ge1\)</span>, take two variables <span
+class="math inline">\(x,y\)</span> and the branches</p>
+<p><span class="math display">\[B_0:\quad y=F^h(x)\ \Rightarrow\
+x=a,\]</span> <span class="math display">\[B_1:\quad x=K^k(y)\
+\Rightarrow\ \top.\]</span></p>
+<p><strong>Proposition 7.1.</strong> The separate branch solution sets
+have minimum maximum-coordinate depths <span
+class="math inline">\(h\)</span> and <span
+class="math inline">\(k\)</span>, respectively. The minimum
+maximum-coordinate depth of a <strong>successful joint witness
+family</strong> is exactly <span class="math inline">\(h+k\)</span>.</p>
+<p>The first branch’s premise and conclusion have the unique witness</p>
+<p><span class="math display">\[g_0=(a,F^h(a)).\]</span></p>
+<p>Every second-branch witness is <span
+class="math inline">\(g_1=(K^k(t),t)\)</span> for some ground term <span
+class="math inline">\(t\)</span>. The separate minimum depths follow by
+taking <span class="math inline">\(t=a\)</span> in branch 1. We now
+analyze the simultaneous lgg of <span
+class="math inline">\(g_0,g_1\)</span>.</p>
+<p>Its <span class="math inline">\(x\)</span> coordinate is the
+disagreement parameter <span class="math inline">\(p\)</span> indexed by
+<span class="math inline">\((a,K^k(t))\)</span>. That parameter cannot
+occur in the <span class="math inline">\(y\)</span> coordinate: such an
+occurrence would require <span class="math inline">\(K^k(t)\)</span> to
+be a subterm of <span class="math inline">\(t\)</span>, impossible by
+strict tree size.</p>
+<p>If the right spine of <span class="math inline">\(t\)</span> stops
+after <span class="math inline">\(j&lt;h\)</span> constructor nodes, let
+its terminal constant be <span class="math inline">\(c\)</span>. At this
+position the <span class="math inline">\(y\)</span> lgg has the
+disagreement parameter indexed by <span
+class="math inline">\((F^{h-j}(a),c)\)</span>. This parameter, say <span
+class="math inline">\(q\)</span>, occurs nowhere else: its first
+component is a unique nonconstant suffix of <span
+class="math inline">\(F^h(a)\)</span>, whereas all earlier left-side
+disagreements and the <span class="math inline">\(x\)</span> coordinate
+have first component <span class="math inline">\(a\)</span>.</p>
+<p>The <span class="math inline">\(y\)</span> lgg consequently has <span
+class="math inline">\(j\)</span> retained <span
+class="math inline">\(f\)</span> nodes, with left children equal to
+<span class="math inline">\(a\)</span> or disagreement parameters,
+followed by <span class="math inline">\(q\)</span>. Set <span
+class="math inline">\(p=b\)</span>, every left-side disagreement
+parameter to <span class="math inline">\(a\)</span>, and <span
+class="math inline">\(q=F^{h-j}(b)\)</span>. This gives a ground
+instance satisfying the first premise and violating <span
+class="math inline">\(x=a\)</span>. Thus a successful <span
+class="math inline">\(t\)</span> must have at least <span
+class="math inline">\(h\)</span> right-spine constructor nodes, in
+particular depth at least <span class="math inline">\(h\)</span>. Then
+<span class="math inline">\(K^k(t)\)</span> has depth at least <span
+class="math inline">\(h+k\)</span>.</p>
+<p>The bound is attained by <span
+class="math inline">\(t=F^h(a)\)</span>. The hull is <span
+class="math inline">\((p,F^h(a))\)</span>, an answer: the first premise
+forces <span class="math inline">\(p=a\)</span>, and the second is
+consistent at <span class="math inline">\(p=K^k(F^h(a))\)</span>. <span
+class="math inline">\(\square\)</span></p>
+<p><strong>Exact success condition.</strong> If the right spine has at
+least <span class="math inline">\(h\)</span> nodes, write</p>
+<p><span
+class="math display">\[t=f(s_0,f(s_1,\ldots,f(s_{h-1},s_h)\ldots)).\]</span></p>
+<p>The <span class="math inline">\(y\)</span> hull has these <span
+class="math inline">\(h\)</span> constructors. Its leaf at position
+<span class="math inline">\(j\)</span> is <span
+class="math inline">\(a\)</span> if <span
+class="math inline">\(s_j=a\)</span>, and otherwise a parameter indexed
+by <span class="math inline">\((a,s_j)\)</span>, shared exactly when
+these subterms are equal. Under the first premise every left leaf
+becomes <span class="math inline">\(a\)</span>, while <span
+class="math inline">\(p\)</span> equals the final leaf. Therefore the
+witnesses succeed exactly when</p>
+<p><span class="math display">\[s_h=a\quad\text{or}\quad
+s_h\in\{s_0,\ldots,s_{h-1}\}.\]</span></p>
+<p>This explains why successful witness choices need not be unique. For
+<span class="math inline">\(h=k=1\)</span>, both <span
+class="math inline">\(t=f(b,a)\)</span> and <span
+class="math inline">\(t=f(b,b)\)</span> work; in the second case the
+<span class="math inline">\(y\)</span> hull is <span
+class="math inline">\(f(q,q)\)</span> and parameter sharing forces the
+result. A stronger uniqueness conjecture considered during this session
+was refuted by these examples.</p>
+</section>
+<section id="tree-size-can-be-exponential-even-for-the-empty-answer"
+class="level2">
+<h2>8. Tree size can be exponential even for the empty answer</h2>
+<p>Define <span class="math inline">\(T_0(c)=c\)</span> and <span
+class="math inline">\(T_{j+1}(c)=f(T_j(c),T_j(c))\)</span>. On <span
+class="math inline">\(X=(x_0,\ldots,x_k)\)</span>, let</p>
+<p><span class="math display">\[E_k=\bigwedge_{j=1}^k
+x_j=f(x_{j-1},x_{j-1}).\]</span></p>
+<p>Use <span class="math inline">\((E_k\land x_0=a,\top)\)</span> and
+<span class="math inline">\((E_k\land x_0=b,\top)\)</span>. The empty
+answer works. Nevertheless each branch has a unique ground witness,
+respectively <span class="math inline">\((T_j(a))_{j=0}^k\)</span> and
+<span class="math inline">\((T_j(b))_{j=0}^k\)</span>. Since <span
+class="math inline">\(|T_j(c)|=2^{j+1}-1\)</span>, every witness family
+has total expanded tree size</p>
+<p><span
+class="math display">\[2\sum_{j=0}^k(2^{j+1}-1)=2^{k+3}-2k-6.\]</span></p>
+<p>The input has <span class="math inline">\(O(k)\)</span> structural
+size, all terms have depth at most one, and the two witnesses have
+maximum depth <span class="math inline">\(k\)</span>. Shared DAGs
+represent the tuples in <span class="math inline">\(O(k)\)</span> nodes.
+With ordinary binary variable-name encodings, input bit length is <span
+class="math inline">\(O(k\log k)\)</span>; the witness trees are still
+superpolynomial in that length. This is a lower bound for expanded
+<strong>witness trees</strong>, not for answer size or DAG size.</p>
+</section>
+<section id="executable-checks-and-remaining-questions" class="level2">
+<h2>9. Executable checks and remaining questions</h2>
+<p>Run the companion experiments from the repository root:</p>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python3</span> projects/jca/agent-collab/round-11-experiments.py</span></code></pre></div>
+<p>The script exposes <code>bounded_search</code> for general instances
+and <code>constant_test_decide</code> for Theorem 3.1’s fragment. The
+latter validates the fragment’s syntax and enumerates canonical flat
+patterns, returning <code>NO</code> after complete exhaustion. An
+optional resource cap returns <code>UNKNOWN</code>. Successful decisions
+include binary witnesses and their verified hull. The generic bounded
+search also distinguishes a found answer, a proved negative case, and
+exhaustion of a search bound. Outside a fragment with a proved bound,
+exhaustion means <strong>unknown</strong>, not unsatisfiable.</p>
+<p>Recorded checks for this session:</p>
+<ul>
+<li>All <span class="math inline">\(1,296\)</span> flat candidate tuples
+and eight binary witness families fail on §4’s obstruction; a
+constructor answer succeeds.</li>
+<li>Nine choices <span class="math inline">\(h,k\in\{1,2,3\}\)</span>
+attain depth <span class="math inline">\(h+k\)</span>, and all <span
+class="math inline">\(138\)</span> smaller witness families in their
+reduced searches fail.</li>
+<li>All <span class="math inline">\(3,969\)</span> specified
+two-variable constant-test instances agree between binary-witness search
+and <span class="math inline">\(400\)</span> constructor-pattern
+candidates. There are <span class="math inline">\(1,280\)</span>
+positive cases; <span class="math inline">\(1,146\)</span> accepted
+single-branch patterns retain validity under constructor-root
+collapse.</li>
+<li>The colouring reduction agrees with independent colouring
+enumeration on all <span class="math inline">\(76\)</span> labelled
+simple graphs with zero through four vertices. The comparison checks
+<span class="math inline">\(21,132\)</span> canonical flat patterns and
+verifies <span class="math inline">\(75\)</span> positive binary-witness
+certificates. The complete graph <span
+class="math inline">\(K_4\)</span> rejects all <span
+class="math inline">\(17,007\)</span> canonical patterns for its seven
+instance variables.</li>
+<li>Shallow chain cases <span
+class="math inline">\(k=0,\ldots,8\)</span> satisfy the exact
+expanded-tree and shared-DAG counts.</li>
+<li>All existing Round 10 checks still pass.</li>
+</ul>
+<p>The separate three-variable profile check is reproducible with</p>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python3</span> projects/jca/agent-collab/round-11-flat-profiles.py</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="ex">python3</span> projects/jca/agent-collab/round-11-flat-profiles.py <span class="at">--random</span> 10000 <span class="at">--depth</span> 4</span></code></pre></div>
+<p>Its default run checks <span class="math inline">\(27,000\)</span>
+depth-one tuples, with <span class="math inline">\(198\)</span> distinct
+profiles, against all <span class="math inline">\(37\)</span> consistent
+flat premises and all <span class="math inline">\(37\)</span> canonical
+flat patterns. The displayed random run adds <span
+class="math inline">\(10,000\)</span> seeded depth-four cases, giving
+<span class="math inline">\(205\)</span> profiles in total. Both flat
+domination and the constructive normalization from Appendix B pass.
+These are finite implementation checks, not substitutes for the proofs.
+The <a href="reviews/round-11-proof-review.html">independent proof
+review</a> records the mathematical audit and its scope.</p>
+<p>The useful next mathematical target is a bound on shared witness
+structure for a fragment that permits variable-equality premises.
+Theorem 3.1 provides a baseline, Proposition 4.1 shows exactly what its
+proof loses, and Proposition 5.1 shows why preserving only input depth
+cannot repair it. The appendices give two further positive fragments.
+The general two-branch constructor-free fragment remains a candidate for
+a stronger result; no completeness bound for that entire fragment is
+established here.</p>
+<p>This session stopped at its twenty-minute checkpoint. The
+unrestricted witness-size question from Round 10 remains unresolved.</p>
+</section>
+<section
+id="appendix-a.-constant-coverage-permits-some-variable-equality-premises"
+class="level2">
+<h2>Appendix A. Constant coverage permits some variable-equality
+premises</h2>
+<p>All inputs in this appendix are constructor-free. Reject if any <span
+class="math inline">\(S_i=D_i\land C_i\)</span> is inconsistent. Call a
+variable <strong>constant-covered</strong> if some <span
+class="math inline">\(S_i\)</span> entails that variable equals <span
+class="math inline">\(a\)</span> or <span
+class="math inline">\(b\)</span>, and let <span
+class="math inline">\(U\)</span> be the uncovered variables. This is
+decidable by unification of the flat input systems.</p>
+<p><strong>Lemma A.1 (one compound term).</strong> Let a tuple pattern
+<span class="math inline">\(P\)</span> have only variable and constant
+coordinates, except possibly for coordinates all equal to one <span
+class="math inline">\(f\)</span>-headed term <span
+class="math inline">\(t\)</span>. Replace those coordinates by the same
+fresh parameter <span class="math inline">\(q\)</span>, giving a flat
+pattern <span class="math inline">\(Q\)</span>. For every
+constructor-free premise <span class="math inline">\(D\)</span>
+consistent with <span class="math inline">\(P\)</span>, <span
+class="math inline">\(D\)</span> remains consistent with <span
+class="math inline">\(Q\)</span>, and <span class="math inline">\(D\land
+P\)</span> and <span class="math inline">\(D\land Q\)</span> entail
+exactly the same constructor-free equations on instance variables.</p>
+<p><em>Proof.</em> Solve the flat equation system <span
+class="math inline">\(D[Q]\)</span> by union-find, choosing <span
+class="math inline">\(q\)</span> as the representative of its class.
+Original consistency implies that this class contains no constant and
+that no class identifies <span class="math inline">\(a,b\)</span>. Write
+<span class="math inline">\(\delta\)</span> for the resulting
+substitution, leaving parameters appearing only inside <span
+class="math inline">\(t\)</span> unchanged. Original consistency also
+implies that <span class="math inline">\(\delta(t)\)</span> does not
+contain <span class="math inline">\(q\)</span>: restoring <span
+class="math inline">\(q=\delta(t)\)</span> would otherwise fail the
+finite-term occurs check. An mgu for <span
+class="math inline">\(D[P]\)</span> is obtained by composing <span
+class="math inline">\(\delta\)</span> with <span
+class="math inline">\(q\mapsto\delta(t)\)</span>, then restricting to
+the original parameters. Since <span
+class="math inline">\(\delta(t)\)</span> is constructor-headed and every
+other flat-class representative is a parameter or constant, this
+restoration identifies no distinct flat-class representatives. Therefore
+two instance coordinates or constants are equalized exactly when they
+were already in the same flat class. <span
+class="math inline">\(\square\)</span></p>
+<p>The consistency qualification matters: abstraction may make
+additional premises satisfiable, which is harmless when retaining the
+already-consistent branches of an answer.</p>
+<p><strong>Theorem A.2.</strong> If <span
+class="math inline">\(|U|\le1\)</span>, answer existence is equivalent
+to existence of a flat answer and to existence of a successful binary
+witness family. Such witnesses have total size <span
+class="math inline">\(mn\)</span>.</p>
+<p><em>Proof.</em> From any answer choose a successful witness family
+using Round 10. At a constant-covered coordinate, at least one witness
+has constant root, so its simultaneous lgg coordinate cannot be
+constructor-headed. At most one lgg coordinate can therefore be
+compound. Apply Lemma A.1 to obtain a flat answer. In each consistent
+flat answer/premise conjunction, ground free parameter classes to <span
+class="math inline">\(a\)</span> and retain classes fixed to <span
+class="math inline">\(b\)</span>; these binary witnesses have a
+successful hull by Round 10. <span
+class="math inline">\(\square\)</span></p>
+<p>The example of §4 has exactly two uncovered coordinates, <span
+class="math inline">\(x,y\)</span>, so the threshold is sharp for this
+flat-answer completeness property. This does not imply undecidability
+when the threshold is exceeded. For two branches in the fragment, all
+binary witness hulls are tuples over <span
+class="math inline">\(\{a,b,p,q\}\)</span>: the only disagreement
+columns are <span class="math inline">\((a,b)\)</span> and <span
+class="math inline">\((b,a)\)</span>. Testing <span
+class="math inline">\(4^n\)</span> such tuples is sufficient.</p>
+</section>
+<section
+id="appendix-b.-four-variables-are-necessary-for-the-constructor-obstruction"
+class="level2">
+<h2>Appendix B. Four variables are necessary for the constructor
+obstruction</h2>
+<p><strong>Theorem B.1.</strong> Every solvable constructor-free
+instance on at most three instance variables has a constructor-free
+answer, regardless of the number of branches. Thus the two-branch,
+four-variable example in §4 is minimal in both counts for requiring a
+constructor answer.</p>
+<p><em>Proof.</em> Pad a pattern answer to three coordinates if
+necessary. We construct a flat pattern passing every constructor-free
+branch passed by it. Classify by the number of constructor-headed
+coordinates.</p>
+<ul>
+<li><strong>Zero:</strong> nothing to change.</li>
+<li><strong>One:</strong> Lemma A.1 applies.</li>
+<li><strong>Three:</strong> replace the tuple by <span
+class="math inline">\((s,s,s)\)</span> for one fresh parameter. No
+premise consistent with the original pattern, or conclusion entailed
+under such a premise, can equate a coordinate to a constant. Every
+remaining atom is a coordinate equality or a true constant equality, and
+the replacement satisfies all of them.</li>
+<li><strong>Two:</strong> write the tuple as <span
+class="math inline">\((P,Q,R)\)</span> with <span
+class="math inline">\(P,Q\)</span> constructor-headed. If <span
+class="math inline">\(R=c\)</span> is a constant, use <span
+class="math inline">\((s,s,c)\)</span>: neither compound coordinate can
+be equated to a constant in a consistent premise or an entailed
+conclusion. It remains to treat <span class="math inline">\(R=r\)</span>
+a parameter.</li>
+</ul>
+<p>In this last case, write the coordinates as <span
+class="math inline">\(x,y,z\)</span>. Up to equivalence, the nontrivial
+consistent premises are <span class="math inline">\(z=c\)</span>, <span
+class="math inline">\(x=y\)</span>, <span class="math inline">\(x=y\land
+z=c\)</span>, <span class="math inline">\(x=z\)</span>, <span
+class="math inline">\(y=z\)</span>, or <span
+class="math inline">\(x=y=z\)</span>, with <span
+class="math inline">\(c\in\{a,b\}\)</span>; the empty premise is also
+allowed. A premise equating a compound coordinate to a constant is
+inconsistent. Beyond the premise’s own equalities, the only possible
+additional consequences are</p>
+<ol type="1">
+<li><span class="math inline">\(x=y\)</span> without a premise, if <span
+class="math inline">\(P=Q\)</span> syntactically;</li>
+<li><span class="math inline">\(x=y\)</span> under <span
+class="math inline">\(z=c\)</span>, if <span
+class="math inline">\(P[r:=c]=Q[r:=c]\)</span>;</li>
+<li><span class="math inline">\(z=c\)</span> under <span
+class="math inline">\(x=y\)</span>, if the mgu of <span
+class="math inline">\(P=Q\)</span> binds <span
+class="math inline">\(r\)</span> to <span
+class="math inline">\(c\)</span>.</li>
+</ol>
+<p>For completeness of this list, under <span
+class="math inline">\(x=z\)</span> consistency requires <span
+class="math inline">\(r\)</span> absent from <span
+class="math inline">\(P\)</span>. If <span
+class="math inline">\(Q\)</span> contains <span
+class="math inline">\(r\)</span>, then <span
+class="math inline">\(Q[r:=P]\)</span> contains <span
+class="math inline">\(P\)</span> properly and cannot equal <span
+class="math inline">\(P\)</span>. If <span
+class="math inline">\(Q\)</span> does not contain <span
+class="math inline">\(r\)</span>, it equals <span
+class="math inline">\(P\)</span> after substitution only when it already
+did. The case <span class="math inline">\(y=z\)</span> is symmetric.
+Under <span class="math inline">\(x=y\)</span>, <span
+class="math inline">\(r\)</span> cannot equal the common compound term:
+if it occurs within <span class="math inline">\(P\)</span> or <span
+class="math inline">\(Q\)</span>, its image is a proper subterm of that
+term; otherwise it remains free. Compound coordinates never become
+constants.</p>
+<p>If <span class="math inline">\(P=Q\)</span> is inconsistent, or its
+mgu does not bind <span class="math inline">\(r\)</span> to a constant,
+replace the tuple by <span class="math inline">\((s,s,r)\)</span>. This
+preserves every possible extra conclusion just listed and every
+originally consistent premise. If its mgu binds <span
+class="math inline">\(r\)</span> to <span
+class="math inline">\(c\in\{a,b\}\)</span>, replace it by <span
+class="math inline">\((r,c,r)\)</span>. This enforces <span
+class="math inline">\(z=c\)</span> under <span
+class="math inline">\(x=y\)</span> and <span
+class="math inline">\(x=y\)</span> under <span
+class="math inline">\(z=c\)</span>. Its only inconsistent premise in the
+list is <span class="math inline">\(x=y\land z=d\)</span> for <span
+class="math inline">\(d\ne c\)</span>, already inconsistent with the
+original tuple. Unconditional <span class="math inline">\(P=Q\)</span>
+and equality after <span class="math inline">\(r:=d\)</span> for <span
+class="math inline">\(d\ne c\)</span> are impossible in this case, so no
+other required conclusion is lost. This covers all cases. Finally remove
+any padding coordinates. <span
+class="math inline">\(\square\)</span></p>
+<p>There are exactly <span class="math inline">\(3\)</span>, <span
+class="math inline">\(10\)</span>, and <span
+class="math inline">\(37\)</span> canonical flat tuple patterns on one,
+two, and three coordinates, respectively: partitions of the coordinates
+together with distinguished constants <span
+class="math inline">\(a,b\)</span>, keeping those constants in different
+classes. Enumerating these gives a decision procedure for the fragment.
+A single constructor-free branch has a binary ground answer whenever its
+premise and conclusion are jointly satisfiable, proving minimality of
+the two-branch count as well.</p>
+<p>The companion <a href="round-11-flat-profiles.py">flat-profile
+experiment</a> compares constructor patterns with canonical flat
+patterns across every consistent flat premise on three coordinates.
+These finite comparisons check the case analysis; the argument above
+carries its unbounded claim.</p>
+</section>
+</section>
+</article>
+<script src="/assets/theme-toggle.js"></script>
+</body>
+</html>
