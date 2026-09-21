@@ -59,6 +59,11 @@ appended automatically — the URL is derived from the note's path (e.g.
 `--no-footer` or customise with `--site-url` / `--footer-prefix`. Run with
 `--help` for all options.
 
+### Blog essay length
+
+Aim for 4,000–7,000 words per blog essay. The hard upper limit is 10,000 words;
+an essay exceeding that limit must be split into multiple articles.
+
 ### Prompt companion pages
 
 Each AI-authored article has a companion `notes/<base>.prompts.md` holding the
