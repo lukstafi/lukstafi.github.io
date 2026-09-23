@@ -5,7 +5,7 @@ author: "Łukasz Stafiniak and Codex"
 date: 2026-09-23
 ---
 
-The previous essay, [“Which AGI?”](which-agi.html), distinguished a running model, a deployment built around it, and the lineage sustained by a laboratory and its users. Much of the disagreement about general intelligence turned out to concern which of these systems should possess the capacities being demanded. Continual learning made the distinction particularly visible: a laboratory can improve its models without the individual deployment learning from its own life.
+The previous essay, [“Which AGI?”](https://lukstafi.github.io/notes/which-agi.html), distinguished a running model, a deployment built around it, and the lineage sustained by a laboratory and its users. Much of the disagreement about general intelligence turned out to concern which of these systems should possess the capacities being demanded. Continual learning made the distinction particularly visible: a laboratory can improve its models without the individual deployment learning from its own life.
 
 There is a parallel disagreement about world modeling. To one observer, an AI's ability to diagnose a software failure, follow a complicated argument, or work out what changes when a premise changes is compelling evidence that it models the systems it discusses. Critics point to failures on spatial or causal tasks as evidence that LLM-derived systems lack world models and that the research programme is heading in the wrong direction. Again, the subject matters: a text-only model, a multimodal predictor, and a robot controlled by one are different systems. So does the timescale: a shortfall in one generation says little about the direction in which successive generations are moving.
 
