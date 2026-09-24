@@ -12,6 +12,7 @@ Requires [Pandoc](https://pandoc.org/) 3.x.
 
 # Or build individually:
 ./scripts/build_notes_html.sh
+./scripts/build_notes_html.sh notes/foo.md  # Build one note
 ./scripts/build_jca_html.sh
 ./scripts/build_agent_collab_html.sh
 ```

@@ -3,6 +3,21 @@ set -euo pipefail
 
 root_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)"
 
+if [ "$#" -gt 1 ]; then
+  echo "usage: $0 [markdown-file]" >&2
+  exit 2
+fi
+
+if [ "$#" -eq 1 ]; then
+  if [ ! -f "$1" ]; then
+    echo "error: file not found: $1" >&2
+    exit 1
+  fi
+  md_files=("$1")
+else
+  md_files=("$root_dir"/notes/*.md)
+fi
+
 if ! command -v pandoc >/dev/null 2>&1; then
   echo "error: pandoc not found on PATH" >&2
   exit 1
@@ -12,7 +27,7 @@ fi
 after_body="$(mktemp)"
 trap 'rm -f "$after_body"' EXIT
 
-for md_file in "$root_dir"/notes/*.md; do
+for md_file in "${md_files[@]}"; do
   [ -f "$md_file" ] || continue
   base_name="$(basename "$md_file" .md)"
   html_file="$root_dir/notes/$base_name.html"
