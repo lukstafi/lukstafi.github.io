@@ -30,6 +30,31 @@ has conversion artifacts. In particular, babble's HTML text extraction exposes
 verbose formatting macros in some displayed code expressions. A successful
 page fetch is not evidence that every formula or figure has been read correctly.
 
+### Local TeX source navigation
+
+Łukasz supplied both source trees on 25 September 2026. Their local locations
+are `/Users/lukstafi/Downloads/babble-arXiv-2212.04596v1/` and
+`/Users/lukstafi/Downloads/TyFlow-arXiv-2510.10216v2/`. These are reading copies
+outside this repository. Paths below are relative to the respective source root.
+
+| Paper | Source files | Reading purpose |
+| --- | --- | --- |
+| babble | `main.tex`, `defs.tex` | Active document structure and notation macros |
+| babble | `au.tex` | Term-level patterns, anti-unification, soundness/completeness, and pruning |
+| babble | `egraphs.tex`, `llmt_algorithm.tex` | Equational generalization and the top-level algorithm |
+| babble | `beam.tex`, `appendix.tex` | Library extraction and proofs |
+| TyFlow | `manuscript.tex`, `macros.tex` | Active document structure and notation macros; both sit above `chapters/` |
+| TyFlow | `chapters/overview.tex`, `chapters/overview-rules.tex`, `chapters/overview-LM.tex` | Worked construction and interface to the learned model |
+| TyFlow | `chapters/methods_meta.tex` | Translation from typing rules to synthesis rules |
+| TyFlow | `chapters/methods_system.tex`, `chapters/appendix.tex` | Construction, query resolution, derivation correspondence, correctness, and proofs |
+
+Follow the active inputs in the main document when identifying published
+claims: the distributions also contain comments and unused material. For
+example, babble's `beam_old.tex` is not included by `main.tex`, and the input
+of `extract_algorithm.tex` is commented out in `beam.tex`. Some content remains
+graphical even in the TeX: TyFlow's overview includes `assets/S-App.png`.
+Source navigation is verified; this does not mark the proofs as audited.
+
 ## Connection to the previous essay
 
 [What Persists When the Agents Change?](../../../notes/what-persists-when-agents-change.md)
