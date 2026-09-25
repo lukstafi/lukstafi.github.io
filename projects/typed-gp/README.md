@@ -1,8 +1,9 @@
 # Typed genetic programming: research workspace
 
 Revisit Łukasz Stafiniak's 2001–2005 programme in typed genetic programming,
-generalization, and program synthesis. Continue the technical investigation
-before deciding on a 25th-anniversary blog essay.
+generalization, and program synthesis. The current phase is a focused literature
+survey before deciding on a 25th-anniversary blog essay. Building our own
+experiments is deferred.
 
 ## Archive
 
@@ -20,11 +21,13 @@ checksums of the four originals and three reading copies.
 ## Reading and continuation
 
 - [Extraction notes](extractions/README.md): provenance and important limitations.
-- [Research notes](research/notes.md): provisional findings, unresolved claims,
-  and a bounded starting point for experiments.
+- [Focused survey](research/survey.md): seven core papers, initial coverage,
+  comparison questions, and a reading sequence.
+- [Research notes](research/notes.md): provisional historical findings,
+  unresolved claims, and a deferred experiment sketch.
 - `sources/`: authoritative historical records; preserve these unchanged.
 - `extractions/`: derived reading aids; consult the source for mathematics.
-- `research/`: contemporary analysis, corrections, and eventual experiments.
+- `research/`: contemporary analysis, literature coverage, and corrections.
 
 This directory is a public research archive tracked in the repository. The
 original documents are historical drafts and thesis materials; the contemporary

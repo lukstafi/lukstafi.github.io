@@ -5,7 +5,10 @@ not historical source text, a proof audit, or a literature-priority assessment.
 Łukasz describes the thesis as the theoretical and surveying culmination of
 the programme: the ideas reached a stage suitable for experimentation, but
 time ran out before experiments were done. The current intention is to do more
-research before settling on an essay.
+research before settling on an essay. On 25 September 2026, Łukasz chose a
+[focused survey of seven papers](survey.md) as the next phase, explicitly
+including AlphaEvolve. Building our own experiments is deferred; the sketch
+below is retained only as a record of the earlier proposal.
 
 ## Development of the programme
 
@@ -64,7 +67,7 @@ research questions.
    can guide the selection of matching nodes. Compare this role with the
    stronger module-ID mechanism in the initial draft.
 
-## Suggested first experiment (not yet implemented)
+## Deferred experiment sketch (not an active task)
 
 Start with a small, explicitly specified language and the simplest common-
 schema crossover. Reconstruct the mutation-compatibility property and test it
@@ -109,4 +112,5 @@ match the decoded source copy; they do not match the lossy reading text.
 The anniversary refers to October 2001. An eventual essay could follow the
 transition from evolutionary units, through mutation-compatible generalization,
 to typed program synthesis. Its angle and conclusions should depend on what
-the reconstruction and experiments reveal. No blog draft has been started.
+the source reconstruction and focused literature survey establish. New
+experiments are not a prerequisite for the essay. No blog draft has been started.
