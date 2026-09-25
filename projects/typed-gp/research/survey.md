@@ -301,8 +301,9 @@ the approximate extraction is unsuitable for checking proofs.
 5. Write the cross-paper synthesis, then choose the anniversary essay's scope.
 
 The three close-reading notes now supply worked comparisons and bounded
-evidence records. The next deliverable is an essay outline drawing on their
-findings; implementing an experimental system remains deferred. Historical
+evidence records. The [essay outline](essay-outline.md) now draws on their
+findings; the next step is drafting the essay. Implementing an experimental
+system remains deferred. Historical
 references already listed in [the research
 notes](notes.md#literature-leads-from-the-discussion) remain context; expand the
 core corpus only when a specific comparison requires it.

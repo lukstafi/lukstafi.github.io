@@ -1,9 +1,9 @@
 # Typed genetic programming: research workspace
 
 Revisit Łukasz Stafiniak's 2001–2005 programme in typed genetic programming,
-generalization, and program synthesis. The current phase is a focused literature
-survey before deciding on a 25th-anniversary blog essay. Building our own
-experiments is deferred.
+generalization, and program synthesis. A focused literature survey now supports
+an outline for a 25th-anniversary blog essay. Building our own experiments is
+deferred.
 
 ## Archive
 
@@ -20,6 +20,8 @@ checksums of the four originals and three reading copies.
 
 ## Reading and continuation
 
+- [Essay outline](research/essay-outline.md): proposed argument, historical arc,
+  worked examples, and source links for *What Should a Program Inherit?*
 - [Extraction notes](extractions/README.md): provenance and important limitations.
 - [Focused survey](research/survey.md): babble, TyFlow, and AlphaEvolve as the
   three focal papers, with worked explorations and supporting literature.
@@ -38,5 +40,5 @@ alongside them. The archive is not yet linked from the website navigation or
 included in its build scripts.
 
 The anniversary is of the programme's October 2001 beginning. The thesis is
-from 2005. No essay angle, claim of historical priority, or experimental result
-has been settled.
+from 2005. The essay outline proposes an angle; the full draft remains to be
+written. No claim of historical priority or new experimental result is made.

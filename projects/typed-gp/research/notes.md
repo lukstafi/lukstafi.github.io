@@ -114,4 +114,5 @@ The anniversary refers to October 2001. An eventual essay could follow the
 transition from evolutionary units, through mutation-compatible generalization,
 to typed program synthesis. Its angle and conclusions should depend on what
 the source reconstruction and focused literature survey establish. New
-experiments are not a prerequisite for the essay. No blog draft has been started.
+experiments are not a prerequisite for the essay. The three explorations now
+support an [essay outline](essay-outline.md); the full draft remains to be written.
