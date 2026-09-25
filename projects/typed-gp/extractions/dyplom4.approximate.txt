@@ -1,0 +1,5274 @@
+  
+CHAPTER: Wprowadzenie
+
+SECTION: Wstęp.
+
+  Praca bada możliwości stosowania bogatszych systemów typów dla programów
+  generowanych przez programowanie genetyczne (ang. genetic programming, GP).
+  GP jest zastosowaniem programowania ewolucyjnego (algorytmów genetycznych w
+  szerokim sensie) do przeszukiwania przestrzeni programów. Wymaga to
+  opracowania operatorów genetycznych dla programów: 0-argumentowego
+  operatora kreacji (generowanie przypadkowego programu), 1-argumentowego
+  operatora mutacji (drobna przypadkowa modyfikacja programu),
+  2-argumentowego operatora rekombinacji (wymiana fragmentów między dwoma
+  programami). Generowanie termu obejmuje inferencję typu. Praca uzasadnia
+  stosowanie systemów polimorficznych (implicit polymorphism), oraz oparcie
+  rekombinacji na anty-unifikacji. Wybór pada na systemy z więzami ze względu
+  na łatwość wyrażania w nich własności programów. Opracowanie operatorów
+  genetycznych sprowadza się do zadań generowania
+  termu dla zadanego typu oraz znajdowania podtermów o typizacjach
+  ''homomorficznych''. Praca ilustruje kluczowe własności rozwiązań:
+  poprawność i pełność algorytmu generowania termów,
+  poprawność algorytmu rekombinacji termów, dowodami dla możliwie
+  najprostszych przypadków. Przedstawione jest nowe spojrzenie na
+  anty-unifikację drugiego rzędu. Opracowanie praktycznych algorytmów dla
+  systemów typów z więzami wymaga dalszych badań, które niniejsza praca
+  jedynie zapoczątkowuje. 
+
+  \;
+
+SECTION: Zagadnienia.
+
+  Programowanie genetyczne (ang. genetic programming, GP) to metaheurystyka
+  (czyli metoda) rozwiązywania problemów poprzez automatyczną konstrukcję
+  programów, wykorzystująca wiedzę o dziedzinie problemu poprzez funkcję
+  oceniającą, jak dobrze dany program radzi sobie z problemem (funkcję
+  dostosowania, ang. fitness function). Ogólność metody GP polega na tym, że
+  nie jest potrzebna analiza semantyczna programów, a w wyniku nie jest
+  potrzebna dogłębna analiza problemu, ponieważ programy zazwyczaj ocenia się
+  uruchamiając je (np. w symulowanym środowisku). GP jest przykładem
+  programowania ewolucyjnego czy też szeroko rozumianych algorytmów
+  genetycznych, czyli metaheurystyk stochastycznych przetwarzających zbiór
+  rozwiązań (populację), konstruujących nowe rozwiązania z jednego lub więcej
+  starych, wybranych z uwzględnieniem funkcji dostosowania (lepsze
+  rozwiązania mają większą szansę wyboru). Wprowadzenie do metod ewolucyjnych
+  zawiera [cite: goldberg]. Termin ``Programowanie genetyczne'' i
+  zapoczątkowanie dziedziny zawdzięczamy Johnowi Kozie [cite: koza92].
+
+SUBSECTION: GP i geny.
+
+  Wyróżnikiem GP wśród innych zastosowań programowania ewolucyjnego jest
+  (istotna) nieskończoność zbioru rozwiązań; nie można nawet w przybliżeniu
+  reprezentować programów przez wektory cech o ustalonej długości. Jeśli mamy
+  taką reprezentację, cechy te nazywa się genami. Odpowiednikiem hipotezy
+  bloków budujących jest w przypadku GP hipoteza, że GP prowadzi do
+  automatycznej identyfikacji przydatnych, funkcjonalnych podprogramów, które
+  rozprzestrzeniają się w populacji i są doskonalone w różnych kontekstach.
+  Odpowiednikiem tej hipotezy w dziedzinie ewolucji naturalnej (biologicznej)
+  jest wprowadzona przez Dawkinsa koncepcja jednostki selekcji
+  [cite: dawkins]. Sugeruje to myślenie o puli genów w przypadku GP jako o
+  bycie zmiennym, który sam podlega ewolucji. Geny to fragmenty programów,
+  które mają dużą szansę być przekazane w całości w wielokrotnym zastosowaniu
+  rekombinacji. Opisuje to np. [cite: altenberg94evolvability].
+
+SUBSECTION: Zalety wprowadzenia typizacji: programowanie dedukcyjne.
+
+  Bogatsze systemy typów są inną (niż funkcja dostosowania) metodą
+  uwzględnienia wiedzy o problemie, dostępną gdy wiedzę tą można wyrazić w
+  postaci reguł logicznych. Ograniczają one przestrzeń rozpatrywanych
+  programów, eliminując konstrukcje nierozsądne (nietypizowalne) oraz
+  pozwalając na zadanie specyfikacji, wymaganych od rozwiązań. Szczególnie
+  istotne jest uwzględnienie jak największej wiedzy na etapie konstrukcji
+  rozwiązania, gdy ocena rozwiązania jest kosztowna (np. funkcję należy
+  sprawdzić na wielu przypadkach, albo potrzeba symulować skomplikowane
+  środowisko dla programu sterującego robotem). Cel, który spełnić ma
+  rozwiązanie, określa się jako typ zadany (generowane będą programy tego
+  typu), warunki lokalne zadaje się jako typy konstrukcji pierwotnych (np.
+  funkcji wbudowanych).
+
+SUBSECTION: Automatyczne programowanie -- synteza programów: synteza
+  dedukcyjna i synteza indukcyjna.
+
+  Hasło ``automatyczne programowanie'' obejmuje różne techniki komputerowego
+  wspierania programowania. Przegląd zagadnień zawiera np.
+  [cite: ute-inductive]. Synteza programów oznacza automatyczne (lub
+  półautomatyczne, interaktywne) generowanie programów. Synteza dedukcyjna
+  oznacza syntezę programu na podstawie jego pełnej specyfikacji w pewnym
+  systemie formalnym. Systemy syntezy dedukcyjnej dzielimy na teorio-dowodowe
+  i transformacyjne. W tych pierwszych specyfikacja jest pewną formułą
+  logiczną, dowód której odpowiada znalezieniu programu: w logikach
+  konstruktywnych dowód istnienia oznacza podanie odpowiedniego obiektu,
+  specyfikacja stwierdza istnienie szukanych obiektów. Systemy
+  transformacyjne przekształcają specyfikację przy pomocy zbioru reguł, i gdy
+  nie ma już reguł do zastosowania, wynik transformacji jest szukanym
+  programem. Systemy teorio-dowodowe podzieliłbym dalej na systemy regułowe i
+  systemy teorio-typowe. Pierwsze przekształcają formułę przy pomocy zbioru
+  reguł logicznych, otrzymując w wyniku formułę (formuły) wyrażającą
+  odpowiedź; fragment tej formuły jest szukanym programem. Np. formułą
+  wejściową jest tautologia P(?x)⇒P(?x), gdzie
+  ?x jest zmienną egzystencjalną, P jest
+  specyfikacją; reguły logiczne zachowują prawdziwość; formułą wynikową jest
+  P(t), gdzie t jest szukanym programem.
+  Drugie konstruują dowód w postaci drzewa (węzły drzewa identyfikują
+  stosowane reguły); na mocy izomorfizmu Curry'ego-Howarda, dowód jest
+  szukanym programem.
+
+  Synteza indukcyjna oznacza generowanie programu na podstawie niepełnej
+  wiedzy wyrażającej nasze oczekiwania; wiedzy ``słabo ustrukturowanej'',
+  tzn. nie dającej wskazówek co do struktury programu. Mamy do dyspozycji
+  między innymi: albo ustalone pary wejście-wyjście (uczenie się z
+  nauczycielem, program dla zadanych wejść ma zwracać określone wyjścia),
+  albo metodę zwracającą poprawne wyjścia dla danych wejść (uczenie się z
+  wyrocznią, program ma być prostszą metodą aproksymującą wyrocznię), albo
+  metodę określającą jakość danego wyjścia dla danego wejścia (uczenie się ze
+  wzmocnieniem przez eksperymentowanie), albo sposób oceny jakości całego
+  programu (uczenie się ze wzmocnieniem; nazwa pochodzi stąd, że możemy
+  ocenić, czy modyfikacja rozwiązania polepsza go czy pogarsza). Uczenie się
+  ze wzmocnieniem daje użytkownikowi największą swobodę co do informacji
+  użytej w ocenie programów, ale najmniej wskazówek systemowi co do struktury
+  programu. Z kolei możemy podzielić systemy indukcyjnego uczenia się na
+  lokalne i globalne (nielokalne). Metody lokalne rozpatrują atrakcyjność
+  pojedynczego rozwiązania (np. metody optymalizacji gradientowej). Metody
+  globalne (nielokalne) rozpatrują hipotezę opisującą atrakcyjne obszary
+  przestrzeni rozwiązań (np. metody optymalizacji dziel-i-rządź).
+
+  Programowanie genetyczne to metoda syntezy indukcyjnej programów będąca
+  nielokalnym uczeniem się ze wzmocnieniem. Generowanie programów w językach
+  typizowanych to teorio-dowodowa, teorio-typowa metoda syntezy dedukcjyjnej.
+  Podsumowując:
+
+[enumerate]
+
+    itemSynteza dedukcyjna
+
+[enumerate]
+
+      itemtransformacyjna
+
+      itemteorio-dowodowa
+
+[enumerate]
+
+        itemregułowa
+
+        itemteorio-typowa
+
+    itemSynteza indukcyjna
+
+[enumerate]
+
+      itemuczenie się z nauczycielem
+
+      itemuczenie się z wyrocznią
+
+      itemuczenie się ze wzmocnieniem przez eksperymentowanie
+
+      itemuczenie się ze wzmocnieniem
+
+[enumerate]
+
+        itemlokalne
+
+        itemglobalne (nielokalne)
+
+  Praca proponuje połączenie metod syntezy dedukcyjnej i indukcyjnej, aby
+  najpełniej wykorzystać wiedzę o problemie. Tą część specyfikacji, która ma
+  charakter ``logiczny`` i jest na tyle prosta, że pozwala na efektywną
+  dedukcję programów, zawiera się w systemie typów i typie zadanym. Pozostałą
+  część wiedzy o problemie zawiera się w funkcji oceniającej programy.
+
+  Algorytmy genetyczne w szerokim sensie można nazwać uczeniem się ``co
+  prawda bez nauczyciela, ale z systemem edukacyjnym''. Operatory
+  rekombinacji próbuje się tworzyć tak, aby, jeśli rodzice (argumenty
+  operatora) mają ten sam wynik dla danego wejścia, to potomek (rezultat
+  operatora) też miał ten wynik dla tego wejścia -- rodzice są nauczycielami
+  potomka. Niestety, w GP stworzenie takiego operatora rekombinacji jest zbyt
+  trudne.
+
+SUBSECTION: Operatory genetyczne i generowanie termów.
+
+  Aby algorytm genetyczny (ewolucyjny) mógł rozpocząć pracę, potrzebuje co
+  najmniej trzech operatorów genetycznych: 0-argumentowego operatora kreacji
+  (dla budowy populacji początkowej), 1-argumentowego operatora mutacji (dla
+  przeszukiwania lokalnego), 2-argumentowego operatora rekombinacji (dla
+  przeszukiwania nielokalnego). Podstawą operatorów kreacji i mutacji jest
+  algorytm generowania termów. Rozdzielamy zagadnienia przeszukiwania i
+  konstrukcji, redukując generowanie termów do przeszukiwania drzew. Algorytm
+  konstrukcji termu b-C(E,τ,w[vector]) dla
+  pewnych ciągów wyborów w[vector] (ciągów liczb
+  naturalnych określających pojedynczą ścieżkę wykonania algorytmu
+  niedeterministycznego) zwraca term e o typie
+  τ w środowisku E; dla pozostałych
+  w[vector] zawodzi (zgłasza niemożność zbudowania
+  termu). Należy wtedy podjąć próbę dla innego ciągu
+  w[vector]', np. zachowując możliwie wiele
+  z wcześniejszej pracy algorytmu dzięki mechanizmowi nawrotów (kontynuacji)
+  -- jest to część zagadnienia przeszukiwania. Operator kreacji zwraca
+  b-C(E_(0),τ_(0),w[vector]),
+  gdzie E_(0) jest środowiskiem początkowym
+  (środowiskiem konstrukcji pierwotnych), a τ_(0)
+  jest typem zadanym -- specyfikacją problemu, a
+  w[vector] odpowiednim (znalezionym) ciągiem
+  wyborów. Operator mutacji (mutacja podtermu) polega na zamianie w termie
+  e podtermu e_(1) na inny. Wiemy, że
+  zachodzi sąd typizujący E_(0)⊢e:τ_(0);
+  niech podterm e_(1) będzie wprowadzony do termu
+  e w wyprowadzeniu tego sądu typizującego z przesłanki
+  E_(1)⊢e_(1):τ_(1). Wtedy
+  operator mutacji podstawia pod e_(1) wynik
+  b-C(E_(1),τ_(1),w[vector]) dla
+  odpowiedniego ciągu wyborów w[vector]. Informację
+  o typie podtermów i środowisku jego wyprowadzenia można przechowywać w tych
+  samych strukturach, które wykorzystuje mechanizm nawrotów.
+
+SUBSECTION: Generowanie termów i ``answer substitution''.
+
+  Nawet, jeśli będziemy zadowoleni z algorytmu zwracającego term dokładnie
+  typu τ, to w jego implementacji będzie potrzebny
+  algorytm pozwalający na konkretyzację typu zadanego. Nie musimy, a wewnątrz
+  algorytmu generującego często nie możemy, wiedzieć wszystko o typie termu,
+  którego szukamy. Niech więc b-C(E,τ,w[vector])
+  znajduje term e i podstawienie T takie,
+  że T*E⊢e:Tτ. Porównaj podrozdział 3.4
+  ``Proof-search in Logical Frameworks'' artykułu
+  [cite: galmiche00proofsearch], czy też wprowadzenie do SLD-rezolucji w
+  [cite: nilsson95prolog]. Zmienne wolne pozostawiamy w
+  τ jako niewiadome, które ma znaleźć algorytm.
+
+  Gdy rozpatrujemy operator mutacji, należy pamiętać, aby zablokować
+  możliwość podstawiania pod zmienne, które w nadtermie typu zostają
+  zgeneralizowane (traktując je jak stałe). Następnie modyfikujemy
+  wyprowadzenie typu dla całego programu, stosując odpowiednio podstawienie
+  zwrócone przez wygenerowanie nowego podtermu. Wadą takiego stosowania
+  mutacji jest nadokreślenie typu programu (jest bardziej skonkretyzowany niż
+  to wynika z termu), dlatego można retypizować cały program po zastosowaniu
+  mutacji.
+
+SUBSECTION: Zacieśnianie odpowiedniości między ciągiem wyborów a poprawnie
+  typowanymi termami; przeszukiwanie.
+
+  Ciąg wyborów wyraża niedeterminizm, czy też stochastyczność algorytmu
+  b-C. Idealnie byłoby, gdyby dla każdego ciągu wyborów
+  algorytm zwracał term poprawnie typowany, a wyliczeniu ciągów wyborów
+  odpowiadałoby wyliczenie termów zamieszkujących zadany typ. Jednak algorytm
+  wykorzystuje ciąg wyborów do generowania termu, i wyliczeniu ciągów wyborów
+  odpowiada wyliczenie wszystkich termów odpowiedniej klasy zadanej
+  syntaktycznie.
+
+SUBSUBSECTION: Generowanie termów jako przeszukiwanie przestrzeni
+  programów.
+
+  Rzeczywisty algorytm uzyskujemy więc z b-C dzięki
+  zastosowaniu przeszukiwania grafów (tutaj zasadniczo drzew). Oczywiście,
+  łatwiej przeszukiwać w głąb, ale lepiej przeszukiwać wszerz: krótsze termy
+  mają większą szansę być lepszymi programami, b-C z
+  przeszukiwaniem wszerz daje rekurencyjną przeliczalność problemu
+  znajdowania mieszkańca zadanego typu. Dla operatorów genetycznych
+  zadających ciąg wyborów losowo i oczekujących odpowiedzi, zwracamy term
+  najbliższy wskazanemu węzłowi (w sensie obranej strategii przeszukiwania)
+  (lub odpowiadamy, że taki nie istnieje, jeśli wyczerpaliśmy przestrzeń).
+  Możemy również zwracać rzeczywisty ciąg wyborów, dla ewentualnego
+  wznowienia przeszukiwania (przestrzeni programów). W praktycznej
+  implementacji pamiętamy o wymuszaniu stopu, gdy przeszukiwanie trwa zbyt
+  długo; zawodzi wtedy próba zastosowania operatora genetycznego.
+
+SUBSUBSECTION: O potrzebie inferencji typu.
+
+  Generowanie termu obejmuje inferencję typu: wyprowadzamy termy typizowane.
+  Jeśli nie mamy mechanizmów inferencji (typizacja bazuje na annotacjach
+  termów typami), zastosowanie przeszukiwania grafów de facto rozwiązuje
+  zadanie inferencji typu dla wygenerowanego termu. W ten sposób struktura
+  przeszukiwań zostaje zdominowana przez problem inferencji typu, podczas gdy
+  chcemy, aby wyrażała semantykę operacyjną programów (jak działają). Dlatego
+  konieczne jest odizolowanie termów i typów, nawet niewyszukany algorytm
+  inferencji dla systemów nierozstrzygalnych (z konieczności algorytm bez
+  własności stopu, w praktyce zaś ze stopem wymuszonym, czyli algorytm
+  niepełny) będzie lepszy od naiwnej enumeracji wszystkich możliwych
+  typizowań. Możemy przywrócić ``przeliczalną pełność'' dodając w momencie
+  stopowania typizacji jej kontynuację jako (odłożony na później) węzeł
+  struktury przeszukiwań.
+
+SUBSUBSECTION: Algorytm ``head-driven''.
+
+  Już w latach trzydziestych wiadomo było, że intuicjonistyczny rachunek zdań
+  jest rozstrzygalny. W interpretacji w lambda-rachunku oznacza to, że dla
+  każdego typu z systemu typów prostych możemy znaleźć term tego typu, albo
+  pokazać, że takich termów nie ma. Wykorzystamy standardowy algorytm
+  znajdowania takiego termu, opisany np. w pracy [cite: nagano-proof]. Idea
+  polega na wykorzystaniu własności ``cut elimination'', czyli w terminologii
+  λ-rachunku faktu, że jeśli istnieje term danego
+  typu, to istnieje term bez β-redeksów, również tego
+  typu. Można więc szukać termu wśród termów normalnych (bez
+  β-redeksów), a pomijając zapętlenia w
+  wyprowadzeniach, jest wtedy tylko skończenie wiele ścieżek do sprawdzenia,
+  kończących się zadanym typem. Oczywiście, możemy zastosować ten mechanizm
+  dla poszukiwania programów funkcyjnych, ponieważ
+  β-redukcja zachowuje wtedy sens programu. Dla
+  systemu typów prostych mamy więc algorytm generowania, zatrzymujący się dla
+  każdego zadanego typu, z termem tego typu lub stwierdzeniem pustości typu.
+
+SUBSUBSECTION: Rozstrzygalność problemu niepustości typu w
+  ML.
+
+  Dla ML bez algebraicznych typów danych, czyli dla ML bez dopasowywania
+  wzorca (lub innych mechanizmów typu CASE), łatwo znaleźć algorytm
+  zwracający term zadanego typu z odpowiadającym programem z własnością
+  stopu, lub odpowiadający, że jeśli typ zamieszkują jakieś termy, to
+  odpowiadające im programy nie zatrzymują się dla żadnego argumentu. Można
+  przeprowadzić eliminację definicji rekurencyjnych i lokalnych i następnie
+  zastosować argument taki sam, jak dla systemu typów prostych. (Jeśli
+  program zatrzymuje się dla pewnych danych, to musi istnieć gałąź programu
+  licząca wynik bez wywołania rekurencyjnego.) Eliminacja zmienia sens
+  programu, ale nie zmienia typu programu. Pełny ML wydaje się nie być
+  rozstrzygalny w tym sensie, ale nie potrafię tego pokazać. Oczywiście,
+  rozstrzygalność ogólnego problemu niepustości typu (czy istnieje term
+  danego typu) jest równoważna (przez izomorfizm Curry'ego-Howarda)
+  rozstrzygalności odpowiadającej systemowi logiki. Pozytywne wyniki wiążą
+  się z pełnością programowania w Prologu.
+
+  Algorytm generujący β-normalne polimorficzne
+  λ-termy (wykorzystując mechanizm unifikacji)
+  odpowiada strategii SLD-rezolucji. Rozszerzamy go o pozostałe konstrukcje
+  ML (czy obszerniejszych systemów). Generowanie (wyliczanie) termów zgodnie
+  z tym algorytmem jest równoważne strategii ewaluacji użytej w Prologu.
+
+SUBSECTION: Definicje rekurencyjne i definicje lokalne.
+
+  Zasygnalizowane w [ref: rozstrzyg] problemy teoretyczne mają swój
+  praktyczny odpowiednik w zagadnieniu użyteczności definicji rekurencyjnych
+  i definicji lokalnych. Definicje rekurencyjne są użyteczne, jeśli
+  odpowiadające im funkcje przynajmniej czasami się zatrzymują (nie będę się
+  zajmował korekurencją). Zapewnienie mocniejszego warunku użyteczności jest
+  opisane w [ref: wlasnstopu]. Natomiast definicje lokalne są użyteczne,
+  jeśli przynajmniej raz są użyte w zakresie defi\Licji, są ce\Lowe, jeśli są
+  użyte więcej niż raz. Skąd jednak wiedzieć, jakie definicje będą przydatne
+  w budowanym podtermie? Następujące rozwiązanie wydaje się optymalne:
+  dopuszczaj, aby każdy wygenerowany podterm był możliwą definicją lokalną, o
+  zakresie będącym najszerszym kontekstem zawierającym zmienne lokalne
+  podtermu. Jeśli definicja będzie użyta (poza miejscem podtermu
+  definiującego), to rzeczywiście ją wprowadzamy. W przeciwnym wypadku
+  pozostawiamy podterm ``na miejscu'', nie wprowadzając definicji. To
+  rozwiązanie ma jednak wadę, jeśli stosuje się je dla termów bez
+  β-redeksów: wprowadza tylko definicje lokalne o
+  typach, które są podtermami typów ze środowiska lub typu zadanego
+  (właściwie, generalizacje tych typów). (Podobny problem pojawia się dla
+  definicji rekurencyjnych.) Ogólnie, chcemy, aby definicje lokalne mogły
+  tworzyć po zredukowaniu β-redeksy, ale nie chcemy
+  wprowadzać bezużytecznych λ-abstrakcji, których
+  zmienne nie będą następnie wykorzystane. Rozwiążemy to, ``patternizując''
+  wygenerowany podterm (o ile ma stanowić definicję lokaną), czyli wycinając
+  podtermy tego podtermu i formując β-redeksy,
+  następnie aplikacje zostawiając w zakresie definicji, a
+  λ-abstrakcje w ciele definicji.
+
+  Pojawia się jeszcze jeden problem techniczny. Dla definicji lokalnej należy
+  wyznaczyć najogólniejszy typ. Ale tworzona jest ona w innym środowisku, niż
+  ostatecznie środowisko jej zakresu.
+
+SUBSECTION: Rekombinacja i homomorfizm typizowań.
+
+  Rekombinacja polega najogólniej na zastąpieniu podtermu
+  e_(1) danego programu e_(0) przez
+  podterm e_(2) pochodzący z innego programu; w językach
+  typizowanych wymaga to, aby podterm zastępujący był typu w jakimś sensie
+  konkretyzującego typ podtermu zastępowanego. Po zastąpieniu należy
+  zrekonstruować typ uzyskanego termu; rekombinacja wymaga więc znalezienia
+  pary podtermów e_(1),e_(2) takich, że
+  rekonstrukcja jest możliwa. W prostych systemach z podtypowaniem
+  zadowalający jest warunek, aby typ podtermu zastępującego był podtypem typu
+  podtermu zastępowanego. W systemach z polimorfizmem parametrycznym, gdzie
+  parametry typu mogą ściśle wiązać się z własnościami termu i kontekstu jego
+  wystąpienia, należy zbudować odpowiedniość między sądami typizującymi
+  E_(1)⊢e_(1):τ_(1) oraz
+  E_(2)⊢e_(2):τ_(2)
+  uwzględniającą, że e_(1) występuje w derywacji typu
+  dla termu macierzystego. Możemy przyjąć, że dziedzina środowisk derywacji
+  obu programów macierzystych jest wspólna, ale typy mogą być skonkretyzowane
+  przez różne \Ranswer substitutions''. Te podstawienia muszą być zgodne
+  (unifikowalne), środowisko E_(2) musi dać się
+  odwzorować na E_(1),
+  h:Dome(E_(2))→Dom(E_(1)), z
+  zachowaniem zmiennych z Dom(E_(0)) (przemianowanie
+  zmiennych wolnych). Jeśli rekonstrukcję typizowania oprzemy na danym
+  E_(2)⊢e_(2):τ_(2), to
+  przemianowanie musi być zgodne z typami:
+  H_(L)*E_(1)(x)=E_(2)(h(x)), oraz typ
+  H_(R)τ_(2)=τ_(1), przy czym
+  H_(R) nie podstawia pod zmienne występujące w
+  E_(2) (Dom(H_(R))∩b-F(E_(2))=
+  ∅). Trójkę h,H_(L),H_(R) nazwiemy
+  E_(0)-homomorfizmem typizowań
+  E_(1)⊢e_(1):τ_(1) oraz
+  E_(2)⊢e_(2):τ_(2).
+
+  \ 
+SUBSECTION: Rekombinacja przez anty-unifikację.
+
+  Jak widzimy, rekombinacja w przypadku bogatszych systemów typów jest
+  złożonym problemem znajdowania analogii (między podtermami). Wielu autorów
+  argumentuje, że podstawowym narzędziem znajdowania, czy też konstrukcji,
+  analogii jest generalizacja (jako znajdowanie kategorii zawierającej
+  wskazane obiekty) (np. [cite: hasker95]). Użyjemy generalizacji programów
+  dla znajdowania analogicznych pozycji podtermów. Mechanizmem syntaktycznej
+  generalizacji termów jest anty-unifikacja. W kracie termów z porządkiem
+  danym przez podstawienia (jeśli (∃T)
+  T*e_(1)≡e_(2), to e_(1)≥e_(2),
+  gdzie T jest podstawieniem) unifikacja jest operacją
+  infimum, a anty-unifikacja operacją supremum dwu termów. Jednak przy
+  pewnych naturalnych definicjach równoważności i podstawień anty-unifikacja
+  nie jest dobrze określona (supremum nie istnieje). Artykuły dotyczące
+  anty-unifikacji: [cite: pfenning91unification], [cite: hasker95],
+  [cite: lu-generalization]. Ogólnie pomysł stosowania anty-unifikacji do
+  rekombinacji termów polega na krzyżowaniu (ang. crossing-over) podstawień.
+  Dla termów e_(1) i e_(2) wynikiem
+  anty-unifikacji jest term e i podstawienia
+  A_(1),A_(2) t. że
+  e_(1)=A_(1)e i
+  e_(2)=A_(2)e. Jeśli
+  A_(i)=[e_(i,1)/x_(1);…;e_(i,n)/x_(n)],
+  rekombinacją e_(1),e_(2) będzie
+  [e_(w_(1),1)/x_(1);…;e_(w_(n),n)/x_(n)]e,
+  gdzie w[vector] jest dowolnym ciągiem
+  jedynkowo-dwójkowym. Jednak w bogatszych systemach typów jedne podstawienia
+  determinują typ dla innych podstawień i rekombinacja wymaga dostosowania
+  tej techniki (ograniczenia dopuszczalnych ciągów
+  w[vector] tak, by rekombinant był typizowalny).
+
+SUBSUBSECTION: Generalizacja i GP.
+
+  Jak podpowiada rozsądek, wspólne cechy obiecujących rodziców należy
+  zachować u potomstwa. Oznacza to, że rekombinacja powinna respektować
+  maksymalnie wiele wspólnych cech; często nie może respektować (zachowywać)
+  wszystkich (porównaj analizy w [cite: radcliffe92algebra]), w podanej wyżej
+  formalizacji oznacza to, że supremum zawiera wiele termów. Artykuł
+  [cite: dhaeseleer94context] pokazuje użyteczność rekombinacji zachowującej
+  generalizacje pierwszego rzędu (nie jest to rekombinacja krzyżująca
+  podstawienia anty-unifikatora, zachowuje się ona bardziej ``swobodnie'')
+  używanej łącznie z rekombinacją swobodną. Ograniczanie się do rekombinacji
+  zachowującej kontekst wymienianych podtermów (jak rekombinacja krzyżująca
+  anty-unifikatory) ma oczywiste wady, gdy system GP nie ma wsparcia dla
+  duplikacji kodu i wykorzystywania podprogramów (code reuse). Jednak
+  proponowany w niniejszej pracy system wspiera te mechanizmy ewolucji dzięki
+  obsłudze definicji lokalnych: mutacja może wprowadzić wykorzystanie w danym
+  miejscu dowolnego podtermu, który w razie potrzeby zostanie ``podniesiony''
+  do definicji lokalnej; odpowiedni operator genetyczny zajmuje się
+  rozwijaniem definicji. Rekombinacja zachowująca kontekst ma duże znaczenie
+  w kontekscie teori ``samolubnego genu'' nadając tożsamość jednostkom
+  selecji: wymieniany podterm nie trafi w przypadkowe miejsce programu,
+  pozostanie w tej samej pozycji anty-unifikatora. W ten sposób selekcja
+  będzie następowała ze względu na spełnianie funkcji wyznaczonej przez
+  anty-unifikator dla poszczególnych pozycji. Rekombinacja swobodna
+  (dodatkowo dla języków nietypizowanych, gdzie jest ona rzeczywiście
+  swobodna) powoduje nabywanie przez programy dużych partii ''niekodujących''
+  -- nigdy nie wykonywanych; problem ten jest nazywany ``code bloat''. Jest
+  to mechanizm obronny zmniejszający prawdopodobieństwo przecinania przez
+  rekombinację cennych fragmentów kodujących, co zazwyczaj zaburzy ich
+  funkcję (patrz m. in. [cite: blickle94genetic] znakomicie pokazujący, że co
+  jest dobre dla genów, nie musi być dobre dla szybkości ewolucji).
+
+SUBSUBSECTION: Rekombinacja zgodna z mutacją i anty-unifikacja drugiego
+  rzędu.
+
+  Najpierw przedstawimy techniczne pojęcie kompatybilnych mutacji próbkowych,
+  żeby następnie podać obrazowe pojęcie rekombinacji zgodnej z mutacją,
+  dodatkowo uzasadniające oparcie rekombinacji programów na anty-unifikacji.
+
+  Pozycja podtermu obejmuje pozycje podtermów tego podtermu. Pozycje w termie
+  nazywamy rozdzielonymi, jeśli żaden ich podzbiór nie obejmuje wspólnie
+  wszystkich pozycji obejmowanych przez pewną pozycję obejmującą te pozycje,
+  oprócz tej pozycji. Tzn. nie istnieje pozycja, obejmująca pozycje z tego
+  podzbioru, i nie obejmująca żadnej pozycji nie obejmowanej przez pozycje z
+  podzbioru poza samą sobą. Zdefiniujmy zbiór kompatybilnych mutacji
+  próbkowych dla programu E_(0)⊢e:τ_(0)
+  (odpowiednio dobranego). Mówimy, że zastosowano mutację
+  p_(i),w[vector]_(i), jeśli dany program
+  E_(0)⊢e_(0):τ_(0) ma w pozycji
+  p_(i) podterm z typizacją
+  E_(i)⊢e_(i):τ_(i), a wynikowy
+  program ma dla T_(i),e_(i)'=b-C(E_(i),τ_(i),w[vector]_(i))
+  postać T_(i)*E_(0)⊢[e_(i)'/p]e_(0):T_(i)τ_(0).
+  Mutacja jest próbkowa, jeśli FV(e_(1)')⊂Dom(E_(0))
+  oraz żadna zmienna ani stała e_(i)' nie
+  występuje w e_(0). Mutacje próbkowe są kompatybilne,
+  jeśli pozycje p_(i) są rozdzielone,
+  T_(i),e_(i)'=b-C(T_(π(1))…T_(π(k))E_(i),T_(π(1))…T_(π(k))τ_(i),w[vector]_(i))
+  dla dowolnego wyboru indeksów π nie zawierającego
+  i.
+
+  Mówimy, że operator rekombinacji jest zgodny z operatorem mutacji, jeśli
+  dla dowolnego zbioru M kompatybilnych mutacji próbkowych
+  dowolnego odpowiedniego programu e, dla programu
+  e_(K) powstałego z zastosowania
+  mutacji K⊆M i programu
+  e_(L) powstałego z zastosowania
+  mutacji L⊆M, zbiór wszystkich rekombinacji
+  e_(K),e_(L) składa się z wszystkich programów
+  powstałych przez zastosowanie mutacji N⊆M,
+  gdzie K∩L⊆N⊆K∪L.
+  Porównaj warunki ``respect'' i ``assortment'' z pracy
+  [cite: radcliffe92algebra].
+
+  Definicja pozycji rozdzielonych została dobrana tak, aby zgodny z mutacją
+  operator rekombinacji mógł wogóle istnieć. Gdyby pozycje nie były
+  rozdzielone, rekombinacja nie potrafiłaby określić, ile właściwie mutacji
+  zastosowano. Sprawdźmy, co wymusza powyższy warunek na operatorze
+  rekombinacji. Rekombinacja musi określić pozycje, w których mutację
+  zastosowano tylko w jednym z rodziców. W pierwszym kroku oznaczmy pozycje,
+  minimalne w odległości od korzenia, o różnych etykietach (w grafie termu) u
+  obu rodziców. W kolejnych krokach oznaczajmy pozycje, których wszyscy
+  potomkowie są już oznaczeni. Na koniec wybierzmy minimalne w odległości od
+  korzenia pozycje oznaczone. Rekombinacja polegać będzie na wymianie
+  podtermów rodziców na tych pozycjach. Jeśli podstawimy zmienne w miejscu
+  wybranych pozycji, uzyskamy maksymalnie szczegółową anty-instancję drugiego
+  rzędu względem porządku danego przez podstawienia ograniczone do podtermów
+  anty-unifikowanych programów. Jest to najprostsza postać anty-unifikacji
+  drugiego rzędu. Dużo mocniejszą postać anty-unifikacji drugiego rzędu
+  podaje [cite: hasker95]. Odpowiada ona operatorowi rekombinacji zgodnemu z
+  mutacjami: mutacją podtermu, insercją (a więc i delecją) oraz permutacją
+  podtermów, przy odpowiednio określonej niezależności mutacji. Podrozdział
+  [ref: antyunif2rz] opisuje własności anty-unifikacji Haskera i wyżej
+  opisanej. W bogatszych systemach typów, określenie anty-unifikacji, a
+  szczególnie rekombinacji, może być trudne.
+
+SUBSECTION: Systemy typów z więzami.
+
+  Kluczowym dla naszej sprawy artykułem jest według mnie
+  [cite: simonet03constraintbased]. Jak wcześniej pisałem, potrzebujemy
+  możliwie sprawnej metody inferencji typów dla systemu pozwalającego wyrażać
+  logiczne własności programów. Systemy z ``Guarded Algebraic Data Types'',
+  czyli typami indukcyjnymi zawierającymi charakterystykę logiczną
+  poszczególnych przypadków, są pod tym względem bardzo wygodne, co pokazuje
+  chociażby sukces systemu Coq, stosującego system typów Calculus of
+  Inductive Constructions, rozszerzający system CC o właśnie ``Guarded
+  Algebraic Data Types'' (GADT). Artykuł Simoneta i Pottiera podaje
+  ``minimalne'' rozszerzenie systemu ML pozwalające na wygodne posługiwanie
+  się GADT -- sparametryzowany językiem wyrażania więzów X
+  system HMG(X). Jednocześnie podaje sprawny algorytm
+  inferencji typu. (Dla potrzeb syntezy programów można rzeczy dodatkowo
+  uprościć rezygnując z pełnego mechanizmu ``pattern matching'' na rzecz
+  prostszej analizy przez przypadki.) Jedyne annotacje, jakich potrzebuje
+  system HMG(X), to typy dla funkcji rekurencyjnych.
+  Potrzebuje ich dlatego, że aby wykorzystać możliwości GADT potrzebujemy
+  rekurencji polimorficznej, a problem inferencji typu dla rekurencji
+  polimorficznej jest nierozstrzygalny.
+
+SUBSUBSECTION: Nierozstrzygalność inferencji typu dla rekurencji
+  polimorficznej.
+
+  Do inferencji typu dla języka ML rozszerzonego o rekurencję polimorficzną
+  (tzw. język ML+, albo system Milnera-Mycrofta) proponowano wiele podejść.
+  Ważną pracą jest [cite: henglein93type], pokazująca redukcję do problemu
+  semi-unifikacji, oraz podająca użyteczny algorytm semi-unifikacji, pomimo
+  nierozstrzygalności samego problemu. Aktualnie prace nad użytecznością
+  inferencji typu dla rekurencji polimorficznej prowadzone są np. w ramach
+  projektu badawczego [Research Project: ``SEMI-UNIFICATION and Periodicity
+  of Turing Machines`` Carlos Camarao, Lucilia Figueiredo, Luigi Laporte,
+  http://www.dcc.ufmg.br/~camarao/SUP/]. Przeprowadzenie inferencji typu dla
+  rekurencji polimorficznej w systemie HMG(X) jest
+  oczywiście trudniejsze, ale wydaje się nie mniej osiągalne niż w przypadku
+  systemu ML+.
+
+SUBSUBSECTION: Własność stopu zapewniona przez system
+  typów.
+
+  Kluczowym zagadnieniem poprawności programu jest posiadanie przez niego
+  własności stopu. Autorka pracy [cite: tinayu99] stosuje iteratory (czy też
+  rekursory) jako funkcje pierwotne do manipulacji indukcyjnymi typami
+  danych, nie pozwalając na rekurencję bezpośrednią. Przypomina to sytuację w
+  systemie Coq (przed wprowadzeniem konstrukcji Fix), gdzie
+  przy definicji typu indukcyjnego system od razu generuje odpowiednie
+  rekursory (funkcje realizujące schematy rekursji). Jednak
+  najodpowiedniejszy schemat rekursji dla danego problemu może być bardzo
+  różny od ogólnego schematu rekursji dla danego typu danych -- warto
+  pozwolić systemowi zrekonstruować odpowiedni schemat rekursji. Można
+  wymusić własność stopu przy pomocy systemu typów. Bardzo prostym, a
+  jednocześnie ekspresyjnym systemem jest
+  λ[vector] przedstawiony w
+  [cite: barthe-typebased]. Hongwei Xi konstruuje bardziej ekspresyjny system
+  na bazie swojego języka DML(X) (DML(X)
+  jest obejmowany przez HMG(X)) [cite: xi01dependent]. Pisząc
+  funkcję rekurencyjną, w prosty sposób wprowadza się metrykę, względem
+  której kolejne wywołania rekurencyjne mają maleć. (Metryki dopuszczają m.
+  in. rekurencję względem wielu zmiennych.)
+
+SUBSECTION: Dalej w pracy.
+
+SUBSUBSECTION: Rozdział 2 -- Generowanie termów.
+
+  Najpierw przedstawiony jest algorytm generowania termów dla systemu typów
+  prostych, dla postaci normalnych (odpowiadający dowodzeniu twierdzeń
+  intuicjonistycznego rachunku zdań). Następnie przedstawione są algorytmy
+  inferencji typów i generowania termów dla systemu Damasa-Milnera (ML),
+  bazujące na ``operacyjnej'' interpretacji reguł systemu i wykorzystaniu
+  unifikacji; podane są własności tych algorytmów, z dowodami. Zaprezentowany
+  jest system λ[vector] z pracy
+  [cite: barthe-typebased], w postaci oryginalnej i dostosowanej
+  (zwiększającej operacyjność reguł), i algorytmy generowania termów dla
+  niego, na podstawie algorytmów dla ML. Umówiony jest związek generowania
+  termów β-normalnych z SLD-rezolucją. Na koniec,
+  przedyskutowany jest problem optymalnego wprowadzania definicji lokalnych.
+
+SUBSUBSECTION: Rozdział 3 -- Generalizacja.
+
+  Zaprezentowany jest algorytm anty-unifikacji drugiego rzędu względem
+  podstawień ograniczonych do podtermów unifikowanych termów, pokazana jest
+  maksymalność generalizacji oraz poprawność (warunki poprawności) opartej na
+  niej rekombinacji w systemie Damasa-Milnera. Następnie omówione jest
+  rozwiązanie zagadnienia generalizacji z pracy [cite: hasker95] i wskazane
+  jest niedopatrzenie: zbyt optymistycznie deklarowana własność podanego
+  praktycznego mechanizmu znajdowania generalizacji. Przedstawiony jest
+  algorytm konstrukcji generalizacji na bazie wspomnianego mechanizmu. Podany
+  jest z uzasadnieniem mechanizm znajdowania najbardziej szczegółowej
+  generalizacji.
+
+SUBSUBSECTION: Rozdział 4 -- Zakończenie.
+
+  Rozdział prezentuje rezultaty pracy i zadania postawione do rozwiązania
+  przez pracę. W pierwszej części zebrane są aspekty nowatorskie pracy. W
+  drugiej części wskazane są dalsze prace, jakie należy podjąć, na drodze do
+  praktycznej implementacji systemu programowania genetycznego w językach z
+  bogatszymi systemami typów.
+
+CHAPTER: Generowanie termów.
+
+SECTION: System typów prostych a intuicjonistyczny rachunek zdań.
+
+  W tym podrozdziale zaprezentuję wyniki z pracy [cite: nagano-proof].
+  Stanowią one dobre wprowadzenie w problem genrowania termów, w dobrze
+  zbadanym usytuowaniu intuicjonistycznego rachunku zdań.
+
+SUBSECTION: System dedukcji naturalnej i typizowany
+  λ-rachunek.
+
+PARAGRAPH: System dedukcji naturalnej.
+Dla uproszczenia, ograniczamy się do
+  implikacyjnego fragmentu logiki intuicjonistycznej.
+
+[definition]
+
+    Zbiór formuł (implikacyjnego rachunku zdań) jest określony regułami:
+
+[enumerate]
+
+      itemJeśli A jest formułą atomową, to
+      A jest formułą.
+
+      itemJeśli X,Y są formułami, to
+      X→Y jest formułą.
+
+  W tym podrozdziale używamy zamiennie pojęć formuła i typ.
+
+  Długość formuły  definiujemy
+
+[eqnarray*]
+
+    \A\   =   1   jeśli
+    A jest atomowa
+ \B\+\C\+1   jeśli
+    A=B→C
+
+[definition]
+
+    System dedukcji naturalnej b-Nb-J jest określony
+    następującymi regułami:
+
+[enumerate]
+
+      item(Aksjomat) Brak.
+
+      item(I)
+
+[equation*]
+
+        (B) / (A→B)
+
+      item(E) Modus ponens
+
+[equation*]
+
+        (A→B A) / (B)
+
+[definition]
+
+    Niech Phi będzie skończonym zbiorem formuł i
+    α będzie formułą. Piszemy
+    Phi⊢_(N J)α jeśli istnieje dowód
+    α którego zbiorem niezdjętych (undischarged)
+    założeń jest Phi.
+
+PARAGRAPH: Przypisanie typu do λ-termu.
+
+[definition]
+
+    λ-term jest zdefiniowany jako:
+
+[enumerate]
+
+      itemZmienne x_(1),x_(2),… są
+      λ-termami.
+
+      itemJeśli M,N są
+      λ-termami, to (M N) jest
+      λ-termem.
+
+      itemJeśli M jest λ-termem
+      i x jest zmienną, to (λx.M)
+      jest λ-termem.
+
+  (M N) jest nazywany aplikacją, a
+  (λx.M) abstrakcją.
+
+[definition]
+
+    Zbiór zmiennych wolnych b-F(M) jest określony przez:
+
+[enumerate]
+
+      itemb-F(x)={x}
+
+      itemb-F(M N)=b-F(M)∪b-F(N)
+
+      itemb-F(λx.M)=b-F(M)\\{x}
+
+[definition]
+
+    Jeśli M jest λ-termem i
+    α jest typem, to opis
+    M:α jest nazywany przypisaniem typu.
+
+[definition]
+
+    Założenie jest przypisaniem typu x:α zmiennej
+    x. Zbiorem założeń nazywamy zbiór
+    Phi={x_(1):α_(1),…,x_(n):α_(n)}
+    taki, że x_(i)neqx_(j) dla
+    ineqj.
+
+[definition]
+
+    System typów T A_(λ) jest określony przez
+    reguły:
+
+[enumerate]
+
+      item(Aksjomat)
+
+[equation*]
+
+        Phi⊢_(λ)x:α (x:α∈Γ)
+
+      item
+
+[equation*]
+
+        (Phi⊢_(λ)M:α→β Phi⊢_(λ)N:α) / (Phi⊢_(λ)M
+        N:β)
+
+      item
+
+[equation*]
+
+        (Phi⊢_(λ)M:β) / (Phi\\{x:α}⊢_(λ)λx.M:α→β)
+
+PARAGRAPH: Izomorfizm Curry'ego-Howarda.
+
+[theorem]
+
+    \;
+
+[eqnarray*]
+
+            ∃M:λ-term
+      taki, że
+ Phi⊢_(N
+      J)α   Longleftrightarrow   {x_(1):α_(1),…,x_(n):α_(n)}⊢_(λ)M:α
+       oraz
+      b-F(M)⊆{x_(1),…,x_(n)}
+
+[theorem]
+
+    ⊢_(N J)αLongleftrightarrow∃M:domknięty
+    (bez zmiennych wolnych) λ-term taki, że
+    ⊢M:α.
+
+SUBSECTION: Dowody w postaci normalnej.
+
+PARAGRAPH: Beta redukcja.
+
+[definition]
+
+    (Beta redukcja) Niech M i N będą
+    λ-termami i x będzie zmienną.
+    λ-term otrzymany z M przez
+    zastąpienie wszystkich wystąpień x przez
+    N oznaczamy [N/x]M.
+    β-redukcja jest rekurencyjnie określona przez:
+
+[enumerate]
+
+      itemMlongrightarrow_(β)M.
+
+      item(λx.M)Nlongrightarrow_(β)[N/x]M.
+
+      itemJeśli Mlongrightarrow_(β)N, wtedy
+      λx.Mlongrightarrow_(β)λx.N,
+      M Plongrightarrow_(β)N P oraz
+      P Mlongrightarrow_(β)P N.
+
+      itemJeśli Llongrightarrow_(β)M oraz
+      Mlongrightarrow_(β)N, to
+      Llongrightarrow_(β)N.
+
+    λ-term postaci
+    (λx.M)N jest nazywany
+    β-redeksem.
+
+[definition]
+
+    (Postać beta normalna) Jeśli λ-term
+    M nie zawiera β-redeksów, wtedy
+    M jest w postaci β-normalnej.
+    Zbiór wszystkich λ-termów w postaci normalnej
+    jest oznaczany przez βnf. Mówimy, że term
+    M ma postać β-normalną N wtw.
+    gdy Mlongrightarrow_(β)N i
+    N∈βnf.
+
+[theorem]
+
+    (Twierdzenie ``subject reduction'') Jeśli
+    Phi⊢M:α i
+    Mlongrightarrow_(β)N, to
+    Phi⊢N:α.
+
+PARAGRAPH: Twierdzenie o normalizacji.
+
+[theorem]
+
+    (Twierdzenie o normalizacji) Jeśli Phi⊢M:α,
+    to Phi⊢N:α dla pewnego
+    λ-termu N∈βnf
+    takiego, że Mlongrightarrow_(β)N.
+
+SUBSECTION: Poszukiwanie dowodów.
+
+PARAGRAPH: Rachunek sekwentów N J_(β).
+Kolejne
+  zastosowania reguły (I) dają
+
+[equation*]
+
+    (A_(1)…A_(n) B) / (A_(1)→…→A_(n)→B) I*
+
+  Kolejne zastosowania reguły (E) dają
+
+[equation*]
+
+    (A_(1)→…→A_(n)→B A_(1) … A_(n)) / (B) E*
+
+  W szczególności, B staje się formułą atomową w (I*) oraz
+  (E*). Kiedy żadna inferencja nie pojawia się powyżej
+  A_(1)→…→A_(n)→B
+  w (E*), jest ona w zbiorze Γ założeń. Kiedy
+  A_(i) nie jest atomowa, mamy następujący dowód ponad
+  A_(i):
+
+[equation*]
+
+    (A_(i_(1))…A_(i_(_(k))) A_(i_(0))) / (A_(i_(1))→…→A_(i_(k))→A_(i_(0))) I*
+
+  Zdefiniujemy rachunek sekwentów N J_(β).
+  Intuicyjnie, dowód w N J_(β) otrzymuje się
+  przez koncentrację wystąpień formuł atomowych jak B i
+  A_(i_(0)). Dowód w N
+  J_(β) odpowiada ``długiej postaci normalnej'' (ang. long normal
+  form) w λ-rachunku z systemem typów prostych oraz
+  ``rozszerzonej postaci normalnej'' (ang. expanded normal form) Systemu
+  Dedukcji Naturalnej Prawitza. (Zamiast oznaczeń H oraz
+  T z pracy [cite: nagano-proof] użyję oznaczeń
+  B jak ``body`` oraz H jak ''head''.)
+
+[definition]
+
+    Mając daną formułę X=A_(1)→…→A_(n)→A
+    z atomową A, definiujemy
+    B(X)={A_(1),…,A_(n)} oraz
+    H(X)=A. Jeśli n=0, to
+    H(X)= ∅.
+
+  Używamy liter greckich Phi,Δ etc. na
+  oznaczenie zbiorów formuł. Phi,Δ oznacza sumę
+  zbiorów Phi i Δ.
+
+[definition]
+
+    System dedukcji naturalnej N J_(β) jest
+    zdefiniowany następującymi regułami:
+
+[enumerate]
+
+      item(Aksjomat)
+
+[equation*]
+
+        Phi⊢A, jeśli
+        A∈Phi i A jest atomowa
+
+      item(Inferencja)
+
+[equation*]
+
+        (B(A_(1)),Phi⊢H(A_(1)) … B(A_(n)),Phi⊢H(A_(n))) / (Phi⊢A)
+
+      jeśli A_(1)→…→A_(n)→A
+      należy do Phi oraz A jest
+      atomowa.
+
+[theorem]
+
+     Niech Phi będzie zbiorem formuł i
+    A formułą.
+
+[eqnarray*]
+
+      Phi⊢_(N
+      J)A   Longleftrightarrow   Phi⊢_(N
+      J_(β))A
+
+PARAGRAPH: Drzewo dedukcyjne.
+Szukamy dowodu sekwentu
+  Phi⊢A (dowód formuły A dany
+  jest przy Phi= ∅). Algorytm
+  Search bierze jako wejście sekwent
+  Phi⊢A z atomową A oraz listę
+  xi sekwentów śledzącą ścieżkę dowodu, aby wykryć
+  zapętlenie. Algorytm zwraca drzewo sekwentów których wnioskami są formuły
+  atomowe. Liście drzewa mają trzy rodzaje etykiet: ``aksjomat'', ``pętla'',
+  ``stop''. Nazywamy je drzewem dedukcyjnym. Drzewem dowodowym albo dowodem
+  nazywamy drzewo, w którym węzeł powstaje przez zastosowanie reguły
+  inferencji systemu dedukcyjnego do jego synów, a liście powstają przez
+  zastosowanie reguły ``aksjomat''.
+
+[definition]
+
+    Search(Phi⊢A;xi):
+
+[enumerate]
+
+      itemA∈Phi. Zwróć węzeł
+      A∈Phi z etykietą ``aksjomat''.
+
+      itemAninPhi.
+
+[enumerate]
+
+        itemPhi⊢A∈xi. Zwróć węzeł
+        Phi⊢A z etykietą ``pętla''.
+
+        itemPhi⊢Aninxi.
+
+[enumerate]
+
+          itemPhi nie zawiera żadnej
+          A_(i) takiej, że
+          T(A_(i))=A. Zwróć węzeł
+          Phi⊢A z etykietą ``stop''.
+
+          itemPhi zawiera A_(i)
+          takie, że T(A_(i))=A. Niech
+          A_(1),…,A_(m) będą wszystkimi
+          takimi formułami oraz A_(i)=B^(i)_(1)→…→B^(i)_(n_(i))→A (i=1,…,m).
+          Mamy H(A_(i))={B_(1)^(i),…,B_(n_(i))^(i)}.
+          Stosując algorytm rekurencyjnie, mamy
+
+[equation*]
+
+            u_(j)^(i)=Search((B(B^(i)_(j)),Phi)⊢H(B_(j)^(i));(Phi⊢A)+xi)
+
+          dla i=1,…,m oraz
+          j=1,…,n_(i).
+
+[enumerate]
+
+            itemDla pewnych (niedeterminizm)
+            1≤i≤m, wszystkie
+            u_(1)^(i),…,u_(n_(i))^(i)
+            są dowodami. Zwróć dowód postaci
+
+[equation*]
+
+              (u_(1)^(i) … u_(n_(i))^(i)) / (Phi⊢A)
+
+            itemDla każdego i=1,…,m, pewne
+            (niedeterminizm) drzewo u_(j_(i))^(i)
+            nie jest dowodem (1≤j_(i)≤n_(i)).
+            Zwróć drzewo, którego korzeniem jest
+            Phi⊢A a synami korzenia są
+            u^(1)_(j_(1)),…,u^(m)_(j_(m)).
+
+  Niedeterminizm algorytmu nie dotyczy rodzaju odpowiedzi: dowód czy
+  obalenie, a jedynie tego, który konkretnie dowód (które obalenie) zostanie
+  zwrócony. epsilon oznacza ciąg pusty.
+
+[theorem]
+
+    Niech A będzie formułą i
+    t=Search(∅⊢A;epsilon). Jeśli
+    A jest dowodliwa w logice intuicjonistycznej, to
+    wszystkie liście t są etykietowane przez ``aksjomat'' i
+    drzewo jest dowodem A.
+
+[definition]
+
+    Jeśli drzewo zawiera etykietę ``stop'' albo ``pętla'', nazywamy je
+    drzewem obalenia.
+
+[theorem]
+
+    (Zatrzymywanie się poszukiwania) Dla każdego sekwentu
+    Phi⊢A, algorytm Search
+    zatrzymuje się (kończy pracę).
+
+[theorem]
+
+    Niech A będzie formułą,
+    t=Search(∅⊢A;epsilon). Jeśli
+    A nie jest dowodliwa w logice intuicjonistycznej, to
+    t jest drzewem obalenia.
+
+  Drzewo obalenia pozwala wtedy łatwo skonstruować kontr-model.
+
+SUBSECTION: Algorytm generujący λ-termy.
+
+  λ-termy w długiej postaci normalnej (ang.
+  η-long β-normal form) są
+  podstawą działania algorytmu Search: izomorfizm
+  Curry'ego-Howarda wykorzystuje się w dowodzie twierdzenia
+  [ref: cutelim]. Oto wersja zwracająca termy; nie potrzebujemy wtedy
+  drzewa obalenia. Niech Phi będzie zbiorem założeń, a
+  A typem. Wtedy Search(Phi,A;xi):
+
+[enumerate]
+
+    itemx:A∈Phi. Zwróć x.
+
+    itemAninPhi.
+
+[enumerate]
+
+      itemPhi⊢A∈xi. Wywołaj wyjątek
+      ``pętla''.
+
+      itemPhi⊢Aninxi.
+
+[enumerate]
+
+        itemPhi nie zawiera żadnego
+        x:A_(i) takiego, że
+        T(A_(i))=A. Wywołaj wyjątek ``stop''.
+
+        itemPhi zawiera
+        x_(i):A_(i) takie, że
+        T(A_(i))=A. Niech
+        x_(1):A_(1),…,x_(m):A_(m)
+        będą wszystkimi takimi przypisaniami typu oraz
+        A_(i)=B^(i)_(1)→…→B^(i)_(n_(i))→A (i=1,…,m).
+        Mamy H(A_(i))={B_(1)^(i),…,B_(n_(i))^(i)}.
+        Niech B(B^(i)_(j))={B_(j)^(i,1),…,B_(j)^(i,k_(i,j))}.
+        Niech x^(i,k)_(j) będą nowymi zmiennymi.
+        Stosując algorytm rekurencyjnie, mamy
+
+[equation*]
+
+          u_(j)^(i)=Search(({x_(j)^(i,1):B_(j)^(i,1),…,x_(j)^(i,k_(i,j)):B_(j)^(i,k_(i,j))},Phi),H(B_(j)^(i));(Phi⊢A)+xi)
+
+        dla i=1,…,m oraz
+        j=1,…,n_(i).
+
+[enumerate]
+
+          itemDla pewnych (niedeterminizm)
+          1≤i≤m, wszystkie
+          u_(1)^(i),…,u_(n_(i))^(i)
+          są obliczone. Zwróć term postaci
+
+[equation*]
+
+            (…(x_(i) (λx_(1)^(i,1)…λx_(1)^(i,k_(i,1)).u_(1)^(i))) … (λx_(1)^(i,1)…λx_(1)^(i,k_(i,1)).u_(n_(i))^(i)))
+
+          itemDla każdego i=1,…,m, pewne
+          u_(j_(i))^(i) nie jest obliczone
+          (wywołano wyjątek) (1≤j_(i)≤n_(i)).
+          Wywołaj wyjątek.
+
+  \;
+
+SECTION: System Damasa-Milnera: inferencja typu i generowanie
+  termu.
+
+  Generowanie termu dla danego typu jest ''odwrotnością'' inferencji typu dla
+  danego termu. Obie operacje są dowodzeniem, w pierwszym przypadku, że typ
+  jest zamieszkały, w drugim, że term jest poprawnie typowany (ang.
+  well-typed). Regułami dowodzenia są reguły obranego systemu typów, które
+  łączą termy i typy. W tym rozdziale opieram się na książce
+  [cite: leroy92polymorphic], rozdział 1. ''A polymorphic applicative
+  language''.
+
+  Wprowadźmy oznaczenia:
+
+[definition]
+
+    Generalizacja
+
+[eqnarray*]
+
+      b-G(τ,E)   =   ∀α_(1),…,α_(n).τ
+
+    gdzie α_(1),…α_(n) są
+    dokładnie tymi zmiennymi wolnymi w τ, które nie
+    występują w E.
+
+    Jeśli E=[x_(1):τ_(1);x_(2):τ_(2);…;x_(k):τ_(k)],
+    oraz 1≤n≤k to oznaczamy
+    E(n)=x_(n):τ_(n) oraz
+    E(x_(n))=τ_(n). Długość oznaczamy
+    E[vector]=k.
+
+[definition]
+
+    Konkretyzacja typu zmiennej ze środowiska: τ  jest
+    konkretyzacją typu zmiennej x ze środowiska
+    E
+
+[eqnarray*]
+
+      τ≤E(x)   ≡   E=…;x:∀α_(1)…α_(n).σ;…
+      i τ=[τ_(1)/α_(1);…;τ_(n)/α_(n)]σ
+
+    dla pewnych τ_(1),…,τ_(n).
+    Typ σ jest bardziej ogólny niż
+    τ
+
+[eqnarray*]
+
+      τ≤σ   ≡   τ=∀γ_(1)…γ_(m).τ'∧σ=∀α_(1)…α_(n).σ'∧τ'=[τ_(1)/α_(1);…;τ_(n)/α_(n)]σ'
+
+    dla pewnych τ_(1),…τ_(n).
+    Podstawienie T=[τ_(1)/α_(1);…;τ_(n)/α_(n)]
+    oznacza zastąpienie wolnych wystąpień zmiennych
+    α_(i) przez odpowiedni typ
+    τ_(i).
+
+[definition]
+
+    \ Reguły typowania języka Mini-ML:
+
+[enumerate]
+
+      itemVAR: Variables.
+
+[equation*]
+
+        (τ≤E(x)) / (E⊢x:τ)
+
+      itemFIX: Functions.
+
+[equation*]
+
+        (E.f:σ→τ.x:σ⊢e:τ) / (E⊢(fix
+        f x.e):σ→τ)
+
+      itemAPP: Applications.
+
+[equation*]
+
+        (E⊢e:σ→τ E⊢e':σ) / (E⊢e
+        e':τ)
+
+      itemLET: Local bindings.
+
+[equation*]
+
+        (E⊢e':σ E.x:b-G(σ,E)⊢e:τ) / (E⊢(let
+        x=e' in e):τ)
+
+  Dopuszczam n-arne konstruktory typów, np. nularny
+  int, unarny list α, binarny
+  pair(α,β). O stałych można założyć, że są
+  zmiennymi początkowego środowiska. Za [Leroy92] pomijam konstrukcję
+  λ-abstrakcji ABS
+
+[equation*]
+
+    (E.x:σ⊢e:τ) / (E⊢λx.e:σ→τ)
+
+  ponieważ jest ona równoważna FIX dla nowej nazwy f nie
+  występującej w e. W rozważanych w tym rozdziale systemach
+  typów (systemie Mini-ML, rozszerzonym następnie o indukcyjne typy danych)
+  kwantyfikator występuje tylko na zewnątrz, tzn. każdy typ ma postać
+  ∀α_(1)…α_(n).τ
+  (lub τ dla n=0) oraz
+  ∀ nie występuje w τ. Jeśli
+  typ zadany dla generowanego termu ma taką postać, to do algorytmu
+  generującego przekazujemy [d_(1)/α_(1);…;d_(n)/α_(n)]τ,
+  gdzie d_(i) są nowymi stałymi typu (nularnymi
+  konstruktorami typu). W algorytmach zakładamy, że kwantyfikator nie
+  występuje w zadanym typie.
+
+[lemma]
+
+    Jeśli E⊢τ oraz stałe typu
+    d_(1),…,d_(n) nie występują w
+    E, to
+
+[equation*]
+
+      E⊢∀α_(1)…α_(n).[α_(1)/d_(1);…;α_(n)/d_(n)]τ
+
+SUBSECTION: Algorytm inferencji typu cal-W i algorytm
+  generowania termu cal-C.
+
+  Przyjrzyjmy się algorytmowi cal-W tak jak jest on
+  podany w [cite: leroy92polymorphic]. Kolejne kroki algorytmu odpowiadają
+  kolejnym konstrukcjom języka. Jeśli E jest zbiorem założeń
+  (środowiskiem), e wyrażeniem, V zbiorem
+  nowych zmiennych typu i cal-W kończy z powodzeniem, to
+  cal-W(E,e,V)=(T,τ,V'), gdzie
+  τ jest najogólniejszym typem e,
+  T takie że T E jest odpowiednim
+  podstawieniem pod zmienne w E,
+  V' są pozostałymi zmiennymi.
+  U=b-U(τ,σ) jest (najogólniejszym)
+  unifikatorem typów τ,σ.
+
+[definition]
+
+    cal-W(E,e,V)=(T,τ,V'), gdzie dopasuj
+    e:
+
+[enumerate]
+
+      iteme=x (VAR: Variables). T=
+      ∅ i dla x:∀α_(1)…α_(n).σ∈E
+      niech
+
+[eqnarray*]
+
+        τ   =   [β[vector]/α[vector]]σ
+ V'   =   V'smallsetminusβ[vector]
+ T   =   ∅
+
+      iteme=fix f x.e_(1) (FIX: Functions). Niech
+
+[eqnarray*]
+
+        V   =   {β,β_(1)}∪[vector]V''
+ (R,rho,V')   =   cal-W(E.f:β_(1)→β.x:β_(1),e_(1),V'')
+ U   =   b-U(Rβ,rho)
+ T   =   U*R
+ τ   =   U*R*(β_(1)→β)
+
+      iteme=f*g (APP: Applications). Niech
+
+[eqnarray*]
+
+        (R,rho,V_(1))   =   cal-W(E,f,V)
+ (S,σ,V_(2))   =   cal-W(R*E,g,V_(1))
+ U   =   b-U(Srho,σ→β)
+ V'   =   V_(2)setminus{β}
+ T   =   U*S*R
+ τ   =   Uβ
+
+      iteme=let x=f in g (LET: Local bindings). Niech
+
+[eqnarray*]
+
+        (R,rho,V_(1))   =   cal-W(E,f,V)
+ (S,σ,V')   =   cal-W(R*E.x:b-G(rho,R*E),g,V_(1))
+ T   =   S*R
+ τ   =   σ
+
+  Algorytm ten najpierw rozgałęzia się na poszczególne zmienne, a następnie
+  unifikuje zgromadzoną informację. Algorytm generujący termy będzie
+  rozdzielał informacje o typie, tak że gdy Rzdecyduje się'' na zmienną, jej
+  typ będzie już (w odpowiednim stopniu) określony. Algorytm zawodzi dla
+  danej ścieżki wyborów, jeśli nie odnajdzie odpowiedniej zmiennej w
+  środowisku. Zwrócony term ma typ bardziej konkretny niż typ zadany,
+  zwrócone jest też odpowiednie podstawienie. Jeśli E jest
+  środowiskiem, τ typem,
+  w[vector] ciągiem liczb naturalnych nazywanym
+  ciągiem albo ścieżką wyborów, to albo cal-C(E,τ,V,w[vector])=(T,e,V',
+  w[vector]'), albo cal-C nie jest
+  określone, gdzie e jest typu Tτ w
+  środowisku T*E, V' są
+  niewykorzystanymi zmiennymi typu z V,
+  w[vector]' są niewykorzystanymi wyborami:
+  w'_(i)=w_(i+k) dla pewnego
+  k. Zazwyczaj będziemy pomijać ciąg wyborów i pisać
+  cal-C(E,τ,V)=(T,e,V'), co oznacza, że
+  równość zachodzi dla pewnego ustalonego ciągu wyborów
+  w[vector] i zakładając odpowiedni
+  w[vector]'. Można przyjąć dowolny
+  nieskończony zbiór zmiennych V i pisać
+  cal-C(E,τ)=(T,e) zakładając odpowiedni
+  V'.
+
+[definition]
+
+     cal-C(E,τ,V,w[vector])=(T,e,V',w[vector]'),
+    gdzie dla (w_(1 )mod 4) równego
+
+[enumerate]
+
+      itemVAR: Variables. Dla E(w_(2) mod
+      E[vector])=x:∀α_(1)…α_(n).σ
+      niech
+
+[eqnarray*]
+
+        U   =   b-U(τ,[β_(1)/α_(1)]…[β_(n)/α_(n)]σ)
+ V   =   {β_(i)\1≤i≤n}∪[vector]V'
+ e   =   x
+ T   =   U
+ w'_(i)   =   w_(i+2)
+
+      Jeśli unifikator nie istnieje, cal-C jest
+      nieokreślone.
+
+      itemFIX: Functions. Jeśli τ=σ→rho,
+      niech
+
+[eqnarray*]
+
+        (R,e_(1),V',w[vector]_(1))   =   cal-C(E.f:τ.x:σ,rho,V,(w_(i+1)))
+ T   =   R
+ e   =   fix
+        f x.e_(1)
+ w[vector]'   =   w[vector]_(1)
+
+      gdzie f,x są nowymi zmiennymi. Jeśli
+      τ=α, gdzie α
+      jest zmienną typu, dla β_(1),β∈V
+      niech
+
+[eqnarray*]
+
+        R   =   [β_(1)→β/α]
+ (S,e_(1),V',w[vector]_(1))   =   cal-C(R*E.f:β_(1)→β.x:β_(1),β,Vsetminus{β_(1),β},(w_(i+1)))
+ T   =   S*R
+ e   =   fix
+        f x.e_(1)
+
+      gdzie f,x są nowymi zmiennymi. Jeśli
+      τ ma inną postać, cal-C
+      jest nieokreślone.
+
+      itemAPP: Applications. Niech dla β∈V
+
+[eqnarray*]
+
+        (R,f,V_(1),w[vector]_(1))   =   cal-C(E,β→τ,Vsetminus{β},(w_(i+1)))
+ (S,g,V',w[vector]_(2))   =   cal-C(R*E,Rβ,V_(1),w[vector]_(1))
+ T   =   S*R
+ e   =   f
+        g
+ w[vector]'   =   w[vector]_(2)
+
+      itemLET: Local bindings. Niech dla β∈V
+
+[eqnarray*]
+
+        (R,f,V_(1),w[vector]_(1))   =   cal-C(E,β,Vsetminus{β},(w_(i+1)))
+ (S,g,V',w[vector]_(2))   =   cal-C(R*E.x:b-G(Rβ,R*E),Rτ,V_(1),w[vector]_(1))
+ T   =   S*R
+ e   =   let
+        x=f in g
+ w[vector]'   =   w[vector]_(2)
+
+  Algorytmy dokonują podstawień w środowisku dla komunikowania informacji o
+  konstruowanym typie: wynikowym typie wyrażenia dla algorytmu inferencji
+  oraz konkretyzacji zadanego typu dla algorytmu cal-C.
+
+SUBSUBSECTION: Poprawność.
+
+  Dla algorytmów generujących zadany język, własność
+  algorytm⊆język
+  nazywamy poprawnością, a własność język⊆algorytm
+  pełnością. Dowody dla cal-W pochodzą z
+  [cite: leroy92polymorphic]. Pokażemy najpierw poprawność:
+
+[theorem]
+
+    Niech e będzie wyrażeniem, E
+    środowiskiem, V zbiorem zmiennych typu. Jeśli
+    (T, τ, V')=cal-W(E,e,V) jest
+    określone, to możemy wywnioskować T*E⊢e:τ.
+
+[proof]
+
+    Przez indukcję względem budowy termu:
+
+[enumerate]
+
+      iteme=x (VAR: Variables). Mamy T=
+      ∅ i τ=[β_(1)/α_(1);…;β_(n)/α_(n)]σ,
+      gdzie E(x)=∀α_(1)…α_(n).σ,
+      czyli τ≤E(x), skąd
+      E⊢x:τ.
+
+      iteme=fix f x.e_(1) (FIX: Functions). Z zał.
+      ind. mamy:
+
+[eqnarray*]
+
+        (R,rho,V_(1))   =   cal-W(E,e_(1),Vsetminus{β_(1),β})
+ R(E.f:β_(1)→β.x:β_(1))   ⊢   e_(1):rho
+
+      Z lematu o podstawianiu, podstawiamy U po obu
+      stronach, korzystamy z T=U*R:
+
+[equation*]
+
+        T(E.f:β_(1)→β.x:β_(1))⊢e_(1):Urho
+
+      gdzie U jest unifikatorem Rβ i
+      rho, mamy więc
+      Tβ=Urho. Pokazaliśmy w ten sposób, że:
+
+[equation*]
+
+        T*E.f:(Tβ_(1)→Tβ).x:Tβ_(1)⊢e_(1):Tβ
+
+      Stosując regułę typizowania funkcji (FIX), mamy:
+
+[equation*]
+
+        T*E⊢(fix f x in e_(1)):Tβ_(1)→Tβ
+
+      To oczekiwany rezultat, ponieważ τ=T(β_(1)→β)=Tβ_(1)→Tβ.
+
+      iteme=f*g (APP: Applications). Z zał. ind. mamy:
+
+[eqnarray*]
+
+        R*E   ⊢   f:rho
+ S*R*E   ⊢   g:σ
+
+      Stosując lemat o podstawianiu:
+
+[equation*]
+
+        S*R*E⊢f:Srho
+
+      Ponieważ U unifikuje Srho i
+      σ→β, mamy
+
+[equation*]
+
+        U*S*R*E⊢f:U(σ→β)
+
+      Biorąc T=U*S*R, z lematu o podstawianiu (drugie
+      równanie) mamy:
+
+[eqnarray*]
+
+        T*E   ⊢   f:Uσ→Uβ
+ T*E   ⊢   g:Uσ
+
+      Teraz z reguły typowania APP mamy
+
+[equation*]
+
+        T*E⊢f*g:Uβ
+
+      co jest oczekiwanym wynikiem τ=Uβ.
+
+      iteme=let x=f in g (LET: Local bindings). Z zał.
+      ind. mamy:
+
+[eqnarray*]
+
+        R*E   ⊢   f:rho
+ S(R*E.x:b-G(rho,R*E))   ⊢   g:σ
+
+      Przemianowując zmienne związane w b-G(rho,R*E)
+      można pokazać
+
+[equation*]
+
+        b-G(Srho,S*R*E)=S(b-G(rho,R*E))
+
+      Biorąc T=S*R mamy:
+
+[eqnarray*]
+
+        T*E   ⊢   f:Srho
+ T*E.x:b-G(Srho,T*E)   ⊢   g:σ
+
+      Stosując regułę typowania LET:
+
+[equation*]
+
+        T*E⊢let x=f in g:σ
+
+      i τ=σ jak oczekiwaliśmy.
+
+    \;
+
+[theorem]
+
+    Niech τ będzie typem, E
+    środowiskiem, V zbiorem zmiennych typu. Jeśli
+    (T,e,V')=cal-C(E,τ,V) jest określone,
+    to możemy wywnioskować T*E⊢e:Tτ.
+
+[proof]
+
+    Przez indukcję na złożoność generowanego termu:
+
+[enumerate]
+
+      iteme=x (VAR: Variables). Gdy
+      σ≤E(x), to
+      Tσ≤T*E(x). Ponieważ
+      T jest unifikatorem σ oraz
+      τ, a więc Tτ≤T*E(x),
+      stąd z reguły typowania VAR mamy T*E⊢x:Tτ.
+
+      iteme=fix f x.e_(1) (FIX: Functions).
+      τ=σ→rho albo
+      τ=α. W pierwszym przypadku, korzystając
+      z zał. ind. mamy
+
+[eqnarray*]
+
+        R(E.f:τ.x:σ)   ⊢   e_(1):Rrho
+ R*E.f:Rσ→Rrho.x:Rσ   ⊢   e_(1):Rrho
+
+      Stosując regułę typizowania funkcji (FIX), mamy:
+
+[equation*]
+
+        R*E⊢(fix f x in e_(1)):Rσ→Rrho
+
+      To oczekiwany rezultat, ponieważ Tτ=Rτ=Rσ→Rrho
+      dla T=R. W drugim przypadku analogicznie: korzystając
+      z zał. ind. mamy
+
+[eqnarray*]
+
+        S(R*E.f:β_(1)→β.x:β_(1))   ⊢   e_(1):Sβ
+ S*R*E.f:Sβ_(1)→Sβ.x:Sβ_(1)   ⊢   e_(1):Sβ
+
+      Stosując regułę typizowania funkcji (FIX), mamy:
+
+[equation*]
+
+        S*E⊢(fix f x in e_(1)):Sβ_(1)→Sβ
+
+      To oczekiwany rezultat, ponieważ Tτ=S*Rτ=Sβ_(1)→Sβ
+      dla T=S*R.
+
+      iteme=f*g (APP: Applications). Z zał. ind. mamy:
+
+[eqnarray*]
+
+        R*E   ⊢   f:R(β→τ)
+ S*R*E   ⊢   g:S*Rβ
+
+      Stosując lemat o podstawianiu, biorąc T=S*R:
+
+[equation*]
+
+        T*E⊢f:Tβ→Tτ
+
+      Teraz z reguły typowania APP mamy
+
+[equation*]
+
+        T*E⊢f g:Tτ
+
+      co jest oczekiwanym wynikiem.
+
+      iteme=let x=f in g (LET: Local bindings). Z zał.
+      ind. mamy:
+
+[eqnarray*]
+
+        R*E   ⊢   f:Rβ
+ S(R*E.x:b-G(Rβ,R*E))   ⊢   g:S*Rτ
+
+      Przemianowując zmienne związane w b-G(Rβ,R*E)
+      można pokazać:
+
+[equation*]
+
+        b-G(S*Rβ,S*R*E)=S(b-G(Rβ,R*E))
+
+      Biorąc T=S*R mamy:
+
+[eqnarray*]
+
+        T*E   ⊢   f:Srho
+ T*E.x:b-G(S*Rβ,T*E)   ⊢   g:Tτ
+
+      Stosując regułę typowania LET:
+
+[equation*]
+
+        T*E⊢(let x=f in g):Tτ
+
+    \;
+
+SUBSUBSECTION: Pełność.
+
+  Teraz pokażemy pełność, najpierw algorytmu cal-W, za
+  [cite: leroy92polymorphic].
+
+[theorem]
+
+    Niech e będzie wyrażeniem, E
+    środowiskiem, V nieskończonym zbiorem zmiennych typu
+    takim, że V∩b-F(E)= ∅. Jeśli
+    istnieje typ τ' i podstawienie
+    T' t. że T'E⊢e:τ',
+    to (T,τ,V')=cal-W(E,e,V) jest
+    określona, i istnieje podstawienie P t. że
+
+[equation*]
+
+      τ'=Pτ i T'=P*T
+      poza V
+
+[proof]
+
+    Przez indukcję względem złożoności e:
+
+[enumerate]
+
+      iteme=x (VAR: Variables). Ponieważ
+      T'E⊢x:τ', mamy
+      x∈Dom(T'E) i
+      τ'≤T'E(x).
+      x∈Dom(E), więc cal-W(E,x,V)
+      jest określony i zwraca
+
+[eqnarray*]
+
+        τ   =   [β_(1)/α_(1);…;β_(n)/α_(n)]τ_(x)
+ T   =   ∅
+ V'   =   Vsetminus{β_(1),…,β_(n)}
+
+      Niech E(x)=∀α_(1)…α_(n).τ_(x),
+      gdzie α_(i)∈V' nie występują
+      w T'. Mamy
+      T'E(x)=∀α_(1)…α_(n).T'τ_(x).
+      Niech R będzie podstawieniem pod
+      α_(i) t. że
+      τ'=R*T'τ_(x). Weźmy
+
+[equation*]
+
+        P=R*T'[α_(1)/β_(1);…;α_(n)/β_(n)]
+
+      Mamy Pτ=R*T'τ_(x)=τ'.
+      Co więcej, αninV nie są ani
+      α_(i), ani
+      β_(i), więc
+      Pα=R*T'α=T'α.
+      To daje oczekiwany rezultat, bo P*T=P dla
+      T= ∅.
+
+      iteme=fix f x.e_(1) (FIX: Functions).
+      Wyprowadzenie typu τ' kończy się
+      zastosowaniem reguły FIX:
+
+[equation*]
+
+        (T'E.f:(rho_(1)'→rho').x:rho_(1)'⊢e_(1):rho') / (T'E⊢(fix
+        f x in e_(1)):rho_(1)'→rho')
+
+      Wybierzmy β_(1),β∈V jak w
+      algorytmie. Określmy środowisko E_(1) i
+      podstawienie R' przez
+
+[eqnarray*]
+
+        E_(1)   =   E.f:β_(1)→β.x:β_(1)
+ R'   =   T'[rho_(1)'/β_(1);rho'/β]
+
+      Mamy R'E_(1)=T'E.f:rho_(1)'→rho'.x:rho_(1)'.
+      Stosując zał. ind. do e_(1), E_(1),
+      R', rho' mamy:
+
+[eqnarray*]
+
+        (R,rho,V_(1))   =   cal-W(E_(1),e_(1),Vsetminus{β_(1),β})
+ rho'   =   P_(1)rho
+ R'   =   P_(1)R
+        poza Vsetminus{β_(1),β}
+
+      W szczególności, P_(1)Rβ=R'β=rho',
+      stąd P_(1) jest unifikatorem
+      Rβ i rho. Stąd istnieje
+      najbardziej ogólny unifikator tych typów: nazwijmy go
+      U -- i cal-W(E,e,V) (tzn.
+      wywołanie b-U(Rβ,rho)) jest dobrze
+      określony. Niech P będzie podstawieniem t. że
+      P_(1)=P*U. Pokażemy teraz, że P
+      spełnia żądanie twierdzenia. Mamy:
+
+[eqnarray*]
+
+        Pτ=   P*U*R(β_(1)→β)   z
+        definicji τ w
+        algorytmie
+ =   P_(1)R(β_(1)→β)   z
+        definicji P
+ =   R'(β_(1)→β)   bo
+        β_(1),βninVsetminus{β_(1),β}
+ =   rho_(1)'→rho'   przez
+        konstrukcję R'
+
+      (T' nie działa na
+      rho_(1)' i
+      rho'). Co więcej, dla każdej zmiennej
+      γninV:
+
+[eqnarray*]
+
+        P*Tγ=   P*U*Rγ   z
+        definicji T w algorytmie
+ =   P_(1)Rγ   z
+        definicji P
+ =   R'γ   bo
+        γninV
+ =   T'γ   bo
+        γninV pociąga
+        γneqβ_(1)∧γneqβ
+
+      c.b.d.o.
+
+      iteme=f*g (APP: Applications). Wyprowadzenie
+      τ' kończy się z
+
+[equation*]
+
+        (T'E⊢f:σ'→nu' T'E⊢g:σ') / (T'E⊢f*g:nu')
+
+      Stosując zał. ind. do f,E,σ'→nu',T'
+      otrzymujemy
+
+[eqnarray*]
+
+        (R,rho,V_(1))   =   cal-W(E,f,V)
+ σ'→nu'   =   P_(1)rho
+ T'   =   P_(1)R
+        poza V
+
+      W szczególności, T'E=P_(1)R*E. Stosujemy
+      zał. ind. do g,R*E,σ',P_(1),V_(1).
+      P_(1) jest dobre, bo
+      T'E=P_(1)R*E.
+
+[eqnarray*]
+
+        (S,σ,V_(2))   =   cal-W(R*E,g,V_(1))
+ σ'   =   P_(2)σ
+ P_(1)   =   P_(2)S
+        poza V_(1)
+
+      Mamy P_(1)rho=P_(2)Srho. Niech
+      P_(3)=P_(2)[nu'/β]. Mamy:
+
+[eqnarray*]
+
+        P_(3)Srho   =   P_(2)Srho=P_(1)rho=σ'→nu'
+ P_(3)(σ→β)   =   P_(2)σ→nu'=σ'→nu'
+
+      P_(3) jest więc unifikatorem
+      Srho i σ→β.
+      Te typy mają więc najogólniejszy unifikator,
+      cal-W(E,f*g,V) jest dobrze określone. W dodatku,
+      mamy P_(3)=P_(4)U dla pewnego
+      P_(4). Teraz pokażemy, że
+      P=P_(4) spełnia wymagania stwierdzenia. Mamy:
+
+[equation*]
+
+        Pτ=P_(4)Uβ=P_(3)β=nu'
+
+      a dla wszystkich γninV
+
+[eqnarray*]
+
+        P*Tγ=   P_(4)U*S*Rγ   z
+        definicji T
+ =   P_(3)S*Rγ   z
+        definicji P_(4)
+ =   P_(2)S*Rγ   bo
+        γneqβ, β  nie wyst. w
+        R,S
+ =   P_(1)Rγ   bo
+        RγninV_(1)
+ =   T'γ   bo
+        γninV
+
+      iteme=let x=f in g (LET: Local bindings).
+      Wyprowadzenie τ' kończy się z:
+
+[equation*]
+
+        (T'E⊢f:rho' T'E.x:b-G(rho',T'E)⊢g:σ') / (T'E⊢(let
+        x=f in g):σ')
+
+      Stosujemy zał. ind. do f,E,V,rho',T'.
+      Otrzymujemy
+
+[eqnarray*]
+
+        (R,rho,V_(1))   =   cal-W(E,f,V)
+ rho'   =   P_(1)rho
+ T'   =   P_(1)R
+        poza V
+
+      W szczególności, T'E=P_(1)R*E. (Teraz
+      sfaktoryzujemy środowisko wyprowadzenia
+      σ'.) Łatwo sprawdzić, że
+      P_(1)b-G(rho,R*E) jest bardziej (nie
+      mniej) ogólne niż b-G(P_(1)rho,P_(1)R*E).
+[footnote]
+
+        Niech P_(1)b-G(rho,R*E)=P_(1)∀α_(1)…α_(n).rho_(1)=∀α_(1)…α_(n).P_(1)rho_(1);
+        natomiast b-G(P_(1)rho,P_(1)R*E)=b-G(∀α_(i)…α_(n).P_(1)rho_(1),P_(1)R*E)
+        oraz α_(1)…α_(i-1)
+        nie występują w R*E; zmienne nie występujące w
+        P_(1)R*E\0 które występują w
+        R*E, to te, pod które podstawia
+        P_(1); ale one nie występują w
+        P_(1)rho_(1).
+      
+ \ Ponieważ możemy wyprowadzić
+
+[equation*]
+
+        T'E.x:b-G(rho',P_(1)R*E)⊢g:σ'
+
+      z następującego lematu:
+
+[lemma]
+
+         Niech E,E' będą
+        środowiskami t. że Dom(E)=Dom(E') i
+        E'(x)≥E(x) dla wszystkich
+        x∈Dom(E). Jeśli
+        E⊢e:τ, to
+        E'⊢e:τ.
+
+      wynika, że możemy również wyprowadzić
+
+[equation*]
+
+        T'E.x:P_(1)b-G(rho,R*E)⊢g:σ'
+
+      czyli
+
+[equation*]
+
+        P_(1)(R*E.x:b-G(rho,R*E))⊢g:σ'
+
+      Stosujemy teraz zał. ind. do g,R*E.x:b-G(rho,R*E),σ',P_(1),
+      otrzymując
+
+[eqnarray*]
+
+        (S,σ,V')   =   cal-W(R*E.x:b-G(rho,R*E),g,V_(1))
+ σ'   =   P_(2)σ
+ P_(1)   =   P_(2)S
+        poza V_(1)
+
+      Algorytm bierze τ=σ i
+      T=S*R. Pokażemy, że P=P_(2)
+      spełnia wymagania stwierdzenia. Mamy
+      Pτ=σ'. I jeśli
+      γninV, czyli
+      γninV_(1):
+
+[eqnarray*]
+
+        P*Tγ=   P_(2)S*Rγ   z
+        definicji T
+ =   P_(1)Rγ   bo
+        RγninV_(1)
+ =   T'γ   bo
+        γninV
+
+      Stąd T'=P*T poza V, jak
+      oczekiwano.
+
+    \;
+
+  Teraz sprawdzimy pełność algorytmu cal-C. Wprowadźmy
+  najpierw inne pojęcie ogólności typu:
+
+[definition]
+
+    Typ σ jest bardziej ogólny niż
+    τ
+
+[equation*]
+
+      τpreccurlyeqσ≡ istnieje
+      podstawienie P: Pσ=τ
+
+    Podstawienie S jest bardziej ogólne niż
+    R
+
+[eqnarray*]
+
+      RpreccurlyeqS   ≡   istnieje
+      podstawienie P: P*S=R
+    ≡   Dom(S)⊆Dom(R)
+      i ∀α∈Dom(S):RαpreccurlyeqSα
+
+[theorem]
+
+     Niech e będzie wyrażeniem,
+    E środowiskiem. Dla dowolnego typu
+    τ i podstawienia T' t.
+    że T'E⊢e:T'τ oraz
+    b-F(T')∩Dom(T')=
+    ∅, dla nieskończonego zbioru zmiennych V
+    rozłącznego z b-F(E) i
+    b-F(T'), dla pewnej ścieżki wyborów
+    zachodzi (T,e,V')=cal-C(E,τ,V) oraz
+    T'preccurlyeqT poza V.
+
+[proof]
+
+    Przez indukcję względem złożoności e:
+
+[enumerate]
+
+      iteme=x (VAR: Variables). Ponieważ
+      T'E⊢x:τ', mamy
+      x∈Dom(E) i T'τ≤T'E(x).
+      Wybieramy VAR w cal-C(E,τ,V) i zmienną
+      x z E. Niech
+      E(x)=∀α_(1)…α_(n).σ.
+      Ponieważ T'τ≤T'E(x),
+      więc istnieje unifikator
+
+[equation*]
+
+        U=b-U(τ,[β_(1)/α_(1);…β_(n)/α_(n)]σ)
+
+      gdzie β_(i)∈V,β_(i)ninV'.
+      Ponieważ U jest najogólniejszym unifikatorem a
+      T' rozszerzony o podstawienia nad
+      β_(i) (oznaczone wcześniej
+      [τ_(i)/α_(i)], ale
+      α_(i)↔β_(i))
+      też jest unifikatorem, więc T'=S*U poza
+      V. Tak więc dla T=U mamy
+      T'preccurlyeqT poza V.
+
+      iteme=fix f x.e_(1) (FIX: Functions).
+      Wyprowadzenie typu T'τ kończy się z
+
+[equation*]
+
+        (T'E.f:(σ'→rho').x:σ'⊢e_(1):rho') / (T'E⊢(fix
+        f x in e_(1)):σ'→rho')
+
+      Typ τ jako ogólniejszy ma postać
+      σ→rho albo
+      α (gdzie α jest
+      zmienną typu). Rozpatrzmy najpierw przypadek
+      σ→rho. Z zał. ind. dla
+      T' i rho'
+      (T'rho=rho') mamy: istnieje
+      ciąg wyborów dający
+
+[equation*]
+
+        (R,e_(1),V_(1))=cal-C(E.f:τ.x:σ,rho,V)
+
+      oraz T'preccurlyeqR poza
+      V. Teza wynika z T=R.
+
+      W przypadku τ=α,
+      R=[β_(1)→β/α],
+      gdzie β_(1),β∈V wprowadzone
+      przez algorytm. Ponieważ T'α=σ'→rho',
+      T' można zmodyfikować:
+      U=b-U(T'α,β_(1)→β),
+      T''=(T'setminus{α↦σ'→rho'})U*.
+      Z zał. ind. dla T'' i
+      β_(1)→β mamy
+
+[equation*]
+
+        (S,e_(1),V_(1))=cal-C(R*E.f:β_(1)→β.x:β_(1),β,Vsetminus{β_(1),β})
+
+      oraz T''preccurlyeqS poza
+      Vsetminus{β_(1),β}. Ale
+      T''(β_(1)→β)=T'α,
+      więc T''R=T', stąd
+      T'preccurlyeqS*R=T.
+
+      iteme=f*g (APP: Applications). Wyprowadzenie
+      T'τ kończy się z
+
+[equation*]
+
+        (T'E⊢f:σ'→τ' T'E⊢g:σ') / (T'E⊢f*g:τ')
+
+      Niech T_(1)=[σ'/β]T'
+      (co nie stwarza problemów, bo β nie wyst. w
+      T'), stosując zał. ind. do
+      T_(1) i β→τ
+      (zachodzi T_(1)(β→τ)=T_(1)β→T_(1)τ=σ'→T'τ=σ'→τ')
+
+[equation*]
+
+        (R,f,V_(1))=cal-C(E,β→τ,Vsetminus{β})
+
+      oraz T_(1)preccurlyeqR poza
+      Vsetminus{β}. Niech
+      T_(2): T_(1)=T_(2)R poza
+      Vsetminus{β}, zastosujmy zał. ind. do
+      T_(2),R*E,R*β
+      (T_(2)Rβ=T_(1)β=σ'):
+
+[equation*]
+
+        (S,g,V_(2))=cal-C(R*E,Rβ,V_(1))
+
+      T_(2)preccurlyeqS poza
+      V_(1) (niech T_(3): T_(2)=T_(3)S
+      poza V_(1)), a więc
+      T_(1)preccurlyeqS*R poza
+      Vsetminus{β} (bo
+      V_(1)⊆Vsetminus{β}), czyli
+      T'preccurlyeqSR=T poza
+      V (bo β∈V).
+
+      iteme=let x=f in g (LET: Local bindings).
+      Wyprowadzenie T'τ kończy się z
+
+[equation*]
+
+        (T'E⊢f:rho' T'E.x:b-G(rho',T'E)⊢g:τ') / (T'E⊢(let
+        x=f in g):τ')
+
+      Stosujemy zał. ind. do [rho'/β]T'
+
+[equation*]
+
+        (R,f,V_(1))=cal-C(E,β,Vsetminus{β})
+
+      mamy [rho'/β]T'preccurlyeqR,
+      czyli [rho'/β]T'=T_(1)R,
+      poza Vsetminus{β}. Analogicznie jak przy
+      dowodzie dla algorytmu cal-W pokazuje się, że
+      możemy wyprowadzić
+
+[equation*]
+
+        T'E.x:T_(1)b-G(Rβ,R*E)⊢g:τ'
+
+      Stosujemy więc zał. ind. do powyższego, biorąc
+      E'=R*E.x:b-G(Rβ,R*E)
+
+[equation*]
+
+        (S,g,V_(2))=cal-C(R*E.x:b-G(Rβ,R*E),τ,V_(1))
+
+      oraz T_(1)preccurlyeqS poza
+      V_(1). Stąd T'preccurlyeqS*R=T
+      poza V, bo V_(1)⊂V i
+      β∈V.
+
+      \ 
+
+    \;
+
+  Zobaczmy, że cal-C w pewnym sensie odtwarza, podobnie
+  jak cal-W, najogólniejszy typ skonstruowanego termu.
+
+[corollary]
+
+     Jeśli β jest zmienną typu nie
+    występującą w E, βninV, oraz
+    cal-C(E,β,V)=(T,e,V_(1)), to dla
+    dowolnego typu τ i podstawienia
+    T', βninb-F(τ)∪b-F(T'),
+    dla których T'E⊢e:τ, mamy
+    T'preccurlyeqT poza
+    V∪{β} i
+    τpreccurlyeqTβ.
+
+[proof]
+
+    Załóżmy, że dla wyborów w[vector]_(1) i
+    w[vector]_(2) zachodzi
+    cal-C(E,β,V,w[vector]_(1))=(R,e,V_(1))
+    oraz cal-C(E,β,V,w[vector]_(2))=(S,e,V_(2)).
+    Sprawdzając, że przebiegi algorytmu się dokładnie pokrywają (przez
+    indukcję względem e), czyli że
+    cal-C(E,β,V,w[vector]_(1))=cal-C(E,β,V,w[vector]_(2)),
+    otrzymujemy, że R=S.
+
+    Rozszerzmy T' do
+    T''=[τ/β]T'. Mamy
+    T''E⊢e:T''β. Ze
+    stwierdzenia [ref: pelnoscC] dla pewnej ścieżki wyborów
+    w[vector]_(1) i
+    cal-C(E,β,V,w[vector]_(1))=(R,e,V_(1))
+    mamy T''preccurlyeqR poza
+    V, ale R=T, więc
+    T''preccurlyeqT poza V, a
+    stąd T'preccurlyeqT poza
+    V∪{β} i
+    τ=T''βpreccurlyeqTβ.
+
+SUBSECTION: Rozszerzenie języka o konstrukcję
+  case.
+
+  Dotychczasowy system typów nie traktował w żaden sposób struktur danych.
+  Uściślimy go pod tym względem i wprowadzimy do języka manipulację tzw.
+  indukcyjnymi strukturami danych: konstruktory oraz dekonstruktor analizy
+  przez przypadki case. Zaprezentowany system typów
+  odpowiada systemowi λ[vector] z
+  [cite: barthe-typebased] z pominięciem etapów (stages), które wprowadzimy w
+  następnym rozdziale. W kwestii szczegółów definicji odsyłam do
+  [cite: barthe-typebased].
+
+[definition]
+
+    Reguły typowania dla struktur indukcyjnych:
+
+[enumerate-numeric]
+
+      itemVAR: Variables...
+
+      itemFIX: Functions...
+
+      itemAPP: Applications...
+
+      itemLET: Local bindings...
+
+      itemCASE: Deconstruction
+
+[equation*]
+
+        (E⊢e':dτ[vector] E⊢e_(i):Inst_(c_(i))τ[vector]→θ
+        (1≤i≤n)) / (c_(n)⇒e_(n)}:θ)
+        jeśli b-C(d)={c_(1),…,c_(n)}
+
+      itemZamiast reguły: CONS: Constructor
+
+[equation*]
+
+        () / (E⊢c:Inst_(c)τ[vector]→dτ[vector])
+        jeśli c∈b-C(d)
+
+      wprowadzamy założenie na temat środowiska E:
+
+[equation*]
+
+        (∀d)(∀c∈b-C(d))  niech
+        c:∀α[vector].Inst_(c)α[vector]→dα[vector]∈E,
+        gdzie #α[vector] jest arnością d
+
+    gdzie b-C(d) jest zbiorem konstruktorów typu
+    d, τ[vector] są
+    argumentami typu, Inst_(c)τ[vector]
+    jest wektorem typów argumentów konstruktora c, jeśli typ
+    parametryczny d przybierze parametry
+    τ[vector]. Oznaczenie: jeśli
+    σ[vector]=(σ_(1),…,σ_(n))=(σ_(i))_(1≤i≤n),
+    to #σ[vector]=n oraz
+
+[equation*]
+
+      σ[vector]→τ=σ_(1)→…→σ_(n)→τ=σ_(1)→(…→(σ_(n)→τ)…)
+
+  Wypada rozszerzyć algorytmy cal-W i
+  cal-C.
+
+[definition]
+
+    cal-W(E,e,V)=(T,τ,V'), gdzie dopasuj
+    e:
+
+[enumerate]
+
+      iteme=x (VAR: Variables)...
+
+      iteme=fix f x.e_(1) (FIX: Functions)...
+
+      iteme=f*g (APP: Applications)...
+
+      iteme=let x=f in g (LET: Local bindings)...
+
+      itemc_(n)⇒e_(n)}
+      (CASE: Deconstruction) Dla typu d o arności
+      k (k-parametrycznego) t. że
+      c_(1),…,c_(n)∈b-C(d)
+
+[eqnarray*]
+
+        V   =   {β_(i)\1≤i≤k}∪{θ}∪[vector]V_(r)
+ (T_(0),rho,V_(0))   =   cal-W(E,e',V_(r))
+ U_(0)   =   b-U(rho,dβ[vector])
+ (T_(1),σ_(1),V_(1))   =   cal-W(U_(0)T_(0)*E,e_(1),V_(0))
+ U_(1)   =   b-U(T_(1)U_(0)T_(0)(Inst_(c_(1))β[vector]→θ),σ_(1))
+ …      
+ (T_(n),σ_(n),V_(n))   =   cal-W(U_(n-1)T_(n-1)…U_(0)T_(0)E,e_(n),V_(n-1))
+ U_(n)   =   b-U(T_(n)U_(n-1)T_(n-1)…U_(0)T_(0)(Inst_(c_(1))β[vector]→θ),σ_(n))
+ T   =   U_(n)T_(n)…U_(0)T_(0)
+ τ   =   Tθ
+ V'   =   V_(n)
+
+[note]
+
+     Dla dowolnego podstawienia T, typu
+    indukcyjnego d, typów
+    τ[vector],#τ[vector]=ar(d) i
+    konstruktora c, c∈b-C(d) zachodzi
+
+[eqnarray*]
+
+      d(Tτ[vector])   =   T*dτ[vector]
+ Inst_(c)Tτ[vector]   =   T*Inst_(c)τ[vector]
+
+[definition]
+
+    cal-C(E,τ,V,w[vector])=(T,e,V',w[vector]'),
+    gdzie dla (w_(1 )mod 5) równego
+
+[enumerate]
+
+      itemVAR: Variables...
+
+      itemFIX: Functions...
+
+      itemAPP: Applications...
+
+      itemLET: Local bindings...
+
+      itemCASE: Deconstruction. Niech d będzie
+      (w_(i+1) mod D)-ym typem indukcyjnym, gdzie
+      D jest ilością typów indukcyjnych, oraz
+      k arnością typu d. Niech
+
+[eqnarray*]
+
+        V   =   {β_(i)\1≤i≤k}∪{θ}∪[vector]V_(r)
+ (R,e',V_(0),w[vector]_(0))   =   cal-C(E,dβ[vector],V_(r),(w_(i+2)))
+ (T_(1),e_(1),V_(1),w[vector]_(1))   =   cal-C(R*E,R*(Inst_(c_(1))β[vector]→τ),V_(0),w[vector]_(0))
+ …      
+ (T_(n),e_(n),V_(n),w[vector]_(n))   =   cal-C(T_(n-1)…T_(1)R*E,T_(n-1)…T_(1)R*(Inst_(c_(n))β[vector]→τ),V_(n-1),w[vector]_(n-1))
+ T
+           =   T_(n)…T_(1)R
+ e   =   case
+        e' of {c_(1)⇒e_(1)\…\c_(n)⇒e_(n)}
+ V'   =   V_(n)
+ w[vector]'   =   w[vector]_(n)
+
+SUBSUBSECTION: Poprawność z case.
+
+[theorem]
+
+    Niech e będzie wyrażeniem, E
+    środowiskiem, V zbiorem zmiennych typu. Jeśli
+    (T, τ, V')=cal-W(E,e,V) jest
+    określone, to możemy wywnioskować T*E⊢e:τ.
+
+[proof]
+
+    Przez indukcję względem budowy termu:
+
+[enumerate]
+
+      iteme=x (VAR: Variables)...
+
+      iteme=fix f x.e_(1) (FIX: Functions)...
+
+      iteme=f*g (APP: Applications)...
+
+      iteme=let x=f in g (LET: Local bindings)...
+
+      itemc_(n)⇒e_(n)}
+      (CASE: Deconstruction). Z algorytmu i z zał. ind. mamy:
+
+[eqnarray*]
+
+        T_(0)E   ⊢   e':rho
+ U_(0)   =   b-U(rho,dβ[vector])
+ T_(1)U_(0)T_(0)E   ⊢   e_(1):σ_(1)
+ U_(1)   =   b-U(T_(1)U_(0)T_(0)(Inst_(c_(1))β[vector]→θ),σ_(1))
+ …      
+ T_(n)U_(n-1)T_(n-1)…U_(0)T_(0)E   ⊢   e_(n):σ_(n)
+ U_(n)   =   b-U(T_(n)U_(n-1)T_(n-1)…U_(0)T_(0)(Inst_(c_(n))β[vector]→θ),σ_(n))
+ T   =   U_(n)T_(n)…U_(0)T_(0)
+ τ   =   Tθ
+
+      Ponieważ
+
+[equation*]
+
+        U_(0)rho=U_(0)dβ[vector]
+
+      oraz
+
+[equation*]
+
+        U_(i)σ_(i)=U_(i)(Inst_(c_(i))β[vector]→θ)
+
+      z lematu o podstawianiu mamy (podstawiając po obu stronach
+      U_(i), stosując powyższą równość, podstawiając po
+      obu stronach T_(i+1),U_(i+1),…,T_(n),U_(n))
+
+[eqnarray*]
+
+        T*E   ⊢   e':U_(n)T_(n)…U_(0)dβ[vector]
+ T*E   ⊢   e_(1):T(Inst_(c_(1))β[vector]→θ)
+ …      
+ T*E   ⊢   e_(n):T(Inst_(c_(n))β[vector]→θ)
+
+      Stosując fakt [ref: ddistr] mamy
+
+[eqnarray*]
+
+        T*E   ⊢   e':d(Tβ[vector])
+ T*E   ⊢   e_(1):Inst_(c_(1))(Tβ[vector])→τ
+ …      
+ T*E   ⊢   e_(n):Inst_(c_(n))(Tβ[vector])→τ
+
+      Z reguły dekonstrukcji (CASE) wnioskujemy (dla tamtejszych
+      τ[vector]assignTβ[vector]
+      i θassignτ)
+
+[equation*]
+
+        T*E⊢(case e' of {c_(1)⇒e_(1)\|…\|c_(n)⇒e_(n)}):τ
+
+    \;
+
+[theorem]
+
+    Niech τ będzie typem, E
+    środowiskiem, V zbiorem zmiennych typu. Jeśli
+    (T,e,V')=cal-C(E,τ,V) jest określone,
+    to możemy wywnioskować T*E⊢e:Tτ.
+
+[proof]
+
+    Przez indukcję na złożoność generowanego termu:
+
+[enumerate]
+
+      iteme=x (VAR: Variables)...
+
+      iteme=fix f x.e_(1) (FIX: Functions)...
+
+      iteme=f*g (APP: Applications)...
+
+      iteme=let x=f in g (LET: Local bindings)...
+
+      itemc_(n)⇒e_(n)}
+      (CASE: Deconstruction). Z algorytmu i zał. ind. mamy:
+
+[eqnarray*]
+
+        rho   =   dβ[vector]
+ R*E   ⊢   e':Rrho
+ T_(1)R*E   ⊢   e_(1):T_(1)R(Inst_(c_(1))β[vector]→τ)
+ …      
+ T_(n)…T_(1)R*E   ⊢   e_(n):T_(n)…T_(1)R*(Inst_(c_(n))β[vector]→τ)
+ T
+           =   T_(n)…T_(1)R
+
+      Stosując lemat o podstawianiu i fakt [ref: ddistr], jak w dowodzie
+      dla algorytmu cal-W, otrzymujemy
+
+[eqnarray*]
+
+        T*E   ⊢   e':d(Tβ[vector])
+ T*E   ⊢   e_(1):Inst_(c_(1))(Tβ[vector])→Tτ
+ …      
+ T*E   ⊢   e_(n):Inst_(c_(n))(Tβ[vector])→Tτ
+
+      Z reguły dekonstrukcji (CASE) wnioskujemy (dla tamtejszych
+      τ[vector]assignTβ[vector]
+      i θassignTτ)
+
+[equation*]
+
+        T*E⊢(case e' of {c_(1)⇒e_(1)\|…\|c_(n)⇒e_(n)}):Tτ
+
+    \;
+
+SUBSUBSECTION: Pełność z case.
+
+[theorem]
+
+    Niech e będzie wyrażeniem, E
+    środowiskiem, V nieskończonym zbiorem zmiennych typu
+    takim, że V∩b-F(E)= ∅. Jeśli
+    istnieje typ τ' i podstawienie
+    T' t. że T'E⊢e:τ',
+    to (T,τ,V')=cal-W(E,e,V) jest
+    określona, i istnieje podstawienie P t. że
+
+[equation*]
+
+      τ'=Pτ i T'=P*T
+      poza V
+
+[proof]
+
+    Przez indukcję względem złożoności e:
+
+[enumerate]
+
+      iteme=x (VAR: Variables)...
+
+      iteme=fix f x.e_(1) (FIX: Functions)...
+
+      iteme=f*g (APP: Applications)...
+
+      iteme=let x=f in g (LET: Local bindings)...
+
+      itemc_(n)⇒e_(n)}
+      (CASE: Deconstruction). Wyprowadzenie typu
+      τ' kończy się z
+
+[equation*]
+
+        (T'E⊢e':dγ[vector] T'E⊢e_(i):Inst_(c_(i))γ[vector]→τ'
+        (1≤i≤n)) / (c_(n)⇒e_(n)}:τ')
+
+      Stosujemy zał. ind. n+1-krotnie
+
+[eqnarray*]
+
+        (T_(0),rho,V_(0))   =   cal-W(E,e',V_(r))
+ dγ[vector]   =   P_(0)rho
+ T'   =   P_(0)T_(0)
+        poza V_(r)
+ U_(0)   =   b-U(rho,dβ[vector])
+ P_(0)   =   P_(0)'U_(0)
+        poza β[vector]
+ T'E   =   P_(0)T_(0)E=P_(0)'U_(0)T_(0)E
+ (T_(1),σ_(1),V_(1))   =   cal-W(U_(0)T_(0)*E,e_(1),V_(0))
+ Inst_(c_(1))γ[vector]→τ'   =   P_(1)σ_(1)
+ P_(0)'   =   P_(1)T_(1)
+        poza V_(0)
+ U_(1)   =   b-U(T_(1)U_(0)T_(0)(Inst_(c_(1))β[vector]→θ),σ_(1))
+ P_(1)   =   P_(1)'U_(1)
+        poza θ
+ T'E   =   P_(1)'U_(1)T_(1)U_(0)T_(0)E
+ (T_(2),σ_(2),V_(2))   =   cal-W(U_(1)T_(1)U_(0)T_(0)E,e_(2),V_(1))
+ Inst_(c_(2))γ[vector]→τ'   =   P_(2)σ_(2)
+ P_(1)'   =   P_(2)T_(2)
+        poza V_(1)
+ U_(2)   =   b-U(T_(2)U_(1)T_(1)U_(0)T_(0)(Inst_(c_(2))β[vector]→θ),σ_(2))
+ P_(2)   =   P_(2)'U_(2)
+        poza θ
+ …      
+ (T_(n),σ_(n),V_(n))   =   cal-W(U_(n-1)T_(n-1)…U_(0)T_(0)E,e_(n),V_(n-1))
+ Inst_(c_(n))γ[vector]→τ'   =   P_(n)σ_(n)
+ P_(n-1)'   =   P_(n)T_(n)
+        poza V_(n-1)
+ U_(n)   =   b-U(T_(n)U_(n-1)T_(n-1)…U_(0)T_(0)(Inst_(c_(n))β[vector]→θ),σ_(n))
+ P_(n)   =   P_(n)'U_(n)
+        poza θ
+ T   =   U_(n)T_(n)…U_(0)T_(0)
+ T'   =   P_(n)'T*
+        poza V
+ τ   =   Tθ
+
+      Unifikator U_(0) istnieje, bo
+      P_(0)rho=dγ[vector]=[γ[vector]/β[vector]]dβ[vector],
+      gdzie [γ[vector]/β[vector]]=[γ_(1)/β_(1);…;γ_(ar(d))/β_(ar(d))].
+      P_(0)=P_(0)'U_(0) poza
+      β[vector] dla pewnego
+      P_(0)', bo
+      [γ[vector]/β[vector]]P_(0)
+      jest innym unifikatorem; (jeśli U_(0) podstawia
+      pod rho, które jest wtedy zmienną, to
+      P_(0)' podstawia pod
+      β_(i); jeśli U_(0)
+      podstawia tylko pod β_(i), to
+      P_(0)'=P_(0); jeśli
+      U_(0)α=β_(i), to
+      P_(0)'β_(i)=P_(0)α).
+      Istnieje unifikator U_(1), bo
+      P_(1)σ_(1)=Inst_(c_(1))γ[vector]→τ',
+      a P_(1)T_(1)U_(0)T_(0)(Inst_(c_(1))β[vector]→θ)=P_(0)'U_(0)T_(0)(Inst_(c_(1))β[vector]→θ)=Inst_(c_(1))γ[vector]→θ,
+      bo d(P_(0)'U_(0)β[vector])=P_(0)'(U_(0)dβ[vector])=P_(0)'U_(0)rho=P_(0)rho=dγ[vector].
+      Stąd też P_(1)=P_(1)'U_(1) poza
+      the4a, bo [τ'/θ]P_(1)
+      jest unifikatorem. Niech σ_(1)^(θ)
+      oznacza fragment typu U_(1)σ_(1)
+      odpowiadający U_(1)θ. Istnieje unifikator
+      U_(2), bo P_(2)σ_(2)=Inst_(c_(2))γ[vector]→τ',
+      a
+
+[eqnarray*]
+
+        P_(2)T_(2)U_(1)T_(1)U_(0)T_(0)(Inst_(c_(2))β[vector]→θ)   =   P_(1)'U_(1)T_(1)U_(0)T_(0)(Inst_(c_(2))β[vector]→θ)
+    =   P_(1)'U_(1)T_(1)U_(0)T_(0)Inst_(c_(2))β[vector]→P_(1)'U_(1)T_(1)U_(0)T_(0)θ
+    =   P_(1)T_(1)U_(0)T_(0)Inst_(c_(2))β[vector]→P_(1)'(U_(1)θ)
+    =   P_(0)'U_(0)T_(0)Inst_(c_(2))β[vector]→P_(1)'σ_(1)^(θ)
+    =   Inst_(c_(2))γ[vector]→(τ'
+        albo θ)
+
+      Także P_(2)=P_(2)'U_(2) poza
+      θ, bo jeśli nie P_(2), to
+      napewno [τ'/θ]P_(2) jest
+      unifikatorem. Podobnie istnieją unifikatory U_(i)
+      dla i=3,…,n. Mamy
+      P_(n)'T=P_(n)'U_(n)T_(n)…U_(0)T_(0)=P_(n)T_(n)…U_(0)T_(0)=P_(n-1)'U_(n-1)T_(4-1)…U_(0)T_(0)=P_(0)'U_(0)T_(0)=P_(0)T_(0)=T'
+      poza V, bo β[vector],{θ},V_(r),V_(i)⊂V.
+      Także P_(n)'U_(n)T_(n)…U_(0)T_(0)θ=τ'
+      jeśli któreś spośród U_(i) podstawia pod
+      θ, w przec. przyp.
+      P_(n)'T=θ. Określmy
+      P=[τ'/θ]P_(n)'.
+      P spełnia warunki stwierdzenia.
+
+    \;
+
+[theorem]
+
+     Niech e będzie wyrażeniem,
+    E środowiskiem. Dla dowolnego typu
+    τ i podstawienia T' t.
+    że T'E⊢e:T'τ oraz
+    b-F(T')∩Dom(T')=
+    ∅ (?), dla nieskończonego zbioru zmiennych
+    V rozłącznego z b-F(E) i
+    b-F(T'), dla pewnej ścieżki wyborów
+    zachodzi (T,e,V')=cal-C(E,τ,V) oraz
+    T'preccurlyeqT poza V.
+
+[proof]
+
+    Przez indukcję względem złożoności e:
+
+[enumerate]
+
+      iteme=x (VAR: Variables)...
+
+      iteme=fix f x.e_(1) (FIX: Functions)...
+
+      iteme=f*g (APP: Applications)...
+
+      iteme=let x=f in g (LET: Local bindings)...
+
+      itemc_(n)⇒e_(n)}
+      (CASE: Deconstruction). Wyprowadzenie
+      T'τ kończy się z
+
+[equation*]
+
+        (T'E⊢e':dγ[vector] T'E⊢e_(i):Inst_(c_(i))γ[vector]→τ'
+        (1≤i≤n)) / (c_(n)⇒e_(n)}:τ')
+
+      gdzie τ'=T'τ. Wybieramy
+      typ indukcyjny d. Stosując
+      n+1-krotnie zał. ind. mamy
+
+[eqnarray*]
+
+        (R,e',V_(0),w[vector]_(0))   =   cal-C(E,dβ[vector],V_(r),(w_(i+2)))
+ [γ[vector]/β[vector]]T'   preccurlyeq   R
+        poza V_(r)
+ [γ[vector]/β[vector]]T'   =   P_(0)R
+        poza V_(r)
+ (T_(1),e_(1),V_(1),w[vector]_(1))   =   cal-C(R*E,R*(Inst_(c_(1))β[vector]→τ),V_(0),w[vector]_(0))
+ P_(0)   preccurlyeq   T_(1)
+        poza V_(0)
+ P_(0)   =   P_(1)T_(1)
+        poza V_(0)
+ (T_(2),e_(2),V_(2),w[vector]_(2))   =   cal-C(T_(1)R*E,T_(1)R(Inst_(c_(2))β[vector]→τ),V_(1),w[vector]_(1))
+ P_(1)   preccurlyeq   T_(2)
+        poza V_(1)
+ P_(1)   =   P_(2)T_(2)
+        poza V_(1)
+ …      
+ (T_(n),e_(n),V_(n),w[vector]_(n))   =   cal-C(T_(n-1)…T_(1)R*E,T_(n-1)…T_(1)R*(Inst_(c_(n))β[vector]→τ),V_(n-1),w[vector]_(n-1))
+ P_(n-1)   preccurlyeq   T_(n)
+        poza V_(n-1)
+ P_(n-1)   =   P_(n)T_(n)
+        poza V_(n-1)
+ T    =   T_(n)…T_(1)R
+ T'
+           =   P_(n)T poza V
+
+      \ [γ[vector]/β[vector]]T'dβ[vector]=[γ[vector]/β[vector]]dβ[vector]=dγ[vector].
+      P_(n)T=P_(n)T_(n)…T_(1)R=P_(n-1)T_(n-1)…T_(1)R=…=P_(0)R=[γ[vector]/β[vector]]T'
+      poza V_(r)∪V_(0)∪…∪V_(n-1)⊂V,
+      oraz β[vector]⊂V, czyli
+      P_(n)T=T' poza V.
+
+    \;
+
+SUBSUBSECTION: Zagadnienia praktyczne: CASE sterowane użyciem.
+
+  Aby zmniejszyć przypadkowość użyć reguły CASE, wprowadzamy do środowiska
+  specjalne zmienne x_(c_(i),j):∀β[vector].(Inst_(c_(i))β[vector])_(j)
+  oznaczające wyjęcie j-tego argumentu konstruktora
+  c_(i). Dla każdego wyboru zmiennej generycznej
+  x_(c_(i),j) generowane i wprowadzane do środowiska
+  są nowe zmienne x_(c_(i),j)^(k):(Inst_(c_(i))β[vector])_(j)
+  dla j=1,…,ar(c_(i)), odpowiadające argumentom
+  konstruktora c_(i) z odpowiedniej dekonstrukcji CASE
+  (gdzie β[vector] są świeżymi zmiennymi z
+  V); użyta zostaje zmienna
+  x_(c_(i),j)^(k). W fazie postprocessingu
+  konstrukcje CASE są zastosowane w najwęższych podtermach obejmujących
+  x_(c_(i),j)^(k) dla ustalonych
+  i,k, tak, żeby żadne x_(c_(i),j)^(k)
+  nie było głową ''swojego'' podtermu. Stworzony podterm nazywamy gałęzią
+  główną odpowiedniego zastosowania CASE; rekurencyjnie generowane są
+  pozostałe gałęzie CASE. W jednoprzebiegowym algorytmie należy przyjąć jakąś
+  arbitralną strategię limitowania rozmiaru gałęzi. 
+
+  \;
+
+SECTION: Monotoniczność i własność stopu.
+
+  Teraz zaprezentuję system kontrolujący głębokość rekurencji, zapewniający w
+  ten sposób własność stopu. System λ[vector]
+  został przedstawiony w [cite: barthe-typebased]. Typy danych w
+  λ[vector] są indeksowane informacją o głębokości
+  struktur, tzw. etapami: d^(s)τ[vector],
+  d jest typem danych, ^(s) jest
+  etapem, τ[vector] są parametrami typu.
+  Reguła wprowadzająca rekurencję zapewnia, że argument funkcji w wywołaniach
+  rekurencyjnych będzie malał, a ponieważ rozmiary danych są skończone, więc
+  program rekurencyjny w końcu się zatrzyma.
+
+  Etapy konstruuje się ze zmiennych etapu, unarnego operatora
+  [vector] oznaczającego jednostkowe zwiększenie rozmiaru,
+  oraz etapu pochłaniającego ∞, oznaczającego
+  dowolny rozmiar. iota[vector] oznacza wszystkie
+  rozmiary nie większe więcej niż o jeden od rozmiarów oznaczanych przez
+  iota. d^(s)τ[vector]
+  oznacza wszystkie dane ``typu dτ[vector]'' o
+  rozmiarze należącym do s (alternatywnie można mówić: nie
+  większym niż s).
+
+SUBSECTION: System typów i algorytm cal-C.
+
+  Tak wygląda prezentacja w [cite: barthe-typebased]:
+
+[definition]
+
+    Porównywanie etapów preccurlyeq i podtypowanie
+    sqsubseteq. Reguły porównywania etapów:
+
+[enumerate-numeric]
+
+      item(REFL)
+
+[equation*]
+
+        () / (spreccurlyeqs)
+
+      item(TRANS)
+
+[equation*]
+
+        (spreccurlyeqr rpreccurlyeqp) / (spreccurlyeqp)
+
+      item(HAT)
+
+[equation*]
+
+        () / (spreccurlyeqs[vector])
+
+      item(INFTY)
+
+[equation*]
+
+        () / (spreccurlyeq∞)
+
+    Reguły podtypowania:
+
+[enumerate]
+
+      item(REFL)
+
+[equation*]
+
+        () / (ssqsubseteqs)
+
+      item(DATA)
+
+[equation*]
+
+        (spreccurlyeqr τ_(i)sqsubseteqτ_(i)' (1≤i≤ar(d))) / (d^(s)τ[vector]sqsubseteqd^(r)τ[vector]')
+
+      item(FUNC)
+
+[equation*]
+
+        (τ'sqsubseteqτ σsqsubseteqσ') / (τ→σsqsubseteqτ'→σ')
+
+[definition]
+
+    Reguły typowania.
+
+[enumerate]
+
+      item(VAR)
+
+[equation*]
+
+        () / (E⊢x:σ)
+
+      gdy (x:σ)∈Γ.
+
+      item(ABS)
+
+[equation*]
+
+        (E.x:τ⊢e:σ) / (E⊢λx.e:τ→σ)
+
+      item(APP)
+
+[equation*]
+
+        (E⊢e:τ→σ E⊢e':τ) / (E⊢e
+        e':σ)
+
+      item(CONS)
+
+[equation*]
+
+        () / (E⊢Inst_(c)^(s)τ[vector]→d^(s[vector])τ[vector])
+
+      gdy c∈b-C(d).
+
+      item(CASE)
+
+[equation*]
+
+        (E⊢e':d^(s[vector])τ[vector] E⊢e_(i):Inst_(c_(i))^(s)τ[vector]→θ (1≤i≤n)) / (c_(n)⇒e_(n)}:θ)
+
+      gdy b-C(d)={c_(1),…,c_(n)}.
+
+      item(REC)
+
+[equation*]
+
+        (E.f:d^(iota)τ[vector]→θ⊢e:d^(iota[vector])τ[vector]→[iota[vector]/iota]θ iota
+        pos θ) / (E⊢(letrec f=e):d^(s)τ[vector]→[s/iota]θ)
+
+      gdy iota nie występuje w
+      E,τ[vector].
+
+      item(SUB)
+
+[equation*]
+
+        (E⊢e:σ σsqsubseteqσ') / (E⊢e:σ')
+
+    Pozytywne-negatywne wystąpienia zmiennej etapu:
+
+[enumerate]
+
+      item(SP1)
+
+[equation*]
+
+        () / (iota pos α)
+
+      item(SP2)
+
+[equation*]
+
+        (iota neg τ iota pos σ) / (iota
+        pos τ→σ)
+
+      item(SP3)
+
+[equation*]
+
+        (iota pos τ_(i) (1≤i≤ar(d))) / (iota
+        pos d^(s)τ[vector])
+
+      item(SN1)
+
+[equation*]
+
+        () / (iota neg α)
+
+      item(SN2)
+
+[equation*]
+
+        (iota pos τ iota neg σ) / (iota
+        neg τ→σ)
+
+      item(SN3)
+
+[equation*]
+
+        (iota nocc s iota neg
+        τ_(i) (1≤i≤ar(d))) / (iota
+        neg d^(s)τ[vector])
+
+  Jednak my potrzebujemy w regułach typowania wskazówek co do podstawień,
+  dlatego będziemy jawnie obsługiwać polimorfizm, wprowadzając explicite
+  kwantyfikację zmiennych etapu. Ponieważ rekurencja jest dopuszczalna tylko
+  względem argumentu będącego typem danych, musimy przywrócić podział na
+  abstrakcję i rekurencję, jednak dostosujemy system do tego z pierwszego
+  rozdziału, zastępując letrec f=e (REC) przez konstrukcję
+  fix f x.e (FIX). Wprowadzimy też definicje lokalne (LET).
+  Zamiast trudnej do kontroli reguły (SUB), wprowadzamy podtypowanie obok
+  konkretyzacji typu w regule (VAR). Co istotniejsze, wprowadzimy stałe etapu
+  (albo zmienne uniwersalne etapu), ponieważ zmienne etapu (albo zmienne
+  egzystencjalne, zmienne unifikacji) w typie zadanym zostałyby potraktowane
+  jako niewiadome. Podobnie, wprowadzimy stałe typu (albo zmienne uniwersalne
+  typu), w odróżnieniu od konstruktorów typów danych d i od
+  zmiennych typu (egzystencjalnych, zmiennych unifikacji). (Egzystencjalne)
+  zmienne wolne typu lub etapu nazywamy niewiadomymi typu lub etapu,
+  odpowiednio.
+
+[definition]
+
+    Generalizacja
+
+[eqnarray*]
+
+      b-G(τ,E)   =   ∀α_(1),…,α_(n).τ
+
+    gdzie α_(1),…α_(n) są
+    dokładnie tymi zmiennymi wolnymi typu lub etapu (niewiadomymi) w
+    τ, które nie występują w E.
+
+[definition]
+
+    Konkretyzacja typu zmiennej ze środowiska: τ  jest
+    konkretyzacją typu zmiennej x ze środowiska
+    E, α_(i) są zmiennymi typu,
+    a iota_(i) są zmiennymi etapu,
+
+[eqnarray*]
+
+      τ≤E(x)   ≡   E=…;x:∀α_(1)…α_(n)iota_(1)…iota_(m).σ;…
+      i τ=[τ_(1)/α_(1);…;τ_(n)/α_(n);s_(1)/iota_(1);…;s_(m)/iota_(m)]σ
+
+    dla pewnych typów τ_(1),…,τ_(n)
+    oraz etapów s_(1),…,s_(m).
+
+  Poniżej, podtypowanie jest tak jak określono powyżej.
+
+[definition]
+
+    Dostosowane reguły typowania dla λ[vector].
+
+[enumerate]
+
+      itemVAR: Variables.
+
+[equation*]
+
+        (τ≤E(x) σsqsubseteqτ) / (E⊢x:σ)
+
+      itemABS: Abstractions.
+
+[equation*]
+
+        (E.x:τ⊢e:σ) / (E⊢λx.e:τ→σ)
+
+      itemFIX: Recursive functions.
+
+[equation*]
+
+        (E.f:d^(iota)τ[vector]→θ.x:d^(iota[vector])τ[vector]⊢e:[iota[vector]/iota]θ iota
+        pos θ) / (E⊢(fix f x=e):d^(s)τ[vector]→[s/iota]θ)
+
+      gdzie iota nie występuje w E ani
+      w τ[vector].
+
+      \;
+
+      itemAPP: Applications.
+
+[equation*]
+
+        (E⊢e:σ→τ E⊢e':σ) / (E⊢e
+        e':τ)
+
+      itemLET: Local bindings.
+
+[equation*]
+
+        (E⊢e':σ E.x:b-G(σ,E)⊢e:τ) / (E⊢(let
+        x=e' in e):τ)
+
+      itemCASE: Deconstruction
+
+[equation*]
+
+        (E⊢e':d^(s[vector])τ[vector] E⊢e_(i):Inst_(c_(i))^(s)τ[vector]→θ
+        (1≤i≤n)) / (c_(n)⇒e_(n)}:θ)
+        jeśli b-C(d)={c_(1),…,c_(n)}
+
+      itemZamiast reguły: CONS: Constructor
+
+[equation*]
+
+        () / (E⊢c:Inst_(c)^(s)τ[vector]→d^(s[vector])τ[vector])
+        jeśli c∈b-C(d)
+
+      wprowadzamy założenie na temat środowiska E:
+
+[equation*]
+
+        ∀d∀c∈b-C(d)  niech
+        c:∀α_(1)…α_(n)iota.Inst_(c)^(iota)α[vector]→d^(iota[vector])α[vector]∈E,
+        gdzie n jest arnością d
+
+  Aby opracować algorytm generowania termów cal-C dla
+  λ[vector], potrzebujemy mechanizmu szukającego
+  możliwości zajścia relacji podtypowania, tak jak unifikacja jest ü
+  mechanizmem szukania konkretyzacji. Odpowiedni algorytm nazwiemy
+  b-U_(sqsubseteq). Zachodzi
+  U=b-U_(sqsubseteq)(τ,σ), jeśli
+  UτsqsubseteqUσ, przy czym
+  U jest podstawieniem zarówno pod zmienne typu, jak i pod
+  zmienne etapu.
+
+[definition]
+
+     cal-C(E,τ,V,w[vector])=(T,e,V',w[vector]'),
+    gdzie dla (w_(1 )mod 4) równego
+
+[enumerate]
+
+      itemVAR: Variables. Dla E(w_(2) mod
+      E[vector])=x:∀α_(1)…α_(n).σ
+      niech
+
+[eqnarray*]
+
+        U   =   b-U_(sqsubseteq)(τ,[β_(1)/α_(1)]…[β_(n)/α_(n)]σ)
+ V   =   {β_(i)\1≤i≤n}∪[vector]V'
+ e   =   x
+ T   =   U
+ w'_(i)   =   w_(i+2)
+
+      Jeśli unifikator nie istnieje, cal-C jest
+      nieokreślone.
+
+      itemABS: Abstractions. Jeśli τ=σ→rho,
+      niech
+
+[eqnarray*]
+
+        (R,e_(1),V',w[vector]_(1))   =   cal-C(E.x:σ,rho,V,(w_(i+1)))
+ T   =   R
+ e   =   λx.e_(1)
+ w[vector]'   =   w[vector]_(1)
+
+      gdzie f,x są nowymi zmiennymi. Jeśli
+      τ=α, gdzie α
+      jest zmienną typu, dla β_(1),β∈V
+      niech
+
+[eqnarray*]
+
+        R   =   [β_(1)→β/α]
+ (S,e_(1),V',w[vector]_(1))   =   cal-C(R*E.x:β_(1),β,Vsetminus{β_(1),β},(w_(i+1)))
+ T   =   S*R
+ e   =   λx.e_(1)
+
+      gdzie f,x są nowymi zmiennymi. Jeśli
+      τ ma inną postać, cal-C
+      jest nieokreślone.
+
+      itemFIX: Functions. Jeśli τ=d^(s)σ[vector]→θ,
+      niech kappa dowolne takie, że
+      [s/iota]kappa=θ, oraz
+
+[eqnarray*]
+
+        (R,e_(1),V',w[vector]_(1))   =   cal-C(E.f:d^(iota)σ[vector]→kappa.x:d^(iota[vector])σ[vector],[iota[vector]/iota]kappa,V,(w_(i+1)))
+ T   =   R
+ e   =   fix
+        f x.e_(1)
+ w[vector]'   =   w[vector]_(1)
+
+      gdzie f,x są nowymi zmiennymi. Jeśli
+      τ=α, gdzie α
+      jest zmienną typu, dla β_(i),β',β'',β''',iota,η∈V
+      niech
+
+[eqnarray*]
+
+        R   =   [d^(η)β[vector]→β'''/α]
+ (S,e_(1),V',w[vector]_(1))   =   cal-C(R*E.f:d^(iota)β[vector]→β''.x:d^(iota[vector])β[vector],β',Vsetminus{β_(i),β',β'',β''',iota,η},(w_(i+1)))
+ U   =   b-U([iota[vector]/iota]β'',β')
+ W   =   b-U([η/iota]β'',β''')
+ T   =   W*U*S*R
+ e   =   fix
+        f x.e_(1)
+
+      gdzie f,x są nowymi zmiennymi. Jeśli
+      τ ma inną postać, cal-C
+      jest nieokreślone.
+
+      itemAPP: Applications. Niech dla β∈V
+
+[eqnarray*]
+
+        (R,f,V_(1),w[vector]_(1))   =   cal-C(E,β→τ,Vsetminus{β},(w_(i+1)))
+ (S,g,V',w[vector]_(2))   =   cal-C(R*E,Rβ,V_(1),w[vector]_(1))
+ T   =   S*R
+ e   =   f
+        g
+ w[vector]'   =   w[vector]_(2)
+
+      itemLET: Local bindings. Niech dla β∈V
+
+[eqnarray*]
+
+        (R,f,V_(1),w[vector]_(1))   =   cal-C(E,β,Vsetminus{β},(w_(i+1)))
+ (S,g,V',w[vector]_(2))   =   cal-C(R*E.x:b-G(Rβ,R*E),Rτ,V_(1),w[vector]_(1))
+ T   =   S*R
+ e   =   let
+        x=f in g
+ w[vector]'   =   w[vector]_(2)
+
+      itemCASE: Deconstruction. Niech d będzie
+      (w_(i+1) mod D)-ym typem indukcyjnym, gdzie
+      D jest ilością typów indukcyjnych, oraz
+      k arnością typu d. Niech
+
+[eqnarray*]
+
+        V   =   {β_(i)\1≤i≤k}∪[vector]{iota,θ}∪[vector]V_(r)
+ (R,e',V_(0),w[vector]_(0))   =   cal-C(E,d^(iota[vector])β[vector],V_(r),(w_(i+2)))
+ (T_(1),e_(1),V_(1),w[vector]_(1))   =   cal-C(R*E,R*(Inst_(c_(1))^(iota)β[vector]→τ),V_(0),w[vector]_(0))
+ …      
+ (T_(n),e_(n),V_(n),w[vector]_(n))   =   cal-C(T_(n-1)…T_(1)R*E,T_(n-1)…T_(1)R*(Inst_(c_(n))^(iota)β[vector]→τ),V_(n-1),w[vector]_(n-1))
+ T
+           =   T_(n)…T_(1)R
+ e   =   case
+        e' of {c_(1)⇒e_(1)\…\c_(n)⇒e_(n)}
+ V'   =   V_(n)
+ w[vector]'   =   w[vector]_(n)
+
+  Uwagi: zmienna etapu iota, podobnie jak parametry typu
+  β[vector], w regule (CASE) i (FIX), są
+  zmiennymi wolnymi, które mogą zunifikować, ``dowiadując się'' (np. od typu
+  τ w przypadku (CASE)) jaki etap bądź typ jest
+  potrzebny.
+
+SUBSUBSECTION: Unifikacja z podtypowaniem
+  b-U_(sqsubseteq).
+
+  Potrzebujemy najogólniejszego unifikatora, w następującym sensie: jeśli
+  U=b-U_(sqsubseteq)(τ,σ), to
+  UτsqsubseteqUσ, oraz jeśli
+  VτsqsubseteqVσ, to
+  VτsqsubseteqUτ oraz
+  UσsqsubseteqVσ. Odpowiednio, jeśli
+  U=b-U_(st)(r,s), to
+  U*rpreccurlyeqU*s oraz jeśli
+  V*rpreccurlyeqV*s, to
+  V*rpreccurlyeqU*r oraz
+  U*spreccurlyeqV*s.
+
+  Najpierw porównajmy etapy.
+
+[definition]
+
+    b-U_(st)(r,s)= dopasuj r,s
+    dobierając pierwszy pasujący przypadek
+
+[enumerate]
+
+      item#,∞: zwróć [] (reguła
+      INFTY)
+
+      itemr[vector],s[vector]: zwróć
+      b-U_(st)(r,s)
+
+      itemr,s[vector]: zwróć
+      b-U_(st)(r,s) (reguła HAT)
+
+      itemiota,#, gdzie iota jest
+      zmienną etapu: zwróć [s/iota] (s
+      jest zmienną lub stałą etapu)
+
+      item#,iota, gdzie iota jest
+      zmienną etapu: jeśli iota nie występuje w
+      r, zwróć [r/iota]
+
+[definition]
+
+    b-U(τ,σ)= dopasuj
+    τ,σ
+
+[enumerate]
+
+      itemα_(),# i α
+      jest zmienną typu: jeśli α nie występuje w
+      σ, zwróć [σ/α]
+
+      item#,α i α jest
+      zmienną typu: jeśli α nie występuje w
+      τ, zwróć [τ/α]
+
+      itemα,α: zwróć []
+
+      itemτ_(1)→τ_(2),σ_(1)→σ_(2):
+      niech U_(1)=b-U(τ_(2),σ_(2)),
+      zwróć b-U(U_(1)σ_(1),U_(1)τ_(1))
+
+      itemd^(r)τ[vector],d^(s)σ[vector]:
+      niech
+
+[eqnarray*]
+
+        U_(0)   =   b-U_(st)(r,s)
+ U_(1)   =   b-U(U_(0)τ_(1),U_(0)σ_(1))
+ …      
+ U_(#τ[vector])   =   U_(#τ[vector])(U_(0)…U_(#τ[vector]-1)τ_(#τ[vector]),U_(0)…U_(#τ[vector]-1)σ_(#τ[vector]))
+
+  \;
+
+SECTION: Generowanie: mechanizmy do zastosowania.
+
+  Wykonamy krok wstecz od języka ML z poprzedniego paragrafu, pomijając
+  dekonstrukcję (case), definicje rekurencyjne i lokalne,
+  aby do generowania termów wykorzystać doskonałą maszynerię, opracowaną dla
+  języka Prolog. Przy okazji poczynimy krok w kierunku języka HMG(X),
+  wprowadzając typy indukcyjne z więzami unifikacyjnymi.
+
+SUBSECTION: System typów z typami indukcyjnymi z więzami unifikacyjnymi.
+
+  Modyfikacja, dająca system typów z typami indukcyjnymi z więzami
+  unifikacyjnymi, dotyczy reguł CASE i CONS. Jednak, aby móc zastosować
+  mechanizm z korzyścią dla choćby najprostszych funkcji rekurencyjnych,
+  potrzebna jest rekurencja polimorficzna.
+
+[definition]
+
+     Reguły typowania dla typów indukcyjnych z więzami
+    unifikacyjnymi:
+
+[enumerate-numeric]
+
+      itemVAR: Variables...
+
+      itemABS: λ-abstractions...
+
+      itemAPP: Applications...
+
+      itemLETREC: Polymorphic Recursion.
+
+[equation*]
+
+        (E.x:rho⊢e':σ rho=b-G(σ,E) E.x:rho⊢e:τ) / (E⊢(letrec
+        x=e' in e):τ)
+
+      itemCASE: Deconstruction
+
+[equation*]
+
+        (E⊢e':dτ[vector] T_(i)E⊢e_(i):T_(i)Inst_(c_(i))α_()[vector]_(i)→T_(i)θ
+        (1≤i≤n)) / (c_(n)⇒e_(n)}:θ)
+        jeśli b-C(d)={c_(1),…,c_(n)}
+
+      gdzie T_(i)=b-U(τ[vector],Tyargs_(c_(i))α[vector]_(i)),
+      dla wszystkich 1≤i≤n takich, że
+      τ[vector] i
+      Tyargs_(c_(i))α[vector]
+      unifikują, α[vector]∩(b-F(τ[vector])∪b-F(E)∪b-F(θ))=
+      ∅ (α[vector] są nowymi
+      zmiennymi). Pozostałe T_(i) są dowolne.
+
+      itemCONS: Constructor
+
+[equation*]
+
+        () / (E⊢c:Inst_(c)σ[vector]→d(Tyargs_(c)σ[vector]))
+        jeśli c∈b-C(d)
+
+      odpowiednio założenie na temat środowiska E:
+
+[equation*]
+
+        (∀d)(∀c∈b-C(d))  niech
+        c:∀α[vector].Inst_(c)α[vector]→d(Tyargs_(c)α[vector])∈E,
+        gdzie #α[vector] jest arnością d
+
+    gdzie b-C(d) jest zbiorem konstruktorów typu
+    d, Tyargs_(c)σ[vector]
+    jest wektorem argumentów typu zadanym przez konstruktor
+    c przy parametrach σ[vector],
+    Inst_(c)σ[vector] jest wektorem
+    typów argumentów konstruktora c dla parametrów
+    σ[vector], oraz
+    Tyargs_(c)σ[vector]=[σ[vector]/α[vector]]Tyargs_(c)α[vector],
+    Inst_(c)σ[vector]=[σ[vector]/α[vector]]Inst_(c)α[vector].
+
+  Gałęzie case, dla których unifikator nie istnieje, są tzw.
+  martwym kodem, nie osiągalnym podczas wykonania programu.
+  T_(i) komunikuje typowi θ
+  dokonany wybór. Przedstawiony system, jeśli pominąć fakt, że używamy
+  prostej analizy przez przypadki zamiast pełnego dopasowywania wzorca,
+  odpowiada minimalnej wersji HMG, obejmowanej przez
+  HMG(X) dla wszystkich języków więzów X.
+
+[example]
+
+    Zobaczmy definicję typu lista z parametrem oznaczającym długość.
+
+[eqnarray*]
+
+      Nil   :   ∀α.list(α,0)
+ Cons   :   ∀αβ.α→list(α,β)→list(α,1+β)
+
+SUBSUBSECTION: Generowanie η-długich
+  β-normalnych polimorficznych
+  λ-termów: Prolog.
+
+  Niestety, ''czysty'' prolog odpowiada generowaniu termów tylko dla języków
+  pierwszego rzędu (nie mylić z systemami typów pierwszego rzędu; nawet
+  system przedstawiony powyżej jest pierwszego rzędu: pod zmienne typu nie
+  można podstawiać skwantyfikowanych typów, czyli schematów typu).
+  Podstawowym krokiem, który trzeba podjąć, jest przejście od klauzul
+  hornowskich, ''definite clauses'' (a→b→…→c,
+  gdzie a,b,…,c są atomowe) do dowolnych wyrażeń
+  implikacyjnych (czyli zawierających → jako
+  jedyny spójnik logiczny). System typów, dla którego generowanie termów
+  η-długich β-normalnych można
+  osiągnąć dostosowując metodę SLD-rezolucji, to:
+
+[definition]
+
+    Reguły typowania dla polimorficznych λ-termów:
+
+[enumerate-numeric]
+
+      itemVAR: Variables.
+
+[equation*]
+
+        (E(x)=∀α[vector].τ) / (E⊢x:[σ[vector]/α[vector]]τ)
+
+      itemABS: λ-abstractions.
+
+[equation*]
+
+        (E.x:σ⊢e:τ) / (E⊢λx.e:σ→τ)
+
+      itemAPP: Applications.
+
+[equation*]
+
+        (E⊢e:σ→τ E⊢e':σ) / (E⊢e
+        e':τ)
+
+      itemCONS: Constructor
+
+[equation*]
+
+        (c∈b-C(d)) / (E⊢c:Inst_(c)σ[vector]→d(Tyargs_(c)σ[vector]))
+
+      odpowiednio założenie na temat środowiska E:
+
+[equation*]
+
+        (∀d)(∀c∈b-C(d))  niech
+        c:∀α[vector].Inst_(c)α[vector]→d(Tyargs_(c)α[vector])∈E,
+        gdzie #α[vector] jest arnością d
+
+    przy oznaczeniach jak powyżej.
+
+SUBSUBSECTION: W stronę pełnego HMG(X).
+
+  Definicje lokalne nie wpływają na logikę, a jedynie pozwalają wielokrotnie
+  wykorzystywać wyniki pośrednie przeszukiwania.
+
+  Definicje rekurencyjne w postaci nieograniczonej są paradoksalne:
+  rozszerzają zbiór aksjomatów o fałszywy schemat zdaniowy
+  (X→X)→X. (Dlatego w GP system
+  typów powinien być rozszerzony by wymuszać własność stopu.) W przypadku
+  rekurencji ``zwykłej'' zmienne wolne są skwantyfikowane wspólnie:
+  ∀((X→X)→X), a w
+  przypadku rekurencji polimorficznej są skwantyfikowane niezależnie:
+  ∀((∀(X)→X)→X).
+
+  Dekonstrukcja (analiza przez przypadki) z punktu widzenia logiki jest
+  eliminacją spójnika ''lub'', a następnie eliminacją kwantyfikatora
+  egzystencjalnego w każdym dysjunkcie. Jej wprowadzenie odpowiada
+  wprowadzeniu aksjomatów:
+
+[equation*]
+
+    (∃σ[vector].d(Tyargs_(c_(1))σ[vector])→wedgeInst_(c_(1))σ[vector])∨…∨(∃σ[vector].d(Tyargs_(c_(n))σ[vector])→wedgeInst_(c_(n))σ[vector])
+
+  gdzie b-C(d)={c_(1),…,c_(n)}. Z punktu
+  widzenia przeszukiwania wprowadzenie definicji lokalnej odpowiada
+  rozgałęzieniu się ze względu na możliwe wartości pewnych zmiennych wolnych
+  w dτ[vector]: w różnych gałęziach zmienne te
+  konkretyzują się (niezależnie), a (pomimo to) w wejściowym
+  dτ[vector] pozostają nieskonkretyzowane
+  (porównaj regułę (CASE) z definicji [ref: construnif], warunek na
+  podstawienia unifikujące). Następnie pozyskiwana jest informacja
+  specyficzna dla danego kostruktora.
+
+SUBSECTION: Programy bez nieużytecznych definicji lokalnych.
+
+  Odpowiedni mechanizm definicji lokalnych, właściwie współpracujący z
+  operatorem mutacji, jest kluczowy dla ponownego wykorzystywania raz
+  wyewoluowanego kodu przez programy, bez angażowania mechanizmów
+  rekombinacji. Nieużytecznych definicji nie będziemy generować, jeśli
+  wielokrotne użycie kodu będzie się opierało na kodzie już wygenerowanym w
+  jakimś celu.
+
+  Dość radykalne rozwiązanie wspierające ``code reuse'' polegać może na
+  dodawaniu, dla każdego skonstruowanego podtermu, odpowiadającej mu zmiennej
+  do środowiska. W momencie, gdy z podtermu ``uciekają'' zmienne wolne (np.
+  wychodzimy poza odpowiednią λ-abstrakcję), typ
+  zmiennej jest względem ich typów ``podnoszony'' i jeśli zmienna zostanie
+  użyta, to będzie zaaplikowana do wartości zastępującej zmienne, które
+  ``uciekły''. Cały mechanizm jednak trudno zintegrować z polimorficznym
+  systemem typów, żeby typy zmiennych były możliwie ogólne.
+
+CHAPTER: Rekombinacja i generalizacja
+
+SECTION: Rekombinacja swobodna.
+
+  Niech Dom(E_(0))⊆Dom(E_(1)) i
+  Dom(E_(0))⊆Dom(E_(2)) oraz istnieją
+  T_(1),T_(2), że
+  _(Dom(E_(0))) i
+  _(Dom(E_(0))) oraz
+  T_(1)E_(0)⊢e_(0):τ_(0).
+  Znajdźmy podtermy e_(1),e_(2) wprowadzone do
+  typizacji rodziców z typizacjami E_(1)⊢e_(1):τ_(1)
+  oraz E_(2)⊢e_(2):τ_(2) (program
+  e_(0) -- nadterm e_(1) nazywa się
+  matką, a program-nadterm e_(2) -- ojcem), dla których
+  istnieje H_(L)*E_(1)(x)=E_(2)(h(x)), oraz typ
+  H_(R)τ_(2)=τ_(1), przy czym
+  H_(R) nie podstawia pod zmienne występujące w
+  E_(2) (Dom(H_(R))∩b-F(E_(2))=
+  ∅). Trójkę h,H_(L),H_(R) nazwiemy
+  E_(0)-homomorfizmem typizowań
+  E_(1)⊢e_(1):τ_(1) oraz
+  E_(2)⊢e_(2):τ_(2). Rekombinacją
+  swobodną matki e_(0) na pozycji podtermu
+  e_(1) z ojcem na pozycji podtermu
+  e_(2) nazywamy program
+  H_(L)*T_(1)E_(0)⊢[h(e_(2))/e_(1)]e_(0):H_(L)τ_(0).
+  Typizacja ta może być (podobnie, jak w wyniku mutacji) nadokreślona
+  względem środowiska E_(0); możemy więc przeprowadzić
+  retypizację.
+
+  \;
+
+SECTION: Anty-unifikacja drugiego rzędu -- prosty przypadek.
+
+  Przedstawimy w tym podrozdziale anty-unifikację pierwszego rzędu w algebrze
+  termów odpowiadającej danemu językowi rozszerzającemu
+  λ-rachunek. Ta anty-unifikacja odpowiada pewnym
+  prostym przypadkom anty-unifikacji drugiego rzędu. Termy algebry termów
+  nazywam też λ-strukturami: są to termy, w których
+  konstrukcje λ-rachunku (czy też języków
+  rozszerzających język λ-termów) są symbolami
+  funkcyjnymi, a stałe i zmienne λ-termu są
+  symbolami stałymi. Jedyna modyfikacja względem sformułowań zwykłych algebr
+  termów i anty-unifikacji pierwszego rzędu w nich wiąże się z obsługą
+  α-równoważności i zmiennych związanych.
+
+  Warto porównać niniejsze sformułowanie z tym zaproponowanym w
+  [cite: lu-generalization]. Nasza generalizacja radzi sobie ze zmiennymi
+  związanymi przez bezpośrednią obsługę kontekstu (i ograniczenie do
+  generalizacji ''ground terms''), generalizacja w [cite: lu-generalization]
+  przez ``variable freezing'' (eliminację zmiennych przez podstawienie
+  stałych) i zabronienie λ-abstrakcji w
+  argumentach. Generalizacja w [cite: lu-generalization] czy też w systemie CC
+  jak w pracy Pfenninga [cite: pfenning91unification] jest dodatkowo
+  skomplikowana przez występowanie typów w termach (''explicit
+  polymorphism''). Nasze generalizacje są czysto syntaktyczne, w sensie, że
+  nie rozpatrują typów termów. Wynika to z założenia stosowania systemów
+  typów bez annotacji typami w termach; cały ciężar spada oczywiście na
+  dowody zgodności z odpowiednim systemem typów.
+
+  W kwestii skierowania porządku, ``co kraj to obyczaj''. W pracy
+  [cite: hasker95] generalizację oznacza się sqcap, a w
+  pracach [cite: pfenning91unification] oraz [cite: lu-generalization] przez
+  sqcup.
+
+SUBSECTION: Definicja.
+
+  Zamiast formalnej definicji λ-struktur przykład:
+  programowi
+
+[equation*]
+
+    fix f x.case x of {Nil⇒0; Cons ⇒
+    λy.λz.+1 (f z)}
+
+  odpowiada λ-struktura:
+
+[equation*]
+
+    fix_(f,x)(case^(list)(x,0,λ_(y)(λ_(z)(@(@(+,1),@(f,z))))))
+
+  Stosujemy adaptację algorytmu Gerarda Hueta obsługującą zmienne związane
+  (kontekst):
+
+[definition]
+
+    Anty-unifikacja pierwszego rzędu λ-struktur:
+
+[eqnarray*]
+
+      F_(x[vector])(s_(1),…,s_(n))sqcap_(z[vector])F_(y[vector])(t_(1),…,t_(n))   =   F_(u[vector])([u[vector]/x[vector]]s_(1)sqcap_(z[vector].u[vector])[u[vector]/y[vector]]t_(1),…,[u[vector]/x[vector]]s_(n)sqcap_(z[vector].u[vector])[u[vector]/y[vector]]t_(n)), F∈cal-C
+ ssqcap_(z[vector])s   =   s
+ ssqcap_(z[vector])t   =   phi([v[vector]/z[vector]]s,[v[vector]/z[vector]]t), w
+      przec. przyp.
+
+    gdzie x[vector] i
+    y[vector] są ciągami tej samej długości zera lub
+    więcej zmiennych związanych przez konstrukcję F,
+    u[vector] jest ciągiem nowych (nie występujących
+    w s[vector] ani w
+    t[vector]) zmiennych języka,
+    v[vector] jest odcinkiem początkowym długości
+    #z[vector] ustalonego ciągu zmiennych
+    v_(1),v_(2),… rozłącznego z pozostałymi
+    zmiennymi używanymi przez algorytm. phi jest
+    bijekcją między parami λ-struktur modulo
+    α-równoważność a zbiorem zmiennych
+    M (rozłącznym ze zmiennymi języka). Niech
+
+[eqnarray*]
+
+      ssqcapt   =   ssqcap_(epsilon)t
+
+    gdzie epsilon jest ciągiem pustym.
+
+  Dla języka ML mamy cal-C={@,λ,fix,let}∪{case^(d)}_(d∈D)
+  gdzie D jest zbiorem typów algebraicznych;
+  @,case^(d) wiążą zero zmiennych,
+  λ,let wiążą jedną zmienną, fix
+  wiąże dwie zmienne. Dalej utożsamiamy termy języka i odpowiednie struktury,
+  przekształcając jedne w drugie w miarę potrzeby. Oznacza to, że język
+  rozszerzamy o tzw. meta-zmienne ze zbioru M. Podstawienie
+  v[vector] zapewnia, że podtermy różniące się tylko
+  nazwami zmiennych wolnych będą utożsamiane.
+
+SUBSECTION: Własność: maksymalnie specyficzna generalizacja.
+
+  Pokażemy teraz, że powyżej zdefiniowana operacja jest maksymalnie
+  specyficzną generalizacją (anty-unifikacją) dla porządku podstawieniowego.
+
+  Zdefiniujmy teraz podstawienie obsługujące kontekst. Pamiętajmy, że zwykłe
+  podstawienie [t[vector]/x[vector]]s nie
+  podstawia pod zmienne związane.
+
+[definition]
+
+    Podstawienie obsługujące kontekst:
+
+[eqnarray*]
+
+      %(T,x[vector];F_(y[vector])(t_(1),…,t_(n)))   =   F_(u[vector])(%(T,x[vector].u[vector];[u[vector]/y[vector]]t_(1)),…,%(T,x[vector].u[vector];[u[vector]/y[vector]]t_(n))) F∈cal-C
+ %(T,x[vector];Y)   =   [x[vector]/y[vector]]s jeśli
+      \ Y∈M,T(Y)=y[vector];s
+ %(T,x[vector];s)   =   s w
+      przeciwnym przypadku
+
+    gdzie u[vector] jest ciągiem nowych (nie
+    występujących w t[vector]) zmiennych języka.
+
+[definition]
+
+    \;
+
+[eqnarray*]
+
+      x[vector];t≤x[vector];s   ≡   (∃T)
+      %(T,x[vector];t)=_(α)s
+
+  Pokażmy na rozgrzewkę
+
+[theorem]
+
+    \;
+
+[eqnarray*]
+
+      y[vector];rsqcap_(y[vector])s   ≤   y[vector];r
+ y[vector];rsqcap_(y[vector])s   ≤   y[vector];s
+
+[proof]
+
+    Pokazujemy pierwszą nierówność przez indukcję względem złożoności
+    r a drugą względem złożoności s. W
+    odpowiednim miejscu algorytmu sqcap, wystarczy brać
+    T(phi([v[vector]/z[vector]]s,[v[vector]/z[vector]]t))=v[vector];[v[vector]/z[vector]]s
+    dla pierwszej nierówności i T(phi([v[vector]/z[vector]]s,[v[vector]/z[vector]]t))=v[vector];[v[vector]/z[vector]]t
+    dla drugiej, gdzie z[vector],v[vector],s,t
+    jak w algorytmie sqcap.
+
+[theorem]
+
+    \;
+
+[eqnarray*]
+
+      (∀x[vector];t)   x[vector];t≤x[vector];r∧x[vector];t≤x[vector];s   ⇒ x[vector];t≤x[vector];rsqcap_(x[vector])s
+
+[proof]
+
+    Ustalmy x[vector];t. Z założenia twierdzenia
+    mamy podstawienia P,Q:
+
+[equation*]
+
+      %(P,x[vector];t)=r,%(Q,x[vector];t)=s
+
+    . Niech P(X_(i))=x[vector]^(i);p_(i),Q(X_(i))=y[vector]^(i);q_(i)
+    dla X_(i)∈Dom(P)=Dom(Q)=b-Fb-M(t).
+    Pokażemy, że T(X_(i))=u[vector];[u[vector]/x[vector]^(i)]p_(i)sqcap_(u[vector])[u[vector]/y[vector]^(i)]q_(i)
+    daje %(T,x[vector];t)=rsqcap_(x[vector])s.
+    Przeprowadźmy indukcję względem złożoności t, przez
+    analizę wyprowadzenia rsqcap_(x[vector])s.
+
+[enumerate]
+
+      itemt=X_(i)∈M. Wt\0dy \0
+      [x[vector]/x[vector]^(i)]p_(i)=r,
+      [x[vector]/y[vector]^(i)]q_(i)=s
+      oraz T(Y)=x[vector];rsqcap_(x[vector])s.
+
+      itemt=F_(z[vector])(t_(1),…,t_(n)).
+      Z założenia twierdzenia, musi być r=F_(v[vector])(r_(1),…,r_(n)),s=F_(w[vector])(s_(1),…,s_(n));
+      stąd
+
+[eqnarray*]
+
+        rsqcap_(x[vector])s   =   F_(u[vector])([u[vector]/v[vector]]r_(1)sqcap_(x[vector].u[vector])[u[vector]/w[vector]]s_(1),…,[u[vector]/v[vector]]r_(n)sqcap_(x[vector].u[vector])[u[vector]/w[vector]]s_(n)
+
+      Ponieważ t_(i)≤r_(i) i
+      t_(i)≤s_(i), co wynika z definicji
+      podstawienia % i α-równoważności,
+      z zał. ind. mamy x[vector].u[vector];[u[vector]/z[vector]]t_(i)≤x[vector].u[vector];[u[vector]/v[vector]]r_(i)sqcap_(x[vector].u[vector])[u[vector]/w[vector]]s_(i).
+      Stąd
+
+[eqnarray*]
+
+        rsqcap_(x[vector])s   =   F_(u[vector])(%(T_(1),x[vector].u[vector];[u[vector]/z[vector]]t_(1)),…,%(T_(n),x[vector].u[vector];[u[vector]/z[vector]]t_(n)))
+
+      gdzie T_(j)(X_(i))=u[vector];[u[vector]/x[vector]^(i)]p_(i)sqcap_(u[vector])[u[vector]/y[vector]^(i)]q_(i)=T(X_(i)).
+
+      itemt=c. Wtedy musi być
+      r=s=rsqcaps=c.
+
+    \;
+
+SUBSECTION: Zgodność rekombinacji z systemem typów.
+
+[definition]
+
+    Niech dane będą programy s,t, oraz
+    T_(1)E_(0)⊢s:T_(1)τ_(0) i
+    T_(2)E_(0)⊢t:T_(2)τ_(0).
+    Rekombinacją nazwiemy program r=%(R,epsilon;ssqcap_(epsilon)t),
+    gdzie %(S,epsilon;ssqcap_(epsilon)t)=s,
+    %(T,epsilon;ssqcap_(epsilon)t)=t oraz
+    R(X_(i))=S(X_(i)) lub
+    R(X_(i))=T(X_(i)). Rekombinację nazywamy
+    poprawną, jeśli T_(3)E_(0)⊢r:T_(3)τ_(0)
+    dla pewnego T_(3).
+
+  Zbadajmy teraz, dla jakich podstawień R,
+  r=%(R,ssqcapt) jest rekombinacją (tzn.
+  r jest typizowalny). Otrzymamy w ten sposób algorytm
+  rekombinacji. Badanie będzie polegało na generalizacji wyprowadzeń
+  najogólniejszych typów dla s i t w
+  środowisku E_(0).
+
+  Zastosujmy algorytm inferencji typu (prototypem jest algorytm
+  cal-W) do problemu
+  E_(0),ssqcapt; niech zwraca wyznaczone typy
+  meta-zmiennych. Modyfikujemy algorytm tak, że gdy ma wyznaczać typ któregoś
+  z wystąpień meta-zmiennej X_(i) (w środowisku
+  E_(1)), wyznacza typy dla
+  S(X_(i)) oraz T(X_(i)) (z
+  przemianowanymi zmiennymi kontekstu tak, aby odpowiadały zmiennym
+  wprowadzonym do E_(1)) w środowisku
+  E_(1). Następnie generalizuje znalezione typy (zwykłym
+  algorytmem anty-unifikacji pierwszego rzędu). Za zmienne generalizacji
+  wstawia nowe konstruktory typu zaaplikowane do listy zmiennych typu: listy
+  wszystkich zmiennych występujących w podtermach ''różnicowych'' (typach z
+  podstawień generalizacji pod tą zmienną), wynik przekazuje jako znaleziony
+  typ. Podobnie, generalizuje typy w zwracanych podstawieniach, i zwraca
+  podstawienie z typami ze zmiennymi generalizacji zastąpionymi przez nowe
+  konstruktory. (Nazwijmy te nowe konstruktory zmiennymi generalizacji typu,
+  TGV.) Jeśli któreś z podstawień generalizacji jest zmienną typu, to
+  nazywamy ją zmienną projekcyjną tej TGV. Podstawienia generalizacji danej
+  TGV nazywamy gałęziami tej zmiennej. Unifikacja TGV z typem polega na
+  osobnych unifikacjach gałęzi z tym typem, i jeśli pojawiają się w nim TGV,
+  na unifikowaniu z odpowiednią gałęzią każdej TGV. Jeśli TGV traci w wyniku
+  unifikacji wszystkie zmienne projekcyjne, \ jej gałęzie są ponownie
+  generalizowane, i jeśli znaleziona anty-instancja jest nietrywialna, to
+  jest podstawiana pod tą TGV.
+
+  Zmienne typu podzielimy na specyficzne, wprowadzone w inferencji typu
+  wystąpienia meta-zmiennej, i niespecyficzne, pozostałe. Specyficzne zmienne
+  typu będą się pojawiały tylko w odpowiednich gałęziach różnych TGV. Jeśli w
+  wyniku unifikacji gałęzi powstają podstawienia niespecyficzne, to są one
+  ujmowane w TGV, która na pozostałej gałęzi ma (nową, specyficzną) zmienną
+  projekcyjną. Stąd, jeśli inna podgałąź będzie unifikować do tej zmiennej
+  (zastąpionej przez skonstruowaną TGV), to podstawienia zostaną
+  zgeneralizowane, i we wszystkie wystąpienia (najpierw zmiennej
+  niespecyficznej, następnie zamienionej na TGV) trafia \ anty-instancja z
+  odpowiednimi TGV.
+
+  Jeśli TGV jest unifikowana z podgałęzią innej TGV, to para tych zmiennych
+  jest zapamiętywana w zbiorze unifikowanych TGV. Jeśli następuje
+  podstawienie pod TGV, to pary zawierające tą zmienną w zbiorze
+  unifikowanych TGV są zastępowane przez pary ``zmienna unifikowana do
+  podstawianej w zastępowanej parze'' - ''TGV występujące w podstawieniu''. W
+  zbiorze unifikowanych TGV uwzględniamy też podstawienia pod zwykłe zmienne
+  typu, kiedy pewne TGV tracą zmienną projekcyjną. Jeśli zmienna typu zostaje
+  skwantyfikowana (zgeneralizowana w sensie polimorfizmu), to w zbiorze
+  unifikowanych TGV przestaje ona być zmienną projekcyjną.
+
+  Despecyfikacja zmiennych. Po zakończeniu inferencji, usuwamy TGV której
+  obydwie gałęzie są zmiennymi specyficznymi (i albo obydwie są
+  nieskwantyfikowane, albo obydwie są skwantyfikowane), zastępując te zmienne
+  nową zmienną niespecyficzną (nie ograniczoną do gałęzi odpowiadających
+  jednemu programowi). Usuwamy też pary zawierające tą zmienną ze zbioru
+  unifikowanych TGV. (Usuwamy też wszystkie TGV, które też miały te zmienne
+  jako projekcyjne, zgodnie z zasadą, że generalizujemy TGV które tracą swoje
+  zmienne projekcyjne.) Postępujemy tak, dopóki są TGV z dwiema specyficznymi
+  zmiennymi projekcyjnymi. Jest to krok niedeterministyczny algorytmu: wynik
+  zależy od kolejności wyboru TGV.
+
+  Silna despecyfikacja konkretyzująca stanowi ostatnią, opcjonalną fazę
+  algorytmu. Można pozbyć się jeszcze większej ilości TGV, kosztem
+  konkretyzacji ``answer substitution''. Usuwamy TGV mającą zmienną
+  projekcyjną (może być niespecyficzna) nie skwantyfikowaną (czyli wolną w
+  całym typowaniu), podstawiając pod zmienną projekcyjną pozostałą gałąź TGV,
+  o ile zmienna projekcyjna nie występuje w tej gałęzi. Pamiętamy, aby dodać
+  to podstawienie do ``answer substitution''. Gdy któraś TGV w wyniku starci
+  swoje zmienne projekcyjne, generalizujemy gałęzie i powtarzamy
+  despecyfikację dla (ewentualnie) powstałych TGV. Jest to krok
+  niedeterministyczny.
+
+[lemma]
+
+    Tak zmodyfikowany algorytm kończy pracę zwracając pewien typ i
+    podstawienie.
+
+  Nazwijmy dwa wystąpienia meta-zmiennych zależnymi, jeśli typ jednego
+  zawiera TGV unifikowaną z TGV występującą w typie drugiego (tzn. para tych
+  TGV należy do zbioru unifikowanych TGV), a silnie zależnymi, jeśli żadna
+  TGV z pary nie zawiera zmiennej projekcyjnej.
+
+[definition]
+
+    Rekombinacja podstawień typów: T_(3)∈b-R(T_(1),T_(2))
+    jeśli
+
+[eqnarray*]
+
+      T_(3)α   =   H(τsqcapσ) α∈Dom(T_(1))∩Dom(T_(2))
+ τ=T_(1)α      σ=T_(2)α
+ Hβ=Tβ   ∨   Hβ=Sβ β∈b-Mb-V(τsqcapσ)
+ T(τsqcapσ)=τ      S(τsqcapσ)=σ
+
+    gdzie sqcap jest generalizacją pierwszego rzędu,
+    b-Mb-V zwraca zmienne wstawione przez
+    generalizację.
+
+[theorem]
+
+    Rekombinacja, która pod wystąpienia zależne bez despecyfikacji
+    konkretyzującej podstawia z tego samego podstawienia (rodzica), jest
+    poprawna. Jeśli T_(1)E_(0)⊢s:T_(1)τ_(0)
+    i T_(2)E_(0)⊢t:T_(2)τ_(0),
+    to T_(3)E_(0)⊢r:T_(3)τ_(0)
+    i T_(3)∈b-R(T_(1),T_(2)), dodatkowo
+    jeśli T_(1)τ_(0) i
+    T_(2)τ_(0) są pryncypalnymi typami
+    s i t, to
+    T_(3)τ_(0) jest typem pryncypalnym (ang.
+    principal type) programu r. Rekombinacja, która pod
+    wystąpienia zależne po despecyfikacji konkretyzującej podstawia z tych
+    samych podstawień, jest poprawna. Rekombinacja, która pod wystąpienia
+    silnie zależne podstawia z różnych podstawień (rodziców), nie jest
+    poprawna.
+
+[proof]
+
+    (Szkicowe uzasadnienie twierdzenia.)
+
+[enumerate]
+
+      itemJeśli pod TGV podstawimy odpowiednie podstawienia generalizacji,
+      ze zmiennymi zastępionymi przez argumenty TGV, to uzyskamy przebiegi
+      algorytmu odpowiadające przebiegom dla rodziców, jeśli staniemy przed
+      fazą despecyfikacji konkretyzującej. Kolejne genralizacje nie wpływają
+      na odpowiedniość z przebiegiem algorytmu cal-W dla
+      zagadnień E_(0),r i E_(0),s.
+      Despecyfikacja zmiennych (niekonkretyzująca) odpowiada przemianowaniu
+      zmiennych nie zmieniającemu wyprowadzenia (żadne zmienne nie zostają
+      utożsamione).
+
+      itemKażda TGV jest związana z pewną meta-zmienną w
+      ssqcapt: każda TGV powstaje albo w generalizacji
+      typizowań dla podstawień pod meta-zmienną, albo z podstawienia pod
+      zmienną niespecyficzną powstałego przy typizowaniu podstawień pod
+      meta-zmienną, wtedy jest związana z tą meta-zmienną, albo z
+      generalizacji gałęzi innej TGV, wtedy jest związana z meta-zmienną
+      macierzystej TGV.
+
+      itemObierzmy pewną rekombinację R. Będziemy
+      rekonstruować typizację dla rekombinanta
+      %(R,ssqcapt) przez wybieranie tych gałęzi TGV,
+      które podstawienie (S(X) czy T(X))
+      zostało wybrane dla meta-zmiennej X związanej z daną
+      TGV.
+
+      itemWyprowadzenie typu z tak podstawionymi TGV odpowiada
+      wyprowadzeniu typu dla rekombinanta, o ile ono istnieje: część
+      odpowiadająca ssqcapt jest wspólna dla wszystkich
+      rekombinantów, jako część odpowiadającą meta-zmiennej
+      X zostało wybrane pewne wyprowadzenie typu dla tego
+      właśnie podstawienia R(X).
+
+      itemWyprowadzenie typu dla %(R,ssqcapt) daje się
+      zrekonstruować, ponieważ komunikacja wewnątrz wyprowadzenia nie jest
+      zaburzona: jeśli pewne dwa typy są unifikowane, to zawierają TGV albo
+      są częścią gałęzi TGV związanych z meta-zmiennymi zależnymi, czyli
+      zgodnie z warunkami twierdzenia, R prowadzi do
+      wybrania odpowiadających sobie gałęzi, i na mocy odpowiedniego
+      wyprowadzenia dla s albo dla t, typy
+      te są unifikowalne.
+
+      itemW zrekonstruowanej typizacji T_(3)∈b-R(T_(1),T_(2))
+      ponieważ algorytm (bez despecyfikacji konkretyzującej) zwraca
+      generalizację podstawień. Zrekonstruowany typ jest pryncypalny,
+      ponieważ jest wynikiem zwracanym przez algorytm inferencji dla
+      rekombinanta.
+
+      itemDespecyfikacja konkretyzująca zachowuje poprawność, ponieważ
+      podstawia pod zmienne typu wolne w typizacji.
+
+      itemKrzyżowanie podstawień silnie zależnych daje nietypizowalny
+      program, ponieważ w (deterministycznym) przebiegu algorytmu inferencji
+      napotyka się wtedy na niespełnialną unifikację różnych gałęzi TGV
+      zaczynających się od stałych (konstruktorów typu).
+
+  Zauważmy, że algorytm nie uwzględnia tożsamości meta-zmiennych przy różnych
+  ich wystąpieniach w anty-instancji. Dla potrzeb programowania genetycznego
+  wydaje się nawet korzystne ograniczenie generalizacji do termów liniowych
+  ze względu na meta-zmienne; jednocześnie bardzo by to uprościło algorytm
+  generalizacji.
+
+SUBSECTION: Związek z algorytmami z prac [cite: pfenning91unification] i
+  [cite: lu-generalization].
+
+  Pod względem syntaktycznym zaprezentowany algorytm jest słabszy od tych ze
+  wspomnianych prac przez brak obsługi permutacji kontekstu, jednak łatwo go
+  rozszerzyć, aby taką obsługę zapewniał. Natomiast mocniejszy jest od
+  [cite: pfenning91unification] w tym, że stosuje generalizację drugiego rzędu
+  z ``subterm restriction'', czyli ograniczeniem do podtermów
+  generalizowanych termów (i odróżnieniem zmiennych termu od meta-zmiennych
+  generalizacji), a nie ``pattern restriction'', czyli ograniczeniem do
+  podtermów które są zmiennymi związanymi (obejmowaną przez ''subterm
+  restriction''). Od [cite: lu-generalization] mocniejszy jest w tym, że
+  pozwala na zmienne związane lokalnie, czyli m.in. na
+  λ-abstrakcje w pozycjach argumentowych. Pokazuje
+  to, że wspomniane algorytmy są syntaktycznie bliskie algorytmom pierwszego
+  rzędu; zasadniczą różnicą z syntaktycznego punktu widzenia jest obsługa
+  permutacji (tutaj permutacji zmiennych związanych, kontekstu).
+
+  Pod względem obsługi typów algorytm z paragrafu [ref: firstord] jest
+  nie do przyjęcia. Jedynie w przypadku systemów z jawnym polimorfizmem
+  (''explicit polymorphism'') (kodujących typy wewnątrz termów), jak te użyte
+  we wspomnianych pracach, algorytm syntaktyczny może zidentyfikować typy
+  równoważne w różnych kontekstach. Właśnie dlatego opracowaliśmy algorytm
+  ``inferencji typu dla anty-instancji'' na wzór systemów z ``ad-hoc
+  polymorphism''. Czy da się ten wynik przenieść na grunt polimorfizmu
+  parametrycznego, pozostaje do zbadania. 
+
+  \;
+
+SECTION: Generalizacja drugiego rzędu i ogólne
+  struktury.
+
+  Teraz zajmiemy się algorytmem anty-unifikacji ``prawdziwie'' drugiego
+  rzędu.
+
+SUBSECTION: Generalizacje rekombinatorowe z pracy [cite: hasker95].
+
+  W tym paragrafie prezentuję definicje i wybrane fakty z rozdziałów 5 i 6
+  pracy Haskera.
+
+SUBSUBSECTION: Definicje ogólne i algorytm dla termów monadycznych.
+
+[definition]
+
+    Zbiór generalizacji termów a,b
+
+[eqnarray*]
+
+      b-G(a,b)   =   {langleθ_(i):t_(i)→a,θ_(i)':t_(i)→brangle}
+
+    Aplikacja podstawienia do generalizacji
+
+[eqnarray*]
+
+      rho:langleθ:t→a,θ':t→brangle→langleσ:s→a,σ':s→brangle   ⇔   rho(t)=s,θ=rho∘σ,θ'=rho∘σ'
+
+    Przez g_(1)→g_(2) oznaczamy fakt
+    (∃rho)rho:g_(1)→g_(2).
+
+[definition]
+
+    Γ=MSG(a,b) jest zbiorem maksymalnie
+    specyficznych generalizacji, jeśli
+
+[enumerate]
+
+      item(Soundness:) Γ⊆b-G(a,b)
+
+      item(Completeness:) (∀g∈b-G(a,b))(∃g'∈Γ)
+      g→g'
+
+      item(Minimality:) (∀g,g'∈Γ)g→g'⇒g=g'
+
+      item(Uniqueness:) (∀g∈b-G(a,b)∀g'∈Γ) rho:g→g'∧rho':g→g'⇒rho=rho'
+
+[definition]
+
+    Niech b-G'(a,b) będzie podzbiorem
+    b-G(a,b) takim, że jeśli
+    langleθ_(1):s→a,θ_(2):s→brangle∈b-G'(a,b)
+    i f∈b-F(s), to
+    θ_(1)(f)=θ_(2)(f)⇒θ_(1)(f)=f.
+
+[definition]
+
+    Para zmiennych f,g w termie t jest
+    przyległa (ang. adjacent) jeśli t zawiera podterm równy
+    f*g.
+
+[definition]
+
+    Generalizacja langleθ_(1):t→a_(1),θ_(2):t→a_(2)rangle
+    jest redundantna, jeśli f i g są
+    przyległymi zmiennymi wolnymi w t oraz zachodzi jedno z:
+    θ_(1)(f)neqf,θ_(2)(f)neqf,θ_(1)(g)neqg,θ_(2)(g)neqg.
+
+[definition]
+
+    b-Cb-G(a,b), zbiór skondensowanych
+    generalizacji, to podzbiór b-G(a,b) nie zawierający
+    generalizacji redundantnych. Zbiór maksymalnie specyficznych
+    generalizacji skondensowanych, MSC(a,b), to zbiór
+    maksymalnie specyficznych generalizacji w
+    b-Cb-G(a,b).
+
+[definition]
+
+    Kiedy g_(1)→g_(2) w
+    b-Cb-G(a,b), to mówimy, że
+    g_(1) jest bardziej ogólna (mniej specyficzna) niż
+    g_(2), g_(1)≥g_(2).
+
+  Oznaczmy przez
+
+[equation*]
+
+    (t,θ_(1),θ_(2)) / (t',θ_(1)',θ_(2)')
+
+  regułę przekształcania generalizacji langleθ_(1):t→a,θ_(2):t→brangle
+  w langleθ_(1)':t'→a,θ_(2)':t'→brangle,
+  gdzie ''mianownik'' jest ściśle bardziej specyficzny niż ''licznik''.
+
+[definition]
+
+    Żeby policzyć MSC(a,b) zaczynamy z
+    g_(0)∈b-Cb-G(a,b) i stosujemy nast.
+    reguły, aż żadna nie będzie stosowalna:
+
+[enumerate]
+
+      item(Delete)
+
+[equation*]
+
+        (t,θ_(1)∪{s/f},θ_(2)∪{s/f}) / ({s/f}(t),θ_(1),θ_(2))
+
+      item(Merge)
+
+[equation*]
+
+        (t,θ_(1)∪{r/f,r/f'},θ_(2)∪{s/f,s/f'}) / ({f/f'}(t),θ_(1)∪{r/f},θ_(2)∪{s/f})
+
+      item(Factor)
+
+[equation*]
+
+        (t,θ_(1)∪{r*K*r'/f},θ_(2)∪{s*K*s'/f}) / ({h*K*h'/f}(t),θ_(1)∪{r/h,r'/h'},θ_(2)∪{s/h,s'/h'})
+
+SUBSUBSECTION: Relewantne kombinatory i algorytm dla termów poliadycznych.
+
+[definition]
+
+    Kombinatory kartezjańskie:
+
+[eqnarray*]
+
+      πlanglep,p'rangle=p   π'langlep,p'rangle=p'   langleπr,π'rrangle=r !_(A)t=!_(B)
+
+  Można pokazać langlep,p'rangler=langlep*r,p'*rrangle.
+  !_(A):A→u posyła argument typu
+  A do typu ``unit'', tzn. ignoruje argument.
+
+  Problem dopasowywania (ang. matching) (oraz generalizacji) nie jest dobrze
+  określony dla typów produktowych w ogólności; pod jedną zmienną można
+  podstawiać coraz bardziej złożone struktury, a pod drugą odpowiednie
+  projekcje pozbywające się ich. Wybranym ograniczeniem jest ograniczenie
+  typów wynikowych funkcji do typów bez produktów. Ale to nie rozwiązuje
+  jeszcze problemu określoności generalizacji, ponieważ projekcje ciągle
+  pozwalają ignorować podtermy anty-instancji. Dlatego wprowadza się
+  relewantne kombinatory.
+
+  Produkt typów i konstruktor pary oznaczamy przez kropkę, np.
+  Acdot(BcdotC)cong(AcdotB)cdotC.
+
+[definition]
+
+    Restruktorem nazywamy parę dwóch wzorców p↦q,
+    gdzie wzorce p,q składają się ze zmiennych
+    x,y,z,…, symbolu specjalnego
+    1_(u) oraz operatora binarnego
+    ``cdot''. Restruktor nazywamy relewantnym, jeśli
+    p jest liniowe, ozn. linear(p), oraz
+    b-F(p)=b-F(q), tzn. każda zmienna występująca w
+    restruktorze pojawia się po prawej stronie. Zakładamy następujące
+    równości między termami (po prawej stronie warunki zachodzenia):
+
+[equation*]
+
+      1 -1 1 1 cell-halign r (s_(1)cdots_(2))(t_(1)cdott_(2))   =   s_(1)t_(1)cdots_(2)t_(2)   
+ b-1_(X)   =   p↦p   p:_(P)X
+ p↦q   =   σ(p)↦σ(q)   linear(σ(p))
+ (p↦q)t   =   θ(q)(r↦σ(q))   θ(p)=t∧σ(p)=r
+ (p↦q)(r↦p)   =   r↦q   
+ (p_(1)↦q_(1))cdot(p_(2)↦q_(2))   =   p_(1)cdotp_(2)↦q_(1)cdotq_(2)   linear(p_(1)cdotp_(2))
+
+  Powyżej, θ jest podstawieniem termów pod zmienne
+  wzorca, a σ jest podstawieniem wzorców pod zmienne
+  wzorca. Przykładowa interpretacja reguły czwartej:
+  θ wyłuskuje wyniki t i
+  θ(q) ustawia je we wzorzec q,
+  następnie σ(q) porządkuje argumenty według wzorca
+  q, żeby je dostarczyć θ(q); jest
+  to możliwe, bo argumenty rozdzielają się według uszczegółowienia wzorca
+  p do funkcji atomowych t (których typ
+  wynikowy nie jest produktem).
+
+  Wprowadzamy następujące skróty:
+
+[equation*]
+
+    1 -1 4 4 cell-halign r associate
+    left:   α_(X,Y,Z)   =   pcdot(qcdotr)   ↦   (pcdotq)cdotr
+ associate
+    right:   α_(X,Y,Z)^(-1)   =   (pcdotq)cdotr   ↦   pcdot(qcdotr)
+ delete
+    left:   λ_(X)   =   b-1_(b-u)cdotp   ↦   p
+ insert
+    left:   λ_(X)^(-1)   =   p   ↦   b-1_(b-u)cdotp
+ delete
+    right:   varrho_(X)   =   pcdotb-1_(b-u)   ↦   p
+ insert
+    right:   varrho_(X)^(-1)   =   p   ↦   pcdotb-1_(b-u)
+ commute:   γ_(X,Y)   =   pcdotq   ↦   qcdotp
+ duplicate:   δ_(X)   =   p   ↦   pcdotp
+
+[definition]
+
+    Niech cal-R będzie zbiorem termów generowanych przez
+    produkcję
+
+[equation*]
+
+      R:assignb-1\|α\|α^(-1)\|λ\|λ^(-1)\|varrho\|varrho^(-1)\|γ\|δ\|R*R\|RcdotR
+
+  Ponieważ zachodzą równania:
+
+[equation*]
+
+    1 -1 1 1 cell-halign r 1 -1 5 5 cell-halign r (αcdotb-1)α(b-1cdotα)   =   αα       (varrhocdotb-1)α   =   b-1cdotλ
+ λ_(b-u)   =   varrho_(b-u)      γγ   =   b-1
+ λγ   =   varrho      (γcdotb-1)α(b-1cdotγ)   =   αγα
+ α(b-1cdotδ)δ   =   (δcdotb-1)δ      γδ   =   δ
+ λ_(b-u)δ_(b-u)   =   b-1_(b-u)      varrho_(b-u)δ_(b-u)   =   b-1_(b-u)
+
+  mamy fakt
+
+[theorem]
+
+    Dla każdego relewantnego restruktora p↦q
+    istnieje r∈cal-R,
+    r=p↦q.
+
+  Dopasowywanie (ang. matching) relewantnych kombinatorów jest rozstrzygalne
+  np. przez sprowadzenie do kombinatorów kartezjańskich.
+
+[definition]
+
+    Zmienne wolne f,g w t są przyległe,
+    jeśli istnieje podterm f*s w t i
+    relewantny restruktor p↦q taki, że
+    f(p↦q)s=f(gcdots') dla pewnego
+    s'.
+
+  Czyli zmienne są przyległe, jeśli nie są rozdzielone przez stałą.
+
+[definition]
+
+    Podstawienie {t/x} jest przemianowaniem, jeśli
+    t jest postaci yτ dla pewnej
+    zmiennej wolnej y oraz obustronnie odwracalnego
+    restruktora relewantnego τ.
+
+[theorem]
+
+    Dla stałej K w t istnieją
+    r,s takie, że t=r(Kcdotb-1)s.
+
+[definition]
+
+    Asocjacyjne restruktory, cal-A, to restruktory
+    generowane przez produkcję
+
+[equation*]
+
+      A:assignb-1\|α\|α^(-1)\|A*A\|AcdotA
+
+  Jeśli oznaczymy s_(n)[vector]=s_(1)cdot(s_(2)cdot…(s_(n-1)cdots_(n))…),
+  to, jeśli rozumieć ''podterm'' jako ''podterm pierwszego rzędu'' (czyli np.
+  s nie jest podtermem w s*t):
+
+[theorem]
+
+    Dla termu t i podtermu K*s o
+    m wystąpieniach w t, istnieją
+    r,s_(n)[vector],mu∈cal-A,τ∈cal-R
+    takie, że t=r(δ^(m)Kmu(s_(n)[vector])cdotb-1)τ.
+
+[definition]
+
+     Żeby policzyć MSC(a,b) zaczynamy z
+    g_(0)∈b-Cb-G(a,b) i stosujemy nast.
+    reguły, aż żadna nie będzie stosowalna:
+
+[enumerate]
+
+      item(Delete)
+
+[equation*]
+
+        (t,θ_(1)∪{s/f},θ_(2)∪{s/f}) / ({s/f}(t),θ_(1),θ_(2))
+
+      item(Merge) Dla obustronnie odwracalnego restruktora
+      τ
+
+[equation*]
+
+        (t,θ_(1)∪{r/f,rτ/f'},θ_(2)∪{s/f,sτ/f'}) / ({fτ/f'}(t),θ_(1)∪{r/f},θ_(2)∪{s/f})
+
+      item(Factor-Constant)
+
+[equation*]
+
+        (t,θ_(1)∪{r(δ^(m)Kmu(r_(n)[vector])cdotb-1)τ/f},θ_(2)∪{s(δ^(m')Kmu(s_(n)[vector])cdotb-1)τ/f}) / ({h*(Kmu(h_(n)[vector])cdotb-1)τ/f}(t),θ_(1)∪{r(δ^(m)cdotb-1)/h,r_(n)[vector]/h_(n)[vector]},θ_(2)∪{s(δ^(m')cdotb-1)/h,s_(n)[vector]/h_(n)[vector]})
+
+      item(Factor-Restructor)
+
+[equation*]
+
+        (t,θ_(1)∪{rτ/f},θ_(2)∪{sτ/f}) / ({hτ/f}(t),θ_(1)∪{r/h},θ_(2)∪{s/h})
+
+      oraz τ nie ma lewostronnego elementu odwrotnego.
+
+SUBSUBSECTION: Praktyczny algorytm uwzględniający rozmiar generalizacji.
+
+  Przedstawimy efektywny algorytm, według [cite: hasker95] znajdujący
+  użyteczny podzbiór MSC(a,b), przy założeniach:
+
+[enumerate]
+
+    itemTermy a i b nie zawierają
+    zmiennych wolnych.
+
+    itemTermy a i b są pierwszego rzędu,
+    tzn. są kombinatorami typu b-u→X.
+
+    itemJest pojedynczy typ bazowy iota; dane mają typ
+    b-u→iota a funkcje mają typ
+    iotacdotiotacdot…cdotiota→iota.
+
+[definition]
+
+    Dla pewnej funkcji size i porządku na jej
+    przeciwdziedzinie ≤
+
+[eqnarray*]
+
+      MSC_(max)(a,b)   =   {g:g∈MSC(a,b)∧(∀g'∈MSC(a,b))
+      size(g')≤size(g)}
+
+  Ustalmy funkcję mierzącą size:MSC(a,b)→langleN,Nrangle
+
+[equation*]
+
+    size(langleθ_(1):t→a,θ_(2):t→brangle)=langlesize(t),size(θ_(1))+size(θ_(2))rangle
+
+  gdzie dla termów t
+
+[eqnarray*]
+
+    size(t)   =   size(r)+size(s)   jeśli
+    t=r*s∨t=rcdots
+ 0   jeśli
+    t=p↦q∨t=b-1∨t jest zmienną
+    wolną
+ 1   w przeciwnym
+    przypadku
+
+  i dla podstawień θ
+
+[eqnarray*]
+
+    size(θ)   =   sum_(x∈Dom(θ))size(θ(x))
+
+  Dla tej definicji size, określmy
+  ≤ jako
+
+[eqnarray*]
+
+    langlea,brangle≤langlec,drangle   Longleftrightarrow   a<c∨(a=c∧b≥d)
+
+[definition]
+
+    Drzewo typizowane to zorientowane drzewo etykietowane takie, że jeśli
+    węzeł t jest symbolem funkcyjnym arności
+    n to t ma n synów.
+
+[definition]
+
+    Częściową permutacją z n do m jest
+    włożenie phi z S do
+    {1,…,m} gdzie S jest
+    k-elementowym podzbiorem
+    {1,…,n} oraz k=min(n,m).
+
+[definition]
+
+    Typizowane drzewo s jest objęte (ang. embedded) w t,
+
+[eqnarray*]
+
+      s=f(s_(1),…,s_(m))   trianglelefteq   g(t_(1),…,t_(n))=t
+
+    jeśli zachodzi dowolny z następujących warunków:
+
+[enumerate]
+
+      itemstrianglelefteqt_(i), ∃i∈{1,…,n}
+
+      itemlabel(f)=label(g),
+       s_(i)trianglelefteqt_(i) ∀i∈{1,…,n}
+
+      itemf jest zmienną, oraz, dla pewnej injekcji
+      phi z {1,…,m} do
+      {1,…,n}, s_(i)trianglelefteqt_(phi(i)) ∀i∈{1,…,m}.
+
+    Jeśli drzewo s jest puste, to przyjmujemy
+    strianglelefteqt dla dowolnego t.
+
+  Hasker w [cite: hasker95] błędnie definiuje punkt 3, zamiast wymagać
+  injekcji pozwala na permutację częściową. Nie jest wtedy prawdą, że
+  poniższe gentrees odpowiada dalej zdefiniowanemu zbiorowi
+  cal-M maksymalnych dopasowań. Rozszerzenie definicji
+  na przypadek drzewa s pustego ma charakter techniczny.
+
+[definition]
+
+    \;
+
+[eqnarray*]
+
+      gentrees(a,b)   =   {t\ttrianglelefteqa,ttrianglelefteqb,(∀t':t'trianglelefteqa∧t'trianglelefteqb)
+      size(t')≤size(t)}
+
+  Numerujemy kolejno węzły drzew używając przejścia wszerz z indeksem
+  korzenia ustawionym na 1. Jeśli węzeł jest bliżej korzenia, to ma mniejszy
+  indeks. Indeks węzła p jest oznaczony
+  index(p), a węzeł (i poddrzewo, kontekst rozróżnia)
+  t o indeksie i przez
+  t/i. Korzeń drzewa t oznaczamy
+  odpowiednio t/1. Etykieta węzła p jest
+  oznaczona przez label(p). Niech 
+  będzie ilością węzłów w t. Definiujemy macierze
+  N i N' rozmiaru
+  :
+
+[definition]
+
+    Niech synami t_(1)/i będą
+    p_(m)[vector], a synami
+    t_(2)/j będą q_(n)[vector]
+    (dla m,n≥0), gdzie
+    u_(n)[vector]=u_(1),…,u_(n).
+    Wtedy N_(i,j) jest zbiorem zawierającym sumę rodzin
+    zbiorów
+
+[enumerate]
+
+      itemq∈q_(m)[vector]}
+
+      itemp∈p_(n)[vector]}
+
+      item
+      phi jest częściową permutacją z n
+      do m}
+
+    oraz N_(i,j)' jest zbiorem
+
+[eqnarray*]
+
+      N_(i,j)'   =   {langlei,jrangle,langleindex(p_(k)),index(q_(k))rangle\1≤k≤n}   label(t_(1)/i)=label(t_(2)/j)
+ ∅   w
+      przeciwnym przypadku
+
+  Definiujemy teraz macierze M,M' zawierające
+  rozmiary maksymalnie objętych drzew otrzymanych z N i
+  N'. Oznaczmy
+
+[eqnarray*]
+
+    M_(SigmaP)   =   sum_(langlep,qrangle∈P)M_(p,q)
+
+[definition]
+
+    \;
+
+[eqnarray*]
+
+      M_(i,j)'   =   0   N'_(i,j)=
+      ∅
+ 1+M_(Sigma(N'_(i,j)\\{langlei,jrangle}))   w
+      przeciwnym przypadku
+
+ M_(i,j)   =   max{M'_(i,j),M_(SigmaP)\P∈N_(i,j)}
+
+  Otrzymujemy
+
+[equation*]
+
+    M_(1,1)=\|t\| dla t∈gentrees(a,b)
+
+  Stosując memoizację, można efektywnie policzyć (jak w metodach
+  programowania dynamicznego)
+
+[code]
+
+    for i=n downto 1
+
+    \ \ for j=m downto 1
+
+    \ \ \ \ compute M'_(i,j) and
+    M_(i,j)
+
+  Żeby znaleźć maksymalnie duże objęte drzewa definiujemy
+
+[definition]
+
+    \;
+
+[eqnarray*]
+
+      I_(i,j)   =   {P∈N_(i,j)\M_(i,j)=M_(SigmaP)}∪{N_(i,j)'\M_(i,j)=M'_(i,j)}
+
+[definition]
+
+    Niech P∈N_(i,j), wtedy
+
+[eqnarray*]
+
+      matches_(langlei,jrangle)   =   cup_(langlep,qrangle∈P\\{langlei,jrangle})matches_(langlep,qrangle)∪{langlei,jrangle}   jeśli
+      langlei,jrangle∈P
+ ∅   w
+      przec. przyp.
+
+    Definicja jest niedeterministyczna ze względu na wybór
+    P. Oznaczamy zbiór wszystkich rozwiązań przez
+
+[eqnarray*]
+
+      cal-M   =   {matches_(langle1,1rangle)}
+
+SUBSECTION: Algorytm rekonstrukcji generalizacji z relewantnymi
+  λ-abstrakcjami.
+
+  Generalizacja drugiego rzędu w porządku danym przez podstawienia wyraża się
+  w języku λ-termów pierwszego rzędu: zmienne
+  związane λ-abstrakcji służą do ``sklejania''
+  podstawień z antyinstancją. (Ogólnie, rząd generalizacji w porządku
+  podstawieniowym jest o 1 większy niż rząd potrzebnych
+  λ-termów.) Dopiero w porządku aplikacyjnym (gdzie
+  podstawienia są realizowane przez β-redukcję) rząd
+  generalizacji jest taki sam jak rząd λ-termów.
+
+  Będziemy się posługiwać λ-rachunkiem, ponieważ
+  jest wygodniejszy dla manipulacji lokalną strukturą aplikacyjną niż algebra
+  kombinatorów: ''nitki'' łączące funkcję i argument mogą być jawnie nazwane;
+  poza tym, jest bardziej naturalny przy traktowaniu termów jako drzew.
+  Będziemy używać postaci ``uncurried'', bardziej odpowiedniej w języku
+  drugiego rzędu. λ-termy używane w generalizacji
+  będziemy uważać za różne od wszelkich konstrukcji języka, którego termy
+  generalizujemy; zbiór zmiennych generalizacji, czyli meta-zmiennych,
+  oznaczmy M.
+
+  Ograniczymy się do relewantnego λ-rachunku, tzn.
+  do λ-abstrakcji relewantnych.
+
+[definition]
+
+    λ-abstrakcja
+    λx_(1),…,x_(n).t jest
+    relewantna, jeśli {x_(1),…,x_(n)}=b-F_(M)(t),
+    gdzie b-F_(M) oznacza wolne meta-zmienne termu.
+
+  Opracujemy algorytm rekonstrukcji generalizacji z macierzy
+  I. Taki algorytm nie był podany bezpośrednio w pracy
+  Haskera. Zbiory zawarte w I_(i,j) oznaczają możliwe do
+  podjęcia w pozycji i,j dopasowania kroki:
+
+[enumerate]
+
+    itemDołącz korzeń drugiego termu do konstruowanego podstawienia, cały
+    pierwszy term zachowaj dla dalszej generalizacji.
+
+    itemDołącz korzeń pierwszego termu do konstruowanego podstawienia, cały
+    drugi term zachowaj dla dalszej generalizacji.
+
+    itemDołącz korzenie obu termów do konstruowanego podstawienia,
+    przydziel podtermy, które w dalszym przebiegu będą tworzyć argumenty
+    konstruowanego podstawienia (zmiennej).
+
+    itemUtwórz anty-instancję z korzeni obu podtermów (o ile mają wspólną
+    etykietę), konstruuj generalizację (anty-instancję) dla każdego
+    argumentu.
+
+  Algorytm generalizacji b-A_(s)(i,j)=Subst(l,r,θ_(1),θ_(2),V,H,S)
+  lub b-A_(s)(i,j)=AntiInst(g,θ_(1),θ_(2)),
+  gdzie i,j to pozycje (indeksy) w generalizowanych
+  programach, l,r lewe (dające s) i prawe
+  (dające t) aktualnie konstruowane podstawienia,
+  θ_(i) wynikowe podstawienia generalizacji,
+  V[vector] zmienne związane aktualnych podstawień
+  generalizacji, H[vector] podtermy anty-instancji w
+  kolejności odpowiadającej V, S pozostałe
+  do przetworzenia fragmenty programów (''skrawki''), g
+  skonstruowaną anty-instancję.
+
+  Przy generalizacji programów s,t,
+  b-A_(s)(i,j,θ_(1),θ_(2))
+  zwraca: wybierz P∈I_(i,j) i w zależności od
+  kategorii rodzin podzbiorółw, do której P należy
+
+[enumerate]
+
+    itemP={langlei,j'rangle},t/j=f(t_(1),…,t_(n)),t/j'=t_(k).
+    Aby skrócić sformułowania, dopuszczamy wszędzie przypadek
+    n=0.
+
+[code]
+
+      jeśli A_(s)(i,j')=Subst(l,r,θ_(1),θ_(2),V[vector],H[vector],S)
+
+[eqnarray*]
+
+        r'   =   f(r_(1),…,r_(n))
+ r_(m)   =   x_(m)
+        dla 1≤m≤n,mneqk
+ r_(k)   =   r
+ S'   =   S∪{t_(m)/x_(m)\1≤m≤n,mneqk}
+
+      \ \ \ \ zwróć Subst(l,r',θ_(1),θ_(2),V[vector],H[vector],S')
+
+      w p.p. A_(s)(i,j')=AntiInst(g,θ_(1),θ_(2))
+
+[eqnarray*]
+
+        r'   =   f(r_(1),…,r_(n))
+ r_(m)   =   x_(m)
+        dla 1≤m≤n,mneqk
+ r_(k)   =   X
+ V[vector]'   =   V[vector].X
+ H[vector]'   =   H[vector].g
+ S'   =   S∪{t_(m)/x_(m)\1≤m≤n,mneqk}
+
+      \ \ \ \ zwróć Subst(X,r',θ_(1),θ_(2),V[vector]',H[vector]',S')
+
+    x_(m) oraz X są nowymi
+    meta-zmiennymi.
+
+    itemP={langlei',jrangle},s/i=f(s_(1),…,s_(n)),s/i'=s_(k).
+
+[code]
+
+      jeśli A_(s)(i',j)=Subst(l,r,θ_(1),θ_(2),V[vector],H[vector],S)
+
+[eqnarray*]
+
+        l'   =   f(l_(1),…,l_(n))
+ l_(m)   =   x_(m)
+        dla 1≤m≤n,mneqk
+ l_(k)   =   l
+ S'   =   S∪{t_(m)/x_(m)\1≤m≤n,mneqk}
+
+      \ \ \ \ zwróć Subst(l',r,θ_(1),θ_(2),V[vector],H[vector],S')
+
+      w p.p. A_(s)(i',j)=AntiInst(g,θ_(1),θ_(2))
+
+[eqnarray*]
+
+        l'   =   f(l_(1),…,l_(n))
+ l_(m)   =   x_(m)
+        dla 1≤m≤n,mneqk
+ l_(k)   =   X
+ V[vector]'   =   V[vector].X
+ H[vector]'   =   H[vector].g
+ S'   =   S∪{s_(m)/x_(m)\1≤m≤n,mneqk}
+
+      \ \ \ \ zwróć Subst(l',X,θ_(1),θ_(2),V[vector]',H[vector]',S')
+
+    x_(m) oraz X są nowymi
+    meta-zmiennymi.
+
+    itemP={langlei_(1),j_(1)rangle,…,langlei_(k),j_(k)rangle},s/i=f(s_(1),…,s_(n)),t/j=g(t_(1),…,t_(n')),s/i_(m)=s_(psi_(m)),t/j_(m)=t_(phi(psi_(m))),1≤m≤k,Dom(phi)={psi_(1),…,psi_(k)}
+    w porządku rosnącym.
+
+[code]
+
+      V[vector]'assignV[vector],H[vector]'assignH[vector]
+
+      dla 1≤m≤k
+
+      \ \ \ \ jeśli A_(s)(i_(m),j_(m))=Subst(l^(m),r^(m),θ_(1)^(m),θ_(2)^(m),V[vector]^(m),H[vector]^(m),S^(m))
+
+[eqnarray*]
+
+        l_(psi_(m))   =   l^(m)
+ r_(phi(psi_(m)))   =   r^(m)
+
+      \ \ \ \ w p.p. A_(s)(i_(m),j_(m))=AntiInst(g^(m),θ_(1)^(m),θ_(2)^(m))
+
+[eqnarray*]
+
+        l_(psi_(m))   =   X_(m)
+ r_(phi(psi_(m)))   =   X_(m)
+ V[vector]'   assign   V[vector]'.X_(m)
+ H[vector]'   assign   H[vector]'.g
+
+      następnie
+
+[eqnarray*]
+
+        S'   =   S∪{s_(m)/x_(m),t_(m')/y_(m')\1≤m≤n,1≤m'≤n',mninDom(phi),m'ninRan(phi)}
+ l_(m)   =   x_(m), 1≤m≤n,mninDom(phi)
+ r_(m)   =   y_(m), 1≤m≤n',mninRan(phi)
+ l'   =   f(l_(1),…,l_(n))
+ r'   =   g(r_(1),…,r_(n'))
+ θ_(1)'   =   cup_(1≤m≤k)θ_(1)^(m)
+ θ_(2)'   =   cup_(1≤m≤k)θ_(2)^(m)
+
+      zwróć Subst(l',r',θ_(1)',θ_(2)',V[vector]',H[vector]',S')
+
+    x_(m),y_(m) oraz X_(m) są
+    nowymi meta-zmiennymi.
+
+    itemP={langlei,jrangle,langlei_(1),j_(1)rangle,…,langlei_(n),j_(n)rangle},s/i=f(s_(1),…,s_(n)),t/j=f(t_(1),…,t_(n)),s/i_(m)=s_(m),t/j_(m)=t_(m),1≤m≤n.
+
+[code]
+
+      θ_(1)'assignθ_(1),θ_(2)'assignθ_(2)
+
+      dla 1≤m≤n
+
+      \ \ \ \ jeśli A_(s)(i_(m),j_(m))=Subst(l^(m),r^(m),θ_(1)^(m),θ_(2)^(m),V[vector]^(m),H[vector]^(m),S^(m))
+
+[eqnarray*]
+
+        S'_(1)(x)   =   A_(p)(V[vector]^(m),θ_(1)^(m)H[vector]^(m),S^(m)(x)) x∈Dom(S^(m))
+ S'_(2)(x)   =   A_(p)(V[vector]^(m),θ_(2)^(m)H[vector]^(m),S^(m)(x)) x∈Dom(S^(m))
+ θ_(1)'   assign   θ_(1)'∪θ_(1)^(m)∪{λV[vector]^(m).S'_(1)(l^(m))/Z_(m)}
+ θ_(2)'   assign   θ_(2)'∪θ_(2)^(m)∪{λV[vector]^(m).S'_(2)(r^(m))/Z_(m)}
+ g_(m)   =   Z_(m)(H[vector]^(m))
+
+      \ \ \ \ w p.p. A_(s)(i_(m),j_(m))=AntiInst(g^(m),θ_(1)^(m),θ_(2)^(m))
+
+[eqnarray*]
+
+        θ_(1)'   =   θ_(1)'∪θ_(1)^(m)
+ θ_(2)'   =   θ_(2)'∪θ_(2)^(m)
+ g_(m)   =   g^(m)
+
+      zwróć AntiInst(f(g_(1),…,g_(n)),θ[vector]'_(1),θ[vector]_(2)')
+
+    Z_(m) są nowymi meta-zmiennymi.
+
+    itemP= ∅,s/i=c,t/j=d,cneqd, zwróć
+    Subst(c,d,∅,∅,∅,∅,∅).
+
+  Żeby wyznaczyć generalizację (anty-unifikację) programów
+  s,t:
+
+[code]
+
+    wyznacz macierze N,N',M,M',I
+
+    jeśli A_(s)(1,1)=Subst(l,r,θ_(1),θ_(2),V[vector],H[vector],S)
+
+[eqnarray*]
+
+      S'_(1)(x)   =   A_(p)(V[vector],θ_(1)H[vector],S(x)) x∈Dom(S)
+ S'_(2)(x)   =   A_(p)(V[vector],θ_(2)H[vector],S(x)) x∈Dom(S)
+ θ_(1)'   =   θ_(1)∪{λV[vector].S'_(1)(l)/Z}
+ θ_(2)'   =   θ_(2)∪{λV[vector].S'_(2)(r)/Z}
+ g   =   Z_()(H[vector])
+
+    \ \ \ \ zwróć g,θ_(1)',θ_(2)'
+
+    w p. p. A_(s)(1,1)=AntiInst(g,θ_(1),θ_(2))
+
+    \ \ \ \ zwróć g,θ_(1),θ_(2)
+
+  Pozostaje jeszcze zadanie wyznaczenia A_(p)(V[vector],H[vector],t).
+  Mając już rozwiązane zadanie maksymalizacji rozmiaru anty-instancji,
+  zajmiemy się minimalizacją rozmiaru podstawień. Ponieważ postać
+  anty-instancji determinuje argumenty podstawień, na ich podstawie trzeba
+  optymalnie ``wykroić skrawki''. Wystarczy przeglądać term
+  t od końców (od liści), szukając najdłużej pasującego
+  argumentu z H[vector]. Przy odpowiedniej
+  reprezentacji, sprowadza się to do porównywania stringów. Jako ważne
+  zadanie pozostaje zbadanie złożoności obliczeniowej powstałych algorytmów i
+  ewentualna optymalizacja algorytmu A_(p)(V[vector],H[vector],t).
+
+  Algorytm A_(p)(V[vector],H[vector],t):
+
+[enumerate]
+
+    itemSprowadź t i elementy
+    H[vector] do postaci odwrotnej notacji polskiej
+    (ang. RPN): t_(r),H[vector]_(r).
+
+    itemZnajdź string z H[vector]_(r) o
+    maksymalnej długości będący odcinkiem początkowym
+    t_(r). Jeśli takiego nie ma, zakończ (zakończ
+    wywołanie rekurencyjne). (Krok niedeterministyczny.)
+
+    itemZastąp znaleziony odc. początkowy t_(0) w
+    t_(r) odpowiednią zmienną x_(0)
+    z V[vector].
+
+    itemOkreśl odcinek początkowy s_(r) taki, że
+    t_(0) jest argumentem funkcji będącej ostatnim
+    elementem s_(r) (tzn. najmniejszy podterm
+    t_(r), że t_(0) jest jego
+    ścisłym podtermem). Jeśli taki s_(r) istnieje, to
+    wywołaj rekurencyjnie od punktu 2 dla
+    s'_(r), gdzie
+    s_(r)=t_(0).s'_(r).
+
+    itemJeśli s_(r)neqt_(r) (a jeśli
+    s_(r) nie istnieje, to jeśli
+    t_(0)neqt_(r)), wywołaj rekurencyjnie od
+    punktu 2 dla t'_(r), gdzie
+    t_(r)=s_(r).t'_(r) (a jeśli
+    s_(r) nie istnieje,
+    t_(r)=t_(0).t_(r)').
+
+    itemPoskładaj odpowiedzi, zastępujące odpowiednie podtermy
+    t_(r) przez zmienne, i zwróć tak przekształcony
+    term.
+
+SUBSECTION: Generalizacja przez znajdowanie maksymalnych wspólnych
+  podstruktur.
+
+  W tym podrozdziale pokażemy, że efektywny algorytm Haskera nie oblicza
+  MSC_(max). Podamy też algorytm obliczający
+  MSC. Powód, dla którego efektywny algorytm Haskera nie
+  oblicza MSC_(max) jest taki sam, jak powód, dla
+  którego zrezygnowano z kombinatorów kartezjańskich na rzecz relewantnych:
+  żeby wykorzystać tę samą informację w różnych miejscach, stosując algorytm
+  rekursji wzdłuż struktury termów, trzeba ją skopiować, a następnie skasować
+  w niepotrzebnych miejscach. Algorytm Haskera wyklucza kopiowanie, żeby nie
+  było konieczne kasowanie. Dopuszczenie kasowania prowadzi do patologicznych
+  pseudo-generalizacji.
+
+  Niekiedy mówiąc o drzewie, ma się na myśli nie tylko graf skierowany, ale
+  jeszcze porządek określony dla każdego węzła na przyległych do niego
+  krawędziach. Tak też niejawnie przyjmuje Hasker w swojej definicji drzewa
+  typizowanego.
+
+  Porządkiem sub wyznaczonym przez drzewo typizowane
+  t nazwiemy domknięcie przechodnie relacji danej przez graf
+  t: sub(v_(1),v_(2)), jeśli węzeł
+  v_(2) należy do poddrzewa zaczepionego w
+  v_(1). Zbiór węzłów drzewa oznaczmy przez
+  V(t). Niech V będzie wyróżnioną etykietą
+  oznaczającą zmienne. Niech predykat label_(k)(v)≡(label(v)=k∨label(v)=V).
+  Niech relacja
+
+[equation*]
+
+    argn_(n)(v_(1),v_(2))=(n≤outdeg(v_(1)))∧sub(v_(1),v_(2))∧(label_(V)(v_(1))∨wierzchołek
+    v_(2) należy do poddrzewa zaczepionego w
+    n-tym argumencie węzła v_(1))
+
+  \ (Jeśli n jest większe od arności
+  funkcji label(v_(1)), to
+  argn_(n)(v_(1),v_(2))}=
+  ∅}).
+
+[definition]
+
+    Niech label_(V)(p)}. Strukturą
+    Struct(t) wyznaczoną przez drzewo typizowane
+    t nazywamy system relacyjny
+    1≤n≤maksymalna
+    arność symb. funkcyjnych t},∅,∅rangle
+    (bez operacji i elementów wyróżnionych; relacje są obcięte do zbiorów
+    G^(n)).
+
+[definition]
+
+    Monomorfizmem systemów relacyjnych b-A i
+    b-B nazywamy różnowartościowy silny homomorfizm,
+    tzn. odwzorowanie h:Alongrightarrow 1-1B
+    takie, że r^(A)(a_(1),…,a_(n))≡r^(B)(h(a_(1)),…,h(a_(n))).
+
+  Definicja systemu relacyjnego i monomorfizmu, patrz [cite: logikaZbierski].
+  Zamysłem twierdzenia jest wskazanie, że algorytm z [cite: hasker95] (a
+  właściwie mój algorytm, na bazie struktury wyznaczonej przez Haskera)
+  zwraca generalizację, ale nie MSC_(max).
+
+[theorem]
+
+    Jeśli drzewo typizowane s jest objęte przez drzewo
+    typizowane t, strianglelefteqt, to
+    istnieje monomorfizm h ze Struct(s) do
+    Struct(t), h[Struct(s)]≤Struct(t).
+    Jednak jeśli nawet istnieje monomorfizm h ze
+    Struct(s) do Struct(t), to ciągle może
+    nie zachodzić s'trianglelefteqt'
+    dla żadnych s',t':
+    Struct(s)=Struct(s'),Struct(t)=Struct(t').
+
+  Przypomnijmy definicję: Typizowane drzewo s jest objęte
+  (ang. embedded) w t,
+
+[eqnarray*]
+
+    s=f(s_(1),…,s_(m))   trianglelefteq   g(t_(1),…,t_(n))=t
+
+  jeśli zachodzi dowolny z następujących warunków:
+
+[enumerate]
+
+    itemstrianglelefteqt_(i), ∃i∈{1,…,n}
+
+    itemlabel(f)=label(g),
+     s_(i)trianglelefteqt_(i) ∀i∈{1,…,n}
+
+    itemf jest zmienną, oraz, dla pewnej injekcji
+    phi z {1,…,m} do
+    {1,…,n}, s_(i)trianglelefteqt_(phi(i)) ∀i∈{1,…,m}.
+
+[proof]
+
+    Część strianglelefteqtLongrightarrowh[Struct(s)]≤Struct(t).
+    Niech drzewa typizowane spełniają strianglelefteqt.
+    Przeprowadźmy indukcję ze względu na rozmiar t.
+
+    Niech t będzie liściem. Wtedy s jest
+    liściem, może zachodzić 2. lub 3. punkt definicji obejmowania. Jeśli
+    f jest zmienną, to monomorfizm jest trywialny (pusty). W
+    przeciwnym przypadku label(s/1)=label(t/1) i wszystkie
+    relacje się pokrywają, h(s/1)=t/1 jest monomorfizmem.
+
+    Niech teraz g(t_(1),…,t_(n))=t,n≥1.
+    Jeśli zachodzi punkt 1. definicji obejmowania, to monomorfizm mamy z zał.
+    ind.
+
+    Jeśli zachodzi punkt 2., to z zał. ind. mamy n
+    monomorfizmów, które składamy razem i dodajemy h(f)=g
+    otrzymując monomorfizm ze Struct(s) w
+    Struct(t). Widać zgodność relacji
+    label_(k) i sub, natomiast zgodność
+    relacji argn_(i) wynika stąd, że sparowane są
+    odpowiednie s_(i) oraz t_(i).
+
+    Jeśli zachodzi punkt 3., to z zał. ind. mamy n
+    monomorfizmów dla podsystemów Struct(s_(i)) w
+    Struct(t_(phi(i))). Relacje sub
+    i argn_(l) nie zachodzą dla żadnych par z
+    Struct(s_(i))×Struct(s_(j)),ineqj,
+    ani dla żadnych par z Struct(t_(i))×Struct(t_(j)),ineqj,
+    a nośnikiem Struct(s) jest suma nośników
+    Struct(s_(i)), więc składając otrzymane
+    n monomorfizmów otrzymujemy szukany monomorfizm.
+
+    Część strianglelefteqt Longleftarrow
+    h[Struct(s)]≤Struct(t). Niech będzie dany monomorfizm
+    h ze Struct(s) w
+    Struct(t). Przeprowadźmy próbę indukcji ze względu na
+    liczebność nośnika Struct(t).
+
+    Niech nośnik Struct(t) będzie pusty. Wymusza to, że
+    nośnik Struct(s) też jest pusty. Obierzmy jako
+    s' drzewo puste, wtedy
+    s'trianglelefteqt'=t.
+
+    Jeśli nośnik Struct(s) jest pusty, obierzmy jako
+    s' drzewo puste, wtedy
+    s'trianglelefteqt'=t.
+
+    Niech s=f(s_(1),…,s_(m)),g(t_(1),…,t_(n))=t.
+    Jeśli f nie jest zmienną oraz h(f)=g,
+    obieramy punkt 2. derywacji i podderywacje obejmowania mielibyśmy z
+    założenia indukcyjnego: ponieważ h jest zgodna z
+    argn_(i), więc jest homomorfizmem podsystemów
+    Struct(s_(i)) w Struct(t_(i)).
+    Tezę mielibyśmy dla s'=f(s_(1)',…,s_(m)'),g(t_(1)',…,t_(n)')=t'.
+
+    Jeśli h(f)neqg, to obieramy punkt 1. derywacji dla
+    odpowiednich poddrzew t tak długo, aż zejdziemy do
+    podtermu o korzeniu t^(1)/1=g^(1)=h(f)
+    (pamiętamy, że h(f)∈Struct(t)). Ponieważ
+    h jest zgodna z sub, więc
+    h[Struct(s)]⊆Struct(t^(1)), stąd
+    h jest monomorfizmem Struct(s) w
+    Struct(t^(1)) i możemy wykorzystać rezultat dany
+    wyżej (tzn. dla przypadku h(f)=g) dla uzyskania
+    potrzebnej podderywacji: niech zwrócone drzewa będą
+    s',t^(1)'. Tezę mielibyśmy dla
+    s',[t^(1)'/t^(1)]t.
+
+    Jeśli f jest zmienną, to możemy obrać w derywacji
+    relacji obejmowania punkt 1 lub 3. Potrzebujemy tak dobrać permutacje,
+    aby pary: minimalna f_(i) należąca do nośnika
+    Struct(s) i h(f_(i)) się spotkały.
+    Jednak h może łączyć minimalne
+    f_(i) z dowolnie ulokowanymi nieporównywalnymi przez
+    sub podtermami t.
+
+    Dla przykładu, niech x będzie zmienną funkcyjną:
+
+[eqnarray*]
+
+      s   =   x(a,b,c)
+ t   =   f(a,g(b,c))
+
+    Monomorfizm h(a_(s))=a_(t),h(b_(s))=b_(t),h(c_(s))=c_(t),
+    ale strianglelefteq t.
+
+    \;
+
+  Maksymalne izomorficzne podsystemy to takie, które nie są podsystemami
+  innych izomorficznych podsystemów. Podobnie można udowodnić, że:
+
+[theorem]
+
+    Zbiory z cal-M wyznaczają izomorficzne podsystemy
+    systemów relacyjnych Struct(s) i
+    Struct(t), dla ustalonych drzew typizowanych
+    s i t. Jednak nie muszą to być
+    maksymalne podsystemy izomorficzne.
+
+  Teraz przejdźmy do meritum:
+
+  Weźmy generalizację programów a i b.
+  (Niech jej anty-instancja i podstawienia będą w postaci normalnej, tzn. bez
+  restruktorów wewnątrz termów, tylko po prawej.) We wszystkich
+  restruktorach, wyróżnijmy pewne wystąpienia zmiennych prawej strony tak,
+  aby każdy restruktor był liniowy jeśli uwzględniać tylko te wystąpienia
+  (eliminacja powtórzeń). Teraz dokonajmy podstawień generalizacji i
+  wyróżnijmy te wystąpienia symboli (węzły drzewa), które pochodzą od
+  korzenia anty-instancji, albo pochodzą od anty-instancji poprzez zmienną
+  wyróżnioną. Można zauważyć, że każdemu wystąpieniu symbolu w anty-instancji
+  odpowiada identyfikowalne wyróżnione wystąpienie symbolu w uzyskanych z
+  podstawienia programach (wyróżniony węzeł drzewa). To pozwala zbudować
+  odpowiedniość między wyróżnionymi węzłami a i
+  b. Nazwijmy ją odpowiedniością przez uliniowienie.
+
+[theorem]
+
+    Każda odpowiedniość przez uliniowienie dana przez generalizację
+    langlet,θ_(1),θ_(2)rangle
+    jest izomorfizmem odpowiednich podsystemów Struct(a) i
+    Struct(b). Podsystemy te są izomorficzne z systemem
+    relacyjnym Struct(t).
+
+  Pamiętamy z definicji, że zmienne są usuwane z nośnika
+  Struct(t).
+
+[proof]
+
+    Przeprowadźmy indukcję względem struktury anty-instancji.
+
+    Jeśli w korzeniu anty-instancji jest stała, to stosując zał. ind. do
+    bezpośrednich podtermów a, b i
+    anty-instancji (odpowiadających sobie, tak, że
+    argn_(i) jest zachowana), otrzymujemy tezę,
+    przyjmując h(a/1)=b/1, odpowiednio
+    h_(1)(a/1)=t/1,h_(2)(b/1)=t/1. (Jeśli nie ma
+    podtermów, to teza wynika natychmiast dla h(a/1)=b/1,
+    h_(1)(a/1)=t/1,h_(2)(b/1)=t/1.)
+
+    Jeśli zaś w korzeniu anty-instancji jest zmienna, to ustalamy, jakie
+    zmienne restruktorów są wyróżnione w podstawieniach. Następnie tworzymy
+    trójki: argument zmiennej w korzeniu anty-instancji, podterm
+    a uzyskany z podstawienia tego argumentu pod zmienną
+    wyróżnioną w podstawieniu dającym a, podterm
+    b tak samo. Stosujemy założenie indukcyjne do każdej
+    trójki (z tymi samymi podstawieniami generalizacji). Szukany izomorfizm
+    jest złożeniem otrzymanych izomorfizmów, wystarczy pokazać, że są zgodne.
+    Ale jeśli dwa węzły leżą w dziedzinach różnych izomorfizmów, to leżą w
+    rozłącznych podtermach, więc argn_(i) ani
+    sub nie zachodzi między nimi; to samo dla dwóch węzłów w
+    obrazach różnych izomorfizmów, w szczególności dla obrazów wspomnianych
+    węzłów z dziedzin. Stąd złożenie izomorfizmów jest izomorfizmem. (Dotyczy
+    to wszystkich trzech izomorfizmów, również tych na
+    Struct(t), ponieważ t/1 nie należy do
+    nośnika.)
+
+[theorem]
+
+    Jeśli pewna (dowolna) odpowiedniość przez uliniowienie wyznacza
+    maksymalne izomorficzne podsystemy, to generalizacja jest sprowadzalna do
+    MSC(a,b) przez co najwyżej łączenie zmiennych (reguła
+    Merge).
+
+[proof]
+
+    Pokażemy, że do tej generalizacji nie stosuje się żadna, poza (Merge),
+    reguła spośród tych w definicji [ref: algMSC], czyli
+
+[enumerate]
+
+      item(Delete)
+
+[equation*]
+
+        (t,θ_(1)∪{s/f},θ_(2)∪{s/f}) / ({s/f}(t),θ_(1),θ_(2))
+
+      item(Merge) Dla obustronnie odwracalnego restruktora
+      τ
+
+[equation*]
+
+        (t,θ_(1)∪{r/f,rτ/f'},θ_(2)∪{s/f,sτ/f'}) / ({fτ/f'}(t),θ_(1)∪{r/f},θ_(2)∪{s/f})
+
+      item(Factor-Constant)
+
+[equation*]
+
+        (t,θ_(1)∪{r(δ^(m)Kmu(r_(n)[vector])cdotb-1)τ/f},θ_(2)∪{s(δ^(m')Kmu(s_(n)[vector])cdotb-1)τ/f}) / ({h*(Kmu(h_(n)[vector])cdotb-1)τ/f}(t),θ_(1)∪{r(δ^(m)cdotb-1)/h,r_(n)[vector]/h_(n)[vector]},θ_(2)∪{s(δ^(m')cdotb-1)/h,s_(n)[vector]/h_(n)[vector]})
+
+      item(Factor-Restructor)
+
+[equation*]
+
+        (t,θ_(1)∪{rτ/f},θ_(2)∪{sτ/f}) / ({hτ/f}(t),θ_(1)∪{r/h},θ_(2)∪{s/h})
+
+      oraz τ nie ma lewostronnego elementu odwrotnego.
+
+    Załóżmy, że do generalizacji stosuje się reguła (Delete). Weźmy dowolną
+    odpowiedniość przez uliniowienie. Ustalmy pewne wystąpienie zmiennej
+    f w anty-instancji. Ponieważ podsystemy tej
+    odpowiedniości są izomorficzne ze Struct(t), więc
+    miejsce w porządku odpowiedniego wystąpienia s w
+    drzewach a i b jest takie samo w obydwu
+    podsystemach. Stąd można je rozszerzyć dodając odpowiednie wystąpienia
+    s i zachowując własność izomorfizmu, czyli nie jest on
+    maksymalny.
+
+    Teraz załóżmy, że do generalizacji stosuje się reguła (Merge). Jeśli
+    przed jej zastosowaniem żadna inna reguła się nie stosuje, to po
+    zastosowaniu (Merge) też nie będzie się stosować, bo jeśli stosuje się do
+    f po (Merge), to stosuje się też do f
+    przed (Merge). Stąd sprowadzając dowolny generalizator skondensowany do
+    generalizatora MSC, można najpierw stosować pozostałe
+    reguły, a gdy żadna się nie będzie stosować, same reguły (Merge).
+
+    Załóżmy, że do generalizacji stosuje się reguła (Factor-Constant).
+    Ustalmy wystąpienie zmienej f, podobnie jak w przypadku
+    (Delete). Wybierzmy pierwsze spośród m
+    wyselekcjonowanych wystąpień stałej K z ustalonych
+    pozycji w a, podobnie pierwsze spośród
+    m' wystąpień w b. Ze względu
+    na to, że stała K ma taką samą strukturę argumentów w
+    obu podstawieniach w tych wystąpieniach, ma dokładnie te same elementy
+    ponad ze względu na relacje sub i
+    argn_(i) w obu podsystemach odpow. z
+    a i z b izomorficznych ze
+    Struct(t). Oczywiście ma też te same elementy pod (są to
+    elementy Struct(t) pod f w
+    t); stąd izomorfizm można rozszerzyć o odwzorowanie tych
+    wystąpień K, nie jest więc maksymalny.
+
+    Załóżmy, że do generalizacji stosuje się reguła (Factor-Restructor).
+    Reguła ta oznacza, że pewne argumenty anty-instancji zostaną powielone.
+    Ustalmy dowolną odpowiedniość przez uliniowienie. Ustalmy jeden z
+    argumentów, który ma być powielony w wyniku reguły. Oznacza to, że w
+    restruktorze ma on co najmniej dwa wystąpienia po prawej. Wybierzmy po
+    jednym niewyróżnionym wystąpieniu w każdym z podstawień. Możemy teraz
+    rozszerzyć izomorfizm, chociażby odwzorowując korzeń podtermu
+    a odpowiadającego argumetnowi wybranego podstawienia w
+    tak określony węzeł b. To zachowa izomorfizm, ponieważ
+    odwzorowane węzły nie mają niczego ponad w podsystemach do których będą
+    dodane, a pod mają to, co ``pod zmienną f''.
+
+PARAGRAPH: Zagadnienia praktyczne.
+Powyższe twierdzenie podpowiada, że
+  można szukać maksymalnych izomorficznych podsystemów żeby znaleźć
+  MSC(a,b); po znalezieniu izomorfizmu rekonstruujemy
+  anty-instancję, która będzie liniowa; następnie łączymy zmienne i
+  ``kompresujemy skrawki'' algorytmem A_(p).
+
+  Jednak dla potrzeb programowania genetycznego, właśnie taka generalizacja,
+  liniowa względem meta-zmiennych generalizacji i
+  λ-abstrakcji generalizacji, wydaje się
+  odpowiednia.
+
+  Możliwość określenia efektywnego algorytmu znajdowania maksymalnej wspólnej
+  podstruktury w ogólnym przypadku zależy od systemu; nie może być zbyt
+  bogaty w ''niestrukturalny'' sposób. Relacje mogą np. wyznaczać jakieś
+  uporządkowanie, pozwalające na zastosowanie programowania dynamicznego, jak
+  tutaj relacja sub.
+
+  Określenie generalizacji a następnie rekombinacji w terminologii
+  podstruktur ma duże znaczenie dla programowania genetycznego, i szerzej dla
+  syntezy (czy wnioskowania) indukcyjnej i analogicznej. Wiele (być może
+  większość) skutecznych zastosowań GP wykorzystuje struktury bliskie
+  problemowi: struktury grafowe i ``wariacje na ich temat'', np. zastosowania
+  w projektowaniu obwodów elektrycznych filtrujących (sukcesy promowane przez
+  Kozę), anten do telefonów komórkowych, stworzeń poruszających się w
+  środowisku fizycznym (system Framsticks opracowywany na UAM w Poznaniu; GP
+  konstruuje budowę fizyczną stworzenia i budowę jego mózgu). Obecnie
+  wykorzystywane w tych systemach operatory rekombinacji najczęściej dokonują
+  przypadkowej wymiany fragmentów reprezentacji. Dla przykładu, w systemie
+  Framsticks trzeba sztucznie ograniczyć rekombinację do wymiany wag w sieci
+  neuronowej, aby zapobiec psuciu przez rekombinację dobrze dostosowanych
+  struktur neuronalnych.
+
+PARAGRAPH: Uwaga natury teoretycznej.
+Odpowiedniość między generalizacjami
+  a maksymalnymi izomorficznymi podstrukturami (podsystemami) wynika stąd, że
+  generalizacja to anty-instancja \ o r a z \ podstawienia. Generalizacja
+  będąca MSC może mieć nie najbardziej specyficzną
+  anty-instancję. Oznacza to, że maksymalne izomorficzne podsystemy
+  s'simt',s'<s,t'<t
+  mogą być parami izomorficzne z izomorficznymi podsystemami
+  s'sims'',t'simt'',s''<s,t''<t,
+  dla których istnieją s'''simt''',s''<s'''≤s,t''<t'''≤t.
+
+SUBSUBSECTION: Znajdowanie maksymalnych izomorficznych podsystemów.
+
+  Najprostszym sposobem znajdowania maksymalnych izomorficznych podsystemów
+  jest:
+
+[code]
+
+    C := zbiór par pozycji o tych samych etykietach
+
+    M := ∅
+
+    dopóki Cneq∅
+
+    \ \ wybierz (p,q)∈C
+
+    \ \ jeśli dla wszystkich (p',q')∈M
+
+    \ \ \ \ (sub(p,p')≡sub(q,q'))∧wedge_(1≤i≤ar(p))argn_(i)(p,p')≡argn_(i)(q,q')
+
+    \ \ to M := M∪{(p,q)}
+
+    \ \ C := C\\{(p,q)}
+
+    zwróć M
+
+  Ma on złożoność O(n^(4)), gdzie n
+  jest sumą długości generalizowanych termów: najpierw generowanych jest
+  mniej niż n^(2) par, następnie dla każdej z nich
+  dokonywanych jest mniej niż n^(2) sprawdzeń. Zaletą
+  tego algorytmu jest, że można uwzględnić preferencje co do wybieranych par.
+  W przypadku programowania genetycznego można np. preferować pary pozycji,
+  dla których podejrzewa się \Rtożsamość genealogiczną'' (pochodzenie od
+  wspólnego przodka).
+
+  Wprowadźmy oznaczenia: parę (p,q)∈C nazywamy
+  Pareto-maksymalną w C jeśli
+
+[equation*]
+
+    ¬(∃(p',q')∈C)
+    p'neqp∧q'neqq∧sub(p,p')∧sub(q,q')
+
+  \;
+
+  Odpowiednio definiuje się parę Pareto-minimalną w C.
+  Wprowadzimy teraz wydajniejsze algorytmy. Algorytm, przetwarzający pozycje
+  od liści ku korzeniowi:
+
+[code]
+
+    C := zbiór par pozycji o tych samych etykietach
+
+    M := ∅
+
+    dopóki Cneq∅
+
+    \ \ 1: wybierz (p,q) Pareto-maksymalną w
+    C
+
+    \ \ 2: C := sub(p,p')∨sub(q,q')}
+
+    \ \ 3: C := (∃i)
+    argn_(i)(p',p)nequivargn_(i)(q',q)}
+
+    \ \ M := M∪{(p,q)}
+
+    zwróć M
+
+  Algorytm przetwarzający pozycje od korzenia ku liściom (odpowiada
+  klasycznym rekurencyjnym sformułowaniom generalizacji termów):
+
+[code]
+
+    przetwórz(C) =
+
+    \ \ M := ∅
+
+    \ \ dopóki Cneq∅
+
+    \ \ \ \ 1: wybierz (p,q) Pareto-minimalną w
+    C
+
+    \ \ \ \ dla i=1 do ar(p)
+
+    \ \ \ \ \ \ 2: M := M∪przetwórz(
+    (∃i) argn_(i)(p,p')∧argn_(i)(q,q')})
+
+    \ \ \ \ 3: C := sub(p,p')∨sub(q,q')}
+
+    \ \ zwróć M
+
+    \;
+
+    C := zbiór par pozycji o tych samych etykietach
+
+    zwróć przetwórz(C)
+
+  Algorytm od-korzenia-ku-liściom łatwo zaimplementować wydajniej -- ze
+  złożonością O(n^(2)). Zbiór C można
+  generować w sposób leniwy z poddrzew s,t:
+  C⊂s×t, ponieważ operacje na przynależności do tego zbioru
+  to 3: usuwanie poddrzew oraz 2: przekazywanie poddrzew do dalszego
+  przetwarzania. Wystarczy opracować mechanizm wyboru (punkt 1) nie
+  przetwarzający par wielokrotnie. Można to zrobić przechowując przetworzone
+  poddrzewa S,T: Snis'
+  (odpowiednio Tnit') oraz w pojedynczym kroku
+  dodawać węzeł p do s' lub
+  q do t' i szukać
+  q (odpowiednio p) w
+  t'∈T (odpowiednio w
+  s'∈S) o tej samej etykiecie; po znalezieniu,
+  zastąpić t' w T przez poddrzewa
+  powstałe przez usunięcie z t' węzłów od korzenia
+  t' do węzła q (odpowiednio dla
+  przypadku s',S,p).
+
+[theorem]
+
+    Powyższe algorytmy generują izomorfimy maksymalnych izomorficznych
+    podsystemów.
+
+  Konstrukcja generalizacji ograniczonych do MSC_(max),
+  a więc nie tylko maksymalnie specyficznych, ale i największych rozmiarem,
+  jest trudniejsza. Przy przetwarzaniu od-liści-ku-korzeniowi możemy
+  zastosować metodę programowania dynamicznego: najlepiej dopasowane drzewa
+  mają też najlepiej dopasowane poddrzewa. Jednak należy uwzględnić wszystkie
+  możliwe dopasowania powyżej przetwarzanej pary. Dla zbioru
+  C wszystkich par pozycji o takich samych etykietach:
+
+[verse]
+
+    Gdy wszystkie pary z C powyżej
+    (p,q)∈C zostały już ocenione, skonstruuj wszystkie
+    maksymalnie liczne zbiory par Pareto-minimalnych z
+
+[equation*]
+
+      {(p',q')∈C\| (∃i)
+      argn_(i)(p,p')∧argn_(i)(q,q')}
+
+    takich, że elementy par w konstruowanym zbiorze są nieporównywalne, oceń
+    zbiory na sumę ocen należących do nich par, oceń (p,q)
+    na maksimum z ocen skonstruowanych zbiorów plus jeden. Skojarz z parą
+    (p,q) zbiór, dla którego zachodzi maksimum, na potrzeby
+    rekonstrukcji izomorfizmu.
+
+  Niestety, nawet przy wydajnej implementacji algorytm oparty na powyższej
+  regule będzie miał dużą złożoność obliczeniową. Pozostaje mieć nadzieję, że
+  w praktycznych przypadkach zbiory par Pareto-minimalnych z
+   (∃i)
+  argn_(i)(p,p')∧argn_(i)(q,q')} dla
+  danych p,q nie będą bardzo liczne.
+
+SUBSUBSECTION: Rozszerzanie generalizacji na
+  λ-termy z definicjami lokalnymi i
+  rekurencyjnymi.
+\ 
+
+  Anty-unifikacja z poprzednich podrozdziałłów bezpośrednio przenosi się na
+  przypadek definicji lokalnych, ponieważ w reprezentacji grafowej wyznaczają
+  one ciągle relację porządku. Natomiast zastosowanie do definicji
+  rekurencyjnych wymaga dalszych badań, ale wiąże się z prowadzonymi przez
+  innych badaniami nad indukcją funkcji rekurencyjnych.
+
+SUBSUBSECTION: Zgodność z systemem typów.
+
+  Opracowanie algorytmu z obsługą zmiennych związanych w języku (w
+  przeciwieństwie do meta-zmiennych) na wzór potraktowania ich w pierwszym
+  podrozdziale, oraz opracowanie rekombinacji zgodnej z systemem typów, to
+  zadanie na bliską przyszłość.
+
+CHAPTER: Zakończenie
+
+SECTION: Wkład pracy.
+
+  Postawione zadanie: Perspektywy programowania genetycznego w językach
+  typizowanych -- postanowiłem rozpatrzeć od strony teoretycznej,
+  umieszczając zagadnienia GP w nowym dla nich kontekscie syntezy dedukcyjnej
+  i indukcyjnej programów.
+
+  We wprowadzeniu przedstawiłem tematykę pracy, jej cele, oraz szerszy
+  kontekst, w tym związki z teorią ewolucji darwinowskiej (pojęcie genu jako
+  jednostki selekcji).
+
+  W pierwszej części pracy (rozdział [ref: generowanie]) zajmowałem się
+  zagadnieniami syntezy dedukcyjnej. Wskazałem na związek syntezy dedukcyjnej
+  z inferencją typów i postawione jej wyzwanie: inferować pełną specyfikację
+  logiczną konstruowanego programu. Opracowałem algorytmy generowania
+  programów dla języka ML (system typów Damasa-Milnera) o charakterze
+  teoretycznym, z pełnymi dowodami poprawności
+  (algorytm⊆język) i
+  pełności (język⊆algorytm).
+  Algorytmy te uwypuklają analogię generowania termów i inferencji typów.
+  Przedstawiłem system typów λ [vector]
+  kontrolujący rekurencję (zapewniający własność stopu), razem z algorytmem
+  generowania programów. Wskazałem na praktyczny mechanizm generowania
+  termów: metodę rezolucji. Wskazałem na najodpowiedniejszego moim zdaniem
+  kandydata na język dla programowania genetycznego: język
+  HMG(X), przy czym uproszczony przez rezygnację z pełnego
+  dopasowywania wzorca. Podałem proste sformułowanie ``podatnego'' na metodę
+  rezolucji języka pozwalającego na kodowanie specyfikacji wyrażalnych
+  mechanizmem unifikacji. Wspomniałem także o bardzo istotnym zagadnieniu
+  maksymalizacji ``code reuse'' poprzez elastyczne mechanizmy wprowadzania
+  definicji lokalnych.
+
+  W drugiej części pracy (rozdział [ref: rekombinacja]) zająłem się
+  kluczowym zagadnieniem syntezy indukcyjnej: generalizacją. Generalizacja ma
+  szerokie zastosowania, natomiast zastosowanie jej, w postaci
+  anty-unifikacji, jako techniki rekombinacji w programowaniu genetycznym
+  jest nowatorskie. W usytuowaniu szeroko rozumianych algorytmów genetycznych
+  używano (w pewnym sensie) generalizacji dla rekombinacji, w postaci
+  rekombinacji zachowującej maksymalne wspólne schematy.
+
+  W kontekscie złożonych systemów typów zagadnienie znalezienia swego rodzaju
+  homomorfizmu typizowań, pozwalającego wymieniać fragmenty programów, jest
+  trudnym zadaniem. Nie wydaje się rozsądne poświęcać energii na poszukiwanie
+  homomorfizmu typizowań dla czegoś tak przypadkowego jak rekombinacja
+  swobodna; anty-unifikacja proponuje bardziej rozsądne pozycje dla
+  rekombinacji. Opracowałem syntaktyczny algorytm anty-unifikacji obsługujący
+  wiązania zmiennych (kontekst); jest on syntaktycznie mocniejszy (po prostej
+  modyfikacji dodającej permutację kontekstu) od pozostałych przytoczonych
+  podejść do anty-unifikacji, ale działa w języku nietypizowanym. Aby
+  zastosować ten algorytm dla rekombinacji termów typizowanych (ale bez
+  annotacji typami w termach) opracowałem algorytm inferencji typów dający
+  typizację dla każdego poprawnego dziecka danej pary rodziców, określający,
+  które dzieci są poprawnie typizowane.
+
+  Z myślą o przyszłych zastosowaniach do rekombinacji programów bogato
+  wykorzystujących definicje lokalne, zająłem się pełną syntaktyczną
+  unifikacją drugiego rzędu. Znakomite sformułowanie generalizacji w języku
+  kombinatorów zawiera praca Haskera. Praca nie zawiera bezpośredniego
+  sformułowania algorytmu znajdującego generalizacje, który dostarczyłem dla
+  opracowanego tam praktycznego algorytmu konstrukcji anty-instancji.
+  Pokazałem, że opracowany w tezie Haskera algorytm praktyczny nie jest tak
+  mocny, jak się tam stwierdza: nie daje anty-instancji dla maksymalnie
+  specyficznych generalizacji. Znalazłem obrazowe podejście do zagadnienia
+  anty-unifikacji drugiego rzędu, które uogólnia się na dowolne systemy
+  relacyjne: zadanie znajdowania maksymalnych izomorficznych podstruktur
+  generalizowanych struktur. Zaproponowałem algorytm rozwiązujący to zadanie
+  oraz przedstawiłem problem maksymalizacji rozmiaru szukanych podstruktur,
+  odpowiadający problemowi znajdowania MSC_(max) z
+  rozdziału 6 pracy [cite: hasker95].
+
+SECTION: Postawione zadania.
+
+  Przeprowadzone badania wskazały kilka problemów, które trzeba bądź warto
+  rozwiązać, nim przystąpi się do implementacji systemu programowania
+  genetycznego opartego o systemy typów bardziej złożone niż system
+  Curry'ego-Hindley'a (patrz [cite: henglein93type]).
+
+  Pierwszym obszernym zadaniem jest stworzenie systemu GP optymalizującego
+  ``code reuse''; jest ono ściśle związane z wynikłym problemem (raczej
+  technicznym), inferencji najogólniejszego typu jednocześnie z typem
+  konkretyzującym zadany.
+
+  Drugim zadaniem jest pełna inferencja typu dla HMG(X)
+  poprzez wykorzystanie mechanizmów inferencji typu dla rekurencji
+  polimorficznej. Na bazie inferencji typu należy skonstruować algorytm
+  generujący programy HMG(X).
+
+  Trzecim zadaniem jest zbadanie złożoności obliczeniowej problemu
+  znajdowania generalizacji z MSC_(max).
+
+  Czwartym zadaniem jest dokonanie dla pełnej anty-unifikacji drugiego rzędu
+  tego, czego podrozdział [ref: antyunif1rz] dokonuje dla
+  anty-unifikacji pierwszego rzędu: wprowadzenie obsługi zmiennych
+  związanych, opracowanie algorytmu inferencji typu dla rekombinantów.
+
+  Pozostaje do zbadania szeroka klasa dziedzin związanych z generowaniem
+  termów: teorii rezolucji i programowania w logice, programowania więzów,
+  poszukiwania dowodów i interaktywnego dowodzenia, dla spożytkowania w
+  teorii programowania genetycznego.
+
+  Nie wolno też zapominać, że teoria jest wstępem do praktyki.
+

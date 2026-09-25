@@ -1,0 +1,997 @@
+07.2002 version of my ideas
+
+I recommend the article "Generalization in Lambda2" by Jianguo Lu,
+Masateru Harao, Masami Hagiya. Reasons: they work directly with lambda
+calculus (they not focus on logic), it is the only article I managed
+to get to clearly expressing an algorithm for generalization of
+lambda-terms, they shape generalization properties by changing the
+ordering, introduce subterm restriction. But I will go beyond to allow
+projection substitutions; I will not use variable-freezing: to
+identify two variables, their lambda abstractions must be matched; I
+will not restrict to Lambda 2 --- I aim at the expresiveness of ML for
+small scale programming (no modules); I will restrict the set of
+generalizators (on which the ordering is defined). Generally: more
+expressive language, but more restrictive generalization.
+
+Basic properties of generalization relation that I need:
+
+ - Decidable for any terms
+
+ - At least one least general generalization (LGG or MCS - maximal
+   common schema, maximal common subtree) exists
+
+ - Only finitely many LGGs may exist
+
+I donot expect the generalization to be unique.
+
+I will introduce two algorithms, two ideas of generalization: one
+without projection (subterm restriction) - fast one, second with
+projection - time consuming for search with backtracing (subterms plus
+projections: e.g. %x y z.y). The second algorithm is not meant to
+find all LGGs, but MCSta that are largest (driving force of the
+algorithm). Firstly, I will work out monomorphic versions.
+
+The goal --- generalization of two mutants should introduce slots for
+places where mutations occurred: slots (variables in the LGG term)
+correspond to genes, substitutions to alleles, mutation to
+introduction of new allele. LGG without projection: point mutations
+(micromutations), branch mutations (external growth) are
+supported. LGG with projection: additionally, insertion/deletion
+mutations (internal growth) supported. Examples:
+
+ - Point mutations: (a b) c => (a f) c; (a b) c; => (g b) c; (a b) c
+   => (a b) h;
+
+ - Branch mutations: (a b) c => f c; (a b) c => (a b) (f g); (a b) c
+   => ((h j) b) c; (a b) c => (a (g h)) c;
+
+ - Insertion mutations: a (b c) => a (g (b c)); (a b) c => f ((a b)
+   c); (a b) c => ((h a) b) c; (a b) c => f g ((a b) c);
+
+other goal my algorithm should achieve is to measure the similarity of
+terms.
+
+
+
+Terms (the language - let's call it "Lambda"):
+
+Monomorphic:
+
+C = {r, s, t, ...} - type constans,
+T = V | C | (T -> T) - types
+
+X = {x, y, z, ...} - variables,
+A = {a, b, c, ...} - constants,
+L = X | A | (L L) | [X : T]L | [GId, X = L : T]L - terms
+
+Polymorphic:
+
+V = {a', b', c', ...} - type variables,
+C = {r, s, t, ...} - type constans,
+T = V | C | (T -> T) | [V]T - types ([V]T - type abstraction)
+
+X = {x, y, z, ...} - variables,
+A = {a, b, c, ...} - constants,
+L = X | A | (L L) | [X : T]L | [GId, X = L : T]L | [V]L - terms
+
+where:
+
+[X : T]L - lambda abstraction
+[GId, X = L : T] - local binding (reduct of ([X : T]L) L), GId is its
+associated genealogical identity, unique in a term. (My first aproach to
+generalization with projections will not treat local bindings, but
+they will be served by recombination "outside" the terms.)
+
+The language "ML": (functions are curried, constructors uncurried)
+
+Monomorphic:
+
+TyCon = {r, s, t, ...} - type constans,
+Ty = V | C | (T -> T) | TyCon | (TyCon T .. T) - types
+  (some type constants are type constructors with fixed arity)
+
+Var = {x, y, z, ...} - variables,
+Con = {A, B, C, ...} - value constructors,
+Val = {a, b, c, ...} - constants,
+Pat = Var | (Con Pat .. Pat) - patterns,
+Exp = Var | Val | (Exp Exp) | Con | (Con Val .. Val) | let Var = Exp
+: Ty in Exp | fun Pat -> Exp `|' .. `|' Pat -> Exp - expressions
+
+Polymorphic:
+
+TyVar = {'a, 'b, 'c, ...} - type variables,
+TyCon = {r, s, t, ...} - type constans,
+Ty = V | C | (T -> T) | TyCon | (TyCon T .. T) | [V]T - types
+  (some type constants are type constructors with fixed arity)
+
+Var = {x, y, z, ...} - variables,
+Con = {A, B, C, ...} - value constructors,
+Val = {a, b, c, ...} - constants,
+Pat = Var | (Con Pat .. Pat) - patterns,
+Exp = Var | Val | (Exp Exp) | Con | (Con Val .. Val) | let GId, Var =
+Exp : Ty in Exp | fun Pat -> Exp `|' .. `|' Pat -> Exp - expressions
+
+where X .. X means one or more of Xes.
+
+For quite a while I will work with monomorphic "Lambda", but I will
+keep in mind "ML", for the sake of extendability. These languages come
+with their classical "properly typed" predicate and computational
+semantics; constants of "Lambda" may serve both as classical functions
+and constructors.
+
+Local bindings have their genealogical identity (GId) by which they
+are matched, even when their scope (location) is changed. Their scope
+cannot pass a lambda-abstraction or escape from local definition they
+are nested in. They are recursive, and these that
+do not have a lambda-abstraction on the (undirected) path joining them
+are mutually recursive.
+
+Variables introduced by generalization are called metavariables (no
+matter whether they are represented as free or as bounded outside the
+term), a list of triples: metavariable, assignment from one term,
+assignment from the other term is costructed as generalization goes
+on. (Algorithm may be easily generalized to work with more than two
+terms simultaneously).
+
+The "Lambda 2" algorithm just collects abstractions (they stand in
+front of both terms). I need to save the structure of abstractions,
+not to change the behaviour of functions. For the purposes of
+recombination, I "overgeneralize" the types: each time atomic types do
+not agree, I introduce new type metavariable, which stays linked with
+value metavariable: substitution of value metavariable forces
+appropriate substitution of type metavariables (for types, first-order
+antiunification is performed). (Actually, for the usage in
+recombination operator, type generalization is only needed to tune-up
+similarity measurement.)
+
+The meaning of generalization... For the purposes of recombination (as
+I advocate elsewhere) I do not need really an LGG: having the most
+details. I need the most accurate decomposition of terms into common
+parts and difference parts: when I have LGG, I transform it to a term
+with all constants left, but with the least number of variables, and
+still "unifiable" with that LGG. (E. g. a (x (y b) z) => a (x
+b)). Traditional substitution works only with complete subterms, thus
+works well in higher-order only with "complete" functions, and not
+with templates like <x (y *) z> in the example above - I need graph
+substitution; I have it using lambda-expressions as substituents, with
+meta-abstractions distinct from object-language (that is, the language
+in use) lambda abstractions, cleared out after performing substitution
+by (syntactical) beta-reduction (we will have %X.x (y X) z as
+substitution for x to get <= transform in the above example, where %
+is meta-abstraction). [I will call an LGG after this transformation a
+MCS (maximal common schema), just for clarity in terms.]
+
+Apart from the requirement on MCS another deviation from the general
+idea of LGG - linearity. That is, we only consider generalization
+terms with no repeats of metavariables. MCSta need to be linear for
+"genetical" reasons - different loci cannot be totally linked.
+
+For generalization with projection, the LGG is not well defined, as we
+can endlessly add identity functions into the body of the
+generalization. But the MCS is again well defined, this time not by
+restricting the ordering, but by restricting the "metalanguage" - a
+syntactical restriction put on generalizations: no metavariable is
+applied to metavariable. (Ordering is enhanced: call it "reduction
+ordering" for meta-abstractions need to be reduced.)
+
+
+
+Generalizations in monomorphic "Lambda" language:
+
+I would like to present a cascade of algorithms computing "less and
+less" general generalizations compatible with mutation events of
+growing "power". Common Schema Algorithm (CSA) is compatible with a
+mutation operator, when, assuming mutation does not introduce
+constants already appearing in original term, for original term and
+mutated term CSA generates a term containing all the "material" from
+original term that has not been mutated. Finally, a Maximal CSA will
+be presented, an algorithm that preserves the biggest possible number
+of constants.
+
+
+Generalization without projection (how to deal with local bindings):
+
+In monomorphic languages generalization without projection is more
+like first-order generalization - since only terms of the same type
+can be generalized and generalization goes "atom by atom", we cannot
+"jump over" type mismatch. Metavariables have concrete types.
+
+CE records the triples: matched terms and metavariables that
+substitute them. CX records matched abstractions and the variables
+bound in generalisation term that correspond to them. CB records local
+bindings found so far; they are identified by their GId, there can be
+at most one binding with given GId in a term. A path and variable
+bindings are remembered for the sake of back-transferring the binding.
+
+All bounded variables are distinct.
+
+There is nothing wrong in the lack of scope control for environment
+CX. When local bindings with different scoping are matched, the
+representation of them in the generalization term is transferred back
+to cover both scopes. '^' denotes concatenation. CE is a global
+variable.
+
+Gen (t, s, CX, CB, Path):
+
+Case t = [GId, X1 = Exp1 : T1]Exp2 , s = Exp3
+     If (X1, x) belongs to CX (binding was transferred back), then
+	Gen = Gen(Exp2, Exp3, CE, CX, CB, Path)
+	catch (B, CXMade, CBMade, Path2)
+	      if Path is a subpath of Path2 then
+		 CX := CXMade (adding the bindings that were served)
+		 CB := CBMade
+		 Gen = B Gen(Exp2, Exp3, CE, CX, CB, Path)
+	      else throw (B, CXMade, CBMade, Path2)
+     Else if GId does not belong to CB, then
+	CX += (X1, x)
+	Exp = perform CX substitution in Exp1
+	CB += ([GId, x = Exp : T1], CX, Path)
+	Gen = [GId, x = Exp : T1]Gen(Exp2, Exp3, CX, CB, Path^2)
+	catch (B, CXMade, CBMade, Path2)
+	      if Path is a subpath of Path2 then
+		 CX := CXMade (adding the bindings that were served)
+		 CB := CBMade
+		 Gen = B[GId, x = Exp1 : T1]Gen(Exp2, Exp3, CX, CB,
+		     Path^2)
+	      else throw (B, CXMade, CBMade, Path2)
+     Else if ([GId, x = Exp4 : T2], CXPath2, Path2) belongs to CB, then
+	It is sure that T1 = T2, (because mutation does not change type)
+	CX += (X1, x) + CXPath2
+	throw ([GId, x = Gen(Exp1, Exp4, CX, CB, Path^1) : T1], CX,
+	      CB, Path2)
+	catch (B, CXMade, CBMade, Path2)
+	      if Path is a subpath of Path2 then
+		 CX := CXMade (adding the bindings that were served)
+		 CB := CBMade
+		 throw ([GId, x = B Gen(Exp1, Exp4, CX, CB) : T1], CX,
+		      CB, Path2)
+	      else throw (B, CXMade, CBMade, Path2)
+
+Case t = [X1 : T1]Exp1 , s = [X2 : T2]Exp2
+     We know that T1 = T2 = t, from equality Type(t) = Type(s).
+     CX += (X1, x) + (X2, x)
+     Gen = [x : t]Gen(Exp1, Exp2, CX, CB, Path)
+     catch (B, CXMade, CBMade, Path2)
+	   if Path is a subpath of Path2 then
+	      CX := CXMade (adding the bindings that were served)
+	      CB := CBMade
+	      Gen = [x : t]B Gen(Exp1, Exp2, CX, CB, Path)
+	   else error: binding scope passed lambda-abstraction
+
+Case t = [X : T1](Exp1 X) , s = Exp2
+     We perform eta-reduction.
+     Gen = Gen(Exp1, Exp2, CX, CB, Path)
+     catch (B, CXMade, CBMade, Path2)
+	   if Path is a subpath of Path2 then
+	      CX := CXMade (adding the bindings that were served)
+	      CB := CBMade
+	      Gen = B Gen(Exp1, Exp2, CX, CB, Path)
+	   else throw (B, CXMade, CBMade, Path2)
+
+Case t = [X : T1]Exp1 , s = Exp2
+     We perform eta-expansion.
+     CX += (X, x) + (x, x)
+     Gen = [x : T1]Gen (Exp1, (Exp2 x), CX, CB, Path)
+     catch (B, CXMade, CBMade, Path2)
+	   if Path is a subpath of Path2 then
+	      CX := CXMade (adding the bindings that were served)
+	      CB := CBMade
+	      Gen = B Gen(Exp1, Exp2, CX, CB, Path)
+	   else throw (B, CXMade, CBMade, Path2)
+
+Case t = A , s = A where A is a constant
+     Gen = A
+
+Case t = A , s = Exp1 where Exp1 is different from the A
+     Exp = perform CX substitution in Exp1
+     CE += (A, Exp, MX)
+     Gen = MX
+
+Case t = X , s = Y where X and Y are variables
+     Find (X, x) and (Y, y) in CX
+     if x = y then Gen = x
+     else
+	CE += (x, y, MX)
+	Gen = MX
+
+Case t = X , s = Exp1 where X is a variable (X is not free!)
+     Find (X, x) in CX
+     Exp = perform CX substitution in Exp1
+     CE += (x, Exp, MX)
+     Gen = MX
+
+Case t = (Exp1 Exp2) , s = (Exp3 Exp4)
+     If Type(Exp2) = Type(Exp4) then
+	Gen = (Gen (Exp1, Exp2, CX, CB, Path^1) Gen(Exp1, Exp3, CX, CB,
+	   Path^2))
+	catch (B, CXMade, CBMade, Path^2)
+	   if Path is a subpath of Path2 then
+	      CX := CXMade (adding the bindings that were served)
+	      CB := CBMade
+	      Gen = (Gen (Exp1, Exp2, CX, CB, Path^1) Gen(Exp1, Exp3,
+	           CX, CB, Path^2))
+	   else throw (B, CXMade, CBMade, Path2)
+     else
+	CE += (t, s, MX)
+	Gen = MX
+
+
+*** CSA 0 ***
+
+Compatible mutations:
+Branch mutation - whole nonfunctional subterm is replaced by a
+		  new subterm of the same type.
+
+Algorithm:
+First-order generalization.
+
+Gen (t, s, CX) returns generalized term:
+
+Case t = [X1 : T1]Exp1, s = [X2 : T2]Exp2
+     We know that T1 = T2 = t, from equality Type(t) = Type(s).
+     CX += (X1, x) + (X2, x)
+     G = Gen (Exp1, Exp2, CX)
+     return [x : t]G
+
+Case t = A , s = A where A is a constant
+     return A
+
+Case t = A , s = Exp1 where Exp1 is different from A
+     Exp = perform CX substitution in Exp1
+     CE += (A, Exp, MX)
+     return MX
+
+Case t = X , s = Y where X and Y are variables
+     Find (X, x) and (Y, y) in CX
+     if x = y then return x
+     else
+	CE += (x, y, MX)
+	return MX
+
+Case t = (A Exp1) , s = (A Exp2) where A is a constant
+     G = Gen (Exp1, Exp2, CX)
+     return (A G)
+
+Case t = (X Exp1) , s = (Y Exp2) where X and Y are variables
+     Find (X, x) and (Y, y) in CX
+     if x = y then 
+	G = Gen (Exp1, Exp2, CX)
+	return (x G)
+     else
+	Exp1' = perform CX substitution in Exp1
+	Exp2' = perform CX substitution in Exp2
+	CE += ((x Exp1'), (y Exp2'), MX)
+	return MX
+
+Case t = ((Exp1 Exp2) Exp3) , s = ((Exp4 Exp5) Exp6)
+     G1 = Gen ((Exp1 Exp2), (Exp4 Exp5), CX)
+     G2 = Gen (Exp3, Exp6, CX)
+     return (G1 G2)
+
+Default case
+     t' = perform CX substitution in t
+     s' = perform CX substitution in s
+     CE += (t', s', MX)
+     return MX
+
+******
+
+*** CSA 1 ***
+
+Compatible mutations:
+Branch mutation.
+Point mutation - an atom is switched to another atom of the same type.
+
+Algorithm:
+Generalization without projection and unmached abstraction "service".
+
+Gen (t, s, CX) returns generalized term:
+
+Case t = [X1 : T1]Exp1, s = [X2 : T2]Exp2
+     We know that T1 = T2 = t, from equality Type(t) = Type(s).
+     CX += (X1, x) + (X2, x)
+     G = Gen (Exp1, Exp2, CX)
+     return [x : t]G
+
+Case t = A , s = A where A is a constant
+     return A
+
+Case t = A , s = Exp1 where Exp1 is different from A
+     Exp = perform CX substitution in Exp1
+     CE += (A, Exp, MX)
+     return MX
+
+Case t = X , s = Y where X and Y are variables
+     Find (X, x) and (Y, y) in CX
+     if x = y then return x
+     else
+	CE += (x, y, MX)
+	return MX
+
+Case t = (Exp1 Exp2) , s = (Exp3 Exp4)
+     G1 = Gen (Exp1, Exp3, CX)
+     G2 = Gen (Exp2, Exp4, CX)
+     return (G1 G2)
+
+Default case
+     t' = perform CX substitution in t
+     s' = perform CX substitution in s
+     CE += (t', s', MX)
+     return MX
+
+******
+
+
+Generalization with projection, the monomorphic "Lambda" language:
+
+The following algorithms work by two passes. The result of the first
+part is a mediate term where type of some metavariables is not
+specified (that is, most general type has type variables). But the
+resulting generalization term has only metavariables with obvious
+concrete types, because types of their arguments and result types are
+concrete and explicit.
+
+I will perform generalization with projection by a directed search
+algorithm. The cost function of partial solution will be the size of
+parts of terms already processed minus the number of constants in
+generalization term times 2. We need to store partial generalization
+terms, in a modifiable structure for min-cut search. To start with, a
+depth-first search version based on previus algorithm. To make things
+easier, we allow only "global" bindings: they do not appear in the
+terms, only calls to them. Appropriate pairings in CX are supposed to
+have been done.
+
+Gen (t, s, CX, Cost) returns pair (G, Co):
+
+Case t = [X1 : T1]Exp1 , s = [X2 : T2]Exp2
+     We know that T1 = T2 = t, from equality Type(t) = Type(s).
+     CX += (X1, x) + (X2, x)
+     (G, Co) = Gen (Exp1, Exp2, Cost)
+     return [x : t]G, Co
+
+Case t = [X : T1](Exp1 X) , s = Exp2
+     We perform eta-reduction.
+     return Gen(Exp1, Exp2, CX, Cost)
+
+Case t = [X : T1]Exp1 , s = Exp2
+     If Type(Exp2) = T1 -> T2
+	We perform eta-expansion.
+	CX += (X, x) + (x, x)
+	G, Co = Gen (Exp1, (Exp2 x), CX, Cost)
+	return [x : T1]G, Co
+     else
+
+Case t = A , s = A where A is a constant
+     return A, Cost
+
+Case t = A , s = Exp1 where Exp1 is different from A
+     Exp = perform CX substitution in Exp1
+     CE += (A, Exp, MX)
+     return MX, Cost + size of Exp + 1
+
+Case t = X , s = Y where X and Y are variables
+     Find (X, x) and (Y, y) in CX
+     if x = y then return x, Cost
+     else
+	CE += (x, y, MX)
+	return MX, Cost + 2
+
+Case t = X , s = Exp1 where X is a variable (X is not free!)
+     Find (X, x) in CX
+     Exp = perform CX substitution in Exp1
+     CE += (x, Exp, MX)
+     return MX, Cost + size of Exp + 1
+
+Case t = (Exp1 Exp2) , s = (Exp3 Exp4)
+
+     G1, Co1 = Gen (Exp1, Exp3, CX, 0)
+     G2, Co2 = Gen (Exp2, Exp4, CX, 0)
+     ret1 = (G1 G2), Cost + Co1 + Co2
+
+     G, Co = Gen (t, Exp4, CX, Cost)
+     Exp = perform CX substitution in Exp3
+     CE += (%x.x, Exp, MX)
+     ret2 = (MX G), Co + size of Exp
+
+or   G, Co = Gen (t, Exp3, CX, Cost)
+     Exp = perform CX substitution in Exp4
+     CE += (%x.x, %x.(x Exp), MX)
+     ret3 = (MX G), Co + size of Exp
+
+return the solution ret1 or ret2 (or ret3) with lowest cost.
+
+To implement branch-and-bound method, we add a continuation reference
+cell and a branching cell to the language. Branching cell will contain
+continuation cells, which together with Cost will be put to the
+heap. Continuation cells will be equipped with their position address
+to reconstruct the solution afterwards. All substitutions can be
+either stored in the global variable CE (each new metavariable has a
+new name) or inside the constructed branched generalization term. A
+global variable Fin preset to true is used to find finished subterms.
+
+Gen (t, s, CX, Cost, Path) returns pair (G, Co):
+
+Case t = (Exp1 Exp2) , s = (Exp3 Exp4)
+     Br1 = ref Cont1(Exp1, Exp2, Exp3, Exp4, CX, Cost, Path^1)
+     Exp = perform CX substitution in Exp3
+     CE += (%x.x, Exp, MX)
+     Br2 = ref Cont2(MX, t, Exp4, CX, Cost + size of Exp, Path^2)
+     Add Br1 and Br2 to the heap
+     set Fin to false
+     return Branch (Br1, Br2), Cost
+
+After returning from Gen, set Fin to true, pop a continuation Br with
+lowest cost and match the value refered to by Br against:
+
+Case Cont1(Exp1, Exp2, Exp3, Exp4, CX, Cost, Path)
+     G1, Co1 = Gen (Exp1, Exp2, CX, Cost, Path)
+     G2, Co2 = Gen (Exp1, Exp3, CX, Co1, Path)
+     Br := (G1 G2), Co2
+
+Case Cont2(MX, t, Exp, Cost, Path)
+     G, Co = Gen (t, Exp, CX, Cost, Path)
+     Br := (MX G), Co
+
+Loop back at pop-ing next continuation unless no new continuations
+were added to the heap in this turn (Fin is true) - in this case
+
+[It got tough]
+
+Extr (g, Path)
+
+
+
+Depth-first, left-to-right search algorithm has exponential time
+complexity, but with memoization it can be brought to a
+polynomial. Partial results are stored in a hashtable addressed by
+paths in processed terms.
+
+Gen (t, s, CX, Cost, Path1, Path2) returns pair (G, Co):
+
+Case t = [X1 : T1]Exp1 , s = [X2 : T2]Exp2
+     We know that T1 = T2 = t, from equality Type(t) = Type(s).
+     CX += (X1, x) + (X2, x)
+     if HTab[Path1^1, Path2^1] is empty
+          HTab[Path^1, Path2^1] = (G, Co) = Gen (Exp1, Exp2, Cost,
+	       Path1^1, Path2^1)
+     else (G, Co) = HTab[Path1^1, Path2^1]
+     return [x : t]G, Co
+
+Case t = [X : T1](Exp1 X) , s = Exp2
+     We perform eta-reduction.
+     if HTab[Path1^1^1, Path2] is empty
+	HTab[Path1^1^1, Path2] = (G, Co) = Gen(Exp1, Exp2, CX, Cost,
+	     Path1^1^1, Path2)
+     else (G, Co) = HTab[Path1^1^1, Path2]
+     return G, Co
+     
+
+Case t = [X : T1]Exp1 , s = Exp2
+     We perform eta-expansion.
+     CX += (X, x) + (x, x)
+     G, Co = Gen (Exp1, (Exp2 x), CX, Cost)
+     return [x : T1]G, Co
+
+Case t = A , s = A where A is a constant
+     return A, Cost
+
+Case t = A , s = Exp1 where Exp1 is different from A
+     Exp = perform CX substitution in Exp1
+     CE += (A, Exp, MX)
+     return MX, Cost + size of Exp + 1
+
+Case t = X , s = Y where X and Y are variables
+     Find (X, x) and (Y, y) in CX
+     if x = y then return x, Cost
+     else
+	CE += (x, y, MX)
+	return MX, Cost + 2
+
+Case t = X , s = Exp1 where X is a variable (X is not free!)
+     Find (X, x) in CX
+     Exp = perform CX substitution in Exp1
+     CE += (x, Exp, MX)
+     return MX, Cost + size of Exp + 1
+
+Case t = (Exp1 Exp2) , s = (Exp3 Exp4)
+     if HTab[Path1^1, Path2^1] is empty
+	HTab[Path1^1, Path2^1] = G1, Co1 = Gen (Exp1, Exp3, CX, 0,
+					       Path1^1, Path2^1)
+     else G1, Co1 = HTab[Path1^1, Path2^1]
+     if HTab[Path1^2, Path2^2] is empty
+	HTab[Path1^2, Path2^2] = G2, Co2 = Gen (Exp2, Exp4, CX, 0,
+					       Path1^2, Path2^2)
+     else G2, Co2 = HTab[Path1^2, Path2^2]
+     ACost = Cost + Co1 + Co2
+     ret1 = (G1 G2), ACost
+     if size of Exp4 > size of Exp2 then TryS (ACost, ret1, TryT)
+     else TryT (ACost, ret1, TryS) where:
+
+Leave(ActCost, ActVal, AltChoice)
+	      return ActVal
+TryS(ActCost, ActVal, AltChoice)
+     Exp = perform CX substitution in Exp3
+     if AltCost > Cost + size of Exp3
+	if HTab[Path1, Path2^2] is empty
+	   HTab[Path1, Path2^2] = G, Co = Gen (t, Exp4, CX, Cost)
+	else G, Co = HTab[Path1, Path2^2]
+	SCost = Co + size of Exp3
+	if SCost < AltCost
+	   CE += (%bx.bx, Exp, MX)
+	   ret = (MX G), SCost
+	   return AltChoice (SCost, ret, Leave)
+	else return AltChoice(ActCost, ActVal, Leave)
+     else return AltChoice (ActCost, ActVal, Leave)
+TryT(ActCost, ActVal, AltChoice)
+     Exp = perform CX substitution in Exp1
+     if AltCost > Cost + size of Exp1
+	if HTab[Path1^2, Path2] is empty
+	   HTab[Path1^2, Path2] = G, Co = Gen (Exp2, s, CX, Cost)
+	else G, Co = HTab[Path1^2, Path2]
+	TCost = Co + size of Exp1
+	if TCost < AltCost
+	   CE += (%bx.bx, Exp, MX)
+	   ret = (MX G), TCost
+	   return AltChoice (TCost, ret, Leave)
+	else return AltChoice(ActCost, ActVal, Leave)
+     else return AltChoice (ActCost, ActVal, Leave)
+
+Now I will work on glueing together metavariables (metavariable
+coalescing algorithm).
+
+Let g, CE be a generalization and its substitutions, a global
+variable. X will denote bounded (object-language) variables and MX -
+metavariables.
+
+Tr (g) returns ng, rebuilds CE:
+
+Case g = [X = Exp1 : T]Exp2 or [X : T]Exp or A or X or (A Exp) or (X
+       Exp) or (Exp A) or (Exp X)
+     ng = accordingly [X = Tr(Exp1) : T]Tr(Exp2) or [X : T]Tr(Exp) or
+	A or X or (A Tr(Exp)) or (X Tr(Exp)) or (Tr(Exp) A) or (Tr(Exp) X)
+
+Case g = ((MX MY) Exp) or (MX MY)
+     Extract (SX MX) and (SY MY) from CE (that is, delete it from CE)
+     CE += (SX SY) after metareducing it, MZ
+     ng = Tr(MZ, Exp) or MZ
+
+Case g = ((..(MX Exp_1) .. Exp_n) MY)
+     Extract (SX MX) and (SY MY) from CE (that is, delete it from CE)
+     CE += (%bx_1 .. bx_n.SX bx_1 .. bx_n SY) after metareducing it, MZ
+     ng = Tr(..(MZ Exp)..Exp)
+
+Case g = ((..(MX Exp_1) .. Exp_k) (..(MY Exp_k+1) .. Exp_n))
+     Extract (SX MX) and (SY MY) from CE (that is, delete it from CE)
+     CE += (%bx_1 .. bx_n.SX bx_1 .. bx_k (..(SY bx_k+1) .. bx_n)) after
+	metareducing it, MZ
+     ng = Tr(..(MZ Exp_1)..Exp_n)
+
+Case g = (Exp1 Exp2)
+     ng = (Tr(Exp1) Tr(Exp2))
+
+OK.
+
+*** CSA 2 ***
+
+Compatible mutations:
+Branch mutation.
+Point mutation.
+Head insertion mutation -
+  subterm of type T is replaced with expression of type
+  T->U1->..->Uk->T->Uk+1->..->Un applied to expressions of type U1 to
+  Uk, to this subterm and then to expressions of type Uk+1 to Un (k
+  and n may be 0)
+
+Head deletion mutation -
+  subterm of type T->U1->..->Uk->T->Uk+1->..->Un composed with its
+  arguments is replaced by one of them - that of type T.
+
+Algorithm:
+Generalization with projections without abstractions
+"service", to be followed with metavariable coalescing. Nonoptimized
+depth-first search (to add - memoization, avoidance of worse cases
+processing).
+
+Gen (t, s, CX, Cost) returns pair (G, Co):
+
+Case t = [X1 : T1]Exp1 , s = [X2 : T2]Exp2
+     if T1 = T2 = t
+	CX += (X1, x) + (X2, x)
+	(G, Co) = Gen (Exp1, Exp2, Cost)
+	return [x : t]G, Co
+     else
+        t' = perform CX substitution in t
+        s' = perform CX substitution in s
+	CE += (t', s', MX)
+	return MX, Cost + size of t + size of s
+
+Case t = A , s = A where A is a constant
+     return A, Cost
+
+Case t = A , s = Exp1 where Exp1 is different from A
+     Exp = perform CX substitution in Exp1
+     CE += (A, Exp, MX)
+     return MX, Cost + size of Exp + 1
+
+Case t = X , s = Y where X and Y are variables
+     Find (X, x) and (Y, y) in CX
+     if x = y then return x, Cost
+     else
+	CE += (x, y, MX)
+	return MX, Cost + 2
+
+Case t = X , s = Exp1 where X is a variable (X is not free!)
+     Find (X, x) in CX
+     Exp = perform CX substitution in Exp1
+     CE += (x, Exp, MX)
+     return MX, Cost + size of Exp + 1
+
+Case t = (Exp1 Exp2) , s = (Exp3 Exp4)
+
+     G1, Co1 = Gen (Exp1, Exp3, CX, 0)
+     G2, Co2 = Gen (Exp2, Exp4, CX, 0)
+     ret1 = (G1 G2), Cost + Co1 + Co2
+
+     G, Co = Gen (t, Exp4, CX, Cost)
+     Exp = perform CX substitution in Exp3
+     CE += (%x.x, Exp, MX)
+     ret2 = (MX G), Co + size of Exp
+
+     G, Co = Gen (t, Exp3, CX, Cost)
+     Exp = perform CX substitution in Exp4
+     CE += (%x.x, %x.(x Exp), MX)
+     ret3 = (MX G), Co + size of Exp
+
+return the solution ret1, ret2 or ret3 with lowest cost.
+
+Default case
+     t' = perform CX substitution in t
+     s' = perform CX substitution in s
+     CE += (t', s', MX)
+     return MX, Cost + size of t + size of s
+
+******
+
+
+*** CSA 3 ***
+
+Compatible mutations:
+Branch mutation.
+Point mutation.
+Head insertion mutation.
+Head deletion mutation.
+Local binding introduction -
+  A subterm s is surrounded by an abstraction followed by application of
+  an expression of appropriate type (local binding): ([x : T]s)Exp.
+
+Argument adjustment mutation -
+  subterm s of type T1->T2 is replaced by abstraction on this subterm
+  applied to an expression of type T1: [x : T1](s Exp), where x can
+  occur in Exp.
+
+Algorithm:
+As CSA 2, plus descending through abstraction.
+
+Gen (t, s, CX, Cost) returns pair (G, Co):
+
+Case t = [X1 : T1]Exp1 , s = [X2 : T2]Exp2
+     if T1 = T2 = t
+	CX += (X1, x) + (X2, x)
+	(G, Co) = Gen (Exp1, Exp2, Cost)
+	return [x : t]G, Co
+     else
+        t' = perform CX substitution in t
+        s' = perform CX substitution in s
+	CE += (t', s', MX)
+	return MX, Cost + size of t + size of s
+
+Case t = [X1 : T1]Exp1 , s = Exp2
+     (G, Co) = Gen (Exp1, Exp2, Cost)
+     CE += (%x.[X1 : T1]x, %x.x, MX)
+     return MX, Co + 1
+
+Case t = A , s = A where A is a constant
+     return A, Cost
+
+Case t = A , s = Exp1 where Exp1 is different from A
+     Exp = perform CX substitution in Exp1
+     CE += (A, Exp, MX)
+     return MX, Cost + size of Exp + 1
+
+Case t = X , s = Y where X and Y are variables
+     Find (X, x) and (Y, y) in CX
+     if x = y then return x, Cost
+     else
+	CE += (x, y, MX)
+	return MX, Cost + 2
+
+Case t = X , s = Exp1 where X is a variable (X is not free!)
+     Find (X, x) in CX
+     Exp = perform CX substitution in Exp1
+     CE += (x, Exp, MX)
+     return MX, Cost + size of Exp + 1
+
+Case t = (Exp1 Exp2) , s = (Exp3 Exp4)
+
+     G1, Co1 = Gen (Exp1, Exp3, CX, 0)
+     G2, Co2 = Gen (Exp2, Exp4, CX, 0)
+     ret1 = (G1 G2), Cost + Co1 + Co2
+
+     G, Co = Gen (t, Exp4, CX, Cost)
+     Exp = perform CX substitution in Exp3
+     CE += (%x.x, Exp, MX)
+     ret2 = (MX G), Co + size of Exp
+
+     G, Co = Gen (t, Exp3, CX, Cost)
+     Exp = perform CX substitution in Exp4
+     CE += (%x.x, %x.(x Exp), MX)
+     ret3 = (MX G), Co + size of Exp
+
+return the solution ret1, ret2 or ret3 with lowest cost.
+
+Default case
+     t' = perform CX substitution in t
+     s' = perform CX substitution in s
+     CE += (t', s', MX)
+     return MX, Cost + size of t + size of s
+
+******
+
+*** CSA 4 ***
+
+Compatible mutations:
+Branch mutation.
+Point mutation.
+Head insertion mutation.
+Head deletion mutation.
+Local binding introduction.
+Argument adjustment mutation -
+  subterm s of type T1->T2 is replaced by abstraction on this subterm
+  applied to an expression of type T1: [x : T1](s Exp), where x can
+  occur in Exp.
+
+Algorithm:
+As CSA 3, plus eta-expansion.
+
+Gen (t, s, CX, Cost) returns pair (G, Co):
+
+Case t = [X1 : T1]Exp1 , s = [X2 : T2]Exp2
+     if T1 = T2 = t
+	CX += (X1, x) + (X2, x)
+	(G, Co) = Gen (Exp1, Exp2, Cost)
+	return [x : t]G, Co
+     else
+        t' = perform CX substitution in t
+        s' = perform CX substitution in s
+	CE += (t', s', MX)
+	return MX, Cost + size of t + size of s
+
+Case t = [X1 : T1]Exp1 , s = Exp2
+     if Type(Exp2) = T1->T2
+	CX += (X1, x) + (x, x)
+	(G, Co) = Gen (Exp1, (Exp2 x), Cost)
+	return [x : T1]G, Co
+     else
+	(G, Co) = Gen (Exp1, Exp2, Cost)
+	CE += (%x.[X1 : T1]x, %x.x, MX)
+	return (MX G), Co + 1
+
+Case t = A , s = A where A is a constant
+     return A, Cost
+
+Case t = A , s = Exp1 where Exp1 is different from A
+     Exp = perform CX substitution in Exp1
+     CE += (A, Exp, MX)
+     return MX, Cost + size of Exp + 1
+
+Case t = X , s = Y where X and Y are variables
+     Find (X, x) and (Y, y) in CX
+     if x = y then return x, Cost
+     else
+	CE += (x, y, MX)
+	return MX, Cost + 2
+
+Case t = X , s = Exp1 where X is a variable (X is not free!)
+     Find (X, x) in CX
+     Exp = perform CX substitution in Exp1
+     CE += (x, Exp, MX)
+     return MX, Cost + size of Exp + 1
+
+Case t = (Exp1 Exp2) , s = (Exp3 Exp4)
+
+     G1, Co1 = Gen (Exp1, Exp3, CX, 0)
+     G2, Co2 = Gen (Exp2, Exp4, CX, 0)
+     ret1 = (G1 G2), Cost + Co1 + Co2
+
+     G, Co = Gen (t, Exp4, CX, Cost)
+     Exp = perform CX substitution in Exp3
+     CE += (%x.x, Exp, MX)
+     ret2 = (MX G), Co + size of Exp
+
+     G, Co = Gen (t, Exp3, CX, Cost)
+     Exp = perform CX substitution in Exp4
+     CE += (%x.x, %x.(x Exp), MX)
+     ret3 = (MX G), Co + size of Exp
+
+return the solution ret1, ret2 or ret3 with lowest cost.
+
+Default case
+     t' = perform CX substitution in t
+     s' = perform CX substitution in s
+     CE += (t', s', MX)
+     return MX, Cost + size of t + size of s
+
+******
+
+
+The algorithm returns each time the same of the MCSta of a given pair
+of terms. Actually, it is one of the Biggest Common Induced
+Subtrees. I will: define generalization relation that will
+incorporate MCSta as LGGs; define Induced Subtrees of a term and
+Biggest Commond Induced Subtree (BCIS); show that the algorithm
+returns a BCIS; it will be obvious that all BCIS are MCSta
+(LGGs). Here it will be done in monomorphic "Lambda" without local
+bindings.
+
+The language with free (or meta) variables for monomorphic Lambda
+("LambdaFree")
+
+MX = {mx, my, mz, ...} - free variables (metavariables),
+C, T, X, A as earlier,
+L = MX| X | A | (L L) | [X : T]L
+
+The language of generalizations for monomorphic "Lambda" ("LambdaScheme"):
+
+MX = {mx, my, mz, ...} - free variables (metavariables),
+C, T, X, A as earlier,
+L1 = X | A | (L1 L) | [X : T]L
+L = MX | L1 | (MX L1)
+
+Let @ mean "belongs to", and <= "is included in" (if the context
+indicates that sets are concerned).
+
+Proposition 1.
+ a) Lambda <= LambdaScheme <= LambdaFree
+ b) For all g @ LambdaFree: Tr(g) = g <=> g @ LambdaScheme 
+
+
+The language for substitutions in "LambdaScheme" ("LambdaSubst"):
+
+BX = {bx, by, bz, ...} - bounded metavariables,
+C, T, X, A as earlier,
+L1 = X | A | (L1 BX) | (L1 L1) | [X : T]L1
+L = %BX_1 .. BX_n. L1 where BX_1 .. BX_n is a sequence of zero or more
+  of distinct metavariables occuring in L1 in the order of appearance
+
+The language for substitutions in "LambdaScheme" that introduce new
+free variables ("LambdaMetaSubst"):
+
+MX = {mx, my, mz, ...} - free variables (metavariables),
+BX = {bx, by, bz, ...} - bounded metavariables,
+C, T, X, A as earlier,
+L11 = X | A | (L11 L1) | [X : T]L1
+L1 = MX | L11 | (MX L11) | (L1 BX)
+L = %BX_1 .. BX_n. L1 where BX_1 .. BX_n is a sequence of zero or more
+  of distinct metavariables occuring in L1 in the order of appearance
+
+
+Proposition 2.
+ a) Tr (CE) <= LambdaSubst
+ b) Subst(t, sub) <= LambdaScheme, where t @ LambdaScheme and
+    sub <= LambdaMetaSubst * MX
+
+An untyped term s I will call an induced subtree of a term t if a
+partial ordering generated by s (that is, the tree corresponding to s
+is a Hesse diagram for this ordering) is an induced subordering of the
+partial ordering generated by t, where the correspondece between
+abstractions indicates correspondece between variables and no
+variables are freed. In other words, there is a matching (a function
+on) term nodes: constants, variables, application and abstraction
+points as they appear in the term, of the first term into nodes with
+the same constants, application or abstraction nodes accordingly, and
+variables whose abstractions are matched.
+
+Proposition 3.
+ a) Tr(Gen(t, s)) is a BCIS of t and s
+ b) All BCIS(t,s) are minimal upper bounds of t and s with respect to
+    >=_Sch

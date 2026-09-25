@@ -1,0 +1,1303 @@
+Lukasz Stafiniak 10.2001
+
+Modular Genetic Programming with Maximal Common Schemata crossover in
+the functional language. (MGP is a generalisation of ADF-GP.)
+
+    ABSTRACT: A Brand New World for Genetic Programming!!! ;)
+
+Contents: (to keep track of what and where I want to say)
+
+1. Biological inspirations of genealogical modularity
+
+Molecular similarity often means having a common ancestor. The role of
+duplication. Module as an structural unit of genealogical
+identity. Functional module vs genealogical module.
+
+2. GMs (Genealogical Modules) for Genetic Programming
+
+Evolving systems with modules at top-level: as rule-based expert
+system, TRS (term rewriting system) or CS (classifier system), its
+simpler incarnation - a model example for MGP (Modular Genetic
+Programming). Crucial operators: crossing over by
+choosing one (rewrite) rule for each distinct GM; duplication - creating
+new GM by copying (rewrite) rule of chosen old GM; mutation - modifying
+a (rewrite) rule without changing its GM identity. Comparison with
+classical method and an analogy in classical GA is given.
+
+3. Genetics and evolution - the reason for GP.
+
+Two "definitions" of "gene": following Mendel and following
+Williams. Genetics opposed to evolution. Evolution creates new
+solutions. Radcliffe's Formae Algebra. Infinitedimensional search
+space.
+
+4. Why one should design the crossover operator carefully - biological
+   inspirations and their application
+
+"The selfish gene" and its environment. The unit of selection and its
+characteristics. What features should crossover have to force genes to
+cooperate for adopting the organism for given fitness function: only
+alleles from loci of homological functionality should be
+exchanged. Critics of classical GP random one-point crossover by
+analysing its units of selection.
+
+5. The MCS (Maximal Common Schemata) crossover - the idea and its
+   exemplification
+
+Schemata seen as hypoteses - they describe equivalently a set in given space
+and a feature of this space points. How Radcliffe defines good
+recombination operators. MCS crossover conserves in
+children as much of schemata shared by parents as possible. It is
+relevant to schemata (hypotesis) space chosen. An algorithm for
+combining terms (constructed only with application) is presented -
+Terms MCSC (last C for Crossover or Combinator). The proof for its MCS
+property is given.
+
+6. Further glimpses of biology -  speciation
+
+Barriers between species are adaptive. But it is often crossing over
+that does not work in otherwise well-adapted cross-breed. In
+genealogical tree of development of variants of a feature there are no
+joins, only branchings, even in the micro scale - only improvings in
+relatives are interoperative. More about GMs.
+
+7. Why MCS crossover needs the support of GMs? Extending repertoire of
+   functional modules and the confusion it brings
+
+The structure of terms is a simple one - they can be seen as directed
+trees. More complex structures cannot be fully explored by Terms MCSC
+algorithm. E. g. lambda-terms are better specified by their data-flow
+graphs (data-flow here means a graph of term given by beta-reducing
+whenever possible and sharing all occurences of formerly applied
+argument) than by their syntax trees. Take local bindings
+(definitions) - Terms MCSC could either try combinations at random or
+always match bindings at corresponding positions. The first solution
+would usually match bindings that have nothing in common. When new
+bindings are added (at same positions), the second solution would also
+match them and would make it impossible for them to coexist. Thus
+Lambda-terms MCSC is invented within the domain of MGP, with local
+bindings as GMs. The unit of selection is now localised by GM it is
+part of and structural thrunk of that GM the unit functionates in.
+
+7. Goal-orienting with types, but how not to constrain expresiveness?
+
+Typed languages order the effort of programmer. More than forbiding
+"stupid" unintended mistakes, as adding strings and floats, the
+programmer may now start with inventing appropriate types (mostly
+data-structures), and then support functions to treat them. For the
+first part, GA can use typed language to generate correct programs
+only. But evolution cannot have the goal in her mind. It would be
+difficult for her to invent appropriate type BEFORE the use of it,
+because type alone cannot be evaluated for performance. Thus, I
+propose language combining strict types defined afore by human, with
+polymorphic variant types as in language OCaml, where constructor
+needs not be defined before its use. Now data structures may be
+created along with their types, so they (and their types) are only
+constrained by selection. 
+
+8. Patterns - functions powered each by its own TRS!
+
+Distinctive feature of modern functional languages, as opposed to mere
+descendants of Lisp, is the possiblity to define function by cases
+using pattern matching. Its a natural method to decompose
+("de-struct") data structures along with fining their treatment
+according to their contents. By joining the ideas from chapters 2, 6
+and 7 we get a powerful MGP-MCSC system. GMs of this system are both local
+bindings and variant cases of functions. If looking for biological
+analogy, one can identify enzyme with a local binding and activating
+enzyme with matching against a pattern, the performance of enzyme
+being the action invoked. Lambda-terms MCSC is extended to
+Pattern-terms MCSC.
+
+9. Optimalisation when fitness is continuus in search space (gradient
+   methods)
+
+Neural networks as an example of space continuus with respect to
+fitness. Optimising at "almost continuus" subspaces generated from
+program by parameterizing over its float (or "real") constants
+(continuus if functions applied to them are continuus and if fitness
+is continuus with respect to values it is supplied with). Additional
+speed-up over the GA-evaluation step can be achieved by compiling
+parameterized program and then supply parameters in the local
+optimisation phase to already compilled program. Continuity concerned
+here is not the "general" continuity, but continuity with respect to
+mutation steps.
+
+10. Multi-object parallel programming (where each object is a separate
+    thread)
+
+I incorporate here yet another idea of nature - that of multicell
+organisms. The "complication" is ment especially to real-time systems
+with many inputs (receptors) and output (effectors) working
+independently (to some extent). All objects-cells share the same code,
+but each is in a state that specialises the cell responses to signals
+(application of arguments). These states form a hierarchy which
+specifies the transition possibilities. Reactions of a stem-cell are
+mostly transformations into further states in the hierarchy, but also
+signalising to what states other cells should transform. There could
+be also an organising state which creates and sends transition signals
+to other cells, and kills itself when its duty is done.
+
+11. Further work with MCS. MCS modulo equational theory. Use of MCS
+    idea in more classical inductive learning
+
+MCS can be used in structurating huge terms by introducing local
+definitions: find a MCS of two (or more) subterms, bind the MCS in
+scope of these subterms, then replace the subterms with binded name
+applied to values reconstructing subterms. MCS modulo equational
+theory: a set of equations is used to transform subterms that
+otherwise would have less in common with corresponding subterms in the
+other term. A more "operative" algorithm is given for the case of
+associavity and commutativity. As for inductive learning, one may use
+more sophisticated schemata space than the one provided before as the
+hypothesis space. Comparison of MCS algorithm with algorithms learning
+grammars inductively.
+
+12. Implementation issues. Sub-language of OCaml to use in MGP with
+    Pattern-terms MCSC.
+
+I plan to use OCaml compiler and byte-code executor to run programs in
+MGP system. It would be possible to work with representation closer to
+bytecode representation than the text source thus speeding things
+up alot: typechecking is useless since generated programs are
+guarranteed to be correct.
+
+13. MCS in theorem prooving.
+
+Store theorems with their proofs. To proove new goal (hypothesis),
+find a  similar theorem and calculate their MCS (it can be done along
+with searching). Apply top rule from proven theorem to the MCS, then
+apply corresponding rules to created subgoals, but only if application
+creates unifier that substitutes for rule unknowns only and not for
+MCS scheme variables (it is also the case for top rule
+application). Now, to proove the goal it suffices to proove the
+subgoals that left with scheme variables instatiated to values from
+main goal.
+
+14. Cognitive Systems approach: reward-based systems.
+
+In situation, when some actions of the system may be valuated, not
+just the performance of the system as a whole, fitness may be assigned
+to parts of the program. When a function succeeds, functions on its
+evaluation path (the "callers") and functions used by the successor
+(the "called") increase their fitness, and when a function fails, its
+"callers" and its "called" decrease their fitness.
+
+15. MGP systems with convergences library - study of an error.
+
+The idea, that led me to MCS: that a discovery can be distilled when
+it is brought twice. Are there MCS finding algorithms smart enough to
+extract a convergent functionality despite different low-level
+descriptions? Then the function(ality) itself can be then put into
+library, and programs constructed by combining functions in a top-down
+manner: by unifying structures describing extracted phenotypal
+features or functions.
+
+16. GP and GAs theory development possibilities.
+
+How to proove that GAs work - a trial for adopting PAC-learnability
+theory to GAs framework. The ideas to be used: hillclimbing, learning
+with query for examples, learning with positive examples, hypotheses
+space, schemata (formae), bricks' hypothesis, search subspaces,
+iterating concept search. 
+
+17. New paradigm for GP - a need for new mathematics (new structures
+    on programs space).
+
+Operators (mutation, error backpropagation, crossover, etc.) induce
+structures on solutions space. Population corresponds to system of
+(e.g. hamiltonian) mechanics. The space connected to a point in
+phasespace is the probability distribution over "copies" of phasespace
+after time = dt of applying operators (according to GA(t) distribution
+of operators), paired with structures induced by those operators
+(e.g. [distribution on] neighbourhood for unary operators, MCS +
+substitutions for parents in case of MCS crossover,
+etc.). Multipopulational modelling (e.g. )
+
+18. Coevolutionary approach based on GBML:cognitive systems as in
+    Goldberg1987, where a whole ecosystem is a "solution".
+
+With diverse populations of specialised specimen it should be harder
+to stuck in "local optima", as there is more "buffer space" for
+code. Local environments in thehe systems are dynamical - they undergo
+changes even if the "fitness" has stabilized. Movement in code
+resources can discover new "nyches", can invent new approaches to
+problem treatment; code can be evaluated against its "dynamics": its
+reusability, its capabilities of spreading to many "nyches"
+(specialisation, or radiation). The individuals are more free than
+genes to diffuse into new environments
+
+
+
+1. Biological inspirations of genealogical modularity
+
+Molecular similarity often means having a common ancestor. The role of
+duplication. Module as an structural unit of genealogical
+identity. Functional module vs genealogical module.
+
+Molecular biology possess a definition of gene different (more
+concrete) to the one I will introduce in chapter 3: here gene is the
+portion of DNA information used to code a protein (or an RNA
+enzyme). These are "executional units" of genome. By the means of
+mutation and selection, they evolve to perform certain
+tasks. (Literally it is DNA that evolves; some changes in DNA
+correspond to changes in proteins they encode.) Due to the importance
+of their performance, genes generally cannot go through rapid
+changes. Moreover, even a "loose" gene (not playing an important role
+yet), cannot evolve into any function, because "fine" functions are
+adaptive only supported by certain backgrounds (so to say only
+demanded genes can evolve). Gene has a functional identity, it is
+bound to function it performs; functions change at far slower pace
+than mutation works, because to change a function you need to change
+many genes whose performance supports or is supported by this
+function. (Thus, 3. order structure of a protein, as corresponding to
+functionality is  more conservative than 1. order structure, and
+thereby is used to determine a common ancestory.) As a result of
+convergence, different genes can evolve towards performing the same
+function, but yet they usually will still be structurally different
+(as different structures can perform similarily if they have relevant
+similarities). As in the law of Dollo, which says that evolution can
+never backtrace, different genes would rarely fully converge in
+structure, to become almost identical DNA or aminoacid
+subsequences. There are just "too many degrees of freedom". And if
+some function demands a very particular structure (here it would be only
+meaningful aminoacid sequence was to be involved) the gene is
+probably "hard to invent" and thus once discovered it would rather
+span to all "branches of life" involved than be rediscovered. When
+selectiveness is released the chances for a coupling in DNA encodings
+space are even less probable due to astronomical hugeness of this
+space. That is why even a small DNA-level similarity leads us to the
+conclusion that the similar parts of DNA must come from a common ancestor.
+
+The complexity of genome grows by duplications of DNA. It is not just
+that there is "more" of it now. When there are two copies of a gene,
+one copy may decrease or (even) loose its previous functionality,
+possibly achieving new one. The selection of new function is possible
+since the gene "works" (is transcribed). Methinks starting with a random
+sequence and "tuning" it would usually do worse because, as I see it,
+an accidental protein in an organism would lessen fitness of that
+organism. Larger improvings are easier to achieve by selecting minor
+consecutive changes of genes involved rather than introducing new gene
+"from scratch". For those who complain about slowliness of the process
+of point mutations evolution prepared a whole machinery, which involve
+- among others - intra-gene duplication, when gene lenghtens by
+duplicating its part. It is intron-exon machinery. It turned out that
+proteins can be naturally divided into functional parts, in molecular
+biology called modules. These are "operationally meaningful" blocks,
+which build proteins, like in LEGO: evolution takes some blocks of this
+shape, some of that, some additions of rare shapes and builds whatever
+she wants. For this to work (that is, to give the possibility to
+interoperate blocks, copy, insert and delete them), exons - modules'
+encodings - are separated by introns, parts of DNA that is not
+transcribed to proteins. Introns are not meaningless - they must cut
+themselves out of the encoding (when it is transcribed to RNA) (or
+make enzymes do it). Duplication may repete exons without cutting them
+in the middle, they may as well be transported to other gene. Even exons
+encoded on quite remote areas of chromosome may be joined! This work
+does not bother with the intron-exon shuffling, but do not worry! -
+language presented further on allow any number of levels of "procedure
+hierarchy", not only two levels: that of exons and that of genes.
+
+We will be concerned with duplication (and deletion) of genes. Each
+gene has an identity - the function it performs. But when gene is
+copied (duplicated), it may change its identity - it may achieve new
+function - if there is no need for "two actors in one role". That kind
+of gene, bound to certain function, we call a genealogical
+module. "Genealogical" means that identity is passed in vertical gene
+transmission, from ancestor to descendants, and is lost in
+duplications. That is very different to the meaning of functional
+module in molecular biology which we mentioned. Mutation does not
+change the genealogical identity. So there may be different genes (in
+the molecular nomenclature) being the same genealogical module
+(abbreviated GM), but only one per organism, because when gene is
+duplied, new GM is created (gene looses old identity and gains new
+one). Functional module has the reverse meaning - it often is repeated
+even in one gene, and is changed when mutation occurs. Yet there are
+some similarities - functional modules usually (if not almost always)
+are related by duplication (we have chosen not to relate GMs by
+duplication because duplication CAN break the functional identity, yet
+it NEEDS NOT do so), and it is possible that the same GM (as exon) can
+participate in different proteins (by means of RNA or protein edition
+after translation). The definition of GM gives it the feature I
+secretly sought - GM corresponds to a locus! Because GM is invariant
+to mutation and kept from generation to generation, and is only one
+per organism, we can identify the loci taken by one GM in different
+organisms.
+
+
+
+
+2. GMs (Genealogical Modules) for Genetic Programming
+
+Evolving systems with modules at top-level: as rule-based expert
+system, or TRS (term rewriting system) - model examples for MGP
+(Modular Genetic Programming). Crucial operators: crossing over by
+choosing one (rewrite) rule for each distinct GM; duplication -
+creating new GM by copying (rewrite) rule of chosen old GM; mutation -
+modifying a (rewrite) rule without changing its GM identity.
+
+The systems concerned here are similar to biological systems from
+previous paragraph. Each production (or rewrite rule) is composed of
+two "genes" - first gene manages translation (rewriting, firing) of
+the other, operational gene. The other, when translated, may work in
+the environment, or signal the need for translation of yet other
+genes. One signal can "fire" a group of genes. After some
+augmentations, classifier system, with its rewriting of all matching
+rules, can be used to model molecular machinery of a cell. Now I
+propose a sketch of a simple MGP system with top-level GMs. Each rule
+has assigned a GM. GMs are identified by integers, rule remembers the
+number - its identifier (ID). In systems with global communication, GM
+ID is just the consecutive number of GM: when dupplicating, new GM is
+assigned the just increased number of GMs ever created in MGP system
+run. If communication is constrained to local domains, the count is
+made locally in the domain, and the number is prefixed by the domain
+number. In systems, where one cannot even support different numbers to
+domains, a random number is chosen for new GMs. GMs can remember their
+parents (in a separate structure) - numbers (or identifiers) assigned
+to rules they were copied from. When combining two programs (or
+systems), rules with the same GM identifiers (or of those that are
+close in GM hierarchy) are matched, if an additional rule-crossover
+operator is given, it is applied to matched rules, otherwise just one
+rule of a pair ich chosen at random. Unmatched GMs are, in general,
+all added to the new system. If an unmatched rule is known not to be
+used by any other rule in new system, it may be discarded, if it is
+not discarded, it becomes a "junk-code", a nonexpressed code, which,
+not restricted by selection, can change at mutation pace. Further on,
+this code can be introduced again, by a mutation that makes one of
+expressed rules "fire" this code.
+
+MGP approach is opposed to e.g. following classical approach,
+represented by an early work of S. F. Smith (1980-1984) (as presented
+in D. E. Goldberg "Genetic Algorithms in Search, Optimisation and
+Machine Learning", 1989). In the system LS-1 genetic algorithm is
+similar to the one presented here, but recombination differs. To
+recombine two sequences of rules, two points are chosen, one in each
+sequence, and then subsequences starting at those points are exchanged
+(it is an analogy of classical crossover or two-point GP
+crossover). Additionaly, inversion operator is used, so that the rules
+that cooperate had the possibility to "met" (this gene correlation is
+called epistasis).
+
+Another example corresponding to MGP from Goldberg is the work of
+Frantz (1972). Inversion works in classical setting, that is with
+fixed set of genes (see next sections). But genes there have
+identifiers, as GM identifiers. All solutions in classical setting
+belong to one "species", so should have alleles of all genes, but
+inversion together with classical crossover can "loose" genes. It is
+interesting to see the ways Frantz solved the problem:
+
+1) Strictly homological matching. Only individuals that have the same
+   ordering of genes are recombined. This separates population into
+   lots of "chromosomal" species, that is specimen of which have
+   identical set of genes, but due to different organisation of this
+   genes they cannot crossbreed (this situation happens in
+   nature). Because MGP is not positionally based, the problem of
+   finding homological pair of loci is not a problem (identifiers
+   indicate it) - a "superiority" over nature? An analogy of "strictly
+   homological matching" would be a situation, when only the systems
+   with identical GMs were recombined.
+
+2) Matching based on liveness. Recombination of any individuals is
+   allowed, but only the individuals that "perform" are introduced
+   into population. It corresponds to a strategy in MGP, when one
+   cares less about creating proper individuals (e. g. if a GM demands
+   some other GM to work), just if the system does not evaluate, or
+   evaluates to fitness below some threshold, it is discarded. This is
+   important to systems, where introduction of new GM, without
+   modification of other GMs, can dramatically change the performance
+   (these are neither functional, neither imperative systems (with
+   "main" function), but TRS-like systems, e.g. rule-based
+   systems). These systems hardly depend on interpretation of
+   nonpresent genes as the presence of empty alleles of these genes
+   (see later sections). In these systems one cannot carelessly
+   introduce "junk" code.
+
+3) Matching based on pattern. In this crossover operator, before
+   classical crossover performs, one of the individuals has genes
+   reordered according to the order of the other. This brings the idea
+   that in MGP system one could choose one of recombined individuals
+   as a pattern of what genes are to be passed to created child: for
+   genes that appear in both parents, either allele is chosen, but
+   other genes come only from one chosen parent.
+
+4) Matching based on better pattern. As above, but always the better
+   fitted (with bigger fitness) parent is chosen to constitute the
+   pattern.
+
+The analogy inspired a very promising idea: recombination based on
+pattern in MGP. But one has to remember that this is a very far
+analogy. In classical GA with inversion, identifiers were introduced
+to indicate gene identity, when loci-based identity was needed for
+other purposes than identifying genes. In MGP, identifiers were
+introduced to indicate inter-individual gene identity where no other
+means for identity are present. (Still, the pattern matching may "not
+work", because the alternative allele may cooperate with genes not
+present in pattern-giving parent). Another, close related work is the
+adaptation of breeding or reproduction barriers in classical
+GAs. Discussion of speciation and reproduction partners prefferences
+of individuals are discussed later. Booker (1982, 1985 taken from
+Goldberg 1989), introduced mating templates: patterns, that must match
+against the genotype of the other solution to allow for
+crossover. When modified by Holland (1985, presented by Goldberg
+1985), it turned to be a generalisation of my GMs. Each solution has a
+pattern (or template), an id (identifier), and a traditional body. Two
+solutions are allowed to recombine only if the pattern of one matches
+against the identifier of the other. The pattern and the id evolve
+just as the rest of genome. It is a pity I have not seen more related
+work, to see the idea in play. In GM, the pattern is the identifier
+itself, so it is fully specified, and it does not evolve, because it
+is not structured itself (it is an "atom"). If it turns out that, due
+to the high rate of duplication, it is important to relax the GMs
+matching rigour, the genealogy tree should be used: those GMs that are
+more related (closer in genealogy tree), are paired. The patterns
+would need a mechanism to specify them, where the matching by
+genealogy trees does not charge evolution with identification
+mechanism. In classical GA this approach for mating solutions was
+explored too. E.g. in the early work of Hollstein (1971, after
+Goldberg 1989), relatives mating was performed as long as the fitness
+of family grew, only then inter-family (cross-line) breeding was
+performed (see later sections). GMs and their IDs were introduced to
+identify genes, not to identify species or subspecies, so this is very
+different setting, but the solution is the same - genealogical
+identity, or relatives mating (matching).
+
+
+
+3. Genetics and evolution - the reason for GP.
+
+Two "definitions" of "gene": following "Mendel" and following
+Williams. Genetics opposed to evolution. Evolution creates new
+solutions. Radcliffe's Formae Algebra. Infinitedimensional search
+space.
+
+Molecular definition of gene corresponds to the definition of cistron
+- the part of sequence between consecutive "start of translation" and
+"end of translation" signs - they can be identified, although in the
+presence of exon shuffling the former defines more complicated DNA
+sequence subsets. Here I will introduce another two definitions of
+gene.  The first defines gene as the hereditary feature that cannot be
+divided into features such that not all of them need to be inherited
+("hereditary feature atoms"). These genes are "phenotype-oriented":
+gene for long legs, etc. The other definition uses "gene" and "unit of
+selection" interchangeably: defines gene as the part of chromosome (of
+the DNA sequence, of the genotype) small enough to survive through
+enough number of generations so that selection can have impact on its
+quantity (in population) ("hereditary information atoms"). The "Mendel
+genetics" was originally developed in opposition to evolutionists
+(begining of XXth century). Why was it so? Genetists searched for
+genes of examined species, bred them for purposes of clarifying those
+genes-features. If they selectioned a plant for the biggest size of
+its seeds, the selection finally stuck with the line of gene for
+biggest seeds (from the initial population). They could not see how
+selection could introduce new species, could construct new mechanisms,
+find new solutions for adaptative challanges. The mutations they saw
+were contradaptative (mostly, created "monsters"). They thought
+selection was just getting rid of the spoiling mutations, and that
+wild populations represented "wild genotype", the best fitted genotype
+for given species. They were unaware of the genetical diversity of
+wild populations. But most of all, they were unaware that gradual
+mutational changes can draw a population to become new species, given
+the selective force is present (that is, selectively significant
+micro-improvings are possible). Selection of existing genes may, due
+to mutational diversity gains, introduce new genes.
+
+The definitions of gene I gave are a bit unfortunate. In genetics,
+allele stands for the unit I called gene so far. The gene corresponds
+to the set of alleles that are interchangeable, such that no two
+alleles from this set can be present at once in an organism, and at least
+one of them must be present. In "chromosome-oriented" definitions (the
+one I called "molecular" and the one following Williams) gene
+corresponds to locus, the place of chromosome alleles of given gene
+occupy. The nice mathematical characterisation for "Mendelian" or
+"phenotype-oriented" genes and alleles was given by Radcliffe. (As
+general GAs theory needs not concern genetical information dubbling and
+dominative / recessive alleles, the main discovery of Mendel, the
+"Mendelian" term is a bit of abuse because it stands just to name
+"phenotype-oriented" or "phenomenological" - concerning organisms only
+- definition.) The characterisations of a species are equivalence
+relations which say if two specimen share a feature or not. For these
+relations a basis is constructed - such minimal set of equivalence
+relations that any characterisation can be constructed by intersection
+of them (logical "and"). Elements of basis are genes, and their
+equivalence classes are alleles. Although the situation is somehow
+unhealthy, the term gene will be used in both means, to recover which
+one is meant from the context. Sometimes, for example, it is said about
+"gene" to mean one allele, and about "alleles" to mean other alleles
+of the gene the first allele belongs to.
+
+Radcliffe suggests to specify features, that are thought to be
+relevant to the performance of the system being evolved, and such that
+they are faithful, that is from description by these features one can
+construct a solution. He goes further than classical GA, allowing us
+define any features to describe the solution, and giving operators
+that always construct proper individuals, even if some combination of
+properties (alleles) we defined are illegal. When the complexity of
+the solutions in search space grows, the situation complicates. In
+biological settings, for example, you take an animal, figure out
+properties relevant to its survival, as the length of the legs, the
+thickness and colour of the fur, the shape of the ears. Not to go into
+too many incompatible features, it is enough to explore only one
+species, where specimen can freely combine. Only when you put enough
+of the specimen into registers, you can select enough genes to
+distinguish all different individuals (excluding clones or "one-egg"
+twins). (Given one individual, when would you stop finding yet another
+property? It would be somehow arbitrary. Most difficult, if not
+impossible would be to "invent" all alternatives for given feature.)
+But when the population is fully described, formae algebra proves
+useful. Just divide the population into any grouping relevant to
+description (according to legs length, fur thickness, etc.). An
+algorithm is then applicable which will find the minimal and unique
+set of feature kinds, or relations, needed to describe (or identify)
+any individual with respect to collected description. These are called
+genes. If it is deducible whether a set of features may "coexist"
+(describe real being), one can then explore the space of specimen,
+possibly combining alleles that have not yet met in real population.
+
+Genetic search is thus made in multidimensional space, each dimension
+corresponding to gene, allele of that gene being the possible
+value. The search marks promising hyperrectangles, descends to
+subspaces, cummulates at the gridpoints of the grid marked out by best
+so far solutions. Thanks to formae algebra, the search space is not
+the multidimensional space itself, but submerged in it a complicated
+figure of the realisable. And recombining operators designed by
+Radcliffe never go off the figure into forbidden area, but still allow
+the full as possible freedom of traversing the search
+space. Finite population generates a subspace in the search space with
+respect to recombination operator - the subspace is always
+finite(dimensional). But do not make the mistake of first genetists -
+the dimensions are not fixed! If they were, evolution would sooner or
+later run out of possibilities. Search space is infinitedimensional!
+By mutation, new dimensions are introduced, the whole populational
+subspace floats in the infinite search space. If two populations of
+one species are separated, the subspace will be probably soon torn
+into parts, if only the environments populations inhabit differ - this
+is called speciation. When classical GAs demand the finite search
+space to be set by a human, and restrict themselves to that space, GP
+takes the challange to "decorate the scene" by itself, and then is not
+restricted to any local subspace but may manage many finite subspaces
+floating in the infinite space of programming language chosen. GP
+cannot work with phenotype-oriented genes. No man could specify the
+infinite set of features that can be programmed in real programming
+language. We gain the unlimited possibilities, but we loose the formae
+algebra, at least as an operative model.
+
+But the freedom Radcliffe gives us in selecting equivalence relations,
+or features, is not just for "unbounded joy of creation". Radcliffe
+warns us, that if genes are not related to performance, if "mean
+allele's fitness" has too high variation, and the variation does not
+decrease sufficiently for groups of alleles, the GA will not fulfill
+our expectations. As GP cannot perform by means of phenotype-oriented
+genes, I take the second definition of gene to foundate GP on. Here
+the observations of Radcliffe apply too. But as the formae cannot be
+specified apriori, the general recombinators of Radcliffe will not
+apply. Because it is recombination operators that generates the search
+subspace of population, directly recombination operators are
+responsible for what genes and alleles are. This will be the subject
+of the next section.
+
+
+
+4. Why one should design the crossover operator carefully - biological
+   inspirations and their application
+
+"The selfish gene" and its environment. The unit of selection and its
+characteristics. What features should crossover have to force genes to
+cooperate for adopting the organism for given fitness function: only
+alleles from loci of homological functionality should be
+exchanged. Critics of classical GP random one-point crossover by
+analysing its units of selection.
+
+The world of evolution is the world of information. Information is
+something abstract enough, as formae of Aristotle, to be identified in
+different carriers. The specific of information is its possibility to
+be transferred, so that the same information moves between physically
+different carriers. Evolution by selection is a way new information is
+created, by processes called mutation and recombination, so that it
+differs a little from the information present aforehead, and the
+presence of information in future is related to what the information
+is (so little difference in information means little difference in its
+chances of presence in near future of the system). The units of
+selection, i. e. parts of information that can survive sufficiently
+long, evolve towards higher survivability in the future: these doing
+better outlive these doing worse. The way information is related to
+its survival is by (carrier and) its environment (e. g. DNA is a
+carrier, but RNA is an environment for genetical information of a
+cell). Stabble enough, being under influence of the gene, environment
+ensures gene survival. Because short sequences of information cannot
+form stable close environment (close environment is that part of
+environment gene can rely on: mostly a cell) and (positively)
+influence more remote environment, and genes are kept short by
+mutation (and recombination), they need to cooperate to stabilise
+their environment. The first step is surrounding a population of genes
+by barrier, or including them in a unit (cell). Genes can then
+propagate into environment only by fission of cell, so the
+competitiveness within the cell is lessened, (especially if a
+chromosome is developed) what easies their coevolution. In genome (the
+set of genes of one organism, when chromosome was created, that is
+when all genes of a cell can (almost) only replicate at once) each
+gene begins to "specialise", that is its genetical information begins
+to be bound to some function. All genes of the genome "perform" for
+the common wealth. The cooperativeness evolved because, even on the
+short hand, it let the replication units (organisms) outperform those
+in which no cooperation of genes was present. Yet, because the units
+of replication are not the units of selection, cooperation is not an
+obvious thing for genes. If only one gene can take over other genes,
+it will. To restrict their "selfishness", there evolved recombination
+operators such that limit the space of alleles of a gene not to
+include the genes which cooperate with the gene concerned. (In nature,
+genes constitute recombination that constitutes genes. In GP, a human
+constructs mutation and recombination, and by this constitutes genes.)
+In the "most ancient times", all other genes were alleles of a given
+gene. To be strict, allele is an invention made by "honest"
+recombination, for it is not always easy to determine at cost of which
+other genes a gene replicates (that is, which genes will thus be
+"ruled out of business"): it is the case for example when a gene can
+insert itself into different parts of chromosome (this insertion needs
+to be that gene activity; when it is done by accident, we would rather
+say that a new gene will gradually form from the copy - see the
+section "Biological inspirations of genealogical modularity"). There
+may be different kinds of USels (units of selection) in one system; in
+the example above we have traditional hereditary genes, the first,
+"mostly productive" kind of USels, and "self-inserting" genes, which
+span through chromosome like a virus, the USel that usually lessens
+the adaptiveness of the organism that includes genes of this second
+kind of unit of selection. As observed, the best kind of USels is the
+one where genes are forced to cooperate to increase the fitness of an
+organism. It happens so when alleles of a gene are genes that are
+bound to the same function, so that the organism does not loose this
+functionality after recombination, and does not loose any other
+functionality. Just the selection for best performance of functions
+that compose an organism (or its features) is expected. One could
+argue that there may be useless genes/functions, but a "nasty USel"
+would not ask what gene it rules out of genome. The careful analysis
+may reveal what kinds of USels are present in the system. Let's try to
+analyse the case of classical GP.
+
+The classical GP crossover operator exchanges two random subterms of
+recombined programs. Obviously, the closer a position to the root of
+program tree, the more probable it will stay with the trunk. And the
+smaller the branch of the program tree (subterm) (or the farther it is
+from the root, depending of cut point choosing strategy), the more
+probable that it will be moved. And this does not depend on whatever
+the recombined terms are. Mutation replaces random subterm with
+randomly generated one, so again, trunk, and little subterms (as there
+are many of them), have big probability to survive. USels, or genes,
+are parts of program that survive through enough number of
+generations, so there are two kinds of USels: trunks and
+branches. Because branches are just arguments to some functions, they
+cannot specify in general much of functionality. If programming
+language is functional, it can do whatever with the value evaluated by
+a branch, so the branch has no functionality - is not bound to any
+function, its roles in programs of children it is part of may have
+nothing in common. If programming language is imperative (or has
+imperative traits), a branch may perform action relevant to fitness of
+the program, but still it can hardly communicate with the rest of the
+program, as it cannot expect to appear in any certain place, or that
+certain other branches will be present too. (Here come my "sharp
+words" about classical GP USels, which will be corrected by analysis
+of GP-related articles I read after writing the first part of the
+work.) One can predict that almost no evolution of branches will be
+present in functional setting, at least selection for (or against)
+some specific constructions, like those evaluating to nuber close to
+zeros in real number arithmetics. In imperative setting, there will be
+selection for branches that could do "something good" despite anything
+would be done by the rest of the program. Some means for
+non-functional communication, as through references to global
+variables, may evolve. The alleles of a branch are all other
+branches. So if a promising branch appears, it may span through
+population, even with multiple occurences in one program. Yet because
+the branches are not clearly distinguished (do not have "the strong
+identity") and the shortest are the best survivors (but "short" here
+is relative to the program size), one cannot rather expect evolution
+of features resembling "ants colony" or "multicell organism", where
+many almost-identical branches cooperate and spontaneus signal
+dependent specialisation of branches emerges. Generally, in imperative
+setting branches evolve a little mostly by eliminating destructive
+effects. Trunks in both settings are responsible for program behavior,
+but in functional setting they really decide it (as they can just
+ignore what branches evaluate to). For trunks there is almost no
+difference between mutation and crossover. From trunks' point of view,
+classical GP is a system with mutation only, that is a multipoint
+hill-climber. Trunks grow, that is program's functionality is attained
+by at first selecting promising "trunk seeds" and then adding
+improvements to them. This is so because mutation has no access to
+inside of a trunk without destroying it, and crossover could VERY
+rarely do such a trick. Summarising, classical GP combines kinds of
+USels from two early stages of evolution: the first stage, when genes
+played on their own (chromosomes were not formed yet), is ironically
+introduced to GP setting by recombination operator, that was meant to
+introduce the "real" genes from the third stage of gene cooperation;
+and the second stage, when genetic information was spread only by
+cloning, and each organism was like a species on its own.
+
+
+
+5. The MCS (Maximal Common Schemata) crossover - the idea and its
+   exemplification
+
+Schemata seen as hypoteses. How Radcliffe defines good
+recombination operators. MCS crossover conserves in
+children as many of schemata shared by parents as possible. It is
+relevant to schemata (hypotesis) space chosen. An algorithm for
+combining terms (constructed only with application) is presented -
+Terms MCSC (last C for Crossover or Combinator). The proof for its MCS
+property is given.
+
+Generally, schema could be seen as a feature of structures, a set over
+them, defined syntactically in a language just by little extending the
+language of these structures representation. E. g. the "following
+schema" activity I understand as acting by a "surface analogy" (as
+opposed to deep analogy, which may not be recognised without an
+analysis) to some prototypical behaviour. We will work with simple,
+mathematical structures, most of them can be described by graphs with
+labelled nodes and with labelled edges. The central structure of
+programming formalism are terms, and the bulk of formalisations of
+computation mostly combine the formalism of lambda calculus or alike
+with term rewriting (with some form of unification).  For terms,
+schema is a term with free variables. Two terms are said to share the
+schema if they both unify with it. The set of terms unifying with
+given schema may be called a forma, to follow notation of
+Radcliffe. First-order schema is a term with free variables of first
+order only (that is, not applied to any arguments and thus not
+representing functions). Higher-order schema is non-first-order
+schema. When "unifier" is treated as a term (often a schema), I mean
+the initial term with unifying substitution performed. Radcliffe
+introduces some notions describing properties recombination operators
+should try to obey:
+
+ - purity: children of identical parents are identical to them
+
+ - respect: children are members of all formae common to parents (that
+   is, such that both parents belong to them)
+
+ - assortment: for formae with nonempty intersection, if each contains
+   at least one of the parents, there is a descendant (not including
+   other genealogical lines) contained in all of them 
+
+ - strict assortment: for formae with nonempty intersection, if each
+   contains at least one of the parents, there is a child contained in
+   all of them
+
+ - gene transmission: children are contained only in formae
+   containing at least one of parents
+
+Unification of schemata (with maximal unifiers) corresponds to
+intersection of formae. Schemata can be compared, a schema s is called
+more general than a schema t, written as s <= t, in other words the
+schema t is called an instance of the schema s (or is more concrete
+than s), written as t >= s, iff there is a substitution r: r(s) = t,
+so if F(x) denotes forma corresponding to a schema x, then F(t) <=
+F(s). Decreasing order of formae inclusion corresponds to increasing
+order of schemata detailment. Maximal schema of a set is such member
+of this set that any other member is either smaller (with respect to
+introduced ordering) or incomparable. Common schema of two terms is a
+schema that unifies with both terms. Maximal common schema is a
+maximal schema in the set of all common schemata. The notion of
+respect would require that a child was unificable with all maximal
+common schemata, which would often lead to situation, when only
+cloning one of the parents (although they differ) is possible, or to
+children often more complicated than parents (and longer), the
+variation of offspring would decline too much. So I relax here the
+requirement of respect to the requirement that a child should unify
+with some maximal common schema of the parents. Neither assortment I
+want to keep for my recombination operator in such a demanding
+form. Schemata are just too arbitrary and too numerous equivalence
+relations. To follow the ideas from previous section, I decided to
+minimalise the possible cuting positions. If only it prooved useful,
+one can augment my operator with a more assorting one (that could cut
+in more positions). The situation is different than the stated by
+Radcliffe. Assortment is not in conflict with respect here. It is just
+that not all schemata are related to performance! And the smaller the
+schema, the less it is related to performance. By keeping some bigger
+schemata from one parent, I can establish them as the means of
+selection, or genes in the notion of Williams. When this goal is
+achieved, one can reintroduce assortment by crossing-over thus
+selected genes at low probability (it is intra-gene recombination,
+recombination of parts of alleles of one gene). But what genes am I
+talking of? When selecting a maximal schema, in natural way two
+substitutions are formed: one leads from schema to one parent, and the
+second to the other parent. Recombination now is done by RECOMBINING
+THE SUBSTITUTIONS! Each variable in a schema has two "alleles": one is a
+substitution from first unificator, and second is a substitution from
+second unificator. Gene transmission can also be only ment in terms of
+such introduced genes: each joint introduces a schema not present in
+parents. Now one can see that schemata were used just to introduce the
+notion of respect into the terra incognita, with hope, that a more
+accurate notion of genes will emerge by itself! Lets leave rest of the
+divagations to the next section and get to the work.
+
+We will use lambda-terms with lambda abstraction and its
+beta-reduction in metalangue, that is for formalisation purposes only,
+they need not appear in implementation. The language and metalanguage
+lambda abstractions are to be distinguished! The metalanguage beta
+reduction should only reduce at metalanguage lambda abstractions. We
+need to restrict what can be substituted for schema variables, because
+if all (meta)lambda-terms were allowed, too wierd schemata would unify
+with both parents, e. g. with junk code, discarded when reducing (or,
+even worse, they could unify by performing a
+"computation"). Substitutions are to be subterms that were cut out of
+the term when forming a schema. The outerly bound variables appear at
+cut positions, so that after substitution the term could be "glued" by
+(meta)beta reduction. That means substituted term must be linear (no
+variable repeted), no abstracted variable omitted, no variable applied
+to any argument. Imagine the tree representation of a term: when
+forming schema we cut out connected (coherent) bits of the tree, we
+place variable in the hole and connect it with edges that vere cut,
+and store the part cut out for further substitution. As can be seen,
+higher-order schemata which I here gradualy define, is somewhat
+arbitrary when compared to the clean definition from previous
+paragraph, because I want the algorithm to be simple enough, and the
+space of schemata to be tuned (the smaller space the better) for the
+purpose of "gene extraction". In functional setting, trunks of term
+trees are more important than branches - such goals can be achieved by
+extending the ordering of schemata. Schemata for GP serve a certain
+purpose: the invariance to mutation, more complex schemata should be
+used when they serve on their own (e. g. in theorem proving or
+categorising). Mutation introduces new genes, and the common regions
+recognition separates them out. Mutation should be able to introduce
+and reduce code not only at branches (first-order mutation), but
+inside the tree, too (not merely mutating atoms (constants or
+variables) for other atoms). Mutation should not exchange code,
+e. g. switch branches, inside the program: it is too vague a way of
+moving code (more "elegant" -- self-evolving ones -- will be shown
+later), and too hard to trace syntactically (so that an MCS would
+guess with low prob. of error that this kind of event happened). This
+implies that the order, in which bound variables appear in
+substitution, must be the same as the order of their
+abstraction. Summing things up, we have:
+
+schema: an expression of the language extended with metavariables (of
+  each type), with (only) free occurrences of metavariables, and no
+  metavariable is applied to other metavariable, (*)
+
+substitution term: either first-order term or: (meta)lambda-term with
+  metavariables abstracted at root position, linear, no abstracted
+  variable omitted in the body, all metavariables are first-order,
+  they appear in the body in the same order in which they were
+  abstracted. (**)
+
+Performing substitution means substituting for free variables in
+schemata defined in (*) the substitution terms defined in (**), and
+then "meta"-beta-reducing. Now the time comes to give the algorithm
+that finds the MCS of two terms with respect to this
+substitution. Every journey starts from the first step.
+
+Fact 1. A subterm of a MCS of terms t1 and t2 is a MCS of some subterms
+of t1 and t2.
+
+Definitions. Ordering of term positions will mean here the partial
+ordering of term positions with root as the lowest element, where
+arguments are higher than functors applied to them. Linear ordering of
+term positions will mean here the linear ordering of positions (often
+incomparable w.r.t. the above ordering), according to the order they
+appear in the linear representation (sometimes called
+prefix-ordering).
+
+Finding MCS of terms t1 and t2:
+
+1) for each constant, collect positions of its occurrence in t1 and t2
+   (separately)
+
+2) 
+
+With sequences, we are close in spirit with "Algebra of Genetic
+Algorithms", because I can find more reasonable equivalences between
+sequences than between terms. Let's do a brainstorm (seeking for
+similarities or formae):
+
+1) there is the same value in both sequences
+
+2) there is the same value in the same position in both sequencess
+
+3) in both sequences value x appears before value y, which appears
+   before value z, which appears ...
+
+4) in both sequences appears: the same directed edge x-y, that is the
+   subsequence xy; the same undirected edge x-y, that is the
+   subsequence xy or yx; the corner x-y-z, that is the subsequence xyz
+   or zyx (TSP formae taken from the work of Hofmann)
+
+5) in both sequences value x appears at least k times and no more than
+   n times
+
+6) one undirected edge appears before other undirected edge
+
+7) both sequences have the same value at the nth from end position
+
+8) both sequences have a common subsequence in the middle of them (but
+   one sequence is very short, and the other sequence is very long)
+
+9) etc...
+
+The "family" of algorithms I present would (intentionally) respect
+some of formae from group 1), 3), 4). They could be directed to
+respect some of formae from groups 2), 7) and 8). This is because the
+algorithms respect common substructures starting from "root"
+position. Farther on, they respect formae like 3), but the more
+"concise" the schemata the more probable they are to be respected,
+e. g. 4), unless some other schema comes "in the way" on search
+directed from "roots" towards "leaves". The kind of structures that
+can use this algorithm are, for example, flow-graphs with no
+(explicite) recurrences. I work only with linear schemata.
+
+The sketch for polynomial, but not complete algorithms for MCS
+detection, together with creation of unifiers:
+
+1. Let T be a class of finite directed acyclic structures
+   (graphs). With each such structure relate an ordering which is a
+   transitive closure of the relation represented by the structure
+   (graph).
+
+2. Nodes are assigned the values, whose introduce equivalence on
+   nodes. For the purposes of algorithm, there are added new kinds of
+   values: metavariables, and the value "empty", which says that
+   all nodes joined to the empty node by outgoing edges should be
+   joined to all nodes joined to the empty node with ingoing edges,
+   e. g. "a --> empty --> b" ==> "a --> b".
+
+3. For the two graphs for which an MCS is sought, a set EQP is created
+   which contains all pairs of equivalent nodes, the first in the pair
+   from one graph, and the second from the other graph. A pair from a
+   set of node pairs is said to be quasiminimal (name indicates, that
+   no proper ordering is introduced) if one of its elements is minimal
+   in the set of nodes at the same position in pairs in the set. A
+   pair is said to be minimal in the set of node pairs, if it is
+   minimal in the intersection of "axis-orderings" (that is, a pair is
+   above other pair if both nodes from the pair are above the
+   corresponding nodes of the other pair) - a default ordering of
+   pairs of nodes. Pairs are crossing if a node in one pair is below
+   the corresponding node in the other pair, and the other node is
+   above the other node in the other pair.
+
+4. A set of mutually not crossing pairs is called a layer. Two layers
+   are crossing if either some of their pairs are crossing or some
+   pair from one layer is above some pair in the other layer and
+   vice-versa.
+
+5. An assembly is created by choosing a maximal layer of the pairs
+   quasiminimal in EQP, then choosing a maximal layer of the pairs
+   quasiminimal in the set of pairs from EQP above the pairs of the
+   previous layer, and so on. These layers are not crossing. A node is
+   above a layer, if it is above a node belonging to some pair of the
+   layer.
+
+6. Assembly represents a schema with a pair of unifiers. A child is
+   created as follows: choose one of the parents (the mother) and copy
+   it as a child.
+
+7. Then, for consecutive layers of the assembly, group the pairs of
+   the actual layer, so that there were no two pairs in different
+   groups having a common node above nodes of corresponding positions,
+   unless this "common" node appears above the next layer.
+
+8. For each group choose a parent, and replace in the child all nodes
+   above the node belonging to the group with all nodes above the
+   corresponding node (the same, or counterpart in the pair) from the
+   parent (the substructures).
+
+9. Proceed to the next layer if there is any and return to point 7.
+
+
+
+Algorithms for recombination operators are given.
+
+Algorithms for terms:
+
+1. The set of cequal values positions pairs of two terms:
+
+EQP(s, t) = { (p, q) @ Pos(s)*Pos(t) | Root(s|p) = Root(t|q) }
+
+where Root(t) denotes atom at root position of term t;
+
+2. The assembly of terms s and t is defined as the tree over EQP(s, t)
+   (nodes belong to this set), except of the root position, which is
+   always (e, e): root positions pair, with position ordering
+   compatible with position orderings of both terms: node (p1, q1) is
+   above node (p, q) iff position p1 is above position p and position
+   q1 is above position q, call this relation Ord2; if (p1, q1) and
+   (p2, q2) are directly (immediately) above node (p, q), then p1 and
+   p2 are incomparable and q1, q2 are incomparable with respect to
+   position ordering, call this two-fold incomparability NotCrossing;
+   denote the ith subtree adjoined to the root of Asm(s, t) by
+   Asm(s,t)[i] and the degree of root node by deg(Asm(s,t))
+
+3. Recombination of an assembly with distributional bias db is a random
+   process returning a term Recomb (Assembly(s,t), db), where:
+
+Recomb (asm, db) = let p, q = Root(asm) in
+  let  s' = s|p and t' = t | q in
+    s'{[Recomb (asm[i], db)](fst asm[i])}_i=1..deg(asm)
+      with probability db
+    t'{[Recomb (asm[i], db)](snd asm[i])}_i=1..deg(asm)
+      with probability 1-db
+
+where t{[ti]pi}_i=1..n denotes term t with n substitutions: terms ti
+substituted in positions pi; t|p denotes subterm of t at position
+p. Terms created, in functional setting, can share common code (only
+paths to substitution places are to be copied).
+
+4. Creation of the assembly, which corresponds to finding an MCS of
+   two terms, Assemble (s, t) = Asm (s, t) where:
+
+start with Eqp = EQP(s, t)
+
+Asm(s, t) = Assem ((e, e), Eqp) where
+
+Assem ((p, q), eqp) = let:
+
+  EqMin = sum for all i<=arity of value at positions p, q
+    {(p1, q1) @ eqp | p1 is minimal in (split_fst eqp) or q1 is
+      minimal in (split_snd eqp)
+     and p1=p^i^_, q1=q^i^_}; (* in non-conservative mode *)
+   (* call this set Bottom((p, q), i, eqp) *)
+
+  eqp := eqp - EqMin
+
+  Next = choose at random pairs from EqMin, until a maximal set of
+         NotCrossing pairs is achieved; in conservative setting,
+         choose pairs such that places of split_fst/snd (Next) list
+         elements are compatible with "lexicographic" order of term
+         positions: lexicographic order modified so that positions one
+         of which is above the other are incomparable (but because in
+         Next are only "vertically" incomparable positions, the linear
+         order will be sustained)
+
+  return AsmTree ((p, q),
+    ...,
+    Assem (Next[i], above (ord2, Next[i], eqp)),
+    ...) (* a leaf in Next is empty *)
+
+Bottom ((p, q), i, eqp) is the set of all possible continuations of
+a schema at ith argument position: either a singleton {p^i, q^i},
+denoting a fixed position, or a set of arguments possible to a
+metavariable, which is the ith argument to previous fixed position of
+the schema. If the check for "i" was not performed, the motion of
+"schema" respected would have to be even more relaxed.
+
+Algorithms for sequences:
+
+Sequence can be seen as a right-folded term, where [a b c d] would
+correspond to a (b (c (d ()))). But, if reasonable, the root position
+can be choosen at other index, maybe dependent on the sequence itself;
+e.g. [f g a x y z] may be seen as a (f (g ()), x (y (z ()))).
+
+
+Now I will try to show, that the above algorithms respect maximal
+common schemata, as defined earlier, and that for all schemata there
+are parents for which the schema is achievable. These considerations
+are not meant to "proove" anything, so they are by no means
+formal. They just try to foundate the "purpose" for given algorithms -
+that they "rather" do respect the specified MCS.
+
+Suppose, for the sake of contradiction, that there is a more concrete
+schema common to parents than the maximal respected in given algorithm by
+certain assembly.
+
+If it was the case, we would either:
+
+  get a first-order schema by substituting first-order variables for
+  higher-order variables, that does not unify with all children
+  generated from given assembly. That is, the schema would not unify
+  with the assembly term (substitute for pairs from EQP the values
+  they represent). That is, in EQP there would be a pair, directly
+  above one of pairs from assembly, not in the assembly. It is a
+  contradiction, because this pair would be NotCrossing with all other
+  pairs belonging to Bottom sets (because it would form a Bottom
+  singleton) and above the "witness" pair from assembly, and therefore
+  would have to be added to the assembly.
+
+  or, there would be an argument, applied to the metavariable of "the
+  more concrete" schema, the metavariable having no other metavariable
+  at its path to the root (those that are still in the schema after
+  making all variables "first-order") ("minimal" metavariable), being
+  more concrete than all comparable (with respect to concreteness)
+  subterms of schema respected by the assembly, which are the
+  arguments applied to metavariables "minimal" in the same way. Then,
+  applying the whole proof recurrently to appropriate subterms of:
+  parents, more concrete schema and assembly, would show a
+  contradiction as well; the proof terminates because terms are finite
+  and acyclic. In other words, the recurrent definition of assembly
+  algorithm indicates that there would be an assembly created for that
+  subterms of parents which unify with chosen argument, the assembly
+  respecting only less concrete schemata than this argument.
+
+  or, there would be more arguments at some of the "minimal" arguments
+  (arguments to "minimal" variables), than in corresponding
+  metavariable of schema respected by the assembly. That is, there
+  would be in EQP(s, t) a pair above some node of assembly, belonging
+  to Bottom set for some i, NotCrossing with any other pair from this
+  Bottom set, and yet not included into assembly, what contradicts the
+  maximality with respect to NotCrossing relation.
+
+  or, after matching the at-least-as-concrete "minimal" arguments of
+  the more concrete with corresponding "minimal" arguments of the
+  respected schema, there are unmatched arguments in respected schema;
+  such an argument must match a subterm of the more concrete schema,
+  and thus the "minimal" argument which contain this subterm cannot be
+  matched with any other "minimal" argument of respected schema; after
+  "deletion" of the unmatched argument from respected schema (the
+  smaller schema is still respected) this reduces to the previous case.
+
+Any other possibility:
+
+  the first-order "trunks" of chosen schema and respected schema are
+  incomparable, or the respected one is less general
+
+  there is a subterm in respected schema that is incomparable with any
+  subterm of chosen schema
+
+obviously cannot describe a more concrete schema.
+
+Now, take any schema cs unifying with both (ground, that is - not
+schema) terms s and t and a pair of unifications us and ut that unify
+cs with s and t. Create the set CSEQP of pairs of positions from s and
+t that for these unifications match against the same fixed position of
+cs. Observe that CSEQP <= EQP(s, t) and that two elements of CSEQP
+either are NotCrossing, or related with Ord2. Create an assembly by
+choosing at each time Next = CSEQP & EqMin (& denotes
+intersection). Suppose that some pair from CSEQP was not chosen for
+Next at any time of creation of assembly, call it ncp. Find in the
+assembly a maximal pair that is below the ncp. Then, while the set
+Next was created for this pair, the ncp was not chosen, and because it
+is NotCrossing with all pairs it is not related with Ord2 in CSEQP, it
+must have not been minimal - there must have been a pair in Next below
+the ncp. But the presence of a pair in between would contradict the
+fact that Next is created for the maximally high pair below ncp - it
+means, that the pair that is in Next has one of its nodes equal to one
+of ncp nodes. If no situation like this happens, the assembly created
+will correspond to cs with unifiers us and ut.
+
+That all pairs from CSEQP belong to some Bottom ((p, q), i, eqp) in
+non-conservative setting can be seen from the fact, that unification
+matches only arguments at corresponding argument positions when the
+function position is fixed, and that when fixed position is supplied
+with variable, the positions of its arguments do not matter, but they
+still must match against subterms of the same subterm which is above
+(p, q) in both unified terms.
+
+In conservative setting, the fact that all pairs (p, q) from CSEQP
+such that p is above q or q is above p belong to some Next steems from
+the fact, that, additionally to what was said, allowed substitutions
+have occurrences of bounded variables in the order of their
+abstraction, so that matches to arguments in all unifications must be
+performed in lexicographic order: first argument to lexicographically
+first subterm to be matched, second to lex. second argument to be
+matched against the arguments of given variable, etc.
+
+Not only that all pairs from CSEQP belong to some Next, but also that,
+sum of all Next's of algorithm run must constitute CSEQP for some
+common schema, should be clear enough now, this observation to support
+the maximality proof.
+
+The maximal common schemata that will be chosen by the algorithm will
+tend to be the inapropriate ones, will not transfer genes thus
+blocking the emergence of them, because each point mutation (the
+change of one atom) will be able to disturb the maximal schema
+respected above the point of mutation. A "dreamed" recombination
+algorithm would corelate the maximal schemata probability to be
+respected with its size (its length) (and then all maximal schemata
+could be selected). For now, I do not know how it could be done
+without enumeration of schemata or unifications. There are technics
+that improve the length of schema to be respected by local search,
+corelating the amount of search with the effectivity of increasing the
+length of schemata (but as we would not be sure if the schema is the
+longest common schema, and we would just modify the algorithm I gave
+not to restrict it so that all maximal schemata were in its search
+space, we would not be sure as well of the maximality of the schema
+chosen). The situation seems to be similar to other situations where
+solutions are to be sought in big search space. If one decides to
+evolve terms incrementally, that is without the need of alleles deep
+in the trees, one can use a crossover which respects biggest
+first-order schemata, with substitutions of first order only, that is
+without meta abstractions. This has only one shortcoming: very low
+assortment. But it can have very quick implementations, that need time
+linear w.r.t. the length of terms supplied, and with a low
+coefficient. (The previous algorithm needs time quadratic w.r.t. the
+length of terms.) Moreover, it allows even more sharing of code,
+because first-level substitutions can be fully shared with
+parent. Sharing common code belonging to schemata (first-order
+schemata are "monolitic") can be done by transforming schemata into
+metafunctions (that is by lambda-abstracting their free
+metavariables). Also observe, that for first-order schemata there is
+only one maximal common schema, and no bizzarement of the notions of
+schema and substitution is needed.
+
+Algorithm for recombination respecting common first-order schemata,
+with distributional bias db: Start from roots of both terms. If the
+same atom is at actual position in both terms, copy it to the child at
+actual position and do recurently the same for positions if its
+arguments. If the atoms at actual positions differ, choose first
+parent with probability db and the other with prob. 1-db and copy the
+subterm the parent has at actual position into child.
+
+This algorithm can do a carrier as an augmenting crossover operator
+for classical GP systems. The classical GP, which does not use point
+mutations, first-order schemata correspond to trunk genes. Classical
+crossover respects much of common first-order schema in the child, but
+looses the more and more of the common schema from generation to
+generation. First-order MCS respecting recombination respects all
+common first-order schemata. It lacks assortment, but can introduce
+performance-related genes. The classical crossover cannot do this, it
+can only evolve "constructing blocks" (see the previous and the next
+section), that is genes that are "not that bad" so they can perform in
+different circumstances (not "gene as a functional part of program",
+but "gene as a constructional module" - see the distinction between
+GMs and functional modules; I have got unintented mess in terminology:
+functional module of molecular biology is just what constructing block
+is, but function-related gene - gene that specialises in certain
+function - I relate to gene identified by its locum; the discussion is
+delayed to the next section). But, if the genes that "have emerged"
+(there are large subpopulations sharing common trunks), my
+recombination strictly assorts these genes, where classical
+one-pointcrossover assorts but never strictly assorts. It is related
+with the important to gene cooperation fact, that classical crossover
+presents strong positional bias. But MCS recombination controls
+distributional bias, where classical one-point crossover has always
+high distributional bias towards the mother. A "geniale" joint-venture
+of the first-order MCS recombination and the classical one-point
+crossover is possible: exchange random subterms, but only above
+certain randomly chosen leaf of the common trunk! That is, in the
+corresponding elements of unificators. It gives:
+
+- respect of first-order schemata, or trunks,
+
+- long-term (in long number of generations, as opposed to strict)
+  assortment,
+
+- strong positional bias, (but at the cost of high rated
+  distributional bias)
+
+- emergence of "locus oriented" genes, that can specialise,
+
+- some means for constructing blocks evolution, especially when the
+  population is diverse (young).
+
+It looses:
+
+- strict assortment,
+
+- some (but not all) means for loci-based genes emergence: transfer of
+  emergent genes,
+
+- the ability to control distributional bias.
+
+One can join multi-point classical crossover with "my" recombination,
+it would eliminate some bad sides, introduce some new bad sides. The
+only theoretical advantage of classical crossover is that it gives
+(far) more opportunities for proliferation of constructing
+blocks. They can evolve "across frontiers" which must be respected by
+loci-based, context-sensitive genes emerging in presence of my
+recombination. In MCS-GP system with emergence of locus-genes, one can
+use classic crossover as two-argument mutation which "supports the
+background of evolution".
+
+
+
+6. More glimpses of biology and further analyses -  genes,
+   replicators, functional modules, development and speciation
+
+Barriers between species are adaptive. But it is often crossover
+that does not work in otherwise well-adapted cross-breed. In
+genealogical tree of development of variants of a feature there are no
+joins, only branchings, even in the micro scale - only improvings in
+relatives are interoperative. More about GMs.
