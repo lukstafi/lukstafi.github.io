@@ -93,3 +93,20 @@ Sounds good, let's add these headings.
 ---
 
 I deleted "Its externalist account and its distinction between filled cogs and the character of their fillers remain in place." Thank you for writing this! Stepping back, how do you feel about the essay?
+
+---
+
+News: let's update the article to include our account of the following reporting: [https://thezvi.substack.com/p/ai-187-coming-into-play?open=false#%C2%A7anthropic-approaches-recursive-self-improvement](https://thezvi.substack.com/p/ai-187-coming-into-play?open=false#%C2%A7anthropic-approaches-recursive-self-improvement)
+Here I quote the section in full so you don't need to fetch the long blog post:
+
+*[The full section “Anthropic Approaches Recursive Self-Improvement” was supplied as an attachment.]*
+
+---
+
+Would you like to revisit Michal's original discussion with Thomas Epistemes to see if we represent their position correctly and see if we react to the most valuable points? Just in case, I attach the full transcript that they linked to from the Substack summary.
+
+*[The full transcript was supplied as “MRW-compiled-vs-interpreted.txt”.]*
+
+---
+
+Glad you took an in-depth look, go ahead with the updates. Thank you!
