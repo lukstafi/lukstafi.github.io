@@ -85,7 +85,29 @@ of `extract_algorithm.tex` is commented out in `beam.tex`. Some content remains
 graphical even in the TeX: TyFlow's overview includes `assets/S-App.png`.
 Source navigation is verified; this does not mark the proofs as audited.
 
-## Connection to the previous essay
+## Connections to earlier essays and the PhD
+
+[What Must Be True?](../../../notes/what-must-be-true.md#can-generalization-tell-us-when-to-stop)
+already introduces anti-unification through `pair(a,a)` and `pair(b,b)`, whose
+most specific common pattern is `pair(p,p)`. The anniversary essay can reuse
+this example with a short standalone refresher. Its new point is the change
+of purpose: GENERA's independent variation instead calls for `pair(p,q)`.
+Retaining the equality serves one objective; relaxing it opens combinations
+for another, subject to type compatibility and any further dependencies.
+
+The [2015 PhD thesis](../../jca/lukstafi-phd-thesis.pdf), *GADTs for
+Reconstruction of Invariants and Postconditions*, connects the earlier work
+to reconstruction of contracts from programs. Its generalization operation
+finds common consequences for postconditions, including anti-unification in
+free terms; abduction supplies conditions for invariants. See the contributions
+and §§4.2–4.3 in the [canonical source](../../jca/lukstafi-phd-thesis.tm).
+This provides a useful comparison with constructing programs under typing
+constraints in the master's thesis and TyFlow. Keep the distinction between
+the unimplemented early GP programme and the PhD's implemented InvarGenT
+system. Also keep the PhD results distinct from the
+[2026 witness-generalization result](../../jca/agent-collab/round-10-witness-generalization.md)
+discussed in *What Must Be True?*; the anniversary essay does not need to
+reproduce that later argument.
 
 [What Persists When the Agents Change?](../../../notes/what-persists-when-agents-change.md)
 asks how an inquiry accumulates useful knowledge across changing participants.

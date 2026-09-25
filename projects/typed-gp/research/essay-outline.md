@@ -65,17 +65,25 @@ identity and visible similarity. A module can retain its identity while its
 implementation changes; copying a module creates another locus. This supplies
 the intuition for correspondence before introducing common schemata.
 
-Use a small example with two parents:
+Reuse the example from
+[What Must Be True?](../../../notes/what-must-be-true.md#can-generalization-tell-us-when-to-stop),
+with a short, self-contained refresher rather than another full introduction
+to anti-unification. Readers should not need to follow the link to understand
+the comparison. Start with two parents:
 
 ```text
-f(a,a)                    f(b,b)
+pair(a,a)                 pair(b,b)
 ```
 
-A shared pattern is `f(X,X)`. Filling `X` with `a` or `b` reconstructs the
-parents. Explain anti-unification as finding such a common pattern and the
-fillings that recover its instances. Then expose the historical purpose:
+A most specific common pattern is `pair(p,p)`. Filling `p` with `a` or `b`
+reconstructs the parents. Explain anti-unification as finding such a common
+pattern and the fillings that recover its instances. The earlier essay uses
+this example to explain why generalization must preserve repeated differences
+consistently: the two components agree. Then expose the historical purpose:
 recombination should be able to mix parental choices. With only one hole,
-the choices remain tied; `f(X,Y)` permits `f(a,b)` and `f(b,a)` as well.
+the choices remain tied; `pair(p,q)` permits `pair(a,b)` and `pair(b,a)` as well.
+The relationship preserved in the previous essay is precisely the one this
+genetic operator deliberately relaxes.
 
 GENERA deliberately requires each schema metavariable to occur once. That
 restriction makes sense relative to its intention to expose independently
@@ -92,7 +100,7 @@ Evidence: [babble exploration, §§3–4](babble.md), especially
 ## 3. babble: when a common pattern becomes a useful function
 
 **Approximately 1,500 words.** Return to the repeated-hole example. A function
-`λX.f(X,X)` asks callers for one argument and expresses its reuse explicitly.
+`λp.pair(p,p)` asks callers for one argument and expresses its reuse explicitly.
 This can help compression. The contrast gives the reader a reason to care
 about the objective before encountering the machinery.
 
@@ -156,6 +164,19 @@ Trace the same example only far enough to expose the difference: under its
 displayed STLC rules, the model supplies the remaining unknown type and name
 before an environment-membership condition checks them. C obtains this type
 through unification with the selected environment binding.
+
+Use a short paragraph to connect this construction problem to the later PhD,
+[GADTs for Reconstruction of Invariants and Postconditions](../../jca/lukstafi-phd-thesis.pdf)
+(2015), and the account in
+[What Must Be True?](../../../notes/what-must-be-true.md#reading-a-contract-out-of-the-code).
+The master's work constructs programs under typing constraints; the PhD
+reconstructs informative types and contracts from programs. In the PhD,
+generalization finds common consequences for postconditions, while abduction
+finds conditions supporting invariants. Its generalization machinery includes
+anti-unification over free terms. These are related uses of logical structure,
+not inverse algorithms or evidence of a single uninterrupted GP project.
+Mention the implemented InvarGenT system so that the early programme's
+theoretical status is not mistakenly extended to the PhD.
 
 The comparison is a question about where to put work. A general rule-based
 framework and a constructor specialized around inference expose different
@@ -234,6 +255,21 @@ previous essay. The outcome of this return is a clearer account of the
 questions, with room to reconsider their answers.
 
 ## Editorial decisions for drafting
+
+The two earlier essays have distinct roles. *What Must Be True?* supplies the
+anti-unification refresher and an accessible account of the PhD's inference
+problem. *What Persists When the Agents Change?* supplies the questions about
+retention and continued inquiry in the AlphaEvolve section. The PhD connection
+belongs within the existing section budgets; it does not add a fourth paper
+survey or require a second introduction to deduction, generalization, and
+abduction.
+
+For the PhD connection, use the contributions and generalization discussion
+in the [canonical thesis source](../../jca/lukstafi-phd-thesis.tm), especially
+§§4.2–4.3. The witness-generalization theorem discussed in *What Must Be True?*
+comes from the [2026 Round 10 work](../../jca/agent-collab/round-10-witness-generalization.md),
+not the 2015 thesis. It need not be retold here. Do not transfer its scope over
+ordinary term equality to babble's generalization modulo supplied equations.
 
 The two main worked examples are repeated versus independent holes and the
 construction of `f b`. The small commutativity example explains babble's added
