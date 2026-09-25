@@ -13,7 +13,12 @@ as a record of the earlier proposal.
 
 ## Development of the programme
 
-**2001 — MGP1.** Mutation and recombination determine which program structures
+**2001 — MGP1.** Łukasz clarified that the document originated in September
+2001, the last month of university summer break; October 2001 is when he last
+modified it. This chronology comes from the author's recollection, while the
+unchanged source carries the October date.
+
+Mutation and recombination determine which program structures
 persist long enough for selection to act on them. Genealogical module IDs
 provide correspondence across programs; duplication creates a new identity.
 Recombination preserves selected common schemata and mixes the corresponding
@@ -110,7 +115,7 @@ match the decoded source copy; they do not match the lossy reading text.
 
 ## Possible eventual essay
 
-The anniversary refers to October 2001. An eventual essay could follow the
+The anniversary refers to September 2001. An eventual essay could follow the
 transition from evolutionary units, through mutation-compatible generalization,
 to typed program synthesis. Its angle and conclusions should depend on what
 the source reconstruction and focused literature survey establish. New

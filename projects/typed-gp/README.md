@@ -9,7 +9,7 @@ deferred.
 
 | Source | Date recorded in source | Description |
 | --- | --- | --- |
-| [MGP1.TXT](sources/MGP1.TXT) | October 2001 | Modular genetic programming, genealogical modules, maximal common schemata |
+| [MGP1.TXT](sources/MGP1.TXT) | October 2001 (last modification) | Begun September 2001; modular genetic programming, genealogical modules, maximal common schemata |
 | [GENERA.TXT](sources/GENERA.TXT) | July 2002 | Mutation-compatible generalization; CSA algorithm drafts |
 | [dyplom4.tm](sources/dyplom4.tm) | 15 June 2005 | Polish master's thesis, *Programowanie genetyczne w językach typizowanych* |
 | [prezentacja.tm](sources/prezentacja.tm) | Undated | Associated Polish presentation, focused on generation and inference |
@@ -39,6 +39,8 @@ research notes are provisional assessments, with their limitations recorded
 alongside them. The archive is not yet linked from the website navigation or
 included in its build scripts.
 
-The anniversary is of the programme's October 2001 beginning. The thesis is
-from 2005. The essay outline proposes an angle; the full draft remains to be
-written. No claim of historical priority or new experimental result is made.
+The anniversary is of the programme's September 2001 beginning, during the
+last month of university summer break. Łukasz clarified that the October 2001
+date in MGP1 records its last modification. The thesis is from 2005. The essay
+outline proposes an angle; the full draft remains to be written. No claim of
+historical priority or new experimental result is made.

@@ -2,10 +2,14 @@
 
 Working subtitle: **Revisiting typed genetic programming, twenty-five years later**
 
-Outline, 25 September 2026. Proposed essay length: approximately 2,400–2,800
-words. The anniversary is October 2026, twenty-five years after the first
-document; the master's thesis is from 2005. This is an editorial outline, not
-the essay draft.
+Outline, 25 September 2026. Agreed essay length: **6,000–7,000 words**, exceeding
+7,000 only if a substantive need arises. The section allocations below total
+approximately 6,500 words and are guides, not quotas.
+
+The anniversary is September 2026: Łukasz recalls beginning the original
+document in September 2001, the last month of university summer break. Its
+October 2001 date records the last modification, not its origin. The master's
+thesis is from 2005. This is an editorial outline, not the essay draft.
 
 ## The argument
 
@@ -29,7 +33,8 @@ motivation or the circumstances of abandoning the work.
 
 ## 1. An unfinished programme, twenty-five years later
 
-**Approximately 250 words.** Open with the October 2001 manuscript and its
+**Approximately 450 words.** Open with the manuscript's September 2001 origin,
+during the last month of university summer break, and its
 ambition: evolving programs whose useful parts could survive changes to the
 whole. Briefly introduce genetic programming as searching through programs by
 varying and selecting them. The central difficulty is already recognizable:
@@ -55,7 +60,7 @@ The essay should link the public archive so the originals are available.
 
 ## 2. Finding the parts that can vary together
 
-**Approximately 400 words.** Explain the early distinction between genealogical
+**Approximately 1,000 words.** Explain the early distinction between genealogical
 identity and visible similarity. A module can retain its identity while its
 implementation changes; copying a module creates another locus. This supplies
 the intuition for correspondence before introducing common schemata.
@@ -86,7 +91,7 @@ Evidence: [babble exploration, §§3–4](babble.md), especially
 
 ## 3. babble: when a common pattern becomes a useful function
 
-**Approximately 500 words.** Return to the repeated-hole example. A function
+**Approximately 1,500 words.** Return to the repeated-hole example. A function
 `λX.f(X,X)` asks callers for one argument and expresses its reuse explicitly.
 This can help compression. The contrast gives the reader a reason to care
 about the objective before encountering the machinery.
@@ -127,7 +132,7 @@ on babble or priority over earlier abstraction research.
 
 ## 4. TyFlow: which choices should remain choices?
 
-**Approximately 550 words.** Move to the 2005 thesis. Its division of labor
+**Approximately 1,600 words.** Move to the 2005 thesis. Its division of labor
 puts tractable requirements into types and leaves other expectations to
 fitness. Introduce algorithm C as a constructor driven by choices, alongside
 type inference. It propagates constraints as it constructs a term, allowing
@@ -175,7 +180,7 @@ operational choices, rather than equating the algorithms.
 
 ## 5. AlphaEvolve: an inheritance for the next attempt
 
-**Approximately 450 words.** Introduce AlphaEvolve's loop briefly: proposals,
+**Approximately 1,400 words.** Introduce AlphaEvolve's loop briefly: proposals,
 evaluation, and retained programs that inform later proposals. Use the paper's
 evolving tensor-decomposition searcher as the concrete case. Distinguish the
 procedure being improved from the mathematical object it discovers, and the
@@ -210,7 +215,7 @@ do not isolate.
 
 ## 6. Returning to the unfinished work
 
-**Approximately 250 words.** Return to the distinction between the historical
+**Approximately 550 words.** Return to the distinction between the historical
 stages. In 2001, the programme asked which structures should survive variation;
 in 2002, it specified how mutation should shape generalization; by 2005, it
 also asked how to construct within logical constraints. Looking back through
