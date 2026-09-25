@@ -6,9 +6,10 @@ not historical source text, a proof audit, or a literature-priority assessment.
 the programme: the ideas reached a stage suitable for experimentation, but
 time ran out before experiments were done. The current intention is to do more
 research before settling on an essay. On 25 September 2026, Łukasz chose a
-[focused survey of seven papers](survey.md) as the next phase, explicitly
-including AlphaEvolve. Building our own experiments is deferred; the sketch
-below is retained only as a record of the earlier proposal.
+[focused survey](survey.md) as the next phase, subsequently narrowing its core
+to babble, TyFlow, and AlphaEvolve. The other four papers supply background.
+Building our own experiments is deferred; the sketch below is retained only
+as a record of the earlier proposal.
 
 ## Development of the programme
 

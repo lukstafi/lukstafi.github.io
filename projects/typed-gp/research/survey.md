@@ -1,9 +1,11 @@
 # Learning structure for program synthesis: focused survey
 
 Scope agreed with Łukasz on 25 September 2026. This is the active research
-phase; building our own experimental system is deferred. The corpus consists
-of DreamCoder, Stitch, babble, LILO, Bayesian Program Learning by Decompiling
-Amortized Knowledge, TyFlow, and AlphaEvolve. *Synthesizing DSLs for Few-Shot
+phase; building our own experimental system is deferred. Following the initial
+seven-paper overview, Łukasz narrowed the core to **babble, TyFlow, and
+AlphaEvolve**. DreamCoder, Stitch, LILO, and Bayesian Program Learning by
+Decompiling Amortized Knowledge remain supporting context, without equal
+coverage commitments. *Synthesizing DSLs for Few-Shot
 Learning* and *Numerical Superoptimization for Library Learning* are outside
 this survey, by choice rather than an assessment of their quality.
 
@@ -11,6 +13,39 @@ This first pass summarizes mechanisms and reported evidence from primary
 sources. It is not a full proof audit, replication, or historical-priority
 assessment. Connections to the 2001–2005 documents are our provisional
 interpretations. Detailed formal comparisons remain to be written.
+
+## Three focal papers
+
+| Paper and fixed reading version | Reason for focus | Close-reading target |
+| --- | --- | --- |
+| [babble, v1](https://arxiv.org/html/2212.04596v1) — December 2022 preprint, POPL 2023 | Technical connection to common schemata and equational generalization | §§3–5 and Appendix A: pattern language, anti-unification, pruning assumptions, and extraction objective; compare with MGP1 and GENERA. |
+| [TyFlow, v2](https://arxiv.org/html/2510.10216v2) — February 2026 revision | Technical connection to the thesis and recent work | §§2–4: synthesis decisions, typing judgments, and correctness statements; compare with algorithm C. Use §6 to delimit the experimental claims. |
+| [AlphaEvolve, v1](https://arxiv.org/html/2506.13131v1) — June 2025 | Recent evolutionary synthesis and connection to the previous essay | §2 and §4: candidate inheritance, evaluation, population diversity, and ablations; examine how retained results affect subsequent search. |
+
+Use these exact versions for section references and comparisons. arXiv HTML
+is the default reading format: prose, searchable headings, references, and much
+of the mathematics are accessible. Inspect figures separately and check the
+corresponding PDF or TeX source when a formula, inference rule, or code listing
+has conversion artifacts. In particular, babble's HTML text extraction exposes
+verbose formatting macros in some displayed code expressions. A successful
+page fetch is not evidence that every formula or figure has been read correctly.
+
+## Connection to the previous essay
+
+[What Persists When the Agents Change?](../../../notes/what-persists-when-agents-change.md)
+asks how an inquiry accumulates useful knowledge across changing participants.
+The survey asks how structures found during program search change the
+possibilities available to subsequent searches. AlphaEvolve is the main bridge:
+examine the respective roles of retained candidates, feedback, and the machinery
+that turns them into further proposals. This is an architectural comparison;
+the paper is not itself a controlled study of replacing inquiry participants.
+
+The essay's discussion of executable artifacts provides a second connection.
+Keep a distinction between preserving program behavior through refactoring and
+preserving the reasons, failures, and unresolved alternatives in an inquiry.
+Compression adequate for one purpose need not preserve what the other needs.
+This framing should help interpret the technical comparisons, without requiring
+all three papers to answer the essay's broader philosophical questions.
 
 ## Organizing question
 
@@ -23,10 +58,10 @@ The historical programme supplies three questions to bring to the papers:
 2. Which dependencies must be preserved for generated programs to remain valid?
 3. How does experience change the representation or the procedure used to search?
 
-These questions allow comparison without assuming that all seven systems solve
+These questions allow comparison without assuming that the selected systems solve
 the same problem or compete on a common benchmark.
 
-## Initial paper coverage
+## Initial reference notes (focal papers and supporting context)
 
 ### DreamCoder — Ellis et al., PLDI 2021
 
@@ -195,12 +230,14 @@ the approximate extraction is unsuitable for checking proofs.
 
 ## Reading sequence and deliverables
 
-1. Establish DreamCoder's architecture and separate its learning objectives.
-2. Read babble and Stitch together against the common-schema drafts.
-3. Compare algorithm C with TyFlow's rules and guarantees.
-4. Read dream decompiling and LILO for the interaction of library and policy.
-5. Read AlphaEvolve's algorithm and ablations against the evolutionary aims.
-6. Write the cross-paper synthesis, then choose the anniversary essay's scope.
+1. Read babble against the common-schema drafts, working through a small
+   anti-unification example and the role of the supplied equations.
+2. Compare algorithm C with TyFlow's rules and guarantees, tracing the same
+   small term through each construction where the languages permit it.
+3. Read AlphaEvolve's algorithm and ablations against the evolutionary aims and
+   the previous essay's account of cumulative inquiry.
+4. Consult the supporting papers only where they clarify these comparisons.
+5. Write the cross-paper synthesis, then choose the anniversary essay's scope.
 
 The deliverable is a source-linked survey with worked comparisons and an
 evidence table, not a new implementation. This document supplies the initial

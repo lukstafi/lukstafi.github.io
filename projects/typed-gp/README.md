@@ -21,8 +21,8 @@ checksums of the four originals and three reading copies.
 ## Reading and continuation
 
 - [Extraction notes](extractions/README.md): provenance and important limitations.
-- [Focused survey](research/survey.md): seven core papers, initial coverage,
-  comparison questions, and a reading sequence.
+- [Focused survey](research/survey.md): babble, TyFlow, and AlphaEvolve as the
+  three focal papers, with initial coverage and supporting literature.
 - [Research notes](research/notes.md): provisional historical findings,
   unresolved claims, and a deferred experiment sketch.
 - `sources/`: authoritative historical records; preserve these unchanged.
