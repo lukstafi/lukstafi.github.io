@@ -9,10 +9,40 @@ coverage commitments. *Synthesizing DSLs for Few-Shot
 Learning* and *Numerical Superoptimization for Library Learning* are outside
 this survey, by choice rather than an assessment of their quality.
 
-This first pass summarizes mechanisms and reported evidence from primary
-sources. It is not a full proof audit, replication, or historical-priority
-assessment. Connections to the 2001–2005 documents are our provisional
-interpretations. Detailed formal comparisons remain to be written.
+The initial overview is now supplemented by three bounded close readings,
+completed on 25 September 2026. They include worked comparisons and evidence
+records, with the principal distinctions checked against the sources during
+integration. This is not a full proof audit, replication, or historical-priority
+assessment. Connections to the 2001–2005 documents remain interpretations,
+with their support and limitations stated in the individual notes.
+
+## Findings from the three explorations
+
+| Reading note | What the worked comparison establishes | Boundary on the conclusion |
+| --- | --- | --- |
+| [babble: common structure for compression and for variation](babble.md) | For `f(a,a)` and `f(b,b)`, repeated-hole `f(X,X)` captures equality useful for compression; GENERA's linear `f(X,Y)` permits independent variation. The 2001 outline also explicitly proposes equations and abstraction extraction. | The shared research question does not make the objectives identical. The global pattern theorem does not confer completeness on pairwise candidate generation or beam selection. |
+| [TyFlow and algorithm C: decisions inside a typed construction](tyflow.md) | Both can construct `f b` while carrying type information between subterms. C infers the unknown argument type from a chosen binding; TyFlow's displayed STLC encoding acquires the remaining unknowns before checking membership. | This compares specific encodings, not equivalent algorithms. Derivation completeness does not imply exhaustive bounded search, and implemented typing rules do not capture every compiler check. |
+| [AlphaEvolve: what an evolutionary search can inherit](alphaevolve.md) | The comparison separates descendants from predecessors, results from their evidence, and future attempts from the records they use. An original bilinear example distinguishes testing from an identity certificate. | The connection to the previous essay is architectural; its questions about replacing participants remain open. |
+
+The most useful common thread is now more precise: **what should be preserved
+depends on what the next operation needs to do.** Repeated structure can support
+compression while restricting variation. A choice can be exposed to a search
+procedure or discharged by inference. A recorded result can support continuation
+only through a process that knows how to use and assess it. These are our
+comparative conclusions, not a claim that the papers form one research lineage.
+
+This is enough grounding for a bounded anniversary essay. Its historical arc
+can move from genetic loci, through common schemata, to typed construction;
+the contemporary comparisons can then show how those questions acquired
+different technical answers. Retain the difference between outline, formal
+construction, and evaluated system. Neither historical priority nor a single
+modern culmination is needed for that account.
+
+The notes record unresolved details: babble's higher-order implementation,
+the formal relationship between C and alternative TyFlow encodings, finer
+causal comparisons for retention mechanisms, and apparent source transcription
+issues. These limit stronger technical claims; they do not require a new
+experimental system before writing the essay.
 
 ## Three focal papers
 
@@ -138,7 +168,9 @@ worked example in §§1–2 of
 
 **Evidence and limits.** The authors evaluate compression on corpora from
 DreamCoder and 2D CAD, reporting better compression and substantial speedups.
-The equations are supplied domain knowledge. These experiments assess library
+The equations are supplied domain knowledge. The completeness theorem concerns
+the global pattern-based formulation; §3.3 explicitly identifies incompleteness
+in practical pairwise candidate generation. These experiments assess library
 learning, not mutation-compatible crossover or an entire evolving synthesizer.
 
 **Historical connection.** This is the most direct comparison for MGP1's
@@ -201,6 +233,10 @@ Read §§2–4 for construction and correctness, and §6 for evaluation.
 correctness is relative to the implemented type systems. Functional correctness
 is assessed separately by tests. The Java implementation omits features,
 including lambda expressions; it does not establish coverage of all Java.
+Java compilation errors remain: Table 2 reports 3.52% and 3.12% for the two
+TyFlow models, attributed to checks outside the implemented type system.
+Formal completeness establishes the existence of a synthesis derivation for
+each well-typed program, not that bounded neural search will find it.
 
 **Historical connection.** Compare algorithm C and its choice sequences with
 TyFlow's synthesis decisions. Build a correspondence between judgments,
@@ -264,9 +300,9 @@ the approximate extraction is unsuitable for checking proofs.
 4. Consult the supporting papers only where they clarify these comparisons.
 5. Write the cross-paper synthesis, then choose the anniversary essay's scope.
 
-The deliverable is a source-linked survey with worked comparisons and an
-evidence table, not a new implementation. This document supplies the initial
-coverage and reading agenda; the detailed comparisons and evidence table are
-still pending. Historical references already listed in [the research
+The three close-reading notes now supply worked comparisons and bounded
+evidence records. The next deliverable is an essay outline drawing on their
+findings; implementing an experimental system remains deferred. Historical
+references already listed in [the research
 notes](notes.md#literature-leads-from-the-discussion) remain context; expand the
 core corpus only when a specific comparison requires it.
