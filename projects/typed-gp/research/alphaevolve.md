@@ -102,6 +102,64 @@ construction, reject completed candidates, or merely influence their ranking?
 The anniversary essay can follow that question across the papers without
 treating their guarantees as interchangeable.
 
+## Developing the evolutionary comparison first
+
+The anniversary section should establish the genetic-programming connection
+before extending it toward the previous essay. Its central question is how
+variation and selection work together when the individuals are programs.
+The following are comparative questions for drafting, not additional claims
+of experimental findings.
+
+**What is the unit of variation?** Identify the candidate, its editable parts,
+and the context needed to interpret those parts. MGP1 distinguishes module
+identity from functional similarity, while its crossover proposal makes
+correspondence between parts explicit. This gives us a question to bring to
+a learned editor: what dependencies must it preserve or repair when it changes
+a part? An operator's ability to propose coordinated changes and a formal
+guarantee of preservation are different properties. Neither should silently
+stand in for the other.
+
+**What counts as recombination?** A child can descend directly from one
+program while drawing ideas from others. That creates a useful distinction
+between genealogical descent, influence, and recombination defined by an
+explicit correspondence between parental parts. GENERA gives the third a
+precise target through schemata and substitutions. Our comparison should ask
+whether useful structure can transfer between candidates without assuming
+that every such transfer is an instance of that operator. Nor should the
+discussion of learned editing erase the continuing question of which changes
+can usefully be made independently.
+
+**What does selection preserve?** Evaluating a candidate and deciding which
+material to make available for future variation are distinct decisions. A
+candidate that is worse under the present evaluation might contain a useful
+component; keeping it does not ensure that a proposal mechanism will find
+or exploit that component. This is already a genetic-programming problem,
+before it becomes a question about records in a continuing inquiry. The
+paper's database draws on MAP-Elites and island models
+([§2.5](https://arxiv.org/html/2506.13131v1#S2.SS5)); this does not identify
+MGP1's speculative biological account with those methods.
+
+**How do constraints and fitness divide the work?** Carry forward the C
+discussion: a type need not encode the whole intended behavior. A shortest
+well-typed candidate need not be the best candidate for the task. Ask which
+requirements should restrict variation, which should reject a candidate, and
+which should contribute to its ranking. This connects the thesis's design
+choices to the evolutionary loop without imposing a common guarantee on
+different systems.
+
+**What happens when the evolving program is itself a search procedure?** Use
+the tensor example from the evidence record to separate outer variation of
+the searcher from its inner search for a mathematical object. MGP1's planned
+§9 gives a historical reason to examine the boundary between structural and
+numerical search. Keep the certificate discussion here, serving the example:
+evidence about the discovered object and evidence about the search procedure
+answer different questions.
+
+Within the section's 1,400-word budget, allocate roughly 1,150 words to this
+evolutionary account and its concrete example, then 250 to the bridge below.
+The earlier essay should extend the argument once the comparison has earned
+it, rather than supplying the section's initial organizing frame.
+
 ## Connection to “What Persists When the Agents Change?”
 
 The [previous essay](../../../notes/what-persists-when-agents-change.md)

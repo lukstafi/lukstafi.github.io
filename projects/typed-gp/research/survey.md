@@ -111,6 +111,11 @@ reproduce that later argument.
 
 [What Persists When the Agents Change?](../../../notes/what-persists-when-agents-change.md)
 asks how an inquiry accumulates useful knowledge across changing participants.
+Develop AlphaEvolve's genetic-programming connection first: representation,
+variation and recombination, fitness, and selection for subsequent variation.
+Use the tensor-searcher example to make that comparison concrete. The link
+to continued inquiry belongs near the end of that account and should occupy
+only a small part of the section.
 The survey asks how structures found during program search change the
 possibilities available to subsequent searches. AlphaEvolve is the main bridge:
 examine the respective roles of retained candidates, feedback, and the machinery
@@ -323,9 +328,9 @@ the approximate extraction is unsuitable for checking proofs.
 5. Write the cross-paper synthesis, then choose the anniversary essay's scope.
 
 The three close-reading notes now supply worked comparisons and bounded
-evidence records. The [essay outline](essay-outline.md) now draws on their
-findings; the next step is drafting the essay. Implementing an experimental
-system remains deferred. Historical
+evidence records. The [essay outline](essay-outline.md) records the drafting
+plan, and the [reviewed essay](../../../notes/what-should-a-program-inherit.md)
+develops these comparisons. Implementing an experimental system remains deferred. Historical
 references already listed in [the research
 notes](notes.md#literature-leads-from-the-discussion) remain context; expand the
 core corpus only when a specific comparison requires it.

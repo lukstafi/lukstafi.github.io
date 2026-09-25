@@ -11,6 +11,12 @@ document in September 2001, the last month of university summer break. Its
 October 2001 date records the last modification, not its origin. The master's
 thesis is from 2005. This is an editorial outline, not the essay draft.
 
+The [essay](../../../notes/what-should-a-program-inherit.md) was written
+and revised on 25 September 2026. This outline preserves the drafting plan;
+the reviewed essay supersedes its word allocations. Subsequent revisions
+added an e-graph inset, sharpened the TyFlow lookup comparison, and shortened
+AlphaEvolve's discussion while making information provenance explicit.
+
 ## The argument
 
 The programme began with a question about how useful structures could survive
@@ -24,6 +30,13 @@ The essay should earn this conclusion through examples. Its interest comes
 from the changing questions and the differences between the answers. The
 historical documents supply the personal thread; the modern papers supply
 concrete systems against which to examine it.
+
+Keep the direction of that development open to criticism. Moving from
+evolutionary operators toward type theory may have addressed real dependencies
+while also shifting attention toward questions with clearer formal success
+criteria. The retrospective should ask whether that shift served the original
+experimental ambition, rather than treating increasing formal sophistication
+as an automatically warranted progression.
 
 The intended reader is interested in programming and AI but need not know
 anti-unification or type-directed synthesis. Explain each term when its example
@@ -146,24 +159,58 @@ fitness. Introduce algorithm C as a constructor driven by choices, alongside
 type inference. It propagates constraints as it constructs a term, allowing
 search to choose among possibilities that may succeed or fail.
 
-Use the shared application example from the close reading:
+Use the polymorphic application example from the close reading as a brief
+warm-up, not the full demonstration of C:
 
 ```text
-available: f : bool → bool, b : bool
+available: f : ∀a. a → a, b : bool
 requested result type: bool
 program to construct: f b
 ```
 
 Explain C's steps in ordinary language. Choosing application creates an
-unknown argument type. Choosing `f` resolves it to `bool`; the argument must
-then be constructed at that type, and choosing `b` succeeds. This is enough
-to show how one choice changes the conditions for the next.
+unknown argument type `β`, so the function must have type `β → bool`.
+Choosing `f` instantiates its scheme with a fresh `α`, giving `α → α`.
+Unifying these function types forces both `α` and `β` to be `bool`; the
+argument must then be constructed at that type, and choosing `b` succeeds.
+The environment still offers polymorphic `f` for other uses. This shows how
+the requested result and a selected binding jointly constrain the next choice.
+
+The main example should expose environment management. A compact candidate is:
+
+```text
+available: p : α → bool, b : bool
+requested result type: bool
+one construction: let test = p in test b
+```
+
+Here `α` is a shared type unknown, not a universally quantified variable.
+Such unknowns can arise while constructing an enclosing function. Choosing
+`LET` and then `p` creates a local binding `test : α → bool`. C must not
+generalize `α`, because it occurs free in the surrounding environment through
+`p`. Constructing `test b` then fixes `α = bool`, updating both `test` and
+`p`. This demonstrates scope extension, generalization relative to the
+environment, and propagation of constraints back into that environment.
+Contrast this with the fresh instantiation of `∀a` in the warm-up. A second
+use of `test` at `int` would conflict with its use at `bool`; it cannot choose
+its input type independently at each occurrence.
+
+Use the example to explain the division of labor: types express part of the
+requirements, while fitness evaluates further aspects of intended behavior.
+Both `b` and `test b` can meet the type without being interchangeable for the
+task. The existence of a shorter inhabitant is no objection to constructing
+the longer program; C must support varied candidates while maintaining their
+typing dependencies. The type is not a semantically complete specification
+of intent, and finding its simplest inhabitant is not the objective. Keep
+the warm-up short enough to accommodate this within the existing budget.
 
 Introduce TyFlow's recent decision representation and learned guidance.
-Trace the same example only far enough to expose the difference: under its
-displayed STLC rules, the model supplies the remaining unknown type and name
-before an environment-membership condition checks them. C obtains this type
-through unification with the selected environment binding.
+For the trace under TyFlow's displayed STLC rules, explicitly use the
+monomorphic environment `f : bool → bool, b : bool`. This lets us compare
+the construction of `f b` without attributing polymorphic instantiation to
+those rules. The model supplies the remaining unknown type and name before
+an environment-membership condition checks them. C obtains this type through
+unification with a fresh instance of the selected environment binding.
 
 Use a short paragraph to connect this construction problem to the later PhD,
 [GADTs for Reconstruction of Invariants and Postconditions](../../jca/lukstafi-phd-thesis.pdf)
@@ -191,30 +238,68 @@ mentioning compiler errors, retain the qualification that Java errors remain
 outside the implemented typing checks.
 
 **Transition:** Construction can enforce some requirements. Other judgments
-arrive only after a candidate has been executed and evaluated. How does a
-search retain and use what those attempts teach it?
+arrive only after a candidate has been executed and evaluated. We can now
+return to the full evolutionary loop: how do variation and selection turn
+existing programs into better candidates?
 
 Primary source: [TyFlow v2](https://arxiv.org/html/2510.10216v2).
 Detailed trace, statements, and evaluation: [TyFlow exploration](tyflow.md).
 The essay should call this a related construction strategy, with different
 operational choices, rather than equating the algorithms.
 
-## 5. AlphaEvolve: an inheritance for the next attempt
+## 5. AlphaEvolve: variation, selection, and what survives
 
-**Approximately 1,400 words.** Introduce AlphaEvolve's loop briefly: proposals,
-evaluation, and retained programs that inform later proposals. Use the paper's
-evolving tensor-decomposition searcher as the concrete case. Distinguish the
-procedure being improved from the mathematical object it discovers, and the
-evidence that warrants accepting that object.
+**Approximately 1,400 words: 400 for the evolutionary loop, 400 for variation
+and recombination, 350 for the concrete search example, and 250 for the bridge
+to the earlier essay.** Develop the genetic-programming comparison before
+turning to continuity of inquiry.
 
-The interpretive work should occupy most of the section. A descendant's
-relationship to earlier programs, a result's relationship to its evidence,
-and a future attempt's access to useful records are three distinct questions.
-They let us revisit the old concern with inheritance without identifying
-learned editing with a formally specified common-schema operator.
+Start with the evolutionary roles: candidate representation, variation,
+fitness evaluation, and selection for further variation. In AlphaEvolve,
+programs and their evaluations populate a database; a sampled parent and
+inspirations inform LLM-generated edits. Discuss this as an evolutionary
+process over programs. Selection and variation are separate design choices:
+what counts as a successful candidate need not tell us how to produce one.
+Connect this directly to the master's division between typing constraints
+and fitness, including why the simplest inhabitant of a type need not serve
+the task.
 
-Bring in [What Persists When the Agents Change?](../../../notes/what-persists-when-agents-change.md)
-here, after the technical comparisons have earned the connection. That essay
+The central comparative question is **what makes a useful variation operator?**
+Return to MGP1's concern with correspondence between modules and GENERA's
+relationship between generalization and mutation. Independent variation is
+valuable only where dependencies permit it. Ask what an operator must retain,
+what it may change, and whether a useful change requires coordinated changes
+elsewhere. Compare an explicitly specified schema-and-substitution operator
+with a learned proposal mechanism. Treat this as a change in where the
+responsibility for producing useful variants lies; formal preservation and
+empirical effectiveness remain different claims.
+
+Make room for recombination without equating every use of earlier candidates
+with formal crossover. Distinguish direct descent from a selected parent,
+influence from other examples, and the historical operation of exchanging
+parts through a common schema. The latter specifies a correspondence and
+admissible substitutions. Whether another mechanism accomplishes a similar
+practical transfer of useful structure is a separate question. Likewise,
+retaining alternatives raises a concrete evolutionary question: which
+currently less successful structures might become useful after further
+variation? Do not infer that preserving candidates guarantees that their
+useful parts will be recognized or combined.
+
+Use the paper's tensor-decomposition searcher as the worked application:
+optimizer, initialization, loss, and hyperparameters change over 15 mutations.
+Now separate two levels of search: evolving a procedure and running that
+procedure to find a mathematical object. Connect this to MGP1's planned
+combination of structural evolution and numerical optimization. The old
+proposal motivates the comparison; it does not establish equivalence between
+these organizations of search. Explain what is being varied, what is being
+evaluated, and what evidence warrants accepting the discovered object. Keep
+the correctness distinction attached to this example rather than making it
+the organizing theme of the whole section.
+
+Only then bring in
+[What Persists When the Agents Change?](../../../notes/what-persists-when-agents-change.md).
+The evolutionary discussion has established why inheritance involves both
+retained material and a process capable of using it. The earlier essay
 asks how an inquiry continues across changing participants and representations.
 An executable artifact is one way a past achievement can change the starting
 point of later work. Its usefulness still depends on selection, interpretation,
@@ -226,7 +311,9 @@ why the evaluation criterion deserves revision. The previous essay gives us
 those further questions; the AlphaEvolve comparison does not settle them.
 
 **Section conclusion:** The record and the process that uses it jointly
-determine what an attempt can inherit.
+determine what an attempt can inherit. This broadens a question developed
+through genetic programming; the section remains primarily an evolutionary
+comparison, with a short opening toward the earlier essay.
 
 Primary source: [AlphaEvolve v1](https://arxiv.org/html/2506.13131v1).
 Evidence and scope: [AlphaEvolve exploration](alphaevolve.md). Keep source
@@ -242,11 +329,31 @@ in 2002, it specified how mutation should shape generalization; by 2005, it
 also asked how to construct within logical constraints. Looking back through
 the three papers makes the consequences of those choices easier to see.
 
-The conclusion should permit revision of the old programme. A dependency can
-be valuable for one purpose and restrictive for another. A choice that search
-can make may be better resolved by inference. An archived achievement becomes
-useful through its contribution to subsequent work. None of these observations
-requires the early proposal to have been complete or successful.
+The conclusion should question the direction of the programme's development,
+including Łukasz's suggested possibility: **was I nerdsniped into type theory?**
+Give that question substance. Environment dependencies were real problems,
+and formalizing them produced meaningful results. But proving properties of
+typed construction and showing that an evolutionary system finds useful
+programs are different achievements. Did the formal work remove an obstacle
+to experiments, or did its tractable questions displace the less tidy work
+of building and evaluating the search? Both could have happened.
+
+Distinguish the value of the subsequent type-theoretic research, including
+the PhD, from its necessity for the original GP ambition. Its independent
+value does not establish that it was the best next step for that programme.
+Conversely, the lack of early experiments does not establish that the
+theoretical direction was a mistake. The missing evidence is how much a
+simpler implemented system could have taught us before the richer machinery
+was developed. Modern systems sharpen that question; their present resources
+do not settle which route was feasible or preferable in 2001–2005.
+
+Let the earlier comparisons inform this self-questioning: a dependency can
+be valuable for one purpose and restrictive for another; inference can
+resolve choices that would otherwise burden search, but its contribution to
+search effectiveness still needs evaluation. Keep the judgment open without
+turning it into either retrospective vindication or a declaration of wasted
+work. The user proposed this as a question, not an established account of
+their motives. Fit it within the existing 550-word conclusion budget.
 
 End with the concrete circumstance of the present essay: the old documents
 have survived, and reading them against newer work changes which questions we
@@ -259,7 +366,8 @@ questions, with room to reconsider their answers.
 The two earlier essays have distinct roles. *What Must Be True?* supplies the
 anti-unification refresher and an accessible account of the PhD's inference
 problem. *What Persists When the Agents Change?* supplies the questions about
-retention and continued inquiry in the AlphaEvolve section. The PhD connection
+retention and continued inquiry at the end of the AlphaEvolve section, after
+the genetic-programming comparison has been developed. The PhD connection
 belongs within the existing section budgets; it does not add a fourth paper
 survey or require a second introduction to deduction, generalization, and
 abduction.
@@ -271,8 +379,9 @@ comes from the [2026 Round 10 work](../../jca/agent-collab/round-10-witness-gene
 not the 2015 thesis. It need not be retold here. Do not transfer its scope over
 ordinary term equality to babble's generalization modulo supplied equations.
 
-The two main worked examples are repeated versus independent holes and the
-construction of `f b`. The small commutativity example explains babble's added
+The two main worked examples are repeated versus independent holes and C's
+environment-sensitive `let` construction, with `f b` as a short warm-up and
+the basis of the STLC comparison. The small commutativity example explains babble's added
 machinery. These fit inline code blocks; no large diagram is necessary. Keep
 the functional-hole insertion example and the bilinear certification example
 in the reading notes unless the draft needs them to clarify a specific claim.
@@ -288,5 +397,5 @@ the research notes. The published essay should preserve the implications of
 those qualifications without turning into an errata list. Its claims should
 rest on the worked constructions we can explain clearly.
 
-This outline is ready to draft from. The reading notes identify unresolved
+This outline accompanies the reviewed essay. The reading notes identify unresolved
 questions that constrain stronger claims; none blocks the proposed account.

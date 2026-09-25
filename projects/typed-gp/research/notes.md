@@ -4,10 +4,10 @@ These are provisional assistant reading notes from the discussion with Łukasz,
 not historical source text, a proof audit, or a literature-priority assessment.
 Łukasz describes the thesis as the theoretical and surveying culmination of
 the programme: the ideas reached a stage suitable for experimentation, but
-time ran out before experiments were done. The current intention is to do more
-research before settling on an essay. On 25 September 2026, Łukasz chose a
+time ran out before experiments were done. On 25 September 2026, Łukasz chose a
 [focused survey](survey.md) as the next phase, subsequently narrowing its core
 to babble, TyFlow, and AlphaEvolve. The other four papers supply background.
+This work now supports the [reviewed anniversary essay](../../../notes/what-should-a-program-inherit.md).
 Building our own experiments is deferred; the sketch below is retained only
 as a record of the earlier proposal.
 
@@ -51,6 +51,17 @@ The presentation makes incremental constraint solving, polymorphic recursion,
 and GADT inference particularly prominent. An interpretation to discuss:
 building the GP system was generating independent programming-language
 research questions.
+
+On 25 September 2026, Łukasz proposed making the direction of this change
+itself a question for the anniversary essay: was the move toward type theory
+warranted, or was he "nerdsniped" into it? Preserve this as an open
+retrospective question, not a claim about historical motives. The formal
+problems could be both real and absorbing enough to draw effort away from
+implementing and evaluating evolutionary search. The independent value of
+that research, including the later PhD, does not decide whether it was a
+necessary or productive next step for the original GP programme. Likewise,
+the absence of experiments does not establish that a simpler implementation
+would have succeeded. The conclusion should distinguish those judgments.
 
 ## Concrete points to revisit
 

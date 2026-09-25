@@ -115,20 +115,21 @@ the type system. See [§4.2](https://arxiv.org/html/2510.10216v2#S4.SS2) and
 [§5](https://arxiv.org/html/2510.10216v2#S5),
 `chapters/methods_system.tex:114–158` and `chapters/model.tex:4–43`.
 
-## One small application in both systems
+## A polymorphic application in C and an STLC comparison
 
 The following is our reconstructed example, not a benchmark run or a quoted
-example. It uses the common variable/application fragment, avoiding a false
-identification of MiniML's recursive `fix` with STLC's annotated lambda. Let
+example. For C, let
 
 ```text
-E = { f : bool → bool, b : bool }
+E = { f : ∀a. a → a, b : bool }
 goal: construct a term of type bool
 chosen result: f b
 ```
 
-`bool` can be a base type constant in the thesis's setting. Both bindings are
-monomorphic, so the example does not purport to compare their polymorphism.
+`bool` can be a base type constant in the thesis's setting. The universally
+quantified `a` belongs to `f`'s type scheme: each use gets a fresh instance.
+The TyFlow trace below uses a monomorphic binding instead, because its
+displayed STLC rules do not include this instantiation step.
 
 ### Algorithm C
 
@@ -138,8 +139,16 @@ Choose `APP`. Introduce a fresh type variable `β` and start with
 C(E, β → bool).
 ```
 
-Choose `VAR`, then environment entry `f`. Its type is `bool → bool`.
-Unification returns `R = { β ↦ bool }`; the generated function is `f`.
+Choose `VAR`, then environment entry `f`. Instantiate its scheme with a fresh
+`α`, giving `α → α`. Unify this instance with the requested `β → bool`:
+
+```text
+α → α = β → bool
+R = { α ↦ bool, β ↦ bool }.
+```
+
+The generated function is `f`. The substitution specializes this use; the
+environment's quantified scheme `∀a. a → a` remains available for other uses.
 
 The application case now constructs its argument with the **updated** goal
 
@@ -153,18 +162,71 @@ choices are `APP; VAR, f; VAR, b`. This notation names their meanings instead
 of assigning literal integers: the old definition's enumeration and modulus
 convention should not be silently converted into a new executable encoding.
 
-The decisive operation is the unification at `f`: it determines the type that
-the argument must have. If the argument choice instead selected a binding
+The decisive operation is the unification at `f`: the requested result type
+and the equal argument and result types in `f`'s fresh instance together
+determine the type that the argument must have. If the argument choice instead selected a binding
 `c : bool → bool`, that path would fail.
+
+### Extending and refining the environment
+
+The application above leaves `E` unchanged: its substitution affects fresh
+instance variables. It is a useful instantiation warm-up, but insufficient
+to explain C's environment management. A second reconstructed example exposes
+that machinery:
+
+```text
+E = { p : α → bool, b : bool }
+goal: bool
+chosen result: let test = p in test b
+```
+
+Here `α` is free in `E`: a shared unification unknown, not a quantified
+variable. Such a context can arise inside a function under construction.
+Following C's `LET` case (source lines 1667–1673):
+
+1. Create a fresh definition-type unknown `δ` and construct the definition
+   at that type. Selecting `p` unifies `δ` with `α → bool`.
+2. Generalize the resulting type relative to the updated environment.
+   Because `α` occurs free in `p`'s type, it cannot be quantified. Extend
+   the context with `test : α → bool` for the body.
+3. Construct the body by choosing application and then `test`. Unifying
+   `α → bool` with `β → bool` ties the argument goal `β` to `α`.
+4. Choose `b` for that argument. Unification now forces `α = bool`.
+   Applying this substitution to the context refines both `p` and `test`
+   to `bool → bool`. The local name `test` is scoped to the `let` body;
+   the substitution on the original environment is returned to the caller.
+
+Thus C returns a term **and** information about its context. If the same
+body also tried to apply `test` to `n : int`, the shared constraint would
+fail. Incorrectly generalizing `test` to `∀a. a → bool` would lose its
+dependency on `p` and wrongly permit independent input types. Conversely,
+if `p` had actually had that quantified scheme, fresh instantiation and
+generalization could legitimately give the alias a polymorphic type.
+
+The requested type also admits `b`. That is consistent with the intended
+division of labor: types express partial requirements, and fitness evaluates
+further aspects of intended behavior. `p b` can compute a different Boolean
+result from `b`; sharing a type does not make them interchangeable for the
+task. C is not tasked with finding the simplest inhabitant of a semantically
+complete specification. It supports choices among candidates while preserving
+their typing dependencies. In the essay, use this example to explain both
+environment management and that division of labor; do not attribute its
+`LET` behavior to TyFlow's displayed STLC rules.
 
 ### TyFlow with its displayed STLC rules
 
-Start with the synthesis goal `E ⊢ ?p : bool`. Choosing `S-App` unifies the
+For this trace, use `E₀ = { f : bool → bool, b : bool }`. This is a comparison
+of the same application shape at a monomorphic type, not a derivation of the
+polymorphic example under STLC. It uses the common variable/application
+fragment, avoiding an identification of MiniML's recursive `fix` with STLC's
+annotated lambda.
+
+Start with the synthesis goal `E₀ ⊢ ?p : bool`. Choosing `S-App` unifies the
 program hole with `?p₁ ?p₂` and creates goals
 
 ```text
-E ⊢ ?p₁ : ?a → bool
-E ⊢ ?p₂ : ?a.
+E₀ ⊢ ?p₁ : ?a → bool
+E₀ ⊢ ?p₂ : ?a.
 ```
 
 Choose `S-Var` for the first goal. There is an important difference from C:
@@ -172,9 +234,9 @@ TyFlow's displayed `T-Var` encodes environment membership as an **executable
 constraint**, not a recursive relation that searches the environment and
 returns a type. The remaining unknown name and type must be acquired before
 that predicate can run. One successful model assignment supplies the name
-`f` and `?a = bool`; the engine checks that `f : bool → bool` belongs to `E`.
+`f` and `?a = bool`; the engine checks that `f : bool → bool` belongs to `E₀`.
 
-That assignment changes the second goal to `E ⊢ ?p₂ : bool`. Another `S-Var`
+That assignment changes the second goal to `E₀ ⊢ ?p₂ : bool`. Another `S-Var`
 choice supplies `b`, and its membership check succeeds. Composition gives
 `?p = f b`. Supplying a name with an incompatible type would fail the check
 and prune this branch.
@@ -189,6 +251,26 @@ construction and information flow, but also a concrete operational difference:
 asks the model to propose it and then checks it.** A different Horn-clause
 encoding of lookup could change that behavior; we have not constructed or
 proved such an encoding equivalent to C.
+
+This is not a distinction between inference during construction and checking
+only a finished program. TyFlow unifies rule conclusions with synthesis goals,
+propagates substitutions between sequential subgoals, and checks constraints
+at each rule application (`chapters/methods_system.tex:19–42`). Its displayed
+lookup predicate checks a ground name–type pair, so the missing type has to
+come from assignment acquisition rather than being returned by lookup.
+The information-flow difference is local to that interface and already
+appears with the same monomorphic environment in both constructions.
+
+Type expressiveness is a separate comparison. The introductory STLC rules
+do not provide C's polymorphic schemes and environment-relative
+generalization. They therefore demonstrate less of the inference machinery
+that concerns the thesis. But STLC is not the extent of TyFlow's framework
+or evaluation: §6 uses SuFu's customized type system and a Java subset whose
+grammar includes generic types (`chapters/evaluation.tex:13–32`;
+`chapters/appendix.tex:99` onward). These sources do not justify a blanket
+claim that TyFlow uses a weaker type system than C. The supported criticism
+is that its shown encoding asks the model to supply some information that
+C obtains through inference, even in the shared monomorphic fragment.
 
 This difference illuminates a tension already articulated in the thesis
 (lines 600–619): searching over type annotations can waste effort that a type
