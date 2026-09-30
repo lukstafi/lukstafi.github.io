@@ -2,7 +2,7 @@
 title: "Where Does Seeing Become Thinking?"
 subtitle: "Representations, Operations, and the Perception–Cognition Boundary in AI"
 author: "Łukasz Stafiniak and Codex"
-date: 2026-09-27
+date: 2026-09-30
 ---
 
 Consider a photograph of a crowded room. We ask an AI assistant whether a wheelchair could pass between the sofa and the table. The assistant identifies the furniture, describes the arrangement, and produces a fluent explanation of accessibility. Then it recommends a route through a gap that is too narrow.
