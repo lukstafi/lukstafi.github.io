@@ -127,3 +127,7 @@ In the last section: "Yet asking physics to supply actuality leaves the crucial 
 What work does this sentence do? "This does not require an actual occurrence to await some further act of individuation."
 
 Alright, it's ready! I'd be glad if you do a final editorial pass, then commit. Thanks!
+
+## Phenomenal field and reality weight
+
+We made a mistake in [can-two-minds-share-one-experience.md](can-two-minds-share-one-experience.md) , We should have used the "phenomenal field", which means the organized totality of one's experience at a given time, instead of "phenomenal space", which has a technical meaning (for how experiences can vary). Another place that is slightly off: "Counting further realizations of an abstraction does not by itself tell us how many subjects or experiential occurrences exist here." It's confusing. For the Platonic position, the counting would contribute to the reality weight of the subject, and for the identity theory-slanted position, I don't see the relevance. WDYT?
