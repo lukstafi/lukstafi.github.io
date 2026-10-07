@@ -12,7 +12,7 @@ header-includes:
     </style>
 ---
 
-*For an introduction to policies, Bellman equations, and learning from rewards, start with the companion [“How Can a Reward Train a Neural Network?”](how-can-a-reward-train-a-neural-network.html). This essay develops the connections to planning and probabilistic inference; both articles can be read independently.*
+*For an introduction to policies, Bellman equations, and learning from rewards, start with the companion [“How Can a Reward Train a Neural Network?”](https://lukstafi.github.io/notes/how-can-a-reward-train-a-neural-network.html). This essay develops the connections to planning and probabilistic inference; both articles can be read independently.*
 
 An agent reaches a junction. Its instinct is to take the route that looks familiar, but it has time to consider alternatives. It can consult a map, simulate several journeys, recall which choices worked previously, or ask a learned value function to score its options. After this extra work it chooses differently. If the choice succeeds, there is something worth retaining: next time, perhaps the agent can make the better decision without repeating the entire deliberation.
 
@@ -20,9 +20,13 @@ This movement between deliberation and learned behavior connects several familie
 
 My old slides on model-based reinforcement learning and probabilistic policy improvement approached these ideas from different directions. Revisiting them several years later, the connections seem more useful than a catalogue of algorithms. They also lead somewhere current. Dreamer 4 combines learning inside a world model with a preference-based descendant of Maximum a Posteriori Policy Optimisation, or MPO. The mathematical machinery connecting these topics is still doing practical work.
 
-The earlier essay [“Which World Model?”](which-world-model.html) asked what a model represents and how reliably an agent uses it. Here the question is more operational: given experience, predictions, and an objective, how do we obtain a better policy? We will follow that question from Bellman equations through planning, the evidence lower bound, expectation-maximization, and weighted regression, before returning to recent agents. The examples and derivations use a common notation rather than reproducing each paper's conventions.
+The earlier essay [“Which World Model?”](https://lukstafi.github.io/notes/which-world-model.html) asked what a model represents and how reliably an agent uses it. Here the question is more operational: given experience, predictions, and an objective, how do we obtain a better policy? We will follow that question from Bellman equations through planning, the evidence lower bound, expectation-maximization, and weighted regression, before returning to recent agents. The examples and derivations use a common notation rather than reproducing each paper's conventions.
 
-## Evaluating a policy and improving it
+The essay has three parts. [Part 1](#part-1) develops value functions, world models, and planning. [Part 2](#part-2) derives improved behavior distributions and ways to learn from them, ending with return conditioning and the distinction between good decisions and good luck. [Part 3](#part-3) brings those tools back to search, then connects them to preference learning and recent agents.
+
+## Part 1: Values, world models, and planning {#part-1}
+
+### Evaluating a policy and improving it
 
 Consider a discounted Markov decision process. At state $s$, the agent samples an action $a$ from its policy $\pi(a\mid s)$. The environment supplies a reward and a next state according to its dynamics. Write $r(s,a)$ for the expected immediate reward, $P(s'\mid s,a)$ for the transition probabilities, and $\gamma\in[0,1)$ for the discount factor. States summarize what is needed to predict the next transition; they need not be directly visible to the agent.
 
@@ -49,7 +53,7 @@ $$
 \pi_0(\cdot\mid s)=(0.6,0.3,0.1),\qquad Q^{\pi_0}(s,\cdot)=(0,1,2).
 $$
 
-These numbers summarize complete journeys, including the current behavior after reaching a gate on the shortcut. They are not a specification of all the underlying transitions. The value at the junction is $0.5$, so the advantages are $(-0.5,0.5,1.5)$. The robot spends most of its probability on its worst option, perhaps because earlier training rewarded caution or because the shortcut was only recently discovered.
+These numbers summarize complete journeys, including the current behavior after reaching a gate on the shortcut. The value at the junction is $0.5$, so the advantages are $(-0.5,0.5,1.5)$. The robot spends most of its probability on its worst option, perhaps because earlier training rewarded caution or because the shortcut was only recently discovered.
 
 With exact values and an unrestricted table of action probabilities, improvement is easy: put all the probability on the largest $Q$. The policy-improvement argument explains why this local operation has a global consequence. If a new policy $\pi'$ satisfies
 
@@ -58,7 +62,25 @@ $$
 \quad\text{for every }s,
 $$
 
-then applying its Bellman operator repeatedly propagates that inequality forward. Monotonicity and contraction give $V^{\pi'}\geq V^\pi$. Policy iteration alternates evaluation and improvement; value iteration interleaves them through an optimality backup. These are the classical foundations developed in [Sutton and Barto, chapters 4 and 8](http://incompleteideas.net/book/the-book-2nd.html).
+then using $\pi'$ for one decision and following $\pi$ afterward is at least as good as following $\pi$ throughout. The conclusion we want is stronger: following $\pi'$ at *every* decision is at least as good. The distinction is in the superscript of $Q^\pi$: the continuation still uses the old policy.
+
+Define the Bellman operator for the new policy by
+
+$$
+(T_{\pi'}v)(s)=\sum_a\pi'(a\mid s)
+\left[r(s,a)+\gamma\sum_{s'}P(s'\mid s,a)v(s')\right].
+$$
+
+It takes any proposed continuation values $v$ and backs them up through one decision under $\pi'$. Our assumption is therefore $T_{\pi'}V^\pi\geq V^\pi$, with inequalities understood at every state. $T_{\pi'}$ is monotonic: averaging with nonnegative probabilities and multiplying by $\gamma\geq0$ preserve the inequality. Applying the operator to both sides repeatedly gives
+
+$$
+V^\pi\leq T_{\pi'}V^\pi
+\leq T_{\pi'}^2V^\pi\leq\cdots.
+$$
+
+Each backup shrinks the largest difference between two bounded continuation-value functions by at least a factor of $\gamma$: this is the operator's **contraction** property. After $n$ decisions, the difference made by reverting to the old policy is bounded by $\gamma^n$ times the largest difference between $V^\pi$ and $V^{\pi'}$. With bounded rewards and $\gamma<1$, that influence vanishes. The chain therefore converges to the value of following $\pi'$ forever, giving $V^{\pi'}\geq V^\pi$.
+
+Policy iteration alternates evaluation and improvement; value iteration interleaves them through an optimality backup. These are the classical foundations developed in [Sutton and Barto, chapters 4 and 8](http://incompleteideas.net/book/the-book-2nd.html).
 
 Practical agents complicate every clause of the argument. Values are estimated from incomplete experience. A neural policy shares parameters across states, so improving one output may damage another. The states used for training may differ from those visited by the new policy. And an apparent shortcut may exploit a defect in the model rather than a feature of the environment. The exact theorem is useful precisely because it makes these departures visible.
 
@@ -75,11 +97,11 @@ J(\pi')-J(\pi)=\frac{1}{1-\gamma}
 \mathbb E_{s\sim d^{\pi'},\,a\sim\pi'}[A^\pi(s,a)].
 $$
 
-To see why, expand each advantage as expected reward plus discounted next-state value minus present-state value. Along a trajectory the value terms telescope. The initial value subtracts $J(\pi)$; the remaining rewards give $J(\pi')$. Bounded values make the distant discounted remainder vanish.
+To see why, use the definition of $d^{\pi'}$ to rewrite the right-hand side as an expected discounted sum of advantages along trajectories generated by $\pi'$. Expanding the advantages gives the expectation of $\sum_{t\geq0}\gamma^t[r_t+\gamma V^\pi(s_{t+1})-V^\pi(s_t)]$. Along each trajectory the value terms telescope. In expectation, the initial value subtracts $J(\pi)$; the remaining rewards give $J(\pi')$. Bounded values make the distant discounted remainder vanish.
 
 The difficulty is that the expectation uses states visited by the *new* policy. We usually have data from the old one. Replacing $d^{\pi'}$ by $d^\pi$ gives a manageable surrogate, but it is an approximation whose quality depends on how behavior changes. Trust regions acquire a concrete purpose here: they help make the data distribution relevant to the policy we are about to deploy. [Kakade and Langford's conservative policy iteration](https://people.eecs.berkeley.edu/~pabbeel/cs287-fa09/readings/KakadeLangford-icml2002.pdf) and [TRPO](https://arxiv.org/abs/1502.05477) develop this line of reasoning.
 
-## The different jobs of a world model
+### The different jobs of a world model
 
 A dynamics model estimates what follows an action. It may predict a next physical state, a distribution over images, or a latent representation sufficient for some control problem. Calling an algorithm model-based tells us that such a model participates in learning or decision-making. It leaves open what computation the model performs.
 
@@ -91,11 +113,11 @@ $$
 
 The same update can consume an observed transition or a simulated one. In the delivery example, discovering that a gate is open can support many additional backups through routes that reach it. The agent need not physically repeat every route before updating its estimates. Classical Dyna-Q does not require inserting simulated transitions into a replay buffer; it can update directly from model samples. The important distinction is where the transition came from.
 
-Model-generated data offers cheap computation, but not independent evidence. Repeating an incorrect simulated transition a million times does not establish that the gate is open. It establishes that the value learner has thoroughly absorbed the model's belief. This distinction between computational reuse and new information will remain important throughout the essay.
+Model-generated data replaces some costly environment interactions with cheaper computation. The model turns what the agent has learned about world transitions into further training examples for its value function or policy. In a stationary environment, this transition knowledge remains useful as the policy changes: the agent can reconsider the value of earlier actions in light of improved later behavior without repeating those interactions with the environment. These updates inherit the model's errors, so their usefulness depends on its accuracy.
 
 [SimPLe](https://arxiv.org/abs/1903.00374) scales the simulated-experience idea to Atari. It alternates collecting real experience, learning a video-prediction model, and training a policy in that learned environment. A short simulated rollout can supply useful training signal while limiting the damage from accumulated prediction error. Predicting pixels is nevertheless expensive: a large part of an image may be irrelevant to deciding whether a passage is traversable.
 
-Latent models reduce that burden. Given observations $o_t$ and actions, an encoder constructs an internal state $z_t$. During training it can use the new observation to infer that state; during imagination a transition model must predict without seeing the future observation:
+Latent models reduce that burden. Given observations $o_t$ and actions, an encoder constructs an internal state $z_t$. When an observation arrives, the encoder uses it to infer that state; during imagination a transition model must predict without seeing the future observation:
 
 $$
 \begin{aligned}
@@ -104,9 +126,28 @@ z_{t+1}&\sim p_\phi(z_{t+1}\mid z_t,a_t).
 \end{aligned}
 $$
 
-Here $z$ can include deterministic recurrent memory as well as stochastic variables. In a partially observed environment, that memory is essential. The robot may have to remember a sign seen before reaching the junction. Two identical current camera images need not imply the same situation.
+Here $z$ can include deterministic recurrent memory (whose update can be shared by $q$ and $p$) as well as stochastic variables. In a partially observed environment, that memory is essential. The robot may have to remember a sign seen before reaching the junction. Two identical current camera images need not imply the same situation.
 
-The original [Dreamer](https://arxiv.org/abs/1912.01603) learns an actor and a value function from imagined latent trajectories. Its continuous-control actor receives gradients through predicted actions, transitions, rewards, and values. Continuous random variables can be expressed as differentiable transformations of parameter-independent noise, enabling reparameterization gradients. Straight-through estimators enter for discrete choices; they are not a universal description of all gradients through Dreamer's model.
+The original [Dreamer](https://arxiv.org/abs/1912.01603) learns an actor and a value function from imagined latent trajectories. Its continuous-control actor receives gradients through predicted actions, transitions, rewards, and values. How can a gradient pass through a random sample?
+
+The **reparameterization trick** separates the randomness from the parameters being learned. Suppose a scalar sample has distribution $x\sim\mathcal N(\mu_\theta,\sigma_\theta^2)$. We can obtain exactly the same distribution by writing
+
+$$
+\epsilon\sim\mathcal N(0,1),\qquad
+x=\mu_\theta+\sigma_\theta\epsilon.
+$$
+
+The noise distribution is independent of $\theta$. Holding one sampled $\epsilon$ fixed during backpropagation, $x$ is a differentiable function of the mean and scale. For a smooth downstream score $F(x)$, the chain rule gives
+
+$$
+\nabla_\theta F(x)
+=F'(x)\left(\nabla_\theta\mu_\theta
++\epsilon\nabla_\theta\sigma_\theta\right).
+$$
+
+Under conditions that allow differentiation under the expectation, averaging these sample gradients estimates $\nabla_\theta\mathbb E[F(x)]$. We draw fresh noise for new samples; fixing it during differentiation does not remove randomness from the objective. This construction, also used in [variational autoencoders](https://arxiv.org/abs/1312.6114), lets gradients follow how a sampled outcome moves as its distribution changes. In an imagined trajectory, such transformations can be chained across actions and latent transitions, allowing a predicted future reward to influence an earlier action. During the actor update, the world-model parameters can remain fixed while gradients pass through its inputs.
+
+For discrete choices, a **straight-through estimator** instead uses a discrete sample in the forward computation but substitutes a differentiable surrogate in the backward computation—for example, treating a sampled one-hot vector as though it were its vector of probabilities. This generally introduces bias; it is a different gradient estimator from the smooth reparameterization above.
 
 A finite imagination horizon is extended by a learned terminal value. One schematic objective is
 
@@ -119,7 +160,7 @@ This puts a demanding responsibility on the critic. A short imagined path to the
 
 Dreamer's actor eventually produces actions without running a fresh trajectory search at every decision. The computational work of improving behavior has been partly absorbed into its parameters. This is sometimes called *amortization*: paying a training cost so that repeated decisions become cheaper. It does not mean eliminating the model, which can still maintain the current latent state, and it does not guarantee that the cheap action matches what a planner with more time would choose.
 
-There is already an ELBO in this story, but it concerns **learning the world model**. For a generic latent-variable model, variational inference gives
+There is already an evidence lower bound (ELBO) in this story, but it concerns **learning the world model**. To isolate the idea, consider one observed camera image $o$ and an unobserved latent representation $z$. The image is a training example supplied by the environment; we have no ground-truth label for $z$. For a generic latent-variable model, variational inference gives
 
 $$
 \log p_\phi(o)\geq
@@ -127,48 +168,63 @@ $$
 -D_{\mathrm{KL}}(q_\psi(z\mid o)\|p_\phi(z)).
 $$
 
-The approximate posterior explains observations through latent variables. Reconstruction rewards explanatory fit; the KL term relates inferred latents to a predictive prior. Sequential models have a corresponding sum of observation and transition terms. [Variational autoencoders](https://arxiv.org/abs/1312.6114) supply the basic construction. Later we will use the same variational identity for a different purpose: explaining *desirable behavior*. A world-model ELBO and a control ELBO optimize different distributions against different evidence.
+The distributions have distinct jobs:
+
+- $q_\psi(z\mid o)$ is a **learned encoder**: given the image, it produces a distribution over latent representations. Here $\psi$ distinguishes its parameters from the generative model's $\phi$.
+- $p_\phi(o\mid z)$ is a **learned decoder**: given a latent representation, it assigns a probability or density to the observed image. The image is the empirical target; this likelihood is the model's prediction.
+- $p_\phi(z)$ is the **prior** over latent representations before seeing this image. It can be learned or fixed by design; a basic VAE often uses a fixed standard Gaussian. In the sequential world model above, its counterpart is the learned transition prior, conditioned on the preceding state and action.
+- $p_\phi(o)=\int p_\phi(o\mid z)p_\phi(z)\,dz$ is the **model's marginal likelihood**, obtained by integrating over possible latents. This integral is generally intractable, but we want to maximize its log over the observed data to fit the data distribution; the ELBO gives us a tractable lower bound to optimize.
+
+The exact posterior $p_\phi(z\mid o)$ follows from the current generative model by Bayes' rule. It is often intractable; $q_\psi$ learns to approximate it. “Exact” here means exact for the model, not knowledge of the environment's true hidden state.
+
+Training averages the right-hand side over observed images and maximizes it with respect to $\phi$ and $\psi$. The reconstruction term rewards explaining those images; the KL term keeps representations inferred from observations compatible with the model's generative prior. Thus the observations train both networks without requiring latent labels. Sequential models have corresponding terms across time. [Variational autoencoders](https://arxiv.org/abs/1312.6114) supply the basic construction.
+
+In Dreamer, the encoder tracks the agent's state, the transition prior supplies imagined experience, and the observation decoder mainly supplies a training signal for the representation. Later we will use the same variational identity for a different purpose: explaining *desirable behavior*. A world-model ELBO and a control ELBO optimize different distributions against different evidence.
 
 ![Three ways a learned model can participate in control: supply simulated transitions for value learning, train an actor through imagined trajectories, or evaluate candidate actions during planning.](images/policy-improvement-model-roles.svg)
 
 The third use of a model is direct planning. The robot can retain its model as a tool for deciding what to do now. This makes additional computation available at deployment, at the price of having to finish that computation before the next action is due.
 
-## Planning over trajectories and trees
+### Planning over trajectories and trees
 
 Model-predictive control, or MPC, repeatedly solves a finite-horizon problem. From the current estimated state, propose action sequences, predict their consequences, score their returns, and execute the first action of the selected sequence. After a new observation arrives, solve the problem again. The remaining planned actions are provisional.
 
 This distinction matters at the gate. A sequence saying “approach, pass through, turn left” should not remain binding after the robot sees that the gate is closed. Replanning uses the new evidence. It cannot retroactively repair a collision, but it prevents the entire predicted future from becoming a fixed commitment.
 
-Random shooting samples candidate sequences and keeps the best. The cross-entropy method iteratively fits a proposal distribution to an elite set of high-scoring candidates. Another common pattern weights candidates exponentially:
+Random shooting samples candidate sequences and keeps the best. The cross-entropy method iteratively fits a proposal distribution to an elite set of high-scoring candidates. This recalls Pelikan, Goldberg, and Cantú-Paz's [Bayesian Optimization Algorithm (BOA, 1999)](https://martinpelikan.net/publications.html), which learns a Bayesian network from selected promising solutions and samples new candidates from it. Both replace fixed search operators with a distribution fitted to successful candidates; BOA explicitly learns dependencies among the solution variables.
+
+Another common pattern weights candidates exponentially:
 
 $$
 w_k=\frac{\exp(\hat G_k/\eta)}{\sum_j\exp(\hat G_j/\eta)},
 \qquad \bar a_t=\sum_k w_k a_t^{(k)}.
 $$
 
-Here $\hat G_k$ is predicted return for candidate $k$. Small $\eta$ concentrates weight on the apparent winners. Path-integral control supplies a more specific derivation for related updates under assumptions about dynamics, noise, and control costs. The displayed weighting pattern alone does not make every such planner an instance of the same path-integral algorithm; proposal corrections and cost terms matter. [Williams et al.](https://arxiv.org/abs/1509.01149) develop a path-integral MPC construction.
+Here $\hat G_k$ is predicted return for candidate $k$. Small $\eta$ concentrates weight on the apparent winners. Path-integral control supplies a more specific derivation for related updates under assumptions about dynamics, noise, and control costs. [Williams et al.](https://arxiv.org/abs/1509.01149) develop model-predictive path-integral control (MPPI), including the proposal corrections and control costs needed for its derivation.
 
 There is also a geometric problem with averaging. If one good route passes left of an obstacle and another passes right, their average may head straight into it. An expressive distribution over plans can preserve alternatives that a single mean collapses. Selecting, mixing, and fitting candidate actions are different operations even when their scores are identical.
 
-[PETS](https://arxiv.org/abs/1805.12114) combines probabilistic dynamics ensembles with trajectory sampling and MPC. Individual predictive distributions represent stochasticity; differences between learned ensemble members help represent uncertainty about the dynamics. These are different reasons for uncertainty: a gate can open randomly even when its mechanism is known, or the agent can simply lack enough observations to know how it works. An ensemble is a practical estimator, not a certificate that all important uncertainty has been captured.
+[PETS](https://arxiv.org/abs/1805.12114) combines probabilistic dynamics ensembles with trajectory sampling and MPC. Individual predictive distributions represent stochasticity; differences between learned ensemble members help represent uncertainty about the dynamics. These are different reasons for uncertainty: a gate can open randomly even when its mechanism is known, or the agent can simply lack enough observations to know how it works.
 
-[MBOP](https://arxiv.org/abs/2008.05556) adds an especially useful arrangement for offline data. It learns dynamics, a behavioral prior for proposing plausible actions, and a return model for extending the planning horizon. Its planner combines these ingredients at decision time. The training is offline because the models are learned from a fixed dataset; planning is still performed online in the sense of choosing actions during execution. “Offline planning” and “offline RL” should therefore never be treated as interchangeable labels without explaining the intended meaning.
+[MBOP](https://arxiv.org/abs/2008.05556) adds an especially useful arrangement for offline data. It learns dynamics, a behavioral prior for proposing plausible actions, and a return model for extending the planning horizon. Its planner combines these ingredients at decision time. The training is offline because the models are learned from a fixed dataset; planning is still performed online in the sense of choosing actions during execution. So we can have online planning with offline RL.
 
 Tree search organizes computation differently. Several candidate journeys may share an initial action, then branch after different observations or choices. A tree can reuse evaluations of shared prefixes and allocate more computation to promising or uncertain branches. Monte Carlo tree search typically repeats selection, expansion, evaluation, and backup. In a stochastic environment the transition outcomes also need appropriate treatment; action branches alone do not express all uncertainty.
 
-AlphaZero combines a known game model with a network that predicts action priors and a state value. Search refines decisions; its visit distribution supplies a policy-training target, while outcomes train the value prediction. Its leaf evaluation uses the network rather than requiring the random rollout to the end of a game familiar from earlier MCTS descriptions. The learned prior, search allocation, and learned value cooperate. [Silver et al.](https://arxiv.org/abs/1712.01815) describe the resulting self-play system.
+AlphaZero combines a known game model with a network that predicts action priors and a state value. It uses a policy-and-value-guided variant of MCTS. Each simulation descends the tree by maximizing a score combining backed-up values, policy priors, and a visit-count exploration bonus. A network value replaces the rollout to the end of the game. Search refines decisions; its visit distribution supplies a policy-training target, while outcomes train the value prediction. [Silver et al.](https://arxiv.org/abs/1712.01815) describe the resulting self-play system.
 
-MuZero learns the model used inside the search. Its representation function maps observation history to a latent state, its dynamics function predicts a next latent and reward, and its prediction function produces policy and value outputs. Training asks these unrolled predictions to agree with rewards, value targets, and search policies. It does not require the latent state to reconstruct every pixel. A useful internal model can therefore be trained around quantities needed for decisions. [Schrittwieser et al.](https://arxiv.org/abs/1911.08265).
+MuZero learns the model used inside the search. Its representation function maps observation history to a latent state, its dynamics function predicts a next latent and reward, and its prediction function produces policy and value outputs. Training asks these unrolled predictions to agree with rewards, value targets, and search policies. It does not require the latent state to reconstruct every pixel. A useful internal model can therefore be trained around quantities needed for decisions. [Schrittwieser et al.](https://arxiv.org/abs/1911.08265). This connects to the [JEPA discussion in “Which World Model?”](https://lukstafi.github.io/notes/which-world-model.html#jepa): predicting useful abstractions can spare a model from reproducing irrelevant observation details.
 
 That economy has a boundary. Predicting task-relevant quantities under the training distribution does not establish that a representation preserves every intervention relevant to a new task. A map recording which corridors lead to deliveries might omit wall materials needed for a later demolition task. “Sufficient for control” always invites the question: sufficient for which rewards, actions, and situations?
 
-The more recent [TD-MPC2](https://arxiv.org/abs/2310.16828) develops this economy for continuous control. It learns latent transitions, rewards, and values without reconstructing observations, then performs local trajectory optimization with a terminal value estimate. The paper reports one hyperparameter configuration across 104 tasks and, separately, a single 317-million-parameter agent trained across 80 tasks. The first demonstrates algorithmic robustness; the second demonstrates joint multitask learning. They are different achievements.
+The more recent [TD-MPC2](https://arxiv.org/abs/2310.16828) develops this economy for continuous control. It learns latent transitions, rewards, and values without reconstructing observations, then performs local trajectory optimization with a terminal value estimate. The paper reports one hyperparameter configuration across 104 tasks and, separately, a single 317-million-parameter agent trained across 80 tasks. The first demonstrates algorithmic robustness; the second demonstrates joint multitask learning.
 
 We now have several ways to spend computation before acting. But what exactly makes the resulting action distribution an improvement, and how should it become a training target? To answer that, it helps to temporarily put trajectories aside and solve a problem at a single state.
 
-## Improving a distribution without throwing away the prior
+## Part 2: Improving distributions and learning from success {#part-2}
 
-Fix a state and suppress it from the notation. Let $p(a)$ be a reference policy with positive probabilities and let $Q(a)$ be a fixed vector of action values. We seek an improved distribution $q$. For finite actions, the KL divergence is
+### Improving a distribution without throwing away the prior
+
+Fix a state and suppress it from the notation. Let $p:a\mapsto p(a)$ be a reference policy with positive probabilities and let $Q:a\mapsto Q(a)$ be a fixed action-value function. We seek an improved distribution $q$. For finite actions, the KL divergence is
 
 $$
 D_{\mathrm{KL}}(q\|p)=\sum_a q(a)\log\frac{q(a)}{p(a)}.
@@ -176,7 +232,21 @@ $$
 
 It measures a directional discrepancy between distributions. It is nonnegative, vanishes when they agree, and is generally asymmetric. If $p(a)=0$, assigning positive mass to that action gives infinite $D_{\mathrm{KL}}(q\|p)$. Regularization toward a prior can preserve useful experience, but it cannot conjure alternatives outside that prior's support.
 
-Consider the penalized objective
+To see why the direction matters, first put rewards aside and consider fitting $q$ to a fixed target $p$. Minimizing $D_{\mathrm{KL}}(p\|q)$ is called **mass covering**: the expectation is under $p$, so making $q(a)$ tiny where $p(a)$ is appreciable is costly. Minimizing $D_{\mathrm{KL}}(q\|p)$ is called **mode seeking**: the expectation is under $q$, so it penalizes placing mass where $p$ is tiny, while regions that $q$ scarcely visits contribute little.
+
+Imagine two good routes around an obstacle, represented by two well-separated peaks in a continuous steering distribution $p$. Suppose $q$ must be a single Gaussian. The mass-covering fit spreads across both peaks, also putting probability in the undesirable region between them. The mode-seeking fit can concentrate around one route, sacrificing coverage of the other to avoid the valley. These are different compromises imposed by the limited expressiveness of $q$. If its family can represent $p$ exactly, both KL objectives have the same optimum, $q=p$. The variational-inference literature studies these [contrasting fitting behaviors](https://arxiv.org/abs/2202.01841).
+
+We will use KL both to limit how far an improved distribution moves from the current policy and to fit a neural policy to that improved distribution. Later, MPO will use $D_{\mathrm{KL}}(q\|\pi_i)$ to constrain improvement, then a mass-covering fit of $\pi_\theta$ to the resulting $q$.
+
+There is also an entropy interpretation. For finite actions, define $H(q)=-\sum_a q(a)\log q(a)$. Then
+
+$$
+-D_{\mathrm{KL}}(q\|p)=H(q)+\mathbb E_q[\log p(a)].
+$$
+
+The entropy term favors spreading probability, while the expected log reference favors actions that $p$ considers likely. For a uniform reference over $K$ actions, the latter term is the constant $-\log K$, so minimizing KL is exactly maximizing entropy. For a nonuniform reference, the two terms together favor matching its shape, which may include several separated modes. The mode-seeking compromise arises when the fitted family cannot preserve that shape.
+
+Now restore the action values and consider the penalized objective
 
 $$
 F(q)=\sum_a q(a)Q(a)-\eta D_{\mathrm{KL}}(q\|p),
@@ -198,7 +268,23 @@ $$
 
 This is a softmax of $\log p(a)+Q(a)/\eta$, not generally a softmax of values alone. The distinction disappears only for a uniform reference. A rare action needs a sufficient value advantage to overcome its small prior probability. As $\eta$ grows, the update approaches the reference; as it shrinks, probability concentrates on the largest supported values.
 
-There is an illuminating way to verify both the optimum and its meaning. Substitute the expression for $q^*$ into the KL divergence to obtain
+To verify the optimum, take logs of the expression for $q^*$:
+
+$$
+\log q^*(a)=\log p(a)+\frac{Q(a)}{\eta}-\log Z.
+$$
+
+Substituting this into $D_{\mathrm{KL}}(q\|q^*)$ gives
+
+$$
+\begin{aligned}
+D_{\mathrm{KL}}(q\|q^*)
+&=\sum_a q(a)\left[\log\frac{q(a)}{p(a)}-\frac{Q(a)}{\eta}+\log Z\right]\\
+&=D_{\mathrm{KL}}(q\|p)-\frac{\mathbb E_q[Q]}{\eta}+\log Z.
+\end{aligned}
+$$
+
+The normalization term survives as $\log Z$ because it is independent of $a$ and $\sum_a q(a)=1$. Multiplying by $\eta$ and rearranging yields
 
 $$
 F(q)=\eta\log Z-\eta D_{\mathrm{KL}}(q\|q^*).
@@ -221,6 +307,18 @@ $$
 \quad\text{subject to}\quad D_{\mathrm{KL}}(q\|p)\leq\epsilon.
 $$
 
+> **Constrained optimization with Lagrange multipliers.** To maximize $f(x)$ subject to $h(x)\leq\epsilon$, form
+>
+> $$
+> L(x,\eta)=f(x)-\eta\bigl(h(x)-\epsilon\bigr),\qquad\eta\geq0.
+> $$
+>
+> The multiplier $\eta$ acts as a price for exceeding the budget. There is also a mechanical intuition: at a smooth optimum with one active constraint, stationarity gives $\nabla f=\eta\nabla h$. The objective's push toward improvement is balanced by the opposing constraint force; additional constraints contribute additional terms. When the optimal value varies smoothly with the budget, $\eta$ measures the gain available per unit of relaxation.
+>
+> For any feasible $x$, $L(x,\eta)\geq f(x)$, so maximizing $L$ over $x$ gives an upper bound on the constrained optimum. We then minimize that bound over $\eta\geq0$. For concave $f$, convex $h$, and a strictly feasible point, this gives the constrained optimum.
+>
+> At a solution, **complementary slackness** says $\eta(h(x)-\epsilon)=0$: unused budget implies a zero multiplier, while a positive multiplier means the constraint is tight. Equality constraints, such as $\sum_a q(a)=1$, instead use an unrestricted multiplier like $c$ in the paragraph about $F(q)$. Here $x=q$, $f=\mathbb E_q[Q]$, and $h=D_{\mathrm{KL}}(q\|p)$, with maximization over normalized distributions.
+
 The Lagrangian multiplier becomes the temperature, obtained by minimizing
 
 $$
@@ -228,9 +326,9 @@ g(\eta)=\eta\epsilon+
 \eta\log\sum_a p(a)e^{Q(a)/\eta}.
 $$
 
-At a differentiable interior solution, $g'(\eta)=\epsilon-D_{\mathrm{KL}}(q_\eta\|p)$. Thus the optimization adjusts temperature until the update uses the allowed divergence. If the unconstrained best action already fits within the budget, the constraint can be inactive and the limiting temperature can be zero. “Using a hard constraint” therefore does not mean avoiding Lagrange multipliers; it means choosing the multiplier through the constraint rather than treating it as a fixed penalty coefficient.
+At a differentiable interior solution, $g'(\eta)=\epsilon-D_{\mathrm{KL}}(q_\eta\|p)$. Thus the optimization adjusts temperature until the update uses the allowed divergence. If the unconstrained best action already fits within the budget, the constraint can be inactive and the limiting temperature can be zero. Using a hard constraint therefore means choosing the temperature through the divergence budget rather than fixing it in advance.
 
-## The evidence lower bound and expectation maximization
+### The evidence lower bound and expectation maximization
 
 The same reweighting can be derived as inference. Start with a policy $\pi_\theta$ and its finite-horizon trajectory distribution
 
@@ -246,9 +344,21 @@ p(O=1\mid\tau)=\exp\!\left(\frac{R(\tau)-C}{\alpha}\right),
 \qquad \alpha>0.
 $$
 
-The bound ensures a likelihood no greater than one. $O$ is a modeling device: we choose a relationship between desirability and likelihood. It need not name an independently observed physical event, and it should not be mistaken for proof that a trajectory is optimal.
+The bound ensures a likelihood no greater than one. $O$ is a modeling device: we choose a relationship between desirability and likelihood. It need not name an independently observed physical event, and $O=1$ doesn't mean that a trajectory is optimal.
 
-Introduce an auxiliary distribution $q(\tau)$. Jensen's inequality gives
+> **A posterior as a selected population.** Imagine drawing trajectories from the current policy's distribution $p_\theta(\tau)$ and retaining each with probability $e^{(R(\tau)-C)/\alpha}$. Let $O=1$ record retention. Among the retained trajectories, the distribution is
+>
+> $$
+> p_\theta(\tau\mid O=1)
+> =\frac{p_\theta(\tau)e^{R(\tau)/\alpha}}
+> {\mathbb E_{p_\theta}[e^{R/\alpha}]}.
+> $$
+>
+> This is the current trajectory distribution reweighted toward higher returns. We use $q$ to represent this improved target: the exact E-step sets $q$ to the posterior, while approximate inference fits a tractable approximation. The latent variable is the trajectory $\tau$; $q$ is a distribution over trajectories conditioned toward the desirable event.
+>
+> This connects to BOA's selection-and-refitting loop. The current generator proposes candidates, selection favors promising ones, and a fitted distribution becomes the next generator. Here $q$ plays the role of the selected population's distribution; the M-step fits the policy to it, producing the next $p_\theta$. Weighted samples can implement the fitting step without literally rejecting trajectories.
+
+For an auxiliary distribution $q(\tau)$ with the same support as $p_\theta(\tau)$, Jensen's inequality gives
 
 $$
 \begin{aligned}
@@ -263,11 +373,16 @@ $$
 The right side is the **evidence lower bound**, or ELBO, which we will call $\mathcal L(q,\theta)$. Its exact gap is
 
 $$
+\begin{aligned}
 \log p_\theta(O=1)-\mathcal L(q,\theta)
-=D_{\mathrm{KL}}\!\left(q(\tau)\|p_\theta(\tau\mid O=1)\right).
+&=\mathbb E_q\!\left[\log
+\frac{q(\tau)\,p_\theta(O=1)}
+{p_\theta(\tau)\,p(O=1\mid\tau)}\right]\\
+&=D_{\mathrm{KL}}\!\left(q(\tau)\|p_\theta(\tau\mid O=1)\right).
+\end{aligned}
 $$
 
-The bound becomes tight when $q$ equals the posterior over trajectories conditioned on the desirable event. With our exponential likelihood, multiplying the ELBO by $\alpha$ gives, up to the constant $-C$,
+In the first line, the evidence $p_\theta(O=1)$ is constant with respect to $\tau$, so its logarithm can move inside the expectation. Bayes' rule then identifies the fraction as $q(\tau)/p_\theta(\tau\mid O=1)$. The bound becomes tight when $q$ equals the posterior over trajectories conditioned on the desirable event. With our exponential likelihood, multiplying the ELBO by $\alpha$ gives, up to the constant $-C$,
 
 $$
 \mathbb E_q[R(\tau)]-\alpha D_{\mathrm{KL}}(q(\tau)\|p_\theta(\tau)).
@@ -297,7 +412,7 @@ in general. The left side is sensitive to the distribution of returns, not only 
 
 Second, an arbitrary trajectory posterior can change the apparent dynamics. Among journeys conditioned on success, the shortcut gate may appear open far more often than it opens in the real environment. The robot controls its actions, not the gate's random mechanism. A posterior that quietly makes the gate more cooperative is not a feasible policy.
 
-We can impose that feasibility by restricting the auxiliary distribution to
+We can impose that feasibility by restricting the auxiliary distribution to a form that can change action probabilities but keeps the initial-state distribution and the environment's conditional transition probabilities fixed:
 
 $$
 q(\tau)=\rho_0(s_0)
@@ -314,13 +429,13 @@ $$
 
 This restricted ELBO is a feasible regularized control objective. Its optimizer generally does not equal the unrestricted posterior. It must account for expected consequences under the given transitions. In our gate example, it can prefer approaching the gate, inspecting it, or retreating; it cannot assign itself more favorable gate dynamics.
 
-This also clarifies the relationship to maximum-entropy RL. Against a uniform action reference, the negative policy KL contributes policy entropy plus a constant. Against a nonuniform reference, it rewards staying near that particular behavior. Entropy regularization, regularization toward a pretrained policy, and regularization toward the last policy iterate have different practical meanings even when their algebra is closely related. [Soft Actor-Critic](https://arxiv.org/abs/1801.01290) is an important development of the entropy-regularized branch.
+The earlier entropy decomposition now applies at each decision: a uniform action reference gives maximum-entropy RL, while a nonuniform reference favors staying near particular behavior. Entropy regularization, regularization toward a pretrained policy, and regularization toward the last policy iterate have different practical meanings even when their algebra is closely related. [Soft Actor-Critic](https://arxiv.org/abs/1801.01290) is an important development of the entropy-regularized branch.
 
-## REPS and the consistency of state distributions
+### REPS and the consistency of state distributions
 
 Relative Entropy Policy Search, or [REPS](https://ojs.aaai.org/index.php/AAAI/article/view/7727), predates MPO and reaches exponential reweighting through a constrained optimization problem. Its original continuing-task formulation is particularly instructive because it constrains a joint state-action distribution, not just actions at independently fixed states.
 
-For this paragraph switch from discounted returns to stationary average reward. Let $\nu(s,a)$ be the candidate occupancy and $\mu(s,a)$ the reference data distribution. In addition to normalization and a KL budget, the candidate must satisfy flow conservation:
+For this section, switch from discounted returns to stationary average reward. Let $\nu(s,a)$ be the candidate occupancy (the probability of being in state $s$ and choosing action $a$ under the candidate policy in steady state), and $\mu(s,a)$ the reference distribution of state-action pairs estimated from collected experience. These play the roles of candidate $q$ and reference $p$, now including how often states are visited. In addition to normalization and a KL budget, the candidate must satisfy flow conservation:
 
 $$
 \sum_a\nu(s',a)
@@ -329,13 +444,32 @@ $$
 
 Incoming probability equals the state's marginal probability. Otherwise optimization could put all its mass at the delivery destination without paying for the journeys needed to arrive there.
 
-Attach multipliers $V(s)$ to these constraints. The coefficient of each $\nu(s,a)$ in the Lagrangian contains
+We want to maximize the average reward $\sum_{s,a}\nu(s,a)r(s,a)$ subject to these constraints. Attach an unrestricted multiplier $V(s')$ to each state's incoming flow minus its marginal probability. Their contribution to the Lagrangian is
+
+$$
+\begin{aligned}
+&\sum_{s'}V(s')\left[\sum_{s,a}\nu(s,a)P(s'\mid s,a)-\sum_a\nu(s',a)\right]\\
+&\qquad=\sum_{s,a}\nu(s,a)\left[\sum_{s'}P(s'\mid s,a)V(s')-V(s)\right].
+\end{aligned}
+$$
+
+To see the second line, consider increasing one particular $\nu(s,a)$. This increases the marginal probability at $s$, contributing $-V(s)$. It also increases incoming flow to each successor $s'$ by $P(s'\mid s,a)$ times that amount, contributing the expected successor multiplier. Adding the immediate reward gives the coefficient
 
 $$
 \delta_V(s,a)=r(s,a)+\sum_{s'}P(s'\mid s,a)V(s')-V(s).
 $$
 
-Maximizing over $\nu$ then yields
+The familiar reward-plus-value-difference form has emerged from balancing probability flow. Here $V$ starts as a set of constraint multipliers, rather than an estimate of a fixed policy's return. For a feasible stationary occupancy, the expected successor and current multipliers cancel; while optimizing over unconstrained flows, they price the imbalances.
+
+Keeping $\nu$ normalized and adding the KL-budget term (for the constraint $D_{\mathrm{KL}}(\nu\|\mu)\leq\epsilon$) gives
+
+$$
+\mathcal L(\nu,V,\eta)
+=\sum_{s,a}\nu(s,a)\delta_V(s,a)
+-\eta D_{\mathrm{KL}}(\nu\|\mu)+\eta\epsilon.
+$$
+
+For fixed $V$ and $\eta>0$, this is the earlier exponential-reweighting problem, with state-action pairs as candidates and $\delta_V$ as their scores. Maximizing over $\nu$ therefore yields
 
 $$
 \nu^*(s,a)\propto\mu(s,a)e^{\delta_V(s,a)/\eta}.
@@ -343,9 +477,9 @@ $$
 
 The multipliers are optimized along with temperature so that the candidate respects the constraints. Conditionalizing $\nu^*$ gives a policy. With feature-based flow constraints this becomes an approximation. The important lesson is structural: value-like quantities can arise as prices enforcing consistency between states. Simply reweighting arbitrary transitions by high rewards would omit that consistency.
 
-## MPO separates improvement from fitting
+### MPO separates improvement from fitting
 
-[Maximum a Posteriori Policy Optimisation](https://arxiv.org/html/1806.06920) combines the inference perspective with an off-policy critic and a practical separation between a flexible improvement distribution and a parameterized policy. In its nonparametric E-step, states are drawn from a fixed sampling distribution $\mu$, and actions are evaluated using a critic for the current policy $\pi_i$.
+[Maximum a Posteriori Policy Optimisation](https://arxiv.org/html/1806.06920) combines the inference perspective with an off-policy critic and a practical separation between a flexible improvement distribution and a parameterized policy. In its nonparametric E-step, replayed states define a fixed sampling distribution $\mu$, and actions are evaluated using a critic for the current policy $\pi_i$.
 
 The constrained problem is
 
@@ -360,7 +494,7 @@ $$
 
 Its solution has the form already derived, with a shared temperature determined by the dual. The average constraint does not require every state to use the same KL distance. Some states can change more than others while respecting the common budget.
 
-In a continuous action space, the algorithm samples several candidate actions from $\pi_i$ at each sampled state. Their empirical weights are proportional to exponentiated critic values. The reference-policy factor is represented by the sampling procedure; multiplying every sampled weight by the policy density again would generally count that factor twice. This distinction between a density formula and a Monte Carlo estimator is small on paper and consequential in code.
+In a continuous action space, the algorithm samples several candidate actions from $\pi_i$ at each sampled state. These candidates, with weights proportional to $e^{\widehat Q^{\pi_i}(s,a)/\eta}$ and normalized within each state, provide a sample-based representation of $q_i(\cdot\mid s)$. The reference-policy factor is represented by the sampling procedure; multiplying every sampled weight by the policy density again would generally count that factor twice.
 
 The M-step fits a policy by weighted likelihood, with an additional trust-region constraint:
 
@@ -369,15 +503,17 @@ $$
 [\log\pi_\theta(a\mid s)].
 $$
 
+For fixed $q_i$, this likelihood objective minimizes $D_{\mathrm{KL}}(q_i\|\pi_\theta)$ averaged over states: the mass-covering direction, with the neural policy now the fitted distribution.
+
 In the paper, the additional constraint controls movement from the old parameterized policy toward the new one; Gaussian implementations can constrain mean and covariance changes separately. The nonparametric distribution can express an improved target before the neural policy commits to how that target should generalize. The critic's fitting objective is a separate part of the algorithm.
 
 The “maximum a posteriori” in MPO's name refers to a prior over policy parameters. Adding $\log p(\theta)$ to the inference objective turns the M-step into weighted likelihood plus a parameter-prior term. The paper connects a suitable local prior to a KL penalty on changes in the policy, then uses a constrained version in practice. This parameter prior and the reference action distribution play related but distinct roles: the reference shapes the improved target, while the additional M-step regularization controls how the fitted policy moves toward it.
 
 This separation explains what MPO contributes to the larger story. We need not demand that one gradient step in policy parameters simultaneously discover good actions, preserve sensible exploration, and represent the improved behavior. We can first construct a better distribution using estimated values, then solve a supervised fitting problem. The quality of the estimate and the quality of the fit remain distinct responsibilities.
 
-For the delivery robot, an E-step can give the shortcut two-thirds of the local probability even if the actor cannot yet represent that preference consistently across visual scenes. A successful M-step learns what distinguishes this junction from other junctions. A poor one memorizes a background texture or pushes all similar scenes toward the shortcut. The likelihood objective tells us what target to fit; it does not guarantee that the representation or dataset supplies the distinctions needed to fit it well.
+For the delivery robot, an E-step can give the shortcut two-thirds of the local probability even if the actor cannot yet represent that preference consistently across visual scenes. A successful M-step learns what distinguishes this junction from other junctions. A poor one memorizes a background texture or pushes all similar scenes toward the shortcut.
 
-## Weighted regression and learning from a fixed dataset
+### Weighted regression and learning from a fixed dataset
 
 [Advantage-Weighted Regression](https://arxiv.org/abs/1910.00177), or AWR, makes policy extraction look particularly simple. Estimate returns for observed state-action pairs, fit a value baseline, and train the policy with likelihood weights determined by advantage. Its practical actor objective has the form
 
@@ -401,22 +537,22 @@ $$
 
 Why, then, does the baseline matter in weighted regression? Because fitting one network across states is a different optimization from normalizing each state's distribution separately. Dropping state-dependent partition functions changes the relative contribution of different states. Subtracting $V(s)$ likewise rescales all the examples from that state. Weight clipping can further break the cancellation. A baseline can therefore be irrelevant to an exact conditional optimizer and important to the practical approximation used to train shared parameters.
 
-Here is an original numerical illustration. Imagine two junctions with the same action preferences, but every journey from the second receives an additional reward of 100. Exponentiating raw returns makes that junction dominate a dataset-wide regression objective. Subtracting each junction's baseline removes the common reward offset. The intended conditional choices remain the same; the allocation of the learner's finite capacity changes. This is why algebra about normalized policies should not be transferred casually to unnormalized sample losses.
+Imagine two junctions with the same action preferences, but every journey from the second receives an additional reward of 100. Exponentiating raw returns makes that junction dominate a dataset-wide regression objective. Subtracting each junction's baseline removes the common reward offset. The intended conditional choices remain the same; the allocation of the learner's finite capacity changes. This is why algebra about normalized policies should not be transferred casually to unnormalized sample losses.
 
 Offline RL makes another issue unavoidable. The dataset may contain very little evidence about a promising action. Maximizing an unconstrained learned critic can select that action precisely because its estimate is wrong. The resulting policy then moves into regions where the error becomes worse.
 
-[Implicit Q-Learning](https://arxiv.org/abs/2110.06169), or IQL, avoids querying unseen actions in its value-learning updates. It fits an upper expectile of observed action values and backs that value up through dataset transitions. The expectile loss for residual $u$ is
+[Implicit Q-Learning](https://arxiv.org/abs/2110.06169), or IQL, avoids querying unseen actions in its value-learning updates. It fits an upper expectile of observed action values (a mean-like estimate that gives more weight to values above it than below it). For each recorded transition $(s,a,r,s')$, the critic learns toward $r+\gamma V(s')$, so better estimated continuations raise the values of actions leading to them. The expectile loss for residual $u=Q(s,a)-V(s)$ is
 
 $$
 \ell_\tau(u)=|\tau-\mathbf1\{u<0\}|u^2,
 \qquad \tfrac12<\tau<1.
 $$
 
-Positive residuals receive more weight, pulling the fitted state value above the conditional mean. A separate policy is then extracted through advantage-weighted behavioral cloning. This provides multi-step value propagation while keeping critic queries tied to dataset actions; it does not certify that every action generated by a fitted neural actor will remain inside the data's support.
+Positive residuals receive more weight, pulling the fitted state value above the conditional mean. A separate policy is then extracted through advantage-weighted behavioral cloning. This propagates values across multiple steps while keeping critic queries tied to dataset actions.
 
 The broader lesson is that learning a value function and extracting a policy need not be interleaved in exactly the same way. We can improve value estimates using one set of constraints, then ask a separate regression procedure to express useful behavior. Success still depends on the compatibility of those two stages.
 
-## From return distributions to return-conditioned policies
+### From return distributions to return-conditioned policies
 
 Weighted regression raises a question that an expected value leaves unanswered: did an action reliably produce a good outcome, or occasionally get lucky? **Distributional RL** learns the distribution of the random return $Z^\pi(s,a)$, whose mean is $Q^\pi(s,a)$. Its policy-evaluation relation is
 
@@ -443,7 +579,7 @@ p_{\mathcal D}(a\mid s,G=g)
 p_{\mathcal D}(G=g\mid s,a).
 $$
 
-For continuous returns, interpret these as conditional densities where defined. A return-conditioned policy fits the left-hand conditional directly. A distributional predictor models the outcome term on the right. Both reflect the continuation behavior represented in the data; neither automatically describes what an improved policy will achieve.
+For continuous returns, interpret these as conditional densities where defined. A return-conditioned policy fits the left-hand conditional directly. A distributional predictor models the outcome term on the right. Here, $G$ includes the consequences of later actions taken in the recorded trajectories.
 
 More generally, assign a nonnegative desirability weight $w(g)$ to recorded returns. Reweighting the joint distribution and marginalizing the return gives
 
@@ -466,15 +602,19 @@ e^{\mathbb E_{\mathcal D}[G\mid s,a]/\eta}
 \quad\text{in general},\qquad \eta>0.
 $$
 
-MPO's critic-based improvement exponentiates an estimated expected action value. Exponentially weighting individual sampled returns instead produces the left-hand quantity in the population limit. This distinction also matters when interpreting AWR's sampled advantage estimates: subtracting a fixed state baseline does not remove outcome variability before exponentiation. Clipping and other estimation choices further change the practical weights.
+MPO's critic-based improvement exponentiates an estimated expected action value. Exponentially weighting individual sampled returns instead produces the left-hand quantity in the population limit. This also matters for AWR: when its advantage estimates use sampled returns, unusually lucky outcomes can receive disproportionately large weights. Clipping and other estimation choices further change the practical weights.
 
-For an original one-step example, compare a certain reward of 2 with a lottery paying 10 with probability $0.1$ and zero otherwise. Their means are 2 and 1. With equal action priors and $\eta=1$, exponentiating the means favors the certain reward; weighting realized returns exponentially favors the lottery because $0.9+0.1e^{10}>e^2$. Conditioning on return 10 selects only lottery actions. Playing those actions again leaves the winning probability at $0.1$.
+For a one-step example, compare a certain reward of 2 with a lottery paying 10 with probability $0.1$ and zero otherwise. Their means are 2 and 1. With equal action priors and $\eta=1$, exponentiating the means favors the certain reward; weighting realized returns exponentially favors the lottery because $0.9+0.1e^{10}>e^2$. Conditioning on return 10 selects only lottery actions. Playing those actions again leaves the winning probability at $0.1$.
 
-This is the earlier ELBO feasibility issue in a new form: conditioning can select favorable environmental outcomes that a policy cannot cause. Return-conditioned learning offers a useful supervised representation of behavior, but requesting a high return does not establish that it is controllable. The quality of the experience, the attainable commands, and the treatment of stochastic outcomes determine whether the fitted behavior improves.
+This brings us back to the ELBO feasibility issue: conditioning can select favorable environmental outcomes that a policy cannot cause. Learning from successful trajectories requires distinguishing good decisions from good luck. Return-conditioned learning offers a useful supervised representation of behavior, but requesting a high return does not establish that it is controllable. The quality of the experience, the attainable commands, and the treatment of stochastic outcomes determine whether the fitted behavior improves.
 
-## Search as regularized policy improvement
+## Part 3: Search, preferences, and modern agents {#part-3}
 
-We can now return to the connection noted in the old slides: AlphaZero's search constructs a nonparametric action distribution which the network learns to imitate. The resemblance to MPO is substantive, but the objectives differ.
+### Search as regularized policy improvement
+
+Part 1 introduced search as a way to improve decisions before acting. Part 2 developed the mathematics of constructing an improved distribution and fitting a policy to it. We can now use those tools to understand AlphaZero's search targets, then extend the connection to preference learning and agents that learn inside world models.
+
+AlphaZero's search constructs a nonparametric action distribution which the network learns to imitate. The resemblance to MPO is substantive, but the objectives differ.
 
 [Grill and colleagues](https://proceedings.mlr.press/v119/grill20a.html) analyze a regularized objective of the form
 
@@ -483,7 +623,7 @@ $$
 -\lambda D_{\mathrm{KL}}(p\|q)\right].
 $$
 
-Here $p$ is the policy prior and $Q$ denotes search estimates. The KL arguments are reversed relative to our exponential update. Differentiating with a normalization multiplier $c$ gives
+Here $p$ is the policy prior and $Q$ denotes search estimates. The KL arguments are reversed relative to our exponential update. Differentiating the objective with a Lagrange multiplier $c$ enforcing $\sum_a q(a)=1$ gives
 
 $$
 Q(a)+\lambda\frac{p(a)}{q(a)}-c=0,
@@ -503,6 +643,20 @@ The two KL directions produce different compromises. Equal numerical penalty coe
 
 ![Action probabilities for the reference policy, exponential KL update, opposite-direction KL update, and greedy policy. Both regularized updates favor the shortcut while preserving different amounts of the other actions.](images/policy-improvement-kl-comparison.svg)
 
+> **From bandits to tree search.** A multi-armed bandit repeatedly chooses among actions with initially unknown reward distributions. It must balance exploiting actions that look good with exploring actions whose value remains uncertain. Upper-confidence-bound (UCB) methods express this as estimated value plus an uncertainty bonus.
+>
+> Monte Carlo tree search (MCTS) builds a search tree through repeated simulations: descend through selected actions, expand the tree, evaluate the continuation, and propagate the result back along the visited path.
+>
+> UCT (UCB applied to trees) applies the bandit idea at each decision node. A typical selection score is
+>
+> $$
+> Q(s,a)+\kappa\sqrt{\frac{\log N(s)}{N(s,a)}},
+> $$
+>
+> where $N(s,a)$ counts simulations taking action $a$ at that node, $N(s)=\sum_bN(s,b)$, and $\kappa>0$ controls exploration. Unvisited actions are tried first. The bonus encourages investigation of less-visited branches. Here, exploration allocates simulated experience before the agent acts. [Kocsis and Szepesvári](https://people.eecs.berkeley.edu/~russell/classes/cs294/s11/readings/Kocsis%2BSzepesvari:2006.pdf)
+>
+> AlphaZero's PUCT-style rule additionally uses the policy prior to guide that allocation, with a different count-dependent bonus. The following formula exposes how this prior-guided search connects to regularized policy improvement. [Grill et al.](https://proceedings.mlr.press/v119/grill20a.html)
+
 The search connection appears when we examine a PUCT-style action-selection score:
 
 $$
@@ -516,40 +670,32 @@ $$
 \hat\pi(a\mid s)=\frac{1+N(s,a)}{|\mathcal A|+\sum_bN(s,b)}.
 $$
 
-The exploration term can then be expressed using $p/\hat\pi$, the same ratio appearing in the derivative of the regularized objective. Their analysis relates search allocation to progress toward its optimizer. The extra count per action facilitates that analysis; it should not be silently identified with every implementation's final visit-count target. During actual search, values and counts both evolve, so a finite search is not simply an exact solve for one fixed vector of values.
-
-[Gumbel AlphaZero and Gumbel MuZero](https://openreview.net/pdf?id=bERaNdoegnO), published at ICLR 2022, address the limited-budget case directly. If search visits only a few root actions, ordinary visit-count training may fail to improve the policy. The Gumbel methods sample actions without replacement and organize selection and policy targets around an improvement construction, with particularly useful results when few simulations are available.
-
-This sharpens what it means for search to teach a policy. A target does not become good merely because it cost computation to obtain. The search must explore relevant alternatives, evaluate them well, and turn those evaluations into a distribution that deserves to be learned. An actor trained on poor search can efficiently reproduce poor search.
-
-The EM comparison now has a precise scope. Both procedures can alternate constructing a better distribution and fitting a policy. MPO motivates its distribution through variational inference and a KL-constrained critic objective. AlphaZero obtains its target through tree search, with a related regularized-optimization interpretation. This shared structure does not make AlphaZero's ordinary training loop exact EM on MPO's trajectory ELBO.
-
-## Where imitation rewards enter
-
-So far the agent has had a reward function. Demonstrations pose a different question: if we know how an expert behaves but lack a satisfactory reward, can we construct a signal that encourages similar behavior?
-
-The [PWIL paper](https://arxiv.org/html/2006.04678) uses a primal optimal-transport construction. Represent an agent trajectory by the empirical distribution of its state-action pairs and demonstrations by another empirical distribution. If there are $T$ agent points and $D$ expert points, a coupling $\Gamma$ obeys
+Here $|\mathcal A|$ is the number of available actions. Write $N=\sum_bN(s,b)$. Substituting the visit distribution rewrites the entire PUCT score as
 
 $$
-\sum_j\Gamma_{ij}=\frac1T,
-\qquad
-\sum_i\Gamma_{ij}=\frac1D,
-\qquad\Gamma_{ij}\geq0.
+Q(s,a)+\underbrace{\frac{c_{\mathrm{puct}}\sqrt N}{|\mathcal A|+N}}_{\lambda_N}
+\frac{p(a\mid s)}{\hat\pi(a\mid s)}.
 $$
 
-It describes how probability mass is matched between the two empirical distributions. The transport objective minimizes $\sum_{ij}\Gamma_{ij}d(x_i,y_j)$. My slides used squared costs, corresponding to a different Wasserstein order; the revised paper develops the first-order case. The coupling is a joint probability distribution with specified marginals. For rectangular matrices with these normalized sums, the usual term “doubly stochastic matrix” is imprecise.
+Compare this with the earlier Lagrangian derivative, before setting it to zero:
 
-PWIL greedily matches arriving agent points to remaining demonstration mass and turns transport costs into rewards. This can be used with an RL algorithm; it supplies the objective rather than replacing policy improvement. A feasible greedy coupling gives an upper bound on optimal transport cost, but nonlinear conversion of step costs into positive rewards does not make maximizing their sum exactly identical to minimizing that cost.
+$$
+Q(a)+\lambda\frac{p(a)}{q(a)}-c.
+$$
 
-The mass constraint adds something absent from a nearest-neighbor reward. Suppose the demonstrations contain equal amounts of waiting and delivery. A robot that waits forever cannot keep matching every waiting point to the same unlimited reservoir of expert waiting. That mass gets used up. The construction compares how behavior is distributed, not only whether each isolated point has a similar expert example.
+Both contain the action value plus a prior-to-candidate probability ratio. The multiplier $c$ is common to all actions, so it does not affect which derivative is largest. With $q=\hat\pi$ and $\lambda=\lambda_N$, PUCT selects the action with the largest derivative; visiting it increases its share of the counts. This connects search allocation to improving the regularized objective.
 
-It still needs an appropriate distance. If visual background dominates the representation, nearby state-action points may be behaviorally unrelated. Conversely, an abstract representation may identify distinct actions whose consequences differ. Optimal transport respects the geometry it is given; it does not establish that the geometry captures the task.
+The extra count per action defines a smoothed distribution for this analysis; final training targets can use different visit-count conventions. Values and counts evolve during search, so this is not an exact solve for one fixed objective.
 
-Trajectory length matters too. With mass $1/T$ per arriving point, the reward mechanism needs a horizon convention and tracks how much expert mass remains. Variable termination, padding, and rewards after mass exhaustion affect incentives. These details must be checked in an implementation; a fixed-horizon derivation alone does not determine variable-length behavior. The reward is also history-dependent through remaining mass; it is not simply one fixed function of the current physical state and action unless that bookkeeping is included in the state.
+[Gumbel AlphaZero and Gumbel MuZero](https://openreview.net/pdf?id=bERaNdoegnO) address small search budgets: an unvisited action can receive zero visit-count target weight simply because search never tried it. At the root, they proceed as follows:
 
-This detour helps distinguish several uses of “matching distributions.” PWIL matches empirical behavior to demonstrations geometrically. MPO fits a policy to a critic-improved distribution. A world-model posterior matches latent explanations to observations. All three use probability, but the distributions live in different spaces and serve different purposes.
+1. **Sample candidates.** Add independent Gumbel noise $g(a)$ to each policy log-probability $\log p(a\mid s)$ and retain the highest-scoring actions. Gumbel noise is chosen so that the single highest score samples exactly from $p$; taking several top scores samples distinct candidates without replacement.
+2. **Allocate simulations.** Sequential halving gives each surviving candidate equal additional simulations, then discards the lower-scoring half. For eight candidates, search narrows through four, two, and one. Ranking combines the original perturbed policy score with a scaled search value: $g(a)+\log p(a\mid s)+h(\widehat Q(s,a))$, where $h$ is an increasing value transformation.
+3. **Train the policy.** A softmax of policy logits plus transformed, completed action values supplies the target. Visited actions use search estimates; unvisited actions receive a shared value estimate. Thus lack of visits does not automatically mean zero target probability. The [implementation](https://github.com/google-deepmind/mctx/blob/main/mctx/_src/policies.py) separates this training target from the chosen action.
 
-## From relative entropy to preference learning
+Like MPO, these methods construct an improved distribution and fit a policy to it. Here search supplies the estimates; MPO uses a critic-based E-step. The shared pattern does not make the search procedure exact EM.
+
+### From relative entropy to preference learning
 
 Language-model preference training provides another application of the exponential optimizer. Treat a prompt as a context $x$ and an entire response as an action $y$. For a reward $r(x,y)$ and reference $\pi_{\mathrm{ref}}$, the KL-regularized optimum satisfies
 
@@ -564,16 +710,47 @@ r(x,y)=\beta\log\frac{\pi^*(y\mid x)}{\pi_{\mathrm{ref}}(y\mid x)}
 +\beta\log Z(x).
 $$
 
-Under the Bradley–Terry preference model, the probability of preferring response $y_+$ to $y_-$ is the logistic sigmoid of their reward difference. Substituting the rearranged expression cancels the context-dependent partition term. [Direct Preference Optimization](https://arxiv.org/abs/2305.18290), or DPO, consequently trains policy log-ratios using a classification loss on preference pairs.
+Under the Bradley–Terry preference model, the probability of preferring response $y_+$ to $y_-$ is $\sigma(r(x,y_+)-r(x,y_-))$, where $\sigma(u)=1/(1+e^{-u})$ is the logistic sigmoid. Substituting the rearranged expression cancels $\beta\log Z(x)$. [Direct Preference Optimization](https://arxiv.org/abs/2305.18290), or DPO, replaces $\pi^*$ with the trainable policy $\pi_\theta$ and defines the preference margin
 
-This is a direct mathematical reuse of the reward-to-policy relation. It does not alternate an explicit E-step with an M-step, and its pairwise preference assumptions deserve separate examination. Two completions can both be bad while one is preferred; an absolute label calling a completion unacceptable supplies different information. We should therefore distinguish comparisons from positive and negative labels, even if both can guide learning.
+$$
+m_\theta(x,y_+,y_-)=\beta\left[
+\log\frac{\pi_\theta(y_+\mid x)}{\pi_{\mathrm{ref}}(y_+\mid x)}
+-\log\frac{\pi_\theta(y_-\mid x)}{\pi_{\mathrm{ref}}(y_-\mid x)}
+\right].
+$$
+
+For a dataset $\mathcal D$ of prompts and labeled response pairs, minimize
+
+$$
+\mathcal L_{\mathrm{DPO}}(\theta)
+=-\mathbb E_{(x,y_+,y_-)\sim\mathcal D}
+\log\sigma\!\left(m_\theta(x,y_+,y_-)\right).
+$$
+
+The reference is frozen. Each pair asks the policy to increase the preferred response's odds relative to the rejected response, measured against their odds under the reference. At $\pi_\theta=\pi_{\mathrm{ref}}$, the margin is zero and the predicted preference probability is $1/2$.
+
+For one pair, the gradient is
+
+$$
+\nabla_\theta\ell
+=-\beta\sigma(-m_\theta)\left[
+\nabla_\theta\log\pi_\theta(y_+\mid x)
+-\nabla_\theta\log\pi_\theta(y_-\mid x)
+\right].
+$$
+
+Gradient descent therefore favors the preferred response over the rejected one, with less pressure once the preference is confidently predicted.
+
+For an autoregressive model, $\log\pi_\theta(y\mid x)=\sum_t\log\pi_\theta(y_t\mid x,y_{<t})$. Training evaluates both recorded responses token by token and backpropagates the pairwise loss. Standard DPO uses a fixed preference dataset, without a separately trained reward model or environment interaction during these updates. The KL-regularized optimum supplies the parameterization; the implemented loss fits preferences directly.
+
+Two completions can both be bad while one is preferred. An absolute label calling a completion unacceptable supplies different information, which motivates the next construction.
 
 The distinction becomes central in [“Learning from Negative Feedback, or Positive Feedback or Both”](https://arxiv.org/abs/2410.04166), published at ICLR 2025. Its preference-based MPO, or PMPO, extends the inference approach to accepted and rejected examples that need not be paired. Its positive-feedback derivation explicitly uses an ELBO and EM. The negative-feedback construction shows how a likelihood-decreasing term can be combined with a reference-policy penalty.
 
 We can see the underlying identity without committing to a particular implementation. At one context, let $p(y)$ be the reference and $u(y)\in[0,1]$ the probability that output $y$ is accepted. Conditioning gives
 
 $$
-q_+(y)=\frac{p(y)u(y)}{Z_+},
+q_+(y)=P(Y=y\mid\text{accepted})=\frac{p(y)u(y)}{Z_+},
 \qquad Z_+=\mathbb E_p[u(y)].
 $$
 
@@ -595,13 +772,19 @@ This is an algebraic view of the same positive-feedback numerator through reject
 
 The regularizer is especially important when decreasing likelihood. A naked objective $-\log\pi_\theta(y_-)$ can grow without bound by driving a rejected example's probability toward zero, without specifying a sensible replacement. A reference provides structure to what remains. On the robot example, suppressing waiting should not arbitrarily make driving into a wall probable simply because wall collisions were never labeled.
 
-KL-regularized policy improvement embodies a lesson related to the representation-learning discussion in [“Which World Model?”](which-world-model.html). There, Mattick agrees with LeCun that pulling similar examples together and pushing others apart insufficiently constrains a useful representation; he favors adding structure through a reference distribution. Here, encouraging accepted behavior and discouraging rejected behavior is supplemented by a distribution over plausible actions. In representation learning, the reference shapes the geometry of embeddings. In policy learning, it shapes how probability can be redistributed among behaviors. The common design principle is to combine selective feedback with structure over the space in which learning takes place.
+KL-regularized policy improvement embodies a lesson related to the representation-learning discussion in [“Which World Model?”](https://lukstafi.github.io/notes/which-world-model.html). There, Mattick agrees with LeCun that pulling similar examples together and pushing others apart insufficiently constrains a useful representation; he favors adding structure through a reference distribution. Here, encouraging accepted behavior and discouraging rejected behavior is supplemented by a distribution over plausible actions. In representation learning, the reference shapes the geometry of embeddings; in policy learning, its choice determines which behavior guides the redistribution of probability.
 
-[GRPO's original formulation](https://arxiv.org/html/2402.03300v3#S4.SS1) illustrates how relative feedback and regularization can coexist. It compares rewards within a group of responses to the same prompt to construct advantage weights, while a separate KL penalty discourages departure from a reference policy. The group supplies a comparison among sampled responses; the reference supplies a broader behavioral constraint. These are complementary roles. GRPO's relative weighting acts on response probabilities, whereas contrastive representation learning acts on embedding similarities.
+In standard DPO, the reference is usually a frozen copy of the supervised-fine-tuned (SFT) model at the start of preference training. PMPO permits either a fixed pretrained/SFT policy or a previous policy iterate, held fixed for an improvement update and refreshed between iterations. A fixed reference anchors behavior to the starting model; a refreshed reference limits each step while allowing cumulative movement away from that starting point. Refreshing can use a policy snapshot without requiring a slowly averaged target network.
+
+[Group Relative Policy Optimization (GRPO)](https://arxiv.org/html/2402.03300v3#S4.SS1) computes advantages remarkably simply, but the machinery developed earlier helps explain its behavior. For outcome supervision, it samples several responses to the same prompt, subtracts their mean reward from each response's reward, and divides by the group's standard deviation. A group with identical rewards supplies no relative reward signal. This computes a group-relative advantage directly from samples, with the group mean replacing a learned value baseline. Using completed returns avoids bootstrapping through an imperfect critic, while retaining the variability of sampled trajectories; group normalization additionally changes their weighting.
+
+The same advantage is assigned to every token in a response. This recalls the full-trajectory credit assignment of REINFORCE: because the response log-probability is a sum of token log-probabilities, the final result can reinforce or discourage every decision that produced it. Eligibility traces address the same backward assignment of credit through accumulated traces; GRPO instead processes the recorded response.
+
+These advantages enter the clipped surrogate objective introduced by [Proximal Policy Optimization (PPO)](https://arxiv.org/abs/1707.06347): token-probability ratios compare the trained policy with the policy that generated the responses, and clipping limits the incentive for large changes. A separate KL penalty controls departure from the reference policy. The sampling policy and the reference therefore have distinct roles: one defines the probability ratios for reusing sampled responses, while the other defines the behavior toward which the KL penalty regularizes.
 
 There is a useful connection to the earlier distinction between knowing good behavior and knowing which bad behavior to avoid. Success-only imitation copies what happened to work. Negative feedback can exclude mistakes while leaving several plausible alternatives. This is valuable when successful demonstrations are scarce, provided the prior contains useful alternatives and the rejection labels are informative. Regularization cannot repair an utterly unsuitable prior by itself.
 
-## Recent agents bring the constructions together
+### Recent agents bring the constructions together
 
 [DreamerV3](https://doi.org/10.1038/s41586-025-08744-2), first released in 2023 and published in Nature in 2025, makes robustness across tasks a central achievement. Normalization, balanced losses, and suitable output representations allow the same configuration to work across more than 150 tasks. “One configuration” describes reusable algorithm settings; it does not mean one trained policy jointly mastered every benchmark. Its learning from imagined experience follows the broad organization introduced earlier, while many details differ from the first Dreamer.
 
@@ -609,19 +792,40 @@ That result matters because practical RL is sensitive to scale. The units of a r
 
 [Dreamer 4](https://arxiv.org/abs/2509.24527), introduced in September 2025, learns a transformer world model using a shortcut-forcing objective, then improves behavior inside it. Its Minecraft experiment uses about 2,500 hours of recorded gameplay with actions and event annotations. The policy learns through a PMPO variant using advantage signs and a behavioral prior; its KL direction differs from the original PMPO formulation. With intermediate task prompts, the reported agent obtains diamonds in 0.7% of 1,000 evaluation episodes. The result demonstrates offline improvement through imagination, with substantial limitations; it is not reliable autonomous completion of the whole task. The task-conditioned setup also differs from DreamerV3's online-learning experiment. [Paper, sections 3.3 and 4.1](https://arxiv.org/html/2509.24527v1).
 
+> **What is shortcut forcing?** Dreamer 4 generates each next frame's latent representation by progressively transforming noise into a prediction conditioned on preceding frames and actions. Shortcut forcing combines two training ideas.
+>
+> **Shortcut models** learn to make one large denoising step match the result of two smaller steps, so generation needs fewer network evaluations. The shortcut is through the denoising computation, not through time in the simulated world.
+>
+> **Diffusion forcing** assigns different noise levels to different frames during training. Each frame supplies a denoising task and context for later frames, so the model learns to predict from partly corrupted histories as well as clean ones.
+>
+> Dreamer 4 combines these ideas and predicts clean latent representations directly, which the authors found reduced error accumulation in long rollouts. Their setup uses four network passes per generated frame. [Paper, sections 2 and 3.2](https://arxiv.org/html/2509.24527v1#S3.SS2).
+
 The interesting connection for this essay is architectural. The world model provides counterfactual experience; a critic judges consequences; a policy-improvement objective translates those judgments into changes in action probabilities. We can ask separately whether the simulated experience is faithful, whether the values are correct, whether the preference signal is useful, and whether the actor represents the resulting distribution. A successful whole system depends on all four, but an observed failure need not indict all four.
 
 Consider again the gate. If the model hallucinates an opening, the critic may correctly evaluate the hallucinated world. If the model predicts the closure accurately but the critic assigns a large terminal value to waiting there, the fault is downstream. If both predictions are sound but the fitting objective puts too little weight on the rare closed-gate examples, the actor may fail anyway. Finally, an actor could behave correctly from the wrong latent state because perception has mistaken which junction it occupies. The decomposition gives us places to investigate.
 
-The 2026 preprint [POCO](https://arxiv.org/abs/2604.01860) illustrates another extension. It applies posterior-guided improvement to policies generating chunks of actions, with an implicit E-step over sampled candidates and a clipped regression surrogate for fitting expressive generative policies. Such policies can be easy to sample from while expensive to evaluate as exact likelihoods. The paper is relevant as an emerging direction, rather than an established endpoint of this account.
+The 2026 preprint [Posterior Optimization with Clipped Objective (POCO)](https://arxiv.org/abs/2604.01860) extends this improvement pattern to generative policies producing *action chunks*: short sequences of controls executed before choosing another chunk. It first imitates offline demonstrations, then improves through environment interaction and replay.
 
-One technical question becomes particularly important there: a supervised generative loss or a bound on negative log likelihood is not automatically the likelihood itself. Replacing a log-probability ratio by a difference of surrogate losses requires additional justification. An EM motivation can remain useful while exact EM guarantees cease to apply. The distinctions developed above let us read such proposals sympathetically without treating every step from an ELBO to an implemented loss as an identity.
+For each replayed state, the current policy samples candidate chunks $\mathbf a_1,\ldots,\mathbf a_K$. A critic scores each chunk's discounted rewards plus the value of continuing afterward. Normalized weights $w_j\propto\exp(\widehat Q(s,\mathbf a_j)/\eta)$ represent the improved distribution, just as MPO's weighted action samples do.
 
-## What constrains improvement when the estimates are wrong
+The fitting step accommodates flow-matching policies, whose supervised loss trains a network to transform noise into target action chunks. The replayed and sampled chunks are held fixed as targets during this update. Writing this loss as $\ell_\theta(s,\mathbf a)$, POCO minimizes
+
+$$
+\mathbb E_{(s,\mathbf a)\sim\mathcal D}\!\left[
+\ell_\theta(s,\mathbf a)
++\beta\sum_j w_j\min\{\ell_\theta(s,\mathbf a_j),\zeta\}
+\right].
+$$
+
+This corresponds to a weighted batch update. The first term retains behavior from replay; the second fits promising sampled alternatives. Here $\beta$ controls their influence and $\zeta$ caps each candidate's regression loss. [Paper, section IV](https://arxiv.org/html/2604.01860#S4).
+
+This differs from PPO's probability-ratio clipping. Capping the loss drops high-error candidates from the update. The paper motivates its regression objective by approximating log-likelihood differences with supervised-loss differences. That substitution is consequential: a bound on negative log likelihood is not generally equal to it up to a constant. The sampling-and-fitting mechanism is concrete, while an exact EM interpretation requires justification for this additional approximation.
+
+### What constrains improvement when the estimates are wrong
 
 An optimizer amplifies whatever distinctions its objective rewards. If the estimated shortcut value is 20 because the model mistakenly removes a wall, reducing temperature makes the policy more confidently wrong. More search can expose the mistake if it gathers relevant information, but more search within the same erroneous simulator can intensify it.
 
-An original toy calculation makes the point. Suppose the true values remain $(0,1,2)$, but the critic mistakenly scores waiting as 5, giving estimated values $(5,1,2)$. With the previous reference and temperature $0.5$, exponential reweighting assigns almost all probability to waiting. Its true expected value falls below the reference's $0.5$, even though its estimated regularized objective improves. The local optimization is functioning exactly as specified. What fails is the premise that its scores measure the desired consequences.
+A toy calculation makes the point. Suppose the true values remain $(0,1,2)$, but the critic mistakenly scores waiting as 5, giving estimated values $(5,1,2)$. With the previous reference and temperature $0.5$, exponential reweighting assigns almost all probability to waiting. Its true expected value falls below the reference's $0.5$, even though its estimated regularized objective improves. The local optimization is functioning exactly as specified. What fails is the premise that its scores measure the desired consequences.
 
 A policy KL constraint limits the size of a step relative to its reference. It does not calibrate the critic, constrain every future state equally, or ensure that the reference itself is appropriate. Repeating small steps can also produce a large total departure. A constraint against the last iterate has a different effect from a persistent constraint against the dataset behavior or a frozen pretrained policy.
 
@@ -635,11 +839,11 @@ Pessimism has an opportunity cost. The real shortcut may be excellent, yet remai
 
 We should also distinguish statistical support from physical validity. A behavioral prior can keep action proposals near demonstrated motions, but the same motion can be inappropriate in a changed state. Conversely, a novel action may be physically valid even though the dataset contains nothing similar. Support constraints manage one kind of uncertainty; dynamics knowledge and task constraints manage others. Combining them is often reasonable because none is a substitute for all the rest.
 
-This is where the apparently abstract choice of divergence becomes operational. Penalizing $D_{\mathrm{KL}}(q\|p)$ forbids mass outside the exact support of $p$. Penalizing $D_{\mathrm{KL}}(p\|q)$ instead forbids deleting mass where $p$ is positive. With a neural Gaussian these hard boundaries are softened by full support, and finite-sample estimation introduces further approximations. Statements such as “the KL keeps us in distribution” need to specify both the direction and the distributions being compared.
+The earlier distinction between mode seeking and mass covering matters here. With full-support Gaussian policies, exact support restrictions become penalties for assigning probability to low-density regions or neglecting them, depending on KL direction. Whether that protects behavior depends on what the reference distribution represents.
 
 The final safeguard is evaluation against what the model was meant to represent. Imagined return, critic loss, likelihood fit, and environment return are separate measurements. A convincing experiment should make clear which improves, what data were available, and which parts of the system were held fixed. Otherwise a gain attributed to planning might come from more training data, and a gain attributed to a world model might come from a stronger representation used only for behavioral cloning.
 
-## A reusable way to read the algorithms
+### A reusable way to read the algorithms
 
 The algorithms we have discussed differ in how they answer four questions: where do candidates come from, how are they evaluated, how is an improved distribution constructed, and how is that improvement retained?
 
@@ -651,19 +855,22 @@ The algorithms we have discussed differ in how they answer four questions: where
 | AlphaZero and MuZero | Tree search allocates evaluations using priors and value estimates | Search targets train the policy network |
 | MPO | Current-policy action samples receive critic scores | A constrained distribution is fitted by weighted likelihood |
 | AWR and IQL | Dataset actions receive estimated advantage weights | Weighted regression extracts an actor |
+| DPO | Recorded response pairs carry preference labels | A pairwise loss updates policy log-ratios against a reference |
 | PMPO | Outputs receive acceptance or rejection information | Likelihood terms and a reference penalty update the policy |
+| GRPO | Responses to a prompt receive group-relative reward weights | A clipped policy objective and KL penalty update the actor |
+| POCO | Sampled action chunks receive critic scores | Weighted, capped regression fits a generative policy |
 
-The table is a map of roles, not a claim that every row instantiates one theorem. Dyna can improve a value function without an explicit supervised policy projection. MPC can act without retaining a fitted actor. A model can be trained by a variational objective while its actor uses policy gradients. The common questions remain useful even when the answers differ.
+The table compares how the methods produce and retain better decisions. Dyna can improve a value function without an explicit supervised policy projection. MPC can act without retaining a fitted actor. Even within one agent, a world model can be trained with a variational objective while its actor uses policy gradients.
 
 For a new paper, I would first locate the actual distributions. Is the reference the current actor, an old behavior mixture, a frozen model, or an empirical search distribution? Does the candidate range over single actions, chunks, complete trajectories, or occupancies? Which quantities are treated as fixed during the update? These details often explain more than the algorithm's name.
 
 Next I would mark the exact equalities and the approximations. The exponential tilt is an exact finite-action optimizer under stated assumptions. Replacing values with a neural critic is an approximation. Sampling a few candidates adds another. Omitting a state-dependent normalizer changes a shared-parameter regression objective. Reversing a KL changes its optimizer. Replacing likelihood with a generative surrogate changes what can be inferred from an EM argument. Each step may be sensible, but it deserves its own reason.
 
-Finally I would ask where new information enters. Search in a known model can discover consequences that have not yet been computed. Imagination in a learned model can make experience more computationally useful. A new observation can correct the model. These are complementary contributions. Confusing them makes it easy to mistake repeated internal calculation for stronger empirical evidence.
+Finally I would ask where new information enters. Search in a known model can discover consequences that have not yet been computed. Imagination in a learned model can make experience more computationally useful. A new observation can correct the model.
 
 The robot at the junction needs all of them in the right proportions. It needs enough knowledge to distinguish a route from an imagined shortcut, enough computation to compare consequences, and enough learning to carry a useful decision into the next encounter. A policy improves when that chain preserves what makes its choices better. The equations help us construct the chain, and also show where it can break.
 
-## Reading paths
+### Reading paths
 
 For the foundations, start with [Sutton and Barto](http://incompleteideas.net/book/the-book-2nd.html), especially policy iteration and planning, then [Levine's control-as-inference tutorial](https://arxiv.org/abs/1805.00909). For the central derivations, read [REPS](https://ojs.aaai.org/index.php/AAAI/article/view/7727), [MPO](https://arxiv.org/abs/1806.06920), and [AWR](https://arxiv.org/abs/1910.00177), paying attention to occupancy constraints, sampling distributions, and policy projection.
 

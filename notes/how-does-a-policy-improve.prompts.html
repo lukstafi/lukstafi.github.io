@@ -101,7 +101,7 @@ class="math inline">Q^{\pi_0}(s,.)</span> WDYT?</p>
 <h2>Introductory companion</h2>
 <p><em>The subsequent discussion led to a separate introductory article,
 “How Can a Reward Train a Neural Network?”. Its <a
-href="how-can-a-reward-train-a-neural-network.prompts.html">prompt
+href="https://lukstafi.github.io/notes/how-can-a-reward-train-a-neural-network.prompts.html">prompt
 companion</a> records the framing and the request to introduce Bellman
 optimality before policy gradients.</em></p>
 </section>
@@ -110,7 +110,7 @@ class="level2">
 <h2>Return distributions and conditioning on outcomes</h2>
 <p><em>The discussion of discounting, eligibility traces, risk,
 exploration, and upside-down RL is recorded in the <a
-href="how-can-a-reward-train-a-neural-network.prompts.html#discounting-and-effective-horizons">introductory
+href="https://lukstafi.github.io/notes/how-can-a-reward-train-a-neural-network.prompts.html#discounting-and-effective-horizons">introductory
 article’s prompt companion</a>. It led to additions to both
 articles.</em></p>
 <p>Sounds good. How do we incorporate this discussion into the articles?
@@ -129,6 +129,446 @@ that the contrastive instruction to pull similar examples together and
 push others apart insufficiently constrains a useful representation.”
 Maybe we could refer back to it saying sth like that RL has internalized
 that lesson?</p>
+</section>
+<section id="making-the-policy-improvement-argument-explicit"
+class="level2">
+<h2>Making the policy-improvement argument explicit</h2>
+<p>Introduction is now on Substack! Coming back to “How Does a Policy
+Improve?”. This fragment is not landing with me: “The policy-improvement
+argument explains why this local operation has a global consequence. […]
+then applying its Bellman operator repeatedly propagates that inequality
+forward. Monotonicity and contraction give <code>V^π′≥V^π</code>.” The
+two equations are the same equation, where does monotonicity and
+contraction enter here?</p>
+<p>Ah because it’s <span class="math inline">Q^{\pi}</span> rather than
+<span class="math inline">\pi&#39;</span>, right!</p>
+<p>Do you want to spell out the contraction? Adding a mention of
+following the old policy or somehow pointing out the π versus π’ would
+be enough for me, but spelling out the argument would also work.</p>
+<p>A bit tighter: drop the sentences: replace
+“<strong>Monotonicity</strong> means that <code>v≥w</code> implies
+<code>Tπ′v≥Tπ′w</code>:” by “<code>Tπ′</code> is monotonic:”, drop “The
+expression <code>Tπ′nVπ</code> evaluates …”</p>
+<p>For proving the J difference formula: “Along a trajectory the value
+terms telescope.” But the expectation isn’t directly over trajectories,
+I would first say e.g.: “Rearrange the expectation space from states to
+trajectories.”</p>
+</section>
+<section id="explaining-the-benefit-of-model-generated-experience"
+class="level2">
+<h2>Explaining the benefit of model-generated experience</h2>
+<p>This paragraph is probably too verbose, and a bit confusing:
+“Model-generated data offers cheap computation, but not independent
+evidence.” I’d say “Model-generated data replaces costly environment
+interactions by cheap computation.” Correspondingly, “computational
+reuse” doesn’t sound intuitive, but maybe it’s the technical term used.
+What I think happens is that we transfer evidence of world transitions
+into a format that on-policy learning can use. What do you suggest?</p>
+<p>Is my intuition right that this helps because learning world
+transitions is more sample efficient because learning action and state
+values is policy-sensitive? (Even off-policy, it’s values <em>for</em> a
+policy&gt;)</p>
+<p>Thanks, let’s do these two changes combined.</p>
+</section>
+<section id="clarifying-recurrent-memory-in-the-latent-state"
+class="level2">
+<h2>Clarifying recurrent memory in the latent state</h2>
+<p>Latent state: “Here <code>z</code> can include deterministic
+recurrent memory as well as stochastic variables.” Is q giving a
+stochastic model, while p alone would suffice for a deterministic model?
+It’s not that q and p are used alternately when unrolling / executing a
+trajectory; they together model a stochastic process. Do I get it
+right?</p>
+<p>So q is used to initialize a rollout and p to perform a rollout? And
+during execution, do we only use q?</p>
+<p>But the q-p formulation does not mention h.</p>
+<p>Maybe: “Here <code>z</code> can include deterministic recurrent
+memory (whose transition can be shared between q and p) as well as
+stochastic variables.” WDYT?</p>
+<p>Do that, thanks!</p>
+</section>
+<section id="explaining-reparameterization-gradients" class="level2">
+<h2>Explaining reparameterization gradients</h2>
+<p>“Continuous random variables can be expressed as differentiable
+transformations of parameter-independent noise, enabling
+reparameterization gradients. Straight-through estimators enter for
+discrete choices; they are not a universal description of all gradients
+through Dreamer’s model.” Is any of this further explained later on? The
+reparameterization trick is neat, so maybe we could explain it here to
+not name-drop.</p>
+</section>
+<section id="identifying-data-and-learned-distributions-in-the-elbo"
+class="level2">
+<h2>Identifying data and learned distributions in the ELBO</h2>
+<p>Can we make the q and p more tangible in “For a generic
+latent-variable model, variational inference gives …”? Which expressions
+are learned and which are empirical / ground truth?</p>
+<p>Instead of “It is neither an empirical frequency nor a separate
+prediction network.” let’s say something like: it’s not tractable, but
+we want to maximize it to fit the data distribution.</p>
+<p>For “the KL term keeps their inferred representations compatible with
+the prior” could we say “the KL term keeps their discriminatively
+inferred representations compatible with the generative prior”? Or would
+“discriminatively” be unjustified?</p>
+<p>Which learned components are useful downstream, and which are
+auxiliary? Or do all of them have different uses?</p>
+<p>Do both updates, thanks.</p>
+</section>
+<section id="connecting-the-cross-entropy-method-to-boa" class="level2">
+<h2>Connecting the cross-entropy method to BOA</h2>
+<p>Offtopic: “iteratively fits a proposal distribution to an elite set
+of high-scoring candidates” reminds me of Bayesian optimization.</p>
+<p>However BOA was originally an improvement over genetic algorithms,
+before it got invaded by math afficionados.</p>
+<p>Ah right, I was confused but in a good way (BO and BOA are
+related).</p>
+<p>Let’s add a reference to BOA next to the cross-entropy method (makes
+the article more personal for me).</p>
+</section>
+<section id="tightening-the-planning-discussion" class="level2">
+<h2>Tightening the planning discussion</h2>
+<p>Remove this filler sentence: “An ensemble is a practical estimator,
+not a certificate that all important uncertainty has been captured.”
+Also this is too long: ““Offline planning” and “offline RL” should
+therefore never be treated as interchangeable labels without explaining
+the intended meaning.” -&gt; “So we can have online planning with
+offline RL.” would be enough.</p>
+</section>
+<section id="clarifying-alphazeros-tree-search" class="level2">
+<h2>Clarifying AlphaZero’s tree search</h2>
+<p>Right, so does Alpha Zero actually implement MCTS with policy
+network-based rollouts, or does it do deterministic tree expansion based
+on the value networks?</p>
+<p>So it combines game research with learning updates. It doesn’t do
+MCTS because it does deterministic best-first expansion, with
+exploration bonus derived from visit counts. WDYT?</p>
+<p>Do that, thanks!</p>
+</section>
+<section id="connecting-muzero-to-jepa" class="level2">
+<h2>Connecting MuZero to JEPA</h2>
+<p>Maybe we could point from the MuZero paragraph to the “Which World
+Model” paragraph discussing JEPA.</p>
+</section>
+<section id="tightening-the-transition-to-policy-improvement"
+class="level2">
+<h2>Tightening the transition to policy improvement</h2>
+<p>Remove filler: “They are different achievements.” Would it be
+pendanting if in “Let <code>p(a)</code> be a reference policy with
+positive probabilities and let <code>Q(a)</code> be a fixed vector of
+action values.” we had <code>a |-&gt; p(a)</code> and
+<code>a |-&gt; Q(a)</code> instead?</p>
+</section>
+<section id="mass-covering-and-mode-seeking" class="level2">
+<h2>Mass covering and mode seeking</h2>
+<p>Would it make sense to discuss mass covering versus mode seeking at
+the beginning of the second part?</p>
+<p>Go ahead, thanks.</p>
+</section>
+<section id="connecting-kl-to-entropy" class="level2">
+<h2>Connecting KL to entropy</h2>
+<p>Do we bring the entropy connection later on? We could introduce it in
+the KL section.</p>
+</section>
+<section id="clarifying-the-two-uses-of-kl" class="level2">
+<h2>Clarifying the two uses of KL</h2>
+<p>I don’t like this style: “The roles of the distributions matter as
+much as their names. Constructing an improved policy against a reference
+and fitting a neural policy to an improved target are separate
+operations.” How can we say it more clearly in one sentence?</p>
+<p>That’s great. Do it.</p>
+</section>
+<section id="showing-where-the-log-normalizer-comes-from"
+class="level2">
+<h2>Showing where the log normalizer comes from</h2>
+<p>“Substitute the expression for <code>q∗</code> into the KL divergence
+to obtain” – maybe we could make it easier to see how <code>log Z</code>
+ends up in the outcome, unless you think it’s not illustrative and
+taking on faith is good enough.</p>
+</section>
+<section id="removing-the-imitation-reward-detour" class="level2">
+<h2>Removing the imitation-reward detour</h2>
+<p>Jumping ahead a bit because this can impact how we feel about word
+counts: Should we remove imitation learning from the essay? PWIL was on
+the slides because imitation learning was one of the core focuses of the
+group (and the author of that algorithm was in the group also).</p>
+<p>Go ahead and remove it. We’ll still keep the split into two parts
+because I think we should explain a few more things in the core
+essay.</p>
+</section>
+<section id="explaining-lagrange-multipliers" class="level2">
+<h2>Explaining Lagrange multipliers</h2>
+<p>We can have a brief box (using Markdown quotation) to explain
+constraint optimization via Lagrangian multipliers.</p>
+<p>“use an unrestricted multiplier like <code>c</code> above” -&gt; “use
+an unrestricted multiplier like <code>c</code> in the paragraph about
+<code>F(q)</code>”</p>
+<p>““Using a hard constraint” therefore does not mean avoiding Lagrange
+multipliers” -&gt; ““Using a hard constraint” therefore does not mean
+avoiding temperature” WDYT?</p>
+<p>Go ahead, thanks.</p>
+<p>Is the intuition behind Lagrange multipliers that the force to keep
+the constraint equals the push on the constraint from the objective?</p>
+<p>I think this is worth adding to the essay. I’m not sure how
+extensively: whether the full paragraph you provided or just a brief
+remark.</p>
+</section>
+<section id="clarifying-the-auxiliary-observation" class="level2">
+<h2>Clarifying the auxiliary observation</h2>
+<p>“and it should not be mistaken for proof that a trajectory is
+optimal” -&gt; “and <code>O = 1</code> doesn’t mean that a trajectory is
+optimal”, right?</p>
+</section>
+<section id="showing-the-exact-elbo-gap" class="level2">
+<h2>Showing the exact ELBO gap</h2>
+<p>Let’s add a step into the equality
+<code>logpθ​(O=1)−L(q,θ)=DKL​(q(τ)∥pθ​(τ∣O=1))</code> to clarify the
+derivation of the exact ELBO gap.</p>
+</section>
+<section id="interpreting-the-posterior-through-selection"
+class="level2">
+<h2>Interpreting the posterior through selection</h2>
+<p>The ELBO-EM section does not give an explicit intuition for the
+posterior or latent <code>q</code>. Is <code>q</code> related to the
+proposal distribution from Bayesian Optimization (Algorithm)?</p>
+<p>That’s neat! (Pun not intended.) Let’s add this connection to the
+article as a box.</p>
+</section>
+<section id="explaining-the-feasible-trajectory-distribution"
+class="level2">
+<h2>Explaining the feasible trajectory distribution</h2>
+<p>“We can impose that feasibility by restricting the auxiliary
+distribution to …” – add sth like “to a form that cannot adapt based on
+state transitions” i.e. point out verbally what the difference is.</p>
+</section>
+<section id="making-occupancy-distributions-tangible" class="level2">
+<h2>Making occupancy distributions tangible</h2>
+<p>“Let <code>ν(s,a)</code> be the candidate occupancy and
+<code>μ(s,a)</code> the reference data distribution.” – Let’s give
+“candidate occupancy” and “reference data distribution” a better handle
+on how it connects with earlier content, maybe not formally but in a few
+words. E.g. “Let <code>ν(s,a)</code> be the candidate occupancy
+(probability that the candidate policy visits <code>s</code> and picks
+<code>a</code> there) …”</p>
+</section>
+<section id="deriving-the-flow-constraint-contribution" class="level2">
+<h2>Deriving the flow-constraint contribution</h2>
+<p>This jumps too quickly for me: “The coefficient of each
+<code>ν(s,a)</code> in the Lagrangian contains …” This pattern matches
+on very familiar formulas, but the derivation is different, so the
+familiarity makes one overlook the opportunity to build the
+intuition.</p>
+<p>I’d help the reader via this parenthetical: “Keeping <code>ν</code>
+normalized and adding the KL-budget term (i.e. the
+<code>DKL​(.∥.)≤ϵ</code> constraint) gives”</p>
+</section>
+<section id="splitting-the-essay-into-three-installments"
+class="level2">
+<h2>Splitting the essay into three installments</h2>
+<p>How many words are from the beginning of part 2 to the beginning of
+section “<em>From return distributions to return-conditioned
+policies”?</em></p>
+<p>Would it make sense to make it a split point for part 3?</p>
+<p>And the other option of putting return conditioned policies into part
+two, is it a worse fit conceptually? ?</p>
+<p>I’m sure I’ll ask for adding things to part three as I read through
+it, so let’s go for the three-parter with your motivation for the
+split.</p>
+</section>
+<section
+id="representing-mpos-improvement-distribution-with-weighted-samples"
+class="level2">
+<h2>Representing MPO’s improvement distribution with weighted
+samples</h2>
+<p>In MPO, is the non-parametric distribution <code>q_i</code> a
+weighted average of samples from the replay buffer?</p>
+<p>“Their empirical weights are proportional to exponentiated critic
+values.” -&gt; “They are weighted proportionally to exponentiated critic
+values to form a single sample of the non-parametric distribution, thus
+defined.” WDYT?</p>
+<p>This is not an empirical approximation, this is a sample? It’s how
+that distribution is defined. (Sorry about being confused, yes not a
+single sample.) Ah but yes the empirical distribution of the samples is
+an approximation…</p>
+<p>Yes, let’s do that.</p>
+</section>
+<section id="trimming-mpo-and-explaining-expectiles" class="level2">
+<h2>Trimming MPO and explaining expectiles</h2>
+<p>At the end of the MPO section, I’d drop this filler: “The likelihood
+objective tells us what target to fit; it does not guarantee that the
+representation or dataset supplies the distinctions needed to fit it
+well.” IQL subsection: what is “an upper expectile”? I’d keep it but
+parenthetically explain.</p>
+</section>
+<section id="making-iqls-value-propagation-explicit" class="level2">
+<h2>Making IQL’s value propagation explicit</h2>
+<p>The IQL subsection is still mysterious e.g. as to how the learned
+value gets propagated through transitions. But maybe that’s fine. Maybe
+the gist you were after is perfectly expressed, and we don’t want to
+bloat the article more.</p>
+<p>Let’s add that. Thanks.</p>
+</section>
+<section id="clarifying-the-return-in-the-data-conditional"
+class="level2">
+<h2>Clarifying the return in the data conditional</h2>
+<p>Under Decision Transformer, what work does this sentence do? “Both
+reflect the continuation behavior represented in the data; neither
+automatically describes what an improved policy will achieve.”</p>
+<p>Ah good, do that.</p>
+</section>
+<section id="separating-outcome-variability-from-baseline-weighting"
+class="level2">
+<h2>Separating outcome variability from baseline weighting</h2>
+<p>This is confusing to me: “This distinction also matters when
+interpreting AWR’s sampled advantage estimates: subtracting a fixed
+state baseline does not remove outcome variability before
+exponentiation.” What we discussed in earlier sections is that, although
+subtracting could preserve the normalized distribution, it changes the
+algorithmic behavior (presumably because we don’t normalize).</p>
+<p>Do that, thanks!</p>
+</section>
+<section id="making-the-search-normalization-constraint-explicit"
+class="level2">
+<h2>Making the search normalization constraint explicit</h2>
+<p>Part 3 woohoo! “Differentiating with a normalization multiplier
+<code>c</code> gives” – it’s the Lagrange multiplier from the summing to
+1 constraint, right?</p>
+<p>Do that, thanks!</p>
+</section>
+<section id="connecting-bandits-uct-and-tree-search" class="level2">
+<h2>Connecting bandits, UCT, and tree search</h2>
+<p>We could have a box explaining some of MCTS, UCT, and multi-armed
+bandits. I’m not sure what the scope is that’s best.</p>
+<p>Sounds good, let’s add!</p>
+</section>
+<section id="comparing-the-full-puct-score-with-the-derivative"
+class="level2">
+<h2>Comparing the full PUCT score with the derivative</h2>
+<p>“The exploration term can then be expressed using <code>p/π^</code>,
+the same ratio appearing in the derivative of the regularized
+objective.” This confuses me because that formula from the derivative
+used Q values.</p>
+<p>|A| is action size, right? This definitely helps, add it.</p>
+</section>
+<section id="explaining-the-gumbel-search-methods" class="level2">
+<h2>Explaining the Gumbel search methods</h2>
+<p>The Gumbel methods are underexplained, no idea what these algorithms
+are doing.</p>
+</section>
+<section id="expanding-the-dpo-derivation" class="level2">
+<h2>Expanding the DPO derivation</h2>
+<p>The hard limit does not apply anymore because we’re splitting into
+three parts for Substack.</p>
+<p>Can we spell out a bit more detail about DPO? What’s in there is
+clear, but it cuts off. Or is related content covered later?</p>
+</section>
+<section id="defining-the-accepted-output-conditional" class="level2">
+<h2>Defining the accepted-output conditional</h2>
+<p>In PMPO, what (conditional) event specifically has the distribution
+<code>q+</code>​?</p>
+<p>There’s no need to introduce another sentence. I would simply add the
+intermediate definitional <span class="math inline">\(q_+(y)=P(Y=y\mid
+accepted)\)=...</span></p>
+</section>
+<section id="clarifying-fixed-and-refreshed-reference-policies"
+class="level2">
+<h2>Clarifying fixed and refreshed reference policies</h2>
+<p>For the discussion around DPO and PMPO, is the reference policy a
+twin delayed variant of the trained policy, or is it fixed all the way
+back to the pre-trained policy?</p>
+<p>Let’s add that information, thanks. I think we can add it in this
+paragraph rather than inline when introduced: “KL-regularized policy
+improvement embodies a lesson related to the representation-learning
+discussion”. WDYT?</p>
+</section>
+<section id="clarifying-grpos-group-relative-advantage" class="level2">
+<h2>Clarifying GRPO’s group-relative advantage</h2>
+<p>“GRPO’s relative weighting acts on response probabilities, whereas
+contrastive representation learning acts on embedding similarities.”
+Confusing.</p>
+<p>Yes, remove it. Can we see GRPO as a poor man’s way of computing the
+advantage?</p>
+</section>
+<section id="connecting-grpo-to-the-earlier-rl-machinery"
+class="level2">
+<h2>Connecting GRPO to the earlier RL machinery</h2>
+<p>I would also remove the restatement: “These are complementary roles.”
+Let’s maybe try analogizing GRPO to the machinery we covered throughout
+the RL series. We have the non-parametric advantage computation. We have
+the high-variance, low-bias effect of using returns rather than action
+values. We have something analogous to eligibility traces by updating
+the whole trajectory at once. WDYT?</p>
+<p>I wouldn’t say GRPO “reconnects”, it is remarkably simple except I
+keep forgetting it has the nuance of PPO also. It is more that we can
+see it in a richer light.</p>
+<p>Make the expansion, thanks!</p>
+</section>
+<section id="linking-the-grpo-objective-back-to-ppo" class="level2">
+<h2>Linking the GRPO objective back to PPO</h2>
+<p>Discussed PPO before, so I would change “These advantages enter a
+PPO-style objective” to sth like “These advantages enter an objective
+originally worked out by PPO (link)”</p>
+<p>*We haven’t (sorry speech rec glitch)</p>
+</section>
+<section id="explaining-shortcut-forcing" class="level2">
+<h2>Explaining shortcut forcing</h2>
+<p>In Dreamer 4, what’s “a shortcut-forcing objective”?</p>
+<p>Let’s add this info in a box.</p>
+</section>
+<section id="explaining-pocos-candidates-and-fitting-objective"
+class="level2">
+<h2>Explaining POCO’s candidates and fitting objective</h2>
+<p>Can we maybe give a bit more detail about POCO?</p>
+</section>
+<section id="making-pocos-supervised-targets-explicit" class="level2">
+<h2>Making POCO’s supervised targets explicit</h2>
+<p>What does POCO actually minimize? It has fixed actions in the
+optimized expressions.</p>
+<p>I see. These are targets, okay.</p>
+<p>Let’s do that. Why optimize toward samples rather than more directly
+toward whatever process that sampled them?</p>
+</section>
+<section id="identifying-the-weighted-batch-update" class="level2">
+<h2>Identifying the weighted batch update</h2>
+<p>So this is the action mixing approach. We’ve seen it before. Was it
+MPPI, or which?</p>
+<p>Right, the sum is on top of the losses, so it’s just a batch
+update.</p>
+<p>Maybe add: “This corresponds to a weighted batch update.” right below
+the formula.</p>
+</section>
+<section id="shortening-the-loss-capping-explanation" class="level2">
+<h2>Shortening the loss-capping explanation</h2>
+<p>Capping a loss just throws out a bad sample.</p>
+<p>This is all too lengthy. My first sentence was just eight words or
+so. Replace this with something like it: “As written, a candidate loss
+above <code>ζ</code> contributes no gradient through that capped term,
+while the replay loss remains active. Capping a loss does not itself
+bound the parameter update or the policy’s KL divergence.”</p>
+</section>
+<section id="tightening-the-concluding-comparison" class="level2">
+<h2>Tightening the concluding comparison</h2>
+<p>Small loss doesn’t mean small gradients, right?</p>
+<p>Close to the end, I would drop this sentence except then the
+paragraph ends a bit abruptly. But informationally it doesn’t make much
+sense. “The common questions remain useful even when the answers
+differ.”</p>
+</section>
+<section id="final-editorial-pass" class="level2">
+<h2>Final editorial pass</h2>
+<p>the article becomes a lighter reading toward the end, but I think
+that’s good to give people some wind-down time. Some parts are authorial
+choice that I’m not entirely sure about but can accept, e.g. “Confusing
+them makes it easy to mistake repeated internal calculation for stronger
+empirical evidence.” (Is it something that can really be confused?
+unless you call wishful thinking a confusion…) It was exciting for me to
+recall those things in a simultaneusly more precise and a bigger-picture
+way. Thanks for the fruitful multi-day session! Please do a final
+editorial pass over the essay.</p>
+</section>
+<section id="absolute-links-for-substack" class="level2">
+<h2>Absolute links for Substack</h2>
+<p>Are all the cross-file links absolute? That’s needed for
+Substack.</p>
 </section>
 </section>
 </article>
