@@ -55,6 +55,7 @@ class ExportTest(unittest.TestCase):
         self.assertEqual(node['marks'][0]['type'], 'link')
         self.assertEqual(_expression('x % explanation\n + y'), 'x + y')
         self.assertEqual(_expression(r'x\% + y'), r'x\% + y')
+        self.assertEqual(_expression("x \\\\% row comment\n y"), r'x \\ y')
 
     def test_figures_and_upload(self):
         with tempfile.TemporaryDirectory() as folder:

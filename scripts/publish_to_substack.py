@@ -67,7 +67,7 @@ def latex_to_unicode(latex: str) -> str:
 
 def _expression(latex: str) -> str:
     # Remove TeX comments BEFORE flattening lines, or % comments out the rest.
-    latex = re.sub(r"(?<!\\)%[^\n]*", "", latex)
+    latex = re.sub(r"(?<!\\)((?:\\\\)*)%[^\n]*", r"\1", latex)
     latex = latex.replace(r"\llbracket", "⟦").replace(r"\rrbracket", "⟧")
     return re.sub(r"\s+", " ", latex).strip()
 
