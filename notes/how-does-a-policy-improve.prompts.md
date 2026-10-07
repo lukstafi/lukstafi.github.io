@@ -359,3 +359,30 @@ the article becomes a lighter reading toward the end, but I think that's good to
 ## Absolute links for Substack
 
 Are all the cross-file links absolute? That's needed for Substack.
+
+Ah, maybe that got fixed recently.
+
+## Committing the essay and index update
+
+Let's commit, include index.html update I added
+
+## Preparing the Substack draft
+
+Can you help me publish? Here's what I get:
+```yaml
+(.venv-substack) lukstafi@LukaszsacStudio lukstafi.github.io % .venv-substack/bin/python scripts/publish_to_substack.py notes/how-does-a-policy-improve.md
+Traceback (most recent call last):
+  File "/Users/lukstafi/lukstafi.github.io/scripts/publish_to_substack.py", line 410, in <module>
+    main()
+    ~~~~^^
+  File "/Users/lukstafi/lukstafi.github.io/scripts/publish_to_substack.py", line 351, in main
+    prepare_images(doc["body"], md_path, assets_dir)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/lukstafi/lukstafi.github.io/scripts/substack_media.py", line 53, in prepare_images
+    from PIL import Image
+ModuleNotFoundError: No module named 'PIL'
+```
+
+## Updating the prompt record
+
+Can you update the prompts file? Do you have my prompts readily and available?
