@@ -16,7 +16,7 @@ from the document metadata (YAML frontmatter). Math is emitted as sentinel nodes
 -- `{type="inline_math", latex=...}` for `$...$` and `{type="display_math",
 latex=...}` for `$$...$$` -- which `publish_to_substack.py` rewrites into
 Substack's real encoding (display math becomes a `latex_block`; inline math
-becomes Unicode text, because Substack has no inline-math node).
+uses the selected Unicode/native/raw/block mode).
 
 Usage:
 
@@ -52,11 +52,14 @@ local function push_text(nodes, text, marks)
 end
 
 -- Emit math as sentinel nodes; the Python side turns these into Substack's
--- actual encoding (display -> latex_block, inline -> Unicode text), since
--- Substack has no inline-math node at all.
+-- actual encoding selected by Python (display blocks and inline modes).
 local function math_node(el)
   local kind = el.mathtype == "DisplayMath" and "display_math" or "inline_math"
-  return { type = kind, latex = el.text }
+  -- Pandoc's texmath parser understands grouping, fonts, accents, and command
+  -- boundaries; do not approximate TeX with string replacements in Python.
+  local unicode = pandoc.write(pandoc.Pandoc({pandoc.Plain({el})}), "plain",
+                              {wrap_text = "none"}):gsub("%s+$", "")
+  return { type = kind, latex = el.text, unicode = unicode }
 end
 
 -- Deep-equality of two ProseMirror mark lists (order-sensitive; links compared
@@ -205,7 +208,12 @@ inlines_to_nodes = function(inlines, marks)
         nodes[#nodes + 1] = n
       end
     elseif t == "Math" then
-      nodes[#nodes + 1] = math_node(el)
+      local node = math_node(el)
+      if #marks > 0 then node.marks = clone_marks(marks) end
+      nodes[#nodes + 1] = node
+    elseif t == "Image" then
+      nodes[#nodes + 1] = { type = "export_image", src = el.src,
+                           alt = stringify(el.caption), title = el.title }
     elseif t == "Quoted" then
       local q = el.quotetype == "SingleQuote" and "'" or '"'
       push_text(nodes, q, marks)
@@ -253,28 +261,27 @@ end
 -- Turn a Para/Plain's inlines into one or more ProseMirror block nodes. A
 -- display-math (`$$...$$`) is a block node in Substack, so any that appear
 -- inside the paragraph are lifted out, splitting the surrounding text into
--- separate paragraphs around each math_display block.
+-- separate paragraphs around each display-math block.
 local function para_blocks(inlines)
   local blocks = {}
   local current = {}
 
-  local function flush()
-    local nodes = trim_ws(inlines_to_nodes(current, {}))
-    if #nodes > 0 then
-      blocks[#blocks + 1] = { type = "paragraph", content = nodes }
-    end
-    current = {}
-  end
-
-  for _, el in ipairs(inlines) do
-    if el.tag == "Math" and el.mathtype == "DisplayMath" then
-      flush()
-      blocks[#blocks + 1] = math_node(el)
+  -- Images and forced display math are block nodes, including when embedded
+  -- in prose. Split the paragraph without discarding either side.
+  for _, node in ipairs(inlines_to_nodes(inlines, {})) do
+    if node.type == "display_math" or node.type == "export_image" then
+      if #current > 0 then
+        blocks[#blocks + 1] = {type = "paragraph", content = trim_ws(current)}
+      end
+      current = {}
+      blocks[#blocks + 1] = node
     else
-      current[#current + 1] = el
+      current[#current + 1] = node
     end
   end
-  flush()
+  if #current > 0 then
+    blocks[#blocks + 1] = {type = "paragraph", content = trim_ws(current)}
+  end
 
   if #blocks == 0 then blocks[1] = { type = "paragraph" } end
   return blocks
@@ -384,80 +391,36 @@ blocks_to_nodes = function(blocks)
       for _, n in ipairs(blocks_to_nodes(blk.content)) do
         nodes[#nodes + 1] = n
       end
-    elseif t == "HtmlTable" then
-      -- Substack has no native table support; render each row as a paragraph
-      -- with cells joined by " | ". Header cells are bolded.
-      local function cell_inlines(cell)
-        local ils = {}
-        for _, b in ipairs(cell.content) do
-          if b.tag == "Para" or b.tag == "Plain" then
-            for _, il in ipairs(b.content) do ils[#ils + 1] = il end
-          end
+    elseif t == "Figure" then
+      local figures = blocks_to_nodes(blk.content)
+      for _, n in ipairs(figures) do
+        if n.type == "export_image" then n.caption = stringify(blk.caption) end
+        nodes[#nodes + 1] = n
+      end
+    elseif t == "HtmlTable" or t == "Table" then
+      -- Keep cell boundaries and math until Python chooses the presentation.
+      local rows = {}
+      local function add_row(cells, header, html)
+        local row = {header = header, cells = {}}
+        for _, cell in ipairs(cells) do
+          row.cells[#row.cells + 1] = blocks_to_nodes(html and cell.content or cell.contents)
         end
-        return ils
+        rows[#rows + 1] = row
       end
-      for _, row in ipairs(blk.rows) do
-        local parts = {}
-        for ci, cell in ipairs(row) do
-          local ils = cell_inlines(cell)
-          if cell.tag == "HtmlTh" and #ils > 0 then
-            ils = { pandoc.Strong(ils) }
-          end
-          for _, il in ipairs(ils) do parts[#parts + 1] = il end
-          if ci < #row then parts[#parts + 1] = pandoc.Str(" | ") end
+      if t == "HtmlTable" then
+        for _, row in ipairs(blk.rows) do
+          add_row(row, row[1] and row[1].tag == "HtmlTh", true)
         end
-        nodes[#nodes + 1] = { type = "paragraph", content = inlines_to_nodes(parts, {}) }
-      end
-    elseif t == "Table" then
-      -- Substack has no native table support; render each row as a paragraph
-      -- with cells joined by " | ". Header cells are bolded.
-      local function cell_inlines(cell)
-        local ils = {}
-        for _, b in ipairs(cell.contents) do
-          if b.tag == "Para" or b.tag == "Plain" then
-            if #ils > 0 then ils[#ils + 1] = pandoc.Space() end
-            for _, il in ipairs(b.content) do ils[#ils + 1] = il end
-          else
-            local txt = stringify(b)
-            if txt ~= "" then
-              if #ils > 0 then ils[#ils + 1] = pandoc.Space() end
-              ils[#ils + 1] = pandoc.Str(txt)
-            end
-          end
+      else
+        for _, row in ipairs(blk.head.rows) do add_row(row.cells, true) end
+        for _, body in ipairs(blk.bodies) do
+          for _, row in ipairs(body.head) do add_row(row.cells, true) end
+          for _, row in ipairs(body.body) do add_row(row.cells, false) end
         end
-        return ils
+        for _, row in ipairs(blk.foot.rows) do add_row(row.cells, false) end
       end
-      local function row_node(row, is_header)
-        local parts = {}
-        for ci, cell in ipairs(row.cells) do
-          local ils = cell_inlines(cell)
-          if is_header and #ils > 0 then ils = { pandoc.Strong(ils) } end
-          for _, il in ipairs(ils) do parts[#parts + 1] = il end
-          if ci < #row.cells then parts[#parts + 1] = pandoc.Str(" | ") end
-        end
-        return { type = "paragraph", content = inlines_to_nodes(parts, {}) }
-      end
-      for _, row in ipairs(blk.head.rows) do
-        nodes[#nodes + 1] = row_node(row, true)
-      end
-      for _, body in ipairs(blk.bodies) do
-        for _, row in ipairs(body.head) do
-          nodes[#nodes + 1] = row_node(row, true)
-        end
-        for _, row in ipairs(body.body) do
-          nodes[#nodes + 1] = row_node(row, false)
-        end
-      end
-      for _, row in ipairs(blk.foot.rows) do
-        nodes[#nodes + 1] = row_node(row, false)
-      end
-      local caption = stringify(blk.caption)
-      if caption ~= "" then
-        nodes[#nodes + 1] = {
-          type = "paragraph",
-          content = inlines_to_nodes({ pandoc.Emph({ pandoc.Str(caption) }) }, {}),
-        }
-      end
+      nodes[#nodes + 1] = {type = "export_table", rows = rows,
+                          caption = t == "Table" and stringify(blk.caption) or ""}
     elseif t == "RawBlock" then
       -- skip remaining raw HTML/TeX blocks (not part of a table)
     else

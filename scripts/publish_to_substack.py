@@ -2,8 +2,7 @@
 """Publish a note from notes/ to Substack as a draft.
 
 The article is converted to Substack's ProseMirror draft JSON by the pandoc
-custom writer in ``scripts/substack.lua`` (math included, as ``math_inline`` /
-``math_display`` nodes), then pushed to Substack via the unofficial
+custom writer in ``scripts/substack.lua`` (math and media included as export sentinels), then pushed to Substack via the unofficial
 ``python-substack`` API.
 
 Usage
@@ -36,6 +35,7 @@ Install dependencies once:
 from __future__ import annotations
 
 import argparse
+import functools
 import json
 import os
 import random
@@ -44,6 +44,7 @@ import string
 import subprocess
 import sys
 from pathlib import Path
+from urllib.parse import urljoin
 
 SCRIPT_DIR = Path(__file__).resolve().parent
 REPO_ROOT = SCRIPT_DIR.parent
@@ -53,118 +54,28 @@ SITE_BASE_URL = "https://lukstafi.github.io"
 FOOTER_PREFIX = "Read this on the web (with typeset math): "
 PROMPTS_FOOTER_PREFIX = "The prompts behind this essay (the human-side contribution): "
 
-# --- inline LaTeX -> Unicode -------------------------------------------------
-# Substack has no inline-math node, so inline `$...$` is rendered as Unicode
-# text. This covers the symbol/sub/superscript vocabulary that actually appears
-# in the notes; unmapped subscripts fall back to `x_y` rather than being dropped.
-
-_SYM = {
-    r"\emptyset": "∅", r"\sqsubseteq": "⊑", r"\sqsupseteq": "⊒", r"\cdot": "·",
-    r"\diamond": "⋄", r"\langle": "⟨", r"\rangle": "⟩", r"\models": "⊨",
-    r"\circ": "∘", r"\neq": "≠", r"\geq": "≥", r"\leq": "≤", r"\star": "⋆",
-    r"\times": "×", r"\sigma": "σ", r"\rho": "ρ", r"\alpha": "α", r"\beta": "β",
-    r"\gamma": "γ", r"\delta": "δ", r"\lambda": "λ", r"\mu": "μ", r"\Phi": "Φ",
-    r"\phi": "φ", r"\Sigma": "Σ", r"\Pi": "Π", r"\mid": "∣", r"\cup": "∪",
-    r"\cap": "∩", r"\in": "∈", r"\notin": "∉", r"\to": "→", r"\mapsto": "↦",
-    r"\subseteq": "⊆", r"\supseteq": "⊇", r"\equiv": "≡", r"\approx": "≈",
-    r"\forall": "∀", r"\exists": "∃", r"\land": "∧", r"\lor": "∨",
-    r"\cong": "≅", r"\sqcup": "⊔", r"\sqcap": "⊓", r"\wedge": "∧", r"\bot": "⊥", r"\top": "⊤",
-    r"\pi": "π", r"\theta": "θ", r"\tau": "τ", r"\omega": "ω", r"\epsilon": "ε",
-    r"\iota": "ι",
-    r"\ldots": "…", r"\dots": "…", r"\cdots": "⋯",
-    # stmaryrd brackets (KaTeX on Substack doesn't know these); Unicode here, and
-    # `_latex_block` separately rewrites them for the equation path.
-    r"\llbracket": "⟦", r"\rrbracket": "⟧",
-    r"\quad": " ", r"\qquad": "  ", r"\;": " ", r"\,": " ", r"\:": " ", r"\!": "",
-}
-_SUB = {c: s for c, s in zip("0123456789aehijklmnoprstuvx+-=",
-                             "₀₁₂₃₄₅₆₇₈₉ₐₑₕᵢⱼₖₗₘₙₒₚᵣₛₜᵤᵥₓ₊₋₌")}
-_SUP = {c: s for c, s in zip("0123456789ni+-", "⁰¹²³⁴⁵⁶⁷⁸⁹ⁿⁱ⁺⁻")}
-_MATHCAL = {"B": "ℬ", "D": "𝒟", "L": "ℒ", "R": "ℛ", "S": "𝒮"}
+# Pandoc/texmath owns TeX parsing, including nested groups and command boundaries.
+# The Lua writer precomputes these strings, avoiding a subprocess per expression.
+@functools.lru_cache(maxsize=1024)
+def latex_to_unicode(latex: str) -> str:
+    result = subprocess.run(
+        ["pandoc", "--from=latex", "--to=plain", "--wrap=none"],
+        input="$" + latex + "$", text=True, capture_output=True, check=True,
+    )
+    return result.stdout.strip()
 
 
-def _take_group(s: str, i: int):
-    """s[i] == '{'; return (inner_text, index_after_closing_brace)."""
-    depth, j, buf = 0, i, []
-    while j < len(s):
-        c = s[j]
-        if c == "{":
-            depth += 1
-            if depth > 1:
-                buf.append(c)
-        elif c == "}":
-            depth -= 1
-            if depth == 0:
-                return "".join(buf), j + 1
-            buf.append(c)
-        else:
-            buf.append(c)
-        j += 1
-    return "".join(buf), j
-
-
-def latex_to_unicode(s: str) -> str:
-    """Best-effort conversion of inline LaTeX to Unicode text."""
-    # Escaped braces `\{` `\}` are literal characters, not grouping delimiters.
-    # Stash them as private-use sentinels so they survive both the group parsing
-    # and the unconditional brace-stripping at the end, then restore them.
-    s = s.replace(r"\{", "").replace(r"\}", "")
-    # Font/formatting macros: keep the argument, drop the wrapper.
-    s = re.sub(r"\\(?:texttt|text|mathrm|mathbf|mathsf|mathit|operatorname)\{([^{}]*)\}",
-               lambda m: m.group(1), s)
-    s = re.sub(r"\\mathcal\{([A-Z])\}", lambda m: _MATHCAL.get(m.group(1), m.group(1)), s)
-    s = re.sub(r"\\(?:widehat|hat)\{([^{}]*)\}", lambda m: m.group(1) + "̂", s)
-    s = re.sub(r"\\(?:overline|bar)\{([^{}]*)\}", lambda m: m.group(1) + "̄", s)
-    s = re.sub(r"\\(?:widetilde|tilde)\{([^{}]*)\}", lambda m: m.group(1) + "̃", s)
-    # Negated relations.
-    s = s.replace(r"\not\sqsubseteq", "⋢").replace(r"\not\sqsupseteq", "⋣")
-    s = s.replace(r"\neq", "≠")
-    # Named symbols, longest first so \sqsubseteq beats any prefix.
-    for k in sorted(_SYM, key=len, reverse=True):
-        s = s.replace(k, _SYM[k])
-    # Any remaining \not X -> X with a combining slash.
-    s = re.sub(r"\\not\s*(.)", lambda m: m.group(1) + "̸", s)
-
-    def render(content, table):
-        if content and all(ch in table for ch in content):
-            return "".join(table[ch] for ch in content)
-        return None
-
-    out, i = [], 0
-    while i < len(s):
-        c = s[i]
-        if c in "_^" and i + 1 < len(s):
-            table = _SUB if c == "_" else _SUP
-            if s[i + 1] == "{":
-                grp, ni = _take_group(s, i + 1)
-                r = render(grp, table)
-                out.append(r if r is not None else c + grp)
-                i = ni
-            else:
-                ch = s[i + 1]
-                r = render(ch, table)
-                out.append(r if r is not None else c + ch)
-                i += 2
-        else:
-            out.append(c)
-            i += 1
-    text = "".join(out).replace("{", "").replace("}", "")
-    text = text.replace("", "{").replace("", "}")
-    # Collapse the whitespace that macros like \, and \quad introduce.
-    return re.sub(r"[ \t]+", " ", text).strip()
+def _expression(latex: str) -> str:
+    # Remove TeX comments BEFORE flattening lines, or % comments out the rest.
+    latex = re.sub(r"(?<!\\)%[^\n]*", "", latex)
+    latex = latex.replace(r"\llbracket", "⟦").replace(r"\rrbracket", "⟧")
+    return re.sub(r"\s+", " ", latex).strip()
 
 
 def _latex_block(latex: str) -> dict:
     """Substack's block-equation node."""
     node_id = "".join(random.choices(string.ascii_uppercase, k=10))
-    # Substack's KaTeX build lacks the stmaryrd brackets `\llbracket`/`\rrbracket`
-    # (they render as an error), so substitute `[[`/`]]` before emitting.
-    latex = latex.replace(r"\llbracket", "[[").replace(r"\rrbracket", "]]")
-    # Editor-created equations are single-line; embedded newlines make Substack's
-    # editor choke on first parse (the recoverable "Something has gone wrong"
-    # popup). Whitespace is insignificant in LaTeX outside the `\\` row breaks,
-    # so collapse it to one line.
-    expr = re.sub(r"\s+", " ", latex).strip()
+    expr = _expression(latex)
     return {
         "type": "latex_block",
         "attrs": {"persistentExpression": expr, "id": node_id, "dirty": True},
@@ -185,34 +96,61 @@ def _merge_text(nodes: list) -> list:
     return out
 
 
-def substackify(body: dict, inline_mode: str = "unicode") -> dict:
-    """Rewrite the writer's math sentinels into Substack's real encoding."""
-
-    def inline_repl(node):
-        latex = node.get("latex", "")
-        if inline_mode == "raw":
-            return {"type": "text", "text": f"${latex}$"}
-        if inline_mode == "block":
-            return _latex_block(latex)
-        return {"type": "text", "text": latex_to_unicode(latex)}
+def substackify(body: dict, inline_mode: str = "unicode",
+                table_mode: str = "list") -> dict:
+    """Resolve export sentinels, keeping block nodes out of text containers."""
+    from substack_media import render_table
 
     def walk(node):
-        if isinstance(node, dict):
-            content = node.get("content")
-            if isinstance(content, list):
-                new = []
-                for child in content:
-                    if isinstance(child, dict) and child.get("type") == "inline_math":
-                        new.append(inline_repl(child))
-                    elif isinstance(child, dict) and child.get("type") == "display_math":
-                        new.append(_latex_block(child.get("latex", "")))
-                    else:
-                        new.append(walk(child))
-                node["content"] = _merge_text(new)
-            return node
-        return node
+        kind = node.get("type")
+        if kind == "export_table":
+            return [n for block in render_table(node, table_mode) for n in walk(block)]
+        if kind == "display_math":
+            return [_latex_block(node["latex"])]
+        if kind == "inline_math":
+            latex = node["latex"]
+            marks = node.get("marks")
+            if inline_mode == "block":
+                return [_latex_block(latex)]
+            if inline_mode == "native":
+                result = {"type": "inline_latex",
+                          "attrs": {"persistentExpression": _expression(latex)}}
+            else:
+                text = (f"${latex}$" if inline_mode == "raw" else
+                        node.get("unicode", None))
+                if text is None:
+                    text = latex_to_unicode(latex)
+                if inline_mode == "unicode" and "\\" in text:
+                    print(f"warning: using a block equation for unsupported Unicode math: {latex}",
+                          file=sys.stderr)
+                    return [_latex_block(latex)]
+                result = {"type": "text", "text": text}
+            if marks:
+                result["marks"] = marks
+            return [result] if result.get("text", "nonempty") else []
+        if "content" not in node:
+            return [dict(node)]
+        children = [n for child in node["content"] for n in walk(child)]
+        if kind in {"paragraph", "heading", "caption"}:
+            # --inline-math block must lift equations, not put them inside a
+            # paragraph/heading where ProseMirror rejects them.
+            result, current = [], []
+            for child in children:
+                if child["type"] in {"latex_block", "export_image", "captionedImage"}:
+                    if current:
+                        result.append({**node, "content": _merge_text(current)})
+                    result.append(child)
+                    current = []
+                else:
+                    current.append(child)
+            if current or not result:
+                result.append({**node, "content": _merge_text(current)})
+            return result
+        if kind == "list_item" and (not children or children[0]["type"] != "paragraph"):
+            children.insert(0, {"type": "paragraph"})
+        return [{**node, "content": _merge_text(children)}]
 
-    return walk(body)
+    return walk(body)[0]
 
 
 def convert(md_path: Path) -> dict:
@@ -358,10 +296,17 @@ def main() -> None:
                         choices=["everyone", "only_free", "only_paid", "founding"],
                         help="Who can read the post (default: everyone)")
     parser.add_argument("--inline-math", default="unicode",
-                        choices=["unicode", "raw", "block"],
-                        help="How to render inline $...$ (Substack has no inline "
-                             "math): unicode text (default), raw LaTeX, or a "
-                             "centered latex_block per expression")
+                        choices=["unicode", "native", "raw", "block"],
+                        help="Inline math: Unicode (default), experimental native "
+                             "inline LaTeX, raw source, or block equations")
+    parser.add_argument("--tables", default="list", choices=["list", "latex"],
+                        help="Tables: labeled entries (default) or LaTeX arrays "
+                             "for short mathematical tables")
+    parser.add_argument("--assets-dir", type=Path,
+                        help="Directory for rasterized images (default: beside JSON "
+                             "output or under .substack-export/)")
+    parser.add_argument("--preview", type=Path,
+                        help="Write a local HTML preview of the exported JSON")
     parser.add_argument("--no-footer", action="store_true",
                         help="Do not append the 'read on the web' link footer")
     parser.add_argument("--site-url", default=SITE_BASE_URL,
@@ -387,7 +332,18 @@ def main() -> None:
         sys.exit(f"error: file not found: {md_path}")
 
     doc = convert(md_path)
-    doc["body"] = substackify(doc["body"], args.inline_math)
+    from substack_media import prepare_images, upload_images, write_preview
+    doc["body"] = substackify(doc["body"], args.inline_math, args.tables)
+    assets_dir = args.assets_dir or ((args.json_out or args.preview).parent / "assets"
+                                    if args.json_out or args.preview else
+                                    REPO_ROOT / ".substack-export" / md_path.stem)
+    prepare_images(doc["body"], md_path, assets_dir)
+    from substack_media import nodes
+    for node in nodes(doc["body"]):
+        for mark in node.get("marks", []):
+            if mark["type"] == "link":
+                mark["attrs"]["href"] = urljoin(website_url(md_path, args.site_url),
+                                                mark["attrs"]["href"])
     if not args.no_footer:
         url = website_url(md_path, args.site_url)
         doc["body"]["content"].append(footer_node(url, args.footer_prefix))
@@ -399,7 +355,19 @@ def main() -> None:
     title = args.title or doc.get("title") or md_path.stem
     subtitle = args.subtitle if args.subtitle is not None else doc.get("subtitle", "")
 
+    doc["title"], doc["subtitle"] = title, subtitle
+    if args.preview:
+        write_preview(doc, args.preview)
+        print(f"wrote preview: {args.preview}", file=sys.stderr)
+
+    api = None
+    if not args.dry_run:
+        load_env(REPO_ROOT)
+        api = make_api()
+        upload_images(doc["body"], api)
+
     if args.json_out:
+        args.json_out.parent.mkdir(parents=True, exist_ok=True)
         args.json_out.write_text(json.dumps(doc, ensure_ascii=False, indent=2))
         print(f"wrote JSON: {args.json_out}", file=sys.stderr)
 
@@ -408,9 +376,6 @@ def main() -> None:
         print()
         return
 
-    repo_root = SCRIPT_DIR.parent
-    load_env(repo_root)
-    api = make_api()
     post = build_post(api, doc, title, subtitle, args.audience)
 
     if args.section:
@@ -430,4 +395,7 @@ def main() -> None:
 
 
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    except (ValueError, OSError) as exc:
+        sys.exit(f"error: {exc}")
