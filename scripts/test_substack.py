@@ -1,4 +1,5 @@
 """Run with: .venv-substack/bin/python -m unittest discover -s scripts -p 'test_*.py'."""
+import base64
 import contextlib
 import copy
 import io
@@ -30,6 +31,15 @@ class ExportTest(unittest.TestCase):
             self.assertIn(token, text)
         self.assertNotIn('\\', text)
         self.assertEqual(body['content'][0]['content'][0]['marks'], [{'type': 'strong'}])
+
+    def test_starred_values_and_primes(self):
+        body = substackify(self.convert_text(r"$V^*$ and $Q^*$; $s'$, $\pi'$, $x''$, $V^{\pi'}$, $x^{*+1}$."))
+        text = ''.join(n.get('text', '') for n in nodes(body))
+        for token in ['V*', 'Q*', 's′', 'π′', 'x″', 'V^(π′)']:
+            self.assertIn(token, text)
+        self.assertIn('x^(*+1)', ''.join(text.split()))
+        self.assertNotIn('^(*)', text)
+        self.assertNotIn('^(′)', text)
 
     def test_fallback_and_block_structure(self):
         source = self.convert_text(r'- Before $G_t=\sum_{k=t}^{T-1}r_k$ after.')
@@ -81,6 +91,40 @@ class ExportTest(unittest.TestCase):
             upload_images(body, api)
             api.get_image.assert_called_once()
             self.assertTrue(all(n['attrs']['src'].startswith('https://') for n in imgs))
+
+    def test_embedded_png_and_remote_metadata(self):
+        from PIL import Image
+        buffer = io.BytesIO()
+        Image.new('RGB', (20, 10), 'blue').save(buffer, format='PNG')
+        src = 'data:image/png;base64,' + base64.b64encode(buffer.getvalue()).decode()
+        body = self.convert_text(f'![Embedded diagram]({src})')
+        prepare_images(body, Path('/tmp/article.md'), Path('/tmp/unused-assets'))
+        embedded = next(n for n in nodes(body) if n['type'] == 'image2')
+        self.assertEqual(embedded['attrs']['width'], 20)
+        self.assertEqual(embedded['attrs']['height'], 10)
+        remote = {'type': 'export_image', 'src': 'https://example.com/figure.png'}
+        prepare_images(remote, Path('/tmp/article.md'), Path('/tmp/unused-assets'))
+        api = Mock()
+        api.get_image.return_value = {'url': 'https://substackcdn.com/figure.png',
+                                     'imageWidth': 640, 'imageHeight': 480,
+                                     'bytes': 12345, 'contentType': 'image/png'}
+        upload_images(remote, api)
+        attrs = remote['content'][0]['attrs']
+        self.assertEqual((attrs['width'], attrs['height'], attrs['bytes'], attrs['type']),
+                         (640, 480, 12345, 'image/png'))
+        self.assertEqual(attrs['resizeWidth'], 640)
+        upload_images(body, api)
+        self.assertEqual(api.get_image.call_args.args[0], src)
+
+    def test_table_images_are_not_dropped(self):
+        source = self.convert_text('| Name | Figure |\n|---|---|\n| A | ![diagram](a.png) |')
+        out = substackify(copy.deepcopy(source))
+        images = [n for n in nodes(out) if n['type'] == 'export_image']
+        self.assertEqual(len(images), 1)
+        self.assertEqual(images[0]['alt'], 'diagram')
+        self.assertEqual(images[0]['src'], 'a.png')
+        with self.assertRaisesRegex(ValueError, 'use --tables list'):
+            substackify(source, table_mode='latex')
 
     def test_missing_image_and_failed_upload(self):
         body = {'type': 'export_image', 'src': 'missing.svg'}

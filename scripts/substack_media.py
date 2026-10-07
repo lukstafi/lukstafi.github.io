@@ -1,7 +1,11 @@
 """Image transport, table presentation, and previews for the Substack exporter."""
 from __future__ import annotations
 
+import base64
+import binascii
 import copy
+import io
+import re
 import hashlib
 import html
 import os
@@ -27,8 +31,24 @@ def prepare_images(body: dict, markdown: Path, assets_dir: Path) -> None:
         if parsed.scheme in {"https", "http"}:
             if parsed.path.lower().endswith(".svg"):
                 raise ValueError(f"Use a local copy of the SVG for rasterization: {src}")
+        elif parsed.scheme == "data":
+            from PIL import Image
+            match = re.fullmatch(r"data:(image/(?:png|jpeg|gif|webp));base64,(.*)",
+                                 src, re.DOTALL)
+            if not match:
+                raise ValueError("Embedded images must be base64 PNG/JPEG/GIF/WebP data URIs")
+            try:
+                data = base64.b64decode(re.sub(r"\s+", "", match[2]), validate=True)
+            except binascii.Error as exc:
+                raise ValueError("Invalid base64 in embedded image") from exc
+            with Image.open(io.BytesIO(data)) as image:
+                if Image.MIME.get(image.format) != match[1]:
+                    raise ValueError("Embedded image MIME type does not match its contents")
+                width, height = image.size
+                image.verify()
+            size = len(data)
         elif parsed.scheme or parsed.netloc:
-            raise ValueError(f"Unsupported image URL: {src}")
+            raise ValueError(f"Unsupported image URL scheme: {parsed.scheme}")
         else:
             from PIL import Image
             path = (markdown.resolve().parent / unquote(parsed.path)).resolve()
@@ -78,14 +98,22 @@ def upload_images(body: dict, api) -> None:
             url = response.get("url") if isinstance(response, dict) else None
             if not isinstance(url, str) or urlparse(url).scheme != "https":
                 raise ValueError(f"Substack did not return an HTTPS image URL for {source}")
-            uploaded[src] = url
-        attrs["src"] = uploaded[src]
+            metadata = {"src": url}
+            for remote, local in [("imageWidth", "width"), ("imageHeight", "height"),
+                                  ("bytes", "bytes"), ("contentType", "type")]:
+                if response.get(remote) is not None:
+                    metadata[local] = response[remote]
+            uploaded[src] = metadata
+        attrs.update(uploaded[src])
+        if not attrs.get("width") or not attrs.get("height"):
+            raise ValueError("Substack image upload did not return intrinsic dimensions")
+        attrs["resizeWidth"] = min(attrs.get("resizeWidth") or 728, attrs["width"])
 
 
 def _cell_inlines(blocks):
     out = []
     for block in blocks:
-        if block["type"] in {"inline_math", "display_math", "text"}:
+        if block["type"] in {"inline_math", "display_math", "text", "export_image"}:
             out.append(copy.deepcopy(block))
         else:
             if out and block["type"] in {"paragraph", "heading", "codeBlock"}:
@@ -114,6 +142,8 @@ def render_table(table: dict, mode: str) -> list:
             for cell in row["cells"]:
                 parts = []
                 for node in _cell_inlines(cell):
+                    if node["type"] == "export_image":
+                        raise ValueError("LaTeX tables cannot contain images; use --tables list")
                     parts.append(node["latex"] if node["type"] in {"inline_math", "display_math"}
                                  else _tex_text(node.get("text", "")))
                 cells.append(" ".join(parts))

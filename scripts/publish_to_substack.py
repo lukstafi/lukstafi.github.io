@@ -65,6 +65,15 @@ def latex_to_unicode(latex: str) -> str:
     return result.stdout.strip()
 
 
+def polish_unicode_math(text: str) -> str:
+    """Unwrap script glyphs whose typography already indicates their position.
+
+    This operates on texmath's output, not on TeX source. Keep grouping on
+    compound scripts such as V^(π₁), where removing it would change meaning.
+    """
+    return re.sub(r"\^\(([′″‴⁗*]+)\)", lambda match: match[1], text)
+
+
 def _expression(latex: str) -> str:
     # Remove TeX comments BEFORE flattening lines, or % comments out the rest.
     latex = re.sub(r"(?<!\\)((?:\\\\)*)%[^\n]*", r"\1", latex)
@@ -124,6 +133,8 @@ def substackify(body: dict, inline_mode: str = "unicode",
                     print(f"warning: using a block equation for unsupported Unicode math: {latex}",
                           file=sys.stderr)
                     return [_latex_block(latex)]
+                if inline_mode == "unicode":
+                    text = polish_unicode_math(text)
                 result = {"type": "text", "text": text}
             if marks:
                 result["marks"] = marks
