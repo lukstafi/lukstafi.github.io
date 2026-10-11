@@ -177,3 +177,5 @@ Type A versus type B: have we reduced the hard problem? Also, explain these sent
 yes, add the Drescher credit and update Substack for the earlier essay. Don't worry about length, we'll tighten or split once I finish reading.
 
 "gensyms: tokens recognizable by their identity, whose distinguishing features introspection cannot inspect" -- this potentially diverges from our view in what both "gensym" and "merely hidden" suggest; it suggests these features are not phenomenal (not phenomenally manifest).
+
+I think this is good, the nuance is that of course the presented / regulated character has a particular information content; it's just the "gensym" metaphor does not do justice to the amount of information. It's not just discrimination and availability for memory grains. It suggests even less information than Carruthers and others allowed via the quality space because gensyms typically don't have structure. But this informational scarcity agrees with the simplicity reading (and why I find simplicity in pre-modern philosophy so baffling).
