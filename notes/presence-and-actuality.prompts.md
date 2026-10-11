@@ -202,6 +202,12 @@ Could we end Michal's section with something like that paragraph at the end of t
 
 I changed "companion draft" to "companion upcoming essay". I'm happy with what we arrived at, even if it won't meet Michal's standards. Can you do a final pass to prepare for posting? (and it's not a draft anymore) Then commit, thanks! Aha, and collect my prompts into the .prompts.md file
 
+## Clarification before the Substack release — 9 October 2026
+
+Regarding 1, the clarification can be put where we distance ourselves from Wolfram's "computation" verbiage. I do accept that the Ruliad is a necessary abstract object in some sense. It is necessary in that I propose any grounding must accord with it (no infinite groundings), and it's abstract in that it's an object of a theory of grounding. These are not senses that a Platonist would use, no?
+
+"Stars are objects of theories" -- I meant an object of the explanatory mechanism. Regarding 2, it's out of scope of the essay (the scope is in the linked essays, and if they're defective in a future, next deep dive essay covering mindedness). Regarding 3, I don't see a problem, that's already implicit in the essay.
+
 ## Material constitution and representational failure
 
 This wiki page also links to https://plato.stanford.edu/entries/material-constitution/ which would be helpful to give a less dismissive account of MRW's position in "Presence and Actuality", wish I stumbled on it earlier; haven't read it yet though.
