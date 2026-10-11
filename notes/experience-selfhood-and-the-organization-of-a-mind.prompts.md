@@ -1,4 +1,4 @@
-# Prompts for Experience Selfhood and the Organization of a Mind
+# Prompts for Experience, Selfhood, and the Organization of a Mind
 
 *The human-side prompts that developed and steered the first draft, in conversation order. Assistant responses and interface metadata are omitted. Local file paths have been replaced by descriptions; the philosophical wording is preserved.*
 

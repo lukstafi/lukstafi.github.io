@@ -1,4 +1,4 @@
-# Experience Selfhood and the Organization of a Mind
+# Experience, Selfhood, and the Organization of a Mind
 
 *Łukasz Stafiniak and Codex (OpenAI) — first draft, 4 October 2026*
 
