@@ -175,3 +175,5 @@ Type A versus type B: have we reduced the hard problem? Also, explain these sent
 ## Drescher's precedent
 
 yes, add the Drescher credit and update Substack for the earlier essay. Don't worry about length, we'll tighten or split once I finish reading.
+
+"gensyms: tokens recognizable by their identity, whose distinguishing features introspection cannot inspect" -- this potentially diverges from our view in what both "gensym" and "merely hidden" suggest; it suggests these features are not phenomenal (not phenomenally manifest).
