@@ -1,6 +1,6 @@
 # Prompts for What Phenomenal Intuition Gets Right
 
-*Selected human-side prompts from the discussion that developed this first draft, in conversation order. Assistant responses and interface metadata are omitted. The selection emphasizes the corrections and positive proposals that shaped the essay; it is not the complete conversation.*
+*Selected human-side prompts from the discussions that developed this essay, in conversation order. Assistant responses and interface metadata are omitted. The selection emphasizes the corrections and positive proposals that shaped the essay; it is not the complete conversation.*
 
 ## Actuality and the explanatory task
 
@@ -141,3 +141,33 @@ Definitely not Russellian. The whole metaphysics is ontic structuralist. There's
 ## Weak illusionism, simplicity, and detachability
 
 (7) is also adjacent to Kammarer's "verbal weak illusionism". What's Frankish argument for instability? Worth responding to, including a source reference. (8) I'm leaning simplicity is part of the uptake, but I never understood simplicity (which has roots in Plato). If possible we could dig deeper. (9) I'm open to moving the symmetry argument to the future Yudkowsky response essay. But the argument was doing work for this essay, by showing that some cognitive organizations make strong illusionism true. (10) Detachability was argued against in an old essay which was the same essay that introduced the against-property-framing argument. So I'm bringing it up here for two reasons: (a) in case someone happened to worry if we also take back that argument; (b) because detachability could illuminate intrinsic character. I'm actually don't think that simplicity bolsters detachability, one can worry even more about detachability on any identity account.
+
+## Polishing distinctness
+
+Let's remove references to the missing article about the metaphysics of cognition / computation / biology. It doesn't have a concrete shape nor ideas we haven't yet communicated and might not happen.
+
+What does this sentence say precisely? "It would be another mistake to conclude that, because the vehicles do not instantiate the represented shapes, there is no genuine experiential difference between them." I would say the consequent more precisely: "there is no genuine content-tracking difference between them". I think using "experiential" here begs the question, no? And appealing to arbitrary difference is not achieving anything?
+
+How do we feel about this claim? An edge detecting neuron does not map to an edge via a spatial projection. But its dendritic field maps onto the geometry of edges.
+
+But the vehicle is the neuron, not the receptive field. Receptive field is in the content space.
+
+But the brain might be making things a bit simpler to us than the challenge I'd like to withstand. The organizational causal structure of the vehicle needs to be content-tracking: allowing explanation in terms of the geometry. The physical space location can be scrambled without affecting it. (But the demand has impact on physical spatiality, as physical proximity facilitates causal connection.)
+
+## Color, symmetry, and neural codes
+
+Are we at risk of vindicating Kammerer, precisely where we went to diagnose our claim as scientific? How does color work in the brain?
+
+I intended to ask whether we can claim lack of symmetry between distinct color vehicles, sufficiently extended.
+
+You're describing symmetry in the phenomenal space. I don't see how your explanation applies to neuronal organization. Except indirectly through physicalism, but this missing move is precisely what we need to show, no? Not the phenomenal space organization.
+
+## Analog computation and the label
+
+We can make a callback to "Presence and Actuality", where we brought up Michał Ryszard Wójcik's argument for the difference between analog computation and digital computation. This doesn't do work for the essay, but I think MRW would appreciate it. The callback is that content tracking in the "lowest"-level vehicle is what distinguishes analog and digital computation.
+
+"It may look like a fine-grained functionalism" -> "It can fairly be called a fine-grained functionalism" WDYT?
+
+## Type A versus type B
+
+Type A versus type B: have we reduced the hard problem? Also, explain these sentences a bit to see if I'm just tired or if they can be put more clearly: "Conversely, correcting the illusion of simplicity need not make every experiential truth derivable a priori from a physical description. The account should determine the classification rather than being fitted to one in advance."

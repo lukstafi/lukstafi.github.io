@@ -201,3 +201,9 @@ Could we end Michal's section with something like that paragraph at the end of t
 ## Final preparation
 
 I changed "companion draft" to "companion upcoming essay". I'm happy with what we arrived at, even if it won't meet Michal's standards. Can you do a final pass to prepare for posting? (and it's not a draft anymore) Then commit, thanks! Aha, and collect my prompts into the .prompts.md file
+
+## Material constitution and representational failure
+
+This wiki page also links to https://plato.stanford.edu/entries/material-constitution/ which would be helpful to give a less dismissive account of MRW's position in "Presence and Actuality", wish I stumbled on it earlier; haven't read it yet though.
+
+I'm ambivalent between Option A and B, but for weak cases of failing to represent: option B doesn't mean that the vehicle role is abandoned, only that the reconstruction of content can stop being parsimonious enough to warrant any claim to representational realism. (Where it can only be interpreted as content via a "creative license" given to the interpreter, rather than warranted by the embodiment or semantic history of the system.)
