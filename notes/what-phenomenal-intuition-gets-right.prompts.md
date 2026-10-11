@@ -171,3 +171,7 @@ We can make a callback to "Presence and Actuality", where we brought up Michał 
 ## Type A versus type B
 
 Type A versus type B: have we reduced the hard problem? Also, explain these sentences a bit to see if I'm just tired or if they can be put more clearly: "Conversely, correcting the illusion of simplicity need not make every experiential truth derivable a priori from a physical description. The account should determine the classification rather than being fitted to one in advance."
+
+## Drescher's precedent
+
+yes, add the Drescher credit and update Substack for the earlier essay. Don't worry about length, we'll tighten or split once I finish reading.
