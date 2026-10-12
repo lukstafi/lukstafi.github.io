@@ -1,0 +1,81 @@
+# Prompts for The Grain of the Hard Problem
+
+*The human-side prompts that developed and steered the draft, in conversation order. Assistant responses and interface metadata are omitted.*
+
+## The argument
+
+Separately from this essay, do you think we could mount an argument that discrimination overflow is required for making sense of the hard problem? In modern language, the thinking is that if experience were exhausted by discrimination, then functionalism would be true and a philosophical zombie world would have nothing missing.
+
+First, about the overreach: we need to distinguish the hard problem and the meta problem. The original framing was not an overreach because we cannot, at the same time, resolve the hard problem and prove the hardness problem. Not sure if I'm being clear, sorry.
+
+Our solution to the meta problem is that philosophical zombies are conceivable because the conceptual frame does not allow expressing grain dependency. Moreover, our Wolfram metaphysics helps here, surprisingly. It shows that physics is grain-dependent too. In fact, the grain of phenomenality is way above the grain of physics, but it could have turned out that the grain of physics is higher. Here, physics as a science rather than as materialism.
+
+## Scope of the essay
+
+I'd like us to write an essay where this is the first self-sufficient part, and the second optional part will be rereading MRW's dialogues to see if his thinking about coarse grainings is related. https://michalryszardwojcik.substack.com/p/the-metaphysics-of-coarse-graining
+
+## Relating Part II to Presence and Actuality
+
+Yes, swapped bits preserve the causal pattern, so same experience. In "Presence and Actuality", we are antagonistic to MRW's positions, and here we are approving of the positions. Is this complementarity (different parts), tension, or overruling?
+
+## Refining Part I
+
+"It could have turned out otherwise." -> "It could have turned out otherwise, logically speaking." I'm guessing it couldn't have turned out otherwise metaphysically, but let's not get into that can of worms. WDYT?
+
+Agreed. Although "for all we know analytically a priori" is still more correct to me, I think we need to sweep some nuance under the rug.
+
+"François Kammerer distinguishes a substantive illusionism, which denies that anything satisfies our phenomenal concepts, from a merely verbal one." It's confusing way to put it partly because of Kammerer's unfortunate choice of term: verbal illusionism is substantive illusionism except for the words, no?
+
+"assessed at the grain at which its regulation corrects it. Two organizations can share every discriminative disposition while differing in that organization." Would you speculate that this is because of the information bottleneck of access? The regulation can integrate more information and cross-level information, and has to, to guarantee the veracity of the accessed information.
+
+"Why should such differences be the rule rather than a curiosity?" I wouldn't put the opening this way. It's not about trying to establish that this is prevalent, but rather to undercut the objection that regulation cannot happen without discrimination. This fails on equivocation on what system does the discriminating.
+
+I also liked your argument about repeatability and context dependence. The total discriminatory profile might not be well defined.
+
+"from how observers like us coarse-grain an underlying computation" -> could we say "from how observers like us coarse-grain an underlying structural dynamics" instead? This is argued in a recent essay already
+
+"Here we must separate physics as a science from physicalism as a metaphysics." Maybe we could add a parenthetical that a future philosophy might opt to rename the concept, as it has already been renamed away from materialism.
+
+I think that the Russellian monism paragraph moves too quickly. I get the feeling that what motivates Russell is the inconceivability of ontic structuralism, but I might be wrong.
+
+## Mary and construction
+
+"The grain account says why it is predicted: the concept that would close the gap would have to carry a grain that recognition cannot carry." Is this "cary" in a representational sense or something beyond representation?
+
+So this is a biological-technological limitation, right?
+
+"A finite system can't represent its own current state at full grain, any more than a map can include itself at full scale." Not at once, but it can integrate over input over time to replace its state with the readout.
+
+But isn't Chalmers' argument intended similarly to the knowledge argument "Mary's room"? Not about self-knowledge, but about the possibility to achieve an exact reproduction of a tiniest experience?
+
+If we want to spend time on this, we can dig a bit deeper. A photograph is one technology to reproduce an experience, but in Chalmers' terms, that would be cheating. We can explain why and why a non-cheating technology would still be possible for some experiencers like specifically designed AIs.
+
+Yes, add the section to the essay and include both answered objections in it.
+
+Is it worth adding parenthetically that standard neural networks, like extensions of transformers, are in the same boat, but the construction is possible with similar technology because mentality outstrips experience. WDYT?
+
+## Observers, attributions, and Michał's levels
+
+"What remains open" takes Wolfram's observers too literally. They are more akin to macroscopic objects versus quantum mechanics I'm guessing. WDYT?
+
+"Presence and Actuality disagreed with Michał about existence: whether phenomenal presence can be read as existence itself" -- no, I don't think so. This part was specifically addressed against IIT and partially panpsychism more generally. I just felt it's a good fit to combine the two responses, but maybe it wasn't.
+
+"Physics does not own the bottom." Is not something I would expect to hear from Michał unforced. It's probably a reaction to my writings.
+
+It's extremely unlikely that Micha would pass info outside of the transcript, which makes me curious: where is the source of Thomas's thinking "Physics does not own the bottom"? I know Thomas is a GPT persona etc. but this phrase sounds Wolfram-like, what was meant by it in fact?
+
+How does Michal react to the autonomy of levels?
+
+## Difference, absence, and cognition
+
+In part one, we jump a bit too quickly from "the possibility of a different experience" to "the possibility of no experience". Under the counterfactual, the first we grant, but maybe the second is at best open?
+
+The more precise point I've been making is that the hypothetically coarse grain of physics, even if very coarse, cannot scramble the way a purely cognitive duplicate can. These hypothetical possibilities are extremely tentative, even despite their counterfactuality.
+
+I would drop "Even as counterfactuals, these possibilities are tentative." We cannot avoid bringing up lack of experience altogether, because of our appeal to discussions of philosophical zombies. The point is that the wedge of different experience is  an intuition pump(?) toward conceiving of no experience at all.
+
+I just realized we might have confused Michal. He might be thinking that we mean cognition = total information processing that drives behavior. We use this technical term "cognition" that partially derives from Ned Block and partially from global workspace architectures...
+
+"Access, in Block's earlier sense, is availability to cognition." No, I think your starting point was good in that Ned's access recipients is precisely what we mean here. It includes selection of action, but not control of action (which has unconscious sensory-to-motor feedback). We should also say "By *cognition* here I mean" because in other places we do/might want to use Block's definition/term.
+
+The rest of part 2 reads well. Let's do a final editorial pass. It's not a draft anymore! Thanks :-)
