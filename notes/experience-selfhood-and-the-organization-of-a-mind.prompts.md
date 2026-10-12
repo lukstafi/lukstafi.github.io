@@ -1,6 +1,6 @@
 # Prompts for Experience, Selfhood, and the Organization of a Mind
 
-*The human-side prompts that developed and steered the first draft, in conversation order. Assistant responses and interface metadata are omitted. Local file paths have been replaced by descriptions; the philosophical wording is preserved.*
+*The human-side prompts that developed and steered the drafts, in conversation order. Assistant responses and interface metadata are omitted. Local file paths have been replaced by descriptions; the philosophical wording is preserved.*
 
 ## Initial scope
 
@@ -60,3 +60,85 @@ It also stress-tests whether our definition of mindedness is a natural category.
 ## Request for the first draft
 
 I'd like you to step back and write an essay out of our discussion so far, with sourced material where possible, to give the essay evidential weight. We will iterate from there.
+
+## Revision after the companion essays
+
+From the discussion of *What Phenomenal Intuition Gets Right*: I'm open to moving the symmetry argument to the future Yudkowsky response essay. But the argument was doing work for this essay, by showing that some cognitive organizations make strong illusionism true.
+
+No idea where the missing comma originated, let's add it. Other points from Astra, quoting: *(followed by Astra's six-point review of how* Presence and Actuality *bears on this draft: compressing the anti-Platonism history, recentering the broadcast argument on individuation, contrasting experiential with minded regulation, distinguishing the operation of regulation from its success, keeping selfhood from conferring existence, and joining the two main arguments in a question about belonging)*
+
+## Unfolding and carriers
+
+For unfolding, we need to distinguish between recurrent auto-regressive recurrent network unfolding and unfolding as in looped transformers i.e. with a residual stream, since the residual stream can be a vehicle carrier.
+
+## Current AI systems
+
+Should we reprobe the question whether agentic LLMs are already phenomenally conscious in this essay, apart of whether Yudkowsky's argument establishes that?
+
+I would say the verdict opens, with what is open is what the shift states, and maybe we manage to make a bit more progress while working on the essay. What's the dynamics of recirculated transformers? Do the cross-token connections make the causal looping last longer?
+
+(Sharing Mozer et al., "Recirculation", arXiv 2608.17981.)
+
+But I think the downstream effect is unbounded? Also, can we construe the layer to which the feedback lands as establishing the depth of the "phenomenal surface"? Maybe the surface settles at a later layer though, for the feedback to spread out. (Tangentially slightly relevant: generalizing residual connections to attention across depth.)
+
+What needs to be preserved in the session data for recirculated transformers?
+
+More precisely, what would be needed for prefill to run in parallel? Source-layer activations are necessary and sufficient, no?
+
+let's start drafting the selfhood essay revision, thanks!
+
+## Workspaces, binding, and perspective
+
+What implications does "Is the Jacobian Space a Global Workspace?" have? (Sharing David Chalmers's commentary, and later Ayonrinde and Lindsey's J++ lens post.)
+
+"Our answer is neither: experience is a regulated carrier, and broadcast is access." But we underspecified regulation. On one species of our view, global broadcast would be necessary to provide the information for the regulatory feedback. In particular, the regulation needs to construct phenomenal binding, so global information might be relevant.
+
+A unitary phenomenal binding might be an account of perspectival subjectivity, which is a formal requirement of phenomenal consciousness. What do you think? I think when we introduced perspectival subjectivity originally, we gave it a too-deflationary account.
+
+Ah wait, not sure there *was* an inconsistency because of the underspecificity of our/my terms. In particular, are we retiring "indexical unity" together with the confering of actuality?
+
+Yes, for the revised (not just pure format) perspectival subjectivity. Is perspectival subjectivity an aspect of phenomenality, or does it extend more broadly?
+
+Before I answer, have you revisited the classification of subjectivities? We do touch on agentic ownership as having phenomenal signature.
+
+yes, write it in with Guillot and option A as more elegant but option B as important empirical question. Maybe add a hesitation around rename of perspectival subjectivity to perspectival organization, because of how connected the consciousness discourse is to subjectivity.
+
+## Carruthers's current view
+
+The Carruthers section could be strengthened, e.g. "Carruthers identifies particular explanatory commitments that were not earning their keep." is not really expressed in the preface, there's a link to a paper which is behind a paywall. But I just found a paper from this year that sounds exciting. (Sharing Yu and Carruthers, "Consciousness as mode of presentation: Content-based objections answered.")
+
+You can add the Pautz sentence to the colour paragraph. A warrant is better than a license, opposite to what you say this only improves our situation, our strength is that we don't need their argument to work.
+
+Isn't the phenomenal signature of ownership binary-categorical rather than analog?
+
+## Brown, content, and grain
+
+This paragraph confuses me a bit: "This also changes what such cases show against Brown." I gather we go to Brown's defense? Does he stay ambiguous whether a HOROR is phenomenally manifest as the vehicle?
+
+But why does Brown have resources for this defense? If there is no content, is there representation? One would need to add that the packaging together of the representation and the pointer is via an appropriate mechanism. And what makes the mechanism work? One would need to arrive at for example a higher-order variant of our theory/approach.
+
+"what it is like is exhausted by its descriptive content" -- that sounds like locating phenomenality in the content (similar to how it sounded for Carruthers & Yu)
+
+## Yudkowsky in context
+
+Which question? "Such architectures do not make the question easier; they move it." End of the same paragraph -- this is unclear: "Infrastructure built with no thought of experience settles where carriers end."
+
+Have you seen EY's tweets in context? (from my saved copy of the posts) I found the October tweet's link: https://x.com/allTheYud/status/2106509058819916284
+
+Yes, please go ahead. I attach "Good and Real" if it helps.
+
+"gensyms: tokens recognizable by their identity, whose distinguishing features introspection cannot inspect" -- this potentially diverges from our view in what both "gensym" and "merely hidden" suggest; it suggests these features are not phenomenal (not phenomenally manifest).
+
+In the acquaintance-and-homeostasis essay we bring up nonwellfounded sets, is it relevant as yet another limit case for the self discussion? I meant, maybe just a link back to that essay from this sentence? "In Kriegel's self-representational theory, meanwhile, “self” primarily concerns a mental state's representation of itself."
+
+I'm leaning toward removing this paragraph: "The criterion does not make selfhood confer existence or individuality." It's a bit confused about what I meant by "indexical actuality" (what it was achieving). And it doesn't help this essay, does it?
+
+"an isolated local loop would have the minimal perspective of its local binding" is only on the local species of our framework, right? Maybe worth adding two guards: that is just the local variant of the framework, adopting the global or hybrid variant reduces these problematic cases; and that a loop would only count as experiential occurrence when in a minded system, which brings a graded complexity, so the anti-panpsychist intuition is not violated.
+
+The "we proposed that mindedness involves" list is missing simulation, is that on purpose?
+
+## Wrapping up the draft
+
+The only section I haven't read is the final "What evidence can decide". Too tired to read it but I'd like to wrap up the essay today. What would you point out to check?
+
+(1) OK. (2) the original said "[the acquaintance] is a relation between two genuinely distinct things: a higher-order regulatory monitoring process and the *vehicle* of a first-order representation." So it's a verbal issue whether this is higher-order (perception) or first-order (broadcast). WDYT? (3) cut out the whole paragraph? Animals having memories does sounds obvious? (4) leaning toward leaving it out. Then commit; no Substack yet, we'll do another editorial pass.
