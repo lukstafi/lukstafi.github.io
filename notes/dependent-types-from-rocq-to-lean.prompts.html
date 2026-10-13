@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>Prompts for Dependent Types from Rocq to Lean 4</title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <link rel="stylesheet" href="/assets/tufte.css">
+  <link rel="stylesheet" href="/assets/pandoc-tufte.css">
+  <link rel="stylesheet" href="/assets/site.css">
+  <script defer=""
+  src="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.js"></script>
+  <script>document.addEventListener("DOMContentLoaded", function () {
+ var mathElements = document.getElementsByClassName("math");
+ var macros = [];
+ for (var i = 0; i < mathElements.length; i++) {
+  var texText = mathElements[i].firstChild;
+  if (mathElements[i].tagName == "SPAN") {
+   katex.render(texText.data, mathElements[i], {
+    displayMode: mathElements[i].classList.contains('display'),
+    throwOnError: false,
+    macros: macros,
+    fleqn: false
+   });
+}}});
+  </script>
+  <link rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.css" />
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+  <script>(function(){var t=localStorage.getItem('theme-preference');if(t)document.documentElement.setAttribute('data-theme',t);})()</script>
+</head>
+<body>
+<nav class="site-nav">
+  <a href="/">Home</a> &middot; <a href="/about.html">About</a> &middot; <a href="https://lukstafi.substack.com">Substack</a>
+</nav>
+<div class="theme-toggle">
+  <button id="theme-btn" aria-label="Toggle dark mode">&#9788;</button>
+</div>
+<article>
+<header>
+<h1 class="title">Prompts for Dependent Types from Rocq to Lean 4</h1>
+</header>
+<p>The human prompts that framed and developed this draft. Assistant
+responses and interface metadata are omitted.</p>
+<section id="initial-request" class="level2">
+<h2>Initial request</h2>
+<p>For an upcoming article for our blog, let’s do a deep dive into
+dependent type systems, in particular calculus of constructions, as in
+Rocq, and the system behind Lean, its evolution, and Lean4. Inspired by
+this article <a
+href="https://www.lesswrong.com/posts/zHhGa3iQBQcdSifFL/a-critical-look-at-lean4-1">https://www.lesswrong.com/posts/zHhGa3iQBQcdSifFL/a-critical-look-at-lean4-1</a>
+But the motivation is to refresh my forgotten understanding of Rocq (Coq
+at the time) and use it to teach me Lean. A fruitful triangulation for
+the level of writing is:</p>
+<ul>
+<li>People who used to be familiar with dependent types at a rather deep
+level but in their past life and need a refresher</li>
+<li>People who are unfamiliar with dependent types but are proficient
+mathematicians</li>
+</ul>
+</section>
+<section id="normalization-and-denotational-semantics" class="level2">
+<h2>Normalization and denotational semantics</h2>
+<p>Let’s go deeper into why proof irrelevance and impredicativity break
+normalization, with a worked example. I’d like to understand the
+mechanism, not just the distinction from inconsistency. On another
+tangent, how do these articles relate? <a
+href="https://arxiv.org/html/2603.12827">https://arxiv.org/html/2603.12827</a>
+and <a
+href="https://arxiv.org/html/2507.04071">https://arxiv.org/html/2507.04071</a>.
+Would it be worth adding a denotational semantics section?</p>
+</section>
+<section id="gadts-and-dependent-types" class="level2">
+<h2>GADTs and dependent types</h2>
+<p>How much of the dependent types’ expressivity can be captured by
+GADTs?</p>
+<p>Is Haskell or OCaml more expressive in this regard, or are they the
+same?</p>
+<p>Let’s add a section on GADTs to the article, using the Haskell and
+OCaml examples to explain how far indexed families get us and what full
+dependent types add. Thanks!</p>
+</section>
+<section id="constructor-declaration-syntax" class="level2">
+<h2>Constructor declaration syntax</h2>
+<p>What does the second colon do in this part of the definition of
+<code>Vec</code>?
+<code>cons {n : Nat} : α → Vec α n → Vec α (n + 1)</code></p>
+<p>Why is it a colon rather than an arrow?</p>
+<p>Ah so it’s just stylistic</p>
+<p>Let’s add a brief explanation of this syntax to the article, showing
+the two equivalent forms of <code>cons</code>.</p>
+</section>
+<section id="naming-the-hypothetical-constructor" class="level2">
+<h2>Naming the hypothetical constructor</h2>
+<p>“If we freely admitted a constructor
+<code>(Bad → False) → Bad</code>,” is the constructor named
+<code>mk</code> in the example that follows? I’d say “If we freely
+admitted a constructor <code>mk : (Bad → False) → Bad</code>,”</p>
+</section>
+<section id="positive-and-negative-positions" class="level2">
+<h2>Positive and negative positions</h2>
+<p>It’s obvious to me what a positive and negative position is, but it
+might not be to all readers.</p>
+</section>
+<section id="understanding-the-diagonal-counterexample" class="level2">
+<h2>Understanding the diagonal counterexample</h2>
+<p>In the counterexample, is <code>d (mk d)</code> the only option, or
+can we pass some other arguments to <code>d</code>?</p>
+<p>What would be the next smallest example of deriving
+<code>False</code>?</p>
+<p>Is it possible to make the example not eventually close directly, but
+to alternate two reducts?</p>
+<p>Do you think adding this example to the article would be a nice
+illustration or just a waste of readers’ time?</p>
+<p>Yes, add this clarification and also add the open reduction sequence
+for <code>d</code></p>
+</section>
+<section id="termination-measures-aside" class="level2">
+<h2>Termination measures aside</h2>
+<p>Can we add an “off-topic details” box where we compare this to
+termination tracking type systems with a decreasing measure?</p>
+</section>
+<section id="reflexivity-terms-and-tactics" class="level2">
+<h2>Reflexivity terms and tactics</h2>
+<p>What does this mean?
+<code>example (n : Nat) : addLeft 0 n = n := rfl</code></p>
+<p>I see; <code>rfl</code> is a tactic “reflexivity”? Let’s explain
+this.</p>
+</section>
+<section id="existential-syntax-and-the-type-of-a-proof" class="level2">
+<h2>Existential syntax and the type of a proof</h2>
+<p>I removed these sentences: ” This is a comparison of dependent
+programming techniques, not a total ranking of the languages.”, “This
+does not identify all propositions.” and changed “makes this a property
+of the type system itself” to “marks this as a property of the type
+system itself”. How does this parse in <code>forgetWitness</code>? “∃ x,
+P x”</p>
+<p>So, the type of this type is <code>Prop</code>, and the values of
+this type are pairs?</p>
+<p>What does this mean? “A proof of <code>∃ x, P x</code> lives in
+<code>Prop</code>.”</p>
+<p>Yes, let’s use that clearer wording in the article, and briefly
+explain how <code>∃ x, P x</code> parses. (This is very clear to a
+mathematician, but an OCaml programmer will glitch for a while thinking
+it’s a pair.)</p>
+</section>
+<section id="a-visible-benefit-of-proof-irrelevance" class="level2">
+<h2>A visible benefit of proof irrelevance</h2>
+<p>What are the benefits of proof irrelevance?</p>
+<p>So without proof irrelevance, we wouldn’t get
+<code>get xs 0 = get xs 0</code> out of the box. Maybe that’s a good
+example to illustrate why we want this? For (1) we could imagine syntax
+sugar that does equivalencing; and (3) and (4) are not so visible to the
+users. All are benefits, but maybe (2) is most striking?</p>
+</section>
+<section id="choice-and-reasoning-about-programs" class="level2">
+<h2>Choice and reasoning about programs</h2>
+<p>How can <code>Classical.choose</code> recover a witness if proof
+irrelevance identifies existential proofs that were constructed using
+different witnesses? Also, doesn’t function extensionality affect
+reasoning about programs?</p>
+<p>Can we say that <code>Classical.choice</code> is a constant
+function?</p>
+<p>The more interesting part is the effect of function extensionality on
+reasoning about programs. Can you comment on this in the article?</p>
+<p>Is it a difference from Rocq?</p>
+<p>My question was misleading then. It’s not the extensionality that
+limits reasoning about programs. It’s the framework of dependent types
+with equality that makes functions and programs different
+categories.</p>
+<p>You can compress the four paragraphs that now discuss this program
+modeling limitation. The first paragraph, “For reasoning about programs,
+distinguish a function from an implementation”, is I think the best.
+Preserve from the others what’s striking / non-obvious.</p>
+</section>
+<section id="deriving-function-extensionality-from-quotients"
+class="level2">
+<h2>Deriving function extensionality from quotients</h2>
+<p>What are the main ways that definitional identity is distinguishable
+from identity in general</p>
+<p>Can we dig deeper into how function extensionality is derived using
+primitive quotients?</p>
+<p>Let’s add it to the article. Would you put it as a subsection of
+“Extensional mathematics and primitive quotients”, or in an appendix
+section?</p>
+</section>
+<section id="separating-typing-from-definitional-equality"
+class="level2">
+<h2>Separating typing from definitional equality</h2>
+<p>Let’s expand this into two lines to avoid confusing object and meta
+equality: <code>z\,D\,i &amp;: D=T\to T,</code></p>
+<p>This is confusing: “If `a : A` and `b : B` prove two propositions, we
+can prove <code>A ↔︎ B</code>”</p>
+</section>
+<section id="propositions-and-formulas-under-assignments"
+class="level2">
+<h2>Propositions and formulas under assignments</h2>
+<p>So, <code>Prop</code> extensionally has two elements?</p>
+<p>So what can we say without excluded middle?</p>
+<p>Once it’s written down formally, it’s not that surprising because of
+the double-negated negation encoding of classical in intuitionistic
+logic. Maybe we can clarify something else. We can discuss how
+equivalence in Prop relates/is distinct from notions of equivalence and
+equisatisfiability with three variables.</p>
+<p>I’d like to add this to the article, but I don’t know what we need to
+say to make it neither sound trivial nor sound like an unmotivated
+digression.</p>
+</section>
+<section id="weak-and-strong-normalization" class="level2">
+<h2>Weak and strong normalization</h2>
+<p>So <code>d(w)</code> has no terminating reduction because the only
+reduction sequence is the one we showed?</p>
+<p>Let’s add a brief clarification of weak versus strong normalization
+to the article, and that this case is not weakly normalizing.</p>
+</section>
+<section id="removing-empty-cautions-about-nested-inductives"
+class="level2">
+<h2>Removing empty cautions about nested inductives</h2>
+<p>This part is bad writing: “This complexity does not identify nesting
+with the mechanism in the normalization counterexample, and that
+counterexample does not establish that nested inductives are
+inconsistent. Keeping the mechanisms separate is essential to evaluating
+claims about either one.” First, we negate two obvious falsehoods
+(obvious when stated at this level of abstraction), and then we warn
+about keeping a mechanism we know about and a mechanism we don’t know
+about separate. What I would say is: “This is its own distinct can of
+worms.”</p>
+<p>Still not quite right because partially redundant with “Nested
+inductive types are a further, distinct topic.” Maybe replace my
+lighthearted sentence with something like: “This gives rise to concerns
+even without invoking non-terminating reduction.” – if that’s true.</p>
+</section>
+<section id="universe-levels-in-the-set-interpretation" class="level2">
+<h2>Universe levels in the set interpretation</h2>
+<p>“dependent products land at level <span
+class="math inline">\max(m+1,n)</span>” – what is <span
+class="math inline">m</span> here? Line 731</p>
+</section>
+<section id="what-con-leche-assumes-and-constructs" class="level2">
+<h2>What con-leche assumes and constructs</h2>
+<p>Line 741: “the <a
+href="https://github.com/leanprover/con-leche">con-leche project</a>
+states a consistency result for its external checker under a
+set-theoretic model assumption”. What’s their approach? Do they provide
+the semantics, or is it only a constraint of having a semantics?</p>
+</section>
+<section id="naming-introduced-variables-and-hypotheses" class="level2">
+<h2>Naming introduced variables and hypotheses</h2>
+<p>Can we also explain <code>intro x y h</code> in the proof near the
+end? Are these arbitrary identifiers, or are they constructed inside the
+initial proof state?</p>
+</section>
+<section id="universal-quantifiers-and-dependent-arrow-syntax"
+class="level2">
+<h2>Universal quantifiers and dependent arrow syntax</h2>
+<p>Could <code>∀ ⦃x y : A⦄, f x = f y → x = y</code> also be written
+<code>(x y : A) → f x = f y → x = y</code>?</p>
+<p>Aha, so correcting for what I overlooked, the original and
+<code>⦃x y : A⦄ → f x = f y → x = y</code> are the same. Could we make a
+side note about this in “Why implication and universal quantification
+are function types”?</p>
+</section>
+<section id="final-editorial-pass" class="level2">
+<h2>Final editorial pass</h2>
+<p>Looks good! Do a final editorial pass. Thanks.</p>
+</section>
+<section id="index-entry-and-commit" class="level2">
+<h2>Index entry and commit</h2>
+<p>I also deleted: “Their types come from this goal; their names are our
+choice. They are not already available in the initial local context.”
+Let’s add an entry to index.html and commit, thanks!</p>
+</section>
+</article>
+<section class="prompts-link"><p><em>From the prompts back to the essay:
+<a href="dependent-types-from-rocq-to-lean.html">dependent-types-from-rocq-to-lean.html &rarr;</a></em></p></section>
+<script src="/assets/theme-toggle.js"></script>
+</body>
+</html>
