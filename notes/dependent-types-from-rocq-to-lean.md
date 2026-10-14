@@ -1,7 +1,7 @@
 ---
 title: "Dependent Types from Rocq to Lean 4"
 subtitle: "A mathematical refresher on constructions, computation, and proof"
-author: "Łukasz Stafiniak and Codex"
+author: "Łukasz Stafiniak, GPT-6 Astra, Claude Opus 5.5"
 date: 2026-10-12
 header-includes:
   - |
