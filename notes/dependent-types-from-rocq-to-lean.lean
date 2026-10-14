@@ -46,6 +46,20 @@ def resizeVec {α : Type u} {n m : Nat}
     (h : n = m) (xs : Vec α n) : Vec α m :=
   transport (Vec α) h xs
 
+def IsInjective {A : Type u} {B : Type v} (f : A → B) : Prop :=
+  ∀ ⦃x y : A⦄, f x = f y → x = y
+
+theorem injectiveComp {A : Type u} {B : Type v} {C : Type w}
+    (f : A → B) (g : B → C)
+    (hf : IsInjective f) (hg : IsInjective g) :
+    IsInjective (fun x => g (f x)) := by
+  intro x y h
+  apply hf
+  apply hg
+  exact h
+
+#print axioms injectiveComp
+
 example (P : Prop) (h₁ h₂ : P) : h₁ = h₂ := rfl
 
 example {α : Type u} (xs : Array α) (h₁ h₂ : 0 < xs.size) :
@@ -126,20 +140,6 @@ def loop : T := diagonal rolled
 #print axioms loop
 -- [propext]
 end ReductionLoop
-
-def IsInjective {A : Type u} {B : Type v} (f : A → B) : Prop :=
-  ∀ ⦃x y : A⦄, f x = f y → x = y
-
-theorem injectiveComp {A : Type u} {B : Type v} {C : Type w}
-    (f : A → B) (g : B → C)
-    (hf : IsInjective f) (hg : IsInjective g) :
-    IsInjective (fun x => g (f x)) := by
-  intro x y h
-  apply hf
-  apply hg
-  exact h
-
-#print axioms injectiveComp
 
 -- Bounded diagnostic for the non-normalizing example discussed in the article.
 -- The handwritten reduction cycle proves divergence; this only checks the

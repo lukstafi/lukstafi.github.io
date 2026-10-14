@@ -139,7 +139,9 @@ once knew Coq, now called Rocq, and a route into Lean for a
 mathematician new to dependent types. The common foundation is the
 Calculus of Constructions and its extensions with inductive types. Lean
 and Rocq make different choices within that family; understanding those
-choices explains much of Lean’s behavior.</p>
+choices explains much of Lean’s behavior. Programmers who know GADTs
+from Haskell or OCaml get a section of their own, which other readers
+can skip.</p>
 <p>Milo Moses’s <a
 href="https://www.lesswrong.com/posts/zHhGa3iQBQcdSifFL/a-critical-look-at-lean4-1">A
 critical look at Lean4</a> supplies the occasion. It raises questions
@@ -233,11 +235,7 @@ class="math inline">x</span>: it is a dependent function. This is the
 propositions-as-types correspondence.</p>
 <blockquote>
 <p><strong>Syntax note.</strong> Lean’s <code>∀ (x : A), B x</code> and
-<code>(x : A) → B x</code> are the same dependent function type. Binder
-conventions carry over: <code>∀ ⦃x y : A⦄, f x = f y → x = y</code> is
-identical to <code>⦃x y : A⦄ → f x = f y → x = y</code>. Both make
-<code>x</code> and <code>y</code> strict implicit arguments, inferred
-when a subsequent explicit argument is supplied.</p>
+<code>(x : A) → B x</code> are the same dependent function type.</p>
 </blockquote>
 <p>The proof of an elementary implication is therefore a small
 program:</p>
@@ -296,8 +294,9 @@ elimination rules:</p>
 </table>
 <p>Negation is <span class="math inline">\neg P := P\to\bot</span>:
 assume <span class="math inline">P</span> and derive a contradiction.
-Classical principles enter with rules such as double-negation
-elimination without further hypotheses.</p>
+Classical logic adds principles such as double-negation elimination,
+<span class="math inline">\neg\neg P\to P</span>, which the rules above
+do not provide.</p>
 <p>Rocq’s <code>forall x : A, P x</code> becomes
 <code>∀ x : A, P x</code>; <code>fun x =&gt; t</code>,
 <code>intros</code>, <code>apply</code>, and <code>exact</code> remain
@@ -390,13 +389,11 @@ Rocq permits smaller universes to embed into larger ones through its
 typing discipline. Lean does not automatically regard a type in
 <code>Type u</code> as an inhabitant of <code>Type (u + 1)</code>.
 Universe polymorphism often removes the need for lifting, but explicit
-constructions such as <code>ULift</code> are available when needed.
-Rocq’s rules also distinguish its computational <code>Set</code> sort
-from <code>Prop</code>; Lean’s ordinary small data live in
-<code>Type</code>.</p>
-<p>Rocq’s <code>Set</code> is a sort; Lean’s mathematical
-<code>Set α</code> represents predicates on <code>α</code>. The shared
-spelling conceals different roles.</p>
+constructions such as <code>ULift</code> are available when needed.</p>
+<p>Rocq’s <code>Set</code> is a sort for small computational data, which
+Lean places in <code>Type</code>; Lean’s <code>Set α</code> is the type
+of predicates on <code>α</code>. The shared spelling conceals different
+roles.</p>
 </section>
 <section id="induction-is-dependent-recursion" class="level2">
 <h2>Induction is dependent recursion</h2>
@@ -427,25 +424,23 @@ through recursors.</p>
 
 def Vec.head {α : Type u} {n : Nat} : Vec α (n + 1) → α
   | .cons x _ =&gt; x</code></pre>
-<p>Lean allows arguments to be declared before the colon, leaving their
-names in scope for the type that follows. These are two equivalent ways
-to write the <code>cons</code> constructor inside the declaration:</p>
-<pre class="text"><code>| cons {n : Nat} : α → Vec α n → Vec α (n + 1)
-| cons : {n : Nat} → α → Vec α n → Vec α (n + 1)</code></pre>
-<p>In the first form, the colon after <code>}</code> introduces the
-remaining function type; in the second, the whole function type follows
-the colon. Both make <code>n</code> implicit, usually inferred by Lean.
-The placement is stylistic; the dependency comes from using
-<code>n</code> in the subsequent types.</p>
+<p>Arguments declared before a constructor’s colon stay in scope for the
+type that follows. The <code>cons</code> line could equally be
+written</p>
+<pre class="text"><code>| cons : {n : Nat} → α → Vec α n → Vec α (n + 1)</code></pre>
+<p>Either way, <code>n</code> is an implicit argument that Lean usually
+infers. The dependency comes from using <code>n</code> in the later
+types, not from where it is declared.</p>
 <p>The element type <code>α</code> is a <em>parameter</em>: it stays
 fixed through the declaration. The length is an <em>index</em>: the
 constructors return different instances of the family. In
 <code>head</code>, the empty constructor cannot inhabit the input type,
 so there is no empty case to handle.</p>
-<p>Compare a list operation that might fail with this signature. Here
-the caller must supply a nonempty vector; the result needs no optional
-wrapper. The mathematical precondition is expressed in the domain of the
-function.</p>
+<p>Compare <code>List.head?</code>, which must return an
+<code>Option α</code> because its input may be empty.
+<code>Vec.head</code> instead requires a nonempty vector, so its result
+needs no optional wrapper. The mathematical precondition is expressed in
+the domain of the function.</p>
 <p>Inductive declarations require restrictions. In particular, recursive
 occurrences must meet <em>strict positivity</em> conditions. To
 understand the terminology, consider an occurrence of a type
@@ -491,48 +486,39 @@ arrow expressions, the path to <code>X</code> must never enter a
 function’s domain. The check applies <strong>inside each constructor
 argument’s type</strong>, not across the outer arrows that make the
 constructor a function. Thus <code>Vec α n</code> is an allowed
-recursive argument to <code>cons</code>; an argument of type
-<code>Bad → False</code> has a forbidden negative occurrence. Nested
-inductive type constructors have additional rules, described in the <a
+recursive argument to <code>cons</code>, while a recursive argument of
+type <code>X → False</code> would be forbidden. Nested inductive type
+constructors have additional rules, described in the <a
 href="https://lean-lang.org/doc/reference/latest/The-Type-System/Inductive-Types/">inductive-type
 reference</a>.</p>
-<p>If we freely admitted a constructor
+<p>If we freely admitted a type <code>Bad</code> with a constructor
 <code>mk : (Bad → False) → Bad</code>, its apparent elimination rule
 would let us define:</p>
 <pre class="text"><code>d : Bad → False
 d (mk f) := f (mk f)</code></pre>
-<p>The definition of <code>d</code> does not recursively call itself: it
-applies the function stored in its argument. For an arbitrary
-<code>f : Bad → False</code>, unfolding <code>d</code> and then matching
-the constructor gives the open reduction sequence:</p>
-<pre class="text"><code>d (mk f)
-  → (match mk f with | mk g =&gt; g (mk g))
-  → f (mk f)</code></pre>
-<p>The expression is <em>open</em> because <code>f</code> remains a
-variable; its behavior determines what happens next. The forbidden
-constructor nevertheless lets us package <code>d</code> itself as an
-input: <code>mk d : Bad</code>. Specializing to <code>f = d</code>
-therefore yields the closed term <code>d (mk d) : False</code>, whose
-reduction repeats:</p>
+<p>The definition of <code>d</code> does not call itself: it applies the
+function stored in its argument. But the constructor lets us store
+<code>d</code> itself, as <code>mk d : Bad</code>. Applying
+<code>d</code> to it gives a closed term of type <code>False</code>.
+Unfolding <code>d</code> and matching the constructor returns the same
+term:</p>
 <pre class="text"><code>d (mk d) → d (mk d) → ...</code></pre>
-<p>Each arrow here abbreviates unfolding and matching. Self-application
-emerges from the constructor and its elimination rule despite the
-absence of explicit recursion. The closed term’s type <code>False</code>
-is the contradiction; the loop also exposes the computational failure.
-The positivity check blocks the declaration of <code>Bad</code> before
-either becomes available.</p>
+<p>Self-application emerges from the constructor and its elimination
+rule despite the absence of explicit recursion. The closed term’s type
+<code>False</code> is the contradiction; the loop also exposes the
+computational failure. The positivity check blocks the declaration of
+<code>Bad</code> before either becomes available.</p>
 <p>Lean’s kernel checks inductive declarations and their recursors.
 Surface recursive definitions are compiled into applications of those
-principles, including well-founded recursion when needed. Rocq instead
-also has primitive fixpoint terms with a guardedness discipline in its
-core presentation. The two systems therefore organize the checking of
-recursion differently. Rocq’s <a
+principles, including well-founded recursion when needed. Rocq’s core
+language instead has primitive fixpoint terms, checked by a guardedness
+discipline; its recursors are defined from them. The two systems
+therefore organize the checking of recursion differently. Rocq’s <a
 href="https://docs.rocq-prover.org/master/refman/language/core/inductive.html">inductive
 and recursive rules</a> are the appropriate comparison, rather than the
 superficial similarity of pattern-matching syntax.</p>
 <blockquote>
-<p><strong>Off-topic details: termination through decreasing
-measures</strong></p>
+<p><strong>Aside: termination through decreasing measures</strong></p>
 <p>A standard termination argument assigns each recursive call a measure
 in a well-founded order. For a natural-number measure <span
 class="math inline">\mu</span>, a call from input <span
@@ -570,10 +556,11 @@ validate the unchanged rules.</p>
 <p>Strict positivity restricts the datatypes and eliminators we may
 introduce; decreasing measures justify recursive uses of the admitted
 principles. Sized types can connect these concerns, but a size index
-alone proves neither termination nor consistency. Likewise, accepting a
-Lean definition through well-founded recursion does not establish
-normalization of every term in Lean’s ambient logic, as the later
-counterexample will illustrate.</p>
+alone proves neither termination nor consistency. Well-founded recursion
+even brings a difficulty of its own. Lean’s accessibility predicate
+<code>Acc</code> lives in <code>Prop</code>, and together with proof
+irrelevance it makes definitional equality undecidable; the section on
+normalization returns to this.</p>
 </blockquote>
 </section>
 <section id="computation-and-the-two-forms-of-equality" class="level2">
@@ -658,8 +645,64 @@ an induction theorem? Does it use extensionality? Each answer suggests a
 different Lean move: <code>rfl</code> or <code>change</code>, induction
 or rewriting, or an explicit extensionality principle.</p>
 </section>
+<section id="a-first-independent-lean-proof" class="level2">
+<h2>A first independent Lean proof</h2>
+<p>We can now write a proof without a guide. The composite of two
+injective functions is injective; an explicit definition keeps every
+step visible:</p>
+<pre class="lean"><code>def IsInjective {A : Type u} {B : Type v} (f : A → B) : Prop :=
+  ∀ ⦃x y : A⦄, f x = f y → x = y
+
+theorem injectiveComp {A : Type u} {B : Type v} {C : Type w}
+    (f : A → B) (g : B → C)
+    (hf : IsInjective f) (hg : IsInjective g) :
+    IsInjective (fun x =&gt; g (f x)) := by
+  intro x y h
+  apply hf
+  apply hg
+  exact h
+
+#print axioms injectiveComp</code></pre>
+<p>The double braces in <code>⦃x y : A⦄</code> make <code>x</code> and
+<code>y</code> <em>strict implicit</em> arguments. Lean infers them, but
+only once a later explicit argument, here the equality, is supplied. So
+<code>hf</code> on its own still denotes the whole quantified
+statement.</p>
+<p><a
+href="https://lean-lang.org/doc/reference/latest/Tactic-Proofs/Tactic-Reference/#quantifiers"><code>intro x y h</code></a>
+introduces and names three local assumptions. Unfolding
+<code>IsInjective</code> exposes two universally quantified variables
+followed by an implication. After <code>intro</code>, the new
+assumptions and remaining goal are:</p>
+<pre class="text"><code>x y : A
+h : g (f x) = g (f y)
+⊢ x = y</code></pre>
+<p>Mathematically: let <code>x, y</code> be arbitrary and assume
+<code>h</code>. We could write <code>intro a b hab</code> and later
+<code>exact hab</code>. The remaining tactics work backward:
+<code>apply hf</code> asks for <code>f x = f y</code>, then
+<code>apply hg</code> asks for <code>g (f x) = g (f y)</code>, supplied
+by <code>exact h</code>. The final command, <code>#print axioms</code>,
+lists the axioms a theorem depends on; for <code>injectiveComp</code> it
+reports none.</p>
+<p>For practice, rewrite the proof as one <code>fun</code> expression.
+Prove that injectivity of <code>g ∘ f</code> implies injectivity of
+<code>f</code>, using <code>congrArg g</code>. Then try surjectivity: a
+composite of surjections is surjective, and if <code>g ∘ f</code> is
+surjective, so is <code>g</code>. Both statements end in an existential,
+so their proofs must supply witnesses.</p>
+<p>Finally, return to <code>Vec</code>. Define <code>Vec.toList</code>
+and prove by induction that its result has length <code>n</code>. Then
+use <code>resizeVec</code> with <code>Nat.zero_add n</code> to turn a
+<code>Vec α (0 + n)</code> into a <code>Vec α n</code>. This brings
+together the three skills on which the rest depends: reading a dependent
+signature, understanding the motive of induction, and recognizing when
+equality requires transport.</p>
+</section>
 <section id="how-far-gadts-take-us" class="level2">
 <h2>How far GADTs take us</h2>
+<p>Readers who do not program in Haskell or OCaml can skip this
+section.</p>
 <p>Much of the vector example is available in Haskell and OCaml through
 <em>generalized algebraic datatypes</em>, or GADTs. Their constructors
 can specify different result indices, and matching a constructor
@@ -670,15 +713,15 @@ arbitrary dependence on ordinary terms.</p>
 <h3>Indexed vectors in Haskell and OCaml</h3>
 <p>In Haskell, enable <code>GADTs</code>, <code>DataKinds</code>, and
 <code>KindSignatures</code>:</p>
-<div class="sourceCode" id="cb12"><pre
-class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="kw">data</span> <span class="dt">Nat</span> <span class="ot">=</span> <span class="dt">Z</span> <span class="op">|</span> <span class="dt">S</span> <span class="dt">Nat</span></span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="kw">data</span> <span class="dt">Vec</span> (<span class="ot">n ::</span> <span class="dt">Nat</span>) a <span class="kw">where</span></span>
-<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>  <span class="dt">VNil</span><span class="ot">  ::</span> <span class="dt">Vec</span> <span class="dt">&#39;Z</span> a</span>
-<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>  <span class="dt">VCons</span><span class="ot"> ::</span> a <span class="ot">-&gt;</span> <span class="dt">Vec</span> n a <span class="ot">-&gt;</span> <span class="dt">Vec</span> (<span class="dt">&#39;S</span> n) a</span>
-<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a><span class="ot">headVec ::</span> <span class="dt">Vec</span> (<span class="dt">&#39;S</span> n) a <span class="ot">-&gt;</span> a</span>
-<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>headVec (<span class="dt">VCons</span> x _) <span class="ot">=</span> x</span></code></pre></div>
+<div class="sourceCode" id="cb13"><pre
+class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="kw">data</span> <span class="dt">Nat</span> <span class="ot">=</span> <span class="dt">Z</span> <span class="op">|</span> <span class="dt">S</span> <span class="dt">Nat</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="kw">data</span> <span class="dt">Vec</span> (<span class="ot">n ::</span> <span class="dt">Nat</span>) a <span class="kw">where</span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>  <span class="dt">VNil</span><span class="ot">  ::</span> <span class="dt">Vec</span> <span class="dt">&#39;Z</span> a</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>  <span class="dt">VCons</span><span class="ot"> ::</span> a <span class="ot">-&gt;</span> <span class="dt">Vec</span> n a <span class="ot">-&gt;</span> <span class="dt">Vec</span> (<span class="dt">&#39;S</span> n) a</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a><span class="ot">headVec ::</span> <span class="dt">Vec</span> (<span class="dt">&#39;S</span> n) a <span class="ot">-&gt;</span> a</span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>headVec (<span class="dt">VCons</span> x _) <span class="ot">=</span> x</span></code></pre></div>
 <p><code>DataKinds</code> promotes <code>Nat</code> to a kind of
 indices, with promoted constructors <code>'Z</code> and <code>'S</code>.
 The GADT declaration then constrains which indices each vector
@@ -689,25 +732,26 @@ documentation</a> explains the latter through typed expression trees,
 another useful indexed family.</p>
 <p>OCaml can express the same nonempty-vector guarantee using separate
 types for zero and successor:</p>
-<div class="sourceCode" id="cb13"><pre
-class="sourceCode ocaml"><code class="sourceCode ocaml"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="kw">type</span> z = Z</span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="kw">type</span> &#39;n s = S <span class="kw">of</span> &#39;n</span>
-<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="kw">type</span> (_, _) vec =</span>
-<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>  | VNil : (z, &#39;a) vec</span>
-<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>  | VCons : &#39;a * (&#39;n, &#39;a) vec -&gt; (&#39;n s, &#39;a) vec</span>
-<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a><span class="kw">let</span> head_vec : <span class="kw">type</span> n a. (n s, a) vec -&gt; a = <span class="kw">function</span></span>
-<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>  | VCons (x, _) -&gt; x</span></code></pre></div>
+<div class="sourceCode" id="cb14"><pre
+class="sourceCode ocaml"><code class="sourceCode ocaml"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="kw">type</span> z = Z</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="kw">type</span> &#39;n s = S <span class="kw">of</span> &#39;n</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a><span class="kw">type</span> (_, _) vec =</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>  | VNil : (z, &#39;a) vec</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>  | VCons : &#39;a * (&#39;n, &#39;a) vec -&gt; (&#39;n s, &#39;a) vec</span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a><span class="kw">let</span> head_vec : <span class="kw">type</span> n a. (n s, a) vec -&gt; a = <span class="kw">function</span></span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>  | VCons (x, _) -&gt; x</span></code></pre></div>
 <p>The <code>type n a.</code> annotation introduces locally abstract
 types for checking the body. Here <code>z</code> and <code>'n s</code>
 serve as indices; no values of those types need to be stored in a
 vector. Both languages rule out the empty constructor at this input
 type. OCaml’s <a
 href="https://ocaml.org/manual/5.5/gadts-tutorial.html">GADT
-tutorial</a> also develops existential indices and equality witnesses.
-Transport between equal indices is therefore available in both
-languages.</p>
+tutorial</a> also develops existential indices and equality witnesses;
+Haskell provides the latter as <code>:~:</code>. Matching such a witness
+transports a value between equal indices, as Lean’s
+<code>transport</code> does.</p>
 </section>
 <section id="connecting-an-index-to-an-ordinary-value" class="level3">
 <h3>Connecting an index to an ordinary value</h3>
@@ -716,17 +760,17 @@ languages.</p>
 the result type. Haskell’s conventional encoding uses a
 <em>singleton</em> connecting a type-level index to its runtime
 representative:</p>
-<div class="sourceCode" id="cb14"><pre
-class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="kw">data</span> <span class="dt">SNat</span> (<span class="ot">n ::</span> <span class="dt">Nat</span>) <span class="kw">where</span></span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">SZ</span><span class="ot"> ::</span> <span class="dt">SNat</span> <span class="dt">&#39;Z</span></span>
-<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">SS</span><span class="ot"> ::</span> <span class="dt">SNat</span> n <span class="ot">-&gt;</span> <span class="dt">SNat</span> (<span class="dt">&#39;S</span> n)</span>
-<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a><span class="ot">replicateVec ::</span> <span class="dt">SNat</span> n <span class="ot">-&gt;</span> a <span class="ot">-&gt;</span> <span class="dt">Vec</span> n a</span>
-<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>replicateVec <span class="dt">SZ</span>     _ <span class="ot">=</span> <span class="dt">VNil</span></span>
-<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>replicateVec (<span class="dt">SS</span> n) x <span class="ot">=</span> <span class="dt">VCons</span> x (replicateVec n x)</span>
-<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a><span class="kw">data</span> <span class="dt">SomeVec</span> a <span class="kw">where</span></span>
-<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>  <span class="dt">SomeVec</span><span class="ot"> ::</span> <span class="dt">SNat</span> n <span class="ot">-&gt;</span> <span class="dt">Vec</span> n a <span class="ot">-&gt;</span> <span class="dt">SomeVec</span> a</span></code></pre></div>
+<div class="sourceCode" id="cb15"><pre
+class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="kw">data</span> <span class="dt">SNat</span> (<span class="ot">n ::</span> <span class="dt">Nat</span>) <span class="kw">where</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">SZ</span><span class="ot"> ::</span> <span class="dt">SNat</span> <span class="dt">&#39;Z</span></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">SS</span><span class="ot"> ::</span> <span class="dt">SNat</span> n <span class="ot">-&gt;</span> <span class="dt">SNat</span> (<span class="dt">&#39;S</span> n)</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a><span class="ot">replicateVec ::</span> <span class="dt">SNat</span> n <span class="ot">-&gt;</span> a <span class="ot">-&gt;</span> <span class="dt">Vec</span> n a</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>replicateVec <span class="dt">SZ</span>     _ <span class="ot">=</span> <span class="dt">VNil</span></span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>replicateVec (<span class="dt">SS</span> n) x <span class="ot">=</span> <span class="dt">VCons</span> x (replicateVec n x)</span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a><span class="kw">data</span> <span class="dt">SomeVec</span> a <span class="kw">where</span></span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>  <span class="dt">SomeVec</span><span class="ot"> ::</span> <span class="dt">SNat</span> n <span class="ot">-&gt;</span> <span class="dt">Vec</span> n a <span class="ot">-&gt;</span> <span class="dt">SomeVec</span> a</span></code></pre></div>
 <p>For each finite natural-number index, the singleton has exactly one
 fully defined constructor-shaped value. Matching it reveals the index’s
 structure. The existential package <code>SomeVec</code> lets a runtime
@@ -746,14 +790,14 @@ class="level3">
 <p>Haskell adds type families for computation in types. With
 <code>TypeFamilies</code>, concatenation can use a separate type-level
 addition:</p>
-<div class="sourceCode" id="cb15"><pre
-class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="kw">type</span> <span class="kw">family</span> <span class="dt">Add</span> (<span class="ot">n ::</span> <span class="dt">Nat</span>) (<span class="ot">m ::</span> <span class="dt">Nat</span>)<span class="ot"> ::</span> <span class="dt">Nat</span> <span class="kw">where</span></span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">Add</span> <span class="dt">&#39;Z</span>     m <span class="ot">=</span> m</span>
-<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">Add</span> (<span class="dt">&#39;S</span> n) m <span class="ot">=</span> <span class="dt">&#39;S</span> (<span class="dt">Add</span> n m)</span>
-<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a><span class="ot">append ::</span> <span class="dt">Vec</span> n a <span class="ot">-&gt;</span> <span class="dt">Vec</span> m a <span class="ot">-&gt;</span> <span class="dt">Vec</span> (<span class="dt">Add</span> n m) a</span>
-<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>append <span class="dt">VNil</span> ys <span class="ot">=</span> ys</span>
-<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>append (<span class="dt">VCons</span> x xs) ys <span class="ot">=</span> <span class="dt">VCons</span> x (append xs ys)</span></code></pre></div>
+<div class="sourceCode" id="cb16"><pre
+class="sourceCode haskell"><code class="sourceCode haskell"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="kw">type</span> <span class="kw">family</span> <span class="dt">Add</span> (<span class="ot">n ::</span> <span class="dt">Nat</span>) (<span class="ot">m ::</span> <span class="dt">Nat</span>)<span class="ot"> ::</span> <span class="dt">Nat</span> <span class="kw">where</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">Add</span> <span class="dt">&#39;Z</span>     m <span class="ot">=</span> m</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">Add</span> (<span class="dt">&#39;S</span> n) m <span class="ot">=</span> <span class="dt">&#39;S</span> (<span class="dt">Add</span> n m)</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a><span class="ot">append ::</span> <span class="dt">Vec</span> n a <span class="ot">-&gt;</span> <span class="dt">Vec</span> m a <span class="ot">-&gt;</span> <span class="dt">Vec</span> (<span class="dt">Add</span> n m) a</span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>append <span class="dt">VNil</span> ys <span class="ot">=</span> ys</span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>append (<span class="dt">VCons</span> x xs) ys <span class="ot">=</span> <span class="dt">VCons</span> x (append xs ys)</span></code></pre></div>
 <p>The equations for <code>Add</code> reduce as the vector match reveals
 <code>n</code>. Lean can instead use an ordinary addition function
 inside the result type. This difference concerns the language of
@@ -762,18 +806,18 @@ href="https://ghc.gitlab.haskell.org/ghc/doc/users_guide/exts/type_families.html
 rules</a>.</p>
 <p>An OCaml encoding can replace that function with its graph: a
 relation carrying evidence that three indices satisfy addition.</p>
-<div class="sourceCode" id="cb16"><pre
-class="sourceCode ocaml"><code class="sourceCode ocaml"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="kw">type</span> (_, _, _) plus =</span>
-<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  | PlusZ : (z, &#39;m, &#39;m) plus</span>
-<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>  | PlusS : (&#39;n, &#39;m, &#39;k) plus -&gt; (&#39;n s, &#39;m, &#39;k s) plus</span>
-<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a><span class="kw">let</span> <span class="kw">rec</span> append : <span class="kw">type</span> n m k a.</span>
-<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>    (n, m, k) plus -&gt; (n, a) vec -&gt; (m, a) vec -&gt; (k, a) vec =</span>
-<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>  <span class="kw">fun</span> sum xs ys -&gt;</span>
-<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>    <span class="kw">match</span> sum, xs <span class="kw">with</span></span>
-<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>    | PlusZ, VNil -&gt; ys</span>
-<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>    | PlusS smaller, VCons (x, rest) -&gt;</span>
-<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>        VCons (x, append smaller rest ys)</span></code></pre></div>
+<div class="sourceCode" id="cb17"><pre
+class="sourceCode ocaml"><code class="sourceCode ocaml"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="kw">type</span> (_, _, _) plus =</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>  | PlusZ : (z, &#39;m, &#39;m) plus</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>  | PlusS : (&#39;n, &#39;m, &#39;k) plus -&gt; (&#39;n s, &#39;m, &#39;k s) plus</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a><span class="kw">let</span> <span class="kw">rec</span> append : <span class="kw">type</span> n m k a.</span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>    (n, m, k) plus -&gt; (n, a) vec -&gt; (m, a) vec -&gt; (k, a) vec =</span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>  <span class="kw">fun</span> sum xs ys -&gt;</span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>    <span class="kw">match</span> sum, xs <span class="kw">with</span></span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>    | PlusZ, VNil -&gt; ys</span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a>    | PlusS smaller, VCons (x, rest) -&gt;</span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a>        VCons (x, append smaller rest ys)</span></code></pre></div>
 <p><code>PlusZ</code> witnesses <span class="math inline">0+m=m</span>;
 <code>PlusS</code> lifts evidence for <span
 class="math inline">n+m=k</span> to evidence for <span
@@ -782,9 +826,9 @@ length. The OCaml interface carries an explicit witness instead of
 asking the checker to evaluate a type family. Witnesses can also be
 computed and packaged with results.</p>
 <p>Haskell consequently offers more direct machinery for computing with
-indices. Higher-kinded and kind polymorphism also make families easier
-to abstract over. OCaml uses module functors or encodings for
-corresponding abstractions over type constructors; <a
+indices. Higher-kinded type variables and kind polymorphism also make
+families easier to abstract over. OCaml uses module functors or
+encodings for corresponding abstractions over type constructors; <a
 href="https://www.cl.cam.ac.uk/~jdy22/papers/lightweight-higher-kinded-polymorphism.pdf">Yallop
 and White</a> explain that tradeoff.</p>
 </section>
@@ -954,29 +998,21 @@ its conclusion.</p>
 Boolean variables and the formulas</p>
 <p><span class="math display">F=p\land q\land r,\qquad G=r\land p\land
 q,\qquad H=p\lor q\lor r.</span></p>
-<p>At the all-true assignment, all three propositions equal
-<code>True</code>. But formulas describe dependence on assignments:
-<span class="math inline">F</span> and <span
-class="math inline">G</span> agree everywhere, whereas <span
+<p>A formula with free variables is not a proposition but a predicate on
+assignments, <code>F : Assignment → Prop</code>. <span
+class="math inline">F</span> and <span class="math inline">G</span>
+agree at every assignment, so <code>propext</code> and
+<code>funext</code> together give <code>F = G</code>. <span
 class="math inline">F</span> and <span class="math inline">H</span>
 disagree at <span
 class="math inline">(p,q,r)=(\mathrm{True},\mathrm{False},\mathrm{False})</span>.
-The latter are merely <em>equisatisfiable</em>: each has a satisfying
-assignment. <a
-href="https://www.cs.cmu.edu/~mfredrik/15414/lectures/02-propositional.pdf">Equisatisfiability</a>
-preserves existence of a model, not agreement under every
-assignment.</p>
-<p>In Lean, represent these meanings as predicates
-<code>F G : Assignment → Prop</code>. Equivalence means
-<code>∀ ρ, F ρ ↔︎ G ρ</code>; <code>propext</code> and
-<code>funext</code> then give <code>F = G</code>. Equisatisfiability
-means <code>(∃ ρ, F ρ) ↔︎ (∃ σ, G σ)</code>: <code>propext</code> equates
-these existential propositions, not the predicates. The witnesses may
-differ. Classically, <code>Prop</code> has two values up to
+They are merely <a
+href="https://www.cs.cmu.edu/~mfredrik/15414/lectures/02-propositional.pdf">equisatisfiable</a>:
+each has a satisfying assignment. Then <code>propext</code> equates the
+propositions <code>∃ ρ, F ρ</code> and <code>∃ ρ, H ρ</code>, but not
+the predicates. Classically, <code>Prop</code> has two values up to
 propositional equality, yet three Boolean inputs permit <span
-class="math inline">2^{2^3}=256</span> distinct truth functions.
-Equality of propositions does not discard dependencies that remain
-explicit in a function’s arguments.</p>
+class="math inline">2^{2^3}=256</span> distinct truth functions.</p>
 <p>Representing subsets by membership predicates, these principles turn
 pointwise equivalence into equality:</p>
 <pre class="lean"><code>def SubsetOf (A : Type u) := A → Prop
@@ -1083,9 +1119,10 @@ makes reconstruction a left inverse of the quotient map.</p>
 <section id="classical-principles-and-conversion" class="level3">
 <h3>Classical principles and conversion</h3>
 <p><code>Classical.choice</code>, together with the extensional
-principles, supports excluded middle. Local <code>classical</code>
-commands enable associated instances without modifying the kernel’s
-rules. Use <code>#print axioms</code> to inspect a theorem’s actual
+principles, proves excluded middle; Lean’s <code>Classical.em</code>
+follows Diaconescu’s argument. Local <code>classical</code> commands
+enable associated instances without modifying the kernel’s rules. Use
+<code>#print axioms</code> to inspect a theorem’s actual
 dependencies.</p>
 <p>Lean therefore combines an intensional account of computation with
 strong propositional extensionality principles and definitional proof
@@ -1138,8 +1175,12 @@ Generating and checking the elimination machinery is more involved than
 for a binary tree. This raises <a
 href="https://arxiv.org/html/2403.14064v1#S5">soundness questions about
 the generated recursors</a> even without invoking non-terminating
-reduction. A consistency argument for Lean 3 therefore needs further
-work to cover Lean 4’s extensions.</p>
+reduction. Carneiro’s <a
+href="https://github.com/digama0/lean-type-theory/releases/download/v1.0/main.pdf">2019
+thesis</a> proved Lean 3’s type theory consistent relative to ZFC with
+<span class="math inline">n</span> inaccessible cardinals for every
+finite <span class="math inline">n</span>. Lean 4’s extensions need
+further work beyond that argument.</p>
 <p>The layers matter when learning the language. A numeral is surface
 syntax. Notation, implicit arguments, coercions, and type-class search
 help turn an expression into a fully specified term. Tactics solve
@@ -1210,14 +1251,16 @@ table.</p>
 <section id="what-the-normalization-result-actually-says"
 class="level2">
 <h2>What the normalization result actually says</h2>
-<p>We can now separate three metatheoretic properties. <strong>Strong
+<p>We can now separate four metatheoretic properties. <strong>Strong
 normalization</strong> says every reduction sequence from a well-typed
 term terminates. <strong>Canonicity</strong>, in a specified fragment
 and with specified axioms, says closed terms of data types compute to
 appropriate canonical values, such as numerals.
 <strong>Consistency</strong> says there is no closed proof of
-<code>False</code> under the designated assumptions. These properties
-interact, but they are not synonyms.</p>
+<code>False</code> under the designated assumptions.
+<strong>Decidability of type checking</strong> says an algorithm settles
+every typing judgment, including every question of definitional
+equality. These properties interact, but they are not synonyms.</p>
 <p>Normalization and an analysis of normal forms can establish
 consistency: if every closed proof normalizes, and no normal form can
 inhabit <code>False</code>, then no such proof exists. Losing that
@@ -1225,13 +1268,12 @@ method does not exhibit a proof of <code>False</code>. A semantic model
 offers another route: interpret types as suitable objects and
 <code>False</code> as empty, then prove that derivable judgments
 preserve the interpretation.</p>
-<p>Abel and Coquand’s <a href="https://arxiv.org/html/1911.08174">2019
-preprint, published in 2020</a>, exhibits non-normalizing proof terms.
-Their closed example uses propositional extensionality as well as
-impredicativity and proof-irrelevant equality. It does not require a
-recursive definition or an assumption of <code>False</code>. We can
-reconstruct the mechanism in Lean 4, starting with the computational
-rule that makes it possible.</p>
+<p>Abel and Coquand’s <a href="https://arxiv.org/html/1911.08174">2020
+paper</a> exhibits non-normalizing proof terms. Their closed example
+uses propositional extensionality as well as impredicativity and
+proof-irrelevant equality. It does not require a recursive definition or
+an assumption of <code>False</code>. We can reconstruct the mechanism in
+Lean 4, starting with the computational rule that makes it possible.</p>
 <section id="a-cast-that-does-not-wait-for-its-proof" class="level3">
 <h3>A cast that does not wait for its proof</h3>
 <p>Transport along reflexivity should do nothing:
@@ -1368,17 +1410,69 @@ extensionality supplies the casts between inhabited propositions; and
 proof-irrelevant cast reduction removes the cast when the loop returns
 to <span class="math inline">D</span>. The claim is about this
 combination of rules, not every system that has some notion of proof
-irrelevance.</p>
-<p>The example type-checks in Lean 4.34.1. The companion checks that
-<code>#reduce (proofs := true) ReductionLoop.loop</code> reaches a
-bounded recursion limit. This diagnostic corroborates the behavior; the
-reduction argument establishes divergence.</p>
+irrelevance. Rocq keeps a related combination behind an option: its
+manual <a
+href="https://docs.rocq-prover.org/master/refman/addendum/sprop.html#non-termination-with-uip">warns</a>
+that the <code>Definitional UIP</code> flag for <code>SProp</code>, off
+by default, breaks termination of reduction in the presence of an
+impredicative sort, and cites this example.</p>
+<p>The example type-checks in Lean 4.34.1. The accompanying Lean file
+checks that <code>#reduce (proofs := true) ReductionLoop.loop</code>
+reaches a bounded recursion limit. This diagnostic corroborates the
+behavior; the reduction argument establishes divergence.</p>
 <p>There is no contradiction: <span class="math inline">T</span> already
 has the proof <code>fun P p =&gt; p</code>. Proof irrelevance identifies
 <code>loop</code> with it, but does not supply a computational reduction
 to it. A checker can recognize proofs of the same proposition without
 reducing them, so the example does not force every type check to
 diverge.</p>
+</section>
+<section id="undecidable-conversion-and-the-kernels-approximation"
+class="level3">
+<h3>Undecidable conversion and the kernel’s approximation</h3>
+<p>Lean’s checker faces a second limitation, independent of the loop.
+Carneiro’s <a
+href="https://github.com/digama0/lean-type-theory/releases/download/v1.0/main.pdf#page=16">thesis</a>
+shows that definitional equality under Lean’s rules is undecidable. The
+source is the accessibility predicate behind well-founded recursion,
+which Lean’s core library defines as follows:</p>
+<pre class="lean"><code>inductive Acc {α : Sort u} (r : α → α → Prop) : α → Prop where
+  | intro (x : α) (h : (y : α) → r y x → Acc r y) : Acc r x</code></pre>
+<p><code>Acc</code> is a proposition, yet its recursor may eliminate
+into data. It computes when the proof is built by <code>intro</code>.
+Any proof <code>a : Acc r x</code> yields, by projection, the argument
+that <code>intro</code> would need. Proof irrelevance then makes
+<code>a</code> definitionally equal to <code>intro</code> applied to
+those projections. That rebuilt proof lets the recursor take one more
+step, and the rebuilding can be repeated indefinitely.</p>
+<p>Carneiro uses this to encode an unbounded search. Fix a decidable
+predicate <span class="math inline">P</span> on natural numbers, and
+take the relation <span class="math inline">&gt;</span>, which is not
+well-founded. Define a function by the recursor that tests <span
+class="math inline">P(n)</span> and continues to <span
+class="math inline">n+1</span> while it holds, returning
+<code>false</code> at the first failure. Assume a proof
+<code>a : Acc (· &gt; ·) 0</code> as a hypothesis. No such proof exists,
+but definitional equality must still be decided in that context. The
+function’s result at <span class="math inline">0</span> is then
+definitionally equal to <code>false</code> exactly when <span
+class="math inline">P</span> fails somewhere. Halting of a Turing
+machine has this form, so no algorithm decides definitional
+equality.</p>
+<p>The kernel’s conversion check is therefore a decidable approximation.
+It does not search for rebuilt proofs, so it can fail to confirm
+equalities that the rules permit. Carneiro draws two further
+consequences. The algorithmic relation is not transitive: it confirms a
+rebuilding step and the reduction that follows it, but not the equation
+that skips the rebuilt proof. And typing based on that relation fails
+subject reduction: reducing a well-typed term can produce one the
+checker rejects at the same type.</p>
+<p>Neither result yields a proof of <code>False</code>. Both concern
+completeness: the kernel may reject terms the declared rules accept, but
+should not accept terms they reject. In practice Lean avoids depending
+on such reductions; definitions by well-founded recursion are
+irreducible by default, and their defining equations are used as
+theorems.</p>
 <p>There is another, milder way computation can fail to produce an
 answer: a term can become <em>stuck</em> at an opaque axiom. This is
 different from an infinite reduction sequence. Classical choice can
@@ -1449,6 +1543,20 @@ quantification impredicative and proofs irrelevant, a model must
 reconcile these representations with abstraction, application, and
 substitution. Saying “all proofs are a point” does not itself do that
 work.</p>
+<p>Miquel and Werner analyze this difficulty in <a
+href="https://www.lix.polytechnique.fr/~werner/publis/cc.pdf">“The not
+so simple proof-irrelevant model of CC”</a>. Carneiro’s <a
+href="https://github.com/digama0/lean-type-theory/releases/download/v1.0/main.pdf">thesis</a>
+handles it by proving <em>unique typing</em> first: each term has one
+type up to definitional equality. The model can then tell which products
+land in <code>Prop</code> and interpret them differently. Barras found a
+shortcut. Aczel’s encoding represents a function <span
+class="math inline">f</span> as the set of pairs <span
+class="math inline">(x,y)</span> with <span class="math inline">y\in
+f(x)</span>. Taking <span class="math inline">\star=\varnothing</span>
+makes the constant function to <span class="math inline">\star</span>
+the empty set, which is <span class="math inline">\star</span> itself,
+whatever its domain.</p>
 <p>This is also where the normalization example becomes illuminating. In
 a successful proof-irrelevant model of its rules, <code>loop</code> and
 the elementary proof of <span class="math inline">T</span> would have
@@ -1502,10 +1610,13 @@ class="level2">
 <h2>Consistency proofs and the reliability of a checker</h2>
 <p>Mario Carneiro’s <a
 href="https://hottest-seminar.github.io/hottestfiles/Carneiro-2025-02-06-HoTTEST.pdf">February
-2025 HoTTEST presentation</a> reports a gap found while formalizing
-earlier metatheory, around definitional inversion and the confluence
-argument. It distinguishes proved results from conjectures and describes
-an alternative route toward soundness.</p>
+2025 HoTTEST presentation</a> reports a gap in the thesis, found while
+formalizing it. The affected theorems are unique typing and definitional
+inversion, which rest on a confluence argument; the talk now lists them
+as conjectures. The thesis’s soundness proof used unique typing, though
+the thesis itself notes that Barras’s encoding avoids that dependency.
+The talk mentions an alternative route to soundness, while some kernel
+optimizations still depend on the conjectured theorems.</p>
 <p>As of October 13, 2026, the <a
 href="https://github.com/leanprover/con-leche">con-leche project</a>
 constructs a set-theoretic interpretation and proves that every
@@ -1517,11 +1628,11 @@ deliberately differs from the official kernel, including its handling of
 inductives, so the result covers con-leche’s accepted declarations
 without automatically covering everything the official kernel
 accepts.</p>
-<p>This is a relative consistency result: the checker is the object of
-study, while Lean serves as the metatheory in which the conditional
-result is proved. The set-theoretic assumptions remain explicit.
-Connecting that theorem to an executable checker also requires
-accounting for its parsing, runtime, and input handling.</p>
+<p>The result is relative: the accepted declarations are consistent if
+set theory with those universes is. The proof is itself a Lean
+development, so Lean also serves as the metatheory, checked by the
+official kernel. Connecting that theorem to an executable checker also
+requires accounting for its parsing, runtime, and input handling.</p>
 <p>This leads to four separate questions about an individual
 formalization:</p>
 <table>
@@ -1572,55 +1683,20 @@ inspection and implementation validation answer others. A successful
 build provides evidence about a particular checking run; assessing its
 trust assumptions also requires knowing how tactics, native computation,
 and imported artifacts enter that run.</p>
-<p>The linked critique usefully prompts these questions. Its forecasts
-about undiscovered contradictions are judgments about risk, beyond what
-the normalization counterexample establishes. Evaluating them requires
-the specific rules, models, and implementations examined here.</p>
-</section>
-<section id="a-first-independent-lean-proof" class="level2">
-<h2>A first independent Lean proof</h2>
-<p>Return now to writing a proof. The composite of two injective
-functions is injective; an explicit definition keeps every step
-visible:</p>
-<pre class="lean"><code>def IsInjective {A : Type u} {B : Type v} (f : A → B) : Prop :=
-  ∀ ⦃x y : A⦄, f x = f y → x = y
-
-theorem injectiveComp {A : Type u} {B : Type v} {C : Type w}
-    (f : A → B) (g : B → C)
-    (hf : IsInjective f) (hg : IsInjective g) :
-    IsInjective (fun x =&gt; g (f x)) := by
-  intro x y h
-  apply hf
-  apply hg
-  exact h
-
-#print axioms injectiveComp</code></pre>
-<p><a
-href="https://lean-lang.org/doc/reference/latest/Tactic-Proofs/Tactic-Reference/#quantifiers"><code>intro x y h</code></a>
-introduces and names three local assumptions. Unfolding
-<code>IsInjective</code> exposes two universally quantified variables
-followed by an implication. After <code>intro</code>, the new
-assumptions and remaining goal are:</p>
-<pre class="text"><code>x y : A
-h : g (f x) = g (f y)
-⊢ x = y</code></pre>
-<p>Mathematically: let <code>x, y</code> be arbitrary and assume
-<code>h</code>. We could write <code>intro a b hab</code> and later
-<code>exact hab</code>. The remaining tactics work backward:
-<code>apply hf</code> asks for <code>f x = f y</code>, then
-<code>apply hg</code> asks for <code>g (f x) = g (f y)</code>, supplied
-by <code>exact h</code>. No classical axiom is required.</p>
-<p>For practice, rewrite the proof as one <code>fun</code> expression.
-Prove that injectivity of <code>g ∘ f</code> implies injectivity of
-<code>f</code>, using <code>congrArg g</code>. Try the surjectivity
-statements too: these exercise existential proofs and the distinction
-between witnesses and returned data.</p>
-<p>Finally, return to <code>Vec</code>. Prove a property by induction on
-its constructors, then change a length expression using
-<code>resizeVec</code>. This brings together the three skills on which
-the rest depends: reading a dependent signature, understanding the
-motive of induction, and recognizing when equality requires
-transport.</p>
+<p>Moses’s critique makes claims of several kinds, and these
+distinctions sort them. Its normalization claim is correct; the loop
+above reconstructs it. What it costs is one route to consistency, not
+evidence of inconsistency. Its consistency claim also stands as written:
+no public proof covers Lean 4 as the official kernel implements it.
+Carneiro’s thesis covers Lean 3, and its proof now has a reported gap;
+con-leche covers a different checker. Its strongest evidence concerns
+implementations: kernel bugs, nested inductives, and validation tools
+run without isolation. That evidence belongs to the third row of the
+table, and the postmortem confirms it. Its warning about mistranslated
+statements belongs to the first row. Its forecast that current Lean
+accepts some proof of <code>False</code> is a judgment about
+implementation risk, which the foundational results here neither support
+nor refute.</p>
 <p>The opening basis theorem now has a more precise shape. It can assert
 that a natural number and a family of vectors satisfying the basis
 properties exist, package them as data with proofs attached, or define a
@@ -1641,7 +1717,7 @@ manual</a>: read the common construction first, then compare the rules
 that differ.</em></p>
 </section>
 </article>
-<section class="prompts-link"><p><em>The prompts behind this essay (the human-side contribution):
+<section class="prompts-link"><p><em>The prompts behind this essay (the human-side contribution): 
 <a href="dependent-types-from-rocq-to-lean.prompts.html">view the prompts &rarr;</a></em></p></section>
 <script src="/assets/theme-toggle.js"></script>
 </body>

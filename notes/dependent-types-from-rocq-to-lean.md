@@ -17,7 +17,7 @@ Suppose you want to state that every finite-dimensional vector space has a basis
 
 Dependent type theory gives these dependencies a uniform notation. Types may depend on values. Proofs inhabit types expressing propositions. Functions can return both mathematical objects and evidence about them. The interesting work begins when we ask which distinctions the system preserves, which it identifies automatically, and which require a theorem.
 
-This article offers a route back into the subject for someone who once knew Coq, now called Rocq, and a route into Lean for a mathematician new to dependent types. The common foundation is the Calculus of Constructions and its extensions with inductive types. Lean and Rocq make different choices within that family; understanding those choices explains much of Lean's behavior.
+This article offers a route back into the subject for someone who once knew Coq, now called Rocq, and a route into Lean for a mathematician new to dependent types. The common foundation is the Calculus of Constructions and its extensions with inductive types. Lean and Rocq make different choices within that family; understanding those choices explains much of Lean's behavior. Programmers who know GADTs from Haskell or OCaml get a section of their own, which other readers can skip.
 
 Milo Moses's [A critical look at Lean4](https://www.lesswrong.com/posts/zHhGa3iQBQcdSifFL/a-critical-look-at-lean4-1) supplies the occasion. It raises questions about normalization, consistency, and the reliability of implementations. We will return to those after developing enough of the machinery to distinguish them. The mathematical exposition comes first: what a proof term is, how computation enters a type, and what happens when equality itself becomes an object of reasoning.
 
@@ -71,7 +71,7 @@ The first forms the function type, the second constructs a function, and the thi
 
 A proof of $P\to Q$ transforms any proof of $P$ into a proof of $Q$: it is a function. A proof of $\forall x:A,\,P(x)$ supplies a proof of $P(x)$ for every $x$: it is a dependent function. This is the propositions-as-types correspondence.
 
-> **Syntax note.** Lean's `∀ (x : A), B x` and `(x : A) → B x` are the same dependent function type. Binder conventions carry over: `∀ ⦃x y : A⦄, f x = f y → x = y` is identical to `⦃x y : A⦄ → f x = f y → x = y`. Both make `x` and `y` strict implicit arguments, inferred when a subsequent explicit argument is supplied.
+> **Syntax note.** Lean's `∀ (x : A), B x` and `(x : A) → B x` are the same dependent function type.
 
 The proof of an elementary implication is therefore a small program:
 
@@ -102,7 +102,7 @@ Other logical connectives have corresponding constructors and elimination rules:
 | $\exists x:A,\,P(x)$ | A witness and a proof about it | Reason about an arbitrary such witness |
 | $\bot$ | No constructor | Derive any proposition from it |
 
-Negation is $\neg P := P\to\bot$: assume $P$ and derive a contradiction. Classical principles enter with rules such as double-negation elimination without further hypotheses.
+Negation is $\neg P := P\to\bot$: assume $P$ and derive a contradiction. Classical logic adds principles such as double-negation elimination, $\neg\neg P\to P$, which the rules above do not provide.
 
 Rocq's `forall x : A, P x` becomes `∀ x : A, P x`; `fun x => t`, `intros`, `apply`, and `exact` remain recognizable. The treatment of proofs and equality changes more substantially.
 
@@ -140,9 +140,9 @@ Thus a proposition may quantify over objects in arbitrarily high *fixed* univers
 
 Data universes are predicative. A type of functions ranging over all small types generally lives higher than those small types. Impredicativity and `Type : Type` are different design choices; the former does not by itself imply the latter.
 
-One practical trap for a Rocq user is **cumulativity**. Rocq permits smaller universes to embed into larger ones through its typing discipline. Lean does not automatically regard a type in `Type u` as an inhabitant of `Type (u + 1)`. Universe polymorphism often removes the need for lifting, but explicit constructions such as `ULift` are available when needed. Rocq's rules also distinguish its computational `Set` sort from `Prop`; Lean's ordinary small data live in `Type`.
+One practical trap for a Rocq user is **cumulativity**. Rocq permits smaller universes to embed into larger ones through its typing discipline. Lean does not automatically regard a type in `Type u` as an inhabitant of `Type (u + 1)`. Universe polymorphism often removes the need for lifting, but explicit constructions such as `ULift` are available when needed.
 
-Rocq's `Set` is a sort; Lean's mathematical `Set α` represents predicates on `α`. The shared spelling conceals different roles.
+Rocq's `Set` is a sort for small computational data, which Lean places in `Type`; Lean's `Set α` is the type of predicates on `α`. The shared spelling conceals different roles.
 
 ## Induction is dependent recursion
 
@@ -170,18 +170,17 @@ def Vec.head {α : Type u} {n : Nat} : Vec α (n + 1) → α
   | .cons x _ => x
 ```
 
-Lean allows arguments to be declared before the colon, leaving their names in scope for the type that follows. These are two equivalent ways to write the `cons` constructor inside the declaration:
+Arguments declared before a constructor's colon stay in scope for the type that follows. The `cons` line could equally be written
 
 ```text
-| cons {n : Nat} : α → Vec α n → Vec α (n + 1)
 | cons : {n : Nat} → α → Vec α n → Vec α (n + 1)
 ```
 
-In the first form, the colon after `}` introduces the remaining function type; in the second, the whole function type follows the colon. Both make `n` implicit, usually inferred by Lean. The placement is stylistic; the dependency comes from using `n` in the subsequent types.
+Either way, `n` is an implicit argument that Lean usually infers. The dependency comes from using `n` in the later types, not from where it is declared.
 
 The element type `α` is a *parameter*: it stays fixed through the declaration. The length is an *index*: the constructors return different instances of the family. In `head`, the empty constructor cannot inhabit the input type, so there is no empty case to handle.
 
-Compare a list operation that might fail with this signature. Here the caller must supply a nonempty vector; the result needs no optional wrapper. The mathematical precondition is expressed in the domain of the function.
+Compare `List.head?`, which must return an `Option α` because its input may be empty. `Vec.head` instead requires a nonempty vector, so its result needs no optional wrapper. The mathematical precondition is expressed in the domain of the function.
 
 Inductive declarations require restrictions. In particular, recursive occurrences must meet *strict positivity* conditions. To understand the terminology, consider an occurrence of a type `X` in an expression built from function types. Start with positive polarity: entering an arrow's domain flips the sign, while entering its codomain preserves it. Intuitively, `A → X` produces an `X`, whereas `X → A` consumes one. Assuming `A` and `B` contain no `X`:
 
@@ -192,34 +191,26 @@ Inductive declarations require restrictions. In particular, recursive occurrence
 | `X → A` | Negative | No |
 | `(X → A) → B` | Positive: two sign flips | No |
 
-Strict positivity is stronger than a positive final sign: in these arrow expressions, the path to `X` must never enter a function's domain. The check applies **inside each constructor argument's type**, not across the outer arrows that make the constructor a function. Thus `Vec α n` is an allowed recursive argument to `cons`; an argument of type `Bad → False` has a forbidden negative occurrence. Nested inductive type constructors have additional rules, described in the [inductive-type reference](https://lean-lang.org/doc/reference/latest/The-Type-System/Inductive-Types/).
+Strict positivity is stronger than a positive final sign: in these arrow expressions, the path to `X` must never enter a function's domain. The check applies **inside each constructor argument's type**, not across the outer arrows that make the constructor a function. Thus `Vec α n` is an allowed recursive argument to `cons`, while a recursive argument of type `X → False` would be forbidden. Nested inductive type constructors have additional rules, described in the [inductive-type reference](https://lean-lang.org/doc/reference/latest/The-Type-System/Inductive-Types/).
 
-If we freely admitted a constructor `mk : (Bad → False) → Bad`, its apparent elimination rule would let us define:
+If we freely admitted a type `Bad` with a constructor `mk : (Bad → False) → Bad`, its apparent elimination rule would let us define:
 
 ```text
 d : Bad → False
 d (mk f) := f (mk f)
 ```
 
-The definition of `d` does not recursively call itself: it applies the function stored in its argument. For an arbitrary `f : Bad → False`, unfolding `d` and then matching the constructor gives the open reduction sequence:
-
-```text
-d (mk f)
-  → (match mk f with | mk g => g (mk g))
-  → f (mk f)
-```
-
-The expression is *open* because `f` remains a variable; its behavior determines what happens next. The forbidden constructor nevertheless lets us package `d` itself as an input: `mk d : Bad`. Specializing to `f = d` therefore yields the closed term `d (mk d) : False`, whose reduction repeats:
+The definition of `d` does not call itself: it applies the function stored in its argument. But the constructor lets us store `d` itself, as `mk d : Bad`. Applying `d` to it gives a closed term of type `False`. Unfolding `d` and matching the constructor returns the same term:
 
 ```text
 d (mk d) → d (mk d) → ...
 ```
 
-Each arrow here abbreviates unfolding and matching. Self-application emerges from the constructor and its elimination rule despite the absence of explicit recursion. The closed term's type `False` is the contradiction; the loop also exposes the computational failure. The positivity check blocks the declaration of `Bad` before either becomes available.
+Self-application emerges from the constructor and its elimination rule despite the absence of explicit recursion. The closed term's type `False` is the contradiction; the loop also exposes the computational failure. The positivity check blocks the declaration of `Bad` before either becomes available.
 
-Lean's kernel checks inductive declarations and their recursors. Surface recursive definitions are compiled into applications of those principles, including well-founded recursion when needed. Rocq instead also has primitive fixpoint terms with a guardedness discipline in its core presentation. The two systems therefore organize the checking of recursion differently. Rocq's [inductive and recursive rules](https://docs.rocq-prover.org/master/refman/language/core/inductive.html) are the appropriate comparison, rather than the superficial similarity of pattern-matching syntax.
+Lean's kernel checks inductive declarations and their recursors. Surface recursive definitions are compiled into applications of those principles, including well-founded recursion when needed. Rocq's core language instead has primitive fixpoint terms, checked by a guardedness discipline; its recursors are defined from them. The two systems therefore organize the checking of recursion differently. Rocq's [inductive and recursive rules](https://docs.rocq-prover.org/master/refman/language/core/inductive.html) are the appropriate comparison, rather than the superficial similarity of pattern-matching syntax.
 
-> **Off-topic details: termination through decreasing measures**
+> **Aside: termination through decreasing measures**
 >
 > A standard termination argument assigns each recursive call a measure in a well-founded order. For a natural-number measure $\mu$, a call from input $x$ to input $y$ must satisfy $\mu(y)<\mu(x)$. Recursing on a list's tail decreases its length; more elaborate algorithms may decrease a lexicographically ordered tuple. There can be no infinite descending chain in the chosen order. Lean's [`termination_by` and `decreasing_by`](https://lean-lang.org/doc/reference/latest/Definitions/Recursive-Definitions/) let us specify such a measure and prove the required decreases, elaborating the definition into well-founded recursion.
 >
@@ -227,7 +218,7 @@ Lean's kernel checks inductive declarations and their recursors. Surface recursi
 >
 > An ordinary recursive-call check has no self-call to inspect in `d`. It calls a stored function, whose unrestricted type `Bad → False` imposes no descent condition. Packaging `d` with `mk` lets that call return to the same expression. Any rank strictly decreasing along this complete reduction cycle would require $\mu(t)<\mu(t)$. A termination-tracking system must therefore reject or restrict some part of the construction; merely attaching a measure to `d` cannot validate the unchanged rules.
 >
-> Strict positivity restricts the datatypes and eliminators we may introduce; decreasing measures justify recursive uses of the admitted principles. Sized types can connect these concerns, but a size index alone proves neither termination nor consistency. Likewise, accepting a Lean definition through well-founded recursion does not establish normalization of every term in Lean's ambient logic, as the later counterexample will illustrate.
+> Strict positivity restricts the datatypes and eliminators we may introduce; decreasing measures justify recursive uses of the admitted principles. Sized types can connect these concerns, but a size index alone proves neither termination nor consistency. Well-founded recursion even brings a difficulty of its own. Lean's accessibility predicate `Acc` lives in `Prop`, and together with proof irrelevance it makes definitional equality undecidable; the section on normalization returns to this.
 
 ## Computation and the two forms of equality
 
@@ -280,7 +271,45 @@ Conversion is often explained as reducing both expressions to the same normal fo
 
 For writing proofs, a useful discipline is to ask what makes an equality available. Does it follow by unfolding and computation? Is it an induction theorem? Does it use extensionality? Each answer suggests a different Lean move: `rfl` or `change`, induction or rewriting, or an explicit extensionality principle.
 
+## A first independent Lean proof
+
+We can now write a proof without a guide. The composite of two injective functions is injective; an explicit definition keeps every step visible:
+
+```lean
+def IsInjective {A : Type u} {B : Type v} (f : A → B) : Prop :=
+  ∀ ⦃x y : A⦄, f x = f y → x = y
+
+theorem injectiveComp {A : Type u} {B : Type v} {C : Type w}
+    (f : A → B) (g : B → C)
+    (hf : IsInjective f) (hg : IsInjective g) :
+    IsInjective (fun x => g (f x)) := by
+  intro x y h
+  apply hf
+  apply hg
+  exact h
+
+#print axioms injectiveComp
+```
+
+The double braces in `⦃x y : A⦄` make `x` and `y` *strict implicit* arguments. Lean infers them, but only once a later explicit argument, here the equality, is supplied. So `hf` on its own still denotes the whole quantified statement.
+
+[`intro x y h`](https://lean-lang.org/doc/reference/latest/Tactic-Proofs/Tactic-Reference/#quantifiers) introduces and names three local assumptions. Unfolding `IsInjective` exposes two universally quantified variables followed by an implication. After `intro`, the new assumptions and remaining goal are:
+
+```text
+x y : A
+h : g (f x) = g (f y)
+⊢ x = y
+```
+
+Mathematically: let `x, y` be arbitrary and assume `h`. We could write `intro a b hab` and later `exact hab`. The remaining tactics work backward: `apply hf` asks for `f x = f y`, then `apply hg` asks for `g (f x) = g (f y)`, supplied by `exact h`. The final command, `#print axioms`, lists the axioms a theorem depends on; for `injectiveComp` it reports none.
+
+For practice, rewrite the proof as one `fun` expression. Prove that injectivity of `g ∘ f` implies injectivity of `f`, using `congrArg g`. Then try surjectivity: a composite of surjections is surjective, and if `g ∘ f` is surjective, so is `g`. Both statements end in an existential, so their proofs must supply witnesses.
+
+Finally, return to `Vec`. Define `Vec.toList` and prove by induction that its result has length `n`. Then use `resizeVec` with `Nat.zero_add n` to turn a `Vec α (0 + n)` into a `Vec α n`. This brings together the three skills on which the rest depends: reading a dependent signature, understanding the motive of induction, and recognizing when equality requires transport.
+
 ## How far GADTs take us
+
+Readers who do not program in Haskell or OCaml can skip this section.
 
 Much of the vector example is available in Haskell and OCaml through *generalized algebraic datatypes*, or GADTs. Their constructors can specify different result indices, and matching a constructor introduces type equations within the branch. This captures an important part of indexed inductive families. It does not by itself supply arbitrary dependence on ordinary terms.
 
@@ -315,7 +344,7 @@ let head_vec : type n a. (n s, a) vec -> a = function
   | VCons (x, _) -> x
 ```
 
-The `type n a.` annotation introduces locally abstract types for checking the body. Here `z` and `'n s` serve as indices; no values of those types need to be stored in a vector. Both languages rule out the empty constructor at this input type. OCaml's [GADT tutorial](https://ocaml.org/manual/5.5/gadts-tutorial.html) also develops existential indices and equality witnesses. Transport between equal indices is therefore available in both languages.
+The `type n a.` annotation introduces locally abstract types for checking the body. Here `z` and `'n s` serve as indices; no values of those types need to be stored in a vector. Both languages rule out the empty constructor at this input type. OCaml's [GADT tutorial](https://ocaml.org/manual/5.5/gadts-tutorial.html) also develops existential indices and equality witnesses; Haskell provides the latter as `:~:`. Matching such a witness transports a value between equal indices, as Lean's `transport` does.
 
 ### Connecting an index to an ordinary value
 
@@ -372,7 +401,7 @@ let rec append : type n m k a.
 
 `PlusZ` witnesses $0+m=m$; `PlusS` lifts evidence for $n+m=k$ to evidence for $(n+1)+m=k+1$. Both versions enforce the result length. The OCaml interface carries an explicit witness instead of asking the checker to evaluate a type family. Witnesses can also be computed and packaged with results.
 
-Haskell consequently offers more direct machinery for computing with indices. Higher-kinded and kind polymorphism also make families easier to abstract over. OCaml uses module functors or encodings for corresponding abstractions over type constructors; [Yallop and White](https://www.cl.cam.ac.uk/~jdy22/papers/lightweight-higher-kinded-polymorphism.pdf) explain that tradeoff.
+Haskell consequently offers more direct machinery for computing with indices. Higher-kinded type variables and kind polymorphism also make families easier to abstract over. OCaml uses module functors or encodings for corresponding abstractions over type constructors; [Yallop and White](https://www.cl.cam.ac.uk/~jdy22/papers/lightweight-higher-kinded-polymorphism.pdf) explain that tradeoff.
 
 ### What general dependency adds
 
@@ -458,9 +487,7 @@ Does this erase the distinctions between formulas? Consider three Boolean variab
 
 $$F=p\land q\land r,\qquad G=r\land p\land q,\qquad H=p\lor q\lor r.$$
 
-At the all-true assignment, all three propositions equal `True`. But formulas describe dependence on assignments: $F$ and $G$ agree everywhere, whereas $F$ and $H$ disagree at $(p,q,r)=(\mathrm{True},\mathrm{False},\mathrm{False})$. The latter are merely *equisatisfiable*: each has a satisfying assignment. [Equisatisfiability](https://www.cs.cmu.edu/~mfredrik/15414/lectures/02-propositional.pdf) preserves existence of a model, not agreement under every assignment.
-
-In Lean, represent these meanings as predicates `F G : Assignment → Prop`. Equivalence means `∀ ρ, F ρ ↔ G ρ`; `propext` and `funext` then give `F = G`. Equisatisfiability means `(∃ ρ, F ρ) ↔ (∃ σ, G σ)`: `propext` equates these existential propositions, not the predicates. The witnesses may differ. Classically, `Prop` has two values up to propositional equality, yet three Boolean inputs permit $2^{2^3}=256$ distinct truth functions. Equality of propositions does not discard dependencies that remain explicit in a function's arguments.
+A formula with free variables is not a proposition but a predicate on assignments, `F : Assignment → Prop`. $F$ and $G$ agree at every assignment, so `propext` and `funext` together give `F = G`. $F$ and $H$ disagree at $(p,q,r)=(\mathrm{True},\mathrm{False},\mathrm{False})$. They are merely [equisatisfiable](https://www.cs.cmu.edu/~mfredrik/15414/lectures/02-propositional.pdf): each has a satisfying assignment. Then `propext` equates the propositions `∃ ρ, F ρ` and `∃ ρ, H ρ`, but not the predicates. Classically, `Prop` has two values up to propositional equality, yet three Boolean inputs permit $2^{2^3}=256$ distinct truth functions.
 
 Representing subsets by membership predicates, these principles turn pointwise equivalence into equality:
 
@@ -545,7 +572,7 @@ The placement of the lambda avoids circularity. Lifting `fun f => f` directly wo
 
 ### Classical principles and conversion
 
-`Classical.choice`, together with the extensional principles, supports excluded middle. Local `classical` commands enable associated instances without modifying the kernel's rules. Use `#print axioms` to inspect a theorem's actual dependencies.
+`Classical.choice`, together with the extensional principles, proves excluded middle; Lean's `Classical.em` follows Diaconescu's argument. Local `classical` commands enable associated instances without modifying the kernel's rules. Use `#print axioms` to inspect a theorem's actual dependencies.
 
 Lean therefore combines an intensional account of computation with strong propositional extensionality principles and definitional proof irrelevance. It does not implement equality reflection, the rule that every proved equality becomes a conversion rule. Nor is it a homotopy type theory: equality proofs live in its proof-irrelevant `Prop`, and the resulting uniqueness of equality proofs is incompatible with the general higher structure sought in univalent foundations.
 
@@ -566,7 +593,7 @@ inductive Rose (α : Type u) where
   | node : α → List (Rose α) → Rose α
 ```
 
-Here the recursive occurrence sits underneath `List`. Generating and checking the elimination machinery is more involved than for a binary tree. This raises [soundness questions about the generated recursors](https://arxiv.org/html/2403.14064v1#S5) even without invoking non-terminating reduction. A consistency argument for Lean 3 therefore needs further work to cover Lean 4's extensions.
+Here the recursive occurrence sits underneath `List`. Generating and checking the elimination machinery is more involved than for a binary tree. This raises [soundness questions about the generated recursors](https://arxiv.org/html/2403.14064v1#S5) even without invoking non-terminating reduction. Carneiro's [2019 thesis](https://github.com/digama0/lean-type-theory/releases/download/v1.0/main.pdf) proved Lean 3's type theory consistent relative to ZFC with $n$ inaccessible cardinals for every finite $n$. Lean 4's extensions need further work beyond that argument.
 
 The layers matter when learning the language. A numeral is surface syntax. Notation, implicit arguments, coercions, and type-class search help turn an expression into a fully specified term. Tactics solve elaboration goals by constructing terms. The kernel checks the resulting declarations. The compiler provides a further route from executable definitions to running programs. Lean's [elaboration and compilation reference](https://lean-lang.org/doc/reference/latest/Elaboration-and-Compilation/) separates these stages.
 
@@ -587,11 +614,11 @@ Rocq also supports eta conversion for functions and primitive records. Its [conv
 
 ## What the normalization result actually says
 
-We can now separate three metatheoretic properties. **Strong normalization** says every reduction sequence from a well-typed term terminates. **Canonicity**, in a specified fragment and with specified axioms, says closed terms of data types compute to appropriate canonical values, such as numerals. **Consistency** says there is no closed proof of `False` under the designated assumptions. These properties interact, but they are not synonyms.
+We can now separate four metatheoretic properties. **Strong normalization** says every reduction sequence from a well-typed term terminates. **Canonicity**, in a specified fragment and with specified axioms, says closed terms of data types compute to appropriate canonical values, such as numerals. **Consistency** says there is no closed proof of `False` under the designated assumptions. **Decidability of type checking** says an algorithm settles every typing judgment, including every question of definitional equality. These properties interact, but they are not synonyms.
 
 Normalization and an analysis of normal forms can establish consistency: if every closed proof normalizes, and no normal form can inhabit `False`, then no such proof exists. Losing that method does not exhibit a proof of `False`. A semantic model offers another route: interpret types as suitable objects and `False` as empty, then prove that derivable judgments preserve the interpretation.
 
-Abel and Coquand's [2019 preprint, published in 2020](https://arxiv.org/html/1911.08174), exhibits non-normalizing proof terms. Their closed example uses propositional extensionality as well as impredicativity and proof-irrelevant equality. It does not require a recursive definition or an assumption of `False`. We can reconstruct the mechanism in Lean 4, starting with the computational rule that makes it possible.
+Abel and Coquand's [2020 paper](https://arxiv.org/html/1911.08174) exhibits non-normalizing proof terms. Their closed example uses propositional extensionality as well as impredicativity and proof-irrelevant equality. It does not require a recursive definition or an assumption of `False`. We can reconstruct the mechanism in Lean 4, starting with the computational rule that makes it possible.
 
 ### A cast that does not wait for its proof
 
@@ -676,11 +703,28 @@ The cast exposes `d` because its endpoints agree, without evaluating the `propex
 
 *Strong normalization* requires every reduction sequence to terminate; *weak normalization* requires at least one sequence reaching a normal form. The cycle alone refutes the former. A looping subterm can sometimes be discarded: $(\lambda t:T.\;0)(d\,w)$ reduces to $0$ by contracting the outer application. For $d\,w$ itself, [Abel and Coquand](https://arxiv.org/html/1911.08174#S2) establish that there is not even a *weak head normal form*: reduction cannot expose a finished outer shape. Thus this term is not weakly normalizing either; choosing another reduction order does not rescue it.
 
-This identifies three distinct contributions: impredicativity permits the instantiation at $D$; propositional extensionality supplies the casts between inhabited propositions; and proof-irrelevant cast reduction removes the cast when the loop returns to $D$. The claim is about this combination of rules, not every system that has some notion of proof irrelevance.
+This identifies three distinct contributions: impredicativity permits the instantiation at $D$; propositional extensionality supplies the casts between inhabited propositions; and proof-irrelevant cast reduction removes the cast when the loop returns to $D$. The claim is about this combination of rules, not every system that has some notion of proof irrelevance. Rocq keeps a related combination behind an option: its manual [warns](https://docs.rocq-prover.org/master/refman/addendum/sprop.html#non-termination-with-uip) that the `Definitional UIP` flag for `SProp`, off by default, breaks termination of reduction in the presence of an impredicative sort, and cites this example.
 
-The example type-checks in Lean 4.34.1. The companion checks that `#reduce (proofs := true) ReductionLoop.loop` reaches a bounded recursion limit. This diagnostic corroborates the behavior; the reduction argument establishes divergence.
+The example type-checks in Lean 4.34.1. The accompanying Lean file checks that `#reduce (proofs := true) ReductionLoop.loop` reaches a bounded recursion limit. This diagnostic corroborates the behavior; the reduction argument establishes divergence.
 
 There is no contradiction: $T$ already has the proof `fun P p => p`. Proof irrelevance identifies `loop` with it, but does not supply a computational reduction to it. A checker can recognize proofs of the same proposition without reducing them, so the example does not force every type check to diverge.
+
+### Undecidable conversion and the kernel's approximation
+
+Lean's checker faces a second limitation, independent of the loop. Carneiro's [thesis](https://github.com/digama0/lean-type-theory/releases/download/v1.0/main.pdf#page=16) shows that definitional equality under Lean's rules is undecidable. The source is the accessibility predicate behind well-founded recursion, which Lean's core library defines as follows:
+
+```lean
+inductive Acc {α : Sort u} (r : α → α → Prop) : α → Prop where
+  | intro (x : α) (h : (y : α) → r y x → Acc r y) : Acc r x
+```
+
+`Acc` is a proposition, yet its recursor may eliminate into data. It computes when the proof is built by `intro`. Any proof `a : Acc r x` yields, by projection, the argument that `intro` would need. Proof irrelevance then makes `a` definitionally equal to `intro` applied to those projections. That rebuilt proof lets the recursor take one more step, and the rebuilding can be repeated indefinitely.
+
+Carneiro uses this to encode an unbounded search. Fix a decidable predicate $P$ on natural numbers, and take the relation $>$, which is not well-founded. Define a function by the recursor that tests $P(n)$ and continues to $n+1$ while it holds, returning `false` at the first failure. Assume a proof `a : Acc (· > ·) 0` as a hypothesis. No such proof exists, but definitional equality must still be decided in that context. The function's result at $0$ is then definitionally equal to `false` exactly when $P$ fails somewhere. Halting of a Turing machine has this form, so no algorithm decides definitional equality.
+
+The kernel's conversion check is therefore a decidable approximation. It does not search for rebuilt proofs, so it can fail to confirm equalities that the rules permit. Carneiro draws two further consequences. The algorithmic relation is not transitive: it confirms a rebuilding step and the reduction that follows it, but not the equation that skips the rebuilt proof. And typing based on that relation fails subject reduction: reducing a well-typed term can produce one the checker rejects at the same type.
+
+Neither result yields a proof of `False`. Both concern completeness: the kernel may reject terms the declared rules accept, but should not accept terms they reject. In practice Lean avoids depending on such reductions; definitions by well-founded recursion are irreducible by default, and their defining equations are used as theorems.
 
 There is another, milder way computation can fail to produce an answer: a term can become *stuck* at an opaque axiom. This is different from an infinite reduction sequence. Classical choice can specify a mathematical object without an executable construction. `noncomputable` records that situation; it does not mean “unproved,” and it does not grant arbitrary recursive proofs. Similarly, Lean's programming facilities for partial or unsafe code have restrictions separating them from ordinary logical definitions.
 
@@ -719,6 +763,8 @@ $$g_A=\{(a,\star)\mid a\in A\}.$$
 
 Its sole element is $g_A$, not necessarily $\star$. Changing $A$ changes the graph. Thus the products of true propositions over different domains do not automatically become the same designated truth value $1$. To keep quantification impredicative and proofs irrelevant, a model must reconcile these representations with abstraction, application, and substitution. Saying “all proofs are a point” does not itself do that work.
 
+Miquel and Werner analyze this difficulty in [“The not so simple proof-irrelevant model of CC”](https://www.lix.polytechnique.fr/~werner/publis/cc.pdf). Carneiro's [thesis](https://github.com/digama0/lean-type-theory/releases/download/v1.0/main.pdf) handles it by proving *unique typing* first: each term has one type up to definitional equality. The model can then tell which products land in `Prop` and interpret them differently. Barras found a shortcut. Aczel's encoding represents a function $f$ as the set of pairs $(x,y)$ with $y\in f(x)$. Taking $\star=\varnothing$ makes the constant function to $\star$ the empty set, which is $\star$ itself, whatever its domain.
+
 This is also where the normalization example becomes illuminating. In a successful proof-irrelevant model of its rules, `loop` and the elementary proof of $T$ would have the same denotation. Every step around the loop would preserve that denotation. There is no contradiction in
 
 $$t\longrightarrow t'\longrightarrow t,
@@ -736,11 +782,11 @@ These approaches expose the choices behind “types are sets”: the representat
 
 ## Consistency proofs and the reliability of a checker
 
-Mario Carneiro's [February 2025 HoTTEST presentation](https://hottest-seminar.github.io/hottestfiles/Carneiro-2025-02-06-HoTTEST.pdf) reports a gap found while formalizing earlier metatheory, around definitional inversion and the confluence argument. It distinguishes proved results from conjectures and describes an alternative route toward soundness.
+Mario Carneiro's [February 2025 HoTTEST presentation](https://hottest-seminar.github.io/hottestfiles/Carneiro-2025-02-06-HoTTEST.pdf) reports a gap in the thesis, found while formalizing it. The affected theorems are unique typing and definitional inversion, which rest on a confluence argument; the talk now lists them as conjectures. The thesis's soundness proof used unique typing, though the thesis itself notes that Barras's encoding avoids that dependency. The talk mentions an alternative route to soundness, while some kernel optimizations still depend on the conjectured theorems.
 
 As of October 13, 2026, the [con-leche project](https://github.com/leanprover/con-leche) constructs a set-theoretic interpretation and proves that every environment accepted by its verified checker has a model. It assumes set theory with an ω-chain of Grothendieck universes; the interpretation of accepted declarations is then proved to exist. Since `False` denotes the empty set, no accepted theorem can inhabit it. The checker deliberately differs from the official kernel, including its handling of inductives, so the result covers con-leche's accepted declarations without automatically covering everything the official kernel accepts.
 
-This is a relative consistency result: the checker is the object of study, while Lean serves as the metatheory in which the conditional result is proved. The set-theoretic assumptions remain explicit. Connecting that theorem to an executable checker also requires accounting for its parsing, runtime, and input handling.
+The result is relative: the accepted declarations are consistent if set theory with those universes is. The proof is itself a Lean development, so Lean also serves as the metatheory, checked by the official kernel. Connecting that theorem to an executable checker also requires accounting for its parsing, runtime, and input handling.
 
 This leads to four separate questions about an individual formalization:
 
@@ -757,41 +803,7 @@ De Moura's [August 24, 2026 postmortem](https://leodemoura.github.io/blog/2026-8
 
 `#print axioms` answers the dependency question. Statement inspection and implementation validation answer others. A successful build provides evidence about a particular checking run; assessing its trust assumptions also requires knowing how tactics, native computation, and imported artifacts enter that run.
 
-The linked critique usefully prompts these questions. Its forecasts about undiscovered contradictions are judgments about risk, beyond what the normalization counterexample establishes. Evaluating them requires the specific rules, models, and implementations examined here.
-
-## A first independent Lean proof
-
-Return now to writing a proof. The composite of two injective functions is injective; an explicit definition keeps every step visible:
-
-```lean
-def IsInjective {A : Type u} {B : Type v} (f : A → B) : Prop :=
-  ∀ ⦃x y : A⦄, f x = f y → x = y
-
-theorem injectiveComp {A : Type u} {B : Type v} {C : Type w}
-    (f : A → B) (g : B → C)
-    (hf : IsInjective f) (hg : IsInjective g) :
-    IsInjective (fun x => g (f x)) := by
-  intro x y h
-  apply hf
-  apply hg
-  exact h
-
-#print axioms injectiveComp
-```
-
-[`intro x y h`](https://lean-lang.org/doc/reference/latest/Tactic-Proofs/Tactic-Reference/#quantifiers) introduces and names three local assumptions. Unfolding `IsInjective` exposes two universally quantified variables followed by an implication. After `intro`, the new assumptions and remaining goal are:
-
-```text
-x y : A
-h : g (f x) = g (f y)
-⊢ x = y
-```
-
-Mathematically: let `x, y` be arbitrary and assume `h`. We could write `intro a b hab` and later `exact hab`. The remaining tactics work backward: `apply hf` asks for `f x = f y`, then `apply hg` asks for `g (f x) = g (f y)`, supplied by `exact h`. No classical axiom is required.
-
-For practice, rewrite the proof as one `fun` expression. Prove that injectivity of `g ∘ f` implies injectivity of `f`, using `congrArg g`. Try the surjectivity statements too: these exercise existential proofs and the distinction between witnesses and returned data.
-
-Finally, return to `Vec`. Prove a property by induction on its constructors, then change a length expression using `resizeVec`. This brings together the three skills on which the rest depends: reading a dependent signature, understanding the motive of induction, and recognizing when equality requires transport.
+Moses's critique makes claims of several kinds, and these distinctions sort them. Its normalization claim is correct; the loop above reconstructs it. What it costs is one route to consistency, not evidence of inconsistency. Its consistency claim also stands as written: no public proof covers Lean 4 as the official kernel implements it. Carneiro's thesis covers Lean 3, and its proof now has a reported gap; con-leche covers a different checker. Its strongest evidence concerns implementations: kernel bugs, nested inductives, and validation tools run without isolation. That evidence belongs to the third row of the table, and the postmortem confirms it. Its warning about mistranslated statements belongs to the first row. Its forecast that current Lean accepts some proof of `False` is a judgment about implementation risk, which the foundational results here neither support nor refute.
 
 The opening basis theorem now has a more precise shape. It can assert that a natural number and a family of vectors satisfying the basis properties exist, package them as data with proofs attached, or define a particular basis using classical choice. Each formulation makes a different promise about computation and observation. Reading Lean means seeing those promises in the type.
 

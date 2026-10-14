@@ -155,3 +155,13 @@ Looks good! Do a final editorial pass. Thanks.
 ## Index entry and commit
 
 I also deleted: "Their types come from this goal; their names are our choice. They are not already available in the initial local context." Let's add an entry to index.html and commit, thanks!
+
+## Revision before the Substack release
+
+*These prompts went to Claude Opus 5.5, after the article was published on the website.*
+
+The article @notes/dependent-types-from-rocq-to-lean.md is already out on the website but there's over a week before it publishes on Substack. Do you see room for improvement in it?
+
+yes, do the style fixes and draft the additions, thanks! The GADT section is optional, but also it's too big to make it a box (Markdown's quotation style), WDYT? Attribution: there's no need to match IMO. Both are truthful. I think the "Codex (OpenAI)" attribution is derived from my system instruction which also applies to git commits. OK to move the tutorial-style "first proof" but I don't have a strong opinion -- at the end it can be understood as a homework, in the middle it prompts a pause in reading. But structurally it's better to move.
+
+Looks good! Update the prompts file, commit and push, and update the scheduled Substack draft. Thanks, good contribution!
