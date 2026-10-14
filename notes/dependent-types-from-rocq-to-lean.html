@@ -1521,7 +1521,14 @@ substitution lemma behind the familiar computation rule.</p>
 properties demanded by the typing rules. Merely saying “let a universe
 contain all sets” does not produce a set. Which closure conditions we
 choose, and whether product formation remains in the same universe,
-determine the required set-theoretic assumptions.</p>
+determine the required set-theoretic assumptions. Werner’s <a
+href="https://doi.org/10.1007/BFb0014566">“Sets in Types, Types in
+Sets”</a> (1997) settled the strength needed for Rocq’s calculus. ZFC
+with <span class="math inline">n</span> inaccessible cardinals proves
+the consistency of CIC with <span class="math inline">n+1</span>
+universes, and CIC with <span class="math inline">n+2</span> universes
+proves the consistency of ZFC with <span class="math inline">n</span>
+inaccessibles. Carneiro’s thesis adapts this model to Lean.</p>
 <section id="why-propositions-make-the-model-less-immediate"
 class="level3">
 <h3>Why propositions make the model less immediate</h3>
@@ -1569,40 +1576,77 @@ additional argument ruling out infinite computation; equality of
 meanings supplies no decreasing measure. A semantic consistency proof
 can therefore succeed even when reduction fails to normalize.</p>
 </section>
-<section id="two-approaches-to-dependent-types-in-sets" class="level3">
-<h3>Two approaches to dependent types in sets</h3>
-<p>Yang, Guilloud, and Kunčak’s <a
-href="https://arxiv.org/html/2603.12827v1">Are Dependent Types in Set
-Theory Feasible?</a> (2026) mechanizes dependent products and cumulative
-universes in Lisa using Tarski–Grothendieck set theory. Its
-bidirectional type-checking tactic produces proofs of set-membership
-judgments for Lisa’s kernel to check. The paper excludes inductives and
-recursive definitions and presents the work as a step toward proof
-transfer. It does not establish a model of Lean’s complete calculus,
-including its impredicative <code>Prop</code>.</p>
-<p>Bice’s <a href="https://arxiv.org/html/2507.04071v2">Dependent Types
-Simplified</a> (2025) develops two systems by defining set
-interpretations before choosing sound inference rules. Its canonical
-universe construction uses <span class="math inline">H(\kappa_n)</span>,
-sets of hereditary size below selected regular cardinals. For a
-dependent product <span class="math inline">\prod_{x:A}B(x)</span>,
-<span class="math inline">m</span> is the universe level of the domain
-<span class="math inline">A</span>, and <span
-class="math inline">n</span> is a common universe level for the fibers
-<span class="math inline">B(x)</span>. The product lies at level <span
-class="math inline">\max(m+1,n)</span>; its products into the
-proposition universe are explicitly <strong>not impredicative</strong>.
-It offers a route without inaccessible cardinals by changing the
-universe discipline. Decidability and normalization require further
-restrictions discussed as future work.</p>
-<p>These approaches expose the choices behind “types are sets”: the
-representation of functions, closure of universes, and treatment of
-propositions. Lisa provides an implemented interface within set theory;
-Bice designs calculi around set semantics. Their product rules and scope
-differ from Lean’s, so each explains part of the design space rather
-than settling Lean’s metatheory. To connect semantics to a proof
-assistant’s reliability, we also need an argument about the checker that
-accepts its terms.</p>
+<section id="a-mathematicians-alternative-semantics-first"
+class="level3">
+<h3>A mathematician’s alternative: semantics first</h3>
+<p>Tristan Bice’s <a href="https://arxiv.org/abs/2507.04071">Dependent
+Types Simplified</a> (2025) reverses the usual order of work. Writing as
+“a mathematician trained in classical logic,” Bice observes that a
+typical paper on dependent types opens with pages of inference rules and
+explains their meaning later, if at all. His two systems start from set
+interpretations and admit only inference rules that are sound for
+them.</p>
+<p>An interpretation assigns sets to constants and variables, and
+nothing else affects it. Bice contrasts this with Miquel–Werner and
+Carneiro, whose interpretations also depend on the typing context and
+split the language into propositional and non-propositional parts. In
+his view, the split gives up the main attraction of propositions as
+types: one uniform treatment of types and propositions.</p>
+<p>The price is impredicativity. Bice’s universes are the sets <span
+class="math inline">H(\kappa_n)</span> of hereditary size below chosen
+regular cardinals; the lowest contains the propositions <span
+class="math inline">\varnothing</span> and <span
+class="math inline">\{\varnothing\}</span>. A dependent product whose
+domain lives at level <span class="math inline">m</span> and whose
+fibers live at level <span class="math inline">n</span> lands at level
+<span class="math inline">\max(m+1,n)</span>. Bice notes that <span
+class="math inline">m+1</span> cannot be lowered to <span
+class="math inline">0</span>, even when the fibers are propositions.
+Identifying all singletons would force it, but would forget each
+function’s domain, which is the <span class="math inline">g_A</span>
+problem above. Barras’s shortcut is, in effect, that identification. It
+suffices for a soundness proof, but Bice wants the semantics alone to
+decide which terms are well-formed, and a forgotten domain makes that
+impossible.</p>
+<p>Bice simulates impredicativity instead. His first system defines
+universal quantification as a doubly negated product, <span
+class="math inline">\neg\neg\prod</span>. Since <span
+class="math inline">\neg X := X\to\bot</span> denotes <span
+class="math inline">\{\varnothing\}</span> when <span
+class="math inline">X</span> is empty and <span
+class="math inline">\varnothing</span> otherwise, the truncated product
+always denotes one of the two propositions. The truncation bears on our
+loop. A proof of <span class="math inline">\neg\neg\prod_{P}(P\to
+P)</span> is not a function that accepts a proposition, so the
+instantiation at <span class="math inline">D</span> cannot be written.
+His second system specifies quantifiers by typing statements about
+constants.</p>
+<p>Specifications are how the second system introduces mathematical
+structure. A specification is a set of typing statements about fresh
+constants, judged by whether every canonical model interprets them as
+intended. Equality is a worked example: a reflexivity constant and a
+substitution constant force every canonical model to make the equality
+type nonempty exactly on equal pairs. These two constants mirror
+<code>Eq.refl</code> and the substitution principle behind Lean’s
+<code>transport</code>.</p>
+<p>Large cardinals become optional. With inaccessible cardinals, each
+universe satisfies ZFC, as in Carneiro’s model. Without them, each still
+satisfies ZFC minus the power-set axiom.</p>
+<p>Computation enters as reduction statements added as axioms. Bice
+states the trade-off plainly: the more reduction statements a system
+admits, the more likely type checking becomes undecidable. His
+future-work section places Lean in this frame, citing Carneiro. Lean’s
+computation rules correspond to an intermediate option, between pure
+type systems, which reduce only by β, and extensional systems, which
+admit arbitrary reductions and give up decidability. Normalization would
+require restricting attention to suitable contexts. Bice leaves it open,
+together with completeness of the inference rules relative to the
+semantics.</p>
+<p>Bice’s systems are not Lean, and he does not claim that they model
+it. They isolate the choice that makes Lean’s semantics delicate: an
+impredicative <code>Prop</code>, which the loop above also exploits. To
+connect semantics to a proof assistant’s reliability, we also need an
+argument about the checker that accepts its terms.</p>
 </section>
 </section>
 <section id="consistency-proofs-and-the-reliability-of-a-checker"

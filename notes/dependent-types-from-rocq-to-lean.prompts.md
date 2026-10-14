@@ -165,3 +165,9 @@ The article @notes/dependent-types-from-rocq-to-lean.md is already out on the we
 yes, do the style fixes and draft the additions, thanks! The GADT section is optional, but also it's too big to make it a box (Markdown's quotation style), WDYT? Attribution: there's no need to match IMO. Both are truthful. I think the "Codex (OpenAI)" attribution is derived from my system instruction which also applies to git commits. OK to move the tutorial-style "first proof" but I don't have a strong opinion -- at the end it can be understood as a homework, in the middle it prompts a pause in reading. But structurally it's better to move.
 
 Looks good! Update the prompts file, commit and push, and update the scheduled Substack draft. Thanks, good contribution!
+
+Is my choice of the two references for the notational semantics section a good one? The article about set-based semantics built by mathematicians rather than computer scientists is one I found randomly a few months ago and read through. The other one is just a quick hit from Google search when working on the article on this essay, I haven't read it myself.
+
+*denotational (speech rec fail)
+
+Yes, read the rest of Bice and maybe expand on it; cut Lisa out, it doesn't seem to add value. For Substack, maybe it helps to do the automatic conversion and then copy-paste from the new draft or discard (replace) the currently scheduled one.
