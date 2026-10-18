@@ -22,7 +22,7 @@ Provenance: four research passes (MoE, attention variants, recurrent layers, dep
 
 ### Interpretability transfer
 
-1. **Nothing of the usual kind exists on the seven checkpoints.** No SAE, transcoder, attribution graph, circuit or patching study on MiMo-V2.6-Pro, Kimi K3, Qwen3.8-2.4T-A95B, GLM-5.3, V4-Pro, V4.1-Flash or MiniMax M3 turned up in any of the four passes. The nearest frontier-scale work is a family of Jacobian-lens analyses on DeepSeek-V4-Flash (about 284B, mHC), three community write-ups from August to October 2026. Others: SAE and routing probes on DeepSeek-R1 671B (the V3 architecture), a weights-only audit of Kimi K3's depth-attention queries, and an activation-statistics study spanning Kimi Linear 48B and Qwen3.5 up to 397B. [Reported]
+1. **Nothing of the usual kind exists on the seven checkpoints.** No SAE, transcoder, attribution graph, circuit or patching study on MiMo-V2.6-Pro, Kimi K3, Qwen3.8-2.4T-A95B, GLM-5.3, V4-Pro, V4.1-Flash or MiniMax M3 turned up in any of the four passes. The nearest frontier-scale work is a family of Jacobian-lens analyses on DeepSeek-V4-Flash (about 284B, mHC), three community write-ups from August to October 2026. Others: SAE and routing probes on DeepSeek-R1 671B (the V3 architecture), a weights-only audit of Kimi K3's depth-attention queries, and an activation-statistics study spanning Kimi Linear 48B and Qwen3.5 up to 397B. [Reported] *Out of date for K3:* a neuron-only attribution graph has since appeared (Addendum A.2).
 2. **Tools that read the residual stream at one position survive.** MoE, MLA, learned sparse attention, windowed attention and recurrent layers all read from and write to the residual stream at each position. Residual-stream SAEs, logit lenses and per-position probes therefore apply unchanged; Qwen-Scope already ships residual-stream SAEs for MoE and GDN-hybrid Qwen models. [Inferred from architecture; Reported for Qwen-Scope] What changes is the structure of edges *between* positions (compressed blocks, selected sets, recurrent state) and the expert dispatch.
 3. **Tools that assume one additive stream across depth break on two of the seven.** Under mHC (V4, V4.1) and AttnRes (Kimi K3), "the residual stream at layer *l*" is not one vector. Both reduce to token-dependent scalar mixing of earlier sublayer outputs in shared coordinates, so direct logit attribution and sublayer-output SAEs remain well defined; "resid_post" SAEs, single-stream patching and circuit-tracing replacement models need new conventions. [Confirmed from equations and released code; the consequences are Inferred]
 4. **The Jacobian lens has been run on an mHC checkpoint with a modification.** The source is the flattened four-stream state; the target is the `hc_head` output. Song and Feng's replication on V4-Flash-0731 found a workspace-like layer band and strong causal sensitivity, but did not reproduce the reasoning-versus-prediction selectivity reported for Claude, on mHC or on single-stream GLM-5.2. [Reported: community work, two authors]
@@ -329,6 +329,8 @@ The essay's own reservation ("modulo what later layers actively cancel") survive
 
 ## 2.5 *Indexical Unity* and *Dispersed Minds, Simulated Selves*
 
+*Status, 18 October 2026:* the upcoming essays supersede *Dispersed Minds*, and it is no longer among the essays our positions depend on. Its verdicts below (D1 to D7) are kept as a record and need no correction. The questions they raise pass to the essays that replace it.
+
 **D1. The blackboard and its missing markers.**
 > no explicit coordinated selection mechanism that gates content into the workspace while suppressing competitors (M3), no principled capacity bottleneck forcing prioritization (M4), no way to persist or revise state variables across processing episodes (M5)
 
@@ -364,7 +366,7 @@ These are architecture-level facts. Whether any of them meets the marker as the 
 **D6. Superposition and spatial non-modularity.**
 > The Transformer's superposition is distributed but *spatially non-modular*
 
-*Verdict.* Needs qualifying for the MoE models. The expert partition is a spatial (parameter) modularity at the FFN: experts are less polysemantic than dense neurons and are addressed by a router. The residual stream where regulation would operate is still superposed. [Reported (Herbst et al., ≤30B); Inferred]
+*Verdict.* Needs qualifying for the MoE models. The expert partition is a spatial (parameter) modularity at the FFN: experts are less polysemantic than dense neurons and are addressed by a router. The residual stream where regulation would operate is still superposed. [Reported (Herbst et al., ≤30B); Inferred] The "already clean" debate leaves this verdict standing but exposes the essay's account of neurons (Addendum A.2).
 
 **D7. The persona reads its own tokens.**
 > The persona itself maintains coherence through an ISA-style (Interpretive Sensory Access) mechanism — interpreting its own token stream to sustain self-representation, reading its outputs rather than its internal vehicles
@@ -480,6 +482,117 @@ The research surfaced items that bear on the earlier dossier's open items.
 4. Inspect the released `hc_*` weights of V4 and the pseudo-queries of K3 (public; no published inspection of V4's mixing matrices). That would test the stream-collapse finding at scale.
 5. Audit the unread essays in Part 2.7, starting with *Phenomenal Consciousness as Mode of Being*.
 6. Run or commission the small-scale versions of Part 3's experiments on Qwen3.5 hybrids, where hooks and prior work exist.
+7. Read Goodfire's companion paper on language-model neurons when it appears (Addendum A.1). Check how "one main job" was judged, whether weak activations are ablatable in LLMs, and how the K3 graph crosses KDA layers, AttnRes and expert dispatch. Read Section 9.1 of Zhou and Klindt on weight decay.
+
+---
+
+# Addendum, 18 October 2026: is the network already clean?
+
+Three items arrived after the research passes. They bear on finding 1, on D6, and on a paragraph of *Dispersed Minds* §4 that the audit did not quote. A companion note, [carriers-multiplexing-and-regulation.md](carriers-multiplexing-and-regulation.md), adds two neuroscience papers and a Mamba-3 analysis. It covers unconditioned state as a source of apparent polysemanticity, multiplexing by space, time and phase, and why dynamical form is not regulation.
+
+## A.1 Sources
+
+**Cammarata, [*Neural Networks Are Already Clean*](https://already-clean.goodfire.com/)** (Goodfire, October 2026). One author; a working hypothesis; a companion paper on language-model neurons is announced.
+- About 90 percent of Qwen3-32B MLP neurons have one main job, about 7 percent have two related jobs, and 2 to 4 percent are not yet understood. The numbers depend on thresholds, and the audit method is not described.
+- The textbook polysemantic cases were misread. InceptionV1 4e:55 is a V-shape neuron (pointed things drive it, round things push it negative), and the *Zoom In* car circuit reflects shared pose.
+- Most apparent mixing comes from "recursive generalization": a neuron's meaning grows by extension ("iy" → "diy" → "do it yourself", which no longer contains "iy"). Superposition should be the last hypothesis.
+- Squeezing InceptionV1's layer 3b from 480 to 10 neurons gives broader neurons, not superposed ones. SAEs on these layers find no building blocks the neurons lack, and rotation searches "land back on the neurons".
+- Neuron-only attribution graphs reproduce Anthropic's transcoder circuits on Qwen3-32B examples.
+
+[Reported: one author; the vision results are the most developed]
+
+**The exchange between Cammarata and Neel Nanda on X** ([Cammarata's announcement](https://x.com/nickcammarata/status/2110757819427574056), [Nanda's reply](https://x.com/NeelNanda5/status/2110875974296654062), [Cammarata's answer](https://x.com/nickcammarata/status/2111073786124705886); excerpt in the gitignored `notes/private/clean_interpretability-discussion.txt`).
+- Nanda separates *representational* superposition, meaning more concepts in the residual stream than it has dimensions, from *computational* superposition in neurons. Nanda says Cammarata accepts the first.
+- Nanda's cruxes:
+  - Facts are an unstructured key–value store, best packed as combinations of neurons.
+  - Weak activations carry superposed information, and ablating them would hurt LLMs.
+  - The essay defines "monosemantic" too loosely.
+- Cammarata's answers:
+  - Agentic, variable-resolution graphs reduce pruning error.
+  - Weak activations are "surprisingly ablatable" (details to come).
+  - Memorization is "local and semantically meaningful": an umbrella relabelled as a bee moves onto existing bee neurons.
+  - They care about "why things are together" more than about whether a neuron counts as monosemantic.
+  - Residual streams look "more like a big manifold than individual directions".
+
+[Reported]
+
+**Zhou and Klindt, [*Complete or Sparse: A Tale of Two Identifiabilities*](https://arxiv.org/abs/2610.20851)** (Cold Spring Harbor Laboratory).
+- *Setting.* Latents map invertibly to inputs. Labels follow a log-linear posterior of effective rank n′. An encoder of width m feeds a linear readout trained to the population cross-entropy optimum.
+- *Theorems.*
+  - **4.1:** With m ≥ n′, the representation is linear in the latents up to an arbitrary linear map, so individual neurons are generally mixed.
+  - **4.2:** With m < n′, the optimum is generically nonlinear.
+  - **4.3:** With non-negative latents and activations and the minimum-energy optimum, the neurons are the latents up to permutation and scaling.
+  - **4.4:** With k-sparse latents and a spark condition, the latents can be recovered by sparse decoding. The authors offer this as the reason SAEs work.
+- *Ablations.* Violating non-negative latent support "substantially degrades" axis alignment.
+- *Real data.* The evidence is correlational and small: GPT-2, Pythia-70m and TinyLlama on Wikipedia unigrams; four ImageNet models; and a macaque IT correlation of r = 0.158, p ≈ 0.10.
+
+[Reported: the first two-thirds of the HTML read through summarizing fetches; Section 9.1 not read]
+
+## A.2 Consequences for the dossier
+
+**Finding 1 is out of date for Kimi K3.**
+- Cammarata publishes an attribution graph of K3 built from MLP neurons only, on a found-wallet prompt. They call it "a hand-picked slice" and note that most of the graph's weight sits in late neurons that are not drawn.
+- The essay does not say how the graph crosses KDA layers, MLA, AttnRes or expert dispatch. So findings 3, 5 and 7 stand: the AttnRes stream convention, the dispatch discontinuity and KDA state remain unexamined.
+
+[Reported]
+
+**D6 stands, and both sides now state its scope.** The verdict put regulation in the residual stream and called the stream superposed. Nanda's representational superposition is that claim, and Cammarata accepts it. The "already clean" thesis concerns MLP neurons, which the verdict did not rely on. [Reported]
+
+***Dispersed Minds* §4 is exposed in two places.** The essay is superseded (Part 2.5), so these points are not corrections to make. They are questions the replacing essays inherit.
+- Its exposition says "Individual neurons in a Transformer are polysemantic — they respond to multiple, semantically unrelated concepts." That presents computational superposition as settled. It is now contested, and for neurons it is probably overstated.
+- Its hopeful paragraph argues from SAE features that "functional differentiation exists geometrically even where it doesn't exist anatomically." If the residual stream is a set of manifolds rather than a set of directions, SAE directions are slices through curved structure. The argument then needs restating for higher-dimensional featurizers; Cammarata names Fel's Block Sparse Featurizer, which is not checked here.
+- The essay's worry that there are "no natural joints for a regulatory process" moves rather than dissolves. If neurons are joints, the question becomes whether anything maintains them. If the stream is shaped like a manifold, the question becomes what counts as a joint in it.
+
+[Inferred]
+
+**The KDA state is outside the debate.**
+- Both sides discuss MLP neurons and the residual stream. In K3 and Qwen3.8 the carrier that persists across tokens is the recurrent state matrix, which neither neurons nor residual-stream SAEs read.
+- The only tool found for it is WriteSAE's rank-one decomposition at one Qwen3.5-0.8B head (Part 1.5).
+- Cammarata says neuron read and write directions "link the computational building blocks and the stream." That suggests the analogue to test: whether the key and value projections that write a KDA state are legible in the same sense.
+
+[Inferred]
+
+## A.3 Theses for the series
+
+1. **Polysemy versus homonymy.**
+   - Interpretability's "polysemantic" runs together two things linguistics keeps apart. A polysemous word has senses that extend one another (chaining, radial categories). A homonym has senses joined by accident.
+   - Nanda counts senses; Cammarata explains why they sit together. Recursive generalization is polysemy at the neuron, and computational superposition is homonymy. Cammarata's local-versus-non-local test is the lexicographer's test.
+   - Both can be right: neurons are polysemous and rarely homonymous.
+   - Caveat: "iy → do it yourself" follows co-occurrence history, so "motivated" need not mean semantically motivated. The same is true of lexical polysemy.
+   - Bears on *concept_theories.md* and *The Restless Form of Meaning*.
+
+   [Inferred]
+
+2. **The facts crux needs a sharper test.** Umbrella → bee retargets one input to a class whose neurons already exist, so locality comes cheap. The case that would bite binds two existing entities arbitrarily, such as a person to a birthplace. Locality would then need the binding to sit near both ends. A low-rank combination across neurons would be Nanda's superposition. [Inferred]
+
+3. **The regime decides, and the training recipe selects the regime.**
+   - Zhou and Klindt give the conditions under which each side is right:
+     - complete, non-negative and at the energy minimum gives clean neurons;
+     - sparse latents beyond the width give superposition that can be recovered;
+     - too narrow gives neither.
+   - Cammarata's history of better tools fits Theorem 4.3. InceptionV1's last layer goes from about 50 to about 70 percent interpretable after retraining with modern regularization, and a same-size ConvNeXt reaches about 99 percent. Among equally good solutions, the energy criterion picks the axis-aligned one.
+   - The squeeze to 10 neurons is the narrow case. There the theory predicts a nonlinear optimum, which fits "broad, coarser" neurons better than either camp's account.
+   - Two tensions:
+     - Signed structure (V-shape neurons, negative poles in SwiGLU models) is where Theorem 4.3's route is weakest.
+     - At the unembedding an LLM is plausibly narrow. That is the softmax bottleneck ([Yang et al. 2018](https://arxiv.org/abs/1711.03953)), and Theorem 4.2 would then rule out linear recovery there.
+   - The theory concerns the representation that feeds a linear readout. It applies to internal MLP neurons only by analogy.
+
+   [Inferred]
+
+4. **Mapping versus certifying.**
+   - Cammarata's answers on pruning, scale and weak activations come back to one idea: zoom in where something is important or surprising, and treat the network "a bit like a map". That serves the explanation of a known behaviour.
+   - Nanda wants to be "confident there's nothing we're missing", which is the property an alignment audit needs. Exploration driven by relevance cannot supply it.
+   - Cammarata's "ambitious interpretability will be solved" runs the two together.
+
+   [Inferred]
+
+5. **For the OSR essay: a basis selected by a process.**
+   - Theorem 4.1 is a structural-realist result: the structure is fixed, while the basis is like a choice of coordinates.
+   - Theorem 4.3 breaks that symmetry through the training dynamics, so there the privileged basis is real because a process selected it.
+   - That answers whether the neuron basis is in the network or in our description of it: in the network where training breaks the symmetry, in our notation where it does not.
+   - It is a test case for the real-patterns criterion in which every condition can be checked.
+
+   [Inferred]
 
 ---
 
@@ -507,6 +620,10 @@ Format: source, scale, status. Scale flags: toy (≤1B), small (1B to 10B), mid 
 - [Chaudhari et al., sparse crosscoders for MoE and dense](https://arxiv.org/abs/2603.05805). Toy. Abstract.
 - [Nguyen, *The Attribution Contract*](https://arxiv.org/abs/2605.23080), single author. Abstract plus search summary.
 - [Yang et al., MoE-X](https://arxiv.org/abs/2503.07639). Small custom models. Text read.
+- [Cammarata, *Neural Networks Are Already Clean*](https://already-clean.goodfire.com/), Goodfire, October 2026. Vision models to ConvNeXt; Qwen3-32B; one Kimi K3 graph. Whole page read through summarizing fetches. Addendum.
+- Cammarata and Nanda on X, October 2026 (links in Addendum A.1). Read.
+- [Zhou and Klindt, *Complete or Sparse*](https://arxiv.org/abs/2610.20851). Theory with synthetic experiments; real data to TinyLlama. First two-thirds read through summarizing fetches. Addendum.
+- [Yang et al., *Breaking the Softmax Bottleneck*](https://arxiv.org/abs/1711.03953), ICLR 2018. Cited from memory, not re-read.
 
 ## Attention
 - [Through the Bottleneck](https://arxiv.org/abs/2607.23054), 25 Jul 2026. 114M. Text read.
