@@ -4,10 +4,16 @@ Date: 18 October 2026. Status: a proposal for discussion, written by Claude at t
 
 ## Summary
 
-The theory's weak points have one root. Somewhere between 2025 and 2026, "regulation" lost its reference: the state that a regulated system defends.
-- *Acquaintance, Homeostasis* identified acquaintance with "the regulatory coupling that constitutes cognitive homeostasis" (AH:47).
+The theory's weak points have one root: "regulation" has never been tied to a reference, meaning the state that a regulated system defends.
+
+Homeostasis came closest.
+- It entered in early March 2026 with the knowledge-grounding argument of *Understanding Without Knowledge*. There, knowledge outruns understanding through a homeostatic link to reality.
+- *Acquaintance, Homeostasis* then identified acquaintance with "the regulatory coupling that constitutes cognitive homeostasis" (AH:47).
 - *Causation, Computation, Indexicality* called suffering "the phenomenology of coherence under threat" (CCI:131).
-- From *Presence and Actuality* on, homeostasis gave way to "content-sensitive regulation", spelled out as tracking, assessment and intervention (ESOM:63). That description is also satisfied by systems that only assimilate their input.
+
+The user's commitment to homeostasis was always tentative: it was an idea explored to see where it led, not a position held because it convinced. From *Presence and Actuality* on, it gave way to "content-sensitive regulation", spelled out as tracking, assessment and intervention (ESOM:63). That description is also satisfied by systems that only assimilate their input.
+
+So the proposal does not return to a foundational commitment. It promotes a once-exploratory idea, and it has to earn that on new grounds: the delta rule, Mamba-3 and Hesse–Tsao, not its lineage.
 
 The proposal puts the reference back and makes it the center:
 - **Experience** is the admission of contentful vehicles into a field whose joint coherence is actively defended, with corrections that reach the vehicles within their lifetimes.
@@ -40,7 +46,13 @@ What separates homeostasis from assimilation is a **reference that is defended a
 - assimilation moves the state toward what comes in;
 - defense corrects vehicles toward a standing state and revises that state only under accumulated pressure.
 
-The 2025 essays had a reference implicitly, in "coherence". The 2026 essays dropped it.
+The exploratory homeostasis essays of March 2026 gestured at a reference, in "coherence" and in the link to reality. The later regulation vocabulary does not name one.
+
+The two early references also point in opposite directions:
+- The knowledge-grounding argument's reference was contact with reality, which a knower corrects *toward*.
+- The proposal's reference is coherence, which a field defends *against* input.
+
+ESOM:73 already names the tension between them: "a system that silences inconvenient input achieves coherence by losing epistemic contact." In the proposal, epistemic contact lives in N1's fourth feature, revision under accumulated mismatch, and in N4's accuracy-responsiveness.
 
 ### 1.2 The carrier is in the wrong place
 
@@ -206,7 +218,7 @@ This keeps CCI:131's "coherence under threat" while dropping its dependence on i
 
 ## 7. Costs and risks
 
-- **Homeostasis returns.** The 2026 essays replaced it without a stated retraction. If the reason was its biological connotation ("before meat"), the reference here is implementation-neutral. If the reason was something else, it should be named before adoption.
+- **An exploratory idea is promoted to a foundation.** Homeostasis was adopted tentatively in March 2026 to see where it led, and it faded without being retracted because it had never been held firmly. Promoting a sharpened version needs the new evidence to carry it. Its earlier appeal is not a reason.
 - **Closeness to global workspace theory.** The proposal could collapse into GWT with hysteresis added. The difference is where experience lies: GWT places it in broadcast for access; the proposal places it in defense reaching vehicles, with access reading the reference. Overflow and the grain thesis keep the two apart. The risk is real.
 - **Hysteresis is cheap.** Any slow variable shows path dependence. The signature has to combine restoring dynamics, a joint constraint across many contents, and sensitivity to content. Even then it may be too permissive. The cerebellum test is where that would show.
 - **Rewrites.**
