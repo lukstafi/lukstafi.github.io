@@ -1,6 +1,25 @@
 # Outline: an essay on self-distillation and the routes to continual learning
 
-Status: outline for review, 15 Oct 2026. No prose drafted. The sample sentences below show register only.
+Status: outline for review, 15 Oct 2026. Revised 21 Oct 2026 (below). The sample sentences show register only.
+
+## Revision, 21 Oct 2026: technical links to the RL essays
+
+At the author's request, all three parts now tie into *How Can a Reward Train a Neural Network?* and *How Does a Policy Improve?*:
+- Part 1: the self-teacher is exactly the KL-regularized tilt at $\eta=1$, with the implicit value $Q_c=\log\pi(y|x,c)/\pi(y|x)$ (the DPO identity run backwards). Worked example B reuses the robot's $p=(0.6,0.3,0.1)$: the teacher spends 1.10 nats, against the robot critic's 1.06. iSDFT's λ is the Lagrange multiplier from the dual $g(\eta)$. The fitting direction is MPO's mass-covering M-step. The sequence tilt preserves within-class ratios, which is the mechanism behind *Denser ≠ Better*. Collapse is the falling effective temperature $\eta/k$ under refreshed references, floored at β by a fixed KL penalty. The GRPO advantage formula has been added.
+- Part 2: worked example D is the robot's door question off-policy (IS 43.2 with probability 1/8, standard deviation 14.3, against a ratio-free λ=0 bootstrap). The collapsed π₁ is a behaviour policy with no coverage. Worked example F gives VPO's per-answer cell weightings $\bar w_i=P(C_i)E[w|C_i]$, which sum to E[w]. GAE has a vector form, with per-answer advantage $\bar w_i^\top\hat A_t$.
+- Part 3: the delta rule is TD(0) at γ=0. A table reads each consolidation method as an E-step in a fast store plus an M-step in a slow one. Lichkovski's hypernetwork is an amortized M-step toward the multitask "trivial solution".
+
+## Revision, 21 Oct 2026: VPO and GQ(λ)
+
+The author added two sources: Vector Policy Optimization (arXiv 2605.22817 and the Yacine podcast with Ryan Bahlous-Boldi) and Maei and Sutton's GQ(λ) (2010). The analysis is in `vpo-and-gq-lambda.md`. Default decisions taken to start drafting (open questions 1, 2 and 5 below), all revisable:
+
+- **Split into parts.** The essay now has three threads (consolidation, alternatives, off-policy knowledge), which is too much for one post.
+  - **Part 1, *Who Teaches the Weights?***, drafted in `notes/who-teaches-the-weights.md`. It covers §§0–4 as planned, plus a new §5, "What on-policy training forgets", on VPO. On-policy RL retains other tasks (*Retaining by Doing*) but forgets alternatives within the task (pass@$k$ below base). VPO keeps them with in-context exploration, so in-context learning appears a second time, as the explorer. Part 1 ends on diversity as the coverage condition for learning about what one does not do.
+  - **Part 2, *Learning About What You Do Not Do***, drafted 21 Oct in `notes/learning-about-what-you-do-not-do.md`. It opens with GQ(λ) and Horde: continual learning as many predictions (general value functions) learned off-policy from one stream. It then gives the mapping VPO ≈ the set-max policy of successor features and GPI, at the horizon of one response, and the vector-critic proposal. Ryan's "it actually is a continual learning paper" and his unsupervised-RL remark go here.
+  - **Part 3, *Where Experience Goes***, drafted 21 Oct in `notes/where-experience-goes.md`: the old §§5–9 (learned update rules, the ladder of stores, benchmarks, corrections to *The Dynamics That Matter*, closing). The ladder gains a predictive store, a GVF bank written by TD.
+- **Register.** Part 1 keeps mathematics to the general loss, the tilt (worked example B), the EMA arithmetic (A) and a small VPO example. Part 2 needs the GQ(λ) and GPI equations, in the style of *How Does a Policy Improve?*.
+- **Corrections** stay in Part 3 as planned (§8), since their evidence (ladder, Doc-to-LoRA, Lampinen) lands there.
+- **Lichkovski's unpublished runs** appear in Part 1 §4 in two sentences, labelled as preliminary results he presented in the podcast. Still to ask him (open question 3).
 
 Working titles (pick one, or supply another):
 

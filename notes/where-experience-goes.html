@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <meta name="author" content="Łukasz Stafiniak and Claude (Anthropic)">
+  <meta name="dcterms.date" content="2026-10-21">
+  <title>Where Experience Goes</title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <link rel="stylesheet" href="/assets/tufte.css">
+  <link rel="stylesheet" href="/assets/pandoc-tufte.css">
+  <link rel="stylesheet" href="/assets/site.css">
+  <script defer=""
+  src="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.js"></script>
+  <script>document.addEventListener("DOMContentLoaded", function () {
+ var mathElements = document.getElementsByClassName("math");
+ var macros = [];
+ for (var i = 0; i < mathElements.length; i++) {
+  var texText = mathElements[i].firstChild;
+  if (mathElements[i].tagName == "SPAN") {
+   katex.render(texText.data, mathElements[i], {
+    displayMode: mathElements[i].classList.contains('display'),
+    throwOnError: false,
+    macros: macros,
+    fleqn: false
+   });
+}}});
+  </script>
+  <link rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.css" />
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+  <script>(function(){var t=localStorage.getItem('theme-preference');if(t)document.documentElement.setAttribute('data-theme',t);})()</script>
+  <style>
+  .katex-display { overflow-x: auto; overflow-y: hidden; padding: 0.3em 0; }
+  .katex-display > .katex { width: max-content; min-width: 100%; }
+  article table { display: block; max-width: 100%; overflow-x: auto; }
+  </style>
+</head>
+<body>
+<nav class="site-nav">
+  <a href="/">Home</a> &middot; <a href="/about.html">About</a> &middot; <a href="https://lukstafi.substack.com">Substack</a>
+</nav>
+<div class="theme-toggle">
+  <button id="theme-btn" aria-label="Toggle dark mode">&#9788;</button>
+</div>
+<article>
+<header>
+<h1 class="title">Where Experience Goes</h1>
+<p class="subtitle">Continual learning, part 3: learned update rules, a
+ladder of stores, and what the benchmarks can see</p>
+<p class="byline">2026-10-21 &ndash; Łukasz Stafiniak and Claude
+(Anthropic)</p>
+</header>
+<p><em>This is the last of three parts on continual learning. <a
+href="https://lukstafi.github.io/notes/who-teaches-the-weights.html">Part
+1</a> read self-distillation as consolidation: the model with privileged
+context teaches the bare model. It also found that on-policy training
+narrows the alternatives within a task. <a
+href="https://lukstafi.github.io/notes/learning-about-what-you-do-not-do.html">Part
+2</a> joined Vector Policy Optimization to an older programme of
+learning many predictions off-policy. This part asks where the results
+of learning are kept, and what moves them from one store to another. It
+ends by revising two claims from our earlier essay <a
+href="https://lukstafi.github.io/notes/axes_of_dynamics.html">The
+Dynamics That Matter</a>.</em></p>
+<p>The usual way to frame continual learning in language models sets two
+camps against each other. One camp keeps the model fixed and gives it
+memory outside the weights: retrieved documents, notes the agent writes
+for itself, skill files, a longer context. The other changes the
+weights. The debate between them is real, but the dichotomy hides most
+of the interesting structure. A deployed model already has half a dozen
+places where experience can be kept. They differ in what writes them,
+how long their contents last, how much they hold before entries
+interfere, and what it costs to read them. The fast ones learn well and
+forget quickly. The slow ones keep what they learn and learn poorly.
+Most of the methods in Parts 1 and 2 are best understood as traffic
+between these stores, in which a faster store teaches a slower one.</p>
+<p>Before laying out that ladder, one more route needs a place on it.
+Parts 1 and 2 took the update rule as given: a gradient step on some
+loss, with the interesting choices in the teacher, the support and the
+objective. A different line of work learns the update rule itself.</p>
+<section id="learning-the-update-rule" class="level2">
+<h2>Learning the update rule</h2>
+<p>A learned update rule is a network whose output is a change to
+another network’s weights, or to its own. The idea is old; Schmidhuber’s
+fast weight programmers of the early 1990s were slow networks that wrote
+into the weights of fast ones. Three recent instances bear on continual
+learning.</p>
+<p>Kazuki Irie, Róbert Csordás and Jürgen Schmidhuber meta-learned
+continual-learning algorithms directly, in a method they call Automated
+Continual Learning. Their learner is a self-referential weight matrix
+that rewrites itself with a delta rule as examples stream in. The
+rewriting rule is trained, across many sequences of tasks, so that after
+reading a sequence the matrix classifies examples from every task in it.
+The learned rule therefore has to solve the stability problem itself,
+since only an update that does not erase earlier tasks scores well. On
+split MNIST in the class-incremental setting, with five tasks and no
+replay, the learned rule reached 84.3% accuracy where elastic weight
+consolidation reached 19.8%. On harder image benchmarks it still trailed
+methods built on large pretrained models. The delta rule here is the
+same error-correcting update that runs inside the recurrent layers of
+current hybrid language models. Below, it reappears as the second rung
+of the ladder.</p>
+<p>Hypernetworks make the learned update explicit. Text-to-LoRA, from
+Sakana AI, maps a natural-language description of a task to a low-rank
+adapter for a language model in one forward pass. Doc-to-LoRA maps a
+document to an adapter, so the model can answer questions about the
+document without the document in its context. Within the context window
+the document in context still does better: on SQuAD the adapter recovers
+about 82% of in-context performance. Its advantage appears past the
+window, where the base model cannot read the document at all, and in
+cost. Internalizing a document takes under a second, and the adapter
+needs megabytes where a long context needs gigabytes. Ilija Lichkovski
+made the point in his podcast interview that Doc-to-LoRA is a learned
+learning algorithm: a sample-efficient map from new content to a weight
+change. Nothing in its setup is shaped like continual learning, and yet
+it is exactly the consolidation step that Part 1 attributed to
+self-distillation, amortized into a single pass.</p>
+<p>Lichkovski presented an experiment of his own in the same interview,
+as preliminary and unpublished, and its negative result is the
+instructive part. He trained a hypernetwork on split MNIST, the digit
+benchmark presented two classes at a time. Given the current weights and
+the identity of the next task, it was to output the weights that
+multitask training on all tasks so far would have produced. Multitask
+training was the oracle, and the hypernetwork was to reach it
+sequentially. It worked surprisingly well. Average accuracy rose with
+each new task toward the multitask level, while fine-tuning stayed at
+the one-fifth that total forgetting gives. Backward transfer was
+positive: earlier tasks improved after later ones were learned. Each
+task cost one forward pass at deployment. Then the ablations showed that
+the hypernetwork ignored the task identity. It had learned a general
+operator that moves any weight configuration toward the region of weight
+space where multitask solutions lie. The weights carried far more
+information than the small task embedding, so the operator attended to
+the weights.</p>
+<p>That result fits a pattern <a
+href="https://lukstafi.github.io/notes/the-given-and-the-found.html">The
+Given and the Found</a> described (§5): an amortized learner learns
+whatever the distribution of its training updates rewards. Here the
+training updates all moved toward multitask solutions, and the cheapest
+way to predict them was to learn that move, not to learn the tasks. The
+failure is also a finding. A learned “move toward multitask” operator is
+a learned stability mechanism, a consolidation step that does not need
+to know what it consolidates.</p>
+<p>One more line connects these to composition. Lake and Baroni’s
+meta-learning for compositionality (MLC) trained a standard transformer
+on a stream of small compositional tasks, each built from invented
+words. On their pseudoword instruction task, where “dax” might mean a
+red circle and “dax fep” three of them, people produced the systematic
+answer about 81% of the time, and the network’s sampled answers about
+82% of the time. Lichkovski’s proposed benchmark, discussed below, is a
+sequential version of the same task. The words arrive one at a time and
+must be composed later.</p>
+</section>
+<section id="a-ladder-of-stores" class="level2">
+<h2>A ladder of stores</h2>
+<p>Here are the stores a deployed language-model agent can use, from
+fastest to slowest.</p>
+<ol type="1">
+<li><strong>The context.</strong> Attention over the key–value cache is
+in-context learning. The forward pass writes it, and nothing in it is
+ever overwritten. It lasts for the session, or until entries are evicted
+or the history is compacted into a summary.</li>
+<li><strong>The recurrent state.</strong> Hybrid models such as Kimi K3
+and Qwen3.8 interleave attention with gated delta-rule layers. Each such
+layer keeps a fixed-size matrix that every token updates by one
+error-correcting step. This is a fast-weight memory, and it is
+bounded.</li>
+<li><strong>Harness memory.</strong> Notes the agent writes, skill
+files, retrieved documents and optimized prompts persist indefinitely,
+as text.</li>
+<li><strong>Prediction heads.</strong> These are Part 2’s banks of
+general value functions: small learned predictors, updated online by
+temporal-difference learning, that answer questions about what would
+happen under various behaviours.</li>
+<li><strong>Adapters.</strong> Low-rank weight deltas, written by
+gradient descent or by one hypernetwork pass.</li>
+<li><strong>Core weights.</strong> Changed by fine-tuning, reinforcement
+learning or self-distillation.</li>
+<li><strong>The release cycle.</strong> A lab trains specialist policies
+and distils them into the next checkpoint.</li>
+</ol>
+<p>Four questions separate the rungs: what writes the store, what
+persists in it and for how long, how much it holds before entries
+interfere, and what it costs to read.</p>
+<table>
+<colgroup>
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+</colgroup>
+<thead>
+<tr>
+<th>Store</th>
+<th>Written by</th>
+<th>Persists</th>
+<th>Capacity and interference</th>
+<th>Cost to read</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Context (KV cache)</td>
+<td>the forward pass; nothing overwritten</td>
+<td>the session, until eviction or compaction</td>
+<td>grows with the context; no overwriting, but quality decays with
+length</td>
+<td>grows with the cache, or with the selection under sparse
+attention</td>
+</tr>
+<tr>
+<td>Recurrent state</td>
+<td>one error-correcting step per token, by a rule learned in
+pretraining</td>
+<td>the session, if the serving protocol keeps it</td>
+<td>bounded; writes erase along their key; overlapping keys
+interfere</td>
+<td>constant per token</td>
+</tr>
+<tr>
+<td>Harness memory</td>
+<td>the agent, in text</td>
+<td>indefinitely</td>
+<td>unbounded; retrieval degrades as the store grows</td>
+<td>retrieval, then context</td>
+</tr>
+<tr>
+<td>Prediction heads</td>
+<td>temporal-difference updates</td>
+<td>indefinitely</td>
+<td>one head per question; linear in features</td>
+<td>one dot product per question</td>
+</tr>
+<tr>
+<td>Adapters</td>
+<td>gradient, or one hypernetwork pass</td>
+<td>indefinitely</td>
+<td>small; composing several is an open problem</td>
+<td>nothing extra once merged</td>
+</tr>
+<tr>
+<td>Core weights</td>
+<td>gradient toward data, reward or a self-teacher</td>
+<td>indefinitely</td>
+<td>large, but entangled: catastrophic forgetting lives here</td>
+<td>nothing extra</td>
+</tr>
+</tbody>
+</table>
+<p>Four claims follow from setting the stores out this way.</p>
+<p><strong>In-context learning is the best learner on the ladder,
+example for example.</strong> Part 1 cited Lampinen and colleagues: a
+model reasons from facts in its context, to reversals and syllogisms,
+far better than it reasons from the same facts trained into its weights.
+The question for every slower store is whether it can keep that quality
+once the content has left the context.</p>
+<p><strong>The recurrent state is parametric continual learning, already
+running inside frontier models.</strong> A delta-rule layer treats its
+state <span class="math inline">S</span> as the weights of a linear map
+from keys to values. For each token it reads the current prediction
+<span class="math inline">S k_t</span>, compares it with the token’s
+value <span class="math inline">v_t</span>, and writes the
+correction:</p>
+<p><span class="math display">
+S_t=S_{t-1}+\beta_t\,(v_t-S_{t-1}k_t)\,k_t^\top,
+</span></p>
+<p>usually after a learned decay of <span
+class="math inline">S_{t-1}</span>. This is one step of gradient descent
+on <span class="math inline">\tfrac12\|S k_t-v_t\|^2</span>, the
+Widrow–Hoff rule of 1960. Our essay <a
+href="https://lukstafi.github.io/notes/solving_the_loop.html">Solving
+the Loop</a> told this history (§2). What matters here is that the
+update is error-correcting, so it can revise. The temporal-difference
+update of <a
+href="https://lukstafi.github.io/notes/how-can-a-reward-train-a-neural-network.html">How
+Can a Reward Train a Neural Network?</a> has the same shape. With a
+linear value estimate <span class="math inline">\theta^\top\phi</span>,
+TD(0) adds <span
+class="math inline">\alpha\,(r+\gamma\,\theta^\top\phi&#39;-\theta^\top\phi)\,\phi</span>.
+Set <span class="math inline">\gamma=0</span>, and the target is the
+observed signal alone: the delta rule, with <span
+class="math inline">\phi</span> as the key and <span
+class="math inline">r</span> as the value. A delta-rule layer is a TD(0)
+learner with no future to bootstrap from. The GQ(λ) heads of Part 2 are
+the same learner given a future, a target policy and a trace. The second
+and fourth rungs of the ladder share an update rule, and they differ in
+their targets and in how long they keep what they learn.</p>
+<blockquote>
+<p><strong>Worked example G: overwriting a redefined word.</strong> Give
+a delta-rule memory two orthogonal keys, <span
+class="math inline">k_{\text{zup}}=(1,0)</span> and <span
+class="math inline">k_{\text{dax}}=(0,1)</span>, and let the values be
+colours. Write zup → red, then dax → blue, then zup → green, each with
+<span class="math inline">\beta=1</span>. The third write reads the
+current prediction for zup (red), and adds <span
+class="math inline">(\text{green}-\text{red})\,k_{\text{zup}}^\top</span>.
+Now zup reads green and dax still reads blue: the redefinition replaced
+the old association in place. With <span
+class="math inline">\beta=0.5</span>, zup reads half red and half green;
+each repetition of the new definition shrinks the remaining error by the
+factor <span class="math inline">1-\beta\|k\|^2</span>. Purely additive
+linear attention, which writes <span
+class="math inline">v\,k^\top</span> without reading first, would make
+zup read red plus green. Now let the keys overlap: if <span
+class="math inline">k_{\text{dax}}</span> had cosine <span
+class="math inline">0.6</span> with <span
+class="math inline">k_{\text{zup}}</span>, the same correction would
+move dax’s readout by <span class="math inline">0.6</span> times <span
+class="math inline">(\text{green}-\text{red})</span>. Interference is
+visible in one line. Fine-tuning a contradicting fact into core weights
+has no such targeted erase. The new fact is added by gradient steps that
+also move every other fact sharing the affected weights.</p>
+</blockquote>
+<p>The capacity is bounded by the size of the matrix, and the gates set
+the rate of forgetting; Kimi’s KDA decays each channel at its own
+learned rate. The contents vanish at the end of the session unless the
+serving protocol keeps the state. A caution belongs here as well. That a
+model has a fast-weight store does not show that it uses the store for
+memory. In Qwen3.5 hybrids, an interpretability study of associative
+recall swapped internal states between runs. Swapping the recurrent
+states moved the answer by only 0.2 to 3.6% of the full effect, while
+swapping the attention caches moved it by 96 to 100%. For that task the
+recall ran through the context, and the recurrent layers did something
+else.</p>
+<p><strong>Slow-weight continual learning is best understood as
+consolidation from faster stores.</strong> Self-distillation moves what
+the context achieved into the core weights (Part 1). Doc-to-LoRA moves a
+document into an adapter in one pass. <em>Learning, Fast and Slow</em>
+interleaves prompt evolution, the fast learner, with reinforcement
+learning on the weights, the slow one. On a synthetic graph task where
+reinforcement learning alone earned nearly nothing for about 250 steps,
+the combination was earning reward by step 50: the evolved prompts
+lifted reward off zero, so the weight updates had a signal to work with.
+The authors’ broader finding is a division of labour. The prompts absorb
+task-specific detail, so the weights drift up to 70% less from the base
+model. Lichkovski described this as a remedy for “discovery-shaped”
+problems, where reinforcement learning otherwise waits for a lucky
+success. In each case a faster, better learner produces the target and a
+slower store absorbs it. The open problems are therefore less about
+stability than about two other things. One is coverage: what revisits
+the old skills, and the old alternatives, that the new training never
+touches. The other is composition across time, which the benchmarks
+below are only starting to measure.</p>
+<p><strong>The cut between parametric and non-parametric memory is the
+wrong one.</strong> The recurrent state is parametric and is wiped at
+the end of every session. Harness memory is non-parametric and
+permanent. Prediction heads are parametric, are written by
+temporal-difference learning rather than by gradients toward data, and
+store a different kind of content: knowledge of what would happen, not
+of what to do. The distinctions that predict behaviour are the four
+columns of the table.</p>
+<section id="consolidation-is-an-m-step" class="level3">
+<h3>Consolidation is an M-step</h3>
+<p><em>How Does a Policy Improve?</em> ended with a way to read any
+policy-improvement algorithm. It asks four questions: where the
+candidates come from, how they are evaluated, how an improved
+distribution is built from them, and how the improvement is retained.
+Its central example was expectation–maximization. The E-step builds an
+improved distribution, by search, a critic or conditioning on success.
+The M-step fits a parametric policy to that distribution by weighted
+likelihood. On the ladder, each consolidation is an EM step split across
+two rungs. A faster store performs the E-step, because it can build a
+better distribution without changing any weights. A slower store
+performs the M-step, because it can keep the result.</p>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr>
+<th>Method</th>
+<th>E-step: candidates and improved distribution</th>
+<th>M-step: where the improvement is kept</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>SDFT, OPSD</td>
+<td>the student’s samples, rescored by the same model with a
+demonstration in context (an implicit critic at <span
+class="math inline">\eta=1</span>)</td>
+<td>core weights, by per-token distillation on the student’s
+prefixes</td>
+</tr>
+<tr>
+<td>SDPO</td>
+<td>as above, with environment feedback in the context</td>
+<td>core weights</td>
+</tr>
+<tr>
+<td>iSDFT</td>
+<td>the same tilt, with its temperature set by an information
+budget</td>
+<td>core weights, plus a fixed anchor to the base</td>
+</tr>
+<tr>
+<td>VPO</td>
+<td>a set of answers built in context, scored by the max over random
+weightings</td>
+<td>core weights, by GRPO on the set score</td>
+</tr>
+<tr>
+<td>Horde, GQ(λ)</td>
+<td>the behaviour’s experience, reweighted toward many target
+policies</td>
+<td>prediction heads; no policy is fitted</td>
+</tr>
+<tr>
+<td><em>Learning, Fast and Slow</em></td>
+<td>evolved prompts that lift reward</td>
+<td>prompts first, then core weights by reinforcement learning</td>
+</tr>
+<tr>
+<td>Doc-to-LoRA</td>
+<td>a document</td>
+<td>an adapter, written in one pass by an amortized M-step</td>
+</tr>
+<tr>
+<td>Lichkovski’s hypernetwork</td>
+<td>a new task, with multitask training as the oracle</td>
+<td>weights, by an amortized step toward the multitask solution</td>
+</tr>
+<tr>
+<td>Multi-teacher on-policy distillation</td>
+<td>specialist policies advising on the student’s own states</td>
+<td>the next release’s core weights</td>
+</tr>
+<tr>
+<td>TTT-Discover</td>
+<td>many attempts at one problem, scored by a verifier</td>
+<td>a low-rank adapter for that problem alone</td>
+</tr>
+</tbody>
+</table>
+<p>Two rows deserve a closer look. Lichkovski’s hypernetwork amortizes
+the trivial solution from Part 1, retraining on everything seen so far:
+its training oracle is the multitask solution, and it learns to jump
+there in one pass. That it ignored the task identity is then less
+surprising. An amortized M-step toward the multitask solution needs to
+know where the weights are, and much less about what was added.
+Doc-to-LoRA is an amortized M-step for context distillation. Its paper
+compares it directly with distilling the same document by gradient
+steps: the gradient route is somewhat more accurate and takes about
+forty seconds per document, while the hypernetwork takes under one.</p>
+<p>The M-step’s divergence matters here as it did in Part 1.
+Multi-teacher distillation fits one student to several teachers, each
+advising on its own domain’s prompts. Fitting by weighted likelihood is
+mass-covering, so the student is pushed to keep whatever each teacher
+keeps. But the teachers were themselves trained by reinforcement
+learning on scalar rewards. A mass-covering fit preserves the
+alternatives a teacher still has, and it cannot restore the ones the
+teacher lost.</p>
+</section>
+<section id="the-release-cycle-is-consolidation-already" class="level3">
+<h3>The release cycle is consolidation already</h3>
+<p>At the slowest rung, the open-weight laboratories already practise a
+form of consolidation, at the cadence of releases. DeepSeek’s V4 report
+describes building specialist models by fine-tuning and GRPO, then
+consolidating them into one checkpoint by on-policy distillation.
+GLM-5.2’s account describes the same consolidation of specialists, and
+GLM-5.3’s announcement attributes its gains to more post-training on the
+same base. Kimi K3 trains nine policies, three domains at three levels
+of reasoning effort, then distils all of them into one model with
+multiple teachers. Xiaomi’s MiMo uses three streams of distillation
+data: the student’s own rollouts scored by the teachers, student turns
+continuing teacher-written histories, and student continuations of
+supervised demonstrations.</p>
+<p>This is the hybrid that Part 1’s sources recommended: capacity set
+aside for each skill, followed by distillation, at scale. Its support is
+on-policy, because the student generates the states on which the
+teachers advise it. Two things are missing for it to count as continual
+learning in the full sense. The specialists are built in parallel from
+one base, so tasks never arrive in sequence and nothing is learned on
+top of a previous consolidation’s side effects. And no report measures
+the alternatives within each skill, before or after distillation, so the
+concern raised in the previous section cannot yet be checked.</p>
+</section>
+<section id="what-survives-of-the-argument-for-parametric-memory"
+class="level3">
+<h3>What survives of the argument for parametric memory</h3>
+<p>Lichkovski’s case for changing weights at all, in his essay “Defining
+Continual Learning” and in the interview, was automaticity. Retrieval
+gets harder as the store grows, and competence that must be retrieved is
+slower and more fragile than competence that has become automatic. He
+also cited Justin Skycak of Math Academy, who builds a curriculum around
+making foundational skills automatic. That argument survives the
+evidence above. It is a claim about cost and scaling, not about whether
+composition is possible in the faster stores. The ladder gives it a
+sharper form. The context composes best but is bounded and expensive.
+The slower stores are cheap to read but learn poorly. So the case for
+consolidation is the case for amortization: paying once, in training,
+for a competence that would otherwise be rebuilt from context every time
+it is needed.</p>
+</section>
+</section>
+<section id="what-the-benchmarks-can-and-cannot-see" class="level2">
+<h2>What the benchmarks can and cannot see</h2>
+<p>Two recent benchmarks measure learning from experience in
+language-model agents. Continual Learning Bench has six tasks, among
+them adapting to a codebase and exploiting a weak poker opponent. It
+scores each method by its gain over the same model without memory of
+earlier episodes. Every method on its leaderboard is in-context learning
+or harness memory, including Claude Code and Codex; the authors state
+that they do not evaluate parametric approaches. FutureSim asks models
+to forecast events from a corpus of news articles released in
+chronological order. It is not branded as a continual-learning
+benchmark, but it is one, since the world drifts while the model reads.
+The best agent answered a quarter of its questions correctly. One
+controlled experiment started every agent from the worst agent’s initial
+forecasts, and none of them recovered: in the authors’ words, “frontier
+agents fail to adapt away from bad initial anchors.”</p>
+<p>Lichkovski’s point about such benchmarks is that they must be
+agnostic about method. In-context methods and weight-changing methods
+should receive the same inputs. His proposal makes the agent’s own
+traces the common substrate. In-context methods keep the traces in
+context; distillation and reinforcement learning train on them. His
+proposed benchmark then treats dependencies between pieces of knowledge
+as the object of study. Invented words and functions over them (from
+MLC’s task) arrive at different times: kiki means purple, tufa means
+brown, later “twice”, later “thrice”, and probes ask for compositions
+such as “thrice tufa surround”. These need a function learned at one
+time applied to words learned at another. Some words are redefined
+partway through (“zup” changes meaning at a later step), which is worked
+example G as a test. Some functions arrive before their arguments. The
+ablations vary how far apart in time the dependent pieces arrived and
+how recently either was seen.</p>
+<p>That design addresses what the coarse measures miss. The usual matrix
+of performance on task <span class="math inline">j</span> after training
+through task <span class="math inline">i</span> measures forgetting and
+transfer between tasks. It does not measure whether knowledge acquired
+at different times can be combined, and it does not distinguish revision
+(zup now means green) from interference (dax drifted too).</p>
+<p>Part 1 adds a requirement the benchmarks do not yet meet. Forgetting
+has a second dimension, the alternatives within a task. A
+continual-learning benchmark should report how much a model gains from
+many attempts, best-of-<span class="math inline">k</span> or pass@<span
+class="math inline">k</span> at large <span
+class="math inline">k</span>, alongside its single-attempt score, before
+and after each phase. A method can look perfect on retention while its
+later attempts become copies of its first.</p>
+<p>Our essay <a
+href="https://lukstafi.github.io/notes/what-breadth-reaches.html">What
+Breadth Reaches</a> (§2) set Nathan Lambert’s substitution argument
+against Dwarkesh Patel’s complaint that today’s assistants cannot be
+taught on the job. Lambert held that context, reasoning and scaffolding
+can substitute for continual learning across much of what people use
+assistants for. On the benchmarks we have, he is winning, and the reason
+is that the benchmarks are short. Lichkovski calibrated his runs so that
+by step 700 an in-context learner would have accumulated at least a
+dozen million tokens of experience. That is the regime where the cost
+argument should start to bite: the context outgrows any window,
+retrieval must choose, and consolidation must start paying for itself.
+This is a prediction, not a result. Lichkovski reported that the
+in-context runs were proving expensive and held them back.</p>
+</section>
+<section id="revisiting-the-dynamics-that-matter" class="level2">
+<h2>Revisiting <em>The Dynamics That Matter</em></h2>
+<p>Two claims in that essay need correcting, and the evidence for both
+has appeared across these three parts.</p>
+<p><strong>First: we claimed that composition requires parametric
+integration, which harness memory cannot provide.</strong> We wrote that
+harness memory “keeps the cognitive labor homogeneous”, that composition
+“requires the integration to have happened at the parametric level
+rather than the harness level”, and that the desiderata depend on a
+heterogeneity “which parametric CL can provide and harness-based CL
+cannot”. The controlled evidence runs the other way for single facts.
+Content held in context composes: models reason from it to reversals and
+syllogisms, and they learn to translate Kalamang, a language with fewer
+than two hundred speakers, from a grammar book in their context. The
+same content trained into the weights composes poorly, unless the
+training data spells out the implications. Retrieval does not prevent
+later computation from integrating what it retrieved; attention
+integrates by construction. What survives is the cost and automaticity
+argument of the previous section. Retrieval degrades with the size of
+the store, context has a ceiling, and retrieved competence is slower
+than automatic competence. Whether composition survives at scale, and
+across long gaps in time, is an empirical question, and Lichkovski’s
+benchmark is built to ask it. The necessity claim was ours, not his. His
+argument was about automaticity, and we turned it into a claim about
+what composition requires.</p>
+<p><strong>Second: we claimed that low sample efficiency signals deep
+integration.</strong> We wrote that parametric updates being less
+sample-efficient than in-context learning “is a signal that the
+integration is happening at a level that requires evidence to support”,
+and that “pushing sample efficiency too low would mean either
+superficial integration or fragile integration”. We retract this. Sample
+efficiency measures the update rule and the prior, not the depth of what
+is integrated. The clearest case is the one the earlier essay leaned on.
+Fine-tuning needs many augmented examples to learn the implications of a
+fact, and those examples are the inferences that in-context learning
+draws for free. Its hunger for samples shows that the update rule cannot
+reach what was latent in the data. That is the opposite of deep
+integration. The theory of usable information states the general point:
+a learner with bounded computation may be unable to use information that
+its data contains. Fast updates are not therefore shallow. Doc-to-LoRA
+writes a document into an adapter in one pass, at some cost in quality
+against the document in context. Lichkovski’s hypernetwork reached
+positive backward transfer at one pass per task, even if what it learned
+was a generic consolidation move. The measure we should have proposed is
+the one the benchmarks above are moving toward: integration shows in
+transfer, composition and the pattern of interference, read off the
+performance matrix and dependency probes, not in how many samples an
+update needed.</p>
+<p>Other parts of <em>The Dynamics That Matter</em> stand, with one
+update. Its §4 introduced a position paper from the Dagstuhl seminar on
+continual learning, which proposes a core model, a working memory and a
+long-term memory. In that architecture an internal regime replays stored
+memories through the core model to distil them into its parameters,
+“sparsely after accumulating sufficient experience”. Context-conditioned
+self-distillation and the laboratories’ on-policy distillation are
+concrete versions of that consolidation pathway, now with evidence about
+when it retains and when it fails. The essay’s overwriting paragraph
+also survives, in a narrower form: different contents should change at
+different rates. Multi-timescale teachers (a moving average, an episodic
+buffer, a frozen base anchor) and per-channel decay gates are working
+instances of that idea.</p>
+<p>A related remark in <a
+href="https://lukstafi.github.io/notes/what-breadth-reaches.html">What
+Breadth Reaches</a> §2 needs narrower conditions. It said that simple
+online learners, such as stochastic gradient descent on linear models or
+recursive least squares, update without destroying what they learned.
+Worked example G shows the condition. The Widrow–Hoff rule revises
+cleanly when keys are orthogonal and interferes in proportion to their
+overlap. A delta-rule layer is exactly such a simple online learner, and
+short trigger strings are known to overwrite the hidden state of Mamba
+models irreversibly. The interference that makes continual learning hard
+in deep networks is not absent in simple learners. It is easier to
+see.</p>
+</section>
+<section id="the-boundary" class="level2">
+<h2>The boundary</h2>
+<p>One method compresses continual learning into a single problem.
+<em>Learning to Discover at Test Time</em> trains a model’s weights at
+test time on one hard problem, optimizing for the best attempt rather
+than the average. Every rung of the ladder appears in miniature.
+Attempts accumulate in the context, the weights consolidate what worked,
+and the objective rewards the best member of a set, as VPO’s does. Like
+VPO, and like every general value function in Part 2, it needs a
+verifier. Something outside the learner has to say which attempt was
+best.</p>
+<p>That is where the three parts end up. Self-distillation consolidates
+what the context made available. VPO keeps the alternatives that a
+future objective might select. Off-policy prediction learns about
+behaviours the agent is not following. Consolidation makes the useful
+parts cheap. Each of these takes a correctness condition as given: a
+demonstration, a test suite, a reward component, the world’s answer to a
+predictive question. A continual learner built from these parts can keep
+learning for as long as such conditions keep arriving. What none of them
+supplies is the condition itself. In the terms of <a
+href="https://lukstafi.github.io/notes/the-given-and-the-found.html">The
+Given and the Found</a> (§6), they amortize search under given
+conditions, and the boundary between that and discovery still
+stands.</p>
+<hr />
+<p><em>Sources.</em> Irie, Csordás and Schmidhuber, <em>Metalearning
+Continual Learning Algorithms</em>, TMLR (2025), arXiv 2312.00276.
+Charakorn et al., <em>Text-to-LoRA: Instant Transformer Adaption</em>,
+ICML 2025, arXiv 2506.06105. <em>Doc-to-LoRA: Learning to Instantly
+Internalize Contexts</em>, arXiv 2602.15902. Lake and Baroni,
+<em>Human-like systematic generalization through a meta-learning neural
+network</em>, Nature 623 (2023). Lampinen et al., arXiv 2505.00661. Lee
+et al., <em>How Linear Attention Remembers</em>, arXiv 2609.33093.
+HiSPA, arXiv 2601.01972. Tiwari et al., <em>Learning, Fast and Slow:
+Towards LLMs That Adapt Continually</em>, arXiv 2605.12484. Asawa et
+al., Continual Learning Bench, arXiv 2606.05661. Goel et al.,
+<em>FutureSim: Replaying World Events to Evaluate Adaptive Agents</em>,
+arXiv 2605.15188. Dorovatas et al., <em>Position: Modular Memory is the
+Key to Continual Learning Agents</em>, arXiv 2603.01761. Technical
+reports and announcements for DeepSeek V4, GLM-5.2 and GLM-5.3, Kimi K3
+and MiMo-V2.6-Pro, as collected in our architecture dossier. Xu et al.,
+<em>A Theory of Usable Information Under Computational Constraints</em>,
+arXiv 2002.10689. Yuksekgonul et al., <em>Learning to Discover at Test
+Time</em>, arXiv 2601.16175. Lichkovski, “Defining Continual Learning”
+(2026), and his interview on <em>Deep Learning with Yacine</em>
+(2026).</p>
+<p><em>This article was co-authored by Łukasz Stafiniak and Claude (Opus
+5.5).</em></p>
+</section>
+</article>
+<section class="prompts-link"><p><em>The prompts behind this essay (the human-side contribution): 
+<a href="where-experience-goes.prompts.html">view the prompts &rarr;</a></em></p></section>
+<script src="/assets/theme-toggle.js"></script>
+</body>
+</html>

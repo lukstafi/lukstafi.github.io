@@ -1,0 +1,780 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <meta name="author" content="Łukasz Stafiniak and Claude (Anthropic)">
+  <meta name="dcterms.date" content="2026-10-21">
+  <title>Learning About What You Do Not Do</title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <link rel="stylesheet" href="/assets/tufte.css">
+  <link rel="stylesheet" href="/assets/pandoc-tufte.css">
+  <link rel="stylesheet" href="/assets/site.css">
+  <script defer=""
+  src="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.js"></script>
+  <script>document.addEventListener("DOMContentLoaded", function () {
+ var mathElements = document.getElementsByClassName("math");
+ var macros = [];
+ for (var i = 0; i < mathElements.length; i++) {
+  var texText = mathElements[i].firstChild;
+  if (mathElements[i].tagName == "SPAN") {
+   katex.render(texText.data, mathElements[i], {
+    displayMode: mathElements[i].classList.contains('display'),
+    throwOnError: false,
+    macros: macros,
+    fleqn: false
+   });
+}}});
+  </script>
+  <link rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.css" />
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+  <script>(function(){var t=localStorage.getItem('theme-preference');if(t)document.documentElement.setAttribute('data-theme',t);})()</script>
+  <style>
+  .katex-display { overflow-x: auto; overflow-y: hidden; padding: 0.3em 0; }
+  .katex-display > .katex { width: max-content; min-width: 100%; }
+  article table { display: block; max-width: 100%; overflow-x: auto; }
+  </style>
+</head>
+<body>
+<nav class="site-nav">
+  <a href="/">Home</a> &middot; <a href="/about.html">About</a> &middot; <a href="https://lukstafi.substack.com">Substack</a>
+</nav>
+<div class="theme-toggle">
+  <button id="theme-btn" aria-label="Toggle dark mode">&#9788;</button>
+</div>
+<article>
+<header>
+<h1 class="title">Learning About What You Do Not Do</h1>
+<p class="subtitle">Continual learning, part 2: GQ(λ), Horde, successor
+features, and Vector Policy Optimization</p>
+<p class="byline">2026-10-21 &ndash; Łukasz Stafiniak and Claude
+(Anthropic)</p>
+</header>
+<p><em>This is the second of three parts on continual learning. <a
+href="https://lukstafi.github.io/notes/who-teaches-the-weights.html">Part
+1</a> argued that self-distillation consolidates what in-context
+learning achieves, and that on-policy training, rewarded or self-taught,
+narrows what a model does within the skill it learns. It ended on a need
+neither route meets: learning about behaviour the model is not currently
+producing. This part follows an older tradition built around that need
+and joins it to a recent method for language models. <a
+href="https://lukstafi.github.io/notes/where-experience-goes.html">Part
+3</a> places the routes on a ladder of memory stores.</em></p>
+<p>The phrase “continual learning” entered machine learning through
+reinforcement learning. Mark Ring’s 1994 dissertation was titled
+<em>Continual Learning in Reinforcement Environments</em>. His picture
+was an agent that accumulates skills over an unbounded stream of
+experience, each built on the ones before. The language-model literature
+borrowed the phrase and narrowed it, mostly to the problem of not
+forgetting. The older tradition kept a broader question: what should an
+agent learn, from a single stream of experience, so that it is ready for
+tasks it has not met yet?</p>
+<p>Richard Sutton’s group at the University of Alberta gave one answer
+between 2008 and 2011. An agent should learn many predictions at once,
+each about the consequences of some way of behaving, including ways it
+is not currently behaving. The algorithm that made this workable was
+GQ(λ), published by Hamid Maei and Sutton in 2010. The architecture that
+put it to use was Horde. Horde’s paper names Gary Drescher’s <em>Made-Up
+Minds</em> (1991) among its precursors. In 2013, writing notes on
+Drescher’s schema mechanism, I thought it “would be cool to redo Gary
+Drescher’s project, but using Rich Sutton and Hamid Maei’s recent
+results — Gradient Temporal-Difference Algorithms with off-policy
+learning — instead of schemas”. This part is partly that old wish,
+redirected to language models.</p>
+<p>The claim is this. Vector Policy Optimization (VPO), the method Part
+1 introduced, optimizes the objective that the successor-features
+literature arrived at for transfer between tasks: build a set of
+behaviours such that, under any weighting of the reward’s components,
+the best member of the set is good. VPO does this at the horizon of a
+single response, where every answer can be scored exactly, so it needs
+no predictions. GQ(λ) is what makes the same objective available when
+the horizon is long and the data comes from behaviour other than the
+current policy. The two lines are halves of one strategy for a learner
+facing objectives it does not yet know. It can behave diversely, which
+is VPO’s half, or predict what each behaviour would achieve, which is
+Horde’s half. Generalized policy improvement is the operation that joins
+them.</p>
+<section id="questions-and-answers" class="level2">
+<h2>Questions and answers</h2>
+<p>A value function answers a question: if the agent behaves according
+to policy <span class="math inline">\pi</span> from here on, how much
+reward will it collect? Horde’s starting point was to notice that
+nothing in this question needs to be about reward. Any signal the agent
+receives can stand in for the reward, and any rule for when to stop
+counting can stand in for the end of an episode. A <strong>general value
+function</strong> is the answer to a question specified by four
+functions:</p>
+<ul>
+<li>a <strong>target policy</strong> <span
+class="math inline">\pi</span>, the behaviour the question is
+about;</li>
+<li>a <strong>termination function</strong> <span
+class="math inline">\beta</span>, giving the probability of stopping in
+each state;</li>
+<li>a <strong>cumulant</strong> <span class="math inline">r</span>, the
+signal summed along the way;</li>
+<li>an <strong>outcome</strong> <span class="math inline">z</span>, the
+signal read off at the moment of stopping.</li>
+</ul>
+<p>The question is then “if I followed <span
+class="math inline">\pi</span> until <span
+class="math inline">\beta</span> said stop, what would the sum of <span
+class="math inline">r</span> plus the final <span
+class="math inline">z</span> be?”. The Horde paper’s examples come from
+a small mobile robot. “If I keep moving, will I bump into something
+within a few seconds?” “If I follow this wall as long as I can, will my
+light sensor then have a high reading?” Each question has a precise
+answer, the expected value under the world’s actual dynamics, and a
+learned approximation of it is accurate to the extent that it matches.
+In the paper’s words: “The approximate value function is the knowledge,
+and its match to the value function—to the actual future reward—defines
+what it means for the knowledge to be accurate.”</p>
+<p>That gives a semantics for a kind of knowledge, and it is the
+semantics this series has found attractive elsewhere. The correctness
+condition is supplied by the world, not by the learner. In the terms of
+<a
+href="https://lukstafi.github.io/notes/the-given-and-the-found.html">The
+Given and the Found</a>, every GVF has a given correctness condition,
+even when the learner chose the question.</p>
+<p>Horde ran many such learners, called demons, in parallel on one
+robot. They shared one stream of sensor readings, one set of features
+and one behaviour policy, and each learned the answer to its own
+question. The paper reports running “thousands of demons using billions
+of binary features of which a few thousand were active at a time, using
+laptop computers.”</p>
+<p>The questions translate readily to language-model agents. A coding
+agent can ask: “If I keep editing and rerunning the suite until it
+passes or I give up, how many of the twenty tests will pass?” It can
+also ask that question once per test, which gives twenty GVFs instead of
+one. “If I keep using this tool for the rest of the episode, will the
+user’s request succeed?” “If I continue this answer to its end, will its
+citation of the second document be correct?” Each has a target policy, a
+stopping rule and a signal to predict. The features <span
+class="math inline">\phi</span> can be the model’s own hidden
+states.</p>
+</section>
+<section id="learning-off-the-policy" class="level2">
+<h2>Learning off the policy</h2>
+<p>Every one of those questions is about a behaviour that the agent is
+mostly not following. A robot that wanders cannot test “if I follow this
+wall” by following the wall every time it wants to learn. It sees
+fragments of wall-following in its wandering, a few steps at a time.
+Learning from such fragments is <strong>off-policy</strong> learning:
+learning about a target policy <span class="math inline">\pi</span> from
+data generated by a different behaviour policy <span
+class="math inline">b</span>. Horde’s paper puts the reason plainly.
+Learning only from complete stretches of on-policy experience would mean
+waiting for the rare occasions on which the behaviour matched the
+question all the way to termination. Learning from fragments makes
+learning “massively parallel”, since every demon learns from every
+step.</p>
+<p>The difficulty is that off-policy learning combined with function
+approximation and bootstrapping (updating a prediction toward another
+prediction) can diverge. Sutton and Barto later called this combination
+the deadly triad. Leemon Baird’s 1995 counterexample showed
+temporal-difference learning with a linear approximator driving its
+weights to infinity. Q-learning, the most widely used off-policy
+algorithm, has the same weakness. A decade of off-policy theory either
+gave up function approximation or gave up guarantees.</p>
+<p>The gradient temporal-difference methods of Sutton, Maei, Szepesvári
+and colleagues (2008–2009) gave a fix. Ordinary temporal-difference
+learning is not gradient descent on any objective, which is why it can
+wander off. The gradient methods choose an objective, the projected
+Bellman error: how far the current predictions are from their own
+one-step-ahead targets, measured only in the directions the features can
+represent. They then descend it. GQ(λ) extended this to action values,
+eligibility traces and the four-function questions above.</p>
+<p>The updates are short enough to state in full. Write <span
+class="math inline">\phi_t</span> for the features of the state and
+action at time <span class="math inline">t</span>, and <span
+class="math inline">\bar\phi_{t+1}=\sum_a\pi(s_{t+1},a)\,\phi(s_{t+1},a)</span>
+for the features expected under the target policy at the next state. The
+prediction is linear, <span class="math inline">\theta^\top\phi</span>.
+Each step computes a temporal-difference error and an importance
+ratio,</p>
+<p><span class="math display">
+\delta_t=r_{t+1}+\beta_{t+1}z_{t+1}+(1-\beta_{t+1})\,\theta_t^\top\bar\phi_{t+1}-\theta_t^\top\phi_t,
+\qquad
+\rho_t=\frac{\pi(s_t,a_t)}{b(s_t,a_t)},
+</span></p>
+<p>updates an eligibility trace,</p>
+<p><span class="math display">
+e_t=\phi_t+(1-\beta_t)\,\lambda_t\,\rho_t\,e_{t-1},
+</span></p>
+<p>and then two weight vectors:</p>
+<p><span class="math display">
+\begin{aligned}
+\theta_{t+1}&amp;=\theta_t+\alpha_\theta\big[\delta_t
+e_t-(1-\beta_{t+1})(1-\lambda_{t+1})\,(h_t^\top
+e_t)\,\bar\phi_{t+1}\big],\\
+h_{t+1}&amp;=h_t+\alpha_h\big[\delta_t
+e_t-(h_t^\top\phi_t)\,\phi_t\big].
+\end{aligned}
+</span></p>
+<p>(The paper calls the secondary vector <span
+class="math inline">w</span>; it is <span class="math inline">h</span>
+here because <span class="math inline">w</span> will soon mean something
+else.)</p>
+<p>Each piece has a job.</p>
+<ul>
+<li>The <strong>TD error</strong> <span
+class="math inline">\delta_t</span> compares the current prediction with
+what happened next: the cumulant received, the outcome if the question
+terminated, and otherwise the prediction at the next state under the
+target policy.</li>
+<li>The <strong>eligibility trace</strong> <span
+class="math inline">e_t</span> remembers which recent features deserve
+credit for the current error. Its decay rate <span
+class="math inline">\lambda_t</span> may depend on the state. With <span
+class="math inline">\lambda=1</span> the method uses the full observed
+outcome, as Monte Carlo does; with <span
+class="math inline">\lambda=0</span> it trusts the next prediction
+instead.</li>
+<li>The <strong>importance ratio</strong> <span
+class="math inline">\rho_t</span> reweights each step by how much more
+or less likely the target policy was to take the action that the
+behaviour actually took. Where the target would never have taken that
+action, <span class="math inline">\rho_t=0</span> and the trace is
+cut.</li>
+<li>The <strong>secondary weights</strong> <span
+class="math inline">h</span> learn to predict the TD error from the
+features. The correction term in the update of <span
+class="math inline">\theta</span> uses that estimate to remove the part
+of the step that would chase the learner’s own moving target. This is
+what turns the update into a true gradient and secures convergence.</li>
+</ul>
+<p>GQ(λ) converges with probability one, off-policy, with linear
+function approximation, at a cost per step linear in the number of
+features. Two conditions matter later. The behaviour policy must be
+“exciting”, <span class="math inline">b(s,a)&gt;0</span> for every state
+and action, so that every action the target might take is sometimes
+taken. And the target and behaviour policies are held fixed while the
+learner converges. Maei and Sutton described the aim as “a universal
+prediction learning algorithm suitable for learning experientially
+grounded knowledge of the world.”</p>
+<p>The companion essay <a
+href="https://lukstafi.github.io/notes/how-can-a-reward-train-a-neural-network.html">How
+Can a Reward Train a Neural Network?</a> already contained the problem
+in miniature.</p>
+<blockquote>
+<p><strong>Worked example D: the door, off the policy.</strong> That
+essay’s delivery robot reaches a junction. It can take a detour, which
+ends the episode with reward <span class="math inline">2</span>, or
+approach a door, with reward <span class="math inline">0</span>. At the
+door it can open it, with reward <span class="math inline">6</span>, or
+give up, with reward <span class="math inline">0</span>; the discount is
+<span class="math inline">\gamma=0.9</span>. The behaviour policy
+approaches the door half the time and, once there, opens it a quarter of
+the time. Ask a question about a different policy: if the robot
+approached the door and opened it, what would the return be? The answer
+is <span class="math inline">0.9\times 6=5.4</span>.</p>
+<p><em>All observed returns, reweighted</em> (<span
+class="math inline">\lambda=1</span>). Weight each episode by the
+product of its ratios <span class="math inline">\pi/b</span>.
+Approaching has ratio <span class="math inline">1/0.5=2</span>, opening
+has ratio <span class="math inline">1/0.25=4</span>, and the detour and
+giving up have ratio <span class="math inline">0</span>. One episode in
+eight approaches and opens, and its weighted return is <span
+class="math inline">2\cdot 4\cdot 5.4=43.2</span>. Every other episode
+counts as <span class="math inline">0</span>. The average is <span
+class="math inline">\tfrac18\cdot 43.2=5.4</span>, which is correct,
+with a standard deviation of <span class="math inline">14.3</span> per
+episode.</p>
+<p><em>One step, then bootstrap</em> (<span
+class="math inline">\lambda=0</span>). Estimate the action value of
+opening, <span class="math inline">Q(D,\text{open})</span>, from the
+quarter of door visits that happened to open: it is <span
+class="math inline">6</span>. The target for approaching is then <span
+class="math inline">0+0.9\sum_a\pi(D,a)\,Q(D,a)=0.9\cdot 6=5.4</span>.
+No ratio appears. The update concerns the action actually taken at the
+junction, and the target policy enters only through the expectation at
+the next state, which is what <span
+class="math inline">\bar\phi_{t+1}</span> computes in GQ(λ). The price
+is dependence on the estimate of <span
+class="math inline">Q(D,\text{open})</span>.</p>
+<p>GQ(λ) interpolates between these two estimators, and the ratios enter
+only through the trace. Now take the policy that the earlier essay
+reached after one step of policy iteration, which always takes the
+detour. That essay remarked that evaluating its door action “asks a
+counterfactual question even when <span class="math inline">\pi_1</span>
+always takes the detour”. As a behaviour policy, <span
+class="math inline">\pi_1</span> never reaches the door: <span
+class="math inline">b(J,\text{door})=0</span>, nothing at the door is
+ever observed, and no off-policy method can recover the <span
+class="math inline">6</span>. The essay saw this too: “If it never opens
+the door, its dataset may contain no example revealing the reward of
+<span class="math inline">6</span>.”</p>
+</blockquote>
+<p>The importance ratio is where language models are unusual. In
+robotics the behaviour policy’s probabilities have to be logged or
+modelled. A language model computes the probability of every token it
+emits, so for any two versions of a model, the ratio at each token is
+exact. The trouble is length. A ratio enters the trace multiplicatively
+at every step.</p>
+<blockquote>
+<p><strong>Worked example E: why traces must be cut.</strong> Let the
+behaviour policy be an older checkpoint and the target a slightly
+updated one. Model the per-token log-ratio <span
+class="math inline">\log\rho_t</span> as noise with standard deviation
+<span class="math inline">\sigma=0.1</span>, with its mean set so that
+each ratio averages exactly 1 under the behaviour, as importance ratios
+must. The product of <span class="math inline">T</span> such ratios
+still averages 1, but its variance is <span
+class="math inline">e^{\sigma^2 T}-1</span>. For a response of 200
+tokens that is <span class="math inline">e^{2}-1\approx 6.4</span>,
+which is tolerable. For an agentic episode of 2,000 tokens it is <span
+class="math inline">e^{20}\approx 5\times 10^{8}</span>. Almost every
+trace then carries a product near zero, and the average is held at 1 by
+rare traces with enormous weights. GQ(λ)’s state-dependent <span
+class="math inline">\lambda_t</span> is the lever. Setting <span
+class="math inline">\lambda_t</span> low where the policies diverge cuts
+the trace there, and the update bootstraps from the current prediction
+instead. Later algorithms such as Retrace (Munos and colleagues, 2016)
+made the cut automatic by truncating each ratio at 1.</p>
+</blockquote>
+</section>
+<section id="from-many-predictions-to-a-choice" class="level2">
+<h2>From many predictions to a choice</h2>
+<p>Horde’s demons were mostly predictors. The step from predictions to
+behaviour came through a different route, at DeepMind, a few years
+later.</p>
+<p>Suppose the reward of every task the agent might face is a weighted
+sum of a fixed set of cumulants <span class="math inline">c\in\mathbb
+R^d</span>: <span class="math inline">r_w=w^\top c</span>. The tasks
+differ only in the weights. Then the value of any policy <span
+class="math inline">\pi</span> under any task <span
+class="math inline">w</span> splits into two factors,</p>
+<p><span class="math display">
+Q^\pi_w(s,a)=w^\top\psi^\pi(s,a),\qquad
+\psi^\pi(s,a)=\mathbb E_\pi\Big[\sum_t\gamma^t c_t\,\Big|\,s,a\Big].
+</span></p>
+<p>The vector <span class="math inline">\psi^\pi</span> collects the
+<strong>successor features</strong> of <span
+class="math inline">\pi</span>: one general value function per cumulant,
+all with the same target policy. Barreto and colleagues introduced the
+decomposition in 2017. Once <span class="math inline">\psi^\pi</span> is
+learned, evaluating <span class="math inline">\pi</span> on a new task
+costs one dot product.</p>
+<p>The second half of their proposal was <strong>generalized policy
+improvement</strong> (GPI). Take a library of policies <span
+class="math inline">\pi_1,\dots,\pi_m</span> with their successor
+features. Faced with a task <span class="math inline">w</span>, act
+by</p>
+<p><span class="math display">
+\pi_{\text{GPI}}(s)\in\arg\max_a\,\max_i\,w^\top\psi^{\pi_i}(s,a).
+</span></p>
+<p>Their theorem guarantees that this policy is at least as good as
+every policy in the library on task <span class="math inline">w</span>,
+up to a term proportional to the error in the learned <span
+class="math inline">\psi</span>’s. No learning is needed for the new
+task. Ordinary policy improvement, the step at the heart of Q-learning,
+takes a max over actions under one policy’s values. GPI takes a max over
+actions and over policies. It can also switch between library policies
+from state to state, following whichever one looks best from where the
+agent now stands.</p>
+<p>A cruder composition commits at the start: pick the one library
+policy with the highest value for <span class="math inline">w</span> at
+the initial state, and follow it to the end. Zahavy, Barreto and
+colleagues called this the <strong>set-max policy</strong>. Its value
+is</p>
+<p><span class="math display">
+\max_i\,w^\top\psi^{\pi_i}(s_0).
+</span></p>
+<p>GPI is never worse than it. Their 2021 paper asked which library to
+build. Their answer was an iteration that adds one policy at a time,
+each chosen to raise the worst-case value of the set-max policy over all
+weightings <span class="math inline">w</span>. They proved that the
+worst-case value strictly improves at each step until no new policy can
+raise it. In a grid world and in simulated locomotion, the policies the
+iteration discovered were visibly diverse: different routes and
+different gaits. Diversity was not the objective. It followed from
+asking the set to be good under every weighting. Alegre, Bazzan and da
+Silva (2022) gave a related construction, optimistic linear support,
+which picks the weightings to train on so that, with exact learning, GPI
+over the library becomes optimal for every <span
+class="math inline">w</span>.</p>
+</section>
+<section id="vpo-builds-a-library-in-one-response" class="level2">
+<h2>VPO builds a library in one response</h2>
+<p>Set the two lines side by side.</p>
+<table>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr>
+<th>Vector Policy Optimization</th>
+<th>Successor features and GPI</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>reward component <span class="math inline">r_j(x,y)</span></td>
+<td>cumulant <span class="math inline">c_j</span>, one GVF per
+component</td>
+</tr>
+<tr>
+<td>answer <span class="math inline">y_i</span> in the response</td>
+<td>policy <span class="math inline">\pi_i</span> in the library</td>
+</tr>
+<tr>
+<td>reward vector <span class="math inline">r(x,y_i)</span></td>
+<td>successor features <span
+class="math inline">\psi^{\pi_i}(s_0)</span></td>
+</tr>
+<tr>
+<td><span class="math inline">\max_{y\in S}\,w^\top r(x,y)</span></td>
+<td>set-max value <span
+class="math inline">\max_i\,w^\top\psi^{\pi_i}(s_0)</span></td>
+</tr>
+<tr>
+<td>average over <span class="math inline">w</span> drawn uniformly from
+the simplex</td>
+<td>worst case over <span class="math inline">w</span> (Zahavy et al.);
+chosen corner weightings (Alegre et al.)</td>
+</tr>
+<tr>
+<td>answer <span class="math inline">i</span> written after reading
+answers <span class="math inline">1,\dots,i-1</span></td>
+<td>next policy trained against the current library’s weakest
+weighting</td>
+</tr>
+<tr>
+<td>test-time search picks the best candidate</td>
+<td>GPI’s max at deployment</td>
+</tr>
+</tbody>
+</table>
+<p>VPO’s objective, <span class="math inline">\mathbb E_w[\max_{y\in
+S}w^\top r(x,y)]</span>, is the average-case version of the set-max
+objective, for a library of <span class="math inline">m</span> policies
+whose horizon is one answer. At that horizon successor features need no
+learning. Each “policy” is a single answer, and its successor features
+are just its reward vector, computed exactly by running the tests. GPI
+and the set-max policy coincide, because there is no later state at
+which to switch. What remains is the question Zahavy’s iteration
+answered: which set to build.</p>
+<p>Two differences are worth noticing, and both favour VPO in its
+setting. First, VPO builds the library inside one response. Zahavy’s
+iteration trains a new policy for each addition, on the weighting under
+which the current library does worst. VPO’s second answer is written by
+the same network after reading the first. The step “add the policy that
+most improves the set” is performed by in-context learning. Second, VPO
+averages over weightings instead of taking the worst case. That suits a
+deployment in which test-time search will select under one particular
+weighting and the training signal should reward broad coverage, not
+insurance against the least favourable task.</p>
+<p>The max in VPO’s objective does more than reward coverage. It assigns
+each answer its own objective. Write <span
+class="math inline">C_i</span> for the set of weightings under which
+answer <span class="math inline">i</span> is the best in its set. Away
+from ties, the first-order effect of improving answer <span
+class="math inline">i</span>’s reward vector by a small <span
+class="math inline">\delta</span> is</p>
+<p><span class="math display">
+\frac{\partial R}{\partial r_i}\cdot\delta=\bar w_i^\top\delta,
+\qquad
+\bar w_i=\mathbb E_w\big[w\,\mathbf 1\{w\in C_i\}\big]=P(C_i)\,\mathbb
+E[w\mid C_i].
+</span></p>
+<p>The cells partition the simplex, so the per-answer weightings add up
+to the average weighting, <span class="math inline">\sum_i\bar
+w_i=\mathbb E[w]</span>. Under the uniform distribution that average is
+exactly the uniform weighting a scalar method would use. VPO splits that
+weighting among the answers, giving each the part of the simplex where
+it is responsible for the set’s score.</p>
+<blockquote>
+<p><strong>Worked example F: the weighting each answer is trained
+under.</strong> Part 1’s set had two specialists, <span
+class="math inline">(1,0)</span> and <span
+class="math inline">(0,1)</span>, and a balanced answer, <span
+class="math inline">(0.6,0.6)</span>, with weightings <span
+class="math inline">w=(u,1-u)</span> for <span
+class="math inline">u</span> uniform. The first specialist is best for
+<span class="math inline">u\ge0.6</span>, the second for <span
+class="math inline">u\le0.4</span>, and the balanced answer in between.
+The per-answer weightings are <span class="math inline">\bar
+w_1=(0.32,0.08)</span>, <span class="math inline">\bar
+w_2=(0.08,0.32)</span> and <span class="math inline">\bar
+w_3=(0.10,0.10)</span>, and they sum to <span
+class="math inline">(0.5,0.5)</span>. The first specialist gains four
+times as much from improving the first component as from improving the
+second. The balanced answer carries a fifth of the total weight, split
+evenly. A scalar method would push all three answers along <span
+class="math inline">(0.5,0.5)</span>.</p>
+</blockquote>
+<p>Bahlous-Boldi described the max as inducing something “almost like an
+unsupervised … clustering” of the weightings into groups that one answer
+can serve. The cells <span class="math inline">C_i</span> are that
+clustering, and <span class="math inline">\bar w_i</span> is the
+objective each cluster hands to its answer. The same cells organize
+optimistic linear support. Alegre and colleagues compute the regions of
+the simplex in which each library policy is optimal and train the next
+policy at a corner where those regions meet, the weighting at which the
+library is most likely to improve. VPO’s gradient instead pushes each
+answer along a weighted centroid of its own cell. One method extends the
+library at the boundaries; the other sharpens each member within its
+territory.</p>
+<p>The mapping also explains two of VPO’s empirical findings.</p>
+<p><strong>Goal conditioning failed in the policy, not in the
+critic.</strong> VPO’s authors tried the obvious alternative: write the
+weighting <span class="math inline">w</span> into the prompt and train
+the model to satisfy it. The model learned to ignore the conditioning
+and collapsed to one behaviour. In the successor-feature construction
+the policy never sees <span class="math inline">w</span>. Conditioning
+on <span class="math inline">w</span> happens in the critic, where it
+costs one dot product, and GPI selects among unconditioned behaviours.
+The VPO result is evidence that a language model struggles to turn a
+vector written as text into a strategy. It is not evidence against
+conditioning on tasks as such.</p>
+<p><strong>Collinear rewards mean few effective features.</strong> VPO
+stopped helping on a preference dataset whose five reward criteria
+mostly agreed. In successor-feature terms, five nominally distinct
+cumulants spanned roughly one direction, so a library of one policy
+already covered every weighting. The rank of the reward vectors under
+the current policy, which the VPO paper uses as its diagnostic, measures
+how large a library the task can use.</p>
+<p>The VPO paper does not mention successor features, GPI or general
+value functions. Its authors place it in multi-objective reinforcement
+learning and in lexicase selection, a technique from evolutionary
+computation that selects candidates by their performance on test cases
+taken one at a time in random order. In the interview on <em>Deep
+Learning with Yacine</em>, Ryan Bahlous-Boldi pointed in the direction
+this section has followed without naming it. He called the assumption
+that reward is linear in its components “a choice”. He also described
+unsupervised reinforcement learning, whose “goal is to learn one
+representation that at test time can satisfy any reward function you
+want with no training at all”, adding that “nobody has scaled it up to
+LLM scale yet”. <em>Learning One Representation to Optimize All
+Rewards</em> is the title of Touati and Ollivier’s 2021 paper on
+forward–backward representations, which generalize successor features to
+rewards that need not be fixed in advance. The thread he wanted to pull
+runs straight through the successor-feature line, and from there back to
+Horde.</p>
+</section>
+<section id="what-gqλ-would-add" class="level2">
+<h2>What GQ(λ) would add</h2>
+<p>At the horizon of one response, then, the bridge adds a vocabulary
+and two explanations, but no new algorithm. The tests score each answer
+exactly, and there is nothing to predict. The prediction machinery earns
+its place under three conditions that a continual learner meets
+constantly.</p>
+<p><strong>Long horizons.</strong> In an agentic episode the reward
+components arrive late and at different times. Tests pass after several
+rounds of editing, tool calls succeed or fail turn by turn, and
+sub-questions are settled at different hops. VPO currently assigns the
+same set-level advantage to every token of the episode, as REINFORCE
+does with a single return. In temporal-difference terms this is the
+<span class="math inline">\lambda=1</span> end of the scale: no
+bootstrapping, all credit from the final outcome. A bank of <span
+class="math inline">d</span> GQ(λ) learners, one per component and all
+reading the model’s hidden states, would estimate the successor features
+<span class="math inline">\psi(\text{prefix})\in\mathbb R^d</span> at
+every token. The value of any weighting at any point of the episode is
+then <span class="math inline">w^\top\psi</span>, so one bank serves the
+whole simplex. The trace parameter <span
+class="math inline">\lambda</span> then interpolates between VPO’s Monte
+Carlo credit and credit bootstrapped from the bank.</p>
+<p><strong>Off-policy data.</strong> A continual learner does not train
+only on its current policy’s samples. Its data include traces from older
+checkpoints, from the base model, from earlier members of its own
+diverse sets, and from deployment logs gathered before the last update.
+GQ(λ) learns about the current target from all of them. In a language
+model the ratios <span class="math inline">\rho_t</span> are exact, and
+the state-dependent <span class="math inline">\lambda</span> handles
+their variance, as worked example D showed. One caution: traces that
+survived a selection step have no known behaviour policy. If a search
+loop sampled thirty answers and kept the best, the kept answer was
+produced by a max, not by a sampler with known probabilities. Off-policy
+correction applies to the raw samples, not to the survivors.</p>
+<p><strong>Answers as options.</strong> Each answer slot in a VPO
+response is an <em>option</em> in the sense of Sutton, Precup and Singh:
+a course of action with its own termination condition, here the
+delimiter that closes the answer. The question “if I finish this answer,
+what will reward component <span class="math inline">j</span> be?” is
+literally a GQ(λ) question. Its target policy is the model, <span
+class="math inline">\beta=1</span> at the delimiter, the outcome <span
+class="math inline">z</span> is <span class="math inline">r_j</span>,
+and the cumulant is zero, or the token count if length matters. GQ(λ)
+was built for these option-conditional questions. Its original
+motivation was intra-option learning, which learns about several options
+from data generated while executing only one.</p>
+<p>Three proposals follow from this. None has been tested.</p>
+<ol type="1">
+<li><p><strong>Per-answer credit, without a critic.</strong> VPO’s set
+score decomposes into marginal gains, <span class="math display">
+R(S)=\sum_{i=1}^{m}\mathbb E_w\Big[\max_{j\le i}w^\top
+r_j-\max_{j&lt;i}w^\top r_j\Big].
+</span> (Take the max over no answers to be zero; rewards here are
+non-negative.) Answer <span class="math inline">i</span> could be
+credited with its own term, the improvement it makes to the set already
+written. Ryan said in the interview that per-answer credit was left out
+to avoid over-complicating the method. This version needs no learned
+predictor, since the rewards are exact, and it mirrors Zahavy’s
+iteration, in which each policy is valued by what it adds. The shared
+reasoning before the first answer would keep the full set score. Whether
+the split destabilizes training is an empirical question.</p></li>
+<li><p><strong>A vector critic from linear demons.</strong> Attach <span
+class="math inline">d</span> linear GQ(λ) heads to frozen hidden states
+of the model, one per reward component, sharing features and behaviour
+policy as Horde’s demons did. The cost per token is <span
+class="math inline">O(d\,n)</span> for hidden size <span
+class="math inline">n</span>, negligible beside a forward pass. Linear
+predictors on frozen features are the setting in which GQ(λ)’s
+convergence guarantee holds as stated; interpretability research calls
+them probes. The reward essay’s generalized advantage estimator then has
+a vector form. With vector temporal-difference errors <span
+class="math inline">\boldsymbol\delta_t=c_t+\gamma\psi(s_{t+1})-\psi(s_t)\in\mathbb
+R^d</span>,</p>
+<p><span class="math display">
+\hat{\mathbf A}_t=\sum_{k\ge0}(\gamma\lambda)^k\boldsymbol\delta_{t+k},
+</span></p>
+<p>and for any weighting, <span class="math inline">w^\top\hat{\mathbf
+A}_t</span> is the generalized advantage of that scalarization, by
+linearity. For VPO’s set score, the tokens of answer <span
+class="math inline">i</span> would take the advantage <span
+class="math inline">\bar w_i^\top\hat{\mathbf A}_t</span>, under the
+weighting of their own cell from worked example F. Uses: credit within
+an answer on long agentic tasks; GPI at intermediate points, for
+instance deciding which candidate an evolutionary loop should extend;
+and evaluating a new weighting <span class="math inline">w</span> on
+logged traces before deploying anything.</p></li>
+<li><p><strong>Continual VPO under drifting weights.</strong> When the
+deployment weighting changes (new tests are added, or a criterion gains
+importance), a reward-diverse model should adapt by selection before it
+adapts by learning. Prediction: after a shift in <span
+class="math inline">w</span>, a VPO checkpoint recovers best-of-<span
+class="math inline">k</span> performance under the new weighting in
+fewer updates than a GRPO checkpoint. VPO’s maze task, whose
+collectibles can be reweighted at will, would test this
+cheaply.</p></li>
+</ol>
+</section>
+<section id="diversity-is-a-coverage-condition" class="level2">
+<h2>Diversity is a coverage condition</h2>
+<p>GQ(λ) assumes a behaviour policy that is “exciting”: every action has
+some probability of being taken. The assumption is not a technicality. A
+learner can learn about an action only if its behaviour sometimes takes
+it, or something close enough that the features generalize. Where the
+behaviour never acts as the target would, <span
+class="math inline">\rho_t=0</span>, the trace is cut, and nothing is
+learned about the target there. Where the behaviour acts that way only
+rarely, the ratio is huge and the update unusable.</p>
+<p>Part 1 described how scalar reinforcement learning collapses a model
+onto one strategy per problem. In the language of this part, the
+collapse destroys the coverage that every later off-policy learner
+depends on. The model can no longer produce data about the alternatives,
+so nothing trained on its data can learn about them. That includes
+off-policy critics, later rounds of policy improvement, and
+consolidation by self-distillation. VPO restores coverage along the axes
+the reward defines. Its value to a continual learner therefore does not
+depend on test-time search. A reward-diverse model is a better behaviour
+policy for whatever learning comes next.</p>
+<p>This is the sense in which Bahlous-Boldi’s remark about “loss of
+plasticity” fits. Dohare and colleagues, also in Sutton’s group, showed
+in 2024 that deep networks trained on a long sequence of tasks gradually
+lose the ability to learn new ones, until they learn “no better than a
+shallow network”. Their remedy, continual backpropagation, reinitializes
+a small fraction of rarely used units. That is plasticity at the level
+of weights. The collapse of alternatives is plasticity lost at the level
+of behaviour: weights that could still change, attached to a policy that
+no longer visits the states from which change would be learned. The two
+can come apart. A network with perfectly plastic weights is still stuck
+if its behaviour generates no data about anything new.</p>
+<p>Bahlous-Boldi framed the remedy as evolution does. Two equally fit
+organisms may differ in how readily their descendants adapt. Selection
+cannot see the difference until the environment shifts, and then it is
+decisive. “Even though there was never a pressure to be nicely
+regularized, everybody is nicely regularized … the pressure comes from
+the changing environment.” A continual learner faces a changing
+environment by definition. Keeping several competent behaviours alive is
+how it stays ready for a shift it cannot foresee.</p>
+</section>
+<section id="two-halves-of-one-strategy" class="level2">
+<h2>Two halves of one strategy</h2>
+<p>A learner in a stream must prepare for objectives it does not know
+yet. There are two ways to prepare, and the two research lines this part
+has joined each took one.</p>
+<p>Horde prepares by <em>predicting</em>. Its demons learn, off-policy,
+what would happen under many behaviours the agent is not following. That
+is knowledge without behaviour: the agent can say what wall-following
+would achieve without having become a wall-follower. VPO prepares by
+<em>behaving diversely</em>. It keeps a set of competent alternatives
+alive in the policy itself, with no critic. That is behaviour without
+knowledge: the model produces the alternatives, and only the tests know
+which one is best. GPI joins the halves. With a library of diverse
+behaviours and successor features that predict each one’s per-component
+outcomes, a new weighting is met at once by a max, with no training.
+Consolidation, the subject of Part 1, can then make the selected
+behaviour cheap by distilling it into the weights. After that, the
+library has to be re-opened, or the next shift will find the model
+collapsed again.</p>
+<p>Both halves stop at the same boundary. Each GVF answers a question
+someone posed, and each component of VPO’s reward vector is a criterion
+someone wrote down. The world supplies the answers, but not the
+questions. Which cumulants to predict, which reward components to keep
+apart, which features to learn them over: these remained the open
+problem of the Horde programme, and later work on discovering useful
+questions (Veeriah and colleagues, 2019) only began on it. The same
+problem appears in VPO as Bahlous-Boldi’s open question of where vector
+rewards come from when there is no verifier. A continual learner that
+must also find its own questions has crossed from the given into the
+found. Neither line has crossed.</p>
+<p><a
+href="https://lukstafi.github.io/notes/where-experience-goes.html">Part
+3</a> takes stock. It places in-context learning, fast weights, harness
+memory, adapters, prediction banks and core weights on one ladder, asks
+which store teaches which, and revises two claims made in <a
+href="https://lukstafi.github.io/notes/axes_of_dynamics.html">The
+Dynamics That Matter</a>.</p>
+<hr />
+<p><em>Sources.</em> Ring, <em>Continual Learning in Reinforcement
+Environments</em>, PhD dissertation, University of Texas at Austin
+(1994). Drescher, <em>Made-Up Minds: A Constructivist Approach to
+Artificial Intelligence</em>, MIT Press (1991); my notes from 2013 are
+<a
+href="https://lukstafi.github.io/notes/drescher-made-up-minds.html">here</a>.
+Maei and Sutton, <em>GQ(λ): A general gradient algorithm for
+temporal-difference prediction learning with eligibility traces</em>,
+AGI 2010. Sutton, Modayil, Delp, Degris, Pilarski, White and Precup,
+<em>Horde: A scalable real-time architecture for learning knowledge from
+unsupervised sensorimotor interaction</em>, AAMAS 2011. Baird,
+<em>Residual algorithms: Reinforcement learning with function
+approximation</em>, ICML 1995. Sutton, Szepesvári and Maei, <em>A
+convergent O(n) algorithm for off-policy temporal-difference learning
+with linear function approximation</em>, NIPS 2008; Sutton et al.,
+<em>Fast gradient-descent methods for temporal-difference learning with
+linear function approximation</em>, ICML 2009. Sutton, Precup and Singh,
+<em>Between MDPs and semi-MDPs: A framework for temporal abstraction in
+reinforcement learning</em>, Artificial Intelligence (1999). Munos,
+Stepleton, Harutyunyan and Bellemare, <em>Safe and efficient off-policy
+reinforcement learning</em> (Retrace), NeurIPS 2016. Barreto et al.,
+<em>Successor Features for Transfer in Reinforcement Learning</em>,
+NeurIPS 2017, arXiv 1606.05312. Zahavy, Barreto, Mankowitz, Hou,
+O’Donoghue, Kemaev and Singh, <em>Discovering a set of policies for the
+worst case reward</em>, ICLR 2021, arXiv 2102.04323. Alegre, Bazzan and
+da Silva, <em>Optimistic Linear Support and Successor Features as a
+Basis for Optimal Policy Transfer</em>, ICML 2022, arXiv 2206.11326.
+Touati and Ollivier, <em>Learning One Representation to Optimize All
+Rewards</em>, arXiv 2103.07945 (2021). Bahlous-Boldi et al., <em>Vector
+Policy Optimization: Training for Diversity Improves Test-Time
+Search</em>, arXiv 2605.22817 (2026), and the interview with Ryan
+Bahlous-Boldi on <em>Deep Learning with Yacine</em> (2026). Dohare,
+Hernandez-Garcia, Lan, Rahman, Mahmood and Sutton, <em>Loss of
+plasticity in deep continual learning</em>, Nature 632 (2024). Veeriah
+et al., <em>Discovery of Useful Questions as Auxiliary Tasks</em>,
+NeurIPS 2019.</p>
+<p><em>This article was co-authored by Łukasz Stafiniak and Claude (Opus
+5.5).</em></p>
+</section>
+</article>
+<section class="prompts-link"><p><em>The prompts behind this essay (the human-side contribution): 
+<a href="learning-about-what-you-do-not-do.prompts.html">view the prompts &rarr;</a></em></p></section>
+<script src="/assets/theme-toggle.js"></script>
+</body>
+</html>
