@@ -68,15 +68,16 @@ Dynamics That Matter</a>.</em></p>
 <p>Teach a language model a numbers game by showing it worked solutions,
 and it gets worse at nearly everything else; teach it the same game by
 letting it play and rewarding wins, and it loses almost nothing. That is
-the finding of <em>Retaining by Doing</em>, a study of forgetting in
-Llama and Qwen models by Howard Chen, Noam Razin, Karthik Narasimhan and
-Danqi Chen at Princeton. Trained on the Countdown arithmetic game by
-supervised fine-tuning on a larger model’s solutions, Qwen-2.5-7B lost
-29.2 points on average across tasks it was not trained on. Trained on
-the same game by GRPO, a reinforcement-learning method, it lost −0.3: a
-slight gain. The pattern repeated when the target was instruction
-following (5.6 points lost against 0.2) or general knowledge (14.6
-against 0.2).</p>
+the finding of <a href="https://arxiv.org/abs/2510.18874"><em>Retaining
+by Doing</em></a>, a study of forgetting in Llama and Qwen models by
+Howard Chen, Noam Razin, Karthik Narasimhan and Danqi Chen at Princeton.
+Trained on the Countdown arithmetic game by supervised fine-tuning on a
+larger model’s solutions, Qwen-2.5-7B lost 29.2 points on average across
+tasks it was not trained on. Trained on the same game by <a
+href="https://arxiv.org/abs/2402.03300">GRPO</a>, a
+reinforcement-learning method, it lost −0.3: a slight gain. The pattern
+repeated when the target was instruction following (5.6 points lost
+against 0.2) or general knowledge (14.6 against 0.2).</p>
 <p>The authors then took apart the explanation one would reach for
 first. GRPO usually carries a penalty that keeps the trained model close
 to the original, and removing it mostly did not bring the forgetting
@@ -85,16 +86,15 @@ of supervised fine-tuning that regenerated its examples from the current
 model once per epoch, and so trained on roughly its own outputs, showed
 mild forgetting or none. (That variant was tested on the Qwen models,
 for instruction following and general knowledge.)</p>
-<p>So the source of the data matters more than the algorithm. That
-raises the question this essay tries to answer: when a model learns
-something new, what should it learn from, and on which inputs? My answer
-is that the best teacher available is usually the model itself, given
-better context. A model shown a demonstration, a document or an error
-message already behaves better than the same model without it.
-In-context learning has done the learning. Self-distillation trains the
-bare model toward that better-informed copy of itself, so it is a
-consolidation step: it moves what the context achieved into the
-weights.</p>
+<p>So where the data comes from matters more than the algorithm. What
+should a model learn from, then, and on which inputs? A teacher has to
+know more than the student, and its targets have to be ones the student
+can absorb. A stronger model meets the first condition; the model
+itself, given better context, can meet both. Shown a demonstration, a
+document or an error message, it already behaves better, and its targets
+come from its own distribution. Self-distillation trains the bare model
+toward that better-informed copy of itself, so it is a consolidation
+step: it moves what in-context learning achieved into the weights.</p>
 <p>That picture explains when self-distillation works and when it fails.
 It also has a blind spot, which the second half of this part takes up.
 On-policy training, whether rewarded or self-taught, protects the
@@ -105,20 +105,23 @@ learning would select from.</p>
 <section id="what-would-count-as-continual-learning" class="level2">
 <h2>What would count as continual learning</h2>
 <p>The research literature on continual learning distinguishes three
-scenarios, following van de Ven, Tuytelaars and Tolias. In
-task-incremental learning the model is told which task it faces. In
-domain-incremental learning the task stays the same while the input
-distribution shifts. In class-incremental learning the model must tell
-apart classes it never saw together, because they arrived in different
-phases of training. The last is the hard one. Ilija Lichkovski, who
-works on continual learning at Prime Intellect, illustrated this in a
-recent podcast with split MNIST, the handwritten digits presented two
-classes at a time. Elastic weight consolidation, a classic method that
-penalizes changes to weights that mattered for earlier tasks, barely
-beats naive fine-tuning in the class-incremental setting, at about 20%
-accuracy. Careful navigation of the loss landscape protects old weights,
-but it does not compose old and new representations into one
-classifier.</p>
+scenarios, following <a
+href="https://doi.org/10.1038/s42256-022-00568-3">van de Ven, Tuytelaars
+and Tolias</a>. In task-incremental learning the model is told which
+task it faces. In domain-incremental learning the task stays the same
+while the input distribution shifts. In class-incremental learning the
+model must tell apart classes it never saw together, because they
+arrived in different phases of training. The last is the hard one. Ilija
+Lichkovski, who works on continual learning at Prime Intellect,
+illustrated this in <a
+href="https://www.youtube.com/watch?v=loXZk5uYWLE">a recent podcast</a>
+with split MNIST, the handwritten digits presented two classes at a
+time. <a href="https://arxiv.org/abs/1612.00796">Elastic weight
+consolidation</a>, a classic method that penalizes changes to weights
+that mattered for earlier tasks, barely beats naive fine-tuning in the
+class-incremental setting, at about 20% accuracy. Careful navigation of
+the loss landscape protects old weights, but it does not compose old and
+new representations into one classifier.</p>
 <p>Measurement starts from a matrix. Let <span
 class="math inline">R_{i,j}</span> be the performance on task <span
 class="math inline">j</span> after training through task <span
@@ -163,32 +166,73 @@ E_{x\sim\mu}\,D\big(q(\cdot\mid x)\,\big\|\,p_\theta(\cdot\mid x)\big).
 distribution the model should keep matching. The
 <strong>support</strong> <span class="math inline">\mu</span> is the set
 of inputs on which it must match it. Elastic weight consolidation
-constrains parameters instead of behaviour, but it is close kin: its
-penalty is a second-order approximation of the same divergence, with the
-Fisher information measuring how much each weight matters for the old
-outputs.</p>
+constrains parameters instead of behaviour, but its penalty approximates
+the same divergence.</p>
+<blockquote>
+<p><strong>Fisher information.</strong> Move the old model’s weights
+<span class="math inline">\theta_0</span> by a small <span
+class="math inline">\Delta</span>. On an input <span
+class="math inline">x</span>, the divergence between the old and new
+outputs is, to second order,</p>
+<p><span class="math display">
+D_{\mathrm{KL}}\big(p_{\theta_0}(\cdot\mid
+x)\,\big\|\,p_{\theta_0+\Delta}(\cdot\mid
+x)\big)\approx\tfrac12\,\Delta^\top F(x)\,\Delta,
+\qquad
+F(x)=\mathbb E_{y\sim p_{\theta_0}(\cdot\mid x)}\big[\nabla\log
+p_{\theta_0}(y\mid x)\,\nabla\log p_{\theta_0}(y\mid x)^\top\big].
+</span></p>
+<p>There is no first-order term, because the old model is at the minimum
+of its divergence from itself. The matrix <span
+class="math inline">F</span> is the Fisher information. It measures how
+sharply the log-probabilities of the model’s own outputs respond to a
+move in each direction of weight space. Wikipedia’s article on <a
+href="https://en.wikipedia.org/wiki/Fisher_information#Relation_to_relative_entropy">Fisher
+information</a> derives the expansion and gives the statistical reading:
+the curvature of the log-likelihood, which bounds how precisely data can
+pin down a parameter (the Cramér–Rao bound). The article on the <a
+href="https://en.wikipedia.org/wiki/Fisher_information_metric#Relation_to_the_Kullback%E2%80%93Leibler_divergence">Fisher
+information metric</a> gives the geometric reading, in which <span
+class="math inline">F</span> is the local metric that the divergence
+induces on a family of distributions. Average <span
+class="math inline">F</span> over the old task’s inputs, keep only its
+diagonal, and the result is the EWC penalty, <span
+class="math inline">\tfrac{\lambda}{2}\sum_i
+F_{ii}\,(\theta_i-\theta_{0,i})^2</span>. EWC is therefore distillation
+with the old model as teacher and the old inputs as support, compressed
+into one number per weight. The compression is what makes it cheap:
+<span class="math inline">F</span> is computed once, and the old inputs
+can then be discarded. It is also what limits it. The quadratic holds
+only near <span class="math inline">\theta_0</span>, which a long
+sequence of tasks leaves behind, and the diagonal ignores how weights
+compensate for one another.</p>
+</blockquote>
 <p>Placing the classic methods on this grid shows what each one
 protects.</p>
 <ul>
-<li><strong>Learning without Forgetting</strong> uses the old model as
-teacher and the new task’s inputs as support. It protects old behaviour
-only where old and new inputs overlap. A model learning medical
-terminology keeps its old answers to medical questions, not its old
-answers to questions about tax law.</li>
-<li><strong>Dark Experience Replay</strong> uses the old model as
-teacher on old inputs, by storing a buffer of past inputs together with
-the logits the model produced for them at the time. On a standard image
-benchmark with only 200 stored examples, plain experience replay reached
-44.8% accuracy, DER 61.9% and DER++ (which adds the stored labels)
-64.9%. The model’s own past soft outputs carry information that its past
-labels do not: which wrong classes it found plausible, and how
-plausible.</li>
+<li><strong><a href="https://arxiv.org/abs/1606.09282">Learning without
+Forgetting</a></strong> uses the old model as teacher and the new task’s
+inputs as support. It protects old behaviour only where old and new
+inputs overlap. A model learning medical terminology keeps its old
+answers to medical questions, not its old answers to questions about tax
+law.</li>
+<li><strong><a href="https://arxiv.org/abs/2004.07211">Dark Experience
+Replay</a></strong> uses the old model as teacher on old inputs, by
+storing a buffer of past inputs together with the logits the model
+produced for them at the time. On a standard image benchmark with only
+200 stored examples, plain experience replay reached 44.8% accuracy, DER
+61.9% and DER++ (which adds the stored labels) 64.9%. The model’s own
+past soft outputs carry information that its past labels do not: which
+wrong classes it found plausible, and how plausible.</li>
 <li><strong>An exponential moving average of the model’s own
-weights</strong> serves as a fresh teacher on current inputs. It smooths
-training. Worked example A below shows why it is not a memory.</li>
-<li><strong>On-policy distillation</strong> makes the support whatever
-the student itself generates. The model is corrected on the states it
-actually visits, which is where its errors compound.</li>
+weights</strong> serves as a fresh teacher on current inputs, as in the
+<a href="https://arxiv.org/abs/1703.01780">Mean Teacher</a> method of
+semi-supervised learning. It smooths training. Worked example A below
+shows why it is not a memory.</li>
+<li><strong><a href="https://arxiv.org/abs/2306.13649">On-policy
+distillation</a></strong> makes the support whatever the student itself
+generates. The model is corrected on the states it actually visits,
+which is where its errors compound.</li>
 </ul>
 <blockquote>
 <p><strong>Worked example A: why a moving-average teacher
@@ -212,13 +256,14 @@ is pulled toward. The evidence from <em>Retaining by Doing</em> concerns
 the first. GRPO keeps a model close to itself because every update is
 computed on the model’s own samples, whatever its penalty term says. A
 month before the Princeton paper, a study from MIT’s Improbable AI Lab,
-<em>RL’s Razor</em>, had found that forgetting tracks how far the
-trained model’s outputs drift from the base model’s on the new task, and
-that on-policy sampling keeps that drift small. The Princeton group
-found the link weaker in its own setting, but the direction is the same.
-Early claims for self-distillation sometimes credited the teacher with
-what the support was doing. The rest of this part keeps the two apart.
-The companion essay <a
+<a href="https://arxiv.org/abs/2509.04259"><em>RL’s Razor</em></a>, had
+found that forgetting tracks how far the trained model’s outputs drift
+from the base model’s on the new task, and that on-policy sampling keeps
+that drift small. The Princeton group found the link weaker in its own
+setting, but the direction is the same. Early claims for
+self-distillation sometimes credited the teacher with what the support
+was doing. The rest of this part keeps the two apart. The companion
+essay <a
 href="https://lukstafi.github.io/notes/how-can-a-reward-train-a-neural-network.html">How
 Can a Reward Train a Neural Network?</a> explains in its first section
 why acting changes the examples one learns from.</p>
@@ -227,16 +272,19 @@ why acting changes the examples one learns from.</p>
 class="level2">
 <h2>The model with privileged context as teacher</h2>
 <p>In January and February of 2026 several groups published the same
-construction under different names: self-distillation fine-tuning
-(SDFT), on-policy self-distillation (OPSD) and self-distillation policy
-optimization (SDPO). The student is the model as it will be deployed,
-without help. It samples a response to a prompt. The teacher is the same
-model, usually a slowly moving copy of it, given something extra in its
-context: a demonstration of the skill, the documentation of a tool, or
-the environment’s feedback on an earlier attempt, such as a failing
-test. The teacher scores each prefix of the student’s response, and the
-student is trained toward the teacher’s next-token distributions on
-those prefixes.</p>
+construction under different names: <a
+href="https://arxiv.org/abs/2601.19897">self-distillation
+fine-tuning</a> (SDFT), <a
+href="https://arxiv.org/abs/2601.18734">on-policy self-distillation</a>
+(OPSD) and <a href="https://arxiv.org/abs/2601.20802">self-distillation
+policy optimization</a> (SDPO). The student is the model as it will be
+deployed, without help. It samples a response to a prompt. The teacher
+is the same model, usually a slowly moving copy of it, given something
+extra in its context: a demonstration of the skill, the documentation of
+a tool, or the environment’s feedback on an earlier attempt, such as a
+failing test. The teacher scores each prefix of the student’s response,
+and the student is trained toward the teacher’s next-token distributions
+on those prefixes.</p>
 <p>The support is therefore on-policy: the student’s own samples. The
 teacher is the student, better informed.</p>
 <p>The construction is easiest to read as a step of policy improvement.
@@ -246,8 +294,9 @@ Does a Policy Improve?</a> separated two jobs that most
 reinforcement-learning algorithms combine. One job builds an improved
 distribution over actions, typically by tilting the current policy
 toward actions with higher estimated value. The other fits a parametric
-policy to that improved distribution. Maximum a Posteriori Policy
-Optimisation makes the separation explicit. In self-distillation the
+policy to that improved distribution. <a
+href="https://arxiv.org/abs/1806.06920">Maximum a Posteriori Policy
+Optimisation</a> makes the separation explicit. In self-distillation the
 improved distribution is simply the model’s own conditional, <span
 class="math inline">\pi(\cdot\mid x,c)</span>, where <span
 class="math inline">c</span> is the privileged context. No critic,
@@ -282,12 +331,12 @@ x,y_{&lt;t})\Big].
 <p>Each token’s term is a dense implicit reward. It is positive where
 the context makes the token more likely and negative where the context
 argues against it. The same rearrangement appeared in the earlier
-essay’s account of Direct Preference Optimization, where a policy’s
-log-ratio against its reference serves as its implicit reward.
-Self-distillation runs the identity in the opposite direction. It starts
-from a model that already behaves as if it had optimized some reward,
-namely the model with context, and reads that reward off the
-log-ratio.</p>
+essay’s account of <a href="https://arxiv.org/abs/2305.18290">Direct
+Preference Optimization</a>, where a policy’s log-ratio against its
+reference serves as its implicit reward. Self-distillation runs the
+identity in the opposite direction. It starts from a model that already
+behaves as if it had optimized some reward, namely the model with
+context, and reads that reward off the log-ratio.</p>
 <blockquote>
 <p><strong>Worked example B: a demonstration as a critic.</strong> The
 earlier essay’s robot had three actions with reference probabilities
@@ -320,9 +369,10 @@ class="math inline">\eta=2</span>, because the geometric interpolation
 student <span class="math inline">p</span> and teacher <span
 class="math inline">T</span> equals <span
 class="math inline">p\,e^{\lambda Q_c}</span> up to normalization, with
-<span class="math inline">\lambda=1/\eta</span>. Information-Proximal
-SDFT (iSDFT) chooses <span class="math inline">\lambda</span> per token
-so that each update stays within an information budget. The paper calls
+<span class="math inline">\lambda=1/\eta</span>. <a
+href="https://arxiv.org/abs/2609.24646">Information-Proximal SDFT</a>
+(iSDFT) chooses <span class="math inline">\lambda</span> per token so
+that each update stays within an information budget. The paper calls
 <span class="math inline">\lambda</span> “the local Lagrange multiplier
 induced by the information budget”. This is the earlier essay’s
 constrained form of the tilt, where a budget <span
@@ -361,25 +411,26 @@ in one sentence: “Regularization toward a prior can preserve useful
 experience, but it cannot conjure alternatives outside that prior’s
 support.” The final section of this part returns to that limit.</p>
 <p>Why should the model with context be a good teacher? Because
-in-context learning generalizes in ways fine-tuning does not. Lampinen
-and colleagues at Google DeepMind ran a controlled comparison on
-synthetic facts the model could not have seen. Given the facts in
-context, the model could answer their reversals and combine them in
-syllogisms. Fine-tuned on the same facts, it mostly could not; on
-reversals it was near zero. The gap closed, and sometimes reversed, when
-the fine-tuning data was augmented with the inferences the model drew in
-context. Self-distillation automates that augmentation. The teacher’s
-distribution already contains the implications, because the teacher is
-the model reasoning with the fact in view.</p>
+in-context learning generalizes in ways fine-tuning does not. <a
+href="https://arxiv.org/abs/2505.00661">Lampinen and colleagues</a> at
+Google DeepMind ran a controlled comparison on synthetic facts the model
+could not have seen. Given the facts in context, the model could answer
+their reversals and combine them in syllogisms. Fine-tuned on the same
+facts, it mostly could not; on reversals it was near zero. The gap
+closed, and sometimes reversed, when the fine-tuning data was augmented
+with the inferences the model drew in context. Self-distillation
+automates that augmentation. The teacher’s distribution already contains
+the implications, because the teacher is the model reasoning with the
+fact in view.</p>
 <p>Lichkovski’s closing point in the podcast puts this in
 information-theoretic terms, through the theory of usable information of
-Xu and colleagues. Processing cannot add Shannon information to data. It
-can make information usable to a learner with bounded computation. A
-document contains its implications in the Shannon sense, but a learner
-that only fits the surface of the document cannot reach them.
-Self-distillation, like synthetic data generally, does not create
-information from nothing. It exposes what was latent, in a form a
-gradient step can absorb.</p>
+<a href="https://arxiv.org/abs/2002.10689">Xu and colleagues</a>.
+Processing cannot add Shannon information to data. It can make
+information usable to a learner with bounded computation. A document
+contains its implications in the Shannon sense, but a learner that only
+fits the surface of the document cannot reach them. Self-distillation,
+like synthetic data generally, does not create information from nothing.
+It exposes what was latent, in a form a gradient step can absorb.</p>
 <p>The essay <a
 href="https://lukstafi.github.io/notes/the-given-and-the-found.html">The
 Given and the Found</a> made a related point about learning signals in
@@ -406,22 +457,29 @@ failures should follow from the reading. They do.</p>
 SDFT paper finds that at 3 billion parameters the method falls behind
 ordinary supervised fine-tuning, while at 7 and 14 billion it pulls
 ahead. That is what the mechanism predicts, since small models gain less
-from context. SynthSelf, a preprint from October 2026, studied models
-from 0.5 to 3 billion parameters and replaced the self-teacher with a
-slightly larger model from the same family, which rewrites the training
-targets so that they stay close to the student’s own distribution.
-Averaged across its settings, SynthSelf reached an acquisition score of
-56.4 against 44.1 for SDFT, at equal retention (41.7 against 41.5). At
-these sizes even plain supervised fine-tuning (52.2) acquired more than
-SDFT. The lesson that transfers is “stay close to the learner’s
-distribution”. “Teach yourself” is one way to do that, and not always
-the best.</p>
-<p><strong>A dense target constrains the wrong things.</strong>
-<em>Denser ≠ Better</em> compared token-level SDPO with sequence-level
-GRPO across a sequence of post-training stages. The dense method forgot
-more, amplified formatting artifacts and sometimes collapsed. One reason
-is structural, and the tilt makes it exact. Tilting the reference by a
-sequence-level reward <span class="math inline">R</span> gives <span
+from context. <a href="https://arxiv.org/abs/2610.13113">SynthSelf</a>,
+a preprint from October 2026, studied models from 0.5 to 3 billion
+parameters and replaced the self-teacher with a slightly larger model
+from the same family, which rewrites the training targets so that they
+stay close to the student’s own distribution. Averaged across its
+settings, SynthSelf reached an acquisition score of 56.4 against 44.1
+for SDFT, at equal retention (41.7 against 41.5). At these sizes even
+plain supervised fine-tuning (52.2) acquired more than SDFT. SynthSelf’s
+teacher knows more than the student, and its rewriting is what makes its
+targets absorbable: teaching, as distinct from knowing. Classic
+distillation met the same distinction from the other side. A much larger
+teacher can teach a small student worse than a moderately larger one,
+and a mid-sized “teacher assistant” placed between them helps (<a
+href="https://arxiv.org/abs/1902.03393">Mirzadeh and colleagues</a>,
+2020). The self-teacher is one way to meet both conditions, and not
+always the best.</p>
+<p><strong>A dense target constrains the wrong things.</strong> <a
+href="https://arxiv.org/abs/2607.01763"><em>Denser ≠ Better</em></a>
+compared token-level SDPO with sequence-level GRPO across a sequence of
+post-training stages. The dense method forgot more, amplified formatting
+artifacts and sometimes collapsed. One reason is structural, and the
+tilt makes it exact. Tilting the reference by a sequence-level reward
+<span class="math inline">R</span> gives <span
 class="math inline">q(y)\propto p(y)\,e^{R(y)/\eta}</span>, so for any
 two responses with the same reward,</p>
 <p><span class="math display">
@@ -451,9 +509,10 @@ appears in the rollouts. Only replay, generated stand-ins for old
 inputs, an anchor evaluated on suitable prompts, or capacity set aside
 for old skills covers what the new task never visits.</p>
 <p><strong>What the context says is not what the weights learn.</strong>
-The <em>Negation Neglect</em> study found that models fine-tuned on text
-describing what not to do still learn to do it. Lichkovski raised the
-worry for agents that read documentation of bad customer interactions. A
+The <a href="https://arxiv.org/abs/2605.13829"><em>Negation
+Neglect</em></a> study found that models fine-tuned on text describing
+what not to do still learn to do it. Lichkovski raised the worry for
+agents that read documentation of bad customer interactions. A
 self-teacher conditioned on a negative example might pass the same
 failure on, since the teacher’s distribution shifts toward whatever the
 context makes salient. That is an open question, not a result.</p>
@@ -485,8 +544,9 @@ the probability of those that scored above the group’s average. Repeated
 many times, this concentrates probability on whichever strategy first
 scored well. The trained model answers better on its first try. Its
 hundredth try, however, looks like its first. Several studies, among
-them one by Yue and colleagues at Tsinghua in 2025, have found that
-after such training, the probability of solving a problem in <span
+them one by <a href="https://arxiv.org/abs/2504.13837">Yue and
+colleagues</a> at Tsinghua in 2025, have found that after such training,
+the probability of solving a problem in <span
 class="math inline">k</span> attempts (pass@<span
 class="math inline">k</span>) at large <span
 class="math inline">k</span> falls <em>below</em> that of the base
@@ -517,18 +577,20 @@ tasks.</p>
 <p>The cost of this is easy to miss when models are evaluated one answer
 at a time. Deployed models increasingly are not. A coding agent runs
 tests and retries, a reasoning system votes across samples, and
-evolutionary systems such as AlphaEvolve keep a population of candidates
-and recombine them. All of these need the model to produce answers that
-differ. A model whose samples are near-duplicates gains nothing from
-being sampled thirty times.</p>
+evolutionary systems such as <a
+href="https://arxiv.org/abs/2506.13131">AlphaEvolve</a> keep a
+population of candidates and recombine them. All of these need the model
+to produce answers that differ. A model whose samples are
+near-duplicates gains nothing from being sampled thirty times.</p>
 <p>Ryan Bahlous-Boldi and colleagues at MIT’s Improbable AI Lab, the
-group behind <em>RL’s Razor</em> and the SDFT paper, proposed Vector
-Policy Optimization (VPO) in May 2026 as a direct answer. It starts from
-an observation about rewards: in practice they are usually vectors that
-someone has collapsed into a scalar. A coding reward is a count of
-passed test cases, but the cases are separate. A multi-hop question has
-an answer and several supporting citations. A tool call has a format, a
-tool name and arguments. Ordinary training fixes a weighting <span
+group behind <em>RL’s Razor</em> and the SDFT paper, proposed <a
+href="https://arxiv.org/abs/2605.22817">Vector Policy Optimization</a>
+(VPO) in May 2026 as a direct answer. It starts from an observation
+about rewards: in practice they are usually vectors that someone has
+collapsed into a scalar. A coding reward is a count of passed test
+cases, but the cases are separate. A multi-hop question has an answer
+and several supporting citations. A tool call has a format, a tool name
+and arguments. Ordinary training fixes a weighting <span
 class="math inline">w^*</span> and maximizes <span
 class="math inline">w^{*\top}r</span>. VPO keeps the vector.</p>
 <p>The method has two parts.</p>
@@ -588,17 +650,18 @@ the weightings for which it is the best in its set.</p>
 </blockquote>
 <p>Each part fails alone, and the failures are instructive. Asking for
 several answers under a fixed scalar reward (the Multi-RLVR baseline of
-Puri and colleagues) gives the model the capacity to diversify but no
-reason to. Its answers converged to similar reward vectors during
-training. Random weightings applied to single answers did nothing
-measurable either. Most telling, a model given the weighting <span
-class="math inline">w</span> in its prompt and trained to satisfy it
-learned to ignore the prompt and collapsed to one behaviour. The model
-could not turn a weight vector written in text into a choice of
-strategy. It could, however, look at its own first answer and write a
-different second one. The diversity lives in the context. In-context
-learning appears here in a second role, as the explorer, after appearing
-earlier in this part as the teacher.</p>
+<a href="https://arxiv.org/abs/2603.24844">Puri and colleagues</a>)
+gives the model the capacity to diversify but no reason to. Its answers
+converged to similar reward vectors during training. Random weightings
+applied to single answers did nothing measurable either. Most telling, a
+model given the weighting <span class="math inline">w</span> in its
+prompt and trained to satisfy it learned to ignore the prompt and
+collapsed to one behaviour. The model could not turn a weight vector
+written in text into a choice of strategy. It could, however, look at
+its own first answer and write a different second one. The diversity
+lives in the context. In-context learning appears here in a second role,
+as the explorer, after appearing earlier in this part as the
+teacher.</p>
 <p>The results follow the motivation. Across four domains (navigation in
 a maze with competing collectibles, multi-hop question answering, a
 five-step reasoning chain, and tool calling), VPO came out best among
@@ -606,11 +669,13 @@ seven methods, or within a hair of the best, once several samples were
 allowed. Its advantage grew with <span class="math inline">k</span>.
 Scalar GRPO plateaued almost at once: on the maze, its score was the
 same at <span class="math inline">k=3</span> and <span
-class="math inline">k=30</span>. The paper adds a case study on
-LiveCodeBench with Qwen2.5-Coder-7B. There GRPO was better on single
-attempts, and VPO caught up and overtook it as the number of attempts
-grew. On the 32 hardest problems, where neither model passed a single
-test in thirty samples, both checkpoints were placed inside OpenEvolve,
+class="math inline">k=30</span>. The paper adds a case study on <a
+href="https://arxiv.org/abs/2403.07974">LiveCodeBench</a> with
+Qwen2.5-Coder-7B. There GRPO was better on single attempts, and VPO
+caught up and overtook it as the number of attempts grew. On the 32
+hardest problems, where neither model passed a single test in thirty
+samples, both checkpoints were placed inside <a
+href="https://github.com/algorithmicsuperintelligence/openevolve">OpenEvolve</a>,
 an open-source evolutionary search loop. Over 200 iterations, the VPO
 model kept finding new solutions while the GRPO model stalled early.</p>
 <p>Two results deserve emphasis. First, VPO beats GRPO <em>under GRPO’s
@@ -677,45 +742,53 @@ model is not currently producing. A continual learner needs one, because
 its next objective may favour exactly such behaviour. There is an old
 line of reinforcement-learning research built around that need, and it
 predates large language models by more than a decade. In 2010 Hamid Maei
-and Richard Sutton published GQ(λ), an algorithm for learning many
-predictions in parallel from a single stream of experience, each about a
-behaviour the agent was not following. Part 2 starts there, and argues
-that VPO’s objective is a close relative of the one that research
-arrived at.</p>
+and Richard Sutton published <a
+href="https://doi.org/10.2991/agi.2010.22">GQ(λ)</a>, an algorithm for
+learning many predictions in parallel from a single stream of
+experience, each about a behaviour the agent was not following. Part 2
+starts there, and argues that VPO’s objective is a close relative of the
+one that research arrived at.</p>
 <hr />
 <p><em>Sources.</em> Chen, Razin, Narasimhan and Chen, <em>Retaining by
 Doing: The Role of On-Policy Data in Mitigating Forgetting</em>, arXiv
 2510.18874 (ICML 2026). Shenfeld, Pari and Agrawal, <em>RL’s Razor: Why
 Online Reinforcement Learning Forgets Less</em>, arXiv 2509.04259 (ICLR
 2026). Van de Ven, Tuytelaars and Tolias, <em>Three types of incremental
-learning</em>, Nature Machine Intelligence (2022). Buzzega et al.,
-<em>Dark Experience for General Continual Learning</em>, arXiv
-2004.07211 (NeurIPS 2020). Shenfeld, Damani, Hübotter and Agrawal,
-<em>Self-Distillation Enables Continual Learning</em>, arXiv 2601.19897
-(ICML 2026). Hübotter et al., <em>Reinforcement Learning via
-Self-Distillation</em>, arXiv 2601.20802 (ICML 2026). Zhao et al.,
-<em>Self-Distilled Reasoner: On-Policy Self-Distillation for Large
-Language Models</em>, arXiv 2601.18734 (ICLR 2026). Khamis et al.,
-<em>iSDFT: Information-Proximal Self-Distillation for Continual Learning
-in LLMs</em>, arXiv 2609.24646. Lampinen et al., <em>On the
-generalization of language models from in-context learning and
-finetuning: a controlled study</em>, arXiv 2505.00661. Xu et al., <em>A
-Theory of Usable Information Under Computational Constraints</em>, arXiv
-2002.10689. Wang et al., <em>Denser ≠ Better: Limits of On-Policy
+learning</em>, Nature Machine Intelligence (2022). Kirkpatrick et al.,
+<em>Overcoming catastrophic forgetting in neural networks</em>, PNAS 114
+(2017), arXiv 1612.00796. Li and Hoiem, <em>Learning without
+Forgetting</em>, ECCV 2016, arXiv 1606.09282. Buzzega et al., <em>Dark
+Experience for General Continual Learning</em>, arXiv 2004.07211
+(NeurIPS 2020). Tarvainen and Valpola, <em>Mean teachers are better role
+models</em>, NeurIPS 2017, arXiv 1703.01780. Agarwal et al.,
+<em>On-Policy Distillation of Language Models: Learning from
+Self-Generated Mistakes</em>, ICLR 2024, arXiv 2306.13649. Shenfeld,
+Damani, Hübotter and Agrawal, <em>Self-Distillation Enables Continual
+Learning</em>, arXiv 2601.19897 (ICML 2026). Hübotter et al.,
+<em>Reinforcement Learning via Self-Distillation</em>, arXiv 2601.20802
+(ICML 2026). Zhao et al., <em>Self-Distilled Reasoner: On-Policy
+Self-Distillation for Large Language Models</em>, arXiv 2601.18734 (ICLR
+2026). Khamis et al., <em>iSDFT: Information-Proximal Self-Distillation
+for Continual Learning in LLMs</em>, arXiv 2609.24646. Lampinen et al.,
+<em>On the generalization of language models from in-context learning
+and finetuning: a controlled study</em>, arXiv 2505.00661. Xu et al.,
+<em>A Theory of Usable Information Under Computational Constraints</em>,
+arXiv 2002.10689. Wang et al., <em>Denser ≠ Better: Limits of On-Policy
 Self-Distillation for Continual Post-Training</em>, arXiv 2607.01763.
 Koh et al., <em>Continually Post-training Small Models via Synthetic
-Self-distillation</em> (SynthSelf), arXiv 2610.13113. <em>Negation
-Neglect: When models fail to learn negations in training</em>, arXiv
-2605.13829. Yue et al., <em>Does Reinforcement Learning Really
-Incentivize Reasoning Capacity in LLMs Beyond the Base Model?</em>,
-arXiv 2504.13837 (NeurIPS 2025). Puri et al., <em>Reaching Beyond the
-Mode: RL for Distributional Reasoning in Language Models</em>, arXiv
-2603.24844. Bahlous-Boldi et al., <em>Vector Policy Optimization:
-Training for Diversity Improves Test-Time Search</em>, arXiv 2605.22817.
-Interviews with Ilija Lichkovski and Ryan Bahlous-Boldi on <em>Deep
-Learning with Yacine</em> (2026). Maei and Sutton, <em>GQ(λ): A general
-gradient algorithm for temporal-difference prediction learning with
-eligibility traces</em>, AGI 2010.</p>
+Self-distillation</em> (SynthSelf), arXiv 2610.13113. Mirzadeh et al.,
+<em>Improved Knowledge Distillation via Teacher Assistant</em>, AAAI
+2020, arXiv 1902.03393. <em>Negation Neglect: When models fail to learn
+negations in training</em>, arXiv 2605.13829. Yue et al., <em>Does
+Reinforcement Learning Really Incentivize Reasoning Capacity in LLMs
+Beyond the Base Model?</em>, arXiv 2504.13837 (NeurIPS 2025). Puri et
+al., <em>Reaching Beyond the Mode: RL for Distributional Reasoning in
+Language Models</em>, arXiv 2603.24844. Bahlous-Boldi et al., <em>Vector
+Policy Optimization: Training for Diversity Improves Test-Time
+Search</em>, arXiv 2605.22817. Interviews with Ilija Lichkovski and Ryan
+Bahlous-Boldi on <em>Deep Learning with Yacine</em> (2026). Maei and
+Sutton, <em>GQ(λ): A general gradient algorithm for temporal-difference
+prediction learning with eligibility traces</em>, AGI 2010.</p>
 <p><em>This article was co-authored by Łukasz Stafiniak and Claude (Opus
 5.5).</em></p>
 </section>

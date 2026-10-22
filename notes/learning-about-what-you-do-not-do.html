@@ -76,28 +76,31 @@ tasks it has not met yet?</p>
 <p>Richard Sutton’s group at the University of Alberta gave one answer
 between 2008 and 2011. An agent should learn many predictions at once,
 each about the consequences of some way of behaving, including ways it
-is not currently behaving. The algorithm that made this workable was
-GQ(λ), published by Hamid Maei and Sutton in 2010. The architecture that
-put it to use was Horde. Horde’s paper names Gary Drescher’s <em>Made-Up
-Minds</em> (1991) among its precursors. In 2013, writing notes on
-Drescher’s schema mechanism, I thought it “would be cool to redo Gary
-Drescher’s project, but using Rich Sutton and Hamid Maei’s recent
-results — Gradient Temporal-Difference Algorithms with off-policy
+is not currently behaving. The algorithm that made this workable was <a
+href="https://doi.org/10.2991/agi.2010.22">GQ(λ)</a>, published by Hamid
+Maei and Sutton in 2010. The architecture that put it to use was <a
+href="http://incompleteideas.net/papers/horde-aamas-11.pdf">Horde</a>.
+Horde’s paper names Gary Drescher’s <em>Made-Up Minds</em> (1991) among
+its precursors. In 2013, <a
+href="https://lukstafi.github.io/notes/drescher-made-up-minds.html">writing
+notes on Drescher</a>’s schema mechanism, I thought it “would be cool to
+redo Gary Drescher’s project, but using Rich Sutton and Hamid Maei’s
+recent results — Gradient Temporal-Difference Algorithms with off-policy
 learning — instead of schemas”. This part is partly that old wish,
 redirected to language models.</p>
-<p>The claim is this. Vector Policy Optimization (VPO), the method Part
-1 introduced, optimizes the objective that the successor-features
-literature arrived at for transfer between tasks: build a set of
-behaviours such that, under any weighting of the reward’s components,
-the best member of the set is good. VPO does this at the horizon of a
-single response, where every answer can be scored exactly, so it needs
-no predictions. GQ(λ) is what makes the same objective available when
-the horizon is long and the data comes from behaviour other than the
-current policy. The two lines are halves of one strategy for a learner
-facing objectives it does not yet know. It can behave diversely, which
-is VPO’s half, or predict what each behaviour would achieve, which is
-Horde’s half. Generalized policy improvement is the operation that joins
-them.</p>
+<p>The claim is this. <a href="https://arxiv.org/abs/2605.22817">Vector
+Policy Optimization</a> (VPO), the method Part 1 introduced, optimizes
+the objective that the successor-features literature arrived at for
+transfer between tasks: build a set of behaviours such that, under any
+weighting of the reward’s components, the best member of the set is
+good. VPO does this at the horizon of a single response, where every
+answer can be scored exactly, so it needs no predictions. GQ(λ) is what
+makes the same objective available when the horizon is long and the data
+comes from behaviour other than the current policy. The two lines are
+halves of one strategy for a learner facing objectives it does not yet
+know. It can behave diversely, which is VPO’s half, or predict what each
+behaviour would achieve, which is Horde’s half. Generalized policy
+improvement is the operation that joins them.</p>
 <section id="questions-and-answers" class="level2">
 <h2>Questions and answers</h2>
 <p>A value function answers a question: if the agent behaves according
@@ -173,20 +176,24 @@ learning “massively parallel”, since every demon learns from every
 step.</p>
 <p>The difficulty is that off-policy learning combined with function
 approximation and bootstrapping (updating a prediction toward another
-prediction) can diverge. Sutton and Barto later called this combination
-the deadly triad. Leemon Baird’s 1995 counterexample showed off-policy
-temporal-difference learning with a linear approximator driving its
-weights to infinity. Q-learning, the most widely used off-policy
-algorithm, has the same weakness. A decade of off-policy theory either
-gave up function approximation or gave up guarantees.</p>
-<p>The gradient temporal-difference methods of Sutton, Maei, Szepesvári
-and colleagues (2008–2009) gave a fix. Ordinary temporal-difference
-learning is not gradient descent on any objective, which is why it can
-wander off. The gradient methods choose an objective, the projected
-Bellman error: how far the current predictions are from their own
-one-step-ahead targets, measured only in the directions the features can
-represent. They then descend it. GQ(λ) extended this to action values,
-eligibility traces and the four-function questions above.</p>
+prediction) can diverge. <a
+href="http://incompleteideas.net/book/the-book-2nd.html">Sutton and
+Barto</a> later called this combination the deadly triad. <a
+href="https://doi.org/10.1016/B978-1-55860-377-6.50013-X">Leemon Baird’s
+1995 counterexample</a> showed off-policy temporal-difference learning
+with a linear approximator driving its weights to infinity. Q-learning,
+the most widely used off-policy algorithm, has the same weakness. A
+decade of off-policy theory either gave up function approximation or
+gave up guarantees.</p>
+<p>The <a href="https://doi.org/10.1145/1553374.1553501">gradient
+temporal-difference methods</a> of Sutton, Maei, Szepesvári and
+colleagues (2008–2009) gave a fix. Ordinary temporal-difference learning
+is not gradient descent on any objective, which is why it can wander
+off. The gradient methods choose an objective, the projected Bellman
+error: how far the current predictions are from their own one-step-ahead
+targets, measured only in the directions the features can represent.
+They then descend it. GQ(λ) extended this to action values, eligibility
+traces and the four-function questions above.</p>
 <p>The updates are short enough to state in full. Write <span
 class="math inline">\phi_t</span> for the features of the state and
 action at time <span class="math inline">t</span>, and <span
@@ -332,8 +339,10 @@ rare traces with enormous weights. GQ(λ)’s state-dependent <span
 class="math inline">\lambda_t</span> is the lever. Setting <span
 class="math inline">\lambda_t</span> low where the policies diverge cuts
 the trace there, and the update bootstraps from the current prediction
-instead. Later algorithms such as Retrace (Munos and colleagues, 2016)
-made the cut automatic by truncating each ratio at 1.</p>
+instead. Later algorithms such as <a
+href="https://arxiv.org/abs/1606.02647">Retrace</a> (Munos and
+colleagues, 2016) made the cut automatic by truncating each ratio at
+1.</p>
 </blockquote>
 </section>
 <section id="from-many-predictions-to-a-choice" class="level2">
@@ -354,11 +363,13 @@ Q^\pi_w(s,a)=w^\top\psi^\pi(s,a),\qquad
 <p>The vector <span class="math inline">\psi^\pi</span> collects the
 <strong>successor features</strong> of <span
 class="math inline">\pi</span>: one general value function per cumulant,
-all with the same target policy. Barreto and colleagues introduced the
-decomposition in 2017, generalizing Peter Dayan’s successor
-representation (1993). Once <span class="math inline">\psi^\pi</span> is
-learned, evaluating <span class="math inline">\pi</span> on a new task
-costs one dot product.</p>
+all with the same target policy. <a
+href="https://arxiv.org/abs/1606.05312">Barreto and colleagues</a>
+introduced the decomposition in 2017, generalizing <a
+href="https://doi.org/10.1162/neco.1993.5.4.613">Peter Dayan’s successor
+representation</a> (1993). Once <span
+class="math inline">\psi^\pi</span> is learned, evaluating <span
+class="math inline">\pi</span> on a new task costs one dot product.</p>
 <p>The second half of their proposal was <strong>generalized policy
 improvement</strong> (GPI). Take a library of policies <span
 class="math inline">\pi_1,\dots,\pi_m</span> with their successor
@@ -378,9 +389,10 @@ from state to state, following whichever one looks best from where the
 agent now stands.</p>
 <p>A cruder composition commits at the start: pick the one library
 policy with the highest value for <span class="math inline">w</span> at
-the initial state, and follow it to the end. Zahavy, Barreto and
-colleagues called this the <strong>set-max policy</strong>. Its value
-is</p>
+the initial state, and follow it to the end. <a
+href="https://arxiv.org/abs/2102.04323">Zahavy, Barreto and
+colleagues</a> called this the <strong>set-max policy</strong>. Its
+value is</p>
 <p><span class="math display">
 \max_i\,w^\top\psi^{\pi_i}(s_0).
 </span></p>
@@ -392,10 +404,11 @@ worst-case value strictly improves at each step until no new policy can
 raise it. In a grid world and in simulated locomotion, the policies the
 iteration discovered were visibly diverse: different routes and
 different gaits. Diversity was not the objective. It followed from
-asking the set to be good under every weighting. Alegre, Bazzan and da
-Silva (2022) gave a related construction, optimistic linear support,
-which picks the weightings to train on so that, with exact learning, GPI
-over the library becomes optimal for every <span
+asking the set to be good under every weighting. <a
+href="https://arxiv.org/abs/2206.11326">Alegre, Bazzan and da Silva</a>
+(2022) gave a related construction, optimistic linear support, which
+picks the weightings to train on so that, with exact learning, GPI over
+the library becomes optimal for every <span
 class="math inline">w</span>.</p>
 </section>
 <section id="vpo-builds-a-library-in-one-response" class="level2">
@@ -551,11 +564,12 @@ unsupervised reinforcement learning, whose “goal is to learn one
 representation that at test time can satisfy any reward function you
 want with no training at all”, adding that “nobody has scaled it up to
 LLM scale yet”. <em>Learning One Representation to Optimize All
-Rewards</em> is the title of Touati and Ollivier’s 2021 paper on
-forward–backward representations, which generalize successor features to
-rewards that need not be fixed in advance. The thread he wanted to pull
-runs straight through the successor-feature line, and from there back to
-Horde.</p>
+Rewards</em> is the title of <a
+href="https://arxiv.org/abs/2103.07945">Touati and Ollivier’s 2021
+paper</a> on forward–backward representations, which generalize
+successor features to rewards that need not be fixed in advance. The
+thread he wanted to pull runs straight through the successor-feature
+line, and from there back to Horde.</p>
 </section>
 <section id="what-gqλ-would-add" class="level2">
 <h2>What GQ(λ) would add</h2>
@@ -593,17 +607,19 @@ loop sampled thirty answers and kept the best, the kept answer was
 produced by a max, not by a sampler with known probabilities. Off-policy
 correction applies to the raw samples, not to the survivors.</p>
 <p><strong>Answers as options.</strong> Each answer slot in a VPO
-response is an <em>option</em> in the sense of Sutton, Precup and Singh:
-a course of action with its own termination condition, here the
-delimiter that closes the answer. The question “if I finish this answer,
-what will reward component <span class="math inline">j</span> be?” is
-literally a GQ(λ) question. Its target policy is the model, <span
-class="math inline">\beta=1</span> at the delimiter, the outcome <span
-class="math inline">z</span> is <span class="math inline">r_j</span>,
-and the cumulant is zero, or the token count if length matters. GQ(λ)
-was built for these option-conditional questions. Its original
-motivation was intra-option learning, which learns about several options
-from data generated while executing only one.</p>
+response is an <em>option</em> in the sense of <a
+href="https://doi.org/10.1016/S0004-3702(99)00052-1">Sutton, Precup and
+Singh</a>: a course of action with its own termination condition, here
+the delimiter that closes the answer. The question “if I finish this
+answer, what will reward component <span class="math inline">j</span>
+be?” is literally a GQ(λ) question. Its target policy is the model,
+<span class="math inline">\beta=1</span> at the delimiter, the outcome
+<span class="math inline">z</span> is <span
+class="math inline">r_j</span>, and the cumulant is zero, or the token
+count if length matters. GQ(λ) was built for these option-conditional
+questions. Its original motivation was intra-option learning, which
+learns about several options from data generated while executing only
+one.</p>
 <p>Three proposals follow from this. None has been tested.</p>
 <ol type="1">
 <li><p><strong>Per-answer credit, without a critic.</strong> VPO’s set
@@ -678,16 +694,17 @@ policy for whatever learning comes next.</p>
 <p>Bahlous-Boldi frames his own research goal around plasticity. Before
 one can “even start thinking about continual learning”, he said in the
 interview, “we need to figure out where this loss of plasticity comes
-from.” Dohare and colleagues, also in Sutton’s group, showed in 2024
-that deep networks trained on a long sequence of tasks gradually lose
-the ability to learn new ones, until they learn “no better than a
-shallow network”. Their remedy, continual backpropagation, reinitializes
-a small fraction of rarely used units. That is plasticity at the level
-of weights. The collapse of alternatives is plasticity lost at the level
-of behaviour: weights that could still change, attached to a policy that
-no longer visits the states from which change would be learned. The two
-can come apart. A network with perfectly plastic weights is still stuck
-if its behaviour generates no data about anything new.</p>
+from.” <a href="https://doi.org/10.1038/s41586-024-07711-7">Dohare and
+colleagues</a>, also in Sutton’s group, showed in 2024 that deep
+networks trained on a long sequence of tasks gradually lose the ability
+to learn new ones, until they learn “no better than a shallow network”.
+Their remedy, continual backpropagation, reinitializes a small fraction
+of rarely used units. That is plasticity at the level of weights. The
+collapse of alternatives is plasticity lost at the level of behaviour:
+weights that could still change, attached to a policy that no longer
+visits the states from which change would be learned. The two can come
+apart. A network with perfectly plastic weights is still stuck if its
+behaviour generates no data about anything new.</p>
 <p>Bahlous-Boldi framed the remedy in evolutionary terms. Two equally
 fit organisms may differ in how readily their descendants adapt.
 Selection cannot see the difference until the environment shifts, and
@@ -722,11 +739,12 @@ someone wrote down. The world supplies the answers, but not the
 questions. Which cumulants to predict, which reward components to keep
 apart, which features to learn them over: these remained the open
 problem of the Horde programme, and later work on discovering useful
-questions (Veeriah and colleagues, 2019) only began on it. The same
-problem appears in VPO as Bahlous-Boldi’s open question of where vector
-rewards come from when there is no verifier. A continual learner that
-must also find its own questions has crossed from the given into the
-found. Neither line has crossed.</p>
+questions (<a href="https://arxiv.org/abs/1909.04607">Veeriah and
+colleagues</a>, 2019) only began on it. The same problem appears in VPO
+as Bahlous-Boldi’s open question of where vector rewards come from when
+there is no verifier. A continual learner that must also find its own
+questions has crossed from the given into the found. Neither line has
+crossed.</p>
 <p><a
 href="https://lukstafi.github.io/notes/where-experience-goes.html">Part
 3</a> takes stock. It places in-context learning, fast weights, harness
