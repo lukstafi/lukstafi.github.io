@@ -141,13 +141,13 @@ that “it is a form of replay”. The phrase is apt, with one qualification
 that the rest of this part develops. What self-distillation replays is
 behaviour, not data, and it replays it only on the inputs the training
 run happens to visit.</p>
-<p>The trivial solution also explains why on-policy data helps. A
-deployed agent revisits many of its general skills just by working. It
-writes code, reads documents and answers questions while learning the
-new thing. When it trains on its own activity, part of the old
-distribution comes back for free. This is part of what <em>Retaining by
-Doing</em> measured. It is also why “replay” and “on-policy” are less
-distinct than their names suggest.</p>
+<p>On-policy data approximates the trivial solution cheaply. A deployed
+agent revisits many of its general skills just by working. It writes
+code, reads documents and answers questions while learning the new
+thing. When it trains on its own activity, part of the old distribution
+comes back for free. This is part of what <em>Retaining by Doing</em>
+measured. It is also why “replay” and “on-policy” are less distinct than
+their names suggest.</p>
 </section>
 <section id="where-the-model-trains-and-what-it-imitates"
 class="level2">
@@ -206,19 +206,19 @@ began, since each step’s agreement is checked only against the recent
 past. The repair is a second, permanent reference: a frozen copy of the
 base model, with its own penalty term.</p>
 </blockquote>
-<p><em>Retaining by Doing</em> returns at this point as evidence that
-support matters by itself. A study from MIT’s Improbable AI Lab,
-<em>RL’s Razor</em>, had found a year earlier that forgetting tracks how
-far the trained model’s outputs drift from the base model’s on the new
-task, and that on-policy sampling keeps that drift small. The Princeton
-group found the link weaker in its own setting, but the direction is the
-same. On-policy sampling and the choice of teacher are different
-decisions. The first decides where the model trains, and the second
-decides what it is pulled toward. GRPO keeps a model close to itself
-because every update is computed on the model’s own samples, whatever
-its penalty term says. Early claims for self-distillation sometimes
-credited the teacher with what the support was doing. The rest of this
-part keeps the two apart. The companion essay <a
+<p>On-policy sampling and the choice of teacher are different decisions.
+The first decides where the model trains, and the second decides what it
+is pulled toward. The evidence from <em>Retaining by Doing</em> concerns
+the first. GRPO keeps a model close to itself because every update is
+computed on the model’s own samples, whatever its penalty term says. A
+month before the Princeton paper, a study from MIT’s Improbable AI Lab,
+<em>RL’s Razor</em>, had found that forgetting tracks how far the
+trained model’s outputs drift from the base model’s on the new task, and
+that on-policy sampling keeps that drift small. The Princeton group
+found the link weaker in its own setting, but the direction is the same.
+Early claims for self-distillation sometimes credited the teacher with
+what the support was doing. The rest of this part keeps the two apart.
+The companion essay <a
 href="https://lukstafi.github.io/notes/how-can-a-reward-train-a-neural-network.html">How
 Can a Reward Train a Neural Network?</a> explains in its first section
 why acting changes the examples one learns from.</p>
@@ -330,18 +330,15 @@ class="math inline">\epsilon</span> replaces a fixed temperature and the
 dual <span class="math display">
 g(\eta)=\eta\epsilon+\eta\log\sum_a p(a)\,e^{Q_c(a)/\eta}
 </span> is minimized until the update uses exactly the divergence
-allowed. (Two natural budgets lead to the same geometric family. One
-maximizes the implicit value subject to a divergence limit from the
-student; the other stays as close to the student as possible while
-capturing enough of the teacher.) iSDFT also adds a penalty toward the
-frozen base model, the permanent reference that worked example A called
-for. The earlier essay drew the distinction precisely: “A fixed
-reference anchors behavior to the starting model; a refreshed reference
-limits each step while allowing cumulative movement away from that
-starting point.” The self-teacher is a refreshed reference, and the base
-anchor is a fixed one. In the authors’ retention tests, 73% of
-evaluations stayed within half a point of the base model’s score,
-against 52% for the strongest baseline.</p>
+allowed. iSDFT also adds a penalty toward the frozen base model, the
+permanent reference that worked example A called for. The earlier essay
+drew the distinction precisely: “A fixed reference anchors behavior to
+the starting model; a refreshed reference limits each step while
+allowing cumulative movement away from that starting point.” The
+self-teacher is a refreshed reference, and the base anchor is a fixed
+one. In the authors’ retention tests, 73% of evaluations stayed within
+half a point of the base model’s score, against 52% for the strongest
+baseline.</p>
 <p>Constructing the improved distribution is half of policy improvement.
 Fitting a network to it is the other half, and the direction of the
 divergence used to fit decides what survives. Maximum a Posteriori
@@ -422,7 +419,7 @@ the best.</p>
 <p><strong>A dense target constrains the wrong things.</strong>
 <em>Denser ≠ Better</em> compared token-level SDPO with sequence-level
 GRPO across a sequence of post-training stages. The dense method forgot
-more, amplified formatting artifacts and sometimes collapsed. The reason
+more, amplified formatting artifacts and sometimes collapsed. One reason
 is structural, and the tilt makes it exact. Tilting the reference by a
 sequence-level reward <span class="math inline">R</span> gives <span
 class="math inline">q(y)\propto p(y)\,e^{R(y)/\eta}</span>, so for any
@@ -487,8 +484,9 @@ verifiable rewards samples a group of answers, scores them, and raises
 the probability of those that scored above the group’s average. Repeated
 many times, this concentrates probability on whichever strategy first
 scored well. The trained model answers better on its first try. Its
-hundredth try, however, looks like its first. Several studies have found
-that after such training, the probability of solving a problem in <span
+hundredth try, however, looks like its first. Several studies, among
+them one by Yue and colleagues at Tsinghua in 2025, have found that
+after such training, the probability of solving a problem in <span
 class="math inline">k</span> attempts (pass@<span
 class="math inline">k</span>) at large <span
 class="math inline">k</span> falls <em>below</em> that of the base
@@ -502,16 +500,16 @@ class="math inline">k</span> such steps the policy is the original one
 tilted by <span class="math inline">kR/\eta</span>, so the effective
 temperature falls as <span class="math inline">\eta/k</span>. Take two
 strategies whose scalar rewards differ by <span
-class="math inline">0.1</span>, for example a balanced solution against
-one that excels on some components and fails on others. Ten steps at
-<span class="math inline">\eta=0.1</span> multiply the odds of the
-better-scoring strategy by <span class="math inline">e^{0.1\cdot
-10/0.1}=e^{10}\approx 22{,}000</span>. The worse-scoring strategy
-disappears, however much probability the base model gave it and however
-different the components it satisfied. A KL penalty toward a fixed
-reference sets a floor. The regularized optimum is <span
-class="math inline">p\,e^{R/\beta}</span>, so the effective temperature
-cannot fall below the penalty’s coefficient <span
+class="math inline">0.1</span>: a balanced solution, and one that excels
+on some components, fails on others and scores <span
+class="math inline">0.1</span> lower. Ten steps at <span
+class="math inline">\eta=0.1</span> multiply the odds of the balanced
+strategy by <span class="math inline">e^{0.1\cdot 10/0.1}=e^{10}\approx
+22{,}000</span>. The specialist disappears, however much probability the
+base model gave it and however different the components it satisfied. A
+KL penalty toward a fixed reference sets a floor. The regularized
+optimum is <span class="math inline">p\,e^{R/\beta}</span>, so the
+effective temperature cannot fall below the penalty’s coefficient <span
 class="math inline">\beta</span>. In practice that coefficient is small,
 and some recipes drop the penalty altogether; <em>Retaining by
 Doing</em> found that dropping it barely changed forgetting across
@@ -603,8 +601,8 @@ learning appears here in a second role, as the explorer, after appearing
 earlier in this part as the teacher.</p>
 <p>The results follow the motivation. Across four domains (navigation in
 a maze with competing collectibles, multi-hop question answering, a
-five-step reasoning chain, and tool calling), VPO came out best, or
-within a hair of the best of six baselines, once several samples were
+five-step reasoning chain, and tool calling), VPO came out best among
+seven methods, or within a hair of the best, once several samples were
 allowed. Its advantage grew with <span class="math inline">k</span>.
 Scalar GRPO plateaued almost at once: on the maze, its score was the
 same at <span class="math inline">k=3</span> and <span
@@ -635,12 +633,12 @@ do not disagree has nothing to offer.</p>
 <p>The paper does not mention continual learning. In the interview,
 Bahlous-Boldi said that many people expected his first paper to be about
 continual learning, “and it actually is. I just didn’t write about it.”
-His diagnosis matches the second kind of forgetting. Training on a new
-loss after an old one climbs back up the old one. Training that has
-already collapsed onto one trough of the old loss has erased the
-alternatives from which the new task could have been learned cheaply.
-His proposed reframing is to find “every single trough” and cover them
-all, so that one of them is already good at the next task. He
+Forgetting is usually pictured as training on a new loss climbing back
+up the old one. His diagnosis is the second kind of forgetting. Training
+that has already collapsed onto one trough of the old loss has erased
+the alternatives from which the new task could have been learned
+cheaply. His proposed reframing is to find “every single trough” and
+cover them all, so that one of them is already good at the next task. He
 anticipated the obvious objection himself. In continual learning the
 future reward is unknown, so the reward vector to diversify over is not
 available. His reply is that diversity along known axes still helps
@@ -678,8 +676,8 @@ trade-offs the reward actually contains.</p>
 model is not currently producing. A continual learner needs one, because
 its next objective may favour exactly such behaviour. There is an old
 line of reinforcement-learning research built around that need, and it
-predates language models by more than a decade. In 2010 Hamid Maei and
-Richard Sutton published GQ(λ), an algorithm for learning many
+predates large language models by more than a decade. In 2010 Hamid Maei
+and Richard Sutton published GQ(λ), an algorithm for learning many
 predictions in parallel from a single stream of experience, each about a
 behaviour the agent was not following. Part 2 starts there, and argues
 that VPO’s objective is a close relative of the one that research
@@ -695,7 +693,9 @@ learning</em>, Nature Machine Intelligence (2022). Buzzega et al.,
 2004.07211 (NeurIPS 2020). Shenfeld, Damani, Hübotter and Agrawal,
 <em>Self-Distillation Enables Continual Learning</em>, arXiv 2601.19897
 (ICML 2026). Hübotter et al., <em>Reinforcement Learning via
-Self-Distillation</em>, arXiv 2601.20802 (ICML 2026). Khamis et al.,
+Self-Distillation</em>, arXiv 2601.20802 (ICML 2026). Zhao et al.,
+<em>Self-Distilled Reasoner: On-Policy Self-Distillation for Large
+Language Models</em>, arXiv 2601.18734 (ICLR 2026). Khamis et al.,
 <em>iSDFT: Information-Proximal Self-Distillation for Continual Learning
 in LLMs</em>, arXiv 2609.24646. Lampinen et al., <em>On the
 generalization of language models from in-context learning and
@@ -706,14 +706,16 @@ Self-Distillation for Continual Post-Training</em>, arXiv 2607.01763.
 Koh et al., <em>Continually Post-training Small Models via Synthetic
 Self-distillation</em> (SynthSelf), arXiv 2610.13113. <em>Negation
 Neglect: When models fail to learn negations in training</em>, arXiv
-2605.13829. Puri et al., <em>Reaching Beyond the Mode: RL for
-Distributional Reasoning in Language Models</em>, arXiv 2603.24844.
-Bahlous-Boldi et al., <em>Vector Policy Optimization: Training for
-Diversity Improves Test-Time Search</em>, arXiv 2605.22817. Interviews
-with Ilija Lichkovski and Ryan Bahlous-Boldi on <em>Deep Learning with
-Yacine</em> (2026). Maei and Sutton, <em>GQ(λ): A general gradient
-algorithm for temporal-difference prediction learning with eligibility
-traces</em>, AGI 2010.</p>
+2605.13829. Yue et al., <em>Does Reinforcement Learning Really
+Incentivize Reasoning Capacity in LLMs Beyond the Base Model?</em>,
+arXiv 2504.13837 (NeurIPS 2025). Puri et al., <em>Reaching Beyond the
+Mode: RL for Distributional Reasoning in Language Models</em>, arXiv
+2603.24844. Bahlous-Boldi et al., <em>Vector Policy Optimization:
+Training for Diversity Improves Test-Time Search</em>, arXiv 2605.22817.
+Interviews with Ilija Lichkovski and Ryan Bahlous-Boldi on <em>Deep
+Learning with Yacine</em> (2026). Maei and Sutton, <em>GQ(λ): A general
+gradient algorithm for temporal-difference prediction learning with
+eligibility traces</em>, AGI 2010.</p>
 <p><em>This article was co-authored by Łukasz Stafiniak and Claude (Opus
 5.5).</em></p>
 </section>

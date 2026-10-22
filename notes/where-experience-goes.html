@@ -85,7 +85,7 @@ objective. A different line of work learns the update rule itself.</p>
 <section id="learning-the-update-rule" class="level2">
 <h2>Learning the update rule</h2>
 <p>A learned update rule is a network whose output is a change to
-another network’s weights, or to its own. The idea is old; Schmidhuber’s
+another network’s weights, or to its own. The idea is old. Schmidhuber’s
 fast weight programmers of the early 1990s were slow networks that wrote
 into the weights of fast ones. Three recent instances bear on continual
 learning.</p>
@@ -350,10 +350,10 @@ below are only starting to measure.</p>
 wrong one.</strong> The recurrent state is parametric and is wiped at
 the end of every session. Harness memory is non-parametric and
 permanent. Prediction heads are parametric, are written by
-temporal-difference learning rather than by gradients toward data, and
-store a different kind of content: knowledge of what would happen, not
-of what to do. The distinctions that predict behaviour are the four
-columns of the table.</p>
+temporal-difference learning toward their own next predictions rather
+than toward data, and store a different kind of content: knowledge of
+what would happen, not of what to do. The distinctions that predict
+behaviour are the four columns of the table.</p>
 <section id="consolidation-is-an-m-step" class="level3">
 <h3>Consolidation is an M-step</h3>
 <p><em>How Does a Policy Improve?</em> ended with a way to read any
@@ -447,16 +447,18 @@ surprising. An amortized M-step toward the multitask solution needs to
 know where the weights are, and much less about what was added.
 Doc-to-LoRA is an amortized M-step for context distillation. Its paper
 compares it directly with distilling the same document by gradient
-steps: the gradient route is somewhat more accurate and takes about
-forty seconds per document, while the hypernetwork takes under one.</p>
+steps. Given the right queries, the gradient route is somewhat more
+accurate and takes about forty seconds per document, while the
+hypernetwork takes under one.</p>
 <p>The M-step’s divergence matters here as it did in Part 1.
 Multi-teacher distillation fits one student to several teachers, each
-advising on its own domain’s prompts. Fitting by weighted likelihood is
-mass-covering, so the student is pushed to keep whatever each teacher
-keeps. But the teachers were themselves trained by reinforcement
-learning on scalar rewards. A mass-covering fit preserves the
-alternatives a teacher still has, and it cannot restore the ones the
-teacher lost.</p>
+advising on its own domain’s prompts. On-policy distillation is usually
+written in the mode-seeking direction, which lets the student settle on
+one of a teacher’s alternatives. A mass-covering fit would push the
+student to keep whatever each teacher keeps. Even then, the teachers
+were themselves trained by reinforcement learning on scalar rewards. A
+mass-covering fit preserves the alternatives a teacher still has, and it
+cannot restore the ones the teacher lost.</p>
 </section>
 <section id="the-release-cycle-is-consolidation-already" class="level3">
 <h3>The release cycle is consolidation already</h3>
@@ -472,15 +474,16 @@ multiple teachers. Xiaomi’s MiMo uses three streams of distillation
 data: the student’s own rollouts scored by the teachers, student turns
 continuing teacher-written histories, and student continuations of
 supervised demonstrations.</p>
-<p>This is the hybrid that Part 1’s sources recommended: capacity set
-aside for each skill, followed by distillation, at scale. Its support is
-on-policy, because the student generates the states on which the
-teachers advise it. Two things are missing for it to count as continual
-learning in the full sense. The specialists are built in parallel from
-one base, so tasks never arrive in sequence and nothing is learned on
-top of a previous consolidation’s side effects. And no report measures
-the alternatives within each skill, before or after distillation, so the
-concern raised in the previous section cannot yet be checked.</p>
+<p>This is a hybrid that surveys of continual learning recommend, here
+at scale: capacity set aside for each skill, followed by distillation.
+Its support is on-policy, because the student generates the states on
+which the teachers advise it. Two things are missing for it to count as
+continual learning in the full sense. The specialists are built in
+parallel from one base, so tasks never arrive in sequence and nothing is
+learned on top of a previous consolidation’s side effects. And no report
+measures the alternatives within each skill, before or after
+distillation, so the concern raised in the previous section cannot yet
+be checked.</p>
 </section>
 <section id="what-survives-of-the-argument-for-parametric-memory"
 class="level3">
@@ -592,19 +595,20 @@ integration is happening at a level that requires evidence to support”,
 and that “pushing sample efficiency too low would mean either
 superficial integration or fragile integration”. We retract this. Sample
 efficiency measures the update rule and the prior, not the depth of what
-is integrated. The clearest case is the one the earlier essay leaned on.
-Fine-tuning needs many augmented examples to learn the implications of a
-fact, and those examples are the inferences that in-context learning
-draws for free. Its hunger for samples shows that the update rule cannot
-reach what was latent in the data. That is the opposite of deep
-integration. The theory of usable information states the general point:
-a learner with bounded computation may be unable to use information that
-its data contains. Fast updates are not therefore shallow. Doc-to-LoRA
-writes a document into an adapter in one pass, at some cost in quality
-against the document in context. Lichkovski’s hypernetwork reached
-positive backward transfer at one pass per task, even if what it learned
-was a generic consolidation move. The measure we should have proposed is
-the one the benchmarks above are moving toward: integration shows in
+is integrated. The clearest case is the contrast the earlier essay
+leaned on, between fine-tuning and in-context learning. Fine-tuning
+needs many augmented examples to learn the implications of a fact, and
+those examples are the inferences that in-context learning draws for
+free. Its hunger for samples shows that the update rule cannot reach
+what was latent in the data. That is the opposite of deep integration.
+The theory of usable information states the general point: a learner
+with bounded computation may be unable to use information that its data
+contains. Fast updates are not therefore shallow. Doc-to-LoRA writes a
+document into an adapter in one pass, at some cost in quality against
+the document in context. Lichkovski’s hypernetwork reached positive
+backward transfer at one pass per task, even if what it learned was a
+generic consolidation move. The measure we should have proposed is the
+one the benchmarks above are moving toward: integration shows in
 transfer, composition and the pattern of interference, read off the
 performance matrix and dependency probes, not in how many samples an
 update needed.</p>
@@ -639,7 +643,7 @@ see.</p>
 <p>One method compresses continual learning into a single problem.
 <em>Learning to Discover at Test Time</em> trains a model’s weights at
 test time on one hard problem, optimizing for the best attempt rather
-than the average. Every rung of the ladder appears in miniature.
+than the average. Several rungs of the ladder appear in miniature.
 Attempts accumulate in the context, the weights consolidate what worked,
 and the objective rewards the best member of a set, as VPO’s does. Like
 VPO, and like every general value function in Part 2, it needs a
@@ -659,7 +663,9 @@ Given and the Found</a> (§6), they amortize search under given
 conditions, and the boundary between that and discovery still
 stands.</p>
 <hr />
-<p><em>Sources.</em> Irie, Csordás and Schmidhuber, <em>Metalearning
+<p><em>Sources.</em> Schmidhuber, <em>Learning to control fast-weight
+memories: An alternative to dynamic recurrent networks</em>, Neural
+Computation 4 (1992). Irie, Csordás and Schmidhuber, <em>Metalearning
 Continual Learning Algorithms</em>, TMLR (2025), arXiv 2312.00276.
 Charakorn et al., <em>Text-to-LoRA: Instant Transformer Adaption</em>,
 ICML 2025, arXiv 2506.06105. <em>Doc-to-LoRA: Learning to Instantly
@@ -674,12 +680,15 @@ al., Continual Learning Bench, arXiv 2606.05661. Goel et al.,
 arXiv 2605.15188. Dorovatas et al., <em>Position: Modular Memory is the
 Key to Continual Learning Agents</em>, arXiv 2603.01761. Technical
 reports and announcements for DeepSeek V4, GLM-5.2 and GLM-5.3, Kimi K3
-and MiMo-V2.6-Pro, as collected in our architecture dossier. Xu et al.,
-<em>A Theory of Usable Information Under Computational Constraints</em>,
-arXiv 2002.10689. Yuksekgonul et al., <em>Learning to Discover at Test
-Time</em>, arXiv 2601.16175. Lichkovski, “Defining Continual Learning”
-(2026), and his interview on <em>Deep Learning with Yacine</em>
-(2026).</p>
+and MiMo-V2.6-Pro, as collected in our architecture dossier. Tanzer et
+al., <em>A Benchmark for Learning to Translate a New Language from One
+Grammar Book</em>, ICLR 2024, arXiv 2309.16575. Gemini Team, <em>Gemini
+1.5: Unlocking multimodal understanding across millions of tokens of
+context</em>, arXiv 2403.05530. Xu et al., <em>A Theory of Usable
+Information Under Computational Constraints</em>, arXiv 2002.10689.
+Yuksekgonul et al., <em>Learning to Discover at Test Time</em>, arXiv
+2601.16175. Lichkovski, “Defining Continual Learning” (2026), and his
+interview on <em>Deep Learning with Yacine</em> (2026).</p>
 <p><em>This article was co-authored by Łukasz Stafiniak and Claude (Opus
 5.5).</em></p>
 </section>

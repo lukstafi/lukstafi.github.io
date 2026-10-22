@@ -125,18 +125,17 @@ class="math inline">\pi</span> until <span
 class="math inline">\beta</span> said stop, what would the sum of <span
 class="math inline">r</span> plus the final <span
 class="math inline">z</span> be?”. The Horde paper’s examples come from
-a small mobile robot. “If I keep moving, will I bump into something
-within a few seconds?” “If I follow this wall as long as I can, will my
+a small mobile robot. “If I keep moving, I will bump into something
+within a few seconds.” “If I follow this wall as long as I can, will my
 light sensor then have a high reading?” Each question has a precise
 answer, the expected value under the world’s actual dynamics, and a
 learned approximation of it is accurate to the extent that it matches.
 In the paper’s words: “The approximate value function is the knowledge,
 and its match to the value function—to the actual future reward—defines
 what it means for the knowledge to be accurate.”</p>
-<p>That gives a semantics for a kind of knowledge, and it is the
-semantics this series has found attractive elsewhere. The correctness
-condition is supplied by the world, not by the learner. In the terms of
-<a
+<p>That gives a semantics for a kind of knowledge in which the
+correctness condition is supplied by the world, not by the learner. In
+the terms of <a
 href="https://lukstafi.github.io/notes/the-given-and-the-found.html">The
 Given and the Found</a>, every GVF has a given correctness condition,
 even when the learner chose the question.</p>
@@ -175,7 +174,7 @@ step.</p>
 <p>The difficulty is that off-policy learning combined with function
 approximation and bootstrapping (updating a prediction toward another
 prediction) can diverge. Sutton and Barto later called this combination
-the deadly triad. Leemon Baird’s 1995 counterexample showed
+the deadly triad. Leemon Baird’s 1995 counterexample showed off-policy
 temporal-difference learning with a linear approximator driving its
 weights to infinity. Q-learning, the most widely used off-policy
 algorithm, has the same weakness. A decade of off-policy theory either
@@ -356,7 +355,8 @@ Q^\pi_w(s,a)=w^\top\psi^\pi(s,a),\qquad
 <strong>successor features</strong> of <span
 class="math inline">\pi</span>: one general value function per cumulant,
 all with the same target policy. Barreto and colleagues introduced the
-decomposition in 2017. Once <span class="math inline">\psi^\pi</span> is
+decomposition in 2017, generalizing Peter Dayan’s successor
+representation (1993). Once <span class="math inline">\psi^\pi</span> is
 learned, evaluating <span class="math inline">\pi</span> on a new task
 costs one dot product.</p>
 <p>The second half of their proposal was <strong>generalized policy
@@ -559,7 +559,7 @@ Horde.</p>
 </section>
 <section id="what-gqλ-would-add" class="level2">
 <h2>What GQ(λ) would add</h2>
-<p>At the horizon of one response, then, the bridge adds a vocabulary
+<p>At the horizon of one response, then, the mapping adds a vocabulary
 and two explanations, but no new algorithm. The tests score each answer
 exactly, and there is nothing to predict. The prediction machinery earns
 its place under three conditions that a continual learner meets
@@ -578,7 +578,7 @@ reading the model’s hidden states, would estimate the successor features
 every token. The value of any weighting at any point of the episode is
 then <span class="math inline">w^\top\psi</span>, so one bank serves the
 whole simplex. The trace parameter <span
-class="math inline">\lambda</span> then interpolates between VPO’s Monte
+class="math inline">\lambda</span> interpolates between VPO’s Monte
 Carlo credit and credit bootstrapped from the bank.</p>
 <p><strong>Off-policy data.</strong> A continual learner does not train
 only on its current policy’s samples. Its data include traces from older
@@ -587,7 +587,7 @@ diverse sets, and from deployment logs gathered before the last update.
 GQ(λ) learns about the current target from all of them. In a language
 model the ratios <span class="math inline">\rho_t</span> are exact, and
 the state-dependent <span class="math inline">\lambda</span> handles
-their variance, as worked example D showed. One caution: traces that
+their variance, as worked example E showed. One caution: traces that
 survived a selection step have no known behaviour policy. If a search
 loop sampled thirty answers and kept the best, the kept answer was
 produced by a max, not by a sampler with known probabilities. Off-policy
@@ -613,9 +613,9 @@ r_j-\max_{j&lt;i}w^\top r_j\Big].
 </span> (Take the max over no answers to be zero; rewards here are
 non-negative.) Answer <span class="math inline">i</span> could be
 credited with its own term, the improvement it makes to the set already
-written. Ryan said in the interview that per-answer credit was left out
-to avoid over-complicating the method. This version needs no learned
-predictor, since the rewards are exact, and it mirrors Zahavy’s
+written. Bahlous-Boldi said in the interview that per-answer credit was
+left out to avoid over-complicating the method. This version needs no
+learned predictor, since the rewards are exact, and it mirrors Zahavy’s
 iteration, in which each policy is valued by what it adds. The shared
 reasoning before the first answer would keep the full set score. Whether
 the split destabilizes training is an empirical question.</p></li>
@@ -675,10 +675,12 @@ consolidation by self-distillation. VPO restores coverage along the axes
 the reward defines. Its value to a continual learner therefore does not
 depend on test-time search. A reward-diverse model is a better behaviour
 policy for whatever learning comes next.</p>
-<p>This is the sense in which Bahlous-Boldi’s remark about “loss of
-plasticity” fits. Dohare and colleagues, also in Sutton’s group, showed
-in 2024 that deep networks trained on a long sequence of tasks gradually
-lose the ability to learn new ones, until they learn “no better than a
+<p>Bahlous-Boldi frames his own research goal around plasticity. Before
+one can “even start thinking about continual learning”, he said in the
+interview, “we need to figure out where this loss of plasticity comes
+from.” Dohare and colleagues, also in Sutton’s group, showed in 2024
+that deep networks trained on a long sequence of tasks gradually lose
+the ability to learn new ones, until they learn “no better than a
 shallow network”. Their remedy, continual backpropagation, reinitializes
 a small fraction of rarely used units. That is plasticity at the level
 of weights. The collapse of alternatives is plasticity lost at the level
@@ -686,12 +688,12 @@ of behaviour: weights that could still change, attached to a policy that
 no longer visits the states from which change would be learned. The two
 can come apart. A network with perfectly plastic weights is still stuck
 if its behaviour generates no data about anything new.</p>
-<p>Bahlous-Boldi framed the remedy as evolution does. Two equally fit
-organisms may differ in how readily their descendants adapt. Selection
-cannot see the difference until the environment shifts, and then it is
-decisive. “Even though there was never a pressure to be nicely
-regularized, everybody is nicely regularized … the pressure comes from
-the changing environment.” A continual learner faces a changing
+<p>Bahlous-Boldi framed the remedy in evolutionary terms. Two equally
+fit organisms may differ in how readily their descendants adapt.
+Selection cannot see the difference until the environment shifts, and
+then it is decisive. “Even though there was never a pressure to be
+nicely regularized, everybody is nicely regularized … the pressure comes
+from the changing environment.” A continual learner faces a changing
 environment by definition. Keeping several competent behaviours alive is
 how it stays ready for a shift it cannot foresee.</p>
 </section>
@@ -745,30 +747,33 @@ AGI 2010. Sutton, Modayil, Delp, Degris, Pilarski, White and Precup,
 <em>Horde: A scalable real-time architecture for learning knowledge from
 unsupervised sensorimotor interaction</em>, AAMAS 2011. Baird,
 <em>Residual algorithms: Reinforcement learning with function
-approximation</em>, ICML 1995. Sutton, Szepesvári and Maei, <em>A
-convergent O(n) algorithm for off-policy temporal-difference learning
-with linear function approximation</em>, NIPS 2008; Sutton et al.,
-<em>Fast gradient-descent methods for temporal-difference learning with
-linear function approximation</em>, ICML 2009. Sutton, Precup and Singh,
-<em>Between MDPs and semi-MDPs: A framework for temporal abstraction in
-reinforcement learning</em>, Artificial Intelligence (1999). Munos,
-Stepleton, Harutyunyan and Bellemare, <em>Safe and efficient off-policy
-reinforcement learning</em> (Retrace), NeurIPS 2016. Barreto et al.,
-<em>Successor Features for Transfer in Reinforcement Learning</em>,
-NeurIPS 2017, arXiv 1606.05312. Zahavy, Barreto, Mankowitz, Hou,
-O’Donoghue, Kemaev and Singh, <em>Discovering a set of policies for the
-worst case reward</em>, ICLR 2021, arXiv 2102.04323. Alegre, Bazzan and
-da Silva, <em>Optimistic Linear Support and Successor Features as a
-Basis for Optimal Policy Transfer</em>, ICML 2022, arXiv 2206.11326.
-Touati and Ollivier, <em>Learning One Representation to Optimize All
-Rewards</em>, arXiv 2103.07945 (2021). Bahlous-Boldi et al., <em>Vector
-Policy Optimization: Training for Diversity Improves Test-Time
-Search</em>, arXiv 2605.22817 (2026), and the interview with Ryan
-Bahlous-Boldi on <em>Deep Learning with Yacine</em> (2026). Dohare,
-Hernandez-Garcia, Lan, Rahman, Mahmood and Sutton, <em>Loss of
-plasticity in deep continual learning</em>, Nature 632 (2024). Veeriah
-et al., <em>Discovery of Useful Questions as Auxiliary Tasks</em>,
-NeurIPS 2019.</p>
+approximation</em>, ICML 1995. Sutton and Barto, <em>Reinforcement
+Learning: An Introduction</em>, 2nd ed., MIT Press (2018). Sutton,
+Szepesvári and Maei, <em>A convergent O(n) algorithm for off-policy
+temporal-difference learning with linear function approximation</em>,
+NIPS 2008; Sutton et al., <em>Fast gradient-descent methods for
+temporal-difference learning with linear function approximation</em>,
+ICML 2009. Sutton, Precup and Singh, <em>Between MDPs and semi-MDPs: A
+framework for temporal abstraction in reinforcement learning</em>,
+Artificial Intelligence (1999). Munos, Stepleton, Harutyunyan and
+Bellemare, <em>Safe and efficient off-policy reinforcement learning</em>
+(Retrace), NeurIPS 2016. Dayan, <em>Improving generalization for
+temporal difference learning: The successor representation</em>, Neural
+Computation 5 (1993). Barreto et al., <em>Successor Features for
+Transfer in Reinforcement Learning</em>, NeurIPS 2017, arXiv 1606.05312.
+Zahavy, Barreto, Mankowitz, Hou, O’Donoghue, Kemaev and Singh,
+<em>Discovering a set of policies for the worst case reward</em>, ICLR
+2021, arXiv 2102.04323. Alegre, Bazzan and da Silva, <em>Optimistic
+Linear Support and Successor Features as a Basis for Optimal Policy
+Transfer</em>, ICML 2022, arXiv 2206.11326. Touati and Ollivier,
+<em>Learning One Representation to Optimize All Rewards</em>, arXiv
+2103.07945 (2021). Bahlous-Boldi et al., <em>Vector Policy Optimization:
+Training for Diversity Improves Test-Time Search</em>, arXiv 2605.22817
+(2026), and the interview with Ryan Bahlous-Boldi on <em>Deep Learning
+with Yacine</em> (2026). Dohare, Hernandez-Garcia, Lan, Rahman, Mahmood
+and Sutton, <em>Loss of plasticity in deep continual learning</em>,
+Nature 632 (2024). Veeriah et al., <em>Discovery of Useful Questions as
+Auxiliary Tasks</em>, NeurIPS 2019.</p>
 <p><em>This article was co-authored by Łukasz Stafiniak and Claude (Opus
 5.5).</em></p>
 </section>
