@@ -13,3 +13,15 @@ Three parts is fine. Draft Part 2 on GQ(λ), Horde, successor features/GPI and V
 ## Going deeper through the RL essays
 
 Can we go deeper technically if we connect to the two prior essays on RL (four Substack articles)? notes/how-can-a-reward-train-a-neural-network.md and notes/how-does-a-policy-improve.md
+
+## Review
+
+Go ahead, review parts 2 and 3, then commit. Thanks!
+
+## Links
+
+Yes, add inline links to papers at first mention across all three parts, like How Does a Policy Improve?. I thought footnotes might be good but the definition-highlight-style links are better.
+
+## Evolutionary search
+
+We have an essay touching on evolutionary algorithms.

@@ -61,8 +61,8 @@ href="https://lukstafi.github.io/notes/learning-about-what-you-do-not-do.html">P
 2</a> takes up an older tradition, in which a learner keeps learning
 about many things it is not doing. <a
 href="https://lukstafi.github.io/notes/where-experience-goes.html">Part
-3</a> places the routes on a ladder of memory stores and revises claims
-from <a
+3</a> places these methods on a ladder of memory stores and revises
+claims from <a
 href="https://lukstafi.github.io/notes/axes_of_dynamics.html">The
 Dynamics That Matter</a>.</em></p>
 <p>Teach a language model a numbers game by showing it worked solutions,
@@ -117,11 +117,11 @@ illustrated this in <a
 href="https://www.youtube.com/watch?v=loXZk5uYWLE">a recent podcast</a>
 with split MNIST, the handwritten digits presented two classes at a
 time. <a href="https://arxiv.org/abs/1612.00796">Elastic weight
-consolidation</a>, a classic method that penalizes changes to weights
-that mattered for earlier tasks, barely beats naive fine-tuning in the
-class-incremental setting, at about 20% accuracy. Careful navigation of
-the loss landscape protects old weights, but it does not compose old and
-new representations into one classifier.</p>
+consolidation</a> (EWC), a classic method that penalizes changes to
+weights that mattered for earlier tasks, barely beats naive fine-tuning
+in the class-incremental setting, at about 20% accuracy. Careful
+navigation of the loss landscape protects old weights, but it does not
+compose old and new representations into one classifier.</p>
 <p>Measurement starts from a matrix. Let <span
 class="math inline">R_{i,j}</span> be the performance on task <span
 class="math inline">j</span> after training through task <span
@@ -246,9 +246,11 @@ class="math inline">0.999^{1000}\approx 0.37</span>. After <span
 class="math inline">5{,}000</span> steps it is about <span
 class="math inline">0.007</span>. A teacher that agrees with the student
 at every step can therefore drift arbitrarily far from where training
-began, since each step’s agreement is checked only against the recent
-past. The repair is a second, permanent reference: a frozen copy of the
-base model, with its own penalty term.</p>
+began. It is the only reference point, and it moves with the student.
+The repair adds a second reference that never moves: a frozen copy of
+the base model, with its own penalty term. Mean Teacher has no such
+anchor, because a model trained from scratch has no earlier competence
+to protect; iSDFT, below, adds one.</p>
 </blockquote>
 <p>On-policy sampling and the choice of teacher are different decisions.
 The first decides where the model trains, and the second decides what it
@@ -260,10 +262,9 @@ month before the Princeton paper, a study from MIT’s Improbable AI Lab,
 found that forgetting tracks how far the trained model’s outputs drift
 from the base model’s on the new task, and that on-policy sampling keeps
 that drift small. The Princeton group found the link weaker in its own
-setting, but the direction is the same. Early claims for
-self-distillation sometimes credited the teacher with what the support
-was doing. The rest of this part keeps the two apart. The companion
-essay <a
+setting, but the direction is the same. It is easy to credit the teacher
+with what the support is doing. The rest of this part keeps the two
+apart. The companion essay <a
 href="https://lukstafi.github.io/notes/how-can-a-reward-train-a-neural-network.html">How
 Can a Reward Train a Neural Network?</a> explains in its first section
 why acting changes the examples one learns from.</p>
@@ -271,8 +272,8 @@ why acting changes the examples one learns from.</p>
 <section id="the-model-with-privileged-context-as-teacher"
 class="level2">
 <h2>The model with privileged context as teacher</h2>
-<p>In January and February of 2026 several groups published the same
-construction under different names: <a
+<p>In January 2026 three papers published the same construction under
+different names: <a
 href="https://arxiv.org/abs/2601.19897">self-distillation
 fine-tuning</a> (SDFT), <a
 href="https://arxiv.org/abs/2601.18734">on-policy self-distillation</a>
@@ -409,14 +410,15 @@ alternatives at the prefixes the student reaches, and it says nothing
 about prefixes the student never starts. The earlier essay put the limit
 in one sentence: “Regularization toward a prior can preserve useful
 experience, but it cannot conjure alternatives outside that prior’s
-support.” The final section of this part returns to that limit.</p>
+support.” The section on what on-policy training forgets returns to that
+limit.</p>
 <p>Why should the model with context be a good teacher? Because
 in-context learning generalizes in ways fine-tuning does not. <a
 href="https://arxiv.org/abs/2505.00661">Lampinen and colleagues</a> at
 Google DeepMind ran a controlled comparison on synthetic facts the model
 could not have seen. Given the facts in context, the model could answer
 their reversals and combine them in syllogisms. Fine-tuned on the same
-facts, it mostly could not; on reversals it was near zero. The gap
+facts, it mostly could not. On reversals it was near zero. The gap
 closed, and sometimes reversed, when the fine-tuning data was augmented
 with the inferences the model drew in context. Self-distillation
 automates that augmentation. The teacher’s distribution already contains
@@ -571,7 +573,7 @@ KL penalty toward a fixed reference sets a floor. The regularized
 optimum is <span class="math inline">p\,e^{R/\beta}</span>, so the
 effective temperature cannot fall below the penalty’s coefficient <span
 class="math inline">\beta</span>. In practice that coefficient is small,
-and some recipes drop the penalty altogether; <em>Retaining by
+and some recipes drop the penalty altogether. <em>Retaining by
 Doing</em> found that dropping it barely changed forgetting across
 tasks.</p>
 <p>The cost of this is easy to miss when models are evaluated one answer
@@ -581,7 +583,12 @@ evolutionary systems such as <a
 href="https://arxiv.org/abs/2506.13131">AlphaEvolve</a> keep a
 population of candidates and recombine them. All of these need the model
 to produce answers that differ. A model whose samples are
-near-duplicates gains nothing from being sampled thirty times.</p>
+near-duplicates gains nothing from being sampled thirty times. Our essay
+<a
+href="https://lukstafi.github.io/notes/what-should-a-program-inherit.html">What
+Should a Program Inherit?</a> made the evolutionary version of the
+point: a strong evaluator cannot select a discovery the variation never
+proposes.</p>
 <p>Ryan Bahlous-Boldi and colleagues at MIT’s Improbable AI Lab, the
 group behind <em>RL’s Razor</em> and the SDFT paper, proposed <a
 href="https://arxiv.org/abs/2605.22817">Vector Policy Optimization</a>
@@ -646,7 +653,8 @@ earn their place. <a
 href="https://lukstafi.github.io/notes/learning-about-what-you-do-not-do.html">Part
 2</a> shows that the max splits GRPO’s weighting among the answers. Each
 answer is trained, in effect, under its own weighting: the average of
-the weightings for which it is the best in its set.</p>
+the weightings for which it is the best in its set, scaled by how often
+that happens.</p>
 </blockquote>
 <p>Each part fails alone, and the failures are instructive. Asking for
 several answers under a fixed scalar reward (the Multi-RLVR baseline of
@@ -680,21 +688,21 @@ an open-source evolutionary search loop. Over 200 iterations, the VPO
 model kept finding new solutions while the GRPO model stalled early.</p>
 <p>Two results deserve emphasis. First, VPO beats GRPO <em>under GRPO’s
 own weighting <span class="math inline">w^*</span></em>, the objective
-GRPO was trained to maximize. In the interview with Yacine on his
-<em>Deep Learning with Yacine</em> channel, Bahlous-Boldi gave the
-mechanism as a story about training dynamics. Suppose a hard problem has
-twenty tests. A greedy solution passes the first ten; a
-dynamic-programming solution passes all twenty but is harder to find. If
-GRPO happens to sample the greedy solution first, it shifts probability
-toward greedy solutions and never escapes, although dynamic programming
-was one of the bumps in the pretrained distribution. Under VPO, some
-weighting cares mostly about test 17, so the solutions that pass it keep
-receiving credit while they are still rare. Second, the method stops
-helping when the reward components are nearly collinear, so that every
-weighting ranks answers the same way. On a preference dataset scored by
-one reward model along five nominally distinct criteria that mostly
-agreed, VPO fell below the scalar baselines. Diversity along axes that
-do not disagree has nothing to offer.</p>
+GRPO was trained to maximize. In an interview on the <em>Deep Learning
+with Yacine</em> channel, Bahlous-Boldi gave the mechanism as a story
+about training dynamics. Suppose a hard problem has twenty tests. A
+greedy solution passes the first ten; a dynamic-programming solution
+passes all twenty but is harder to find. If GRPO happens to sample the
+greedy solution first, it shifts probability toward greedy solutions and
+never escapes, although dynamic programming was one of the bumps in the
+pretrained distribution. Under VPO, some weighting cares mostly about
+test 17, so the solutions that pass it keep receiving credit while they
+are still rare. Second, the method stops helping when the reward
+components are nearly collinear, so that every weighting ranks answers
+the same way. On a preference dataset scored by one reward model along
+five nominally distinct criteria that mostly agreed, VPO fell below the
+scalar baselines. Diversity along axes that do not disagree has nothing
+to offer.</p>
 <p>The paper does not mention continual learning. In the interview,
 Bahlous-Boldi said that many people expected his first paper to be about
 continual learning, “and it actually is. I just didn’t write about it.”
