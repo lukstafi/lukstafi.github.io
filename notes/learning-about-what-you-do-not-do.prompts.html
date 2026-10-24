@@ -9,6 +9,24 @@
   <link rel="stylesheet" href="/assets/tufte.css">
   <link rel="stylesheet" href="/assets/pandoc-tufte.css">
   <link rel="stylesheet" href="/assets/site.css">
+  <script defer=""
+  src="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.js"></script>
+  <script>document.addEventListener("DOMContentLoaded", function () {
+ var mathElements = document.getElementsByClassName("math");
+ var macros = [];
+ for (var i = 0; i < mathElements.length; i++) {
+  var texText = mathElements[i].firstChild;
+  if (mathElements[i].tagName == "SPAN") {
+   katex.render(texText.data, mathElements[i], {
+    displayMode: mathElements[i].classList.contains('display'),
+    throwOnError: false,
+    macros: macros,
+    fleqn: false
+   });
+}}});
+  </script>
+  <link rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.css" />
   <!--[if lt IE 9]>
     <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
   <![endif]-->
@@ -66,6 +84,65 @@ good but the definition-highlight-style links are better.</p>
 <section id="evolutionary-search" class="level2">
 <h2>Evolutionary search</h2>
 <p>We have an essay touching on evolutionary algorithms.</p>
+</section>
+<section id="second-review" class="level2">
+<h2>Second review</h2>
+<p>This can be trimmed even if we preserve all info and examples, at
+least the early sections. Can you make it tighter? Any chance we could
+make more / earlier references the RL intro essay / other RL essays? The
+part about giving up either function approximation or guarantees, what
+does giving up approximation mean?</p>
+<p>But it’s tabular in the sense of non-parametric? Exhaustive tabular
+is for toy problems only</p>
+</section>
+<section id="traces-and-momentum" class="level2">
+<h2>Traces and momentum</h2>
+<p>Why do the features <span class="math inline">\phi</span> enter into
+the eligibility trace verbatim?</p>
+<p>Interesting, so eligibility traces are similar to implementing
+momentum in SGD?</p>
+<p>Looking at what we said about eligibility traces in earlier articles,
+would it be worthwhile to include this comparison in this article?
+(e.g. in a box)</p>
+</section>
+<section id="world-models" class="level2">
+<h2>World models</h2>
+<p>Are we building a latent state (+ action) world model via the
+features <span class="math inline">\phi</span>? While <span
+class="math inline">\theta</span> is the policy parameters?</p>
+<p>Do we cover successor features in here or in part 3?</p>
+</section>
+<section id="fixed-points" class="level2">
+<h2>Fixed points</h2>
+<p>What is the update a gradient of, loosely speaking?</p>
+<p>So it’s a gradient toward the Bellman fixpoint?</p>
+<p>Worth adding a box or a subsection on this. The two bullet-points
+from your last response, and a remark that <span
+class="math inline">h</span> corrects the sample error from multiplying
+two expectations. WDYT? Also: Hmm, is this at all related to
+https://arxiv.org/html/2609.16222v1 ?</p>
+</section>
+<section id="conditioning" class="level2">
+<h2>Conditioning</h2>
+<p>We mention GVF without defining the acronym.</p>
+<p>Is it related to the later research on GVFs which was IIRC
+goal-conditioning?</p>
+<p>Is GPI related to regret minimization for multi-armed bandits?</p>
+<p>How much exposition did we give multi-armed bandits in the earlier
+essays? (E.g. around UCT)</p>
+<p>There’s recent work: https://arxiv.org/html/2610.19783v2 It’s in
+between AWR and upside-down RL.</p>
+</section>
+<section id="the-library" class="level2">
+<h2>The library</h2>
+<p>Does the GPI policy library keep training the old policies, or only
+iteratively adds new policies?</p>
+<p>But the GPI mixture-policy keeps using the frozen policies in their
+winning domains?</p>
+<p>“A continual learner does not train only on its current policy’s
+samples.” This is an assumption about the training economics, right?
+“For best data efficiency, …”</p>
+<p>Looks good overall! Please make a final editorial pass, thanks!</p>
 </section>
 </section>
 </article>
