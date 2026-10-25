@@ -325,17 +325,15 @@ visible in one line. Fine-tuning a contradicting fact into core weights
 has no such targeted erase. The new fact is added by gradient steps that
 also move every other fact sharing the affected weights.</p>
 </blockquote>
-<p>Simple online learners are therefore not free of interference. <a
-href="https://lukstafi.github.io/notes/what-breadth-reaches.html">What
-Breadth Reaches</a> (§2) said that learners such as stochastic gradient
-descent on linear models or recursive least squares update without
-destroying what they learned. Worked example G shows the condition: the
-Widrow–Hoff rule revises cleanly when keys are orthogonal and interferes
-in proportion to their overlap. A delta-rule layer is exactly such a
-learner, and <a href="https://arxiv.org/abs/2601.01972">short trigger
-strings</a> are known to overwrite the hidden state of Mamba models
-irreversibly. The interference that makes continual learning hard in
-deep networks is not absent in simple learners. It is easier to see.</p>
+<p>Simple online learners, such as stochastic gradient descent on linear
+models or recursive least squares, are therefore not free of
+interference. The Widrow–Hoff rule revises cleanly when keys are
+orthogonal and interferes in proportion to their overlap. A delta-rule
+layer is exactly such a learner, and <a
+href="https://arxiv.org/abs/2601.01972">short trigger strings</a> are
+known to overwrite the hidden state of Mamba models irreversibly. The
+interference that makes continual learning hard in deep networks is not
+absent in simple learners. It is easier to see.</p>
 <p>The capacity is bounded by the size of the matrix, and the gates set
 the rate of forgetting; Kimi’s <a
 href="https://arxiv.org/abs/2510.26692">KDA</a> decays each channel at
