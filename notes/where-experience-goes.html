@@ -334,8 +334,20 @@ href="https://arxiv.org/abs/2601.01972">short trigger strings</a> are
 known to overwrite the hidden state of Mamba models irreversibly. The
 interference that makes continual learning hard in deep networks is not
 absent in simple learners. It is easier to see.</p>
-<p>The capacity is bounded by the size of the matrix, and the gates set
-the rate of forgetting; Kimi’s <a
+<p>The capacity is bounded by the size of the matrix. <a
+href="https://alexwang.ai/posts/associative-memory/">Alex Wang’s account
+of associative memory</a> makes the bound concrete. A memory written by
+adding outer products, as purely additive linear attention does, recalls
+about <span class="math inline">d_k</span> random associations in <span
+class="math inline">d_k</span> dimensions before interference swamps the
+signal. The least-squares memory that repeated delta-rule writes
+approach recalls about <span class="math inline">2d_k</span>. An MLP’s
+nonlinearity suppresses interference, so the core weights hold far more
+than their width suggests, in superposition. Softmax attention over a
+context recalls vastly more, about a million associations at <span
+class="math inline">d_k=64</span> with the usual scaling, because the
+exponential suppresses every key that does not match. The gates set the
+rate of forgetting; Kimi’s <a
 href="https://arxiv.org/abs/2510.26692">KDA</a> decays each channel at
 its own learned rate. The contents vanish at the end of the session
 unless the serving protocol keeps the state. A caution belongs here as
@@ -346,7 +358,8 @@ associative recall swapped internal states between runs. Swapping the
 recurrent states moved the answer by only 0.2 to 3.6% of the full
 effect, while swapping the attention caches moved it by 96 to 100%. For
 that task the recall ran through the context, and the recurrent layers
-did something else.</p>
+did something else. Capacity predicts as much for any task with more
+associations than the state has dimensions.</p>
 <p><strong>Slow-weight continual learning is best understood as
 consolidation from faster stores.</strong> Self-distillation moves what
 the context achieved into the core weights (Part 1). Doc-to-LoRA moves a
@@ -490,8 +503,17 @@ hypernetwork takes under one.</p>
 Multi-teacher distillation fits one student to several teachers, each
 advising on its own domain’s prompts. On-policy distillation is usually
 written in the mode-seeking direction, which lets the student settle on
-one of a teacher’s alternatives. A mass-covering fit would push the
-student to keep whatever each teacher keeps. Even then, the teachers
+one of a teacher’s alternatives. The direction is a separate choice from
+the sampling, and <a href="https://arxiv.org/abs/2610.03529">Zucchet and
+Linderman</a> found that it, not on-policy sampling, accounts for the
+lower entropy of on-policy distillation. A mass-covering fit would push
+the student to keep whatever each teacher keeps, and, as Part 1 noted,
+to spread extra mass wherever it cannot fit a teacher exactly. In their
+single-seed runs distilling Qwen3 teachers into a 0.6-billion-parameter
+student on mathematics, the mode-seeking direction slightly improved
+accuracy, while the mass-covering direction on the student’s own samples
+raised entropy most and lowered accuracy during training. All the runs
+ended within about three points of each other. Even then, the teachers
 were themselves trained by reinforcement learning on scalar rewards. A
 mass-covering fit preserves the alternatives a teacher still has, and it
 cannot restore the ones the teacher lost.</p>
@@ -638,7 +660,16 @@ of performance on task <span class="math inline">j</span> after training
 through task <span class="math inline">i</span> measures forgetting and
 transfer between tasks. It does not measure whether knowledge acquired
 at different times can be combined, and it does not distinguish revision
-(zup now means green) from interference (dax drifted too).</p>
+(zup now means green) from interference (dax drifted too). Nor does it
+distinguish erasure from lost access. <a
+href="https://arxiv.org/abs/2610.08718">Palit and colleagues</a> found
+that much of the forgetting during fine-tuning shifts all the old
+representations along one shared direction, which hides old facts
+without erasing them. Removing that direction from each weight update
+restored old facts in a pretrained language model. Only a slower erosion
+of individual facts was permanent. Part of a drop in the matrix can
+therefore be reversed, and a probe for the shared shift belongs beside
+it.</p>
 <p>Part 1 adds a requirement the benchmarks do not yet meet. Forgetting
 has a second dimension, the alternatives within a task. A
 continual-learning benchmark should report how much a model gains from
@@ -698,26 +729,30 @@ arXiv 2506.06105. <em>Doc-to-LoRA: Learning to Instantly Internalize
 Contexts</em>, arXiv 2602.15902. Lake and Baroni, <em>Human-like
 systematic generalization through a meta-learning neural network</em>,
 Nature 623 (2023). Lampinen et al., arXiv 2505.00661. Lee et al.,
-<em>How Linear Attention Remembers</em>, arXiv 2609.33093. HiSPA, arXiv
-2601.01972. Tiwari et al., <em>Learning, Fast and Slow: Towards LLMs
-That Adapt Continually</em>, arXiv 2605.12484. Asawa et al., Continual
-Learning Bench, arXiv 2606.05661. Goel et al., <em>FutureSim: Replaying
-World Events to Evaluate Adaptive Agents</em>, arXiv 2605.15188.
-Dorovatas et al., <em>Position: Modular Memory is the Key to Continual
-Learning Agents</em>, arXiv 2603.01761. Technical reports and
-announcements for DeepSeek V4, GLM-5.2 and GLM-5.3, Kimi K3 and
-MiMo-V2.6-Pro, as collected in our architecture dossier. Tanzer et al.,
-<em>A Benchmark for Learning to Translate a New Language from One
-Grammar Book</em>, ICLR 2024, arXiv 2309.16575. Gemini Team, <em>Gemini
-1.5: Unlocking multimodal understanding across millions of tokens of
-context</em>, arXiv 2403.05530. Xu et al., <em>A Theory of Usable
-Information Under Computational Constraints</em>, arXiv 2002.10689.
-Ellis et al., <em>DreamCoder: Growing generalizable, interpretable
-knowledge with wake-sleep Bayesian program learning</em>, PLDI 2021,
-arXiv 2006.08381. Yuksekgonul et al., <em>Learning to Discover at Test
-Time</em>, arXiv 2601.16175. Lichkovski, “Defining Continual Learning”
-(2026), and his interview on <em>Deep Learning with Yacine</em>
-(2026).</p>
+<em>How Linear Attention Remembers</em>, arXiv 2609.33093. Wang, <em>You
+could have invented transformers from memory</em> (blog post, October
+2026), alexwang.ai/posts/associative-memory. Zucchet and Linderman,
+<em>Divergence controls entropy in distillation</em>, arXiv 2610.03529.
+Palit et al., <em>When Forgetting is not Catastrophic: On the Mechanics
+of Spurious Forgetting</em>, arXiv 2610.08718. HiSPA, arXiv 2601.01972.
+Tiwari et al., <em>Learning, Fast and Slow: Towards LLMs That Adapt
+Continually</em>, arXiv 2605.12484. Asawa et al., Continual Learning
+Bench, arXiv 2606.05661. Goel et al., <em>FutureSim: Replaying World
+Events to Evaluate Adaptive Agents</em>, arXiv 2605.15188. Dorovatas et
+al., <em>Position: Modular Memory is the Key to Continual Learning
+Agents</em>, arXiv 2603.01761. Technical reports and announcements for
+DeepSeek V4, GLM-5.2 and GLM-5.3, Kimi K3 and MiMo-V2.6-Pro, as
+collected in our architecture dossier. Tanzer et al., <em>A Benchmark
+for Learning to Translate a New Language from One Grammar Book</em>,
+ICLR 2024, arXiv 2309.16575. Gemini Team, <em>Gemini 1.5: Unlocking
+multimodal understanding across millions of tokens of context</em>,
+arXiv 2403.05530. Xu et al., <em>A Theory of Usable Information Under
+Computational Constraints</em>, arXiv 2002.10689. Ellis et al.,
+<em>DreamCoder: Growing generalizable, interpretable knowledge with
+wake-sleep Bayesian program learning</em>, PLDI 2021, arXiv 2006.08381.
+Yuksekgonul et al., <em>Learning to Discover at Test Time</em>, arXiv
+2601.16175. Lichkovski, “Defining Continual Learning” (2026), and his
+interview on <em>Deep Learning with Yacine</em> (2026).</p>
 <p><em>This article was co-authored by Łukasz Stafiniak and Claude (Opus
 5.5).</em></p>
 </section>

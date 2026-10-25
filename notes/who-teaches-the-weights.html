@@ -398,17 +398,26 @@ alternative the target keeps. The opposite direction, <span
 class="math inline">D_{\mathrm{KL}}(\pi_\theta\|q)</span>, is
 mode-seeking. A network that cannot represent the whole target is
 allowed to settle on one of its peaks. On-policy distillation is often
-written in the mode-seeking form, since it is natural to average over
-the student’s own samples. iSDFT’s loss uses the mass-covering form at
-each token, and the SDFT authors report that the mass-covering form
-worked best in practice. Either way, the average runs over prefixes the
-student itself generated. A mass-covering fit preserves the teacher’s
-alternatives at the prefixes the student reaches, and it says nothing
-about prefixes the student never starts. The earlier essay put the limit
-in one sentence: “Regularization toward a prior can preserve useful
-experience, but it cannot conjure alternatives outside that prior’s
-support.” The section on what on-policy training forgets returns to that
-limit.</p>
+written in the mode-seeking form, since deriving it from a divergence
+between whole sequences ties sampling from the student to that
+direction. <a href="https://arxiv.org/abs/2610.03529">Zucchet and
+Linderman</a> showed that the two choices come apart once the divergence
+is taken token by token, and that the divergence, not the sampling, sets
+how sharp the student becomes. iSDFT’s loss uses the mass-covering form
+at each token, and the SDFT authors report that the mass-covering form
+worked best in practice. Mass-covering has a cost of its own. At a
+stationary point of the fit, the student’s average entropy equals the
+teacher’s plus the forward divergence that remains. A student that
+cannot fit its teacher exactly therefore ends up more diffuse than the
+teacher: it keeps the teacher’s alternatives, and also spreads mass
+where the teacher has none. Either way, the average runs over prefixes
+the student itself generated. A mass-covering fit preserves the
+teacher’s alternatives at the prefixes the student reaches, and it says
+nothing about prefixes the student never starts. The earlier essay put
+the limit in one sentence: “Regularization toward a prior can preserve
+useful experience, but it cannot conjure alternatives outside that
+prior’s support.” The section on what on-policy training forgets returns
+to that limit.</p>
 <p>Why should the model with context be a good teacher? Because
 in-context learning generalizes in ways fine-tuning does not. <a
 href="https://arxiv.org/abs/2505.00661">Lampinen and colleagues</a> at
@@ -501,6 +510,20 @@ that support can undo the protection.</p>
 worked example A again. Small steps, each checked against a teacher that
 moved with the student, add up to a large distance from the base model.
 A frozen anchor is the repair, at the price of some plasticity.</p>
+<p><strong>A self-teacher is sharper than its student, and the
+difference compounds.</strong> Privileged context concentrates
+probability; in worked example B, the demonstration put most of the mass
+on one continuation. Since the teacher is built from the student,
+whatever entropy the student loses, the next teacher loses too. Zucchet
+and Linderman reproduced this collapse in the self-distillation setup of
+the SDPO paper. A mode-seeking divergence and a teacher that tracked the
+student at every step drove it. A mass-covering divergence, a teacher
+updated slowly, and keeping the tail of the distribution as one extra
+bucket counteracted it. The momentum of worked example A therefore
+matters twice. It sets how far the teacher drifts from the base model,
+and how fast the teacher follows the student into collapse. A slowly
+moving or frozen teacher tolerated larger learning rates before
+collapsing.</p>
 <p><strong>On-policy support is not old-task support.</strong> A model
 learning a tool-use skill visits states about tool use. Its self-teacher
 says nothing about medical questions, because no medical question
@@ -573,6 +596,13 @@ class="math inline">\beta</span>. In practice that coefficient is small,
 and some recipes drop the penalty altogether. <em>Retaining by
 Doing</em> found that dropping it barely changed forgetting across
 tasks.</p>
+<p>Capacity pushes the same way. <a
+href="https://arxiv.org/abs/2608.15448">Zucchet, Lee and Linderman</a>
+found that the more ambiguous a next-token distribution is, the harder
+it is to learn accurately: it needs more capacity to store, larger
+embeddings to represent and more steps to fit. Collapsing onto one
+strategy is the cheap direction for the network as well as for the
+objective.</p>
 <p>The cost of this is easy to miss when models are evaluated one answer
 at a time. Deployed models increasingly are not. A coding agent runs
 tests and retries, a reasoning system votes across samples, and
@@ -778,7 +808,10 @@ for Continual Learning in LLMs</em>, arXiv 2609.24646. Lampinen et al.,
 <em>On the generalization of language models from in-context learning
 and finetuning: a controlled study</em>, arXiv 2505.00661. Xu et al.,
 <em>A Theory of Usable Information Under Computational Constraints</em>,
-arXiv 2002.10689. Wang et al., <em>Denser ≠ Better: Limits of On-Policy
+arXiv 2002.10689. Zucchet and Linderman, <em>Divergence controls entropy
+in distillation</em>, arXiv 2610.03529. Zucchet, Lee and Linderman,
+<em>Language models suffer from a curse of ambiguity</em>, arXiv
+2608.15448. Wang et al., <em>Denser ≠ Better: Limits of On-Policy
 Self-Distillation for Continual Post-Training</em>, arXiv 2607.01763.
 Koh et al., <em>Continually Post-training Small Models via Synthetic
 Self-distillation</em> (SynthSelf), arXiv 2610.13113. Mirzadeh et al.,

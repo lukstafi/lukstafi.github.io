@@ -10,6 +10,24 @@ Timescales</title>
   <link rel="stylesheet" href="/assets/tufte.css">
   <link rel="stylesheet" href="/assets/pandoc-tufte.css">
   <link rel="stylesheet" href="/assets/site.css">
+  <script defer=""
+  src="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.js"></script>
+  <script>document.addEventListener("DOMContentLoaded", function () {
+ var mathElements = document.getElementsByClassName("math");
+ var macros = [];
+ for (var i = 0; i < mathElements.length; i++) {
+  var texText = mathElements[i].firstChild;
+  if (mathElements[i].tagName == "SPAN") {
+   katex.render(texText.data, mathElements[i], {
+    displayMode: mathElements[i].classList.contains('display'),
+    throwOnError: false,
+    macros: macros,
+    fleqn: false
+   });
+}}});
+  </script>
+  <link rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.css" />
   <!--[if lt IE 9]>
     <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
   <![endif]-->
@@ -417,14 +435,19 @@ associative recall in Qwen3.5 hybrids swapped internal states between
 runs. Swapping the recurrent states moved the answer by only 0.2 to 3.6%
 of the full effect, while swapping the attention caches moved it by 96
 to 100%. For that task the recall ran through the context, and the
-recurrent layers did something else. Having a carrier for state does not
-show that a model uses it for a given kind of continuity. The carrier
-also has its own fragility: <a
-href="https://arxiv.org/abs/2601.01972">short trigger strings</a> can
-overwrite the hidden state of Mamba models irreversibly. Recall of an
-explicit association is not the continuity at issue here, though, which
-is a standing background, a tone or an unworded partial understanding.
-No study we know of has tested that.</p>
+recurrent layers did something else. Capacity predicts as much. A state
+of fixed size <span class="math inline">d</span> recalls on the order of
+<span class="math inline">d</span> random associations before
+interference swamps the signal, while softmax attention over a long
+context recalls vastly more; <a
+href="https://alexwang.ai/posts/associative-memory/">Alex Wang</a> works
+through the estimates. Having a carrier for state does not show that a
+model uses it for a given kind of continuity. The carrier also has its
+own fragility: <a href="https://arxiv.org/abs/2601.01972">short trigger
+strings</a> can overwrite the hidden state of Mamba models irreversibly.
+Recall of an explicit association is not the continuity at issue here,
+though, which is a standing background, a tone or an unworded partial
+understanding. No study we know of has tested that.</p>
 <p>The persistence work on emotion features belongs inside this question
 as an illustration. Sauers, Imago, Janus and Tessera show that
 emotion-shaped features in Kimi K2.5 and Cogito v2.1, both
@@ -650,8 +673,9 @@ Sauers, Imago, Janus, and Tessera, “Long-range Persistence of Emotion
 Features” (April 2026), with informal supporting observations from the
 Animalabs KV-perturbation thread (April 2026) marked as suggestive
 rather than load-bearing. The 2026 revision adds Lee et al., “How Linear
-Attention Remembers” (arXiv 2609.33093), and HiSPA (arXiv 2601.01972).
-The framework presupposed throughout is developed across earlier
+Attention Remembers” (arXiv 2609.33093), HiSPA (arXiv 2601.01972), and
+Alex Wang, “You could have invented transformers from memory” (October
+2026). The framework presupposed throughout is developed across earlier
 articles in the series, especially “Understanding Without Knowledge,”
 “The Acquaintance Relation as Cognitive Homeostasis,” “Feedback,
 Recurrence, and the Question of AI Consciousness,” “Is Knowledge Both
