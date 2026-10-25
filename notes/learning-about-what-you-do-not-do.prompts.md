@@ -75,3 +75,11 @@ But the GPI mixture-policy keeps using the frozen policies in their winning doma
 "A continual learner does not train only on its current policy's samples." This is an assumption about the training economics, right? "For best data efficiency, ..."
 
 Looks good overall! Please make a final editorial pass, thanks!
+
+## Objectives and open-endedness
+
+*From the Part 3 review; see [Prompts for Where Experience Goes](where-experience-goes.prompts.html).*
+
+Do we ever bring up "Why Greatness Cannot be Planned: The Myth of the Objective" and the associated research program?
+
+Draft the Part 2 passage and also a sentence for Part 3's boundary section on novelty search / OMNI as constructed conditions; verify sources first.

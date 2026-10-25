@@ -76,10 +76,11 @@ interfere, and what it costs to read them. The fast ones learn well and
 forget quickly. The slow ones keep what they learn and learn poorly.
 Most of the methods in Parts 1 and 2 are best understood as traffic
 between these stores, in which a faster store teaches a slower one.</p>
-<p>Before laying out that ladder, one more route needs a place on it.
-Parts 1 and 2 took the update rule as given: a gradient step on some
-loss, with the interesting choices in the teacher, the support and the
-objective. A different line of work learns the update rule itself.</p>
+<p>Before we lay out that ladder, one more route to learning needs a
+place on it. Parts 1 and 2 took the update rule as given: a gradient
+step on some loss, with the interesting choices in the teacher, the
+support and the objective. A different line of work learns the update
+rule itself.</p>
 <section id="learning-the-update-rule" class="level2">
 <h2>Learning the update rule</h2>
 <p>A learned update rule is a network whose output is a change to
@@ -110,13 +111,13 @@ AI, maps a natural-language description of a task to a low-rank adapter
 for a language model in one forward pass. <a
 href="https://arxiv.org/abs/2602.15902">Doc-to-LoRA</a> maps a document
 to an adapter, so the model can answer questions about the document
-without the document in its context. Within the context window the
+without the document in its context. Within the window, reading the
 document in context still does better: on SQuAD the adapter recovers
-about 82% of in-context performance. Its advantage appears past the
-window, where the base model cannot read the document at all, and in
-cost. Internalizing a document takes under a second, and the adapter
-needs megabytes where a long context needs gigabytes. Ilija Lichkovski
-made the point in <a
+about 82% of in-context performance. The adapter’s advantage appears
+past the window, where the base model cannot read the document at all,
+and in cost. Internalizing a document takes under a second, and the
+adapter needs megabytes where a long context needs gigabytes. Ilija
+Lichkovski made the point in <a
 href="https://www.youtube.com/watch?v=loXZk5uYWLE">his podcast
 interview</a> that Doc-to-LoRA is a learned learning algorithm: a
 sample-efficient map from new content to a weight change. Nothing in its
@@ -347,12 +348,12 @@ than their width suggests, in superposition. Softmax attention over a
 context recalls vastly more, about a million associations at <span
 class="math inline">d_k=64</span> with the usual scaling, because the
 exponential suppresses every key that does not match. The gates set the
-rate of forgetting; Kimi’s <a
+rate of forgetting. Kimi’s <a
 href="https://arxiv.org/abs/2510.26692">KDA</a> decays each channel at
 its own learned rate. The contents vanish at the end of the session
-unless the serving protocol keeps the state. A caution belongs here as
-well. That a model has a fast-weight store does not show that it uses
-the store for memory. In Qwen3.5 hybrids, <a
+unless the serving protocol keeps the state.</p>
+<p>That a model has a fast-weight store does not show that it uses the
+store for memory. In Qwen3.5 hybrids, <a
 href="https://arxiv.org/abs/2609.33093">an interpretability study</a> of
 associative recall swapped internal states between runs. Swapping the
 recurrent states moved the answer by only 0.2 to 3.6% of the full
@@ -405,7 +406,9 @@ what would happen, not of what to do. The distinctions that predict
 behaviour are the four columns of the table.</p>
 <section id="consolidation-is-an-m-step" class="level3">
 <h3>Consolidation is an M-step</h3>
-<p><em>How Does a Policy Improve?</em> ended with a way to read any
+<p><a
+href="https://lukstafi.github.io/notes/how-does-a-policy-improve.html">How
+Does a Policy Improve?</a> ended with a way to read any
 policy-improvement algorithm. It asks four questions: where the
 candidates come from, how they are evaluated, how an improved
 distribution is built from them, and how the improvement is retained.
@@ -513,10 +516,10 @@ single-seed runs distilling Qwen3 teachers into a 0.6-billion-parameter
 student on mathematics, the mode-seeking direction slightly improved
 accuracy, while the mass-covering direction on the student’s own samples
 raised entropy most and lowered accuracy during training. All the runs
-ended within about three points of each other. Even then, the teachers
-were themselves trained by reinforcement learning on scalar rewards. A
-mass-covering fit preserves the alternatives a teacher still has, and it
-cannot restore the ones the teacher lost.</p>
+ended within about three points of each other. Whatever the direction,
+the teachers were themselves trained by reinforcement learning on scalar
+rewards. A mass-covering fit preserves the alternatives a teacher still
+has, and it cannot restore the ones the teacher lost.</p>
 </section>
 <section id="the-release-cycle-is-consolidation-already" class="level3">
 <h3>The release cycle is consolidation already</h3>
@@ -738,16 +741,17 @@ With test-time training it reached 1,203, below the best human entry’s
 1,371. <a
 href="https://lukstafi.github.io/notes/what-breadth-reaches.html">What
 Breadth Reaches</a> (§2) asked whether long work on one project leaves a
-residue that training breadth does not deliver. This is a first data
-point at the scale of a single problem. Whether it holds at the scale of
-a project, over months, is open.</p>
+residue that training breadth does not deliver. The kernel result is a
+first data point at the scale of a single problem. Whether it holds at
+the scale of a project, over months, is open.</p>
 <p>Like VPO, and like every general value function in Part 2, the method
 needs a verifier. The verifier scores attempts. It does not choose the
 problem, which attempts to build on, or what the model trains on. An
 autonomous learner would have to construct these teaching conditions
 itself: in Part 1’s terms, find the context in which it knows more, and
-targets it can absorb. Some of this is already learned. SEAL, in the box
-above, learns to write its own training data. Schmidhuber’s <a
+targets it can absorb.</p>
+<p>Some of this is already learned. SEAL, in the box above, learns to
+write its own training data. Schmidhuber’s <a
 href="https://arxiv.org/abs/1112.5309">PowerPlay</a> invents its own
 tasks, each the simplest that its current solver cannot yet solve.
 Open-ended search goes further and drops the target. Lehman and
