@@ -593,6 +593,36 @@ per task, even if what it learned was a generic consolidation move.
 Integration shows in transfer, composition and the pattern of
 interference, which the benchmarks of the next section are starting to
 measure, not in how many samples an update needed.</p>
+<blockquote>
+<p><strong>The inferences fine-tuning must be fed.</strong> The
+reversal-curse data of <a
+href="https://arxiv.org/abs/2309.12288">Berglund and colleagues</a>
+gives the smallest case. A model fine-tuned on “Daphne Barrington is the
+director of <em>A Journey Through Time</em>” cannot say who directed the
+film; with the sentence in its context, it answers at once. For
+fine-tuning to answer, the training set must state the reversal
+outright.</p>
+<p>For a whole corpus, the bill runs to hundreds of times the source. <a
+href="https://arxiv.org/abs/2409.07431">Synthetic continued
+pretraining</a> expanded 1.3 million tokens of books into 455 million
+tokens of generated text about how their entities relate. Fine-tuned on
+it, Llama 3 8B rose from 39 to 56 percent on closed-book questions about
+the books. With no training and passages retrieved into its context, the
+same model scored 60 percent.</p>
+<p>The generated text is itself in-context inference. <a
+href="https://arxiv.org/abs/2506.10943">SEAL</a> has the model read a
+passage, list its implications, and train on the list. Training on the
+passage alone barely moves accuracy on questions about it, from 33 to 34
+percent. Adding the model’s own implications lifts it to 40. Once
+reinforcement learning has taught the model which implications make good
+training data, it reaches 47, slightly above training data written by
+GPT-4.1. See also <a href="https://arxiv.org/abs/2505.00661">Lampinen
+and colleagues</a>, cited in <a
+href="https://lukstafi.github.io/notes/who-teaches-the-weights.html">Part
+1</a>: augmenting fine-tuning with the inferences the model drew in
+context closed the gap to in-context learning, and sometimes reversed
+it.</p>
+</blockquote>
 <p>The automaticity argument survives all of this. Retrieval degrades
 with the size of the store, context has a ceiling, and retrieved
 competence is slower than automatic competence. The ladder gives the
@@ -701,22 +731,42 @@ Time</em></a> trains a model’s weights at test time on one hard problem,
 optimizing for the best attempt rather than the average. Several rungs
 of the ladder appear in miniature. Attempts accumulate in the context,
 the weights consolidate what worked, and the objective rewards the best
-member of a set, as VPO’s does. Like VPO, and like every general value
-function in Part 2, it needs a verifier. Something outside the learner
-has to say which attempt was best.</p>
-<p>That is where the three parts end up. Self-distillation consolidates
-what the context made available. VPO keeps the alternatives that a
-future objective might select. Off-policy prediction learns about
-behaviours the agent is not following. Consolidation makes the useful
-parts cheap. Each of these takes a correctness condition as given: a
-demonstration, a test suite, a reward component, the world’s answer to a
-predictive question. A continual learner built from these parts can keep
-learning for as long as such conditions keep arriving. What none of them
-supplies is the condition itself. In the terms of <a
+member of a set, as VPO’s does. The weight updates do work that search
+does not. On a GPU-kernel task, the same model reusing past attempts in
+the same way, but with frozen weights, stalled at 2,061 microseconds.
+With test-time training it reached 1,203, below the best human entry’s
+1,371. <a
+href="https://lukstafi.github.io/notes/what-breadth-reaches.html">What
+Breadth Reaches</a> (§2) asked whether long work on one project leaves a
+residue that training breadth does not deliver. This is a first data
+point at the scale of a single problem. Whether it holds at the scale of
+a project, over months, is open.</p>
+<p>Like VPO, and like every general value function in Part 2, the method
+needs a verifier. The verifier scores attempts. It does not choose the
+problem, which attempts to build on, or what the model trains on. An
+autonomous learner would have to construct these teaching conditions
+itself: in Part 1’s terms, find the context in which it knows more, and
+targets it can absorb. Some of this is already learned. SEAL, in the box
+above, learns to write its own training data. Schmidhuber’s <a
+href="https://arxiv.org/abs/1112.5309">PowerPlay</a> invents its own
+tasks, each the simplest that its current solver cannot yet solve.
+Open-ended search goes further and drops the target. Lehman and
+Stanley’s novelty search, met in Part 2, rewards behaviour unlike any
+seen before. <a href="https://arxiv.org/abs/2306.01711">OMNI</a>, which
+both co-authored, has a foundation model choose, among the tasks a
+learner can learn, those that people would find interesting. Each works
+under a condition that is given one level up. SEAL’s reward is accuracy
+on questions someone wrote, and PowerPlay’s test for a new task is fixed
+in advance. Novelty is measured in a space of behaviours someone chose,
+such as the robot’s final position, and OMNI’s sense of what is
+interesting was learned from human writing. Constructing teaching
+conditions moves the given condition up a level; it does not remove it.
+Predictive questions are the one kind a learner can pose for itself and
+have graded for free, because the world answers them. For any other
+correctness condition, the boundary drawn in <a
 href="https://lukstafi.github.io/notes/the-given-and-the-found.html">The
-Given and the Found</a> (§6), they amortize search under given
-conditions, and the boundary between that and discovery still
-stands.</p>
+Given and the Found</a> (§7) still stands, between amortizing search
+under a given condition and discovering the condition.</p>
 <hr />
 <p><em>Sources.</em> Schmidhuber, <em>Learning to control fast-weight
 memories: An alternative to dynamic recurrent networks</em>, Neural
@@ -728,10 +778,15 @@ al., <em>Text-to-LoRA: Instant Transformer Adaption</em>, ICML 2025,
 arXiv 2506.06105. <em>Doc-to-LoRA: Learning to Instantly Internalize
 Contexts</em>, arXiv 2602.15902. Lake and Baroni, <em>Human-like
 systematic generalization through a meta-learning neural network</em>,
-Nature 623 (2023). Lampinen et al., arXiv 2505.00661. Lee et al.,
-<em>How Linear Attention Remembers</em>, arXiv 2609.33093. Wang, <em>You
-could have invented transformers from memory</em> (blog post, October
-2026), alexwang.ai/posts/associative-memory. Zucchet and Linderman,
+Nature 623 (2023). Lampinen et al., arXiv 2505.00661. Berglund et al.,
+<em>The Reversal Curse: LLMs trained on “A is B” fail to learn “B is
+A”</em>, ICLR 2024, arXiv 2309.12288. Yang, Band, Li, Candès and
+Hashimoto, <em>Synthetic continued pretraining</em>, arXiv 2409.07431.
+Zweiger et al., <em>Self-Adapting Language Models</em>, arXiv
+2506.10943. Lee et al., <em>How Linear Attention Remembers</em>, arXiv
+2609.33093. Wang, <em>You could have invented transformers from
+memory</em> (blog post, October 2026),
+alexwang.ai/posts/associative-memory. Zucchet and Linderman,
 <em>Divergence controls entropy in distillation</em>, arXiv 2610.03529.
 Palit et al., <em>When Forgetting is not Catastrophic: On the Mechanics
 of Spurious Forgetting</em>, arXiv 2610.08718. HiSPA, arXiv 2601.01972.
@@ -751,8 +806,17 @@ Computational Constraints</em>, arXiv 2002.10689. Ellis et al.,
 <em>DreamCoder: Growing generalizable, interpretable knowledge with
 wake-sleep Bayesian program learning</em>, PLDI 2021, arXiv 2006.08381.
 Yuksekgonul et al., <em>Learning to Discover at Test Time</em>, arXiv
-2601.16175. Lichkovski, “Defining Continual Learning” (2026), and his
-interview on <em>Deep Learning with Yacine</em> (2026).</p>
+2601.16175. Schmidhuber, <em>PowerPlay: Training an Increasingly General
+Problem Solver by Continually Searching for the Simplest Still
+Unsolvable Problem</em>, Frontiers in Psychology 4 (2013), arXiv
+1112.5309. Lehman and Stanley, <em>Abandoning Objectives: Evolution
+Through the Search for Novelty Alone</em>, Evolutionary Computation 19
+(2011). Stanley and Lehman, <em>Why Greatness Cannot Be Planned: The
+Myth of the Objective</em>, Springer (2015). Zhang, Lehman, Stanley and
+Clune, <em>OMNI: Open-endedness via Models of human Notions of
+Interestingness</em>, arXiv 2306.01711. Lichkovski, “Defining Continual
+Learning” (2026), and his interview on <em>Deep Learning with
+Yacine</em> (2026).</p>
 <p><em>This article was co-authored by Łukasz Stafiniak and Claude (Opus
 5.5).</em></p>
 </section>
