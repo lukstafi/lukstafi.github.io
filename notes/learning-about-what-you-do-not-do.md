@@ -227,7 +227,7 @@ Horde prepares by *predicting*. Its demons learn, off-policy, what would happen 
 
 Both halves stop at the same boundary. Each GVF answers a question someone posed, and each component of VPO's reward vector is a criterion someone wrote down. The world supplies the answers, but not the questions. Which cumulants to predict, which reward components to keep apart, which features to learn them over: these remained the open problem of the Horde programme, and later work on discovering useful questions ([Veeriah and colleagues](https://arxiv.org/abs/1909.04607), 2019) only began on it. The same problem appears in VPO as Bahlous-Boldi's open question of where vector rewards come from when there is no verifier. A continual learner that must also find its own questions has crossed from the given into the found. Neither line has crossed.
 
-[Part 3](https://lukstafi.github.io/notes/where-experience-goes.html) takes stock. It places in-context learning, fast weights, harness memory, adapters, prediction banks and core weights on one ladder, asks which store teaches which, and revises two claims made in [The Dynamics That Matter](https://lukstafi.github.io/notes/axes_of_dynamics.html).
+[Part 3](https://lukstafi.github.io/notes/where-experience-goes.html) takes stock. It places in-context learning, fast weights, harness memory, adapters, prediction banks and core weights on one ladder, and asks which store teaches which.
 
 ---
 

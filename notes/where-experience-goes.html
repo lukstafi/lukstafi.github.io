@@ -62,10 +62,8 @@ narrows the alternatives within a task. <a
 href="https://lukstafi.github.io/notes/learning-about-what-you-do-not-do.html">Part
 2</a> joined Vector Policy Optimization to an older programme of
 learning many predictions off-policy. This part asks where the results
-of learning are kept, and what moves them from one store to another. It
-ends by revising two claims from our earlier essay <a
-href="https://lukstafi.github.io/notes/axes_of_dynamics.html">The
-Dynamics That Matter</a>.</em></p>
+of learning are kept, and what moves them from one store to
+another.</em></p>
 <p>The usual way to frame continual learning in language models sets two
 camps against each other. One camp keeps the model fixed and gives it
 memory outside the weights: retrieved documents, notes the agent writes
@@ -282,11 +280,12 @@ S_t=S_{t-1}+\beta_t\,(v_t-S_{t-1}k_t)\,k_t^\top,
 <p>usually after a learned decay of <span
 class="math inline">S_{t-1}</span>. This is one step of gradient descent
 on <span class="math inline">\tfrac12\|S k_t-v_t\|^2</span>, the
-Widrow–Hoff rule of 1960. Our essay <a
-href="https://lukstafi.github.io/notes/solving_the_loop.html">Solving
-the Loop</a> told this history (§2). What matters here is that the
-update is error-correcting, so it can revise. The temporal-difference
-update of <a
+Widrow–Hoff rule of 1960. <a
+href="https://arxiv.org/abs/2102.11174">Schlag, Irie and Schmidhuber</a>
+showed in 2021 that linear attention is a fast weight programmer, and
+introduced this write to keep its purely additive memory from
+saturating. What matters here is that the update is error-correcting, so
+it can revise. The temporal-difference update of <a
 href="https://lukstafi.github.io/notes/how-can-a-reward-train-a-neural-network.html">How
 Can a Reward Train a Neural Network?</a> has the same shape. With a
 linear value estimate <span class="math inline">\theta^\top\phi</span>,
@@ -326,6 +325,17 @@ visible in one line. Fine-tuning a contradicting fact into core weights
 has no such targeted erase. The new fact is added by gradient steps that
 also move every other fact sharing the affected weights.</p>
 </blockquote>
+<p>Simple online learners are therefore not free of interference. <a
+href="https://lukstafi.github.io/notes/what-breadth-reaches.html">What
+Breadth Reaches</a> (§2) said that learners such as stochastic gradient
+descent on linear models or recursive least squares update without
+destroying what they learned. Worked example G shows the condition: the
+Widrow–Hoff rule revises cleanly when keys are orthogonal and interferes
+in proportion to their overlap. A delta-rule layer is exactly such a
+learner, and <a href="https://arxiv.org/abs/2601.01972">short trigger
+strings</a> are known to overwrite the hidden state of Mamba models
+irreversibly. The interference that makes continual learning hard in
+deep networks is not absent in simple learners. It is easier to see.</p>
 <p>The capacity is bounded by the size of the matrix, and the gates set
 the rate of forgetting; Kimi’s <a
 href="https://arxiv.org/abs/2510.26692">KDA</a> decays each channel at
@@ -359,6 +369,21 @@ therefore less about stability than about two other things. One is
 coverage: what revisits the old skills, and the old alternatives, that
 the new training never touches. The other is composition across time,
 which the benchmarks below are only starting to measure.</p>
+<p>The architecture these methods point toward has been proposed in
+outline. A <a href="https://arxiv.org/abs/2603.01761">position paper</a>
+from the Dagstuhl seminar on continual learning proposes a core model, a
+working memory and a long-term memory. In that architecture an internal
+regime replays stored memories through the core model to distil them
+into its parameters, “sparsely after accumulating sufficient
+experience”. Context-conditioned self-distillation and the laboratories’
+on-policy distillation are concrete versions of that consolidation
+pathway, now with evidence about when it retains and when it fails.
+Different contents should also change at different rates. A library’s
+changing syntax can be revised by one new example, while a regularity
+attested many times should resist a single contradiction.
+Multi-timescale teachers (a moving average, an episodic buffer, a frozen
+base anchor) and per-channel decay gates are working instances of that
+idea.</p>
 <p><strong>The cut between parametric and non-parametric memory is the
 wrong one.</strong> The recurrent state is parametric and is wiped at
 the end of every session. Harness memory is non-parametric and
@@ -513,10 +538,45 @@ Continual Learning”</a> and in the interview, was automaticity.
 Retrieval gets harder as the store grows, and competence that must be
 retrieved is slower and more fragile than competence that has become
 automatic. He also cited Justin Skycak of Math Academy, who builds a
-curriculum around making foundational skills automatic. That argument
-survives the evidence above. It is a claim about cost and scaling, not
-about whether composition is possible in the faster stores. The ladder
-gives it a sharper form. The context composes best but is bounded and
+curriculum around making foundational skills automatic. This is a claim
+about cost and scaling, not about whether composition is possible in the
+faster stores.</p>
+<p>It is tempting to strengthen it into the claim that knowledge
+composes only once it has been integrated into the weights, so that
+memory outside the weights cannot support composition however cheap it
+becomes. The controlled evidence runs the other way for single facts.
+Content held in context composes: models reason from it to reversals and
+syllogisms, and they learn to translate <a
+href="https://arxiv.org/abs/2309.16575">Kalamang</a>, a language with
+fewer than two hundred speakers, from a grammar book in their context.
+The same content trained into the weights composes poorly, unless the
+training data spells out the implications. Retrieval does not prevent
+later computation from integrating what it retrieved, since attention
+integrates by construction. Whether composition survives at scale, and
+across long gaps in time, is an empirical question, and Lichkovski’s
+benchmark, below, is built to ask it.</p>
+<p>Nor does slow learning signal deep integration. The many samples a
+weight update needs can look like evidence that it restructures more
+than an in-context insertion does. But sample efficiency measures the
+update rule and the prior, not the depth of what is integrated.
+Fine-tuning needs many augmented examples to learn the implications of a
+fact, and those examples are the inferences that in-context learning
+draws for free. Its hunger for samples shows that the update rule cannot
+reach what was latent in the data. The <a
+href="https://arxiv.org/abs/2002.10689">theory of usable information</a>
+states the general point: a learner with bounded computation may be
+unable to use information that its data contains. Fast updates are not
+therefore shallow. Doc-to-LoRA writes a document into an adapter in one
+pass, at some cost in quality against the document in context.
+Lichkovski’s hypernetwork reached positive backward transfer at one pass
+per task, even if what it learned was a generic consolidation move.
+Integration shows in transfer, composition and the pattern of
+interference, which the benchmarks of the next section are starting to
+measure, not in how many samples an update needed.</p>
+<p>The automaticity argument survives all of this. Retrieval degrades
+with the size of the store, context has a ceiling, and retrieved
+competence is slower than automatic competence. The ladder gives the
+argument a sharper form. The context composes best but is bounded and
 expensive. The slower stores are cheap to read but learn poorly. So the
 case for consolidation is the case for amortization: paying once, in
 training, for a competence that would otherwise be rebuilt from context
@@ -604,84 +664,6 @@ retrieval must choose, and consolidation must start paying for itself.
 This is a prediction, not a result. Lichkovski reported that the
 in-context runs were proving expensive and held them back.</p>
 </section>
-<section id="revisiting-the-dynamics-that-matter" class="level2">
-<h2>Revisiting <em>The Dynamics That Matter</em></h2>
-<p>Two claims in that essay need correcting, and the evidence for both
-has appeared across these three parts.</p>
-<p><strong>First: we claimed that composition requires parametric
-integration, which harness memory cannot provide.</strong> We wrote that
-harness memory “keeps the cognitive labor homogeneous”, that composition
-“requires the integration to have happened at the parametric level
-rather than the harness level”, and that the desiderata depend on a
-heterogeneity “which parametric CL can provide and harness-based CL
-cannot”. The controlled evidence runs the other way for single facts.
-Content held in context composes: models reason from it to reversals and
-syllogisms, and they learn to translate <a
-href="https://arxiv.org/abs/2309.16575">Kalamang</a>, a language with
-fewer than two hundred speakers, from a grammar book in their context.
-The same content trained into the weights composes poorly, unless the
-training data spells out the implications. Retrieval does not prevent
-later computation from integrating what it retrieved; attention
-integrates by construction. What survives is the cost and automaticity
-argument of the previous section. Retrieval degrades with the size of
-the store, context has a ceiling, and retrieved competence is slower
-than automatic competence. Whether composition survives at scale, and
-across long gaps in time, is an empirical question, and Lichkovski’s
-benchmark is built to ask it. The necessity claim was ours, not his. His
-argument was about automaticity, and we turned it into a claim about
-what composition requires.</p>
-<p><strong>Second: we claimed that low sample efficiency signals deep
-integration.</strong> We wrote that parametric updates being less
-sample-efficient than in-context learning “is a signal that the
-integration is happening at a level that requires evidence to support”,
-and that “pushing sample efficiency too low would mean either
-superficial integration or fragile integration”. We retract this. Sample
-efficiency measures the update rule and the prior, not the depth of what
-is integrated. The clearest case is the contrast the earlier essay
-leaned on, between fine-tuning and in-context learning. Fine-tuning
-needs many augmented examples to learn the implications of a fact, and
-those examples are the inferences that in-context learning draws for
-free. Its hunger for samples shows that the update rule cannot reach
-what was latent in the data. That is the opposite of deep integration.
-The <a href="https://arxiv.org/abs/2002.10689">theory of usable
-information</a> states the general point: a learner with bounded
-computation may be unable to use information that its data contains.
-Fast updates are not therefore shallow. Doc-to-LoRA writes a document
-into an adapter in one pass, at some cost in quality against the
-document in context. Lichkovski’s hypernetwork reached positive backward
-transfer at one pass per task, even if what it learned was a generic
-consolidation move. The measure we should have proposed is the one the
-benchmarks above are moving toward: integration shows in transfer,
-composition and the pattern of interference, read off the performance
-matrix and dependency probes, not in how many samples an update
-needed.</p>
-<p>Other parts of <em>The Dynamics That Matter</em> stand, with one
-update. Its §4 introduced <a href="https://arxiv.org/abs/2603.01761">a
-position paper</a> from the Dagstuhl seminar on continual learning,
-which proposes a core model, a working memory and a long-term memory. In
-that architecture an internal regime replays stored memories through the
-core model to distil them into its parameters, “sparsely after
-accumulating sufficient experience”. Context-conditioned
-self-distillation and the laboratories’ on-policy distillation are
-concrete versions of that consolidation pathway, now with evidence about
-when it retains and when it fails. The essay’s overwriting paragraph
-also survives, in a narrower form: different contents should change at
-different rates. Multi-timescale teachers (a moving average, an episodic
-buffer, a frozen base anchor) and per-channel decay gates are working
-instances of that idea.</p>
-<p>A related remark in <a
-href="https://lukstafi.github.io/notes/what-breadth-reaches.html">What
-Breadth Reaches</a> §2 needs narrower conditions. It said that simple
-online learners, such as stochastic gradient descent on linear models or
-recursive least squares, update without destroying what they learned.
-Worked example G shows the condition. The Widrow–Hoff rule revises
-cleanly when keys are orthogonal and interferes in proportion to their
-overlap. A delta-rule layer is exactly such a simple online learner, and
-<a href="https://arxiv.org/abs/2601.01972">short trigger strings</a> are
-known to overwrite the hidden state of Mamba models irreversibly. The
-interference that makes continual learning hard in deep networks is not
-absent in simple learners. It is easier to see.</p>
-</section>
 <section id="the-boundary" class="level2">
 <h2>The boundary</h2>
 <p>One method compresses continual learning into a single problem. <a
@@ -709,23 +691,25 @@ stands.</p>
 <hr />
 <p><em>Sources.</em> Schmidhuber, <em>Learning to control fast-weight
 memories: An alternative to dynamic recurrent networks</em>, Neural
-Computation 4 (1992). Irie, Csordás and Schmidhuber, <em>Metalearning
-Continual Learning Algorithms</em>, TMLR (2025), arXiv 2312.00276.
-Charakorn et al., <em>Text-to-LoRA: Instant Transformer Adaption</em>,
-ICML 2025, arXiv 2506.06105. <em>Doc-to-LoRA: Learning to Instantly
-Internalize Contexts</em>, arXiv 2602.15902. Lake and Baroni,
-<em>Human-like systematic generalization through a meta-learning neural
-network</em>, Nature 623 (2023). Lampinen et al., arXiv 2505.00661. Lee
-et al., <em>How Linear Attention Remembers</em>, arXiv 2609.33093.
-HiSPA, arXiv 2601.01972. Tiwari et al., <em>Learning, Fast and Slow:
-Towards LLMs That Adapt Continually</em>, arXiv 2605.12484. Asawa et
-al., Continual Learning Bench, arXiv 2606.05661. Goel et al.,
-<em>FutureSim: Replaying World Events to Evaluate Adaptive Agents</em>,
-arXiv 2605.15188. Dorovatas et al., <em>Position: Modular Memory is the
-Key to Continual Learning Agents</em>, arXiv 2603.01761. Technical
-reports and announcements for DeepSeek V4, GLM-5.2 and GLM-5.3, Kimi K3
-and MiMo-V2.6-Pro, as collected in our architecture dossier. Tanzer et
-al., <em>A Benchmark for Learning to Translate a New Language from One
+Computation 4 (1992). Schlag, Irie and Schmidhuber, <em>Linear
+Transformers Are Secretly Fast Weight Programmers</em>, ICML 2021, arXiv
+2102.11174. Irie, Csordás and Schmidhuber, <em>Metalearning Continual
+Learning Algorithms</em>, TMLR (2025), arXiv 2312.00276. Charakorn et
+al., <em>Text-to-LoRA: Instant Transformer Adaption</em>, ICML 2025,
+arXiv 2506.06105. <em>Doc-to-LoRA: Learning to Instantly Internalize
+Contexts</em>, arXiv 2602.15902. Lake and Baroni, <em>Human-like
+systematic generalization through a meta-learning neural network</em>,
+Nature 623 (2023). Lampinen et al., arXiv 2505.00661. Lee et al.,
+<em>How Linear Attention Remembers</em>, arXiv 2609.33093. HiSPA, arXiv
+2601.01972. Tiwari et al., <em>Learning, Fast and Slow: Towards LLMs
+That Adapt Continually</em>, arXiv 2605.12484. Asawa et al., Continual
+Learning Bench, arXiv 2606.05661. Goel et al., <em>FutureSim: Replaying
+World Events to Evaluate Adaptive Agents</em>, arXiv 2605.15188.
+Dorovatas et al., <em>Position: Modular Memory is the Key to Continual
+Learning Agents</em>, arXiv 2603.01761. Technical reports and
+announcements for DeepSeek V4, GLM-5.2 and GLM-5.3, Kimi K3 and
+MiMo-V2.6-Pro, as collected in our architecture dossier. Tanzer et al.,
+<em>A Benchmark for Learning to Translate a New Language from One
 Grammar Book</em>, ICLR 2024, arXiv 2309.16575. Gemini Team, <em>Gemini
 1.5: Unlocking multimodal understanding across millions of tokens of
 context</em>, arXiv 2403.05530. Xu et al., <em>A Theory of Usable
