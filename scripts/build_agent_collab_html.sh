@@ -22,6 +22,10 @@ build_html() {
 
   mkdir -p "$(dirname -- "$output_html")"
 
+  # Link-preview meta tags (Open Graph, Twitter card) from the index entry.
+  local og_meta
+  og_meta="$(python3 "$root_dir/scripts/og_meta.py" "${output_html#"$root_dir/"}" "$title")"
+
   pandoc \
     --from=markdown+tex_math_dollars+tex_math_single_backslash \
     --to=html5 \
@@ -36,6 +40,7 @@ build_html() {
     --toc-depth=3 \
     --mathjax="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" \
     --metadata=pagetitle:"$title" \
+    --variable=og-meta:"$og_meta" \
     "$input_md" \
     -o "$output_html"
 

@@ -65,6 +65,9 @@ for md_file in "${md_files[@]}"; do
       ;;
   esac
 
+  # Link-preview meta tags (Open Graph, Twitter card) from the index entry.
+  og_meta="$(python3 "$root_dir/scripts/og_meta.py" "notes/$base_name.html" "$title")"
+
   pandoc \
     --from=markdown+tex_math_dollars+tex_math_single_backslash \
     --to=html5 \
@@ -78,6 +81,7 @@ for md_file in "${md_files[@]}"; do
     --include-before-body="$root_dir/assets/nav.html" \
     ${include_args[@]+"${include_args[@]}"} \
     --metadata=pagetitle:"$title" \
+    --variable=og-meta:"$og_meta" \
     "$md_file" \
     -o "$html_file"
 

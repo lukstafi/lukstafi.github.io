@@ -17,6 +17,12 @@ Requires [Pandoc](https://pandoc.org/) 3.x.
 ./scripts/build_agent_collab_html.sh
 ```
 
+Each built page gets link-preview meta tags (Open Graph and a Twitter
+`summary` card) from `scripts/og_meta.py`. Title and description come from the
+page's entry in `index.html`, so rebuild a page after adding or editing its
+index entry. A page without an entry falls back to its `<title>`.
+`index.html` and `about.html` carry their own tags, written by hand.
+
 ### Publishing a note to Substack
 
 `scripts/publish_to_substack.py` converts a note in `notes/` to Substack's

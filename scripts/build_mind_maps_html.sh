@@ -17,6 +17,9 @@ for md_file in "$root_dir"/mind_maps/*.md; do
   title="$(grep -m1 '^# ' "$md_file" | sed 's/^# //; s/\*\*//g' || true)"
   [ -z "$title" ] && title="$base_name"
 
+  # Link-preview meta tags (Open Graph, Twitter card) from the index entry.
+  og_meta="$(python3 "$root_dir/scripts/og_meta.py" "mind_maps/$base_name.html" "$title")"
+
   pandoc \
     --from=markdown+tex_math_dollars+tex_math_single_backslash \
     --to=html5 \
@@ -28,6 +31,7 @@ for md_file in "$root_dir"/mind_maps/*.md; do
     --css="/assets/site.css" \
     --include-before-body="$root_dir/assets/nav.html" \
     --metadata=pagetitle:"$title" \
+    --variable=og-meta:"$og_meta" \
     "$md_file" \
     -o "$html_file"
 
