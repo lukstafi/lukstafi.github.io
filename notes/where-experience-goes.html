@@ -348,13 +348,17 @@ readout only has to pick the right answer from a fixed set, as
 next-token prediction does, a <span class="math inline">d_k\times
 d_v</span> matrix holds on the order of <span class="math inline">d_k
 d_v</span> associations, up to a logarithm (<a
-href="https://arxiv.org/abs/2412.06538">Nichani, Lee and Bietti</a>). An
-MLP’s nonlinearity suppresses interference, so the core weights hold far
-more than the residual width suggests, in superposition. Softmax
-attention over a context recalls vastly more, about a million
-associations at <span class="math inline">d_k=64</span> with the usual
-scaling, because the exponential suppresses every key that does not
-match. The gates set the rate of forgetting. Kimi’s <a
+href="https://arxiv.org/abs/2412.06538">Nichani, Lee and Bietti</a>).
+The logarithm is not small: with <span
+class="math inline">d_k=d_v=128</span>, an outer-product memory picks
+out about 350 associations correctly and the best possible matrix about
+1,160 (<a href="https://arxiv.org/abs/2605.05189">Barnfield and
+colleagues</a>). An MLP’s nonlinearity suppresses interference, so the
+core weights hold far more than the residual width suggests, in
+superposition. Softmax attention over a context recalls vastly more,
+about a million associations at <span class="math inline">d_k=64</span>
+with the usual scaling, because the exponential suppresses every key
+that does not match. The gates set the rate of forgetting. Kimi’s <a
 href="https://arxiv.org/abs/2510.26692">KDA</a> decays each channel at
 its own learned rate. The contents vanish at the end of the session
 unless the serving protocol keeps the state.</p>
@@ -814,13 +818,15 @@ Zweiger et al., <em>Self-Adapting Language Models</em>, arXiv
 memory</em> (blog post, October 2026),
 alexwang.ai/posts/associative-memory. Nichani, Lee and Bietti,
 <em>Understanding Factual Recall in Transformers via Associative
-Memories</em>, arXiv 2412.06538. Afendulev, Dontsov, Tutubalina and
-Korznikov, <em>What Attention Recalls and Recurrence Controls in Hybrid
-Language Models</em>, arXiv 2609.04434. Zucchet and Linderman,
-<em>Divergence controls entropy in distillation</em>, arXiv 2610.03529.
-Palit et al., <em>When Forgetting is not Catastrophic: On the Mechanics
-of Spurious Forgetting</em>, arXiv 2610.08718. HiSPA, arXiv 2601.01972.
-Tiwari et al., <em>Learning, Fast and Slow: Towards LLMs That Adapt
+Memories</em>, arXiv 2412.06538. Barnfield, Kim, Nichani, Lee and Lu,
+<em>Sharp Capacity Thresholds in Linear Associative Memory</em>, arXiv
+2605.05189. Afendulev, Dontsov, Tutubalina and Korznikov, <em>What
+Attention Recalls and Recurrence Controls in Hybrid Language
+Models</em>, arXiv 2609.04434. Zucchet and Linderman, <em>Divergence
+controls entropy in distillation</em>, arXiv 2610.03529. Palit et al.,
+<em>When Forgetting is not Catastrophic: On the Mechanics of Spurious
+Forgetting</em>, arXiv 2610.08718. HiSPA, arXiv 2601.01972. Tiwari et
+al., <em>Learning, Fast and Slow: Towards LLMs That Adapt
 Continually</em>, arXiv 2605.12484. Asawa et al., Continual Learning
 Bench, arXiv 2606.05661. Goel et al., <em>FutureSim: Replaying World
 Events to Evaluate Adaptive Agents</em>, arXiv 2605.15188. Dorovatas et

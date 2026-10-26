@@ -456,10 +456,13 @@ vectors before interference swamps the signal, while softmax attention
 over a long context recalls vastly more; <a
 href="https://alexwang.ai/posts/associative-memory/">Alex Wang</a> works
 through the estimates. If the readout only has to pick the right answer
-from a fixed set, the same state holds on the order of <span
-class="math inline">d^2</span> (<a
-href="https://arxiv.org/abs/2412.06538">Nichani, Lee and Bietti</a>). So
-the recall study’s routing through the cache was learned, not forced.
+from a fixed set, the same state holds more, though far fewer than its
+<span class="math inline">d^2</span> entries suggest: with <span
+class="math inline">d=128</span>, about 350 associations written as
+outer products and about 1,160 at best (<a
+href="https://arxiv.org/abs/2412.06538">Nichani, Lee and Bietti</a>; <a
+href="https://arxiv.org/abs/2605.05189">Barnfield and colleagues</a>).
+So the recall study’s routing through the cache was learned, not forced.
 Either way, the cache is the store that grows with the context, and the
 state is the store that every token reads. It suits a few settings that
 persist and condition everything the model generates. Language and
