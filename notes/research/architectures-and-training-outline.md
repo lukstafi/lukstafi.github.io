@@ -68,6 +68,15 @@ Figure 1: the common block with three replaceable slots (from the dossier's figu
 - **Parametric and non-parametric stores.** Weights are written in training and hold the world's facts. The cache is written while reading and holds the context. Wang's thread juxtaposes the two in one breath; the essay keeps them apart.
 - **Experts and lookup tables.** An MoE router acts as a coarse key match before recall. Splitting into experts costs about 1.3 times in stored knowledge per parameter, even with top-1 routing (Allen-Zhu and Li, Result 9). So total parameters, not active ones, indicate how much a model can store. DeepSeek V4's hash-routed early layers and V4.1-Flash's Engram tables are stores addressed by token identity or n-gram.
 
+**Classical lineage (decided 26 Oct: §2 is a full section, with the background as titled boxes or subsections).** Each box tells one strand in a few paragraphs and ends where the main text picks it up. Candidates, in the order the main text needs them:
+
+- *Box: The linear associative memory.* Kohonen's correlation-matrix memory and Anderson's interactive memory (both 1972); the pseudo-inverse "optimal" mapping of Kohonen and Ruohonen (1973), which is Wang's least-squares store; the Widrow–Hoff rule (1960) as the online route to it, and Diederich and Opper (1987) on a local rule converging to the projection rule. Lands at: the outer-product and least-squares rows of the capacity table, and §3's delta rule.
+- *Box: Hopfield and the 0.14 N limit.* Hopfield (1982); Amit, Gutfreund and Sompolinsky (1985) for about $0.138N$ patterns with small errors; McEliece et al. (1987) for about $N/(4\log N)$ error-free; Gardner (1988) for $2N$ with optimal, non-Hebbian storage. Lands at: why the recall criterion moves the constants.
+- *Box: Dense associative memory and modern Hopfield networks.* Krotov and Hopfield (2016): a steeper energy gives polynomial capacity, $N^{n-1}$; Demircigil et al. (2017): an exponential energy gives exponential capacity; Ramsauer et al. (2020): the update rule of that network is Transformer attention. Lands at: the MLP and softmax rows, with Wang's correspondence between his power $p$ and Krotov–Hopfield's $n=p+1$.
+- *Box: Feed-forward layers as key–value memories, and fast weights.* Sukhbaatar et al. (2019) and Geva et al. (2021) for FFNs; Schmidhuber (1992), Katharopoulos et al. (2020) and Schlag, Irie and Schmidhuber (2021) for linear attention as a fast-weight memory written at inference. Lands at: the split between parametric and non-parametric stores, and §3.
+
+Evidence status: the 2016–2021 papers' key passages were read for the associative-memory note. The classical papers (1960–1988) were checked for existence and bibliographic data only; their capacity figures are reported via Ramsauer et al. and Krotov and Hopfield. Read them, or quote them through those secondary sources with attribution, before drafting the boxes. Citations are in `associative-memory-view.md` and the gitignored source digest.
+
 Worked example 1: a single head with $d_k=128$ under both criteria. How many random associations does it recall as clean vectors, and how many by picking the right answer from a vocabulary? The numbers should make the gap between the criteria visible in one line.
 
 Sample sentence: "How much a memory holds depends on what you count as remembering."
@@ -186,7 +195,7 @@ Figure 5: parallel training timelines, marking when modalities, long context, lo
 ## 4. Open questions
 
 1. ~~Opening~~ Decided 26 Oct: the three-model 1M-token prompt opens; the hybrid result lands in §3.
-2. **Where the store vocabulary enters.** §2 as a full section before the models, or introduced inside §1 and used from §3 on? A full section is clearer, but it delays the models.
+2. ~~Where the store vocabulary enters~~ Decided 26 Oct: §2 is a full section, with the classical lineage in boxes or subsections.
 3. **§6's weight.** The depth-and-monitorability section is the most theoretical. Keep it in Part A, or close the essay with it after Part B?
 4. **Figures.** Five original figures are planned. Draw them as SVG for the blog. Substack needs raster versions, which the publish script can produce.
 5. **Remaining research before drafting**, from the dossiers: read the V4 equations for Single-Pass mHC; read MSA and DSA ablations; resolve the Qwen output-gate mismatch; read 2609.19101 in full; check K3.1 Pro's config on release.
