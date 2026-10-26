@@ -454,7 +454,7 @@ Thus the mathematical retention multiplier lies between $e^{-5}$ and 1 and beta 
 
 **Qwen.** The checkpoint declares `Qwen3_5MoeForCausalLM` and the `qwen3_5_moe_text` implementation family. The inspected Transformers Gated DeltaNet path computes $\beta_t=\sigma(b_t)$ and log retention $g_t=-e^{a_h}\operatorname{softplus}(u_t+c_h)$, then applies $e^{g_t}$ to the state. It requests query/key L2 normalization. Its 16 query/key heads are repeated across 128 value heads, with head dimensions 128 and convolution width four. This is a configuration-specific explanation of the grouping, not a property of every DeltaNet. [Qwen config][Q3], [Transformers implementation][I2]
 
-One mismatch remains worth checking: Qwen's config declares `output_gate_type: swish`, while the inspected upstream full-attention path directly applies a sigmoid output gate. The recurrent output gate and the full-attention output gate are also distinct. Do not settle the exact deployed full-attention gate from the config name alone, or claim this library snapshot reproduces every checkpoint-specific option.
+*(Resolved 26 October: there is no mismatch.)* `output_gate_type: swish` names the SiLU gate on the Gated DeltaNet output norm; the full-attention gate is a head-specific elementwise sigmoid on the attention output, selected by `attn_output_gate: true`. vLLM, SGLang and Transformers all read the keys this way, and the sibling Qwen3.8-Flash-Next config documents `output_gate_type` as the linear-attention gate. No Qwen-authored code states it; the resolution rests on agreement among the public implementations. The sigmoid choice matches the Gated Attention paper's best variant (Qiu et al., arXiv 2505.06708).
 
 For intuition, a normalized-key delta factor $I-\beta kk^\top$ has eigenvalues 1 in directions orthogonal to $k$ and $1-\beta\lVert k\rVert^2$ in the key direction. With $0\leq\beta\leq1$ and $\lVert k\rVert\leq1$, that factor has no negative eigenvalues. This observation explains why the doubled-beta extension matters. It does **not** classify the full model, establish the spectrum of arbitrary products across time, or prove a short effective memory. The essay should distinguish an implementation audit from an expressivity theorem.
 
@@ -582,11 +582,40 @@ Interpretability results, including the measurement of mHC in V4-Flash and the s
 - **Top-$k$ selection has its own composition limit.** [Eitan, Yehudai and Maron, arXiv 2610.25250](https://arxiv.org/abs/2610.25250) show that conventional hybrid blocks, and blocks with top-$k$ KV access, need capacity growing as $\sqrt n$ to compose two functions over a domain of size $n$; a block with retrieval depth $m$ composes $m$ functions at fixed size. [Reported: abstract] The section "Recurrence, circuit depth, and effective memory" should treat selection (DSA, MSA, CSA) as a second source of depth limits beside the transition algebra. [Inferred]
 - **Hybrids may need shorter scratchpads.** [Steifer, arXiv 2605.16640](https://arxiv.org/abs/2605.16640) (May; missed earlier) claims that at constant precision a GDN-plus-gated-attention hybrid solves a parity-conditioned retrieval task with a constant number of CoT steps, where pure GDN has no comparable solution and pure gated attention needs a scratchpad of polynomial length. [Reported: abstract; single author, under review] If it holds, it is a formal case of the hybrid design shortening the visible computation that the monitorability argument relies on. [Inferred]
 - **Looped depth adds little in small models.** [Olszowiec et al., arXiv 2610.18127](https://arxiv.org/abs/2610.18127) find that in eight looped models at 1.3B to 3.5B, 76 to 89 percent of answer tokens are decided at the first iteration, except Huginn, which decides gradually. [Confirmed] This weakens, for that architecture class, the worry about hidden serial computation in the bullet "Recurrence through model depth". It says nothing about KDA or GDN recurrence over tokens. [Inferred]
-- **Activation and CoT monitors are complementary.** On Kimi K3, Goodfire's reward-hacking probes beat CoT monitors on two of three benchmarks, and an OR of both nearly doubles detection on DeepSWE (audit addendum B.2). [Confirmed] This is the first measurement of the separate observation channels that "Monitorability is detection" asks to assess, on two of the seven checkpoints. [Inferred]
+- **Activation probes and transcript monitors are complementary.** On Kimi K3, Goodfire's reward-hacking probes beat an LLM monitor reading the whole transcript on two of three benchmarks, and an OR of both nearly doubles detection on DeepSWE (audit addendum B.2). Every probe hit they show is also verbalized, so this is evidence about detection, not about hidden reasoning. [Confirmed] This is the first measurement of the separate observation channels that "Monitorability is detection" asks to assess, on two of the seven checkpoints. [Inferred]
 - **Complex KDA** ([B20]) is listed as a NeurIPS 2026 paper. [Reported] It is still a variant, not a K3 disclosure.
 - **GDN head half-lives.** The median GDN head in Qwen3.8-27B has a half-life of about 24 tokens, and head roles are nearly fixed by the weights (GateSight; audit addendum B.4). [Confirmed] This is the first measurement bearing on "Limited effective depth needs an operational definition" for one of the hybrid families. [Inferred]
 
 Nothing new was found on MLA, DSA, MSA or CSA/HCA interpretability, Single-Pass mHC, MTP and drafting beyond systems papers, or long-context curricula for the seven.
+
+### Pre-drafting research: compression, selection and their training
+
+A pass on 26 October read the V4 and V4.1 reports and reference code, the DeepSeek-V3.2 report (the source of DSA), the GLM-5 report, IndexCache and the MSA paper. The full report is in the gitignored `notes/private/research-arch-2026-10-26.md`. Single-Pass mHC and the Qwen gate are settled in place above and in the audit dossier, Part 1.6.
+
+**How CSA and HCA pool.** [Confirmed: V4 §2.3 and Pro-0813 code]
+- A CSA entry pools 8 tokens at stride 4: two streams, one for the current block and one overlapping the previous one, each with a learned positional bias. The weights are a softmax over the 8 positions, separately in each of 512 channels. So the pool is a learned, content-dependent, channel-wise convex average.
+- One pooled vector serves as both key and value, shared by all 128 query heads.
+- The selector has its own compressor (128 channels, Hadamard rotation, FP4) and scores entries as $I_{t,s}=\sum_h w_{t,h}\,\mathrm{ReLU}(q^I_{t,h}\cdot k^I_s)$, with 64 indexer heads; V4-Pro keeps the top 1,024.
+- HCA pools 128 tokens without overlap and has no selector: at 1M tokens it attends to about 8,192 entries, while CSA's selector chooses among about 250,000. [Inferred: arithmetic]
+- Each query also sees the 128 most recent uncompressed entries. Window entries, compressed entries and a learned per-head sink logit share one softmax.
+
+**V4.1's CSA2, concretely.** [Confirmed: V4.1 §2.3 and code; the sharing pattern is Inferred from config and code]
+- No overlap and no positional bias. Compression is 2 in encoder layers 2–19 and 1 (none) in the decoder.
+- The encoder keeps three KV caches, from layers 2, 8 and 14, each shared by six layers with its indices.
+- The decoder keeps one uncompressed KV, computed by layer 20 from the encoder's final state, read by all 20 decoder layers. Layer 20 scores every visible position, keeps the 2,048 best blocks of 8 (at most 16,384 positions), and layers 24, 28, 32 and 36 re-select their top 512 within that pool.
+- Indexer keys are projected from the main latent rather than a separate compressor.
+- V4.1 "trains sparse attention from scratch at a sequence length of 64K, without any dense attention warmup stages". V4-Pro went dense, then indexer warm-up, then sparse. Neither report gives the indexer's loss. [Confirmed: checked directly]
+
+**Does learned selection cost quality, and what makes it work?**
+- Every published recipe except V4.1's uses three devices: distilling the indexer toward the main attention by KL (restricted to the selected set once sparse); a stop-gradient at the indexer input, so the indexer learns only from the KL and the backbone only from the language-model loss; and a dense warm-up. Warm-ups: DSA 2.1B tokens, GLM-5 about 2.8B, MSA 40B. [Confirmed]
+- After joint sparse training the reports find parity. Costs show up in three places. [Confirmed]
+  - Before joint training: in GLM's DSA experiment on GLM-4.7-Flash (30B-A3B), warm-up alone loses 7.9 RULER points at 128K (79.21 → 71.35); joint training restores 78.86.
+  - With index sharing added without retraining: on GLM-5 (744B), sharing one indexer across four layers drops the long-context average from 78.4 to 72.7. Trained with sharing, the 30B model matches its baseline (50.6 against 51.0). GLM-5.2's IndexShare is this method (IndexCache, arXiv 2603.12201), trained in from mid-training.
+  - Without MSA's forced sink and local blocks: RULER-32K falls from 65.8 to 61.5, which the authors call "comparable".
+- The DSA source report has no ablation of the indexer, only parity checks. No published ablation measures learned selection at 1M tokens. [Confirmed]
+- MSA's appendix ablations (gradient source, detach, warm-up, sinks) used a 10.5B-A1.5B pilot, not the 109B model; without the stop-gradient the KL gradient spikes and the language-model loss diverges, and without warm-up the main attention's entropy collapses early. [Confirmed]
+
+**A precision note for calculation 3.** The released Sinkhorn kernel makes the residual mixer's rows sum to 1 exactly and its columns only approximately, so the conservation of the residual total holds exactly for the calculation's symmetric matrix but only approximately in the trained model. [Confirmed: code; Inferred: consequence]
 
 ### Consequences for the essay
 
