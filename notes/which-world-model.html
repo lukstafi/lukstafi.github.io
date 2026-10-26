@@ -48,7 +48,11 @@
 Prediction</p>
 <p class="byline">2026-09-23 &ndash; Łukasz Stafiniak and Codex</p>
 </header>
-<p>The previous essay, <a href="which-agi.html">“Which AGI?”</a>,
+<p><em>Revised 26 October 2026: a paragraph added near the end on Dual
+Exam, a benchmark that tests agents and generated world models
+separately.</em></p>
+<p>The previous essay, <a
+href="https://lukstafi.github.io/notes/which-agi.html">“Which AGI?”</a>,
 distinguished a running model, a deployment built around it, and the
 lineage sustained by a laboratory and its users. Much of the
 disagreement about general intelligence turned out to concern which of
@@ -401,14 +405,15 @@ language results give little reason to regard ordinary language-model
 training as a mistaken direction. The useful question is where the added
 constraint earns its cost and whether those gains extend to broader
 tasks.</p>
-<p><span id="jepa"></span>Joint Embedding Predictive Architectures, or JEPAs, make a related
-design choice: predict representations of targets rather than reproduce
-every detail of the targets themselves. A useful forecast for
-manipulating a cup may need its position, orientation, and relation to
-the hand, while leaving countless details of the image unspecified.
-Learning an appropriate abstraction can reduce the burden of prediction.
-But learning what to discard is a substantive problem. A small detail
-irrelevant to one task may determine the outcome of another.</p>
+<p><span id="jepa"></span>Joint Embedding Predictive Architectures, or
+JEPAs, make a related design choice: predict representations of targets
+rather than reproduce every detail of the targets themselves. A useful
+forecast for manipulating a cup may need its position, orientation, and
+relation to the hand, while leaving countless details of the image
+unspecified. Learning an appropriate abstraction can reduce the burden
+of prediction. But learning what to discard is a substantive problem. A
+small detail irrelevant to one task may determine the outcome of
+another.</p>
 <p>Lukas Kuhn and colleagues’ <a
 href="https://arxiv.org/abs/2607.00784v1"><em>LeVLJEPA: End-to-End
 Vision-Language Pretraining Without Negatives</em></a> makes that
@@ -685,6 +690,27 @@ extensive intervention is still a finding about the system, but it is a
 different practical resource from a capacity the agent can recruit on
 its own. Both negative and positive results become more informative when
 these conditions are stated.</p>
+<p>A benchmark built on the principle of separate measurement appeared
+in October 2026. <a href="https://arxiv.org/abs/2610.31066"><em>Dual
+Exam</em></a> couples agents with generated environments, in which an
+image or video model renders the result of each action. Its world model
+is therefore an external simulator, the transition function <span
+class="math inline">F</span> above, rather than a representation inside
+the agent. A pilot that placed GPT-5.6 Sol inside the video model
+Seedance 2.5 completed none of 150 tasks, and its trajectories could not
+say which side had failed. The benchmark therefore tests each side with
+the other held fixed: agents act in reference environments, and world
+models receive scripted actions. The world models’ illustrated failures
+were not ignored actions but disturbed surroundings, such as an extra
+cup in a stacking task or a tray nobody asked for. That is the frame
+problem, rendered in pixels. Their rankings also reversed between
+scenarios. GPT-Image-2 led MiniMax H3 on the overall average, 21.7 to
+17.3 out of 100, yet trailed it on embodied scenes, 20.9 to 53.8. An
+average therefore says little about how a world model will serve the
+states one particular agent visits. The authors list the controls they
+have not yet run: copying the last frame, a null action, shuffled
+actions. Those are the comparisons with plausible shortcuts that a
+useful evaluation needs.</p>
 <p>To assess the research direction, turn these evaluations into
 comparisons across successive systems. For navigation, one could measure
 the fraction of held-out routes completed under specified disturbances,
@@ -733,15 +759,17 @@ empirical papers are preprints; their results are reported within their
 tested settings. The supplied paper versions were Dupoux, LeCun, and
 Malik, arXiv:2603.15381v1; Kuhn and colleagues, arXiv:2607.00784v1; Teoh
 and colleagues, arXiv:2511.05963v4; and Beckmann, Queloz, and Freitas,
-arXiv:2609.21748v1. The Carrier passage was supplied as an extract from
-his article, originally dated October 29, 2025 and subsequently updated.
-The MLST discussion with Alexander Mattick and Tim Scarfe was consulted
-in the supplied caption transcript for the September 21, 2026 episode;
-timestamps refer to that transcript. The interpretive connections among
-these sources are our argument, rather than claims jointly made by their
-authors.</p>
+arXiv:2609.21748v1. The paragraph on Dual Exam, added on 26 October
+2026, draws on Rao, Chu, and colleagues, arXiv:2610.31066v1. The Carrier
+passage was supplied as an extract from his article, originally dated
+October 29, 2025 and subsequently updated. The MLST discussion with
+Alexander Mattick and Tim Scarfe was consulted in the supplied caption
+transcript for the September 21, 2026 episode; timestamps refer to that
+transcript. The interpretive connections among these sources are our
+argument, rather than claims jointly made by their authors.</p>
 </article>
-<section class="prompts-link"><p><em>The prompts behind this essay (the human-side contribution): <a href="which-world-model.prompts.html">view the prompts &rarr;</a></em></p></section>
+<section class="prompts-link"><p><em>The prompts behind this essay (the human-side contribution): 
+<a href="which-world-model.prompts.html">view the prompts &rarr;</a></em></p></section>
 <script src="/assets/theme-toggle.js"></script>
 </body>
 </html>

@@ -62,3 +62,14 @@ It looks like the NextLat results are underwhelming. "Yet the co-trained dynamic
 ---
 
 Okay, thank you! Let's commit and push. Note the perplexity results are not relevant as that's the LLM objective, just the multiple-choice results are relevant.
+
+---
+
+*Revision, 26 October 2026: a check of two October 2026 papers against the recent essays.*
+
+Can you check how these two papers interact with our recent essays, suggest updates?
+https://arxiv.org/html/2610.31066v1 "Dual Exam: Controlled Evaluation of Multimodal Agents and World Models", https://arxiv.org/html/2610.32770v1 "On-Policy Self-Training: Data-Free Self-Improvement in Large Language Models"
+
+---
+
+Let's also add the (4a) update (Which World Model), thanks! Agreed the other candidates are not worth updating. Then append to the relevant prompt files.

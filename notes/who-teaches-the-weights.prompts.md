@@ -55,3 +55,12 @@ We have an essay touching on evolutionary algorithms.
 Part 1 looks good! Would you like to do an editorial pass and add an entry to the index, or should we wait till we cover the rest first?
 
 Do the editorial pass on Part 1 now; hold the index entry until Parts 2 and 3 are done. Thanks!
+
+## On-Policy Self-Training
+
+*From a check of two October 2026 papers against the recent essays, 26 October 2026.*
+
+Can you check how these two papers interact with our recent essays, suggest updates?
+https://arxiv.org/html/2610.31066v1 "Dual Exam: Controlled Evaluation of Multimodal Agents and World Models", https://arxiv.org/html/2610.32770v1 "On-Policy Self-Training: Data-Free Self-Improvement in Large Language Models"
+
+Apply the OPST edits to Who Teaches the Weights? and Where Experience Goes (sections 2a and 2b of the note), and regenerate the HTML.

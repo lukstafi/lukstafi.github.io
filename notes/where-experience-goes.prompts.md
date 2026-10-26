@@ -67,3 +67,12 @@ Part 3 looks good! Do a final editorial pass, then update the prompts file and a
 First re-check the 3 Oct dossier for model releases and new papers since then, and fold in the associative-memory thread.
 
 Yes, revise What Breadth Reaches §3 and Where Experience Goes with the 2609.04434 result and the recall-criterion caveat, then commit everything.
+
+## On-Policy Self-Training
+
+*From a check of two October 2026 papers against the recent essays, 26 October 2026.*
+
+Can you check how these two papers interact with our recent essays, suggest updates?
+https://arxiv.org/html/2610.31066v1 "Dual Exam: Controlled Evaluation of Multimodal Agents and World Models", https://arxiv.org/html/2610.32770v1 "On-Policy Self-Training: Data-Free Self-Improvement in Large Language Models"
+
+Apply the OPST edits to Who Teaches the Weights? and Where Experience Goes (sections 2a and 2b of the note), and regenerate the HTML.
