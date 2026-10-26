@@ -433,11 +433,12 @@ the search itself (<code>beam_search</code> in
 compiling each candidate and timing it on the device, in parallel,
 keeping the fastest few per round until improvement stalls.</p>
 <p>Halide’s lesson, which tinygrad inherits through TVM’s lineage (the
-<a href="../proposals/gh-ocannl-242.md">TVM deep dive</a> traces this),
-is that the <em>algorithm</em> and the <em>schedule</em> are separate
-artifacts, and the OptOps layer is that lesson reduced to its minimum
-viable form: not a scheduling DSL, just a list of triples acting on loop
-axes — small enough to search mechanically.</p>
+<a href="https://lukstafi.github.io/proposals/gh-ocannl-242.md">TVM deep
+dive</a> traces this), is that the <em>algorithm</em> and the
+<em>schedule</em> are separate artifacts, and the OptOps layer is that
+lesson reduced to its minimum viable form: not a scheduling DSL, just a
+list of triples acting on loop axes — small enough to search
+mechanically.</p>
 <p>Now the OCANNL side, with the seed inventory first because it is more
 advanced than “no schedule layer” suggests. The substrate the OptOps act
 on — explicit loop nests — is <code>Low_level.t</code>’s native form.
@@ -471,25 +472,25 @@ kernel after are both ordinary values of the IR type, comparable,
 printable, testable. This is the v0.8 tiling work’s natural form, and
 the existing tiling proposals (<a
 href="https://github.com/ahrefs/ocannl/issues/412">#412</a> for GPU, <a
-href="../proposals/watch-ocannl-README-md-347818d3.md">the CPU matmul
-plan</a> for the sibling) describe the transforms; what no proposal yet
-pins down is this schedule IR itself — the <a
-href="../proposals/gh-ocannl-267.md">Tiramisu study</a>’s thesis is
-precisely that this layer is what OCANNL is missing, and the gap now has
-a stub of its own.</p>
+href="https://lukstafi.github.io/proposals/watch-ocannl-README-md-347818d3.md">the
+CPU matmul plan</a> for the sibling) describe the transforms; what no
+proposal yet pins down is this schedule IR itself — the <a
+href="https://lukstafi.github.io/proposals/gh-ocannl-267.md">Tiramisu
+study</a>’s thesis is precisely that this layer is what OCANNL is
+missing, and the gap now has a stub of its own.</p>
 <p><strong>(c) The search harness</strong> — and this is the easy part,
 not the hard one. BEAM over schedule prefixes with on-device timing is a
 few hundred lines in any language once (a) and (b) exist; the <a
-href="../proposals/gh-ocannl-261.md">superoptimizer survey</a> covers
-the design space of cost models and search strategies beyond it. The one
-structural remark worth making: contexts-as-values are a <em>better</em>
-autotuner substrate than tinygrad’s global device state. Candidate
-timings are sibling compiles from one frontier — the same context value,
-compiled against repeatedly, with no mutation to undo between candidates
-and no risk that timing candidate 7 perturbed the state candidate 8
-compiles against. tinygrad’s BEAM manages this with care (per-worker
-device isolation in a multiprocessing pool); OCANNL’s design makes the
-isolation a non-event.</p>
+href="https://lukstafi.github.io/proposals/gh-ocannl-261.md">superoptimizer
+survey</a> covers the design space of cost models and search strategies
+beyond it. The one structural remark worth making: contexts-as-values
+are a <em>better</em> autotuner substrate than tinygrad’s global device
+state. Candidate timings are sibling compiles from one frontier — the
+same context value, compiled against repeatedly, with no mutation to
+undo between candidates and no risk that timing candidate 7 perturbed
+the state candidate 8 compiles against. tinygrad’s BEAM manages this
+with care (per-worker device isolation in a multiprocessing pool);
+OCANNL’s design makes the isolation a non-event.</p>
 <p>The honest design problem — the one the article cannot solve, only
 locate — is <strong>pass ordering against virtualization</strong>.
 Inlining changes which loops exist, so the schedule must act after
@@ -551,9 +552,9 @@ href="https://github.com/ahrefs/ocannl/issues/195">#195</a>, CUDA
 workgroup <code>Barrier</code>s plus <code>LOCAL</code>-address-space
 buffers give shared-memory reductions and tiled matmuls — the
 structured, well-understood patterns that <a
-href="../proposals/gh-ocannl-263.md">Flash-attention-style kernels</a>
-eventually consume. And it is honest to mark where the 80% ends, because
-tinygrad marks it too: the spec’s <code>Barrier</code> is
+href="https://lukstafi.github.io/proposals/gh-ocannl-263.md">Flash-attention-style
+kernels</a> eventually consume. And it is honest to mark where the 80%
+ends, because tinygrad marks it too: the spec’s <code>Barrier</code> is
 <em>workgroup-scoped</em>, kernels split at reduction boundaries, and
 nothing in the current tree does grid-level synchronization or
 persistent thread blocks — cross-kernel sequencing remains the host’s
@@ -654,13 +655,14 @@ memory headroom, who is busy) that no annotation can make by itself.</p>
 was input to. OCANNL’s sharding cluster (<a
 href="https://github.com/ahrefs/ocannl/issues/293">#293</a>) resolved
 its design verdict in June 2026 (<a
-href="../proposals/task-a2c331e9.md">the 293b elaboration</a>): sharding
-lands as <strong>per-shard backend contexts with explicit
-primitives</strong> — <code>shard_along</code>, <code>gather</code>,
-<code>grad_sync</code> — host-orchestrated, with merge-buffer copies as
-the one cross-shard channel, composing with <a
-href="../proposals/task-e4003e5f.md">slice-as-alias</a> for copy-free
-sharding and the <a href="../proposals/task-2445dd1c.md">training-loop
+href="https://lukstafi.github.io/proposals/task-a2c331e9.md">the 293b
+elaboration</a>): sharding lands as <strong>per-shard backend contexts
+with explicit primitives</strong> — <code>shard_along</code>,
+<code>gather</code>, <code>grad_sync</code> — host-orchestrated, with
+merge-buffer copies as the one cross-shard channel, composing with <a
+href="https://lukstafi.github.io/proposals/task-e4003e5f.md">slice-as-alias</a>
+for copy-free sharding and the <a
+href="https://lukstafi.github.io/proposals/task-2445dd1c.md">training-loop
 integration</a> on top. Read against that verdict, the tinygrad algebra
 is not a rival proposal but the <em>checking and sugar layer over
 it</em>: a per-tnode placement annotation, threaded through shape
@@ -671,12 +673,13 @@ really sits where a shard boundary dies, that a reduce over a sharded
 axis is preceded by the <code>grad_sync</code> it needs — and (later)
 <em>insert</em> them, lowering annotation boundaries to the same
 merge-buffer transfers the explicit code writes today, with <a
-href="../proposals/concise-merge-buffer-transfers.md">terser syntax</a>
-as the surface. The honest port is therefore the propagation rules plus
-an explicit placement <em>policy hook</em> — the heterogeneity decision
-as a first-class parameter, where tinygrad hardcodes interchangeability
-— and its natural sequencing is after the explicit primitives ship and
-the <a href="../proposals/distro-feasibility-study.md">feasibility-study
+href="https://lukstafi.github.io/proposals/concise-merge-buffer-transfers.md">terser
+syntax</a> as the surface. The honest port is therefore the propagation
+rules plus an explicit placement <em>policy hook</em> — the
+heterogeneity decision as a first-class parameter, where tinygrad
+hardcodes interchangeability — and its natural sequencing is after the
+explicit primitives ship and the <a
+href="https://lukstafi.github.io/proposals/distro-feasibility-study.md">feasibility-study
 end</a> of multi-node work makes the policy hook earn its keep.</p>
 </section>
 <section
@@ -698,7 +701,7 @@ at compile time by the hazard frontier in <code>context.ml</code>, which
 tracks per-tnode <code>last_writer</code> and <code>last_readers</code>
 and derives the read-after-write, write-after-read, and
 write-after-write edges as routines are compiled in a lineage (the <a
-href="../proposals/execution-dependency-tracking.md">execution-dependency-tracking
+href="https://lukstafi.github.io/proposals/execution-dependency-tracking.md">execution-dependency-tracking
 design</a> extends the same information to run time, and the
 merge-buffer static verification of <a
 href="https://github.com/ahrefs/ocannl/issues/288">#288</a> already
@@ -752,7 +755,8 @@ tinygrad rewrite step is attributable — a named rule, in a named stage,
 and the <code>VIZ=1</code> tooling will show you every rewrite that
 fired on the way from tensor expression to kernel. OCANNL’s rewrites are
 anonymous match arms, and the cost of anonymity has already been paid
-once: the <a href="../proposals/cse-alpha-equivalence-soundness.md">CSE
+once: the <a
+href="https://lukstafi.github.io/proposals/cse-alpha-equivalence-soundness.md">CSE
 alpha-equivalence unsoundness</a> was a subtle bad rewrite that lived in
 the optimizer precisely because no per-rule accounting existed to make
 it visible. The relevant trajectory is that the rule count is about to
@@ -766,10 +770,10 @@ href="https://github.com/ahrefs/ocannl/issues/296">lowering audit</a> as
 the documentation prerequisite. An e-graph over <code>scalar_t</code> —
 equality saturation instead of ordered rewriting — is the possible
 eventual shape, already surveyed as a v0.9 candidate in the <a
-href="../proposals/gh-ocannl-261.md">superoptimizer review</a>. Lowest
-urgency of the six; the trigger to act is the moment match arms in
-<code>simplify_llc</code> start needing comments that say “this must run
-before that.”</p>
+href="https://lukstafi.github.io/proposals/gh-ocannl-261.md">superoptimizer
+review</a>. Lowest urgency of the six; the trigger to act is the moment
+match arms in <code>simplify_llc</code> start needing comments that say
+“this must run before that.”</p>
 </section>
 <section id="the-bets-underneath" class="level2">
 <h2>The bets underneath</h2>
