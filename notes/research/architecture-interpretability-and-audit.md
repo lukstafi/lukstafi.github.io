@@ -649,7 +649,31 @@ Finding 1 is now out of date beyond the K3 neuron graph of Addendum A.2.
 - **Self-attribution in a GDN hybrid.** [*Where Is the "Self" of a Large Language Model?*, arXiv 2610.16717](https://arxiv.org/abs/2610.16717) finds a linear "self-index" separating the model's own messages from external ones at all 64 layers of Qwen3.8-27B. Swapping states after a message reverses self-attribution in layers 15–31. The abstract does not say whether the swapped states include the GDN state. [Reported] Relevant to the audit of *Experience, Selfhood* and *Indexical Unity*; whether the KV cache or the recurrent state carries the index is open. [Inferred]
 - **Retrieval in Mamba.** [Yarden et al., arXiv 2610.19709](https://arxiv.org/abs/2610.19709): selection gates control retrieval, but they read query relevance from representations that encode it several layers too late. [Reported: abstract] This fits Part 1.5's point that gates and keys are functions of other positions' residual streams. [Inferred]
 
-## B.7 Open items after this check
+## B.7 Kanerva's sparse distributed memory and the homonymy thesis
+
+Added 26 October after a discussion of the essay outline's lineage boxes.
+
+**The model.** Kanerva's *Sparse Distributed Memory* (MIT Press, 1988) places many "hard locations" at random addresses in a high-dimensional binary space. A write adds the data to every location within a Hamming radius of the item's address. A read sums the locations within the radius of the query and thresholds the sum. Read as a network, it is a two-layer store with a fixed random first layer and a threshold nonlinearity. [Inferred from the standard description; the book has not been read for this note]
+- [Bricken and Pehlevan, *Attention Approximates Sparse Distributed Memory*](https://arxiv.org/abs/2111.05498) (NeurIPS 2021) report that attention closely approximates SDM's read under certain data conditions, and that the conditions hold in pre-trained GPT-2. [Reported: abstract]
+- [Bricken, Davies, Singh, Krotov and Kreiman, *Sparse Distributed Memory is a Continual Learner*](https://arxiv.org/abs/2303.11934) (ICLR 2023) turn SDM into a modified MLP that learns continually without replay or task labels. [Reported: abstract]
+
+**The tension with "already clean".** By design, an SDM location sums every item written near its random address, so one unit holds many unrelated memories. In thesis 1's terms that is homonymy: senses joined by accident. It is also the shape of Nanda's facts crux, where facts sit in combinations of units. [Inferred]
+
+**The resolution goes through thesis 3.** SDM's addresses are fixed and random. In a trained network the first-layer weights play the role of the addresses, and they are learned. [Inferred]
+- With random addresses, nothing breaks the symmetry. Units hold unrelated items, and the basis is arbitrary, which corresponds to Zhou and Klindt's Theorem 4.1.
+- With learned addresses, training can move each unit to a meaningful region of the input space. Its neighbouring items then extend one another, which is polysemy, Cammarata's picture.
+
+So SDM is not evidence against clean neurons. It names the regime in which neurons are homonymous, and it turns the debate into a question about training: does it move the addresses to meaningful regions? This also restates thesis 1 as a claim about addressing. Homonymy is what random addressing produces, and polysemy is what learned addressing produces.
+
+**Tests.**
+1. Bricken et al.'s continual-learning MLP learns its addresses under top-$k$ sparsity. Are its trained units specialized (polysemous at most), and are its untrained units homonymous? A direct comparison, small and cheap.
+2. Thesis 2 sharpened: when a fact is written into an MLP, are the units it lands on near each other in meaning, or only near each other in a random projection of the input? The first is Cammarata's locality, the second SDM's distribution.
+
+**Scope.** Kanerva's other line, hyperdimensional computing and binding by vector operations, bears on the binding problem of audit finding 4 (the tensor-product store). It belongs with that discussion, not here.
+
+**Hawkins's Hierarchical Temporal Memory** draws on the same sparse-distributed tradition. HTM's sequence memory learns online through local, dendrite-like coincidence detection, and Numenta's active-dendrites work uses context-gated sparse subnetworks against forgetting. Neither entered the lineage of the seven checkpoints, and no recent comparison with Transformers was found. The successor, the [Thousand Brains Project](https://arxiv.org/abs/2507.04494) (Monty; *Neural Computation* 38, 2026), studies sensorimotor object recognition on YCB objects with Hebbian-like local learning. [Reported] It bears on the continual-learning and mindedness questions (local learning, reference frames, voting between modules), not on the architectures essay. [Inferred]
+
+## B.8 Open items after this check
 
 - Item 4: done for V4-Flash (B.3); open for V4-Pro, V4.1-Flash and K3's pseudo-queries.
 - Item 6: start from the split-prefill code (B.1).
