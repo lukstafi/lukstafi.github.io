@@ -449,8 +449,28 @@ When the context holds a demonstration or a test result, the
 self-teacher is grounded, and its confident targets are confident for a
 reason. Without such context, self-distillation is the ungrounded case
 that essay warned about: a model regressed onto its own confident
-mistakes. The next section shows what happens when the grounding is
-weak.</p>
+mistakes.</p>
+<p>A preprint from Google, <a
+href="https://arxiv.org/abs/2610.32770"><em>On-Policy
+Self-Training</em></a> (OPST), tests the space between the two cases.
+The model writes its own privileged context. Given only a topic name, it
+poses a question and writes a rationale and an answer. The sample is
+kept only if the model reaches the same answer again in a fresh context
+and after rewording the question. Nothing outside the model checks the
+answer. What matters is the role the answer plays. On Gemma 4 E2B, a
+small model, the same generated answers raised a three-benchmark average
+by 1.7 points as fine-tuning targets, by 1.0 as a GRPO reward, and by
+7.3 as the teacher’s context. With the filters off and three-quarters of
+the answers replaced by wrong ones, the context route lost 1.9 points on
+MMLU, while fine-tuning lost 5.7 and fell below the base model. The tilt
+says why. A wrong hint moves the teacher only as far as the model finds
+it plausible, so in the terms of <em>The Given and the Found</em> it
+weakens the signal more than it reverses it. The agreement filter is a
+weak form of grounding: the answer must survive a change of framing.
+That makes the teacher as reliable as what the model already knows, and
+no more. The authors draw the consequence themselves: consistent errors
+still enter training. The next section turns to where self-teaching
+fails.</p>
 <p>One cost should be stated before the failures. The SDFT paper reports
 about 2.5 times the floating-point operations and 4 times the wall-clock
 time of ordinary fine-tuning. Regenerating training data once per epoch,
@@ -764,7 +784,8 @@ keeps the update close to what the model already does, a frozen anchor
 bounds its drift, and the teacher’s reasoning carries the implications
 that plain fine-tuning misses. This route consolidates what the context
 made available, and nothing more. When the context holds no
-demonstration or feedback, there is nothing grounded to consolidate.</p>
+demonstration or feedback, only what the model already knows is there to
+consolidate.</p>
 <p>The second story qualifies the first. On-policy training, rewarded or
 self-taught, keeps the model’s other skills while narrowing the skill it
 is learning. A token-level self-teacher that picks one continuation per
@@ -808,8 +829,10 @@ for Continual Learning in LLMs</em>, arXiv 2609.24646. Lampinen et al.,
 <em>On the generalization of language models from in-context learning
 and finetuning: a controlled study</em>, arXiv 2505.00661. Xu et al.,
 <em>A Theory of Usable Information Under Computational Constraints</em>,
-arXiv 2002.10689. Zucchet and Linderman, <em>Divergence controls entropy
-in distillation</em>, arXiv 2610.03529. Zucchet, Lee and Linderman,
+arXiv 2002.10689. Sick et al., <em>On-Policy Self-Training: Data-Free
+Self-Improvement in Large Language Models</em>, arXiv 2610.32770.
+Zucchet and Linderman, <em>Divergence controls entropy in
+distillation</em>, arXiv 2610.03529. Zucchet, Lee and Linderman,
 <em>Language models suffer from a curse of ambiguity</em>, arXiv
 2608.15448. Wang et al., <em>Denser ≠ Better: Limits of On-Policy
 Self-Distillation for Continual Post-Training</em>, arXiv 2607.01763.

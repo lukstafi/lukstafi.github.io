@@ -770,7 +770,10 @@ targets it can absorb.</p>
 <p>Some of this is already learned. SEAL, in the box above, learns to
 write its own training data. Schmidhuber’s <a
 href="https://arxiv.org/abs/1112.5309">PowerPlay</a> invents its own
-tasks, each the simplest that its current solver cannot yet solve.
+tasks, each the simplest that its current solver cannot yet solve. <a
+href="https://arxiv.org/abs/2610.32770">OPST</a>, from Part 1, poses its
+own questions from a topic name and keeps those its student cannot yet
+answer consistently, so its curriculum moves with the student.
 Open-ended search goes further and drops the target. Lehman and
 Stanley’s novelty search, met in Part 2, rewards behaviour unlike any
 seen before. <a href="https://arxiv.org/abs/2306.01711">OMNI</a>, which
@@ -778,13 +781,15 @@ both co-authored, has a foundation model choose, among the tasks a
 learner can learn, those that people would find interesting. Each works
 under a condition that is given one level up. SEAL’s reward is accuracy
 on questions someone wrote, and PowerPlay’s test for a new task is fixed
-in advance. Novelty is measured in a space of behaviours someone chose,
-such as the robot’s final position, and OMNI’s sense of what is
-interesting was learned from human writing. Constructing teaching
-conditions moves the given condition up a level; it does not remove it.
-Predictive questions are the one kind a learner can pose for itself and
-have graded for free, because the world answers them. For any other
-correctness condition, the boundary drawn in <a
+in advance. OPST’s topics are named by people, in its experiments the
+category labels of the benchmarks it is scored on, and its only test of
+an answer is the model’s agreement with itself. Novelty is measured in a
+space of behaviours someone chose, such as the robot’s final position,
+and OMNI’s sense of what is interesting was learned from human writing.
+Constructing teaching conditions moves the given condition up a level;
+it does not remove it. Predictive questions are the one kind a learner
+can pose for itself and have graded for free, because the world answers
+them. For any other correctness condition, the boundary drawn in <a
 href="https://lukstafi.github.io/notes/the-given-and-the-found.html">The
 Given and the Found</a> (§7) still stands, between amortizing search
 under a given condition and discovering the condition.</p>
@@ -834,11 +839,13 @@ Yuksekgonul et al., <em>Learning to Discover at Test Time</em>, arXiv
 2601.16175. Schmidhuber, <em>PowerPlay: Training an Increasingly General
 Problem Solver by Continually Searching for the Simplest Still
 Unsolvable Problem</em>, Frontiers in Psychology 4 (2013), arXiv
-1112.5309. Lehman and Stanley, <em>Abandoning Objectives: Evolution
-Through the Search for Novelty Alone</em>, Evolutionary Computation 19
-(2011). Stanley and Lehman, <em>Why Greatness Cannot Be Planned: The
-Myth of the Objective</em>, Springer (2015). Zhang, Lehman, Stanley and
-Clune, <em>OMNI: Open-endedness via Models of human Notions of
+1112.5309. Sick et al., <em>On-Policy Self-Training: Data-Free
+Self-Improvement in Large Language Models</em>, arXiv 2610.32770. Lehman
+and Stanley, <em>Abandoning Objectives: Evolution Through the Search for
+Novelty Alone</em>, Evolutionary Computation 19 (2011). Stanley and
+Lehman, <em>Why Greatness Cannot Be Planned: The Myth of the
+Objective</em>, Springer (2015). Zhang, Lehman, Stanley and Clune,
+<em>OMNI: Open-endedness via Models of human Notions of
 Interestingness</em>, arXiv 2306.01711. Lichkovski, “Defining Continual
 Learning” (2026), and his interview on <em>Deep Learning with
 Yacine</em> (2026).</p>
