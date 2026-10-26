@@ -59,3 +59,11 @@ Draft the Part 2 passage and also a sentence for Part 3's boundary section on no
 ## Editorial pass
 
 Part 3 looks good! Do a final editorial pass, then update the prompts file and add an entry to the index.
+
+## Recurrent state and the recall criterion
+
+*From the freshness check for the architecture series, 26 October 2026.*
+
+First re-check the 3 Oct dossier for model releases and new papers since then, and fold in the associative-memory thread.
+
+Yes, revise What Breadth Reaches §3 and Where Experience Goes with the 2609.04434 result and the recall-criterion caveat, then commit everything.

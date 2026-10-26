@@ -49,7 +49,9 @@ class="level1">
 interference in simple online learners; §3 corrected on what the KV
 cache carries across compaction, and updated with the first evidence
 from hybrid recurrent models now deployed at the frontier; a broken link
-fixed.</em></p>
+fixed. Revised 26 October 2026: §3 updated with evidence that the
+recurrent state of hybrids carries output language and persona, and its
+capacity estimate tied to its recall criterion.</em></p>
 <hr />
 <p>David Deutsch holds that current AI systems are not creating
 knowledge. They are interpolating sophisticated curves over training
@@ -429,25 +431,44 @@ information without producing the regulatory dynamics the framework
 specifies, the bounded-privilege claim is sharpened, and the privilege
 sits more clearly with seconds-scale settling than with anything at the
 medium timescale. Either outcome is informative.</p>
-<p>The first evidence counsels caution about the stronger hope. <a
+<p>The first evidence divides the question. <a
 href="https://arxiv.org/abs/2609.33093">An interpretability study</a> of
 associative recall in Qwen3.5 hybrids swapped internal states between
 runs. Swapping the recurrent states moved the answer by only 0.2 to 3.6%
 of the full effect, while swapping the attention caches moved it by 96
-to 100%. For that task the recall ran through the context, and the
-recurrent layers did something else. Capacity predicts as much. A state
-of fixed size <span class="math inline">d</span> recalls on the order of
-<span class="math inline">d</span> random associations before
-interference swamps the signal, while softmax attention over a long
-context recalls vastly more; <a
+to 100%. For that task the recall ran through the context. Having a
+carrier for state does not show that a model uses it for a given kind of
+continuity.</p>
+<p><a href="https://arxiv.org/abs/2609.04434">A second study</a> found
+what the recurrent layers carry instead. After a prompt was processed,
+it kept either the attention cache or the recurrent state and let the
+model generate. Exact retrieval survived only through the cache. The
+requested output language and persona survived mainly through the
+recurrent state. With the cache alone, Qwen3.5-4B answered in the
+requested language 1% of the time; with the state alone, 70%. Pairing
+one prompt’s cache with another prompt’s state took the answer’s content
+from the first and its language from the second. Kimi Linear, a smaller
+relative of Kimi K3, showed the same division.</p>
+<p>Capacity makes sense of the division without settling it. A state
+with <span class="math inline">d</span>-dimensional keys recalls on the
+order of <span class="math inline">d</span> random associations as clean
+vectors before interference swamps the signal, while softmax attention
+over a long context recalls vastly more; <a
 href="https://alexwang.ai/posts/associative-memory/">Alex Wang</a> works
-through the estimates. Having a carrier for state does not show that a
-model uses it for a given kind of continuity. The carrier also has its
-own fragility: <a href="https://arxiv.org/abs/2601.01972">short trigger
-strings</a> can overwrite the hidden state of Mamba models irreversibly.
-Recall of an explicit association is not the continuity at issue here,
-though, which is a standing background, a tone or an unworded partial
-understanding. No study we know of has tested that.</p>
+through the estimates. If the readout only has to pick the right answer
+from a fixed set, the same state holds on the order of <span
+class="math inline">d^2</span> (<a
+href="https://arxiv.org/abs/2412.06538">Nichani, Lee and Bietti</a>). So
+the recall study’s routing through the cache was learned, not forced.
+Either way, the cache is the store that grows with the context, and the
+state is the store that every token reads. It suits a few settings that
+persist and condition everything the model generates. Language and
+persona are the nearest measurable cases of the continuity at issue
+here, a standing background or a tone. An unworded partial understanding
+has not been tested, and the generations in the study were short, at
+most 48 tokens. The carrier also has its own fragility: <a
+href="https://arxiv.org/abs/2601.01972">short trigger strings</a> can
+overwrite the hidden state of Mamba models irreversibly.</p>
 <p>The persistence work on emotion features belongs inside this question
 as an illustration. Sauers, Imago, Janus and Tessera show that
 emotion-shaped features in Kimi K2.5 and Cogito v2.1, both
@@ -465,8 +486,8 @@ continuous, and the long tail is statistical rather than maintained. The
 substrate that persists is positional and recomputed token by token, not
 updated through selective gating. A natural hypothesis is that the same
 persistence in a hybrid would be more continuous and better integrated
-within the session. The recall study shows that this has to be measured
-rather than assumed.</p>
+within the session. The persona result makes the hypothesis more
+plausible, and it still has to be measured.</p>
 <p>The compaction failure itself is better located than the original
 version of this essay located it. Losing the reasons while keeping the
 decisions is a property of compacting into text, and it should appear in
@@ -474,11 +495,13 @@ any architecture that compacts this way. What an architecture can change
 is whether anything survives compaction besides the summary. A hybrid
 that carries its recurrent state across the boundary would keep whatever
 that state holds. Whether it holds the reasons is the open question, and
-the recall study gives some reason to doubt it. The test is direct:
-compact the same session with and without carrying the recurrent state
-across, and see whether the earlier optimizations survive. That is a
-more interesting empirical question than whether AI systems “have
-continual learning” in a yes-or-no register.</p>
+the two studies point different ways. The state carries settings such as
+language and persona. But the reasons behind an optimization are
+content, and in the recall study content ran through the cache. The test
+is direct: compact the same session with and without carrying the
+recurrent state across, and see whether the earlier optimizations
+survive. That is a more interesting empirical question than whether AI
+systems “have continual learning” in a yes-or-no register.</p>
 </section>
 <section id="epistemic-agency-across-timescales" class="level2">
 <h2>4. Epistemic Agency Across Timescales</h2>

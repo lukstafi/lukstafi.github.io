@@ -596,6 +596,68 @@ Three items arrived after the research passes. They bear on finding 1, on D6, an
 
 ---
 
+# Addendum, 26 October 2026: literature freshness check
+
+A search of arXiv listings and posts covered items after the research dates above, and items before them that the registers missed (marked *missed earlier*). The full report, including what was skimmed or skipped, is in the gitignored `notes/private/freshness-papers-2026-10-26.md`. Model releases are in the architecture dossier's addendum of the same date; the associative-memory thread is in [associative-memory-view.md](associative-memory-view.md).
+
+## B.1 The recurrent state carries language and persona
+
+**Afendulev, Dontsov, Tutubalina and Korznikov, [*What Attention Recalls and Recurrence Controls in Hybrid Language Models*](https://arxiv.org/abs/2609.04434)** (3 September; missed earlier) is the most consequential item.
+- *Design.* Split-prefill keeps either the KV cache or the recurrent state of a processed prefix, then generates. A state-swap pairs the KV cache of one context with the recurrent state of another. Code: github.com/kirillTerra/split-prefill. [Confirmed]
+- *Scale.* Qwen3.5 4B, 9B and 27B (GDN hybrids); Falcon-H1 3B, 7B and 34B (Mamba hybrids). Point estimates without intervals for Kimi-Linear-48B, Olmo-Hybrid-7B and Jamba2-3B. [Confirmed]
+- *Results.* On Qwen3.5-4B, exact key–value retrieval scores 0.89 with the KV cache only and 0.00 with the recurrent state only. Output-language following shows the reverse, 0.70 against 0.01, and persona 0.49 against 0.14. In the swap, the answer's value comes from the KV source and its language from the recurrent source. KV-only models can report what the language instruction was but do not act on it. The same dissociation is reported for Kimi-Linear-48B. [Confirmed; checked against the abstract on 26 October]
+- *Limits.* Generations are capped at 48 tokens, and persona is judged by an LLM. "KV-only" removes a state that the model was trained to have; it is not a pure-attention model. [Confirmed for the first two; Inferred for the third]
+
+Consequences:
+- **Finding 7 and "What the experiments would test", item 4, need revising.** Lee et al.'s recall result showed that the recurrent state is dispensable *for recall*. This paper shows what the state does instead: it carries standing settings of the generation. The carrier-dissolution conditional of item 4 does not apply to those. [Inferred]
+- **Audit finding 1 gains support.** In hybrids, the persistence across tokens that the audited essays denied is behaviourally load-bearing, not merely architectural. [Inferred]
+- **Part 3.1's carrier test has a template.** The proposed small-scale experiment (open item 6) can start from this code. [Inferred]
+- **The division is what capacity predicts.** A $d_k\times d_v$ state holds few clean associations but can hold a few slowly varying settings; exact retrieval among many items needs softmax attention's suppression (associative-memory note, findings 1–2). [Inferred]
+
+## B.2 Out of date: "nothing exists on the seven checkpoints"
+
+Finding 1 is now out of date beyond the K3 neuron graph of Addendum A.2.
+- **Activation probes against CoT monitors.** [Bergen et al. (Goodfire), arXiv 2609.19101](https://arxiv.org/abs/2609.19101) (v2, 9 October; missed earlier) fit difference-of-means probes for reward hacking on Kimi K3 (layer 60), GLM 5.2 and Qwen 3.8 Max (layers 78 and 83), and steer Qwen3.8-27B. At a matched false-positive rate, probes on K3 catch 33.1 points more hacks than CoT monitors on ImpossibleBench and 3.0 more on DeepSWE, and miss 6.6 more on SWE-bench. Combining probe and monitor by OR raises K3's DeepSWE detection from 41.1 to 80.2 percent for about one percent more false positives. [Confirmed: about 55 percent of the text read]
+- **Deployed activation monitors.** [Lubana et al. (Goodfire)](https://www.goodfire.com/research/production-cyber-monitors-on-kimi-k3) (8 October; missed earlier) run probe-then-judge cyber monitors on K3 and GLM 5.3 in production, at about 93 percent recall and a 5.5 percent benign-interruption rate. A monitor built on K3 data transfers to GLM 5.3. [Confirmed; company-reported]
+- Neither paper says how "the residual stream at layer 60" is defined under K3's AttnRes, and neither uses the KDA state. So finding 3's convention problem stands, unaddressed rather than solved. [Confirmed by absence]
+
+## B.3 Depth: mHC measured, and both depth mixers read as memories
+
+- **Open item 4 is answered for V4-Flash.** [Zhao et al., arXiv 2609.05309](https://arxiv.org/abs/2609.05309) (4 September; missed earlier) measure DeepSeek-V4-Flash-0731. A typical site reads about 2.0 of the four streams and writes about 1.8. Mixing deviates from identity by 0.046 in layers 0–21 and by 0.009 in layers 22–42. Replacing the late mixers with identity raises C4 perplexity by 1.9 percent; replacing the early ones raises it by 41.4 percent, while fixing them to their token mean costs 0.2 percent. [Confirmed] So at V4 scale an mHC model is neither one carrier nor four, and its early mixing is close to input-independent. Audit finding 2's "mean-conserving re-mixing of four copies" holds for the early layers; the late layers are close to four separate identity skips. V4-Pro and V4.1-Flash's Single-Pass mHC remain open. [Inferred]
+- **A mechanism for the near-identity mixing.** [Li, Sha and Yang, arXiv 2610.06653](https://arxiv.org/abs/2610.06653) split a doubly stochastic mixer into a mean channel, which is an ordinary residual update, and a difference channel that contracts at each layer unless the mixer is a permutation. [Reported: abstract]
+- **Depth mixers as memories.** [González-Martínez et al., *Depth Memory*, arXiv 2610.18809](https://arxiv.org/abs/2610.18809) cast AttnRes as an explicit store over depth (a growing cache of layer outputs read by attention) and mHC as an implicit one (a fixed-size state written by outer products). They propose a recursive-least-squares depth memory, tested at 400M and 1.5B. [Confirmed] This makes Part 1.6's reading exact, and it carries the delta-rule and fast-weight vocabulary of Part 1.5 from the token axis to the depth axis. [Inferred]
+- **A frontier-scale residual intervention under mHC.** [Shi, Chen and Shen, arXiv 2609.09793](https://arxiv.org/abs/2609.09793) (missed earlier) read a refusal direction in GLM-5.3-Flash (about 320B, four-stream mHC) by collapsing the streams with the hyper-connection weights. They project it out of all 12,479 residual writers, 12,384 of them fused expert down-projections. Editing attention, dense projections or routed experts alone removes 4, 2 and 15 percent of refusal; editing all three removes 78 percent. [Confirmed] This supplies one of the stream conventions finding 3 listed as missing, and shows experts carrying a large share of a residual direction. [Inferred]
+
+## B.4 Recurrent gates: partly closed
+
+- **GDN heads have fixed roles.** [GateSight, arXiv 2610.14754](https://arxiv.org/abs/2610.14754) measures Qwen3.8-27B and Qwen3.8-Flash-Next. The median GDN head half-life is about 24 tokens. Head rankings agree across documents at Spearman 0.99 or higher, and the static weights alone predict them at 0.94. Head identity explains 71.7 percent of the variance in log effective write, against 10.2 percent for the token. Strong writes by slow-decaying heads predict which attention KV entries will matter later (Spearman about 0.55). [Confirmed] The recurrent layers write where the attention layers will later read, which refines finding 7. [Inferred]
+- **KDA's channel-wise decay is used.** [DASC, arXiv 2608.30386](https://arxiv.org/abs/2608.30386) (missed earlier) reads static per-channel decay horizons from Kimi K3's weights: median one-step decay 0.942. At a 64-token cutoff, 98.3 percent of K3's layer–head pairs mix retained and forgotten channels, and static horizons rank empirical ones at a median within-layer Spearman of 0.90. [Confirmed] Part 1.5's "none inspects KDA's per-channel α" is out of date; per-token gate trajectories on K3 or Qwen3.8-2.4T are still missing. [Inferred]
+- **A lens on recurrent state exists for diagonal SSMs.** [Wang and Reid, arXiv 2609.32102](https://arxiv.org/abs/2609.32102) (missed earlier) redefine the Jacobian lens with the recurrent state as source. On Mamba-1, -2 and -3 and a Nemotron hybrid, a state lens beats the residual lens on concept recovery in most families. No delta-rule model is included; extending it to GDN and KDA is the next step that Part 1.7 asks for. [Confirmed for the results; Inferred for the extension]
+
+## B.5 The "already clean" debate
+
+- Goodfire's companion paper on language-model neurons has not appeared; it is described as "forthcoming in a few weeks". [Confirmed]
+- [Leo Gao, *Neural networks are not already clean*](https://www.lesswrong.com/posts/Dkh7pXKjoNWkkxQDz/neural-networks-are-not-already-clean) (LessWrong, 17 October) concedes that neurons were written off too quickly. He disputes that matching top activations explains a neuron, and guesses that ablating weak activations "quite substantially degrades model performance", promising numbers. No new experiment. [Confirmed] A second senior dissent on Nanda's weak-activation crux. [Inferred]
+- A [toy community replication](https://github.com/AMX07/already-clean-replication) (4- and 6-layer models, one seed) finds weak activations cheap to ablate: zeroing each neuron's weakest 75 percent of activations raises loss by 0.037, against 2.03 for a mass-matched ablation of the strongest. [Confirmed: README; unreviewed]
+- Goodfire's own [VPD](https://arxiv.org/abs/2610.20748) decomposes a 67M dense model's weights into rank-one subcomponents and allows more of them than rows or columns, so as to capture computation in superposition. [Confirmed] The lab's parameter-decomposition line assumes what Cammarata's essay argues against. [Inferred]
+- Zhou and Klindt's v2 adds only the NeurIPS 2026 acceptance. No responses were found. [Confirmed]
+- **For thesis 2 (the facts crux).** [*Atoms, Not Knowledge*, arXiv 2610.25317](https://arxiv.org/abs/2610.25317) reports that single facts written into Engram-style hashed memory (V4.1-Flash; Qwen3.8-Flash-Next n-gram tables) are retrievable but not composable: two-hop accuracy is 26 percent against 25 percent expected from independent hops. [Reported: abstract; read before use]
+
+## B.6 Smaller items
+
+- **MoE.** [*The Router Already Knows*, arXiv 2610.27421](https://arxiv.org/abs/2610.27421) trains a dictionary per expert, opened only when the frozen router selects it, on one layer of Gemma 4 26B-A4B. It explains 0.518 of router-weighted output variance against 0.387 to 0.481 for controls. There is no causal evaluation. [Confirmed] It is a first, weak instance of what Part 1.3 said was missing, using the convention of treating routing as given. [Inferred]
+- **Self-attribution in a GDN hybrid.** [*Where Is the "Self" of a Large Language Model?*, arXiv 2610.16717](https://arxiv.org/abs/2610.16717) finds a linear "self-index" separating the model's own messages from external ones at all 64 layers of Qwen3.8-27B. Swapping states after a message reverses self-attribution in layers 15–31. The abstract does not say whether the swapped states include the GDN state. [Reported] Relevant to the audit of *Experience, Selfhood* and *Indexical Unity*; whether the KV cache or the recurrent state carries the index is open. [Inferred]
+- **Retrieval in Mamba.** [Yarden et al., arXiv 2610.19709](https://arxiv.org/abs/2610.19709): selection gates control retrieval, but they read query relevance from representations that encode it several layers too late. [Reported: abstract] This fits Part 1.5's point that gates and keys are functions of other positions' residual streams. [Inferred]
+
+## B.7 Open items after this check
+
+- Item 4: done for V4-Flash (B.3); open for V4-Pro, V4.1-Flash and K3's pseudo-queries.
+- Item 6: start from the split-prefill code (B.1).
+- Item 7: the Goodfire companion paper is still pending; Zhou and Klindt §9.1 is still unread.
+- New: read 2609.19101 in full for its residual-stream convention under AttnRes; read *Atoms, Not Knowledge* before using it for thesis 2.
+
+---
+
 # Source register
 
 Format: source, scale, status. Scale flags: toy (≤1B), small (1B to 10B), mid (10B to 100B), large (>100B).

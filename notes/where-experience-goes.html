@@ -336,30 +336,48 @@ interference that makes continual learning hard in deep networks is not
 absent in simple learners. It is easier to see.</p>
 <p>The capacity is bounded by the size of the matrix. <a
 href="https://alexwang.ai/posts/associative-memory/">Alex Wang’s account
-of associative memory</a> makes the bound concrete. A memory written by
-adding outer products, as purely additive linear attention does, recalls
-about <span class="math inline">d_k</span> random associations in <span
-class="math inline">d_k</span> dimensions before interference swamps the
-signal. The least-squares memory that repeated delta-rule writes
-approach recalls about <span class="math inline">2d_k</span>. An MLP’s
-nonlinearity suppresses interference, so the core weights hold far more
-than their width suggests, in superposition. Softmax attention over a
-context recalls vastly more, about a million associations at <span
-class="math inline">d_k=64</span> with the usual scaling, because the
-exponential suppresses every key that does not match. The gates set the
-rate of forgetting. Kimi’s <a
+of associative memory</a> makes the bound concrete for one criterion:
+recalling a clean value vector, with random keys. By that criterion a
+memory written by adding outer products, as purely additive linear
+attention does, recalls about <span class="math inline">d_k</span>
+associations in <span class="math inline">d_k</span> dimensions before
+interference swamps the signal. The least-squares memory that repeated
+delta-rule writes approach recalls about <span
+class="math inline">2d_k</span>. A looser criterion counts more. If the
+readout only has to pick the right answer from a fixed set, as
+next-token prediction does, a <span class="math inline">d_k\times
+d_v</span> matrix holds on the order of <span class="math inline">d_k
+d_v</span> associations, up to a logarithm (<a
+href="https://arxiv.org/abs/2412.06538">Nichani, Lee and Bietti</a>). An
+MLP’s nonlinearity suppresses interference, so the core weights hold far
+more than the residual width suggests, in superposition. Softmax
+attention over a context recalls vastly more, about a million
+associations at <span class="math inline">d_k=64</span> with the usual
+scaling, because the exponential suppresses every key that does not
+match. The gates set the rate of forgetting. Kimi’s <a
 href="https://arxiv.org/abs/2510.26692">KDA</a> decays each channel at
 its own learned rate. The contents vanish at the end of the session
 unless the serving protocol keeps the state.</p>
-<p>That a model has a fast-weight store does not show that it uses the
-store for memory. In Qwen3.5 hybrids, <a
+<p>That a model has a fast-weight store does not show what it uses the
+store for. In Qwen3.5 hybrids, <a
 href="https://arxiv.org/abs/2609.33093">an interpretability study</a> of
 associative recall swapped internal states between runs. Swapping the
 recurrent states moved the answer by only 0.2 to 3.6% of the full
 effect, while swapping the attention caches moved it by 96 to 100%. For
-that task the recall ran through the context, and the recurrent layers
-did something else. Capacity predicts as much for any task with more
-associations than the state has dimensions.</p>
+that task the recall ran through the context. The prompts were not built
+to overflow the state, so the routing was learned, not forced by
+capacity.</p>
+<p><a href="https://arxiv.org/abs/2609.04434">A second study</a> found
+what the recurrent layers carry instead. After a prompt was processed,
+it kept either the attention cache or the recurrent state and let the
+model generate. Exact retrieval survived only through the cache. The
+requested output language and persona survived mainly through the
+recurrent state; Kimi Linear, a smaller relative of Kimi K3, showed the
+same division. The cache is the store that grows with the context, and
+it holds the content. The state is the store that every token reads, and
+it holds a few settings that condition everything generated. On the
+ladder, the second rung is so far a store of dispositions for the
+session rather than of facts.</p>
 <p><strong>Slow-weight continual learning is best understood as
 consolidation from faster stores.</strong> Self-distillation moves what
 the context achieved into the core weights (Part 1). Doc-to-LoRA moves a
@@ -789,7 +807,11 @@ Zweiger et al., <em>Self-Adapting Language Models</em>, arXiv
 2506.10943. Lee et al., <em>How Linear Attention Remembers</em>, arXiv
 2609.33093. Wang, <em>You could have invented transformers from
 memory</em> (blog post, October 2026),
-alexwang.ai/posts/associative-memory. Zucchet and Linderman,
+alexwang.ai/posts/associative-memory. Nichani, Lee and Bietti,
+<em>Understanding Factual Recall in Transformers via Associative
+Memories</em>, arXiv 2412.06538. Afendulev, Dontsov, Tutubalina and
+Korznikov, <em>What Attention Recalls and Recurrence Controls in Hybrid
+Language Models</em>, arXiv 2609.04434. Zucchet and Linderman,
 <em>Divergence controls entropy in distillation</em>, arXiv 2610.03529.
 Palit et al., <em>When Forgetting is not Catastrophic: On the Mechanics
 of Spurious Forgetting</em>, arXiv 2610.08718. HiSPA, arXiv 2601.01972.

@@ -16,3 +16,11 @@ Yes: revise §2–§3 and do a light editorial pass on What Breadth Reaches, fix
 
 How do the following resources impact our articles? [a discussion on X headed by two posts, [Alex Wang's](https://x.com/heyyalexwang/status/2111158818730397932) and [Nicolas Zucchet's](https://x.com/NicolasZucchet/status/2112409382210425127)], the former post presenting this article: https://alexwang.ai/posts/associative-memory/ , and the latter post mentioning in particular https://arxiv.org/html/2610.03529v1
 
+
+## Revision, 26 October 2026
+
+*From the freshness check for the architecture series.*
+
+First re-check the 3 Oct dossier for model releases and new papers since then, and fold in the associative-memory thread.
+
+Yes, revise What Breadth Reaches §3 and Where Experience Goes with the 2609.04434 result and the recall-criterion caveat, then commit everything.

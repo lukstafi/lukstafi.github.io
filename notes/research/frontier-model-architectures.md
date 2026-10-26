@@ -20,7 +20,7 @@ The essay will also explicitly correct and improve three earlier pieces: [What D
 | DeepSeek V4.1 | `deepseek-ai/DeepSeek-V4.1-Flash` | Flash is the released V4.1 checkpoint verified in this pass. The release notice mentions a future V4.1-Pro; that is not evidence of released Pro weights. [DeepSeek card][D1], [release notice][D5] |
 | MiniMax M3 | `MiniMaxAI/MiniMax-M3` | Separate production M3 from the smaller experimental model in the MSA paper. [MiniMax card][N1], [MSA paper][N3] |
 
-API names need separate treatment: DeepSeek's September 10 notice says requests to `deepseek-v4-pro` route to V4.1-Flash from September 14 until V4.1-Pro launches. A call using that alias therefore cannot establish that V4-Pro weights were evaluated. Use named checkpoints and provider deployment provenance for comparisons. [Official release notice][D5]
+API names need separate treatment: DeepSeek's September 10 notice says requests to `deepseek-v4-pro` route to V4.1-Flash from September 14 until V4.1-Pro launches. *(Corrected 26 October: the change log says V4-Pro service continues; see the addendum.)* A call using that alias therefore cannot establish that V4-Pro weights were evaluated. Use named checkpoints and provider deployment provenance for comparisons. [Official release notice][D5]
 
 ## Establish the Transformer baseline
 
@@ -313,7 +313,7 @@ For depth mixing, first explain mHC as constrained mixing of multiple residual s
 
 ### MiniMax learns which blocks of context to read
 
-M3's released configuration uses 64 query heads and 4 KV heads, with three initial dense FFNs followed by MoE. Its attention schedule also begins with three full-attention layers, followed by 57 sparse-attention layers. Its vision stack has 32 layers and projects into the language backbone. [MiniMax config][N2]
+M3's released configuration uses 64 query heads and 4 KV heads, with three initial dense FFNs followed by MoE. Its attention schedule also begins with three full-attention layers, followed by 57 sparse-attention layers. *(26 October: M3.1-Flash is sparse in all 60 layers, and M3 also carries a 7-module MTP drafter; see the addendum.)* Its vision stack has 32 layers and projects into the language backbone. [MiniMax config][N2]
 
 MSA adds a lightweight index branch that selects KV blocks separately for each GQA group. Main attention is computed over selected blocks, including a mandatory local block. Selection uses non-differentiable top-k, so the indexer learns through a KL objective matching the main branch's attention. Stop-gradients keep that auxiliary objective from changing the backbone; full-attention warmup precedes sparse selection. [MSA paper, section 3][N3]
 
@@ -535,6 +535,63 @@ Use arithmetic and diagrams to explain mechanisms; use published ablations to su
 - Audit licenses and availability of training data/code separately. Do not infer reproducibility from access to weights.
 - Complete the retrospective's source audit: verify the original neuroscience, temporal-window, continual-learning, multi-stream, and Scientist AI sources rather than inheriting the old essays' interpretations. Separate factual mistakes, unsupported deductions, philosophical hypotheses, and developments since publication.
 - Audit *What Breadth Reaches* §3 primarily for its claims about within-session state, persistence, integration, and regulatory settling. Separate natural feature persistence from steering experiments; seek comparisons of KV and recurrent memory that control history, storage, and training. Treat rolling-context/compaction protocols as continuity stress tests and §2's across-session integration as secondary.
+
+## Addendum, 26 October 2026: freshness check
+
+A second check covered releases and publications from 3 to 26 October. It queried the Hugging Face API for each lab's new repositories and for the current revision of each pinned checkpoint, diffed every changed file, and read official release pages, the arXiv API and GitHub commit histories. The labels follow [architecture-interpretability-and-audit.md](architecture-interpretability-and-audit.md): Confirmed, Reported, Inferred. The full reports are in the gitignored `notes/private/freshness-models-2026-10-26.md` and `notes/private/freshness-papers-2026-10-26.md`. The associative-memory thread that arrived in the same period has its own note, [associative-memory-view.md](associative-memory-view.md).
+
+### Corrections
+
+1. **The `deepseek-v4-pro` alias was not rerouted.** DeepSeek's [change log](https://api-docs.deepseek.com/updates), under 10 September, says: "we have decided to continue providing API services for DeepSeek V4 Pro after September 14, 2026", with billing unchanged. The [10 September news page][D5] still carries the original routing text, so DeepSeek's own pages conflict; cite the change log for current behaviour. The API documentation does not say which Pro snapshot (preview or 0813) the alias serves. What the change log does reroute is the legacy Flash names, `deepseek-v4-flash` and `deepseek-v4-flash-vision-exp`, to V4.1-Flash. [Confirmed; checked directly on 26 October]
+2. **The production MiniMax model is now sparse in every layer.** MiniMax-M3.1-Flash ([announcement](https://www.minimax.io/blog/minimax-m31f), 19 October; [weights](https://huggingface.co/MiniMaxAI/MiniMax-M3.1-Flash), 23 October) has the same size as M3, about 428B total and 23B active, despite its name. Its `sparse_attention_freq` is 1 for all 60 layers, against `[0,0,0,1,…]` in M3. The M3 portrait's "three full-attention layers, followed by 57 sparse-attention layers" therefore describes M3 only. [Confirmed: config diff]
+3. **The M3 portrait omits a drafter.** M3's released config has `num_mtp_modules: 7` and `num_nextn_predict_layers: 1`. M3.1-Flash drops both and ships a five-layer DSpark draft model, the second DSpark adopter after DeepSeek. [Confirmed]
+4. **"Flash is the released V4.1 checkpoint" is incomplete.** DeepSeek-V4.1-Flash-1017 ([card](https://huggingface.co/deepseek-ai/DeepSeek-V4.1-Flash-1017), 17 October) is "a minor update" with a byte-identical config and new weights. `deepseek-flash` now serves it. Its only training disclosure is one sentence in the [release note](https://api-docs.deepseek.com/news/news261017): "reinforcement learning with self-feedback to improve end-to-end project development." [Confirmed] So the weights presumably differ through post-training only. [Inferred]
+
+No architectural claim about the seven pinned checkpoints was contradicted. The configs of MiMo, GLM-5.3, V4.1-Flash and MiniMax-M3 were re-diffed; Kimi K3, Qwen3.8-2.4T, V4-Pro and V4-Pro-0813 have no new revisions. [Confirmed]
+
+### Pinned revisions that moved
+
+- **MiMo RL and MOPD** (9 October): only `preprocessor_config.json` changed, aligning image preprocessing with training. The RL and MOPD language configs remain identical. [Confirmed]
+- **GLM-5.3** (14 October): an evaluation file and a chat-template speed-up. [Confirmed]
+- **V4.1-Flash** (12–16 October): reference-inference fixes. One commit restores each shared indexer's K cache on incomplete compression steps, which shows in code that one layer owns the indexer cache and others share it. That matches the dossier's description of CSA2. Another adds FP8 activation quantization before the grouped output projection. Any reproduction should pin the new revision, `314113f8`. [Confirmed for the diffs; Inferred for the match]
+- **MiniMax-M3** (26 October): a README rename only. [Confirmed]
+
+### New in the seven families
+
+- **Kimi K3.1 Pro** ([blog](https://www.kimi.ai/blog/kimi-k3-1-pro), 23–24 October). Moonshot calls it "a post-trained version of Kimi K3, with substantially larger post-training compute", with joint RL "across hundreds of domains". For the open-weight release Moonshot "identified and removed cyber-related data from both training stages". Weights are promised by 4 November. No architecture, parameter counts or license are given. [Confirmed] That it keeps K3's architecture rests on secondary reports; check the config when the weights appear. [Reported] The blog does not say that the API model and the released weights are the same. [Inferred]
+- **No new Qwen language checkpoint, Qwen3.8-Max report or GLM-5.3 report.** The Qwen and MiniMax training-provenance gaps stay open. Qwen4 is reported to be in training. [Confirmed for absence on Hugging Face and arXiv; Reported for Qwen4] A dated API snapshot, Qwen3.8-Max-0902, widens the gap between the Max service and the open checkpoint. [Reported]
+- **The GLM-5 report** ([arXiv 2602.15763](https://arxiv.org/abs/2602.15763)), tagged on the GLM-5.3 card, is the closest first-party source for the base architecture's parameter accounting, which the dossier leaves open. [Confirmed for the tag; Inferred for its use]
+
+### Stable citations
+
+- [M2] is on arXiv as [2610.11959](https://arxiv.org/abs/2610.11959) (8 October); a text diff shows it matches the pinned PDF, so it is not a new disclosure. [Confirmed]
+- [K3] is on arXiv as [2607.24653](https://arxiv.org/abs/2607.24653) (v2, 7 August). [Confirmed]
+
+### Other labs (flag only)
+
+- **Meta Muse Spark Open** ([blog](https://huggingface.co/blog/meta-muse-spark-open), 15 October; 816B total, about 42B active): "Each block combines its input and its output through a learned residual gate, not through a plain sum." It is a third departure from the additive residual, beside mHC and AttnRes. [Confirmed from the blog; gated config not read]
+- **StepFun Step-5-Preview** (weights about 14–15 October): DeepSeek-style compressed sparse attention on the global layers only of a sliding-window hybrid. [Confirmed from config; date Reported]
+- **inclusionAI Ling-3.1-flash** (13 October): a second KDA-plus-MLA hybrid after Kimi K3, probably below frontier tier. [Confirmed from config]
+- **Reflection Beam 1.0** (501B, 23B active, Apache-2.0) is architecturally conventional. **Mistral Large 4** weights are promised but not yet out. [Confirmed; Reported for Mistral's date]
+
+### New papers on components and monitoring
+
+Interpretability results, including the measurement of mHC in V4-Flash and the split of roles between KV cache and recurrent state, are in the audit dossier's addendum B of the same date. The items below bear on this dossier's own sections.
+
+- **Residual paths are memories over depth.** [*Depth Memory*, arXiv 2610.18809](https://arxiv.org/abs/2610.18809) casts AttnRes as attention over a growing cache of layer outputs and mHC as a fixed-size recurrent state over depth. [Confirmed] The section on AttnRes and mHC can use the same vocabulary as the section on recurrent token mixers. [Inferred] [Li, Sha and Yang, arXiv 2610.06653](https://arxiv.org/abs/2610.06653) show that a doubly stochastic mixer contracts every difference between streams unless it is a permutation, so mHC's extra width is a fading memory. [Reported: abstract] [Multi-Stream Attention Residuals, arXiv 2610.13630](https://arxiv.org/abs/2610.13630) report gains over mHC and AttnRes at 18B and 28B. [Reported] The replacement of the additive residual is spreading.
+- **Top-$k$ selection has its own composition limit.** [Eitan, Yehudai and Maron, arXiv 2610.25250](https://arxiv.org/abs/2610.25250) show that conventional hybrid blocks, and blocks with top-$k$ KV access, need capacity growing as $\sqrt n$ to compose two functions over a domain of size $n$; a block with retrieval depth $m$ composes $m$ functions at fixed size. [Reported: abstract] The section "Recurrence, circuit depth, and effective memory" should treat selection (DSA, MSA, CSA) as a second source of depth limits beside the transition algebra. [Inferred]
+- **Hybrids may need shorter scratchpads.** [Steifer, arXiv 2605.16640](https://arxiv.org/abs/2605.16640) (May; missed earlier) claims that at constant precision a GDN-plus-gated-attention hybrid solves a parity-conditioned retrieval task with a constant number of CoT steps, where pure GDN has no comparable solution and pure gated attention needs a scratchpad of polynomial length. [Reported: abstract; single author, under review] If it holds, it is a formal case of the hybrid design shortening the visible computation that the monitorability argument relies on. [Inferred]
+- **Looped depth adds little in small models.** [Olszowiec et al., arXiv 2610.18127](https://arxiv.org/abs/2610.18127) find that in eight looped models at 1.3B to 3.5B, 76 to 89 percent of answer tokens are decided at the first iteration, except Huginn, which decides gradually. [Confirmed] This weakens, for that architecture class, the worry about hidden serial computation in the bullet "Recurrence through model depth". It says nothing about KDA or GDN recurrence over tokens. [Inferred]
+- **Activation and CoT monitors are complementary.** On Kimi K3, Goodfire's reward-hacking probes beat CoT monitors on two of three benchmarks, and an OR of both nearly doubles detection on DeepSWE (audit addendum B.2). [Confirmed] This is the first measurement of the separate observation channels that "Monitorability is detection" asks to assess, on two of the seven checkpoints. [Inferred]
+- **Complex KDA** ([B20]) is listed as a NeurIPS 2026 paper. [Reported] It is still a variant, not a K3 disclosure.
+- **GDN head half-lives.** The median GDN head in Qwen3.8-27B has a half-life of about 24 tokens, and head roles are nearly fixed by the weights (GateSight; audit addendum B.4). [Confirmed] This is the first measurement bearing on "Limited effective depth needs an operational definition" for one of the hybrid families. [Inferred]
+
+Nothing new was found on MLA, DSA, MSA or CSA/HCA interpretability, Single-Pass mHC, MTP and drafting beyond systems papers, or long-context curricula for the seven.
+
+### Consequences for the essay
+
+- The family resemblance across the open frontier is now stronger than when the dossier was written. Sparse attention spreads to every layer (MiniMax) and to the global layers of window hybrids (StepFun), KDA-plus-MLA hybrids multiply (Ling), and the plain residual sum is being replaced in more places (Meta). The series can present these as converging choices rather than seven idiosyncrasies. [Inferred]
+- Decide before drafting whether to keep the pinned seven or move MiniMax to M3.1-Flash and Kimi to K3.1 Pro once its weights appear. Moving costs little for MiniMax, whose change is fully documented in the config. For Kimi it depends on the 4 November config.
 
 ## Primary source register
 
