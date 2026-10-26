@@ -9,11 +9,7 @@ Status: outline for review, 26 Oct 2026. Sample sentences show register only. Se
 - **No philosophical retrospective.** The 3 Oct dossier planned a section correcting earlier essays. Much of it landed on 25–26 Oct (*The Dynamics That Matter* retired; *What Breadth Reaches* §3 and *Where Experience Goes* revised). What remains concerns carriers and mindedness, so it moves to the mindedness essay. This essay ends with at most a paragraph pointing ahead.
 - **The seven pinned checkpoints stay the subject**: MiMo-V2.6-Pro, Kimi K3, Qwen3.8-2.4T-A95B, GLM-5.3, DeepSeek V4-Pro, DeepSeek V4.1-Flash, MiniMax M3. MiniMax-M3.1-Flash and Kimi K3.1 Pro appear where they extend a trend (§5), and K3.1 Pro's config is checked when its weights appear (due 4 Nov).
 
-Working titles (pick one, or supply another):
-
-- *Where the Model Keeps Things: Architectures and Training of the Open Frontier*
-- *Every Layer a Store: How the 2026 Open Models Are Built and Trained*
-- *Seven Ways to Extend the Transformer, and How They Are Trained*
+Title (chosen 26 Oct): *Every Layer a Store: How the 2026 Open Models Are Built and Trained*. The seven checkpoints do not make seven distinct extensions: GLM-5.3 reuses its predecessor's architecture, K3 and Qwen3.8 share the delta-rule hybrid design, and the thesis stresses convergence.
 
 Sources this outline draws on:
 
