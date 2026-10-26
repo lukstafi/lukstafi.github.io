@@ -5,7 +5,7 @@ Status: outline for review, 26 Oct 2026. Sample sentences show register only. Se
 ## Decisions taken so far
 
 - **Scope.** A deep account of architectures and training. Interpretability results enter only where they show what a component does in a trained model.
-- **Form.** One blog essay, landing on Substack in parts if it runs long. Split into an architectures article and a training article if the two halves stop cohering. The split point is fixed in advance: between §6 and §7.
+- **Form (decided 26 Oct): two essays.** Essay A covers Part A (§§0–6) with its own closing; it is drafted in `notes/every-layer-a-store.md` as *Every Layer a Store*, subtitle "The open frontier, part 1: how the 2026 open models are built". Essay B covers Part B (§§7–11) with its own opening and closing; working title *Filling the Stores*, subtitle "The open frontier, part 2: how the 2026 open models are trained". §12's answer to the opening question closes essay A; essay B opens on GLM-5.3, a release whose gains came from training rather than architecture, or on circuits forming before facts.
 - **No philosophical retrospective.** The 3 Oct dossier planned a section correcting earlier essays. Much of it landed on 25–26 Oct (*The Dynamics That Matter* retired; *What Breadth Reaches* §3 and *Where Experience Goes* revised). What remains concerns carriers and mindedness, so it moves to the mindedness essay. This essay ends with at most a paragraph pointing ahead.
 - **The seven pinned checkpoints stay the subject**: MiMo-V2.6-Pro, Kimi K3, Qwen3.8-2.4T-A95B, GLM-5.3, DeepSeek V4-Pro, DeepSeek V4.1-Flash, MiniMax M3. MiniMax-M3.1-Flash and Kimi K3.1 Pro appear where they extend a trend (§5), and K3.1 Pro's config is checked when its weights appear (due 4 Nov).
 
