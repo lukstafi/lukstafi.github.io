@@ -36,7 +36,7 @@ $$
 
 The mask $M$ hides the positions a query may not see; in a language model these are the future ones. Several heads run in parallel, each with its own projections.
 
-A Transformer is a stack of units called blocks, all with the same outline. Model cards, and this essay, count blocks as *layers*: when we say that Kimi K3 has 93 layers, we mean 93 blocks. Each block contains two *sublayers*, and each sublayer is wrapped in a normalization and a residual addition, which adds the sublayer's output back to its input. A modern block thus has three slots:
+A Transformer is a stack of *layers*, repeated units with the same outline: when we say that Kimi K3 has 93 layers, we mean 93 of these units. Each layer combines two *blocks*, components such as an attention block or a feed-forward block, with wiring around them. The wiring normalizes each block's input and adds the block's output back to what came in, the residual addition. A modern layer thus has three slots:
 
 ```text
 incoming representation
@@ -45,7 +45,7 @@ incoming representation
   → outgoing representation
 ```
 
-The token mixer moves information between positions; attention is the classic choice. The channel mixer transforms each position on its own; a feed-forward network is the classic choice. The residual combination carries each position's representation from one block to the next. Every model in this essay replaces at least one of the three.
+The token mixer moves information between positions; attention is the classic choice. The channel mixer transforms each position on its own; a feed-forward network is the classic choice. The residual combination carries each position's representation from one layer to the next. Every model in this essay replaces at least one of the three.
 
 Four smaller changes are common to most of them:
 
@@ -190,23 +190,23 @@ As a context grows, so does the number of keys that compete with the right one. 
 
 ## 4. Memory along depth
 
-The third kind of mixing runs across layers. In a standard Transformer each sublayer reads the residual stream, computes something, and adds the result back. The residual stream is therefore a store too: within one token's pass through the network, every sublayer writes into it and every later sublayer reads the sum. Two of the seven models replace this plain sum.
+The third kind of mixing runs across layers. In a standard Transformer each block reads the residual stream, computes something, and adds the result back. The residual stream is therefore a store too: within one token's pass through the network, every block writes into it and every later block reads the sum. Two of the seven models replace this plain sum.
 
 ### Several streams, mixed
 
-DeepSeek's [Manifold-Constrained Hyper-Connections](https://arxiv.org/abs/2512.24880) (mHC) keep four copies of the residual stream for each token, stacked as the rows of a matrix $X_l$. Around each sublayer $\mathcal F_l$,
+DeepSeek's [Manifold-Constrained Hyper-Connections](https://arxiv.org/abs/2512.24880) (mHC) keep four copies of the residual stream for each token, stacked as the rows of a matrix $X_l$. Around each block $\mathcal F_l$, attention or feed-forward,
 
 $$
 X_{l+1}=B_lX_l+C_l\,\mathcal F_l(A_lX_l).
 $$
 
-The row vector $A_l$ mixes the four streams into the sublayer's input. The column vector $C_l$ distributes the sublayer's output back over the streams. The matrix $B_l$ mixes the streams among themselves. All three are computed from the current streams, so they differ from token to token. $B_l$ is pushed toward a doubly stochastic matrix, with non-negative entries and rows and columns summing to 1, by twenty rounds of alternately normalizing its rows and columns. A doubly stochastic mix conserves the total over the streams, which keeps the signal from growing or vanishing across many layers.
+The row vector $A_l$ mixes the four streams into the block's input. The column vector $C_l$ distributes the block's output back over the streams. The matrix $B_l$ mixes the streams among themselves. All three are computed from the current streams, so they differ from token to token. $B_l$ is pushed toward a doubly stochastic matrix, with non-negative entries and rows and columns summing to 1, by twenty rounds of alternately normalizing its rows and columns. A doubly stochastic mix conserves the total over the streams, which keeps the signal from growing or vanishing across many layers.
 
-> **Worked example 4: mixing two streams.** Take two scalar streams, $x=(2,4)$, and the doubly stochastic mix with rows $(3/4,1/4)$ and $(1/4,3/4)$. The mixed residual is $(2.5,3.5)$, and its total is still 6. If the sublayer reads the average of the streams, 3, computes 6 from it, and sends half to each stream, the result is $(5.5,6.5)$. The mixing conserved the old total; the sublayer added new content on top. In the trained model the rows of the mixing matrix sum to 1 exactly and the columns only approximately, so the conservation is approximate.
+> **Worked example 4: mixing two streams.** Take two scalar streams, $x=(2,4)$, and the doubly stochastic mix with rows $(3/4,1/4)$ and $(1/4,3/4)$. The mixed residual is $(2.5,3.5)$, and its total is still 6. If the block reads the average of the streams, 3, computes 6 from it, and sends half to each stream, the result is $(5.5,6.5)$. The mixing conserved the old total; the block added new content on top. In the trained model the rows of the mixing matrix sum to 1 exactly and the columns only approximately, so the conservation is approximate.
 
-A doubly stochastic mix has a further property. Its average channel is an ordinary residual update, and every difference between the streams shrinks at each layer unless the matrix is a permutation, as [Li, Sha and Yang](https://arxiv.org/abs/2610.06653) show. The extra streams are a memory that fades over depth. [Zhao and colleagues](https://arxiv.org/abs/2609.05309) measured how a trained model uses them. In DeepSeek-V4-Flash, a typical sublayer reads about two of the four streams and writes about two. In the later half of the network the mixing is close to the identity: replacing it with the identity raised perplexity by 1.9 percent. In the earlier half the mixing matters, at 41.4 percent, but it hardly depends on the input: fixing it to its average over tokens cost 0.2 percent.
+A doubly stochastic mix has a further property. Its average channel is an ordinary residual update, and every difference between the streams shrinks at each layer unless the matrix is a permutation, as [Li, Sha and Yang](https://arxiv.org/abs/2610.06653) show. The extra streams are a memory that fades over depth. [Zhao and colleagues](https://arxiv.org/abs/2609.05309) measured how a trained model uses them. In DeepSeek-V4-Flash, a typical block reads about two of the four streams and writes about two. In the later half of the network the mixing is close to the identity: replacing it with the identity raised perplexity by 1.9 percent. In the earlier half the mixing matters, at 41.4 percent, but it hardly depends on the input: fixing it to its average over tokens cost 0.2 percent.
 
-DeepSeek-V4.1-Flash changes one coefficient. Its Single-Pass mHC reads each sublayer's input with $A_{l-1}$, the mixing vector computed one step earlier, instead of $A_l$. That lets the hardware read each tile of the streams once instead of twice, halving the memory traffic of the original implementation. The report says the shift costs negligible quality, and it was used in pretraining, so it changes the model and not only its kernel.
+DeepSeek-V4.1-Flash changes one coefficient. Its Single-Pass mHC reads each block's input with $A_{l-1}$, the mixing vector computed one step earlier, instead of $A_l$. That lets the hardware read each tile of the streams once instead of twice, halving the memory traffic of the original implementation. The report says the shift costs negligible quality, and it was used in pretraining, so it changes the model and not only its kernel.
 
 ### Attention over depth
 
@@ -276,7 +276,7 @@ Part of the case for watching a model's reasoning rests on depth. A Transformer 
 
 The best-known constant-depth result concerns the circuit class $\mathrm{TC}^0$. Under its arithmetic assumptions, [Merrill, Petty and Sabharwal](https://arxiv.org/abs/2404.08819) place fixed-depth Transformers and the diagonal recurrences of Mamba-style models in it. The class excludes, assuming a separation that is widely believed but unproved, some problems of tracking a state through a sequence. Whether the delta-rule layers escape the class depends on their transition matrices. Gated DeltaNet's update multiplies the state by $\alpha_t(I-\beta_tk_tk_t^\top)$, which mixes coordinates and is not diagonal. Constructions that give such layers stronger state tracking, [in Olmo Hybrid](https://arxiv.org/abs/2604.03444) and [in Complex KDA](https://arxiv.org/abs/2609.24797), widen the ranges of the gates, for instance letting the write step exceed 1 so that the factor can have a negative eigenvalue. The released code of Kimi K3 and Qwen3.8 does not: the write step stays between 0 and 1. Names like "linear attention" or "delta rule" therefore do not settle where these models sit.
 
-Selection has its own limit. [Eitan, Yehudai and Maron](https://arxiv.org/abs/2610.25250) argue that hybrid blocks with top-$k$ access to their context need capacity growing as the square root of the domain size to compose two lookups, unless retrieval is repeated within the block. A model that reads few entries per layer may have to pay for composition in layers.
+Selection has its own limit. [Eitan, Yehudai and Maron](https://arxiv.org/abs/2610.25250) argue that hybrid layers with top-$k$ access to their context need capacity growing as the square root of the domain size to compose two lookups, unless retrieval is repeated within the layer. A model that reads few entries per layer may have to pay for composition in layers.
 
 For monitoring, the important distinction is between three paths from one token to the next. The first is recurrence across positions, as in KDA and Gated DeltaNet: a numerical state carries information that the emitted text need not express. Ordinary Transformers have this path too, through their caches, so text was never the only channel between steps. The second is recurrence through depth, repeated passes through the same layers before a token is emitted. None of the seven does this, and in eight small looped models [most answer tokens are decided at the first iteration](https://arxiv.org/abs/2610.18127). The third is generated text, which adds steps of computation but need not explain them faithfully.
 
