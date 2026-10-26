@@ -197,6 +197,6 @@ Figure 5: parallel training timelines, marking when modalities, long context, lo
 
 1. ~~Opening~~ Decided 26 Oct: the three-model 1M-token prompt opens; the hybrid result lands in §3.
 2. ~~Where the store vocabulary enters~~ Decided 26 Oct: §2 is a full section, with the classical lineage in boxes or subsections.
-3. **§6's weight.** The depth-and-monitorability section is the most theoretical. Keep it in Part A, or close the essay with it after Part B?
+3. ~~§6's weight~~ Decided 26 Oct: §6 stays in Part A as an architectural consideration.
 4. **Figures.** Five original figures are planned. Draw them as SVG for the blog. Substack needs raster versions, which the publish script can produce.
 5. **Remaining research before drafting**, from the dossiers: read the V4 equations for Single-Pass mHC; read MSA and DSA ablations; resolve the Qwen output-gate mismatch; read 2609.19101 in full; check K3.1 Pro's config on release.
