@@ -107,7 +107,12 @@ weighted average of the values:</p>
 <p>The mask <span class="math inline">M</span> hides the positions a
 query may not see; in a language model these are the future ones.
 Several heads run in parallel, each with its own projections.</p>
-<p>A modern block has three slots:</p>
+<p>A Transformer is a stack of units called blocks, all with the same
+outline. Model cards, and this essay, count blocks as <em>layers</em>:
+when we say that Kimi K3 has 93 layers, we mean 93 blocks. Each block
+contains two <em>sublayers</em>, and each sublayer is wrapped in a
+normalization and a residual addition, which adds the sublayer’s output
+back to its input. A modern block thus has three slots:</p>
 <pre class="text"><code>incoming representation
   → normalize → mix tokens   → add to the residual
   → normalize → mix channels → add to the residual
@@ -648,7 +653,7 @@ stochastic mix with rows <span class="math inline">(3/4,1/4)</span> and
 <span class="math inline">(1/4,3/4)</span>. The mixed residual is <span
 class="math inline">(2.5,3.5)</span>, and its total is still 6. If the
 sublayer reads the average of the streams, 3, computes 6 from it, and
-sends half to each stream, the block’s output is <span
+sends half to each stream, the result is <span
 class="math inline">(5.5,6.5)</span>. The mixing conserved the old
 total; the sublayer added new content on top. In the trained model the
 rows of the mixing matrix sum to 1 exactly and the columns only
@@ -686,8 +691,9 @@ h_l=\sum_i\alpha_{i\to l}\,v_i ,
 <p>where the weights come from a learned query for layer <span
 class="math inline">l</span> compared with the normalized candidates. In
 K3 the candidates are the embedding, the completed sums of earlier
-blocks of 12 layers, and the running sum within the current block: up to
-nine sources at the last layer.</p>
+groups of 12 layers, and the running sum within the current group: up to
+nine sources at the last layer. (The AttnRes paper calls these groups
+blocks.)</p>
 <blockquote>
 <p><strong>Worked example 5: retrieval over depth.</strong> Let two
 earlier representations be <span class="math inline">(1,0)</span> and

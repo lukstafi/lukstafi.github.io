@@ -36,7 +36,7 @@ $$
 
 The mask $M$ hides the positions a query may not see; in a language model these are the future ones. Several heads run in parallel, each with its own projections.
 
-A modern block has three slots:
+A Transformer is a stack of units called blocks, all with the same outline. Model cards, and this essay, count blocks as *layers*: when we say that Kimi K3 has 93 layers, we mean 93 blocks. Each block contains two *sublayers*, and each sublayer is wrapped in a normalization and a residual addition, which adds the sublayer's output back to its input. A modern block thus has three slots:
 
 ```text
 incoming representation
@@ -202,7 +202,7 @@ $$
 
 The row vector $A_l$ mixes the four streams into the sublayer's input. The column vector $C_l$ distributes the sublayer's output back over the streams. The matrix $B_l$ mixes the streams among themselves. All three are computed from the current streams, so they differ from token to token. $B_l$ is pushed toward a doubly stochastic matrix, with non-negative entries and rows and columns summing to 1, by twenty rounds of alternately normalizing its rows and columns. A doubly stochastic mix conserves the total over the streams, which keeps the signal from growing or vanishing across many layers.
 
-> **Worked example 4: mixing two streams.** Take two scalar streams, $x=(2,4)$, and the doubly stochastic mix with rows $(3/4,1/4)$ and $(1/4,3/4)$. The mixed residual is $(2.5,3.5)$, and its total is still 6. If the sublayer reads the average of the streams, 3, computes 6 from it, and sends half to each stream, the block's output is $(5.5,6.5)$. The mixing conserved the old total; the sublayer added new content on top. In the trained model the rows of the mixing matrix sum to 1 exactly and the columns only approximately, so the conservation is approximate.
+> **Worked example 4: mixing two streams.** Take two scalar streams, $x=(2,4)$, and the doubly stochastic mix with rows $(3/4,1/4)$ and $(1/4,3/4)$. The mixed residual is $(2.5,3.5)$, and its total is still 6. If the sublayer reads the average of the streams, 3, computes 6 from it, and sends half to each stream, the result is $(5.5,6.5)$. The mixing conserved the old total; the sublayer added new content on top. In the trained model the rows of the mixing matrix sum to 1 exactly and the columns only approximately, so the conservation is approximate.
 
 A doubly stochastic mix has a further property. Its average channel is an ordinary residual update, and every difference between the streams shrinks at each layer unless the matrix is a permutation, as [Li, Sha and Yang](https://arxiv.org/abs/2610.06653) show. The extra streams are a memory that fades over depth. [Zhao and colleagues](https://arxiv.org/abs/2609.05309) measured how a trained model uses them. In DeepSeek-V4-Flash, a typical sublayer reads about two of the four streams and writes about two. In the later half of the network the mixing is close to the identity: replacing it with the identity raised perplexity by 1.9 percent. In the earlier half the mixing matters, at 41.4 percent, but it hardly depends on the input: fixing it to its average over tokens cost 0.2 percent.
 
@@ -216,7 +216,7 @@ $$
 h_l=\sum_i\alpha_{i\to l}\,v_i ,
 $$
 
-where the weights come from a learned query for layer $l$ compared with the normalized candidates. In K3 the candidates are the embedding, the completed sums of earlier blocks of 12 layers, and the running sum within the current block: up to nine sources at the last layer.
+where the weights come from a learned query for layer $l$ compared with the normalized candidates. In K3 the candidates are the embedding, the completed sums of earlier groups of 12 layers, and the running sum within the current group: up to nine sources at the last layer. (The AttnRes paper calls these groups blocks.)
 
 > **Worked example 5: retrieval over depth.** Let two earlier representations be $(1,0)$ and $(0,2)$, and let the layer's query score them at 0 and $\ln 3$. The softmax weights are 1/4 and 3/4, and the layer's input is $(1/4,3/2)$. The lookup runs over layers of the same token, not over earlier tokens.
 
