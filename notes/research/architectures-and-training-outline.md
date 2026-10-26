@@ -43,8 +43,8 @@ Sample sentence: "A Transformer layer is a memory, and the question every one of
 
 **Purpose:** show the reader one concrete difference before introducing any term.
 
-- Candidate opening: the same 1M-token prompt, read by three of the seven. A full-attention layer keeps an entry for every token. A KDA layer in Kimi K3 keeps a fixed-size matrix per head that every token updates. A V4.1-Flash decoder never runs most of the prompt through its full stack: an encoder builds the decoder's cache. Give each in one sentence, then pose the question of where the prompt went.
-- Alternative opening: the hybrid split result. Ask a Qwen3.5 hybrid to answer in French and to recall a value. Drop its recurrent state, and it recalls the value in the wrong language; drop its cache, and it answers in French but cannot recall. This is vivid, but it spends the essay's best evidence early. Decide when drafting §3.
+- **Opening (decided 26 Oct): show that the vanilla-Transformer picture is out of date.** Follow one 1M-token prompt into three of the seven. The vanilla picture says every layer keeps an entry for every token and reads all of them. A full-attention layer in MiMo does that only in its 10 global layers; its other 60 see a 128-token window. A KDA layer in Kimi K3 keeps a fixed-size matrix per head that every token updates. A V4.1-Flash decoder never runs most of the prompt through its own layers: a separate encoder builds the decoder's cache. Give each in one or two sentences, then ask where the prompt went.
+- **Keep the striking hybrid result for §3.** A Qwen3.5 hybrid that has lost its recurrent state still recalls the value but answers in the wrong language; one that has lost its cache answers in French but cannot recall. It lands where the reader has the store vocabulary to see why.
 - State the thesis in two sentences.
 
 #### §1 From the 2017 Transformer to the contemporary block
@@ -185,7 +185,7 @@ Figure 5: parallel training timelines, marking when modalities, long context, lo
 
 ## 4. Open questions
 
-1. **Opening.** The three-model 1M-token prompt, or the French-and-recall hybrid result? The first is better suited to the whole essay; the second is more vivid.
+1. ~~Opening~~ Decided 26 Oct: the three-model 1M-token prompt opens; the hybrid result lands in §3.
 2. **Where the store vocabulary enters.** §2 as a full section before the models, or introduced inside §1 and used from §3 on? A full section is clearer, but it delays the models.
 3. **§6's weight.** The depth-and-monitorability section is the most theoretical. Keep it in Part A, or close the essay with it after Part B?
 4. **Figures.** Five original figures are planned. Draw them as SVG for the blog. Substack needs raster versions, which the publish script can produce.
