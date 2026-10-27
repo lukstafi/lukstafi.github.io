@@ -1,6 +1,6 @@
 # An overhaul proposal, v2: experience as defended coherence
 
-Date: 18 October 2026. Status: a revised proposal for discussion, written by Claude at the user's request. Nothing in it is adopted.
+Date: 18 October 2026. Status: a revised proposal for discussion, written by Claude at the user's request. Nothing in it is adopted. Archival since 27 October 2026; see the verdict addendum at the end.
 
 It revises [theory-overhaul-proposal.md](theory-overhaul-proposal.md) (v1) in light of [overhaul-proposal-audit.md](overhaul-proposal-audit.md), an independent audit written in a separate session. Both documents are kept unchanged. The empirical inputs are in [carriers-multiplexing-and-regulation.md](carriers-multiplexing-and-regulation.md).
 
@@ -395,3 +395,34 @@ Additions after the audit, prompted by the user's questions:
 ## Citation check
 
 The audit checked v1's citations. The new citations in v2 that were checked directly: ESOM:37, ESOM:71, MbD:71, MbD:83, MbD:99, MbD:109, MON:64, MON:66, UWK:49.
+
+## Verdict addendum, 27 October 2026
+
+Status: archival. The body above is left as it was. There will be no v3; the mindedness essay is the vehicle for what survives. These verdicts come from a conversation about Michał Wójcik's dialogue *Whether There Is a Well-Defined Hard Problem* (reply draft in `notes/research/hard-problems-reply-to-michal.md`). Items marked (user) are the user's own positions. The rest is Claude's analysis, which the user accepted.
+
+**Unity (§5) survives.** "One economy of error over mutually assessable vehicles" is close to what we now call psychological unity: whether something constitutes a single broadcasting economy, with a broadcast that returns (ESOM:57 excludes the one-way channel). "Records suffice for the unity of a mind, but not for a field" also stands.
+
+**Shared defense (Summary, §4) is rejected.** A broadcasting economy does not entail coherence maintenance (user). Broadcast that returns can spread a contradiction as easily as resolve one. Maintenance needs a process that registers conflicts between truth-bearers and revises, and broadcast is at most its precondition. Counterexamples are a blackboard architecture with no consistency checker, a transformer's context, and fragmented belief (Lewis, Egan). The asymmetry is that a mind's unity survives incoherence, while a field does not survive missing binding. So the five conditions split two ways:
+- *What makes something a mind*: accuracy-responsiveness as a disposition (MbD:67), not maintained coherence.
+- *What makes it one mind*: the economy.
+
+Defense belongs to experience, and through U1 to personhood. The symmetry that remains is that phenomenality and mindedness are both regulation, at vehicle grain and at truth-bearer grain. Their unities are asymmetric: binding achieves phenomenal unity, while psychological unity is a structure of availability.
+
+**Psychological unity underlies phenomenal unity (user).** With the local variant disowned (MON:116), binding into one field needs global regulation. Every field therefore lies within an economy, which bounds it without fixing it. One economy may hold more than one field (user). Nested experiences, multiple fields and overlapping economies (monk and monastery) leave "how many beings?" without a privileged answer. The metaphysics needs no such count. Ethics needs a rule for proportioning moral consideration. The rule we argue for is that a shared experience is not added once per owner (MON:124 already counts occurrences, not ownerships). Do not claim that a whole is not added to its parts. A field is more than the sum of its part-experiences, since its joints are experienced (user). A measure that is additive over disjoint parts would deny this. Keep this ethical measure apart from the reality measure of *Presence and Actuality* ("Suffering and reality measure"). That one weighs occurrences from beneath the grain of physics, like Born weights on branches, and nested experiences share their occurrence's weight. The mereology of minds is insulated from it. Their distribution across rulial space (Boltzmann brains, plenitude) is not.
+
+**The local variant is rejected for phenomenality in general, not only for animals (user).** Tracking, assessment and intervention also belong to minded regulation (ESOM:61), so binding is what makes regulation experiential. The local variant gives that criterion up and cannot say what phenomenality is. The general claim has the status of *Grain*'s identity: necessary if true, known a posteriori, with our own experiences fixing the kind as samples fix "water". Read "local" and "global" by how far a loop reaches, not by anatomy. Localist compositional binding that yields a field relabels non-local binding (user). Composition that does not return yields no field over its parts. Conceiving such a convergent architecture is conceiving the rival theory, not a counterexample.
+
+**The dis-joint Martian.** It is possible, and two fields within one economy explain it without the local variant (user). Dis-jointness that is presented as a relation is a joint, however weak. Between genuine fields, the economy registers the dis-jointness cognitively.
+
+**Binding has dimensions (user).** An imagined apple shares the perspectival format of the seen desk. The represented space carries both, but no experienced space does: the two are joined in time and dis-joint in space. Reality monitoring maintains the dis-joint by exempting imagined vehicles from cross-checks with the scene. Its failures show it at work: the Perky effect, hallucination, and imagery projected onto the scene. Togetherness in content without togetherness in experience is evidence that content does not fix phenomenal binding.
+
+**Joints are phenomenal (user).** Seeing them is like seeing movement rather than a change of position, like the Dalmatian rather than democracy. In the Dalmatian, recognition of the whole changes how the same patches look. That favors corrections that return to the feature vehicles over convergence on a new vehicle. Mooney-image results point the same way (Hsieh, Vul and Kanwisher 2010, cited from memory and not yet checked). The empirical argument needed is narrow: do binding corrections return to feature-level vehicles? Use cross-modal examples; ESOM:65's cup is visual-only, and local recurrence could bind it.
+
+**Working memory** means active maintenance within the thick present, not recall of earlier moments.
+
+**The knowledge-grounding conjecture** (§ Summary, History) is abandoned (user). It held that phenomenal consciousness evolved to provide epistemic assurance. The current view is that experience contributes epistemically when present, through reliability assessment and binding, but that knowledge does not require it. v2's "promotes a sharpened version" should be read in that light.
+
+**Probe cases for the mindedness essay:**
+- perceptual imagination;
+- absorption, such as a daydream while driving, as the best everyday candidate for two fields in one economy;
+- aphantasia, where the vehicles are intact (many aphantasics dream visually) but the voluntary write path is missing; this is a human case of *Grain*'s Mary.
