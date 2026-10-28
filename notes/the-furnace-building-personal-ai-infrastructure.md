@@ -194,4 +194,4 @@ The six empty slots are staring at me right now. Time to fill them.
 
 ---
 
-*This is the first article in the series "Working on the Eve of Singularity." The previous series on consciousness, cognitive architecture, and AI mentality is available at [lukstafi.github.io](https://lukstafi.github.io). Ludics is open source at [github.com/lukstafi/ludics](https://github.com/lukstafi/ludics).*
+*This is the first article in the series "Working on the Eve of Singularity." The previous series on consciousness, cognitive architecture, and AI mentality is available at [lukstafi.github.io](https://lukstafi.github.io). Ludics is open source at [github.com/lukstafi/ludics-classic](https://github.com/lukstafi/ludics-classic).*
