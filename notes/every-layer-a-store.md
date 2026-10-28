@@ -228,6 +228,26 @@ Neither design feeds a later layer's output back into an earlier layer within a 
 
 ## 5. The seven assembled
 
+Section 2 put four questions to every store: what writes it and when, how much it holds, and what reading it costs. Sections 2 to 4 answered them one store at a time. Here are the answers side by side, with a fifth column for how each store forgets. $L$ is the length of the context, and $d$ the dimension of a key.
+
+| Store | Written by | Holds | Reading costs | Forgets |
+| --- | --- | --- | --- | --- |
+| Feed-forward layer | training | about $d$ clean associations with a linear readout, order $d^p$ with a power-$p$ nonlinearity; measured, about 2 bits per parameter | the whole layer, for every token | only when later training overwrites it |
+| Experts | training | judged by total parameters, at a small penalty | a few experts, chosen by a router or, in V4-Pro's first three layers, by a hash of the token | only when later training overwrites them |
+| Engram | training, under keys fixed in advance: hashes of the last two to four tokens | a learned value per table row; tokens whose hashes collide share a row | a fixed number of lookups per token, whatever the tables' size | only when later training overwrites it |
+| Full cache | each token of the context, once | an entry per token; random keys stay separable at a fixed sharpness up to about $e^{2\beta(1-\beta/d)}$ entries | all $L$ entries | nothing; competitors accumulate |
+| Window | each token of the context | the last 128 entries in MiMo | a fixed number of entries | everything older than the window |
+| Selected entries | each token of the context | an entry per token | a scoring pass over all $L$, then 512 to 2,048 entries | nothing; what the indexer passes over is missed |
+| Compressed entries | each group of tokens, pooled | one entry per 4 tokens (overlapping pools of 8) or per 128 in DeepSeek-V4-Pro | all entries, or a selection of them | distinctions within a pool |
+| Recurrent state | each token, by a delta-rule correction | about $d$ clean associations per head | a fixed-size matrix | by a learned decay, per head or per channel, and by overwriting |
+| Residual stream | each block, within one token's pass | one running sum | one vector | nothing is removed; later blocks add on top |
+| mHC streams | each block, within one token's pass | four running sums | a learned mix of the four | differences between the streams, which contract at every layer |
+| AttnRes | each group of layers, within one token's pass | up to nine sums in K3 | attention over the sums | distinctions between the layers of a group, which are summed |
+
+Read down the last column. The stores written in training lose contents only when training writes over them, and that is the second essay's subject. The stores written while reading differ in what they give up. The window gives up the old, compression gives up detail, selection gives up whatever its indexer misses, and the recurrent state gives up what decays and what is overwritten. The full cache gives up nothing, and it pays with a reading cost that grows with the context.
+
+The seven models combine these stores as follows.
+
 | Model | Stored / active parameters | Layers | Token mixing | Experts chosen / available |
 | --- | --- | --- | --- | --- |
 | MiMo-V2.6-Pro | 1.02T / 42B | 70 | 60 window (128 tokens), 10 global | 8 / 384 |

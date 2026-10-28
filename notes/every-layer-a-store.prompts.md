@@ -55,3 +55,7 @@ Yes, add to outline (the MAI-Thinking-1 points in the Part B sections, plus the 
 What should I look into next to improve "Every Layer a Store"?
 
 Yes, fact check first (results to a numbers-check note in notes/research/).
+
+## Stores table
+
+Yes, stores table (one row per store, columns for the four questions plus how it forgets).
