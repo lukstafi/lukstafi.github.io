@@ -61,7 +61,7 @@ Checked by rederivation; the literature agent checks the statements against the 
 
 Typos in the Polish (*sprzedarzy*, *zabużonym*, *tranzakcja*) do not matter for an English essay.
 
-**Confirmed and extended against the papers** (literature agent, 28 Oct; details in `notes/private/research-pm-literature-2026-10-28.md`, Part A). Items 1–5 above are confirmed; the $4\varepsilon^2Tb$ slip is already in the 2008 source paper. Further corrections for the companion:
+**Confirmed and extended against the papers** (literature agent, 28 Oct; details in `notes/research/research-pm-literature-2026-10-28.md`, Part A). Items 1–5 above are confirmed; the $4\varepsilon^2Tb$ slip is already in the 2008 source paper. Further corrections for the companion:
 
 6. **§2 properties.** Individual rationality should say non*negative* expected *profit* (the notes say "nonzero payout"). Lambert et al.'s monotonicity is two-sided and about profit. Normality should say "expected". The family characterized in their Thm 3 allows the scoring rule to depend on the total wager, and assumes smooth nonnegative payouts. "Weighted average of a scoring rule" misdescribes the payout: each wager is paid its own score relative to the wager-weighted mean score.
 7. **§4.1 Eisenberg–Gale standard form.** Indices should run $k = n+1,\dots,n+nn'$ with $m = n+nn'$. Lemma 2 omits the source's "consistency" item.
@@ -76,7 +76,7 @@ Typos in the Polish (*sprzedarzy*, *zabużonym*, *tranzakcja*) do not matter for
 
 ## 3. Source map and later literature
 
-From the literature agent's report, `notes/private/research-pm-literature-2026-10-28.md` (full citations, DOIs, URLs; items checked only at abstract level are marked there). Spot-checked 28 Oct: Chen et al. 2008 (arXiv 0802.1362) and Frongillo–Papireddygari–Waggoner (arXiv 2302.00196).
+From the literature agent's report, `notes/research/research-pm-literature-2026-10-28.md` (full citations, DOIs, URLs; items checked only at abstract level are marked there). Spot-checked 28 Oct: Chen et al. 2008 (arXiv 0802.1362) and Frongillo–Papireddygari–Waggoner (arXiv 2302.00196).
 
 ### 3.1 Where each section of the notes comes from
 
@@ -124,7 +124,7 @@ Citations the agent gave from memory and flagged unverified: Shao et al. ICML 20
 
 ## 4. Practice in 2026
 
-From the industry agent's report, `notes/private/research-pm-industry-2026-10-28.md` (all URLs there; 26 items flagged UNCONFIRMED). Two claims spot-checked against their sources on 28 Oct: the Oddpool RFQ census and the Saguillo et al. arbitrage estimate. **Recheck every number before it goes into the essay.** Volume caveat: US venues count contracts at $1 face value, so "notional" overstates money at risk severalfold (Kalshi, 28 Sep–27 Oct 2026: $89.6B notional, $20.4B paid).
+From the industry agent's report, `notes/research/research-pm-industry-2026-10-28.md` (all URLs there; 26 items flagged UNCONFIRMED). Two claims spot-checked against their sources on 28 Oct: the Oddpool RFQ census and the Saguillo et al. arbitrage estimate. The numbers the essay uses were then fact-checked in `notes/research/research-pm-factcheck-2026-10-28.md`, whose corrections supersede this section (e.g. the Kalshi sports share counts combos as sports, the wash-trading peak was Dec 2024, and the Prophet Arena result is not a loss verdict). Volume caveat: US venues count contracts at $1 face value, so "notional" overstates money at risk severalfold (Kalshi, 28 Sep–27 Oct 2026: $89.6B notional, $20.4B paid).
 
 What the 2010 theory did and did not anticipate:
 
