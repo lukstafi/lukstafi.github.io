@@ -1,0 +1,1294 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <meta name="author" content="Łukasz Stafiniak and Claude (Anthropic)">
+  <meta name="dcterms.date" content="2026-10-28">
+  <meta property="og:title" content="The Bookmaker Is a Learner: The Mathematics">
+  <meta property="og:url" content="https://lukstafi.github.io/notes/the-bookmaker-is-a-learner-mathematics.html">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="lukstafi&#x27;s blog">
+  <meta name="twitter:card" content="summary">
+  <title>The Bookmaker Is a Learner: The Mathematics</title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <link rel="stylesheet" href="/assets/tufte.css">
+  <link rel="stylesheet" href="/assets/pandoc-tufte.css">
+  <link rel="stylesheet" href="/assets/site.css">
+  <script defer=""
+  src="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.js"></script>
+  <script>document.addEventListener("DOMContentLoaded", function () {
+ var mathElements = document.getElementsByClassName("math");
+ var macros = [];
+ for (var i = 0; i < mathElements.length; i++) {
+  var texText = mathElements[i].firstChild;
+  if (mathElements[i].tagName == "SPAN") {
+   katex.render(texText.data, mathElements[i], {
+    displayMode: mathElements[i].classList.contains('display'),
+    throwOnError: false,
+    macros: macros,
+    fleqn: false
+   });
+}}});
+  </script>
+  <link rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.css" />
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+  <script>(function(){var t=localStorage.getItem('theme-preference');if(t)document.documentElement.setAttribute('data-theme',t);})()</script>
+  <style>
+  .katex-display { overflow-x: auto; overflow-y: hidden; padding: 0.3em 0; }
+  .katex-display > .katex { width: max-content; min-width: 100%; }
+  article table { display: block; max-width: 100%; overflow-x: auto; }
+  </style>
+</head>
+<body>
+<nav class="site-nav">
+  <a href="/">Home</a> &middot; <a href="/about.html">About</a> &middot; <a href="https://lukstafi.substack.com">Substack</a>
+</nav>
+<div class="theme-toggle">
+  <button id="theme-btn" aria-label="Toggle dark mode">&#9788;</button>
+</div>
+<article>
+<header>
+<h1 class="title">The Bookmaker Is a Learner: The Mathematics</h1>
+<p class="subtitle">A corrected English rendering of my 2010 lecture
+notes on prediction markets, with sources, the two sections the notes
+left empty, and the original exercises</p>
+<p class="byline">2026-10-28 &ndash; Łukasz Stafiniak and Claude
+(Anthropic)</p>
+</header>
+<p><em>This page accompanies <a
+href="https://lukstafi.github.io/notes/the-bookmaker-is-a-learner.html">The
+Bookmaker Is a Learner</a>. It renders the mathematics of my lecture on
+prediction markets for Sebastian Bala’s Algorithmic Game Theory course
+at the University of Wrocław (spring 2010), in English, with the sources
+the notes did not cite. Errors in the original are corrected silently
+except where the correction is instructive; a list is at the end.
+Sections 6.3–6.4 were headings without text in 2010 and are written here
+for the first time. The numbering of theorems follows the original
+notes.</em></p>
+<p>Notation: <span class="math inline">n</span> outcomes <span
+class="math inline">\omega\in\{1,\dots,n\}</span>; <span
+class="math inline">\Delta_n</span> is the probability simplex; <span
+class="math inline">\mathbf 1</span> the all-ones vector; <span
+class="math inline">e_i</span> the <span class="math inline">i</span>-th
+unit vector.</p>
+<section id="market-types-and-wagering-mechanisms" class="level2">
+<h2>1. Market types and wagering mechanisms</h2>
+<p>Three kinds of prediction market:</p>
+<ol type="1">
+<li><strong>Order matching.</strong> Traders submit orders, and the
+market executes trades among a set of traders whenever their orders
+match.</li>
+<li><strong>Pari-mutuel pools.</strong> Each bettor puts a chosen stake
+into a pool, and the pool is divided among the winners.</li>
+<li><strong>Market makers.</strong> Each trader deals immediately with a
+bookmaker, at a payout fixed at the time of the trade and depending only
+on the outcome.</li>
+</ol>
+<p>An order is <em>divisible</em> if the trader accepts partial
+execution (with a proportional price limit) and <em>indivisible</em> if
+it is all-or-nothing. In combinatorial markets, orders are stated in a
+bidding language, and several orders can match jointly although no pair
+of them matches (bets <span class="math inline">A&gt;B</span>, <span
+class="math inline">B&gt;C</span>, <span
+class="math inline">C&gt;A</span>).</p>
+<p><strong>Wagering mechanisms</strong> (type 2). Player <span
+class="math inline">i</span> wagers <span class="math inline">m_i\ge
+0</span> and reports a distribution <span
+class="math inline">r_i\in\Delta_n</span>; after the outcome <span
+class="math inline">\omega</span> the mechanism pays <span
+class="math inline">\Pi_i(\bar r,\bar m,\omega)</span>. <a
+href="https://doi.org/10.1145/1386790.1386820">Lambert, Langford,
+Wortman, Chen, Reeves, Shoham and Pennock</a> (EC 2008) consider:</p>
+<ul>
+<li><em>Budget balance</em>: <span
+class="math inline">\sum_i\Pi_i=\sum_i m_i</span>.</li>
+<li><em>Anonymity</em>: payouts do not depend on the players’
+identities.</li>
+<li><em>Truthfulness</em>: a player maximizes expected profit by
+reporting their true belief.</li>
+<li><em>Normality</em>: under any distribution over outcomes, when one
+player changes their report, every other player’s expected payout either
+stays the same or moves opposite to that player’s own expected
+payout.</li>
+<li><em>Sybilproofness</em>: replacing a group of players who make the
+same report by any other group with the same report and the same total
+wager leaves the other players’ payouts unchanged, and the new group’s
+total payout equals the old group’s.</li>
+<li><em>Individual rationality</em>: every player, whatever their belief
+and wager, has a report that gives nonnegative expected profit whatever
+the other players report and wager.</li>
+<li><em>Monotonicity</em>: the magnitude of a player’s expected profit
+strictly increases with their wager.</li>
+</ul>
+<p><strong>Theorem 1</strong> (Lambert et al. 2008, their Thm 3). Under
+smoothness and nonnegativity assumptions on payouts, a wagering
+mechanism is budget-balanced, anonymous, truthful, normal and sybilproof
+if and only if it is a <em>weighted-score wagering mechanism</em>:</p>
+<p><span class="math display">
+\Pi_i(\bar r,\bar m,\omega)=m_i+m_i\Bigl(s(r_i,\omega)-\frac{\sum_j
+m_j\,s(r_j,\omega)}{M}\Bigr),
+\qquad M=\sum_j m_j,
+</span></p>
+<p>where <span class="math inline">s</span> is a strictly proper scoring
+rule with values in <span class="math inline">[0,1]</span> (in the
+general statement it may depend on the total wager <span
+class="math inline">M</span>). Weighted-score mechanisms are also
+individually rational and monotone; those two properties are not part of
+the characterization.</p>
+<p>Each player is paid their own score relative to the wager-weighted
+mean score, scaled by their wager. <a
+href="https://dl.acm.org/doi/10.1145/2600057.2602876">Chen, Devanur,
+Pennock and Wortman Vaughan</a> (EC 2014) later showed that these
+mechanisms admit arbitrage and proposed no-arbitrage variants.</p>
+<p><strong>Myopic truthfulness.</strong> Dynamic mechanisms (types 3,
+and type 2 with orders taken in stages) are built on properness, which
+makes them only <em>myopically</em> incentive compatible: a trader
+maximizes expected profit by reporting their estimate, if they ignore
+the effect of their report on later traders. Under some information
+structures a trader gains by bluffing. See <a
+href="https://doi.org/10.1007/s00453-009-9323-2">Chen, Dimitrov, Sami,
+Reeves, Pennock, Hanson, Fortnow and Gonen</a>, <em>Algorithmica</em>
+58(4), 2010, and <a
+href="https://doi.org/10.3982/ECTA8479">Ostrovsky</a>,
+<em>Econometrica</em> 80(6), 2012, for when information is aggregated in
+every equilibrium.</p>
+</section>
+<section id="three-automated-market-makers" class="level2">
+<h2>2. Three automated market makers</h2>
+<p><strong>Scoring rules.</strong> A scoring rule <span
+class="math inline">s=(s_1,\dots,s_n)</span> maps a reported
+distribution <span class="math inline">p</span> to a payment <span
+class="math inline">s_i(p)</span> when outcome <span
+class="math inline">i</span> occurs. It is <em>proper</em> if <span
+class="math inline">\mathbb E_{i\sim r}s_i(r)\ge\mathbb E_{i\sim
+r}s_i(p)</span> for all <span class="math inline">r,p</span>, and
+<em>strictly proper</em> if equality holds only for <span
+class="math inline">p=r</span>. Two standard rules:</p>
+<p><span class="math display">
+s_i(p)=b\log p_i\quad\text{(logarithmic)},\qquad
+s_i(p)=b\Bigl(2p_i-\sum_j p_j^2\Bigr)\quad\text{(quadratic)}.
+</span></p>
+<p><strong>Market scoring rules</strong> (<a
+href="https://mason.gmu.edu/~rhanson/mktscore.pdf">Hanson 2003,
+2007</a>). The market starts at <span class="math inline">p^0</span>. A
+trader who moves it from <span class="math inline">p</span> to <span
+class="math inline">p&#39;</span> pays <span
+class="math inline">s_k(p)</span> and receives <span
+class="math inline">s_k(p&#39;)</span> when the outcome is <span
+class="math inline">k</span>. The operator’s total payout telescopes to
+<span class="math inline">s_k(p^T)-s_k(p^0)</span>. For the logarithmic
+rule with uniform <span class="math inline">p^0</span>, this is at most
+<span class="math inline">b\ln n</span>.</p>
+<p><strong>Cost-function markets</strong> (<a
+href="https://arxiv.org/abs/1206.5252">Chen and Pennock</a>, UAI 2007).
+The operator sells shares; a share in <span class="math inline">i</span>
+pays $1 if <span class="math inline">i</span> occurs. With <span
+class="math inline">q</span> shares outstanding, buying a bundle <span
+class="math inline">a</span> costs <span
+class="math inline">C(q+a)-C(q)</span>. Instantaneous prices are <span
+class="math inline">p_i(q)=\partial C(q)/\partial q_i</span>. <span
+class="math inline">C</span> is a <em>valid</em> cost function if <span
+class="math inline">p_i(q)\ge0</span> and <span
+class="math inline">\sum_i p_i(q)=1</span> for all <span
+class="math inline">q</span>. The logarithmic market scoring rule (LMSR)
+is</p>
+<p><span class="math display">
+C(q)=b\log\sum_{i=1}^n e^{q_i/b},\qquad p_i(q)=\frac{e^{q_i/b}}{\sum_j
+e^{q_j/b}}.
+</span></p>
+<p><strong>Sequential convex pari-mutuel mechanism (SCPM)</strong> (<a
+href="https://doi.org/10.1007/978-3-540-77105-0_23">Peters, So and
+Ye</a>, WINE 2007; <a
+href="https://doi.org/10.1287/opre.1110.0922">Agrawal, Delage, Peters,
+Wang and Ye</a>, EC 2009 and <em>Operations Research</em> 59(3), 2011).
+An order consists of a limit price <span class="math inline">\pi</span>
+(the most the trader will pay per unit), a quantity limit <span
+class="math inline">l</span>, and a 0–1 vector <span
+class="math inline">a</span> of the outcomes the order covers. The
+operator solves</p>
+<p><span class="math display">
+\max_{x,z,s}\ \pi x-z+u(s)\quad\text{subject to}\quad a x+s+q=z\mathbf
+1,\quad 0\le x\le l.
+</span></p>
+<p>Here <span class="math inline">q</span> is the vector of shares
+outstanding before the order, <span class="math inline">z</span> is an
+upper bound on the shares of any single outcome after the order (so
+<span class="math inline">\pi x-z</span> is the operator’s worst-case
+profit, up to the revenue already collected), <span
+class="math inline">s</span> are slack variables, and <span
+class="math inline">u</span> is a concave regularizer that damps price
+swings; the logarithmic variant has <span
+class="math inline">u(s)=\sum_i\theta_i\log s_i</span>. The price vector
+<span class="math inline">p</span> is the optimal dual solution for the
+equality constraints: <span class="math inline">p_i</span> is the gain
+in the optimal objective from relaxing <span
+class="math inline">a_ix+s_i+q_i=z</span> to <span
+class="math inline">a_ix+s_i+q_i=z+1</span>. In the original mechanism
+the trader pays <span class="math inline">p^\top a</span> per unit, at
+the dual prices of the optimal solution <span
+class="math inline">x^*</span>.</p>
+</section>
+<section id="convex-duality-toolkit" class="level2">
+<h2>3. Convex duality toolkit</h2>
+<p><strong>Lagrangian duality.</strong> For the problem</p>
+<p><span class="math display">
+\min_x f_0(x)\quad\text{s.t.}\quad f_i(x)\le0\ (i=1..m),\quad h_i(x)=0\
+(i=1..p)
+</span></p>
+<p>with optimum <span class="math inline">p^*</span>, the Lagrangian is
+<span
+class="math inline">L(x,\lambda,\nu)=f_0(x)+\sum_i\lambda_if_i(x)+\sum_i\nu_ih_i(x)</span>
+and the dual function is <span
+class="math inline">g(\lambda,\nu)=\inf_xL(x,\lambda,\nu)</span>. For
+<span class="math inline">\lambda\ge0</span> and feasible <span
+class="math inline">x</span>, <span
+class="math inline">\sum_i\lambda_if_i(x)+\sum_i\nu_ih_i(x)\le0</span>,
+so <span class="math inline">g(\lambda,\nu)\le p^*</span> (weak
+duality). The dual problem maximizes <span class="math inline">g</span>
+over <span class="math inline">\lambda\ge0</span>; it is always a convex
+problem. <em>Strong duality</em> means the two optima are equal. It
+holds for convex problems (<span class="math inline">f_0,f_i</span>
+convex, <span class="math inline">h_i</span> affine) under Slater’s
+condition: some feasible <span class="math inline">x</span> has <span
+class="math inline">f_i(x)&lt;0</span> for every nonlinear <span
+class="math inline">f_i</span>. The proof separates the convex set <span
+class="math inline">\{(u,v,t)\mid\exists x:\ f_i(x)\le u_i,\
+h_i(x)=v_i,\ f_0(x)\le t\}</span> from <span
+class="math inline">\{(0,0,s)\mid s&lt;p^*\}</span> by a hyperplane,
+whose normal vector gives the optimal multipliers (<a
+href="https://web.stanford.edu/~boyd/cvxbook/">Boyd and
+Vandenberghe</a>, ch. 5).</p>
+<p><strong>Zero-sum games.</strong> For a game with loss matrix <span
+class="math inline">P</span> for player 1, player 1 choosing a mixed
+strategy <span class="math inline">u</span> known to player 2 solves
+<span class="math inline">\min t</span> s.t. <span
+class="math inline">u\ge0</span>, <span class="math inline">\mathbf
+1^\top u=1</span>, <span class="math inline">P^\top u\le t\mathbf
+1</span>. The Lagrangian dual of this linear program, after eliminating
+the multiplier of <span class="math inline">u\ge0</span>, is <span
+class="math inline">\max\nu</span> s.t. <span
+class="math inline">v\ge0</span>, <span class="math inline">\mathbf
+1^\top v=1</span>, <span class="math inline">Pv\ge\nu\mathbf 1</span>:
+player 2’s problem, with player 2’s mixed strategy <span
+class="math inline">v</span> as the multiplier vector. Strong duality
+gives the minimax theorem.</p>
+<p><strong>Price interpretation.</strong> If <span
+class="math inline">x</span> is a firm’s plan, <span
+class="math inline">f_0</span> its cost minus revenue, and <span
+class="math inline">f_i(x)\le0</span> its resource limits, imagine that
+limits may be exceeded at unit price <span
+class="math inline">\lambda_i</span> and surplus sold at the same price.
+The firm’s total cost is then <span
+class="math inline">L(x,\lambda)</span>, and <span
+class="math inline">g(\lambda^*)</span> is its cost under the least
+favourable prices. Under strong duality, <span
+class="math inline">\lambda^*</span> are the prices at which the firm
+gains nothing by buying or selling resources.</p>
+<p><strong>KKT conditions.</strong> Under strong duality, <span
+class="math inline">f_0(x^*)=g(\lambda^*,\nu^*)\le
+L(x^*,\lambda^*,\nu^*)\le f_0(x^*)</span>, so <span
+class="math inline">\sum_i\lambda^*_if_i(x^*)=0</span>, and since each
+term is nonpositive, <span
+class="math inline">\lambda^*_if_i(x^*)=0</span> (complementary
+slackness). For differentiable problems, <span
+class="math inline">x^*</span> minimizes <span
+class="math inline">L(\cdot,\lambda^*,\nu^*)</span>, so its gradient
+vanishes there. Together with feasibility:</p>
+<p><span class="math display">
+f_i(x^*)\le0,\quad
+h_i(x^*)=0,\quad\lambda^*_i\ge0,\quad\lambda^*_if_i(x^*)=0,\quad
+\nabla f_0(x^*)+\sum_i\lambda^*_i\nabla f_i(x^*)+\sum_i\nu^*_i\nabla
+h_i(x^*)=0.
+</span></p>
+<p>These are necessary under strong duality, and sufficient for convex
+problems: <span class="math inline">L(\cdot,\lambda^*,\nu^*)</span> is
+then convex and minimized at <span class="math inline">x^*</span>, so
+<span
+class="math inline">g(\lambda^*,\nu^*)=L(x^*,\lambda^*,\nu^*)=f_0(x^*)</span>.</p>
+<p><strong>Sensitivity.</strong> Let <span
+class="math inline">p^*(u,v)</span> be the optimum of the problem with
+constraints relaxed to <span class="math inline">f_i(x)\le u_i</span>,
+<span class="math inline">h_i(x)=v_i</span>. Under strong duality, for
+every feasible <span class="math inline">x</span> of the perturbed
+problem, <span class="math inline">p^*(0,0)=g(\lambda^*,\nu^*)\le
+f_0(x)+\sum_i\lambda_i^*f_i(x)+\sum_i\nu^*_ih_i(x)\le
+f_0(x)+\lambda^{*\top}u+\nu^{*\top}v</span>, hence</p>
+<p><span class="math display">
+p^*(u,v)\ge p^*(0,0)-\lambda^{*\top}u-\nu^{*\top}v.
+</span></p>
+<p>If <span class="math inline">p^*</span> is differentiable at the
+origin, taking one-sided limits along each coordinate gives <span
+class="math inline">\lambda^*_i=-\partial p^*/\partial u_i</span> and
+<span class="math inline">\nu^*_i=-\partial p^*/\partial v_i</span>. The
+optimal multipliers are <em>shadow prices</em>: the marginal value of
+relaxing each constraint.</p>
+<p><strong>The Eisenberg–Gale program.</strong> In Fisher’s market with
+linear utilities there are goods <span class="math inline">j=1..n</span>
+(one unit of each) and buyers <span
+class="math inline">i=1..n&#39;</span> with budgets <span
+class="math inline">e_i</span> and utilities <span
+class="math inline">u_{ij}</span> per unit; buyer <span
+class="math inline">i</span>’s total utility is <span
+class="math inline">u_i=\sum_ju_{ij}x_{ij}</span>. Market-clearing
+prices, at which every buyer spends their whole budget on
+utility-maximizing bundles and every good with a positive price sells
+out, are the shadow prices of</p>
+<p><span class="math display">
+\max\ \sum_{i}e_i\log u_i\quad\text{s.t.}\quad\sum_ix_{ij}\le1\ \forall
+j,\qquad x_{ij}\ge0.
+</span></p>
+<p>The objective is the logarithm of the budget-weighted geometric mean
+of utilities. The geometric mean is chosen because rescaling one buyer’s
+utilities, or splitting one buyer’s budget between two identical buyers,
+should not change the solution. Optimality is equivalent to: (1) <span
+class="math inline">p_j\ge0</span>; (2) <span
+class="math inline">p_j&gt;0\Rightarrow\sum_ix_{ij}=1</span>; (3) <span
+class="math inline">u_{ij}/p_j\le u_i/e_i</span> for all <span
+class="math inline">i,j</span>; (4) <span
+class="math inline">x_{ij}&gt;0\Rightarrow u_{ij}/p_j=u_i/e_i</span>. In
+standard form, <span class="math inline">f_0=-\sum_ie_i\log u_i</span>,
+the supply constraints are <span
+class="math inline">f_j=\sum_ix_{ij}-1</span> for <span
+class="math inline">j=1..n</span>, and the nonnegativity constraints are
+<span class="math inline">f_k=-x_{ij}</span> for <span
+class="math inline">k=n+1,\dots,n+nn&#39;</span>, so <span
+class="math inline">m=n+nn&#39;</span>, and there are no equality
+constraints (exercise 1). <a
+href="https://doi.org/10.1214/aoms/1177706369">Eisenberg and Gale</a>
+published the program in 1959 as “Consensus of subjective probabilities:
+the pari-mutuel method”: the goods were horses, <span
+class="math inline">u_{ij}</span> was bettor <span
+class="math inline">i</span>’s probability that horse <span
+class="math inline">j</span> wins, and the prices were the consensus
+probabilities, which fix the pool’s odds.</p>
+<p><strong>The ellipsoid method.</strong> Assume the feasible set <span
+class="math inline">K</span> satisfies <span
+class="math inline">S(a_0,r)\subseteq K\subseteq S(a_0,R)</span> for
+known <span class="math inline">a_0,r,R</span>. Starting from the ball
+<span class="math inline">S(a_0,R)</span>, the method maintains an
+ellipsoid containing every point better than the best found so far, and
+shrinks it by cutting. It needs three subroutines: a feasibility test; a
+<em>separation oracle</em> that, given an infeasible point, returns a
+hyperplane separating it from <span class="math inline">K</span>; and
+the computation of the smallest ellipsoid containing the intersection of
+an ellipsoid with a half-space (<a
+href="https://doi.org/10.1016/0041-5553(80)90061-0">Khachiyan 1979</a>;
+Grötschel, Lovász and Schrijver, <em>Geometric Algorithms and
+Combinatorial Optimization</em>, 1988). The method runs in polynomial
+time whenever the separation oracle does, even if the constraints are
+too many to list.</p>
+</section>
+<section id="the-scpms-optimality-conditions" class="level2">
+<h2>4. The SCPM’s optimality conditions</h2>
+<p>To study prices as the order is filled, cap the order at <span
+class="math inline">\varepsilon</span>:</p>
+<p><span class="math display">
+\max_{x,z,s}\ \pi x-z+u(s)\quad\text{s.t.}\quad ax+s+q=z\mathbf 1,\quad
+0\le x\le\varepsilon. \tag{8}
+</span></p>
+<p>With multipliers <span class="math inline">p</span> (equality), <span
+class="math inline">\xi</span> for <span
+class="math inline">-x\le0</span> and <span class="math inline">y</span>
+for <span class="math inline">x-\varepsilon\le0</span>, the KKT
+conditions give</p>
+<p><span class="math display">
+p^{*\top}\mathbf 1=1,\qquad p^*=\nabla u(s^*),\qquad
+y^*+p^{*\top}a\ge\pi,\qquad y^*\ge0,\qquad y^*(\varepsilon-x^*)=0,\qquad
+ax^*+q+s^*=z^*\mathbf 1.
+</span></p>
+<p><strong>Lemma 2</strong> (Agrawal et al. 2009). (1) <span
+class="math inline">\mathbf 1^\top p(\varepsilon)=1</span>. (2) Prices
+are nonnegative if <span class="math inline">u</span> is nondecreasing.
+(3) The total instantaneous price <span
+class="math inline">p(\varepsilon)^\top a</span> is nondecreasing in
+<span class="math inline">\varepsilon</span>. (4) The price function is
+integrable. (The source also states a consistency property omitted
+here.)</p>
+<p><em>Proof of (3).</em> Let <span
+class="math inline">(x_k,z_k,s_k)</span> be optimal for <span
+class="math inline">\varepsilon_k</span>, <span
+class="math inline">k=1,2</span>, with <span
+class="math inline">s_k=z_k\mathbf 1-q-x_ka</span>. Concavity of <span
+class="math inline">u</span> gives two inequalities whose sum is</p>
+<p><span class="math display">
+\bigl(\nabla u(s_1)-\nabla u(s_2)\bigr)^\top\bigl((z_2-z_1)\mathbf
+1-(x_2-x_1)a\bigr)\ge0.
+</span></p>
+<p>By (1), <span class="math inline">\nabla u(s_k)^\top\mathbf
+1=1</span> for both <span class="math inline">k</span>, so the <span
+class="math inline">\mathbf 1</span> term vanishes and <span
+class="math inline">(p_2-p_1)^\top a\,(x_2-x_1)\ge0</span>, i.e. <span
+class="math inline">p^\top a</span> moves in the same direction as <span
+class="math inline">x</span>, which is nondecreasing in <span
+class="math inline">\varepsilon</span>. Integrability follows from
+boundedness and monotonicity on a closed interval. <span
+class="math inline">\square</span></p>
+</section>
+<section id="equivalences" class="level2">
+<h2>5. Equivalences</h2>
+<section id="the-lmsr-is-hedge" class="level3">
+<h3>5.1 The LMSR is Hedge</h3>
+<p>This section follows <a href="https://arxiv.org/abs/0802.1362">Chen,
+Fortnow, Lambert, Pennock and Wortman</a> (EC 2008, §6.2), in a cleaner
+form than the 2010 notes.</p>
+<p>Split all trades into small steps <span
+class="math inline">r_t\in[-\varepsilon,\varepsilon]^n</span> and let
+<span class="math inline">q_t=q_0+\sum_{\tau\le t}r_\tau</span> with
+<span class="math inline">q_0=0</span>. Treat outcomes as experts and
+<span class="math inline">r_{i,t}</span> as expert <span
+class="math inline">i</span>’s gain at step <span
+class="math inline">t</span>, so <span
+class="math inline">G_{i,t}=q_{i,t}</span>. Hedge with learning rate
+<span class="math inline">\eta</span> plays</p>
+<p><span class="math display">
+w_{i,t}=\frac{e^{\eta G_{i,t-1}}}{\sum_je^{\eta G_{j,t-1}}},
+</span></p>
+<p>which for <span class="math inline">\eta=1/b</span> equals the LMSR
+price <span class="math inline">p_i(q_{t-1})</span>. The bookmaker’s
+revenue is <span
+class="math inline">\sum_t\bigl(C(q_t)-C(q_{t-1})\bigr)\ge\sum_tp(q_{t-1})\cdot
+r_t=\sum_tw_t\cdot r_t</span> by convexity of <span
+class="math inline">C</span>. If the outcome is <span
+class="math inline">\omega</span>, it pays <span
+class="math inline">q_{\omega,T}\le\max_iG_{i,T}</span>. Its loss is
+therefore at most Hedge’s regret, <span
+class="math inline">\max_iG_{i,T}-\sum_tw_t\cdot r_t</span>. The
+standard bound for gains in an interval of width <span
+class="math inline">2\varepsilon</span> (by Hoeffding’s lemma) is</p>
+<p><span class="math display">
+\max_iG_{i,T}-\sum_tw_t\cdot r_t\le\frac{\ln n}{\eta}+\frac{\eta
+T(2\varepsilon)^2}{8}=b\ln n+\frac{T\varepsilon^2}{2b}.
+</span></p>
+<p>For a fixed trading volume <span
+class="math inline">V=T\varepsilon</span>, the second term is <span
+class="math inline">V\varepsilon/(2b)\to0</span> as trades become small,
+and the bookmaker’s worst-case loss is <span class="math inline">b\ln
+n</span>, matching the telescoping bound of §2.</p>
+</section>
+<section id="from-a-bookmaker-to-a-learner" class="level3">
+<h3>5.2 From a bookmaker to a learner</h3>
+<p>This section follows <a href="https://arxiv.org/abs/1003.0034">Chen
+and Wortman Vaughan</a> (EC 2010).</p>
+<p>A cost function has <em><span
+class="math inline">\varphi</span>-stable</em> prices if they are
+continuous and piecewise differentiable with <span
+class="math inline">\sum_{i,j}\lvert\partial p_i(q)/\partial
+q_j\rvert\le\varphi</span> (taking 0 where a derivative does not
+exist).</p>
+<p><strong>Lemma 3.</strong> For a valid cost function with <span
+class="math inline">\varphi</span>-stable prices, any <span
+class="math inline">q</span>, and any <span class="math inline">r</span>
+with <span class="math inline">\lvert r_i\rvert\le\varepsilon</span>:
+<span class="math inline">\bigl\lvert
+C(q+r)-C(q)-\sum_ip_i(q)r_i\bigr\rvert\le\varepsilon^2\varphi/2</span>.</p>
+<p><em>(Second-order Taylor bound.)</em></p>
+<p><strong>Theorem 4.</strong> Let <span class="math inline">C</span> be
+a valid cost function with <span
+class="math inline">\varphi</span>-stable prices whose worst-case loss
+is at most <span class="math inline">B</span>. Define a learner that,
+facing losses <span class="math inline">l_{i,t}\in[0,1]</span>, plays
+weights <span class="math inline">w_{i,t}=p_i(-\varepsilon
+L_{t-1})</span>, where <span class="math inline">L_{t-1}</span> is the
+vector of cumulative losses. With <span
+class="math inline">\varepsilon=\sqrt{2B/(\varphi T)}</span>, its regret
+after <span class="math inline">T</span> rounds is at most <span
+class="math inline">\sqrt{2B\varphi T}</span>.</p>
+<p><em>Proof.</em> Let <span class="math inline">r_{i,t}=-\varepsilon
+l_{i,t}</span> be the shares of <span class="math inline">i</span>
+bought at step <span class="math inline">t</span> and <span
+class="math inline">q_t=\sum_{\tau\le t}r_\tau</span>, so <span
+class="math inline">w_t=p(q_{t-1})</span>. Bounded loss means <span
+class="math inline">\max_i\sum_tr_{i,t}-\sum_t\bigl(C(q_t)-C(q_{t-1})\bigr)\le
+B</span>. By Lemma 3,</p>
+<p><span class="math display">
+\max_i\sum_tr_{i,t}-\sum_t\Bigl(\sum_iw_{i,t}r_{i,t}+\frac{\varepsilon^2\varphi}{2}\Bigr)\le
+B.
+</span></p>
+<p>Substituting <span class="math inline">r_{i,t}=-\varepsilon
+l_{i,t}</span> and dividing by <span
+class="math inline">\varepsilon</span>:</p>
+<p><span class="math display">
+\sum_t w_t\cdot l_t-\min_i\sum_tl_{i,t}\le\frac
+B\varepsilon+\frac{\varepsilon\varphi T}{2},
+</span></p>
+<p>which is minimized at <span
+class="math inline">\varepsilon=\sqrt{2B/(\varphi T)}</span> with value
+<span class="math inline">\sqrt{2B\varphi T}</span>. <span
+class="math inline">\square</span></p>
+<p>For the LMSR, <span class="math inline">\partial p_i/\partial
+q_j=p_i(\delta_{ij}-p_j)/b</span>, so <span
+class="math inline">\varphi=2/b</span> suffices, and with <span
+class="math inline">B=b\ln n</span> the regret bound is <span
+class="math inline">2\sqrt{T\ln n}</span>, independent of <span
+class="math inline">b</span>.</p>
+</section>
+<section id="market-scoring-rules-and-cost-functions-are-one-family"
+class="level3">
+<h3>5.3 Market scoring rules and cost functions are one family</h3>
+<p><strong>Lemma 5.</strong> <span class="math inline">C</span> is a
+valid cost function iff it is (1) differentiable, (2) monotone (<span
+class="math inline">q\ge q&#39;\Rightarrow C(q)\ge C(q&#39;)</span>),
+and (3) translation-invariant: <span class="math inline">C(q+k\mathbf
+1)=C(q)+k</span>.</p>
+<p><em>Proof.</em> Differentiability gives the prices, and monotonicity
+is equivalent to their nonnegativity. If prices sum to one, then with
+<span class="math inline">v(a)=q+a\mathbf 1</span>,</p>
+<p><span class="math display">
+C(q+k\mathbf 1)-C(q)=\int_0^k\sum_i\frac{\partial C(v(a))}{\partial
+v_i}\,da=\int_0^k\sum_ip_i(v(a))\,da=k.
+</span></p>
+<p>Conversely, differentiating <span
+class="math inline">C(q&#39;+k\mathbf 1)=C(q&#39;)+k</span> in <span
+class="math inline">k</span> gives <span
+class="math inline">\sum_ip_i(q)=1</span>. <span
+class="math inline">\square</span></p>
+<p><strong>Lemma 6.</strong> <span class="math inline">C</span> is a
+valid <strong>convex</strong> cost function iff it is differentiable
+and</p>
+<p><span class="math display">
+C(q)=\sup_{p\in\Delta_n}\Bigl(\sum_ip_iq_i-\alpha(p)\Bigr)
+</span></p>
+<p>for a convex lower semicontinuous <span
+class="math inline">\alpha:\Delta_n\to(-\infty,\infty]</span>. (Lemma
+5’s properties plus convexity are the axioms of a convex risk measure,
+up to sign, and this is their representation theorem; Föllmer and
+Schied, <em>Stochastic Finance</em>, 2002. The 2010 notes omitted
+“convex”.)</p>
+<p><strong>Lemma 7.</strong> The prices <span
+class="math inline">p(q)=\nabla C(q)</span> are the maximizers of <span
+class="math inline">\sum_ip_iq_i-\alpha(p)</span>.</p>
+<p><em>Proof.</em> Let <span
+class="math inline">f(q,p)=\sum_ip_iq_i-\alpha(p)</span> and <span
+class="math inline">p^*(q)</span> its maximizer. For <span
+class="math inline">q&#39;</span> differing from <span
+class="math inline">q</span> in coordinate <span
+class="math inline">i</span>, <span
+class="math inline">f(q&#39;,p^*(q))-f(q,p^*(q))\le
+C(q&#39;)-C(q)</span> by maximality of <span
+class="math inline">C(q&#39;)</span>. The left side is <span
+class="math inline">p^*_i(q)(q&#39;_i-q_i)</span>. Dividing by <span
+class="math inline">q&#39;_i-q_i</span> and taking one-sided limits
+gives <span class="math inline">p^*_i(q)\le\partial_iC(q)</span> from
+one side and <span class="math inline">\ge</span> from the other. <span
+class="math inline">\square</span></p>
+<p><strong>Lemma 8.</strong> The worst-case loss of the bookmaker
+started at <span class="math inline">q=0</span> is at most <span
+class="math inline">\sup_{p,p&#39;\in\Delta_n}\bigl(\alpha(p)-\alpha(p&#39;)\bigr)</span>.</p>
+<p><em>Proof.</em> If the outcome is <span
+class="math inline">\omega</span> and the final state is <span
+class="math inline">q</span>, the bookmaker pays <span
+class="math inline">q_\omega</span> and has collected <span
+class="math inline">C(q)-C(0)</span>. From the representation, <span
+class="math inline">C(q)\ge q_\omega-\alpha(e_\omega)</span> and <span
+class="math inline">C(0)=-\inf\alpha</span>. So the loss <span
+class="math inline">q_\omega-C(q)+C(0)\le\alpha(e_\omega)-\inf\alpha</span>.
+<span class="math inline">\square</span></p>
+<p><strong>Definition 9.</strong> A market scoring rule and a
+cost-function market are <em>equivalent</em> on a set <span
+class="math inline">D</span> of price vectors if a trader who moves the
+MSR from <span class="math inline">r</span> to <span
+class="math inline">r&#39;</span> receives the same payout in every
+outcome as a trader who moves the cost-function market from <span
+class="math inline">q</span> to <span class="math inline">q&#39;</span>
+with <span class="math inline">p(q)=r</span>, <span
+class="math inline">p(q&#39;)=r&#39;</span>, for all <span
+class="math inline">r,r&#39;\in D</span>.</p>
+<p><strong>Theorem 10</strong> (Chen and Wortman Vaughan 2010). There is
+a one-to-one correspondence between cost-function markets with strictly
+convex differentiable <span class="math inline">\alpha_C</span> and
+market scoring rules with strictly proper, regular, differentiable
+scoring rules, given by</p>
+<p><span class="math display">
+\alpha_C(p)=\sum_ip_is_i(p),\qquad
+s_i(p)=\alpha_C(p)-\sum_j\frac{\partial\alpha_C(p)}{\partial
+p_j}p_j+\frac{\partial\alpha_C(p)}{\partial p_i}.
+</span></p>
+<p>On the set of strictly positive prices the correspondence is an
+equivalence in the sense of Definition 9, and every probability vector
+reachable in the MSR is a reachable price vector of the cost-function
+market. (Regular: <span
+class="math inline">\sum_ip_is_i(p&#39;)\in[-\infty,\infty)</span> and
+<span class="math inline">\sum_ip_is_i(p)\in(-\infty,\infty)</span>.)
+The proof combines three facts: a scoring rule is strictly proper only
+if its expected score <span class="math inline">\sum_ip_is_i(p)</span>
+is strictly convex; the Savage/Gneiting–Raftery representation <span
+class="math inline">s_i(p)=G(p)-\sum_jp_j\dot G_j(p)+\dot G_i(p)</span>
+of regular strictly proper rules, with <span class="math inline">\dot
+G</span> a subgradient of a convex <span class="math inline">G</span>
+(<a href="https://doi.org/10.1198/016214506000001437">Gneiting and
+Raftery</a>, 2007); and the KKT conditions of the maximization in Lemma
+7.</p>
+<p><em>Check.</em> For the LMSR, <span
+class="math inline">\alpha_C(p)=b\sum_ip_i\log p_i</span> and <span
+class="math inline">\partial_i\alpha_C=b(\log p_i+1)</span>, so <span
+class="math inline">\sum_jp_j\partial_j\alpha_C=\alpha_C+b</span> and
+<span class="math inline">s_i(p)=b\log p_i</span>.</p>
+</section>
+<section id="follow-the-regularized-leader" class="level3">
+<h3>5.4 Follow the regularized leader</h3>
+<p>A broad class of no-regret algorithms chooses weights</p>
+<p><span class="math display">
+w_t=\arg\min_{w\in\Delta_n}\Bigl(\sum_iw_iL_{i,t-1}+\frac1\eta
+R(w)\Bigr).
+</span></p>
+<p>With <span class="math inline">R</span> the negative entropy this is
+Hedge. By Lemma 7, the prices of the cost-function market with <span
+class="math inline">\alpha_C=R/\eta</span> at <span
+class="math inline">q=-L_{t-1}</span> are exactly these weights.</p>
+<p><strong>Theorem 11.</strong> Let <span class="math inline">C</span>
+be a valid convex cost function with <span
+class="math inline">\varphi</span>-stable prices and <span
+class="math inline">\alpha_C=R</span> for an FTRL algorithm with
+normalized weights. Setting <span class="math inline">\varepsilon</span>
+(respectively <span class="math inline">\eta</span>) to <span
+class="math inline">\sqrt{2\sup_{p,p&#39;}(\alpha_C(p)-\alpha_C(p&#39;))/(\varphi
+T)}</span>, the learner of Theorem 4 (respectively FTRL) has regret at
+most</p>
+<p><span class="math display">
+\sqrt{2T\varphi\sup_{p,p&#39;\in\Delta_n}\bigl(\alpha_C(p)-\alpha_C(p&#39;)\bigr)}.
+</span></p>
+<p><em>(Theorem 4 with <span class="math inline">B</span> from Lemma
+8.)</em></p>
+</section>
+<section id="cost-function-markets-and-the-scpm" class="level3">
+<h3>5.5 Cost-function markets and the SCPM</h3>
+<p><strong>The flaw and its repair.</strong> The original SCPM charges
+the dual price of the final solution for the whole filled quantity:
+<span class="math inline">p(x^*)^\top a\,x^*</span>. This is not
+truthful (exercise 3). It can be repaired in two ways, which coincide:
+by charging the integral of the marginal prices as the order is filled
+(Agrawal et al., EC 2009), and by VCG pricing (the <em>Operations
+Research</em> version, exercise 5). Let <span
+class="math inline">p(\varepsilon)</span> be the dual prices of (8) and
+<span class="math inline">x^*</span> the solution for <span
+class="math inline">\varepsilon=l</span>. Charge</p>
+<p><span class="math display">
+\Bigl(\int_0^{x^*}p(\varepsilon)\,d\varepsilon\Bigr)^\top a
+</span></p>
+<p>instead. Splitting an order into parts, with <span
+class="math inline">q</span> updated after each part, then does not
+change the payment.</p>
+<p><strong>Lemma 12.</strong> For <span
+class="math inline">0\le\varepsilon\le x^*</span>, the optimal duals
+<span class="math inline">p(\varepsilon)</span> of (8) are also optimal
+for</p>
+<p><span class="math display">
+\max_{z,s}\ \pi\varepsilon-z+u(s)\quad\text{s.t.}\quad
+a\varepsilon+s+q=z\mathbf 1. \tag{16}
+</span></p>
+<p><em>Proof.</em> Maximizing out <span class="math inline">z</span> and
+<span class="math inline">s</span> leaves an objective concave in <span
+class="math inline">x</span>, maximized over <span
+class="math inline">[0,l]</span> at <span
+class="math inline">x^*</span>. So for <span
+class="math inline">\varepsilon\le x^*</span> the cap binds and <span
+class="math inline">x(\varepsilon)=\varepsilon</span>. Program (16) is
+(8) with <span class="math inline">x</span> fixed at <span
+class="math inline">\varepsilon</span>. Its KKT conditions, <span
+class="math inline">\mathbf 1^\top p=1</span>, <span
+class="math inline">p=\nabla u(s)</span> and feasibility, are among
+those of (8), so the optimal <span class="math inline">(z,s)</span> and
+<span class="math inline">p(\varepsilon)</span> of (8) satisfy them.
+Since (16) is convex, they are optimal. <span
+class="math inline">\square</span></p>
+<p><strong>Theorem 13.</strong> If <span class="math inline">q</span>
+shares are outstanding in an SCPM and a new order <span
+class="math inline">(\pi,l,a)</span> is filled to <span
+class="math inline">x^*</span>, the repaired payment is</p>
+<p><span class="math display">
+\Bigl(\int_0^{x^*}p(\varepsilon)\,d\varepsilon\Bigr)^\top
+a=C(q+ax^*)-C(q),\qquad
+C(q)=\min_t\bigl(t-u(t\mathbf 1-q)\bigr),
+</span></p>
+<p>and <span class="math inline">C</span> is convex with <span
+class="math inline">\mathbf 1^\top\nabla C(q)=1</span> for <span
+class="math inline">q\ge0</span>.</p>
+<p><em>Proof.</em> The optimum of (16) is <span
+class="math inline">V(q,\varepsilon)=\pi\varepsilon-\min_z\bigl(z-u(z\mathbf
+1-q-a\varepsilon)\bigr)=\pi\varepsilon-C(q+a\varepsilon)</span>. By
+sensitivity analysis, <span
+class="math inline">p_i(\varepsilon)=-\partial V/\partial q_i=\partial
+C(q+a\varepsilon)/\partial q_i</span>. Integrating, <span
+class="math inline">\int_0^{x^*}p(\varepsilon)^\top
+a\,d\varepsilon=\int_0^{x^*}\frac{d}{d\varepsilon}C(q+a\varepsilon)\,d\varepsilon=C(q+ax^*)-C(q)</span>.
+The prices sum to one by Lemma 2. <span
+class="math inline">\square</span></p>
+<p><strong>Theorem 14.</strong> Every convex cost-function market is an
+SCPM with concave utility <span class="math inline">u(s)=-C(-s)</span>,
+and the two charge the same for every order.</p>
+<p><em>Proof.</em> By translation invariance, <span
+class="math inline">u(s)=z-C(z\mathbf 1-s)</span> for any <span
+class="math inline">z</span>, and the SCPM program becomes <span
+class="math inline">\max\pi x-C(z\mathbf 1-s)</span> s.t. <span
+class="math inline">z\mathbf 1-ax-s=q</span>, <span
+class="math inline">0\le x\le l</span>. Its KKT conditions are <span
+class="math inline">p^\top a+y\ge\pi</span>, <span
+class="math inline">x(p^\top a+y-\pi)=0</span>, <span
+class="math inline">p_i=\partial C(q+ax)/\partial q_i</span>, <span
+class="math inline">y(l-x)=0</span>, <span
+class="math inline">y\ge0</span>, <span class="math inline">0\le x\le
+l</span>. So <span class="math inline">x</span> grows until the price
+<span class="math inline">p^\top a</span> reaches the limit <span
+class="math inline">\pi</span> or <span class="math inline">x</span>
+reaches <span class="math inline">l</span>. Theorem 13’s cost function
+for this <span class="math inline">u</span> is <span
+class="math inline">\min_t\bigl(t-u(t\mathbf
+1-q)\bigr)=\min_t\bigl(t+C(q-t\mathbf 1)\bigr)=C(q)</span>, by
+translation invariance, so the repaired SCPM charges <span
+class="math inline">C(q+ax^*)-C(q)</span>, as the cost-function market
+does. <span class="math inline">\square</span></p>
+<p><strong>Theorem 15.</strong> If <span class="math inline">\nabla
+u</span> ranges over the whole simplex <span
+class="math inline">\{r\mid\mathbf 1^\top r=1,\ r\ge0\}</span>, the cost
+function of the corresponding SCPM defines a cost-function market whose
+equivalent MSR is proper.</p>
+<p><em>Proof.</em> For cost-function markets, the implicit scoring rule
+is <span class="math inline">s_i(p)=q_i-C(q)+K</span> with <span
+class="math inline">p=\nabla C(q)</span> (exercise 2). Properness
+requires <span class="math inline">\nabla C(q^*)=r</span> at any <span
+class="math inline">q^*\in\arg\max_{q\ge0}\sum_ir_i(q_i-C(q))</span>:
+the trader’s interest coincides with reporting <span
+class="math inline">r</span>. Writing the maximization through <span
+class="math inline">u</span>, with <span class="math inline">s=t\mathbf
+1-q</span>,</p>
+<p><span class="math display">
+\max_{q\ge0}\ r^\top q-\min_t\bigl(t-u(t\mathbf 1-q)\bigr)
+=\max_{q\ge0,t}\ r^\top q-t+u(t\mathbf 1-q)
+=\max_s\ u(s)-r^\top s,
+</span></p>
+<p>using <span class="math inline">r^\top\mathbf 1=1</span>. For a
+solution <span class="math inline">s^*</span>, <span
+class="math inline">t^*</span> can be taken large enough that <span
+class="math inline">q^*&gt;0</span>, so the KKT multipliers of <span
+class="math inline">q\ge0</span> vanish and <span
+class="math inline">\nabla C(q^*)=r</span> because <span
+class="math inline">\nabla u(s^*)=r</span>. <span
+class="math inline">\square</span></p>
+</section>
+</section>
+<section id="combinatorial-markets" class="level2">
+<h2>6. Combinatorial markets</h2>
+<p>Outcomes are permutations <span class="math inline">\sigma</span> of
+<span class="math inline">n</span> candidates (<span
+class="math inline">\sigma(\alpha)</span> is <span
+class="math inline">\alpha</span>’s position), so <span
+class="math inline">\lvert\Omega\rvert=n!</span>. Two bidding languages,
+following <a href="https://doi.org/10.1145/1250910.1250957">Chen,
+Fortnow, Nikolova and Pennock</a>, “Betting on permutations,” EC
+2007:</p>
+<ul>
+<li><strong>Subset betting.</strong> <span
+class="math inline">\langle\alpha\mid\Phi\rangle</span> pays $1 if <span
+class="math inline">\sigma(\alpha)\in\Phi</span>; <span
+class="math inline">\langle\Psi\mid j\rangle</span> pays $1 if the
+candidate in position <span class="math inline">j</span> is in <span
+class="math inline">\Psi</span>.</li>
+<li><strong>Pair betting.</strong> <span
+class="math inline">\langle\alpha&gt;\beta\rangle</span> pays $1 if
+<span class="math inline">\sigma(\alpha)&lt;\sigma(\beta)</span>.</li>
+</ul>
+<section id="matching-orders-market-type-1" class="level3">
+<h3>6.1 Matching orders (market type 1)</h3>
+<p>An order <span class="math inline">(b_i,q_i,\phi_i)</span> offers
+price <span class="math inline">b_i</span> per share for up to <span
+class="math inline">q_i</span> shares of security <span
+class="math inline">\phi_i</span>; <span
+class="math inline">I_i(\sigma)\in\{0,1\}</span> says whether <span
+class="math inline">\phi_i</span> pays in outcome <span
+class="math inline">\sigma</span>. The <em>matching decision
+problem</em> asks for <span class="math inline">x\ne0</span> with <span
+class="math inline">\sum_i(b_i-I_i(\sigma))q_ix_i\ge0</span> for all
+<span class="math inline">\sigma</span>; the <em>optimal matching
+problem</em> maximizes <span class="math inline">c</span> subject to
+<span class="math inline">\sum_i(b_i-I_i(\sigma))q_ix_i\ge c</span> for
+all <span class="math inline">\sigma</span>. Orders are indivisible if
+<span class="math inline">x_i\in\{0,1\}</span> and divisible if <span
+class="math inline">0\le x_i\le1</span>.</p>
+<p><strong>Theorem 16.</strong> Optimal divisible matching for subset
+betting is solvable in polynomial time.</p>
+<p><em>Proof.</em> Solve the linear program by the ellipsoid method; it
+suffices to find a violated constraint <span
+class="math inline">\sum_iI_i(\sigma)q_ix_i&gt;\sum_ib_iq_ix_i-c</span>
+when one exists. Build a bipartite graph between candidates and
+positions, giving edge <span class="math inline">(\alpha,j)</span> the
+weight <span class="math inline">\sum q_ix_i</span> over orders <span
+class="math inline">i</span> that pay when <span
+class="math inline">\alpha</span> is in position <span
+class="math inline">j</span>. Each outcome <span
+class="math inline">\sigma</span> is a perfect matching, and its weight
+is the bookmaker’s payout <span
+class="math inline">\sum_iI_i(\sigma)q_ix_i</span>. A maximum-weight
+perfect matching finds the worst outcome in polynomial time, and the
+right side does not depend on <span class="math inline">\sigma</span>.
+<span class="math inline">\square</span></p>
+<p><strong>Pair betting is NP-hard.</strong> Pair betting has only <span
+class="math inline">n(n-1)</span> securities, but both its indivisible
+and divisible matching problems are NP-hard. A set of accepted pair bets
+is a directed graph on the candidates. Let <span
+class="math inline">k(H)</span> be the size of a minimum feedback arc
+set of <span class="math inline">H</span> (unweighted) and <span
+class="math inline">l(H)</span> its weighted version, with edge weights
+<span class="math inline">x_e</span>.</p>
+<ul>
+<li><strong>Lemma 17.</strong> If the bookmaker accepts every edge of
+<span class="math inline">H</span> at price <span
+class="math inline">1-\varepsilon</span> and quantity 1, its worst-case
+revenue is <span class="math inline">k(H)-\varepsilon\lvert
+E\rvert</span>. (The worst outcome agrees with all edges except a
+minimum feedback arc set. The 2010 notes wrote “weighted”; it is the
+unweighted problem.)</li>
+<li><strong>Theorem 18.</strong> Finding the optimal worst-case revenue
+in indivisible pair betting is NP-hard.</li>
+<li><strong>Lemma 19.</strong> Removing edge <span
+class="math inline">e</span> of weight <span
+class="math inline">x_e</span> decreases <span
+class="math inline">l(H)</span> by at most <span
+class="math inline">x_e</span> and <span class="math inline">k(H)</span>
+by at most 1.</li>
+<li><strong>Theorem 20.</strong> Finding the optimal matching in
+indivisible pair betting is NP-hard.</li>
+<li><strong>Lemma 21.</strong> If the bookmaker accepts edges with
+weights <span class="math inline">x_e</span>, its worst-case revenue is
+<span class="math inline">c(H)=\sum_e(b_e-1)x_e+l(H)</span>.</li>
+<li><strong>Lemma 22.</strong> <span class="math inline">l(G^*)\le
+k(G^*)\le k(G)</span>, where <span class="math inline">G</span> is the
+graph of all orders and <span class="math inline">G^*</span> the graph
+of an optimal matching.</li>
+<li><strong>Lemma 23.</strong> There is an <span
+class="math inline">\varepsilon</span> such that when every edge price
+is <span class="math inline">1-\varepsilon</span>, <span
+class="math inline">l(G^*)=k(G)</span>.</li>
+<li><strong>Theorem 24.</strong> Finding the optimal worst-case revenue
+in divisible pair betting is NP-hard.</li>
+<li><strong>Lemma 25.</strong> If <span
+class="math inline">l(H)=k(H)</span> and an edge of weight <span
+class="math inline">x_e&lt;1</span> is removed, <span
+class="math inline">k(H-e)=k(H)</span>.</li>
+<li><strong>Theorem 26.</strong> Finding the optimal matching in
+divisible pair betting is NP-hard.</li>
+</ul>
+<p><strong>A polynomial sufficient condition.</strong></p>
+<p><strong>Lemma 27.</strong> A match exists (divisible or indivisible)
+if some cycle <span class="math inline">C</span> in the order graph has
+<span class="math inline">\sum_{e\in C}b_e\ge\lvert
+C\rvert-1</span>.</p>
+<p><em>Proof.</em> The left side is the bookmaker’s revenue from the
+cycle. A cycle of pair bets is contradictory by transitivity and
+antisymmetry, so at least one of its bets loses, and the payout is at
+most <span class="math inline">\lvert C\rvert-1</span>. <span
+class="math inline">\square</span></p>
+<p><strong>Lemma 28.</strong> A cycle maximizing <span
+class="math inline">\sum_{e\in C}b_e-(\lvert C\rvert-1)</span> can be
+found in polynomial time.</p>
+<p><em>Proof.</em> <span class="math inline">\sum_{e\in C}b_e-(\lvert
+C\rvert-1)=1-\sum_{e\in C}(1-b_e)</span>, so it suffices to find a
+shortest cycle with edge weights <span class="math inline">1-b_e</span>:
+for each vertex, a shortest path from it back to itself. <span
+class="math inline">\square</span></p>
+<p>A greedy method that repeatedly finds and removes the best cycle
+cannot find matches made of interleaved cycles, each unprofitable alone
+but profitable together. Even when the optimal match consists of
+disjoint cycles, a short cycle can block several slightly longer
+ones.</p>
+<p><strong>Lemma 29.</strong> The greedy algorithm that repeatedly
+removes a shortest cycle can be off by a factor of <span
+class="math inline">\sqrt n/2</span> from the maximum number of disjoint
+cycles. (This is a lower bound on greedy’s error, not a guarantee. An
+<span class="math inline">O(\sqrt n)</span>-approximation for
+edge-disjoint cycle packing is due to <a
+href="https://doi.org/10.1145/1273340.1273347">Krivelevich, Nutov,
+Salavatipour, Verstraete and Yuster</a>, 2007.)</p>
+</section>
+<section id="pricing-is-p-hard-market-type-3" class="level3">
+<h3>6.2 Pricing is #P-hard (market type 3)</h3>
+<p>Following <a href="https://arxiv.org/abs/0802.1362">Chen, Fortnow,
+Lambert, Pennock and Wortman</a>, EC 2008. Let <span
+class="math inline">\Theta</span> be a set of compound securities; <span
+class="math inline">S\in\Theta</span> pays $1 if any outcome <span
+class="math inline">\omega\in S</span> occurs. With <span
+class="math inline">Q=(q_S)_{S\in\Theta}</span> shares outstanding,
+define for each outcome <span
+class="math inline">q_\omega=\sum_{S\ni\omega}q_S</span>, the shares
+that pay in <span class="math inline">\omega</span>. The LMSR cost
+function is</p>
+<p><span class="math display">
+C(Q)=b\log\sum_{\omega\in\Omega}e^{q_\omega/b}=b\log\sum_{\omega\in\Omega}\prod_{S\in\Theta:\,\omega\in
+S}e^{q_S/b},
+</span></p>
+<p>and the price of a compound security is the sum of its outcomes’
+prices:</p>
+<p><span class="math display">
+p_S(Q)=\frac{\partial C(Q)}{\partial q_S}=\frac{\sum_{\omega\in
+S}e^{q_\omega/b}}{\sum_{\tau\in\Omega}e^{q_\tau/b}}.
+</span></p>
+<p><strong>Subset betting.</strong> It suffices to price the securities
+<span class="math inline">\langle i\mid j\rangle</span> (“candidate
+<span class="math inline">i</span> in position <span
+class="math inline">j</span>”), since <span class="math inline">\langle
+i\mid\Phi\rangle</span> and <span class="math inline">\langle\Psi\mid
+j\rangle</span> are sums of them. Then</p>
+<p><span class="math display">
+p_{ij}(Q)=\frac{\sum_{\sigma:\sigma(i)=j}\prod_{k=1}^ne^{q_{k,\sigma(k)}/b}}{\sum_\tau\prod_{k=1}^ne^{q_{k,\tau(k)}/b}},\qquad
+C(Q)=b\log\sum_\sigma\prod_{k=1}^ne^{q_{k,\sigma(k)}/b}.
+</span></p>
+<p><strong>Theorem 30.</strong> Computing <span
+class="math inline">p_{ij}(Q)</span> and <span
+class="math inline">C(Q)</span> for subset betting is #P-hard.
+<em>(Reduction from the permanent of a 0–1 matrix, <span
+class="math inline">\sum_{\sigma}\prod_ia_{i\sigma(i)}</span>, which is
+#P-hard by Valiant 1979.)</em></p>
+<p><strong>Pair betting.</strong> With <span
+class="math inline">q_{ij}</span> the shares of <span
+class="math inline">\langle i&gt;j\rangle</span>,</p>
+<p><span class="math display">
+p_{ij}(Q)=\frac{\sum_{\sigma:\sigma(i)&lt;\sigma(j)}\prod_{i&#39;,j&#39;:\,\sigma(i&#39;)&lt;\sigma(j&#39;)}e^{q_{i&#39;j&#39;}/b}}{\sum_\tau\prod_{i&#39;,j&#39;:\,\tau(i&#39;)&lt;\tau(j&#39;)}e^{q_{i&#39;j&#39;}/b}},\qquad
+C(Q)=b\log\sum_\sigma\prod_{i,j:\,\sigma(i)&lt;\sigma(j)}e^{q_{ij}/b}.
+</span></p>
+<p><strong>Theorem 31.</strong> Computing <span
+class="math inline">p_{ij}(Q)</span> and <span
+class="math inline">C(Q)</span> for pair betting is #P-hard.
+<em>(Reduction from counting the linear extensions of a partial order,
+which is #P-hard.)</em></p>
+<p>The same paper proves analogous hardness results for Boolean betting,
+with outcomes in <span class="math inline">\{0,1\}^n</span> and
+securities given by Boolean formulas; the 2010 notes omitted them.</p>
+</section>
+<section
+id="learning-that-minimizes-regret-against-the-best-permutation-new"
+class="level3">
+<h3>6.3 Learning that minimizes regret against the best permutation
+<em>(new)</em></h3>
+<p>The 2010 notes left this section empty. It is §6.3 of Chen et
+al. 2008, which uses the learner of <a
+href="https://jmlr.org/papers/v10/helmbold09a.html">Helmbold and
+Warmuth</a>, “Learning permutations with exponential weights” (COLT
+2007; <em>JMLR</em> 10, 2009).</p>
+<p>The comparison class is the <span class="math inline">n!</span>
+permutations, with a loss matrix <span class="math inline">\mathcal
+L_t</span> each round, where a permutation <span
+class="math inline">\sigma</span> suffers <span
+class="math inline">\sum_k\mathcal L_{t,k\sigma(k)}</span>. Running
+Hedge over permutations directly needs <span
+class="math inline">n!</span> weights. PermELearn instead keeps an <span
+class="math inline">n\times n</span> doubly stochastic matrix <span
+class="math inline">W_t</span>, whose entry <span
+class="math inline">(k,j)</span> plays the role of the probability that
+<span class="math inline">k</span> is mapped to <span
+class="math inline">j</span>. Each round it multiplies entries by <span
+class="math inline">e^{-\eta\mathcal L_{t,kj}}</span> and then applies
+<em>Sinkhorn balancing</em>: alternately rescale rows and columns to sum
+to one, which converges to a doubly stochastic matrix. To act, it
+decomposes <span class="math inline">W_t</span> into a convex
+combination of at most <span class="math inline">n^2-2n+2</span>
+permutation matrices (Birkhoff–von Neumann) and samples one. Its regret
+against the best fixed permutation is of order <span
+class="math inline">\sqrt{L^*n\ln n}+n\ln n</span>, where <span
+class="math inline">L^*</span> is the best permutation’s loss.</p>
+</section>
+<section id="approximate-subset-betting-prices-in-polynomial-time-new"
+class="level3">
+<h3>6.3.1 Approximate subset-betting prices in polynomial time
+<em>(new)</em></h3>
+<p>Chen et al. 2008, §6.4, turn PermELearn into a bookmaker by the
+equivalence of §5.1. Start from the uniform matrix <span
+class="math inline">P^1</span> with all entries <span
+class="math inline">1/n</span>. After a trade in securities <span
+class="math inline">\langle k\mid j\rangle</span>, multiply entry <span
+class="math inline">(k,j)</span> by <span
+class="math inline">e^{q_{kj}/b}</span> for the shares bought and
+Sinkhorn-balance. The resulting matrices coincide with PermELearn’s
+weights for the corresponding loss sequence (their Lemma 10), and the
+bookmaker quotes <span class="math inline">P_{kj}</span> as the price of
+<span class="math inline">\langle k\mid j\rangle</span>. Every step is
+polynomial, with Sinkhorn balancing run to a fixed precision.
+Translating the learner’s regret bound gives a worst-case loss of at
+most <span class="math inline">b\,n\ln n</span> in the limit of small
+trades (their Theorem 11 and Corollary 12; for a fixed step size <span
+class="math inline">\varepsilon&gt;0</span>, the paper notes that the
+bound “can grow arbitrarily large” as the number of steps grows). The
+exact LMSR over permutations would have worst-case loss <span
+class="math inline">b\ln n!</span>.</p>
+<p>Two remarks. First, this bookmaker is not the exact LMSR over
+permutations. The exact LMSR’s matrix of runner-by-position prices is
+also doubly stochastic, but computing it requires permanents; Sinkhorn
+balancing of the matrix <span class="math inline">e^{q_{kj}/b}</span>
+gives a different doubly stochastic matrix. Second, the approximation is
+not the Jerrum–Sinclair–Vigoda approximation of the permanent. The
+bookmaker is designed as a learner, and its guarantee is a regret bound,
+not an approximation ratio for LMSR prices.</p>
+</section>
+<section id="polynomial-pricing-for-tournaments-new" class="level3">
+<h3>6.4 Polynomial pricing for tournaments <em>(new)</em></h3>
+<p><a href="https://doi.org/10.1145/1374376.1374421">Chen, Goel and
+Pennock</a>, “Pricing combinatorial markets for tournaments,” STOC 2008.
+In a single-elimination tournament of <span
+class="math inline">n=2^k</span> teams there are <span
+class="math inline">n-1</span> games, and the outcome space has <span
+class="math inline">2^{n-1}</span> elements. Pricing arbitrary bets on
+it with the LMSR is #P-hard. For a natural bet language it is tractable
+(their Theorem 3.3, <span class="math inline">O(n^3)</span> operations
+per trade):</p>
+<ul>
+<li>“team <span class="math inline">i</span> wins game <span
+class="math inline">k</span>”;</li>
+<li>“team <span class="math inline">i</span> wins game <span
+class="math inline">k</span>, given that it reaches that game”;</li>
+<li>“team <span class="math inline">i</span> beats team <span
+class="math inline">j</span>, given that they meet.”</li>
+</ul>
+<p>An LMSR trade on an event <span class="math inline">E</span>
+multiplies the probability of every outcome in <span
+class="math inline">E</span> by a common factor and renormalizes.
+Starting from the uniform distribution, the market’s distribution is a
+Bayesian network on the bracket with edges directed away from the final:
+each game’s winner conditions the winners of its two feeder games, the
+reverse of the causal direction. A trade on any of these bets preserves
+that structure, because the factor can be absorbed into the conditional
+probability tables of at most one game per round, along a path of the
+bracket. Prices remain exact, and each trade costs polynomial time. If
+only “team <span class="math inline">i</span> beats team <span
+class="math inline">j</span>, given that they meet” is allowed, the
+causal orientation (feeder games to later games) is preserved instead,
+and a trade updates a single parameter.</p>
+</section>
+</section>
+<section id="after-2010" class="level2">
+<h2>7. After 2010</h2>
+<ul>
+<li><a href="https://doi.org/10.1145/2465769.2465777">Abernethy, Chen
+and Wortman Vaughan</a>, “Efficient market making via convex
+optimization, and a connection to online learning,” <em>ACM TEAC</em>
+1(2), 2013, derive the duality-based cost function from axioms (path
+independence, no arbitrage, information incorporation) for arbitrary
+securities, identify trading with FTRL, and subsume most of §5. They
+also give an efficient pair-betting market maker by relaxing the
+no-arbitrage set.</li>
+<li>Frongillo, Della Penna and Reid, NIPS 2012: price dynamics as
+stochastic mirror descent. Abernethy, Kutty, Lahaie and Sami, EC 2014:
+exponential-family markets, with the cost function a log-partition
+function.</li>
+<li>Combinatorial market making as optimization over the marginal
+polytope: Dudík, Lahaie and Pennock, EC 2012 (constraint generation); <a
+href="https://doi.org/10.1145/2940716.2940767">Kroer, Dudík, Lahaie and
+Balakrishnan</a>, EC 2016 (Frank–Wolfe projection with an
+integer-programming oracle, on a <span
+class="math inline">2^{63}</span>-outcome market for a 64-team
+tournament); Hossain, Wang and Yu, SODA 2025 (a geometric view, with
+pricing as range queries).</li>
+<li><a href="https://arxiv.org/abs/2302.00196">Frongillo, Papireddygari
+and Waggoner</a>, ITCS 2024: constant-function market makers with
+concave potentials, such as Uniswap, are equivalent to cost-function
+prediction markets and define proper scoring rules.</li>
+</ul>
+</section>
+<section id="exercises" class="level2">
+<h2>8. Exercises</h2>
+<section id="prediction-markets-may-2010" class="level3">
+<h3>Prediction markets (May 2010)</h3>
+<ol type="1">
+<li>Show that the four optimality conditions of the Eisenberg–Gale
+program (§3) are equivalent to the KKT conditions with <span
+class="math inline">\lambda^*_k=p_k</span> for the supply constraints
+<span class="math inline">k=1..n</span>, and <span
+class="math inline">\lambda^*_k=\lambda_{ij}(x,p)</span> for the
+nonnegativity constraints.</li>
+<li>Show that the implicit formula <span
+class="math inline">s_i(p)=q_i-C(q)+K</span> (for any constant <span
+class="math inline">K</span>) and the explicit formula of Theorem 10
+describe the same scoring rule, i.e. the explicit formula satisfies the
+implicit one.</li>
+<li>Show that the original SCPM is not truthful: build an example in
+which a client earns more by buying a portfolio of shares that does not
+match their probability distribution over outcomes.</li>
+<li>Show, without the theorems about cost-function markets, that follow
+the regularized leader is equivalent to the SCPM market model.</li>
+<li>Justify Theorem 1 of the <em>Operations Research</em> version of “A
+unified framework for dynamic prediction market design”: whatever the
+utility function <span class="math inline">u</span>, the SCPM with
+Vickrey–Clarke–Groves pricing is truthful. (The paper’s theorem says
+<em>myopically</em> truthful.) Also show that under VCG pricing the
+client pays <span class="math inline">\chi(0)-\chi(x^*)</span>, where
+<span class="math display">
+x^*=\arg\max_{0\le x\le l}\ \pi x+\chi(x),\qquad
+\chi(x)=\max_{z,s}\ -z+u(s)\quad\text{s.t.}\quad ax+s+q=z\mathbf 1.
+</span></li>
+</ol>
+<p><em>Solution sketch for 1</em> (from my worked solution of June
+2010). Use multipliers <span class="math inline">p_j</span> for the
+supply constraints and <span class="math inline">q_{ij}</span> for the
+nonnegativity constraints:</p>
+<p><span class="math display">
+L(x,p,q)=-\sum_ie_i\log
+u_i+\sum_jp_j\Bigl(\sum_ix_{ij}-1\Bigr)-\sum_{i,j}q_{ij}x_{ij}.
+</span></p>
+<p>The KKT conditions are complementary slackness, <span
+class="math inline">p_j\bigl(\sum_ix_{ij}-1\bigr)=0</span> (a) and <span
+class="math inline">q_{ij}x_{ij}=0</span> (b); stationarity, <span
+class="math inline">-e_iu_{ij}/u_i+p_j-q_{ij}=0</span> (c), since <span
+class="math inline">\partial(e_i\log u_i)/\partial
+x_{ij}=e_iu_{ij}/u_i</span>; and feasibility, <span
+class="math inline">x\ge0</span>, <span
+class="math inline">\sum_ix_{ij}\le1</span>, <span
+class="math inline">p\ge0</span>, <span
+class="math inline">q\ge0</span>. <em>Necessity:</em> condition 1 is
+<span class="math inline">p\ge0</span>; condition 2 follows from (a);
+moving <span class="math inline">q_{ij}\ge0</span> to the other side of
+(c) gives <span class="math inline">p_j\ge e_iu_{ij}/u_i</span>, which
+rearranges to condition 3; and when <span
+class="math inline">x_{ij}&gt;0</span>, (b) forces <span
+class="math inline">q_{ij}=0</span>, so (c) holds with equality, which
+is condition 4. <em>Sufficiency:</em> given conditions 1–4 and a
+feasible <span class="math inline">x</span> (<span
+class="math inline">x\ge0</span>, <span
+class="math inline">\sum_ix_{ij}\le1</span>), define <span
+class="math inline">q_{ij}=p_j-e_iu_{ij}/u_i</span>. Condition 3 makes
+<span class="math inline">q\ge0</span>, and (c) holds by definition.
+Condition 4 gives (b), by cases on <span
+class="math inline">x_{ij}&gt;0</span> or <span
+class="math inline">x_{ij}=0</span>, and condition 2 gives (a), by cases
+on <span class="math inline">p_j&gt;0</span> or <span
+class="math inline">p_j=0</span>. So <span
+class="math inline">L(x,p,q)=f_0(x)</span> with the gradient of <span
+class="math inline">L</span> vanishing, and since the program is convex,
+<span class="math inline">x</span> is optimal and <span
+class="math inline">p</span> are its shadow prices.</p>
+<p><em>Hint for 2.</em> At <span class="math inline">q</span> with
+interior prices <span class="math inline">p=p(q)</span>, the
+maximization of Lemma 7 has the first-order condition <span
+class="math inline">q_i=\partial_i\alpha_C(p)+\lambda</span> for a
+multiplier <span class="math inline">\lambda</span> of <span
+class="math inline">\sum_ip_i=1</span>. Then <span
+class="math inline">C(q)=p\cdot
+q-\alpha_C(p)=\sum_jp_j\partial_j\alpha_C+\lambda-\alpha_C</span>, and
+<span
+class="math inline">q_i-C(q)=\alpha_C-\sum_jp_j\partial_j\alpha_C+\partial_i\alpha_C</span>,
+the explicit formula, with <span class="math inline">K=0</span>.</p>
+<p><em>Hint for 3.</em> Under final-price charging, the price paid for
+the first units of an order is the marginal price after the last unit.
+Compare a client who buys the bundle matching their beliefs with one who
+first buys a cheap outcome to shift the duals and then buys the
+rest.</p>
+</section>
+<section id="regret-minimization-and-the-multi-armed-bandit-april-2010"
+class="level3">
+<h3>Regret minimization and the multi-armed bandit (April 2010)</h3>
+<p>The second sheet I wrote for the course, on the chapter of Nisan,
+Roughgarden, Tardos and Vazirani’s <em>Algorithmic Game Theory</em>
+(2007) on learning and regret (Blum and Mansour), and on the papers it
+cites.</p>
+<ol type="1">
+<li>Prove theorem 4.12 or 4.13 of the book.</li>
+<li>Extend the Polynomial Weights algorithm and theorem 4.6 of the book
+to maximizing arbitrary payoffs bounded from below, and outline the
+changes needed in the proof. Remove the dependence on knowing an upper
+bound on (the sums of squares of) the payoffs. See Cesa-Bianchi, Mansour
+and Stoltz, <a href="https://arxiv.org/abs/math/0602629">“Improved
+second-order bounds for prediction with expert advice”</a>, Lemma 2 and
+§3.1.</li>
+<li>The loss of an algorithm <span class="math inline">H</span> in the
+full-information model is an expectation, <span
+class="math inline">L^H_T=\sum_t\sum_ip^t_il^t_i</span>. Define instead
+the random variable <span class="math inline">\hat
+L^H_T=\sum_tl^t_{\hat\imath_t}</span> with <span
+class="math inline">\hat\imath_t\sim p^t</span>. Find a nontrivial
+high-probability bound <span class="math inline">P\{\hat
+L^H_T&gt;f(T,\delta)\}&lt;\delta</span> for Polynomial Weights, or a
+modification of it that reduces the variance of its losses. (See §4.3 of
+the second-order bounds paper; §6 of Auer, Cesa-Bianchi, Freund and
+Schapire, <a
+href="https://cseweb.ucsd.edu/~yfreund/papers/bandits.pdf">“The
+non-stochastic multi-armed bandit problem”</a>, gives such a bound for
+the partial-information algorithm Exp3.P.)</li>
+<li>Prove theorem 4.17 of the book (the bound for the
+partial-information regret-minimization algorithm MAB).</li>
+<li>Present Exp3 (§3 of the bandit paper). Justify its form by comparing
+it with MAB, citing the relevant parts of the proofs.</li>
+<li>Partial-information algorithms are sensitive to the number of
+actions, because they must estimate each action’s losses separately.
+Suppose many experts <span class="math inline">i=1..N</span> each supply
+a probability distribution <span class="math inline">\xi^i(t)</span>
+over a few actions <span class="math inline">j=1..K</span>. Following
+Exp4, modify MAB and derive an upper bound on expected regret against
+the experts that depends only logarithmically on <span
+class="math inline">N</span>.</li>
+<li>The <em>hardness</em> of a strategy choosing <span
+class="math inline">j_1,\dots,j_T</span> is the number of action
+switches, <span class="math inline">1+\lvert\{1\le t&lt;T: j_t\ne
+j_{t+1}\}\rvert</span>. Derive a nontrivial regret bound for MAB, or a
+modification, against an arbitrary strategy, depending on that
+strategy’s hardness. (See §8 of the bandit paper, Exp3.S.)</li>
+<li>Following the best expert deterministically in the full-information
+model has regret of the order of the number of leader changes, <span
+class="math inline">T/2</span> in the worst case for losses in <span
+class="math inline">[0,1]</span>. <em>Follow the perturbed leader</em>
+stores each expert’s cumulative loss <span
+class="math inline">L_{i,t}</span> and plays <span
+class="math inline">\arg\min_i(L_{i,t-1}+Z_{i,t})</span> for random
+perturbations <span class="math inline">Z_{i,t}</span>. With <span
+class="math inline">Z_{i,t}</span> independent and uniform on <span
+class="math inline">[0,\Delta]</span>, expected regret is at most <span
+class="math inline">\Delta+NT/\Delta</span>. Build an environment
+(depending on <span class="math inline">\Delta</span>) in which this
+algorithm’s loss is as large as possible, i.e. a nontrivial, perhaps
+matching, lower bound. Concentrating the perturbations around the best
+actions reduces the sensitivity to the number of experts: is this
+visible in your environment? With perturbation density <span
+class="math inline">f(z)=(\eta/2)^Ne^{-\eta\lVert z\rVert_1}</span>, the
+upper bound depends only logarithmically on the number of experts
+(Cesa-Bianchi and Lugosi, <em>Prediction, Learning, and Games</em>,
+§4.3).</li>
+</ol>
+</section>
+</section>
+<section id="corrections-to-the-2010-notes" class="level2">
+<h2>Corrections to the 2010 notes</h2>
+<p>The instructive ones, applied above:</p>
+<ol type="1">
+<li>§2 (now §1): the “if and only if” of Theorem 1 covers five
+properties, not seven; individual rationality and monotonicity are
+consequences. Individual rationality concerns nonnegative expected
+<em>profit</em> (the notes said “nonzero payout”), and monotonicity
+concerns the magnitude of expected profit.</li>
+<li>§5.1: the Weighted Majority bound has <span class="math inline">\ln
+n/\eta</span>, not <span class="math inline">\ln\eta/\eta</span>, and
+the bookmaker’s loss bound has <span
+class="math inline">4\varepsilon^2T/b</span>, not <span
+class="math inline">4\varepsilon^2Tb</span>. The second slip is already
+in the 2008 source paper. (§5.1 above uses a gains formulation instead,
+with the Hoeffding constant.)</li>
+<li>Theorem 4: the proof’s last line dropped the factor 2 in <span
+class="math inline">\varepsilon=\sqrt{2B/(\varphi T)}</span>.</li>
+<li>Lemma 6 needs “convex”; Theorem 10 needs “differentiable” scoring
+rules.</li>
+<li>§5.3 (now §5.5): the original SCPM charges <span
+class="math inline">p(x^*)^\top a\,x^*</span>, not <span
+class="math inline">p(l)</span>.</li>
+<li>Lemma 17 concerns the unweighted feedback arc set; Lemma 29 is a
+lower bound on greedy’s error, not an approximation guarantee.</li>
+<li>§6.2: <span class="math inline">q_\omega</span> was never
+defined.</li>
+<li>Eisenberg–Gale standard form: the nonnegativity constraints are
+indexed <span class="math inline">k=n+1..n+nn&#39;</span>, and <span
+class="math inline">m=n+nn&#39;</span>.</li>
+<li>Lemma 2(3)’s proof (§4): summing the two concavity inequalities
+gives <span class="math inline">(\nabla u(s_1)-\nabla
+u(s_2))^\top(s_2-s_1)\ge0</span>; the notes had <span
+class="math inline">s_1-s_2</span>, which as written would make prices
+fall as the order grows. Agrawal et al.’s appendix has the correct
+sign.</li>
+<li>Slater’s condition needs a <em>feasible</em> point with <span
+class="math inline">f_i(x)&lt;0</span> for the nonlinear
+constraints.</li>
+</ol>
+<p><em>This page was co-authored by Łukasz Stafiniak and Claude (Opus
+5.5), from Łukasz’s 2010 notes.</em></p>
+</section>
+</article>
+<script src="/assets/theme-toggle.js"></script>
+</body>
+</html>
