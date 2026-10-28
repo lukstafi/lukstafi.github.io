@@ -43,3 +43,9 @@ Q4: is SVG better than Mermaid? Or would it be Mermaid exported to SVG?
 Okay, ready to start drafting the essay(s)?
 
 Maybe we should already decide to split into essay A and essay B? Draft A in one go.
+
+## MAI-Thinking-1
+
+Let's continue working on the LLMs two-parter, with notes/every-layer-a-store.md covering the architecture and the next essay covering training. Is it worth extending the survey to include MAI-Thinking-1 ? https://microsoft.ai/pdf/mai-thinking-1.pdf
+
+Yes, add to outline (the MAI-Thinking-1 points in the Part B sections, plus the one-sentence aside for essay A).
