@@ -59,3 +59,7 @@ Yes, fact check first (results to a numbers-check note in notes/research/).
 ## Stores table
 
 Yes, stores table (one row per store, columns for the four questions plus how it forgets).
+
+## Figures
+
+Yes, figures (Figures 1–3 as matplotlib SVGs with their scripts in the repo).

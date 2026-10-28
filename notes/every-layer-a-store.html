@@ -164,8 +164,14 @@ model stores, the computation each token uses, the state a context
 occupies, and the time a piece of hardware takes. “Active parameters”
 measures only the second. It says nothing about memory, about the cost
 of a long context, or about speed.</p>
-<p><em>[Figure 1: the common block, with its three replaceable
-slots.]</em></p>
+<figure>
+<img src="images/every-layer-a-store-block.svg"
+alt="Figure 1. A modern layer has three slots: the token mixer, the channel mixer, and the residual combination that carries each position’s representation to the next layer. The lists name the options the seven models use." />
+<figcaption aria-hidden="true">Figure 1. A modern layer has three slots:
+the token mixer, the channel mixer, and the residual combination that
+carries each position’s representation to the next layer. The lists name
+the options the seven models use.</figcaption>
+</figure>
 </section>
 <section id="every-layer-is-a-store" class="level2">
 <h2>2. Every layer is a store</h2>
@@ -468,8 +474,15 @@ into one entry before anything is read.</li>
 <li><strong>A recurrent state</strong>: a fixed-size matrix that every
 token updates, with no per-token record at all.</li>
 </ul>
-<p><em>[Figure 2: the five memories, drawn as what is kept and what a
-new token reads.]</em></p>
+<figure>
+<img src="images/every-layer-a-store-memories.svg"
+alt="Figure 2. Five ways to keep the past of a context, drawn for sixteen earlier tokens. Each row shows what one layer keeps and what the next token reads. In the selection row an indexer scores every entry, and attention reads three blocks: the first, one from the middle, and the most recent." />
+<figcaption aria-hidden="true">Figure 2. Five ways to keep the past of a
+context, drawn for sixteen earlier tokens. Each row shows what one layer
+keeps and what the next token reads. In the selection row an indexer
+scores every entry, and attention reads three blocks: the first, one
+from the middle, and the most recent.</figcaption>
+</figure>
 <blockquote>
 <p><strong>Worked example 2: a million tokens, five ways.</strong> Count
 what one layer keeps for a 1,000,000-token prompt, and what the next
@@ -954,8 +967,17 @@ mHC</td>
 million tokens, and Qwen3.8 extends to about the same. The parameter
 counts are the publishers’; GLM’s total is left open because its
 first-party accounting does not yet reconcile.</p>
-<p><em>[Figure 3: seven aligned layer strips, showing where each model
-places each kind of layer.]</em></p>
+<figure>
+<img src="images/every-layer-a-store-layers.svg"
+alt="Figure 3. The layers of the seven models, read from their configuration files. Colour shows each layer’s token mixer. Every layer of both DeepSeek models also reads a window of recent tokens. Kimi K3’s MLA layers and Qwen3.8’s gated attention layers are drawn as full attention. Marks below a strip show the layers without experts, and the right column names how each model combines the outputs of its layers." />
+<figcaption aria-hidden="true">Figure 3. The layers of the seven models,
+read from their configuration files. Colour shows each layer’s token
+mixer. Every layer of both DeepSeek models also reads a window of recent
+tokens. Kimi K3’s MLA layers and Qwen3.8’s gated attention layers are
+drawn as full attention. Marks below a strip show the layers without
+experts, and the right column names how each model combines the outputs
+of its layers.</figcaption>
+</figure>
 <p><strong>MiMo-V2.6-Pro</strong> is the most conventional of the seven.
 Its global layers sit at irregular positions (0, 7, 15, 23, …), and the
 window layers between them see 128 tokens. Locality is cheap and covers

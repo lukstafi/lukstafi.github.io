@@ -58,7 +58,7 @@ The largest change is conditional computation. A [mixture of experts](https://ar
 
 This makes it necessary to keep four quantities apart: the weights a model stores, the computation each token uses, the state a context occupies, and the time a piece of hardware takes. "Active parameters" measures only the second. It says nothing about memory, about the cost of a long context, or about speed.
 
-*[Figure 1: the common block, with its three replaceable slots.]*
+![Figure 1. A modern layer has three slots: the token mixer, the channel mixer, and the residual combination that carries each position's representation to the next layer. The lists name the options the seven models use.](images/every-layer-a-store-block.svg)
 
 ## 2. Every layer is a store
 
@@ -142,7 +142,7 @@ The seven models keep the past of a context in five ways:
 - **Compressed entries**: groups of positions are pooled into one entry before anything is read.
 - **A recurrent state**: a fixed-size matrix that every token updates, with no per-token record at all.
 
-*[Figure 2: the five memories, drawn as what is kept and what a new token reads.]*
+![Figure 2. Five ways to keep the past of a context, drawn for sixteen earlier tokens. Each row shows what one layer keeps and what the next token reads. In the selection row an indexer scores every entry, and attention reads three blocks: the first, one from the middle, and the most recent.](images/every-layer-a-store-memories.svg)
 
 > **Worked example 2: a million tokens, five ways.** Count what one layer keeps for a 1,000,000-token prompt, and what the next token reads. A full-attention layer keeps 1,000,000 entries and reads all of them. One of MiMo's window layers keeps 128 and reads 128. A layer of MiniMax-M3 keeps all 1,000,000 but reads 16 blocks of 128 tokens, 2,048 positions, for each of its four groups of heads. A compressed sparse layer of DeepSeek-V4-Pro keeps about 250,000 entries, each pooled from 8 tokens at a stride of 4, and reads the 1,024 its indexer selects, plus the 128 most recent tokens uncompressed. A heavily compressed layer of the same model keeps about 7,800 entries, each pooled from 128 tokens, and reads them all. A recurrent layer of Kimi K3 keeps a matrix per head whose size does not depend on the prompt's length, and reads that.
 
@@ -260,7 +260,7 @@ The seven models combine these stores as follows.
 
 MiMo, Kimi K3, GLM-5.3, both DeepSeek models and MiniMax-M3 accept a million tokens, and Qwen3.8 extends to about the same. The parameter counts are the publishers'; GLM's total is left open because its first-party accounting does not yet reconcile.
 
-*[Figure 3: seven aligned layer strips, showing where each model places each kind of layer.]*
+![Figure 3. The layers of the seven models, read from their configuration files. Colour shows each layer's token mixer. Every layer of both DeepSeek models also reads a window of recent tokens. Kimi K3's MLA layers and Qwen3.8's gated attention layers are drawn as full attention. Marks below a strip show the layers without experts, and the right column names how each model combines the outputs of its layers.](images/every-layer-a-store-layers.svg)
 
 **MiMo-V2.6-Pro** is the most conventional of the seven. Its global layers sit at irregular positions (0, 7, 15, 23, …), and the window layers between them see 128 tokens. Locality is cheap and covers most of what a token needs; the global layers keep a path to everything else.
 
