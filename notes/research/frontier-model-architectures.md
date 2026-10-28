@@ -571,7 +571,7 @@ No architectural claim about the seven pinned checkpoints was contradicted. The 
 
 - **Meta Muse Spark Open** ([blog](https://huggingface.co/blog/meta-muse-spark-open), 15 October; 816B total, about 42B active): "Each block combines its input and its output through a learned residual gate, not through a plain sum." It is a third departure from the additive residual, beside mHC and AttnRes. [Confirmed from the blog; gated config not read]
 - **StepFun Step-5-Preview** (weights about 14–15 October): DeepSeek-style compressed sparse attention on the global layers only of a sliding-window hybrid. [Confirmed from config; date Reported]
-- **inclusionAI Ling-3.1-flash** (13 October): a second KDA-plus-MLA hybrid after Kimi K3, probably below frontier tier. [Confirmed from config]
+- **inclusionAI Ling-3.1-flash** (13 October; 560B/25B, 63 KDA + 9 gated MLA): a KDA-plus-MLA hybrid, probably below frontier tier. [Confirmed from config] *(Corrected 28 Oct: not the second after K3. inclusionAI had already released Ling-3.0-flash, 2 Aug, 5:1, and Ling-3.0-tiny, 10 Aug, 3:1.)*
 - **Reflection Beam 1.0** (501B, 23B active, Apache-2.0) is architecturally conventional. **Mistral Large 4** weights are promised but not yet out. [Confirmed; Reported for Mistral's date]
 
 ### New papers on components and monitoring

@@ -64,9 +64,9 @@ models of 2026. It covers how they are built. The second covers how they
 are trained.</em></p>
 <p>Give a language model a prompt of a million tokens. The picture most
 people carry of a Transformer says what happens next: every layer keeps
-an entry for every token, and every new token reads all of them. Three
-of this year’s open models accept a prompt that long, and none of them
-works that way.</p>
+an entry for every token, and every new token reads all of them. Most of
+this year’s large open models accept a prompt that long. Here are three,
+and none of them works that way.</p>
 <p><a
 href="https://huggingface.co/XiaomiMiMo/MiMo-V2.6-Pro-RL">MiMo-V2.6-Pro</a>,
 from Xiaomi, has 70 layers. In 60 of them, each position looks back only
@@ -81,7 +81,8 @@ href="https://huggingface.co/deepseek-ai/DeepSeek-V4.1-Flash">DeepSeek-V4.1-Flas
 has 40 layers, split into a 20-layer encoder and a 20-layer decoder.
 Most of the prompt passes only through the encoder. The decoder’s record
 of the prompt is projected from the encoder’s final states, and only the
-tokens the model generates pass through all 40 layers.</p>
+prompt’s last 128 tokens and the tokens the model generates pass through
+all 40 layers.</p>
 <p>So where did the prompt go? Into stores of different kinds, each with
 its own way of writing, keeping and reading. That is the thesis of this
 essay. A Transformer layer is a memory, and the 2026 open models extend
@@ -210,11 +211,11 @@ signal-to-noise ratio that falls with the number of stored traces.
 Neither gave a capacity number. The first one came a year later. <a
 href="https://doi.org/10.1109/TC.1973.5009138">Kohonen and Ruohonen</a>
 replaced the sum of outer products with the pseudo-inverse of the key
-matrix. That map recalls every stored value exactly if and only if the
-keys are linearly independent, so it stores at most as many pairs as the
-keys have dimensions. Beyond that it returns the least-squares
-approximation. An online route to the same map is older still. In 1960,
-<a
+matrix. That map recalls every stored value exactly when the keys are
+linearly independent, so for arbitrary values it stores at most as many
+pairs as the keys have dimensions. Beyond that it returns the
+least-squares approximation. An online route to the same map is older
+still. In 1960, <a
 href="https://isl.stanford.edu/~widrow/papers/c1960adaptiveswitching.pdf">Bernard
 Widrow and Ted Hoff</a> trained an adaptive linear unit by measuring its
 error on one pattern at a time and moving each weight against the
@@ -247,15 +248,19 @@ the same way. Raising the overlap to the power <span
 class="math inline">p</span> gives capacity of order <span
 class="math inline">d^p</span>.</p>
 <p>That feed-forward layers store associations this way is more than an
-analogy. <a href="https://arxiv.org/abs/1907.01470">Sukhbaatar and
-colleagues</a> replaced a Transformer’s feed-forward layers with
-attention over a set of learned key–value pairs and kept the model’s
-performance. <a href="https://arxiv.org/abs/2012.14913">Geva and
-colleagues</a> took a trained 16-layer language model and looked at what
-the keys of its feed-forward layers respond to. For 65 to 80 percent of
-the inputs that most activate a key, annotators found a shared pattern:
-shallow ones, such as a common last word, in the lower layers, and
-semantic ones in the upper layers.</p>
+analogy. <a href="https://arxiv.org/abs/1706.03762v2">A version of
+<em>Attention Is All You Need</em></a> already replaced the feed-forward
+layers with attention over learned key–value pairs, at about the same
+translation quality. Later versions dropped the passage. <a
+href="https://arxiv.org/abs/1907.01470">Sukhbaatar and colleagues</a>
+folded such learned pairs into self-attention itself and removed the
+feed-forward layers without loss. <a
+href="https://arxiv.org/abs/2012.14913">Geva and colleagues</a> took a
+trained 16-layer language model and looked at what the keys of its
+feed-forward layers respond to. For 65 to 80 percent of the inputs that
+most activate a key, annotators found a shared pattern: shallow ones,
+such as a common last word, in the lower layers, and semantic ones in
+the upper layers.</p>
 <blockquote>
 <p><strong>Hopfield and the 0.14 N limit.</strong> In 1982 <a
 href="https://doi.org/10.1073/pnas.79.8.2554">John Hopfield</a> stored
@@ -307,16 +312,17 @@ that its update rule is Transformer attention.</p>
 class="math inline">e^{\beta s}=\sum_p(\beta s)^p/p!</span>, so a store
 that weights each value by <span class="math inline">e^{\beta s}</span>,
 where <span class="math inline">s</span> is the overlap of its key with
-the query, suppresses interference more than any single power. Normalize
-the weights by their sum, and the store is softmax attention:</p>
+the query and <span class="math inline">\beta</span> sets the sharpness,
+suppresses interference more than any single power. Normalize the
+weights by their sum, and the store is softmax attention:</p>
 <p><span class="math display">
 f(q)=\sum_i v_i\,\frac{e^{\beta k_i^\top q}}{\sum_j e^{\beta k_j^\top
 q}} .
 </span></p>
 <p>Wang’s estimate for random keys gives a capacity of about <span
 class="math inline">e^{2\beta(1-\beta/d)}</span>. With the usual
-temperature, <span class="math inline">\beta=d^{1/2}</span>, that is
-about 1.2 million pairs at <span class="math inline">d=64</span>.</p>
+sharpness, <span class="math inline">\beta=d^{1/2}</span>, that is about
+1.2 million pairs at <span class="math inline">d=64</span>.</p>
 <p>Attention is a different kind of store from the feed-forward layer.
 Nothing is trained into it. Its keys and values are computed from the
 context while the model reads, and its <span
@@ -359,7 +365,7 @@ vocabulary of candidates. Under that criterion a linear store holds many
 more pairs. <a href="https://arxiv.org/abs/2412.06538">Nichani, Lee and
 Bietti</a> proved that an outer-product matrix of size <span
 class="math inline">d\times d</span> can pick out on the order of <span
-class="math inline">d^2</span> answers, up to a logarithmic factor. <a
+class="math inline">d^2</span> answers, up to logarithmic factors. <a
 href="https://arxiv.org/abs/2605.05189">Barnfield and colleagues</a>
 found the sharp constants: the best possible linear map succeeds while
 <span class="math inline">d^2/(n\ln n)</span> stays above 2, and the
@@ -374,21 +380,25 @@ values, it recalls about 350 written as outer products, and about 1,160
 written by the best possible linear map. The last two numbers come from
 solving <span class="math inline">n\ln n=d^2/8</span> and <span
 class="math inline">n\ln n=d^2/2</span> with <span
-class="math inline">d^2=16{,}384</span>. They are asymptotic, and at
-this size the measured transitions sit somewhat lower. “Order <span
-class="math inline">d^2</span>” hides a logarithm that here costs more
-than a factor of ten.</p>
+class="math inline">d^2=16{,}384</span>. They are asymptotic. In
+Barnfield and colleagues’ simulations the best map holds more at finite
+sizes than the asymptotic count, and their finite-size formula gives
+about 1,800 here. Either way, “order <span
+class="math inline">d^2</span>” hides a logarithm that costs about a
+factor of ten.</p>
 </blockquote>
 <p>Two further cautions hold for every number in this section. The
 counts are per key dimension, not per parameter. A feed-forward store
 that holds <span class="math inline">d^2</span> pairs needs about <span
 class="math inline">d^2</span> hidden units to do it. Measured per
-parameter, stores hold about the same amount whatever their
-nonlinearity: Training language models on synthetic biographies, <a
+parameter, architectures differ less than these counts suggest. Training
+language models on synthetic biographies, <a
 href="https://arxiv.org/abs/2404.05405">Allen-Zhu and Li</a> found that
 they store about 2 bits of knowledge per parameter when each fact has
-been seen about a thousand times, and about 1 bit when it has been seen
-a hundred times. And the counts assume random keys. Real keys share
+been seen about a thousand times, with gated feed-forward layers, plain
+ones, or none. When each fact has been seen a hundred times the figure
+falls to about 1 bit, and there gated feed-forward layers store 1.3
+times less. And the counts assume random keys. Real keys share
 structure: the same entity appears in many facts, and templates repeat.
 Shared structure raises interference beyond what any count here
 predicts.</p>
@@ -402,8 +412,9 @@ distractors before any expert sees the query. The cost in capacity is
 small. In Allen-Zhu and Li’s experiments a model with 32 experts stored
 1.3 times less knowledge per parameter than a dense model, even when
 each token went to a single expert and used 8.8 percent of the
-parameters. How much a mixture of experts can store is better judged
-from its total parameters than from its active ones.</p>
+parameters. For facts seen only a hundred times the loss was 1.5 times.
+How much a mixture of experts can store is better judged from its total
+parameters than from its active ones.</p>
 <p>Not every layer needs to be split. Microsoft’s <a
 href="https://microsoft.ai/pdf/mai-thinking-1.pdf">MAI-Thinking-1</a>,
 whose weights are not released, alternates a feed-forward store split
@@ -415,10 +426,10 @@ shared expert brought it little or nothing.</p>
 DeepSeek-V4-Pro routes tokens in its first three layers by a hash of the
 token’s identity, so the address is the token itself.
 DeepSeek-V4.1-Flash adds <a
-href="https://arxiv.org/abs/2601.07372">Engram</a>, a
-196-billion-parameter table looked up by short sequences of tokens. Both
-are stores whose keys are fixed in advance and whose values are
-learned.</p>
+href="https://arxiv.org/abs/2601.07372">Engram</a>: 196 billion
+parameters of tables in two layers, looked up by hashes of the last two
+to four tokens. Both are stores whose keys are fixed in advance and
+whose values are learned.</p>
 <blockquote>
 <p><strong>Feed-forward layers and fast weights.</strong> The
 distinction between stores written in training and stores written while
@@ -488,12 +499,13 @@ combines several of them and keeps 890 bytes of global cache per
 token.</p>
 <section id="selection-is-learned-retrieval" class="level3">
 <h3>Selection is learned retrieval</h3>
-<p>Three of the seven choose which entries to read. GLM-5.3 uses
-DeepSeek Sparse Attention: a small “lightning indexer” scores every
-earlier position for each query, and the main attention reads the 2,048
-best. Its IndexShare lets one indexer serve a group of four consecutive
+<p>Four of the seven choose which entries to read. GLM-5.3 uses DeepSeek
+Sparse Attention: a small “lightning indexer” scores every earlier
+position for each query, and the main attention reads the 2,048 best.
+Its IndexShare lets one indexer serve a group of four consecutive
 layers. DeepSeek-V4-Pro’s compressed sparse attention applies the same
-kind of indexer to compressed entries. MiniMax-M3’s <a
+kind of indexer to compressed entries, and DeepSeek-V4.1-Flash stacks
+two levels of it (Section 5). MiniMax-M3’s <a
 href="https://arxiv.org/abs/2606.13392">sparse attention</a> (MSA)
 selects blocks of 128 positions, separately for each group of heads that
 share keys and values, and always includes the block that contains the
@@ -503,11 +515,12 @@ It scores keys, and the main attention reads only the winners. Because
 the choice is a hard top-<span class="math inline">k</span>, no gradient
 flows through it, so the indexers learn by imitating the main
 attention’s distribution; the second essay describes how. What they
-learn can be inspected. In MiniMax’s own analysis, its indexer selects
-the first position of the sequence, the “attention sink” that many heads
-use as a default, and the block next to the query, without being told
-to. The new failure that selection brings is the miss: an entry the
-indexer did not choose cannot be read, however relevant it was.</p>
+learn can be inspected. In MiniMax’s analysis of its
+109-billion-parameter research models, the indexer learns to select the
+first block of the sequence, which holds the “attention sink” that many
+heads use as a default. The new failure that selection brings is the
+miss: an entry the indexer did not choose cannot be read, however
+relevant it was.</p>
 </section>
 <section id="compression-pools-positions" class="level3">
 <h3>Compression pools positions</h3>
@@ -600,16 +613,18 @@ persona survived the same way, 49 percent against 14. Then they paired
 one prompt’s cache with another prompt’s state, and the answer took its
 content from the first and its language from the second. Kimi Linear,
 Moonshot’s smaller relative of K3, showed the same division. The models
-were small, the answers short, and the largest results came from a
-single run. Discarding one store also leaves the model in a state it
-never met in training, which the paired swap partly answers.</p>
+were far smaller than the seven, the answers short, and the results for
+the largest models came from a single run. Discarding one store also
+leaves the model in a state it never met in training, which the paired
+swap partly answers.</p>
 <p>The recurrent layers also forget quickly, by design. <a
 href="https://arxiv.org/abs/2610.14754">In Qwen3.8-27B</a> the median
 recurrent head halves its contents in about 24 tokens, and the ranking
 of heads from fast to slow is almost the same for every document, fixed
 by the weights. <a href="https://arxiv.org/abs/2608.30386">In Kimi
-K3</a>, almost every recurrent head mixes channels that keep their
-contents for long with channels that forget them within 64 tokens.</p>
+K3</a>, an estimate from the weights finds that 98 percent of recurrent
+heads mix channels that fade to a thousandth within 64 tokens with
+channels that last longer.</p>
 <p>Together these results divide the labour. The cache is the store that
 grows with the context, and it holds the content: values, names, the
 facts a later question will need. The recurrent state is the store that
@@ -625,15 +640,17 @@ in minimal versions of their tasks. The division is learned.</p>
 <p>As a context grows, so does the number of keys that compete with the
 right one. Softmax attention suppresses random competitors
 exponentially, but its capacity is finite at a fixed temperature. One
-remedy raises the temperature with the logarithm of the context length;
-<a href="https://arxiv.org/abs/2309.16609">Qwen’s LogN scaling</a> is an
+remedy sharpens the softmax as the context grows, multiplying <span
+class="math inline">\beta</span> by a factor that grows with the
+logarithm of the context length. <a
+href="https://arxiv.org/abs/2309.16609">Qwen’s LogN scaling</a> is an
 early instance. In Wang’s simulations with random competitors, this
-keeps recall nearly perfect at any length. Real long contexts are not
-random: they repeat entities, templates and phrasings, and
-near-duplicate keys cannot be separated by temperature. That is one
-reason a model whose architecture accepts a million tokens may still
-fail to use them, and why the second essay treats long context as a
-training problem.</p>
+keeps recall nearly perfect at every length he tried, up to two million
+entries. Real long contexts are not random: they repeat entities,
+templates and phrasings, and near-duplicate keys cannot be separated by
+temperature. That is one reason a model whose architecture accepts a
+million tokens may still fail to use them, and why the second essay
+treats long context as a training problem.</p>
 </section>
 </section>
 <section id="memory-along-depth" class="level2">
@@ -680,10 +697,10 @@ of the mixing matrix sum to 1 exactly and the columns only
 approximately, so the conservation is approximate.</p>
 </blockquote>
 <p>A doubly stochastic mix has a further property. Its average channel
-is an ordinary residual update, and every difference between the streams
-shrinks at each layer unless the matrix is a permutation, as <a
-href="https://arxiv.org/abs/2610.06653">Li, Sha and Yang</a> show. The
-extra streams are a memory that fades over depth. <a
+is an ordinary residual update, and the differences between the streams
+contract at every layer, since only a permutation preserves them all, as
+<a href="https://arxiv.org/abs/2610.06653">Li, Sha and Yang</a> show.
+The extra streams are a memory that fades over depth. <a
 href="https://arxiv.org/abs/2609.05309">Zhao and colleagues</a> measured
 how a trained model uses them. In DeepSeek-V4-Flash, a typical block
 reads about two of the four streams and writes about two. In the later
@@ -694,11 +711,11 @@ fixing it to its average over tokens cost 0.2 percent.</p>
 <p>DeepSeek-V4.1-Flash changes one coefficient. Its Single-Pass mHC
 reads each block’s input with <span class="math inline">A_{l-1}</span>,
 the mixing vector computed one step earlier, instead of <span
-class="math inline">A_l</span>. That lets the hardware read each tile of
-the streams once instead of twice, halving the memory traffic of the
-original implementation. The report says the shift costs negligible
-quality, and it was used in pretraining, so it changes the model and not
-only its kernel.</p>
+class="math inline">A_l</span>. With a fused kernel, that lets the
+hardware read each tile of the streams once instead of twice, and it
+halves the memory traffic of the original implementation. The report
+says the shift costs negligible quality, and it was used in pretraining,
+so it changes the model and not only its kernel.</p>
 </section>
 <section id="attention-over-depth" class="level3">
 <h3>Attention over depth</h3>
@@ -810,10 +827,10 @@ mHC</td>
 </tr>
 </tbody>
 </table>
-<p>MiMo, Kimi K3, both DeepSeek models and MiniMax-M3 accept a million
-tokens, and Qwen3.8 extends to about the same. The parameter counts are
-the publishers’; GLM’s total is left open because its first-party
-accounting does not yet reconcile.</p>
+<p>MiMo, Kimi K3, GLM-5.3, both DeepSeek models and MiniMax-M3 accept a
+million tokens, and Qwen3.8 extends to about the same. The parameter
+counts are the publishers’; GLM’s total is left open because its
+first-party accounting does not yet reconcile.</p>
 <p><em>[Figure 3: seven aligned layer strips, showing where each model
 places each kind of layer.]</em></p>
 <p><strong>MiMo-V2.6-Pro</strong> is the most conventional of the seven.
@@ -829,14 +846,14 @@ compute in a narrower latent space. Its residual combination is
 AttnRes.</p>
 <p><strong>Qwen3.8</strong> shares K3’s plan for the token mixer: three
 Gated DeltaNet layers for every attention layer. Its attention layers
-apply a sigmoid gate to their output, head by head. The open checkpoint
-is the text-only counterpart of the Qwen3.8-Max service, which also
-reads images.</p>
+multiply each head’s output, channel by channel, by a sigmoid gate. The
+open checkpoint is the text-only counterpart of the Qwen3.8-Max service,
+which also reads images.</p>
 <p><strong>GLM-5.3</strong> shows that a new release need not mean a new
-architecture. Its model card names GLM-5.2 as its base, and its gains
-come from more post-training. The architecture it inherits pairs an
-MLA-style cache with DeepSeek’s sparse attention and shares each indexer
-across a group of four layers.</p>
+architecture. Its model card says it shares GLM-5.2’s base model and
+that every gain comes from post-training. The architecture it inherits
+pairs an MLA-style cache with DeepSeek’s sparse attention and shares
+each indexer across a group of four layers.</p>
 <p><strong>DeepSeek-V4-Pro</strong> combines two levels of compression.
 Its first two layers are heavily compressed, and the remaining 59
 alternate between compressed sparse and heavily compressed attention.
@@ -850,9 +867,10 @@ The encoder keeps three caches, at a compression of 2, each shared by
 six layers. The decoder keeps one uncompressed cache, computed by its
 first layer from the encoder’s final state and read by all twenty
 decoder layers. A hierarchical indexer narrows its reads: the first
-decoder layer picks up to 16,384 candidate positions, and every fourth
-layer after it chooses 512 within them. Engram, Single-Pass mHC and
-4-bit cache entries complete the design.</p>
+decoder layer chooses its own 512 positions and a pool of up to 16,384
+candidates, and every fourth layer after it chooses a fresh 512 within
+that pool. Engram, Single-Pass mHC and 4-bit entries in the global cache
+complete the design.</p>
 <p><strong>MiniMax-M3</strong> learns which blocks of the context to
 read, with three full-attention layers at the start. Its October
 successor, <a
@@ -863,10 +881,13 @@ with a delta-rule write, mixed with attention; learned selection of what
 to read; learned compression of what is kept; a split between reading a
 prompt and writing an answer; and replacements for the plain residual
 sum. The October releases spread them further. Selection reached every
-layer of MiniMax’s model and the global layers of StepFun’s window
-design. KDA-plus-MLA hybrids appeared beyond Moonshot, and Meta replaced
-the residual sum. Most of these ideas are answers to one question: what
-a memory should be allowed to forget.</p>
+layer of MiniMax’s model and the global layers of <a
+href="https://huggingface.co/stepfun-ai/Step-5-Preview">Step-5-Preview</a>,
+StepFun’s window hybrid. KDA-plus-MLA hybrids, which inclusionAI had
+adopted in August, reached 560 billion parameters in its <a
+href="https://huggingface.co/inclusionAI/Ling-3.1-flash">Ling-3.1-flash</a>,
+and Meta replaced the residual sum. Most of these ideas are answers to
+one question: what a memory should be allowed to forget.</p>
 </section>
 <section id="depth-recurrence-and-what-a-monitor-can-see"
 class="level2">
@@ -917,16 +938,17 @@ stronger state tracking, <a href="https://arxiv.org/abs/2604.03444">in
 Olmo Hybrid</a> and <a href="https://arxiv.org/abs/2609.24797">in
 Complex KDA</a>, widen the ranges of the gates, for instance letting the
 write step exceed 1 so that the factor can have a negative eigenvalue.
-The released code of Kimi K3 and Qwen3.8 does not: the write step stays
-between 0 and 1. Names like “linear attention” or “delta rule” therefore
-do not settle where these models sit.</p>
-<p>Selection has its own limit. <a
+Kimi K3’s released code, and the Transformers implementation that loads
+Qwen3.8, do not: the write step stays between 0 and 1. Names like
+“linear attention” or “delta rule” therefore do not settle where these
+models sit.</p>
+<p>Hybrids have a limit of their own. <a
 href="https://arxiv.org/abs/2610.25250">Eitan, Yehudai and Maron</a>
-argue that hybrid layers with top-<span class="math inline">k</span>
-access to their context need capacity growing as the square root of the
-domain size to compose two lookups, unless retrieval is repeated within
-the layer. A model that reads few entries per layer may have to pay for
-composition in layers.</p>
+prove that a hybrid block, whether it reads its whole cache or only the
+top-<span class="math inline">k</span> entries, needs capacity of at
+least the square root of the domain size to compose two lookups, unless
+it repeats retrieval within the block. A model that retrieves once per
+layer may have to pay for composition in layers.</p>
 <p>For monitoring, the important distinction is between three paths from
 one token to the next. The first is recurrence across positions, as in
 KDA and Gated DeltaNet: a numerical state carries information that the
@@ -934,7 +956,7 @@ emitted text need not express. Ordinary Transformers have this path too,
 through their caches, so text was never the only channel between steps.
 The second is recurrence through depth, repeated passes through the same
 layers before a token is emitted. None of the seven does this, and in
-eight small looped models <a
+six of eight small looped models <a
 href="https://arxiv.org/abs/2610.18127">most answer tokens are decided
 at the first iteration</a>. The third is generated text, which adds
 steps of computation but need not explain them faithfully.</p>
@@ -970,7 +992,7 @@ measured so far are a guide, those matrices hold the prompt’s settings,
 its language and voice, while the facts stay in the cache. In
 DeepSeek-V4.1-Flash, the encoder read the prompt and wrote it into four
 caches: three compressed ones shared within the encoder, and one
-uncompressed one from which the decoder selects. Engram’s table was
+uncompressed one from which the decoder selects. Engram’s tables were
 consulted along the way. In each model the prompt was divided among
 stores that keep different things for different lengths of time.</p>
 <p>These stores were not designed to hold particular contents; training
