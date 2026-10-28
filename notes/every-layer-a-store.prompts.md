@@ -63,3 +63,7 @@ Yes, stores table (one row per store, columns for the four questions plus how it
 ## Figures
 
 Yes, figures (Figures 1–3 as matplotlib SVGs with their scripts in the repo).
+
+## Editorial pass
+
+Yes, editorial pass (AGENTS.md style).
