@@ -76,3 +76,11 @@ Can you check how these two papers interact with our recent essays, suggest upda
 https://arxiv.org/html/2610.31066v1 "Dual Exam: Controlled Evaluation of Multimodal Agents and World Models", https://arxiv.org/html/2610.32770v1 "On-Policy Self-Training: Data-Free Self-Improvement in Large Language Models"
 
 Apply the OPST edits to Who Teaches the Weights? and Where Experience Goes (sections 2a and 2b of the note), and regenerate the HTML.
+
+## Language Models Need Sleep
+
+*From a check of Google's Sleep paper against the series, 28 October 2026.*
+
+Google just posted https://research.google/blog/the-sleep-framework-a-new-way-for-llms-to-retain-knowledge-in-continual-learning/ but the paper is from a few months ago: https://arxiv.org/html/2606.03979v2 . Are we covering it in the continual learning series?
+
+Yes, add to Part 3.

@@ -424,6 +424,22 @@ attested many times should resist a single contradiction.
 Multi-timescale teachers (a moving average, an episodic buffer, a frozen
 base anchor) and per-channel decay gates are working instances of that
 idea.</p>
+<p>A Google paper, <a
+href="https://arxiv.org/abs/2606.03979"><em>Language Models Need
+Sleep</em></a>, builds part of the ladder inside the weights. Its
+feed-forward blocks are updated at different frequencies. The fastest
+hold short-term memories, and the slowest almost never change.
+Periodically, in a phase the authors call sleep, the contents of a fast
+block move into a slower one. The teacher is the model as it stands
+before the move. The student is the model after it: the fast block’s
+recently added experts are cleared, and the slower block gains a new
+low-rank expert. Only that expert is trained, by on-policy distillation,
+so what the slower block already held stays fixed. This is consolidation
+as Part 1 described it, written into capacity allocated for the purpose.
+A second phase, which the authors call dreaming, has the model generate
+its own training data, in the manner of SEAL (see the box below). Most
+of the experiments run on the authors’ own multi-frequency architecture,
+so the method’s gains are hard to separate from the architecture’s.</p>
 <p><strong>The cut between parametric and non-parametric memory is the
 wrong one.</strong> The recurrent state is parametric and is wiped at
 the end of every session. Harness memory is non-parametric and
@@ -496,6 +512,13 @@ policies</td>
 <td><em>Learning, Fast and Slow</em></td>
 <td>evolved prompts that lift reward</td>
 <td>prompts first, then core weights by reinforcement learning</td>
+</tr>
+<tr>
+<td>Sleep</td>
+<td>the model before a fast block’s contents are cleared, rescoring the
+student’s samples for a set fraction of the data</td>
+<td>a new low-rank expert in a slower block, with everything else
+frozen</td>
 </tr>
 <tr>
 <td>Doc-to-LoRA</td>
@@ -647,8 +670,12 @@ passage alone barely moves accuracy on questions about it, from 33 to 34
 percent. Adding the model’s own implications lifts it to 40. Once
 reinforcement learning has taught the model which implications make good
 training data, it reaches 47, slightly above training data written by
-GPT-4.1. See also <a href="https://arxiv.org/abs/2505.00661">Lampinen
-and colleagues</a>, cited in <a
+GPT-4.1. The Sleep paper reran this task with its own method. In its
+runs, SEAL reached 47 percent and Sleep with dreaming 49. Without
+dreaming, Sleep reached 36, barely above the 33 of fine-tuning on the
+passage alone. See also <a
+href="https://arxiv.org/abs/2505.00661">Lampinen and colleagues</a>,
+cited in <a
 href="https://lukstafi.github.io/notes/who-teaches-the-weights.html">Part
 1</a>: augmenting fine-tuning with the inferences the model drew in
 context closed the gap to in-context learning, and sometimes reversed
@@ -838,7 +865,9 @@ Continually</em>, arXiv 2605.12484. Asawa et al., Continual Learning
 Bench, arXiv 2606.05661. Goel et al., <em>FutureSim: Replaying World
 Events to Evaluate Adaptive Agents</em>, arXiv 2605.15188. Dorovatas et
 al., <em>Position: Modular Memory is the Key to Continual Learning
-Agents</em>, arXiv 2603.01761. Technical reports and announcements for
+Agents</em>, arXiv 2603.01761. Behrouz, Hashemi, Javanmard and Mirrokni,
+<em>Language Models Need Sleep: Learning to Self-Modify and Consolidate
+Memories</em>, arXiv 2606.03979. Technical reports and announcements for
 DeepSeek V4, GLM-5.2 and GLM-5.3, Kimi K3 and MiMo-V2.6-Pro, as
 collected in our architecture dossier. Tanzer et al., <em>A Benchmark
 for Learning to Translate a New Language from One Grammar Book</em>,
