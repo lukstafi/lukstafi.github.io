@@ -65,6 +65,16 @@ for md_file in "${md_files[@]}"; do
       ;;
   esac
 
+  # Refresh the dark variant of every SVG figure the article uses
+  # (foo.svg -> foo-dark.svg) when it is missing or older than its source.
+  while IFS= read -r svg; do
+    src="$root_dir/notes/$svg"
+    dark="${src%.svg}-dark.svg"
+    if [ -f "$src" ] && { [ ! -f "$dark" ] || [ "$src" -nt "$dark" ]; }; then
+      python3 "$root_dir/scripts/figures/svg_dark_variant.py" "$src"
+    fi
+  done < <(grep -oE '\(images/[^)[:space:]]+\.svg\)' "$md_file" | tr -d '()' | grep -v -- '-dark\.svg$' | sort -u || true)
+
   # Link-preview meta tags (Open Graph, Twitter card) from the index entry.
   og_meta="$(python3 "$root_dir/scripts/og_meta.py" "notes/$base_name.html" "$title")"
 
@@ -74,6 +84,7 @@ for md_file in "${md_files[@]}"; do
     --standalone \
     --section-divs \
     --katex \
+    --lua-filter="$root_dir/scripts/figure_themes.lua" \
     --template="$root_dir/assets/tufte.html5" \
     --css="/assets/tufte.css" \
     --css="/assets/pandoc-tufte.css" \

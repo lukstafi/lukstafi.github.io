@@ -67,6 +67,18 @@
   --updated-fg: #1a6b3e;
 }
 
+/* Figures with a dark variant: show the one that matches the theme
+   (pairs emitted by scripts/figure_themes.lua) */
+img.fig-dark { display: none; }
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) img.fig-light { display: none; }
+  :root:not([data-theme="light"]) img.fig-dark { display: inline; }
+}
+
+:root[data-theme="dark"] img.fig-light { display: none; }
+:root[data-theme="dark"] img.fig-dark { display: inline; }
+
 /* Apply variables — override Tufte's hardcoded colors */
 body {
   background-color: var(--bg) !important;
