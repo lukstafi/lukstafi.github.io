@@ -117,13 +117,13 @@ $$
 \langle A,R,S,B\rangle\ \text{IS-A}\ \langle R,R,S,S\rangle.
 $$
 
-That gives domains and ranges for free, as ordinary IS-A: whatever plays the role $R$ IS-A $R$. A relation is a concept, so it can fill a role in another tuple. So can a single link, which a Davidsonian reading treats as a state that can be talked about. The design closes the circle with a convention that defines the top relation as the top concept:
+That gives domains and ranges for free, as ordinary IS-A: whatever plays the role $R$ IS-A $R$. A relation is a concept, so it can fill a role in another tuple. So can a single link, which a Davidsonian reading treats as a state that can be talked about. The design treats every link as something that can play a role, so the most general relation falls under the most general role:
 
 $$
-\langle\textit{Role},\textit{Role},\textit{Role},\textit{Role}\rangle=\textit{Role}.
+\langle\textit{Role},\textit{Role},\textit{Role},\textit{Role}\rangle\ \text{IS-A}\ \textit{Role}.
 $$
 
-Every relation, and everything that takes part in one, then falls under a single concept, and reification is uniform.
+Every relation then falls under *Role*, and reification is uniform.
 
 **Events.** Only binary tuples exist, so a fact with more participants is reified as an event, in Donald Davidson's style. "John gave Mary a book" becomes $\langle g,\textit{Giving},\textit{giver},\textit{John}\rangle$, $\langle g,\textit{Giving},\textit{recipient},\textit{Mary}\rangle$ and $\langle g,\textit{Giving},\textit{gift},b\rangle$, with the event's class serving as the event's role.
 
@@ -139,7 +139,7 @@ Every relation, and everything that takes part in one, then falls under a single
 
 **No individuals, no classes.** Dropping the distinction is in the spirit of term logic, and we accept that contradictions may arise. The danger is not Russell's paradox. With a reflexive IS-A, the concepts that are not IS-A themselves form an empty class, and the empty class IS-A itself without contradiction. The danger is collective predication. "Dogs are mammals" says something of every dog. "Humans are a species" says something of the kind. If both were IS-A, John would be a species. So IS-A is *distributive*: it says only what holds of every member. A collective fact is about a kind, and the kind gets a singular term of its own, distinct from the class of its members: $\langle\textit{HomoSapiens},\textit{taxon},\textit{rank},\textit{SpeciesRank}\rangle$, together with $\langle\textit{Human},\textit{member},\textit{taxon},\textit{HomoSapiens}\rangle$. Wikidata likewise records taxonomic rank as a property of the taxon.
 
-The convention $\langle\textit{Role},\textit{Role},\textit{Role},\textit{Role}\rangle=\textit{Role}$ makes *Role* a concept that falls under itself. That alone is harmless: Quine's New Foundations has a universal set. Paradoxes need a diagonal construction, a term for "the concepts that do not fall under themselves". The term language cannot form one. Images are taken over tuples, and IS-A is not a tuple, so no image can collect the concepts that are not IS-A themselves.
+*Role* covers everything that takes part in a relation, including relations and their links, so it is in effect a universal concept, and it falls under itself. That alone is harmless: Quine's New Foundations has a universal set. Paradoxes need a diagonal construction, a term for "the concepts that do not fall under themselves". The term language cannot form one. Images are taken over tuples, and IS-A is not a tuple, so no image can collect the concepts that are not IS-A themselves.
 
 **Roles are concepts like any other.** Anything that takes part in a relation IS-A some role, so *Role* is in effect the top concept. Some roles hold only for a while. OntoClean, the method of Nicola Guarino and Christopher Welty, calls such roles *anti-rigid*: John can stop being an employee without ceasing to be John. One rule handles this. An IS-A derived from a tuple is asserted where the tuple is asserted. If the employment is an event with its own time and context, then "John IS-A Employee" holds in that context, not in the timeless shared world.
 

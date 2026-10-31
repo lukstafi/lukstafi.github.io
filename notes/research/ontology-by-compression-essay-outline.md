@@ -100,7 +100,7 @@ Recorded so the draft keeps the author's choices in the author's voice.
 5. Fine-grained roles required.
 6. Symmetry implies ∀∃ and ∃∀, so only ⟨Dog, whole, part, DogLeg⟩ is valid.
 7. No individual/class distinction, term-logic style, accepting possible contradictions as the spirit of the approach.
-8. Roles are not separated from non-roles (otherwise non-roles could not participate); ⟨Role, Role, Role, Role⟩ = Role so that reification works.
+8. Roles are not separated from non-roles (otherwise non-roles could not participate); ⟨Role, Role, Role, Role⟩ = Role so that reification works. Revised by the user after the draft review (31 Oct): weakened to ⟨Role, Role, Role, Role⟩ IS-A Role, since the identity fails under the link-set extension of tuple terms; every link is treated as a possible role-player.
 9. IS-A is primitive.
 10. A separate provenance meta-relation, valid only when asserted, through which all assertion of IS-A and tuples factors.
 
