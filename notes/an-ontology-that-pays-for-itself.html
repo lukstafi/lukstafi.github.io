@@ -1,0 +1,778 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <meta name="author" content="Łukasz Stafiniak and Claude (Opus 5.5)">
+  <meta name="dcterms.date" content="2026-10-31">
+  <meta property="og:title" content="An Ontology That Pays for Itself">
+  <meta property="og:url" content="https://lukstafi.github.io/notes/an-ontology-that-pays-for-itself.html">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="lukstafi&#x27;s blog">
+  <meta name="twitter:card" content="summary">
+  <title>An Ontology That Pays for Itself</title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <link rel="stylesheet" href="/assets/tufte.css">
+  <link rel="stylesheet" href="/assets/pandoc-tufte.css">
+  <link rel="stylesheet" href="/assets/site.css">
+  <script defer=""
+  src="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.js"></script>
+  <script>document.addEventListener("DOMContentLoaded", function () {
+ var mathElements = document.getElementsByClassName("math");
+ var macros = [];
+ for (var i = 0; i < mathElements.length; i++) {
+  var texText = mathElements[i].firstChild;
+  if (mathElements[i].tagName == "SPAN") {
+   katex.render(texText.data, mathElements[i], {
+    displayMode: mathElements[i].classList.contains('display'),
+    throwOnError: false,
+    macros: macros,
+    fleqn: false
+   });
+}}});
+  </script>
+  <link rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.css" />
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+  <script>(function(){var t=localStorage.getItem('theme-preference');if(t)document.documentElement.setAttribute('data-theme',t);})()</script>
+  <style>
+  .katex-display { overflow-x: auto; overflow-y: hidden; padding: 0.3em 0; }
+  .katex-display > .katex { width: max-content; min-width: 100%; }
+  article table { display: block; max-width: 100%; overflow-x: auto; }
+  </style>
+</head>
+<body>
+<nav class="site-nav">
+  <a href="/">Home</a> &middot; <a href="/about.html">About</a> &middot; <a href="https://lukstafi.substack.com">Substack</a>
+</nav>
+<div class="theme-toggle">
+  <button id="theme-btn" aria-label="Toggle dark mode">&#9788;</button>
+</div>
+<article>
+<header>
+<h1 class="title">An Ontology That Pays for Itself</h1>
+<p class="subtitle">Inducing a Cyc-like ontology by compression, with
+provenance as the only judgment</p>
+<p class="byline">2026-10-31 &ndash; Łukasz Stafiniak and Claude (Opus
+5.5)</p>
+</header>
+<p>Here is a corpus of three sentences: “Mary walked home”, “Mary ran
+home”, “Mary drove home”. Link the words of each sentence by their
+dependencies, then cut every link in half. Each verb comes out with the
+same shape: a half-link reaching left to <em>Mary</em> and a half-link
+reaching right to <em>home</em>. In the notation of Link Grammar:</p>
+<pre><code>walked: Mary- &amp; home+;
+ran:    Mary- &amp; home+;
+drove:  Mary- &amp; home+;</code></pre>
+<p>The three entries beg to be merged into one:</p>
+<pre><code>walked ran drove: Mary- &amp; home+;</code></pre>
+<p>The example comes from Linas Vepštas’s <a
+href="https://arxiv.org/abs/1901.01341">“Sheaves: A Topological Approach
+to Big Data”</a>, a long draft written for the OpenCog project’s attempt
+to learn language without supervision. Vepštas notes that the merge
+looks like an application of the distributive law, and that the
+appearance deceives. The merge is safe only if the three verbs occur
+nowhere else. In a real corpus they do: people run companies and drive
+nails. Whether the merge is right depends on everything else the corpus
+says. Vepštas leaves the decision to whatever similarity measure the
+user supplies.</p>
+<p>This essay leaves it to compression. A merge is right when it
+shortens the description of the data. Taken seriously, that criterion
+reaches well beyond word classes. It can decide which concepts,
+relations and rules an ontology contains, and the ontology it builds
+resembles Cyc, the decades-long effort to write down common sense by
+hand. We work out what such an ontology needs: a code in three parts, a
+model of who is speaking, a representation with two primitives, and a
+single form of judgment. Reasoning over it, with contradictions kept
+local and defaults that tolerate exceptions, is the subject of <a
+href="https://lukstafi.github.io/notes/presumed-normal.html"><em>Presumed
+Normal</em></a>, which can be read before this essay or alongside
+it.</p>
+<section id="merges-that-pay" class="level2">
+<h2>Merges that pay</h2>
+<p>Vepštas’s pipeline has three steps. First, parse a large corpus
+without supervision, linking the words of each sentence into the
+spanning tree of highest total mutual information, following <a
+href="https://arxiv.org/abs/cmp-lg/9805009">Deniz Yuret’s</a> “lexical
+attraction”. Second, cut each parse into <em>seeds</em>: a word together
+with its half-links, which Link Grammar calls a <em>disjunct</em>.
+Third, collect all of a word’s seeds into what Vepštas calls its
+<em>stalk</em>, and merge words whose stalks are similar. A stalk is a
+feature vector, and the merging is clustering.</p>
+<p>Vepštas also has a test for structure that goes beyond word classes.
+Suppose clustering has found a class of names, {Adam, Mary}, and a class
+of actions, {walked, ran}. The corpus contains “Mary walked” and “Adam
+ran” but not “Mary ran”. We still want to conclude that any name can
+combine with any action. The evidence is a pattern in the co-occurrence
+table: names occur often with actions, while names with non-actions
+(“Mary book”) and non-names with actions (“the ran”) are rare. The block
+where names meet actions is dense, and the cells around it are nearly
+empty. The same pattern will return one level up, among facts instead of
+words, as the basic unit of the ontology.</p>
+<p>What the pipeline lacks is a score. <a
+href="https://aclanthology.org/D09-1001/">Hoifung Poon and Pedro
+Domingos’s</a> Unsupervised Semantic Parsing (USP) supplies one. USP
+starts from dependency parses made by a supervised parser, converts them
+into fragments of logical form, and clusters the fragments. A MERGE
+operation joins two clusters. A COMPOSE operation joins fragments into a
+larger unit, so that “is next to” can be clustered with “borders”. USP
+writes its fragments as lambda terms, but the notation does no work.
+What matters is that every operation is scored by</p>
+<p><span class="math display">
+\log P(\text{corpus}\mid H)+\log P(H),
+</span></p>
+<p>and the search keeps an operation only when the score rises (by more
+than 10, in their implementation). The score is minus a <em>two-part
+code length</em>: the bits needed to describe the hypothesis <span
+class="math inline">H</span>, plus the bits needed to describe the
+corpus once <span class="math inline">H</span> is known. USP’s weights
+are log relative frequencies, computed in closed form from counts, so a
+merge changes the score only through the clusters it touches. Its prior
+is exponential in the number of parameters. “X and Y” usually names two
+different things, so a second prior discourages putting the two halves
+of a conjunction into one cluster, which keeps antonyms apart. <a
+href="https://aclanthology.org/P10-1031/">OntoUSP</a> adds ISA and
+IS-PART hierarchies over the clusters.</p>
+<p>Scoring of this kind scales. <a
+href="https://aclanthology.org/J92-4003/">Brown clustering</a> is the
+same idea with the simplest possible seeds, a word and its neighbours.
+It merges word classes greedily to maximize the likelihood of a
+class-bigram model, which comes to the same thing as maximizing the
+mutual information between adjacent classes. <a
+href="https://aclanthology.org/P08-1086/">Jakob Uszkoreit and Thorsten
+Brants</a> ran a distributed exchange algorithm for a related class
+model on up to 31 billion tokens. The locality of the score is what lets
+the work be split across machines.</p>
+<p>Two details keep the accounting honest. Coding each sentence with its
+single best parse is still a valid code, only a longer one than a code
+that sums over all parses, so hard parses are allowed. And the
+likelihood term alone never asks for merging, since finer classes always
+fit the data better. Brown clustering sidesteps the question by fixing
+the number of classes in advance. A two-part code answers it: the prior
+is what pays for merging. Turning its weight up should yield coarse
+classes, the parts of speech. Turning it down should yield synonym sets,
+where <em>plate</em> goes with <em>dish</em> but not with <em>cup</em>.
+Vepštas observed the same thing informally: “the amount of compression
+applied can reveal different kinds of structures”. <a
+href="https://aclanthology.org/P93-1024/">Fernando Pereira, Naftali
+Tishby and Lillian Lee</a> obtained such a hierarchy of word classes in
+1993 by annealing a temperature. Behind all of this stand <a
+href="https://doi.org/10.1007/3-540-58473-0_141">Andreas Stolcke and
+Stephen Omohundro’s</a> Bayesian model merging, Peter Grünwald’s and
+Carl de Marcken’s MDL grammar induction, and <a
+href="https://doi.org/10.3390/info4030283">Gerard Wolff’s</a> long
+program of learning as compression.</p>
+<p>Vepštas was moving in this direction himself. <a
+href="https://arxiv.org/abs/1401.3372">Vepštas and Ben Goertzel</a>
+proposed in 2014 that “the sum of the (logarithm of) the number of
+rules, and the (logarithmic) complexity” should serve as “an ‘Occam’s
+razor’” for the learned grammar. They also took a step toward ontology:
+that books do not bark “suggests that perhaps books and dogs differ, and
+can be sub-classified as inanimate and animate objects”. The pipeline’s
+record is weak, though. The OpenCog language-learning team’s <a
+href="https://doi.org/10.1007/978-3-030-27005-6_11">published
+evaluations</a> scored learned grammars against the output of the
+hand-written Link Grammar parser, not against human treebanks. They
+compared with no standard baselines, and grammars learned from
+unsupervised parses reached an F1 of about 0.5. Vepštas’s own 2022
+experiments report no evaluation of grammar quality. We take his
+representation and his diagnosis, not his results.</p>
+</section>
+<section id="text-is-not-the-world" class="level2">
+<h2>Text is not the world</h2>
+<p>Grammar induction compresses talk. An ontology has to compress what
+the talk is about. These come apart: “things that take a determiner” is
+a fine class for a grammar and a poor concept for an ontology, while
+“physical object” is the reverse. So the code needs three parts:</p>
+<p><span class="math display">
+L(\text{ontology})+L(\text{facts}\mid\text{ontology})+L(\text{text}\mid\text{facts},\
+\text{lexicon}).
+</span></p>
+<p>The last part is the <em>realization channel</em>: syntax, word
+choice, paraphrase. Grammar induction lives there. The middle part is
+where the ontology earns its keep, because a concept is worth having
+when it shortens the description of the facts. The first part keeps the
+ontology from growing a concept for every fact.</p>
+<p>The realization channel has to be kept weak in the right way. If it
+were a large language model, it would already know that dogs have four
+legs, text about dogs would cost few bits whatever the facts said, and
+the ontology would get no credit for common sense. Variational
+autoencoders fail the same way when a powerful decoder learns to ignore
+the latent code. World knowledge goes to whichever component can hold it
+most cheaply. So the channel should know grammar, word choice and
+paraphrase, and nothing about the world, and its own description length
+belongs in the code.</p>
+<p>Mammal is worth having because it lets a thousand facts about dogs,
+whales and bats be stated once. The code rewards several kinds of
+structure in this way, most of them in the middle term and two in the
+realization channel:</p>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: left;">Element of the ontology</th>
+<th style="text-align: left;">Why it shortens the code</th>
+<th style="text-align: left;">Term that pays</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">A concept</td>
+<td style="text-align: left;">its members share many facts</td>
+<td style="text-align: left;">facts</td>
+</tr>
+<tr>
+<td style="text-align: left;">A place in the IS-A hierarchy</td>
+<td style="text-align: left;">a property is stated once at the parent,
+not at every child</td>
+<td style="text-align: left;">facts</td>
+</tr>
+<tr>
+<td style="text-align: left;">A typed argument slot</td>
+<td style="text-align: left;">arguments become predictable from the
+type</td>
+<td style="text-align: left;">facts</td>
+</tr>
+<tr>
+<td style="text-align: left;">Disjointness</td>
+<td style="text-align: left;">combinations that never occur need no
+code</td>
+<td style="text-align: left;">facts</td>
+</tr>
+<tr>
+<td style="text-align: left;">A default with exceptions</td>
+<td style="text-align: left;">a rule plus a list of its exceptions beats
+listing every case</td>
+<td style="text-align: left;">facts</td>
+</tr>
+<tr>
+<td style="text-align: left;">A context</td>
+<td style="text-align: left;">a mixture of codes, one per subcorpus,
+beats a single global code</td>
+<td style="text-align: left;">facts</td>
+</tr>
+<tr>
+<td style="text-align: left;">A paraphrase equivalence</td>
+<td style="text-align: left;">several forms map to one predicate, as
+<em>is next to</em> and <em>borders</em> do in USP</td>
+<td style="text-align: left;">text</td>
+</tr>
+<tr>
+<td style="text-align: left;">A word sense</td>
+<td style="text-align: left;">“fly” the insect and “fly” the verb each
+become predictable from their contexts</td>
+<td style="text-align: left;">text</td>
+</tr>
+</tbody>
+</table>
+<p>Two rows deserve a note. A default survives while the rule plus its
+list of exceptions is cheaper than the alternatives, such as listing
+every case or splitting the class. Whether a default exists at all is
+thus a question for the code. Whether it applies to a given dog is a
+separate question, for inference, and <em>Presumed Normal</em> describes
+logics that presume normality case by case unless the premises rule it
+out. Contexts are Cyc’s <em>microtheories</em>, and here they are
+induced, not curated.</p>
+<p>The middle term has precedents. <a
+href="https://aclanthology.org/J98-2002.pdf">Hang Li and Naoki Abe</a>
+used MDL in 1998 to choose, for each argument slot of a verb, the level
+of a thesaurus at which its arguments should be typed. That is the
+earliest case we know of letting code length choose between typing the
+object of <em>break</em> as, say, <em>Bone</em> or <em>BodyPart</em>. <a
+href="https://cocolab.stanford.edu/papers/KatzEtAl2008-Cogsci.pdf">Yarden
+Katz, Charles Kemp and colleagues</a> model theories as compressive:
+they express data “as samples from the logical consequences of a
+theory’s underlying laws plus a small number of core facts”. The <a
+href="https://cdn.aaai.org/AAAI/2006/AAAI06-061.pdf">Infinite Relational
+Model</a> of Kemp, Joshua Tenenbaum and colleagues clusters the entities
+of a relational table, and can cluster the relations too, looking for
+blocks that are uniformly dense or uniformly empty. That is Vepštas’s
+block test, both halves of it, with a principled prior. <a
+href="https://arxiv.org/abs/2003.10412">KGist</a> selects the rules that
+best compress a knowledge graph and reads rule violations as errors,
+exceptions or missing facts. And <a
+href="https://doi.org/10.1073/pnas.0802631105">Kemp and Tenenbaum</a>
+score which <em>kind</em> of structure suits a domain (a tree, a chain,
+a ring, a grid), a reminder that not everything is a taxonomy.</p>
+</section>
+<section id="who-says-so" class="level2">
+<h2>Who says so</h2>
+<p>Cyc began from an observation: the knowledge an intelligent system
+most needs is what nobody writes down. Compression of text runs straight
+into it. <a href="https://doi.org/10.1145/2509558.2509563">Jonathan
+Gordon and Benjamin Van Durme</a> call the effect <em>reporting
+bias</em>: “murder is mentioned in text many more times than more
+quotidian actions like hugging or constant activities like breathing.”
+People seldom write that they have two hands. A model of the corpus
+learns what gets said, and what gets said is a poor sample of what is
+true.</p>
+<p>Large language models suggest a way around this. Do not model the
+probability of the corpus. Model the probability of each text given
+where it came from. Pretraining learns something about a document’s
+origin implicitly: on <a href="https://arxiv.org/abs/2111.02080">one
+account</a>, in-context learning is inference about a latent concept
+that generated the document. Making the source explicit helps. <a
+href="https://arxiv.org/abs/2501.01956">MeCo</a> prepends only the
+domain name of each document’s URL during most of pretraining, and a
+1.6-billion-parameter model matches its baseline with a third less data.
+In MeCo’s most telling result, hashed URLs work as well as real ones.
+The gain comes from knowing <em>which</em> documents share a source,
+without knowing anything about the source.</p>
+<p>For an ontology, conditioning on provenance splits the description
+into a shared world and a model of each source. A source writes about
+some world: the actual one, a novel’s, a jurisdiction’s. (The section on
+judgment treats these worlds as sources in their own right.) It also has
+a <em>reporting policy</em>: the probability that it mentions a fact,
+given the fact, the source and the audience it writes for. The text is
+then coded given the facts the source chose to mention.</p>
+<p>Audience is where this pays most. Writers follow Grice and omit what
+their readers already know. A children’s book about dogs says that a dog
+has four legs. A veterinary paper never does, because its readers know.
+So the facts stated for novices and omitted for experts on the same
+topic are an estimate of the <em>common ground</em>, the very knowledge
+Cyc set out to write by hand. The ingredients exist. <a
+href="https://arxiv.org/abs/2210.04530">Julien Romero and Simon
+Razniewski</a> found that children’s texts “contain much more, and more
+typical commonsense assertions”. <a
+href="https://aclanthology.org/2021.findings-acl.455">Text
+simplification adds content of this kind</a> when it rewrites for
+novices. And the consumer and professional versions of the Merck
+Manuals, which <a href="https://arxiv.org/abs/2005.00701">Yixin Cao and
+colleagues</a> assembled into a corpus, cover the same topics for the
+two audiences. We have not found the contrast itself used as a
+measurement.</p>
+<p>Conditioning on provenance has three further consequences.</p>
+<p><strong>Consensus as compression.</strong> A claim made by one source
+is cheapest to code as that source’s belief. Once enough independent
+sources state it, coding it once in the shared world becomes cheaper
+than repeating it per source. The objective decides when a claim becomes
+a fact.</p>
+<p><strong>Reliability in the same code.</strong> Truth discovery has
+long modelled sources this way: <a
+href="https://doi.org/10.2307/2346806">A. P. Dawid and A. M. Skene</a>
+estimated observers’ error rates, and the <a
+href="https://arxiv.org/abs/1203.0058">Latent Truth Model</a> gives each
+source a rate of false claims and a rate of omissions. The omission rate
+is the reporting policy without the audience. Here reliability enters
+the same code as the ontology, and an unreliable source pays for its
+errors in bits.</p>
+<p><strong>Copying.</strong> Mirrors and syndication manufacture
+consensus. Shared errors give copying away: “If two data sources provide
+a large number of common values and many of these values are rarely
+provided by other sources (e.g., particular false values), it is very
+likely that one copies from the other,” as <a
+href="https://doi.org/10.14778/1687627.1687690">Xin Luna Dong and
+colleagues</a> put it. Detecting copies is a prerequisite for counting
+sources as independent.</p>
+<p>Two limits should be stated plainly. Compression rewards mutual
+consistency, not truth: a <a
+href="https://arxiv.org/abs/2603.11749">recent study of language-model
+training</a> argues that gradient descent “favors the most compressible
+answer cluster, not truth per se”. A coherent myth told by many
+independent sources will be promoted to the shared world, and only
+sources outside text, such as measurement and action, can break it. And
+a fact that no source states remains out of reach. Conditioning on
+provenance makes the reporting channel identifiable, but it does not
+create evidence.</p>
+</section>
+<section id="two-primitives" class="level2">
+<h2>Two primitives</h2>
+<p>Now the representation. It has two primitives that form terms. The
+first is IS-A, which is asymmetric. The second is a tuple of four
+concepts,</p>
+<p><span class="math display">
+\langle A,R,S,B\rangle\equiv\langle B,S,R,A\rangle,
+</span></p>
+<p>read “<span class="math inline">A</span> plays role <span
+class="math inline">R</span> toward <span class="math inline">B</span>,
+which plays role <span class="math inline">S</span>”. So <span
+class="math inline">\langle\textit{John},\textit{parent},\textit{child},\textit{Mary}\rangle</span>
+and <span
+class="math inline">\langle\textit{Mary},\textit{child},\textit{parent},\textit{John}\rangle</span>
+are the same fact. The tuple is Vepštas’s link with both ends labelled:
+two seeds joined by a pair of typed half-links. It is also the shape
+that USP’s argument slots and the dense blocks of the previous sections
+produce.</p>
+<p>Several conventions disappear. A relation has no argument order, so
+no relation needs a separately named converse. Cyc’s binary predicates
+order their arguments, and relating a predicate to its converse takes
+extra vocabulary. A symmetric relation is simply one whose roles
+coincide: <span class="math inline">\langle
+A,\textit{sibling},\textit{sibling},B\rangle</span>. A subrelation comes
+from a subrole. The design takes IS-A between roles to carry over to the
+links they label: since <em>mother</em> IS-A <em>parent</em>, every
+motherhood tuple is a parenthood tuple.</p>
+<p>Roles and relations are concepts too. A relation is identified with
+its pair of roles, written as the tuple <span
+class="math inline">\langle R,R,S,S\rangle</span>, and every instance of
+the relation stands under it:</p>
+<p><span class="math display">
+\langle A,R,S,B\rangle\ \text{IS-A}\ \langle R,R,S,S\rangle.
+</span></p>
+<p>That gives domains and ranges for free, as ordinary IS-A: whatever
+plays the role <span class="math inline">R</span> IS-A <span
+class="math inline">R</span>. A relation is a concept, so it can fill a
+role in another tuple. So can a single link, which a Davidsonian reading
+treats as a state that can be talked about. The design closes the circle
+with a convention that defines the top relation as the top concept:</p>
+<p><span class="math display">
+\langle\textit{Role},\textit{Role},\textit{Role},\textit{Role}\rangle=\textit{Role}.
+</span></p>
+<p>Every relation, and everything that takes part in one, then falls
+under a single concept, and reification is uniform.</p>
+<p><strong>Events.</strong> Only binary tuples exist, so a fact with
+more participants is reified as an event, in Donald Davidson’s style.
+“John gave Mary a book” becomes <span class="math inline">\langle
+g,\textit{Giving},\textit{giver},\textit{John}\rangle</span>, <span
+class="math inline">\langle
+g,\textit{Giving},\textit{recipient},\textit{Mary}\rangle</span> and
+<span class="math inline">\langle
+g,\textit{Giving},\textit{gift},b\rangle</span>, with the event’s class
+serving as the event’s role.</p>
+<p><strong>Fine-grained roles.</strong> Since a relation <em>is</em> its
+pair of roles, two relations with the same roles would collapse into
+one. Spatial parthood, temporal parthood and membership need distinct
+roles, organized by IS-A under a general <em>part</em>. Role names need
+sense splitting just as words do: the <em>child</em> of a parent is not
+the <em>child</em> of an age group.</p>
+<p><strong>Both directions.</strong> When <span
+class="math inline">A</span> and <span class="math inline">B</span> are
+classes, the tuple asserts in both directions: every <span
+class="math inline">A</span> stands in the relation to some <span
+class="math inline">B</span>, <em>and</em> every <span
+class="math inline">B</span> stands in it to some <span
+class="math inline">A</span>. So <span
+class="math inline">\langle\textit{Dog},\textit{whole},\textit{part},\textit{DogLeg}\rangle</span>
+holds, and <span
+class="math inline">\langle\textit{Dog},\textit{whole},\textit{part},\textit{Leg}\rangle</span>
+does not, because tables have legs too. The construction is known. <a
+href="https://pmc.ncbi.nlm.nih.gov/articles/PMC1175958/">Barry Smith and
+colleagues</a> define <code>integral_part_of</code> as part-of in one
+direction together with has-part in the other, and their example shows
+the asymmetry it repairs: “cell nucleus part_of cell, but not cell
+has_part cell nucleus”. They offer it beside the one-directional
+relations. Here it is the only reading a class-level tuple has. A
+one-directional fact remains expressible as IS-A into a constructed
+class, introduced below: <em>CellNucleus</em> IS-A “part of some
+<em>Cell</em>”. The second direction carries information only when <span
+class="math inline">B</span> is a class given independently.
+<em>DogLeg</em>, defined as the legs of dogs, satisfies it by
+construction, and the tuple then says only that every dog has a leg. The
+ontology fills up with such fine-grained classes, and the induction is
+what supplies them: a block of facts that is dense in both directions is
+approximately a true tuple of this kind.</p>
+<p><strong>Singular terms.</strong> Take <em>John</em> and <em>Mary</em>
+as terms with one member each. “Every member of <em>John</em> is a
+parent of some member of <em>Mary</em>, and every member of
+<em>Mary</em> is a child of some member of <em>John</em>” says no more
+than that John is Mary’s parent. In the term logic of Fred Sommers and
+George Englebretsen, singular terms have <em>wild quantity</em>: for
+them, “every” and “some” agree. This is why the ontology needs no
+primitive distinction between individuals and classes. A tuple over
+individuals is a plain fact, and the same semantics covers both. Being
+singular, having exactly one member, can still be defined where counting
+needs it.</p>
+<p><strong>Inheritance forms new terms.</strong> Under the two-way
+reading, neither generalizing nor specializing one side of a true tuple
+is safe. Generalizing a side can break that side’s own “every”: <span
+class="math inline">\langle\textit{Dog},\textit{whole},\textit{part},\textit{Leg}\rangle</span>
+fails because of table legs. Specializing a side can break the other
+side’s: <span
+class="math inline">\langle\textit{Puppy},\textit{whole},\textit{part},\textit{DogLeg}\rangle</span>
+fails because most dog legs belong to grown dogs. What holds is the
+matched specialization <span
+class="math inline">\langle\textit{Puppy},\textit{whole},\textit{part},\textit{PuppyLeg}\rangle</span>,
+where <em>PuppyLeg</em> is “the DogLegs that are part of some Puppy”.
+Inheritance therefore needs constructors that form such terms: an image,
+“the things that are part of some Puppy”, and an intersection with
+<em>DogLeg</em>. Pei Wang’s <em>Non-Axiomatic Logic</em> (2013) has
+both, the first under the name <em>image</em>, and description logics
+write <em>PuppyLeg</em> as <span
+class="math inline">\textit{DogLeg}\sqcap\exists\textit{partOf}.\textit{Puppy}</span>.</p>
+<p><strong>Tuples as terms.</strong> A tuple term is identified by its
+four components. Its extension is the set of <span
+class="math inline">R</span>–<span class="math inline">S</span> links
+between members of <span class="math inline">A</span> and members of
+<span class="math inline">B</span>. Two terms can share an extension and
+still differ: <span
+class="math inline">\langle\textit{Dog},\textit{whole},\textit{part},\textit{Leg}\rangle</span>
+and <span
+class="math inline">\langle\textit{Dog},\textit{whole},\textit{part},\textit{DogLeg}\rangle</span>
+pick out the same links, since every leg of a dog is a dog leg. IS-A
+between tuple terms is inclusion of extensions, and enlarging <span
+class="math inline">A</span>, <span class="math inline">B</span> or a
+role can only enlarge the set of links. In this sense every instance
+tuple IS-A its relation. The two-way claim is something else: an
+assertion that the links cover all of <span class="math inline">A</span>
+and all of <span class="math inline">B</span>. It depends on the
+components, which is why the two terms above differ in truth. A term can
+also occur without being asserted, as the content of someone’s claim
+does. Assertion therefore needs its own form, which the next section
+supplies.</p>
+<p><strong>No individuals, no classes.</strong> Dropping the distinction
+is in the spirit of term logic, and we accept that contradictions may
+arise. The danger is not Russell’s paradox. With a reflexive IS-A, the
+concepts that are not IS-A themselves form an empty class, and the empty
+class IS-A itself without contradiction. The danger is collective
+predication. “Dogs are mammals” says something of every dog. “Humans are
+a species” says something of the kind. If both were IS-A, John would be
+a species. So IS-A is <em>distributive</em>: it says only what holds of
+every member. A collective fact is about a kind, and the kind gets a
+singular term of its own, distinct from the class of its members: <span
+class="math inline">\langle\textit{HomoSapiens},\textit{taxon},\textit{rank},\textit{SpeciesRank}\rangle</span>,
+together with <span
+class="math inline">\langle\textit{Human},\textit{member},\textit{taxon},\textit{HomoSapiens}\rangle</span>.
+Wikidata likewise records taxonomic rank as a property of the taxon.</p>
+<p>The convention <span
+class="math inline">\langle\textit{Role},\textit{Role},\textit{Role},\textit{Role}\rangle=\textit{Role}</span>
+makes <em>Role</em> a concept that falls under itself. That alone is
+harmless: Quine’s New Foundations has a universal set. Paradoxes need a
+diagonal construction, a term for “the concepts that do not fall under
+themselves”. The term language cannot form one. Images are taken over
+tuples, and IS-A is not a tuple, so no image can collect the concepts
+that are not IS-A themselves.</p>
+<p><strong>Roles are concepts like any other.</strong> Anything that
+takes part in a relation IS-A some role, so <em>Role</em> is in effect
+the top concept. Some roles hold only for a while. OntoClean, the method
+of Nicola Guarino and Christopher Welty, calls such roles
+<em>anti-rigid</em>: John can stop being an employee without ceasing to
+be John. One rule handles this. An IS-A derived from a tuple is asserted
+where the tuple is asserted. If the employment is an event with its own
+time and context, then “John IS-A Employee” holds in that context, not
+in the timeless shared world.</p>
+<p><strong>Counting and exceptions.</strong> “Four legs” is beyond the
+two-way reading. It needs fine-grained roles, such as
+<em>front-left-leg</em>, each marked as taking exactly one filler and as
+distinct from the others. One three-legged dog then breaks a strict
+“every” on one of those roles. A class-level tuple can carry a
+typicality strength, stated in a further tuple about the tuple, and the
+default inference of <em>Presumed Normal</em> does the rest.</p>
+<p>None of these primitives is new on its own. Unordered tuples with
+named roles go back to <a
+href="https://www.seas.upenn.edu/~zives/03f/cis550/codd.pdf">Edgar
+Codd’s</a> relational model and are central to Object-Role Modeling. <a
+href="https://sites.pitt.edu/~rbrandom/Courses/2024%20Philosophy%20of%20Language/Texts/Fine%20Neutral%20Relations.pdf">Kit
+Fine</a> argued that relations have no intrinsic argument order. John
+Sowa’s conceptual graphs, Leśniewski’s Ontology and OntoClean’s analysis
+of roles each cover part of the ground. The closest system overall is
+Wang’s NARS, in which inheritance is the only basic relation, instance
+is derived from inheritance, a relation is a product term inheriting
+from a relation term, and images are compound terms. NARS differs in its
+ordered products and its evidential truth values. What the design here
+adds is the combination: the two-way reading as the only class-level
+semantics, the relation as a tuple of its own roles, and the provenance
+judgment of the next section.</p>
+</section>
+<section id="one-judgment" class="level2">
+<h2>One judgment</h2>
+<p>Tuples and IS-A statements are terms, and nothing inside a term
+asserts anything. The only form of judgment is</p>
+<p><span class="math display">
+\mathrm{Prov}(T,P):\quad\text{source }P\text{ asserts }T.
+</span></p>
+<p><span class="math inline">\mathrm{Prov}</span> is never itself a term
+and never occurs inside one, so there is no unasserted <span
+class="math inline">\mathrm{Prov}</span> to account for. Everything else
+follows from asking who makes a <span
+class="math inline">\mathrm{Prov}</span> judgment.</p>
+<p><strong>The regress stops at the system.</strong> <span
+class="math inline">\mathrm{Prov}(T,P)</span> is the system’s own
+judgment that <span class="math inline">P</span> asserted <span
+class="math inline">T</span>, made from a parse that may be wrong and
+graded by the parser’s confidence. The shared world of the previous
+sections is <span
+class="math inline">\mathrm{Prov}(T,\textit{Self})</span>. A fact
+inferred by the system also has <em>Self</em> as its source, with the
+derivation recorded as its provenance. Ingestion and inference use one
+format.</p>
+<p><strong>Flat judgments, composed sources.</strong> Reported speech
+seems to need nesting: the <em>Times</em> reports that Smith claims
+<span class="math inline">T</span>. Nesting would make <span
+class="math inline">\mathrm{Prov}</span> a term again. The nesting goes
+into the source instead, <span
+class="math inline">\mathrm{Prov}(T,\textit{Smith-via-Times})</span>. <a
+href="https://www.bwlampson.site/44-CalculusAccessControl/44-CalculusAccessControlOCR.htm">Martín
+Abadi, Michael Burrows, Butler Lampson and Gordon Plotkin’s</a> calculus
+for access control has exactly this quoting principal, and the <a
+href="https://mpqa.cs.pitt.edu/">MPQA</a> annotations of opinion record
+such chains of sources. Explicit chains give copy detection its easy
+cases. Undeclared copying still has to be inferred from shared errors. A
+source can also speak for another. If an article stands to the
+<em>Times</em> as publication to publisher, its claims may count as the
+<em>Times</em>’s claims, and whether that holds for an opinion piece is
+something to model, not assume.</p>
+<p><strong>Contexts are idealized sources.</strong> A context records
+where a claim holds, not who makes it, and it can still be treated as a
+source: a novel’s canon, a country’s law, a hypothetical. <span
+class="math inline">\mathrm{Prov}(T,\textit{HarryPotterCanon})</span>
+places <span class="math inline">T</span> in a fiction, and the system
+learns how real sources map onto such contexts. A novel’s sentences are
+coded against its canon, not against <em>Self</em>. The derived IS-A of
+the previous section, “John IS-A Employee”, is likewise asserted with
+the employment’s context as its source. Only idealized sources and
+<em>Self</em> are closed under inference. Smith does not believe every
+consequence of what Smith says, so combining claims from different
+sources happens only in <em>Self</em>, after <em>Self</em> has adopted
+them.</p>
+<p><strong>Claims become events.</strong> Keeping <span
+class="math inline">\mathrm{Prov}</span> out of the term language has a
+cost: the ontology could not speak about claims, and a Cyc must be able
+to say that a claim was retracted, disputed or debunked. Davidsonian
+events supply the fix. Each judgment <span
+class="math inline">\mathrm{Prov}(T,P)</span> licenses the system’s
+judgment that a claiming event <span class="math inline">c</span>
+occurred, with <span class="math inline">\langle
+c,\textit{Claiming},\textit{content},T\rangle</span> and <span
+class="math inline">\langle
+c,\textit{Claiming},\textit{claimant},P\rangle</span>. The event is a
+term like any other, and it can carry a time, which retraction
+needs.</p>
+<p><strong>Denials and conditionals.</strong> Sources deny, ask and
+suppose. A denial is recorded as the assertion of a negation term, and a
+question asserts nothing. A conditional needs an implication term, so
+that a source saying “if <span class="math inline">T_1</span> then <span
+class="math inline">T_2</span>” asserts neither <span
+class="math inline">T_1</span> nor <span
+class="math inline">T_2</span>.</p>
+<p>The objective can now be written out in full. The data is the texts
+with their metadata: URL, venue, date, intended audience. The <span
+class="math inline">\mathrm{Prov}</span> judgments are how the system
+explains the texts, and the code pays for every part of the
+explanation:</p>
+<p><span class="math display">
+L(\text{ontology})+L(\text{lexicon})+L(\text{sources})+L(\text{world}\mid\text{ontology})+\sum_d\Bigl[L(\mathrm{Prov}_d\mid\text{world},\text{source}_d)+L(\text{text}_d\mid\mathrm{Prov}_d,\text{lexicon})\Bigr].
+</span></p>
+<p>Here <span class="math inline">d</span> ranges over documents, <span
+class="math inline">\mathrm{Prov}_d</span> is what document <span
+class="math inline">d</span> is judged to assert, and the source models
+hold the contexts and reporting policies. Two sources that disagree do
+not make the knowledge base inconsistent. They are two records, and the
+code decides whether to adopt one of them, both in different contexts,
+or neither. Contradictions can still arise inside <em>Self</em>, and
+there the adaptive logics of <em>Presumed Normal</em> keep them from
+spreading.</p>
+<p>The relatives of this design are well known. <a
+href="https://web-archive.southampton.ac.uk/cogprints.org/418/">John
+McCarthy’s</a> <span class="math inline">\mathit{ist}(c,p)</span> says
+that <span class="math inline">p</span> is true in context <span
+class="math inline">c</span>, and Cyc puts every assertion in a
+microtheory. McCarthy’s contexts nest without end and have no outermost
+context, which is the opposite choice from a flat <span
+class="math inline">\mathrm{Prov}</span> with <em>Self</em> as the last
+judge. <a href="https://doi.org/10.1145/1060745.1060835">Named
+graphs</a> and <a
+href="https://doi.org/10.3233/ISU-2010-0613">nanopublications</a> attach
+provenance to sets of statements on the Semantic Web, and NARS tracks
+the evidence behind each judgment.</p>
+</section>
+<section id="what-the-language-model-is-for" class="level2">
+<h2>What the language model is for</h2>
+<p><a href="https://arxiv.org/abs/2308.04445">Douglas Lenat and Gary
+Marcus</a> proposed a neurosymbolic Cyc in 2023: ask a language model to
+translate sentences into Cyc’s language, let Cyc repair and
+contextualize the result, and ask “Can you already prove this? Can you
+already disprove this?” Their judge is proof. Ours is code length. In
+the design here, a language model does three jobs, and judging is not
+among them.</p>
+<p><strong>It parses into the current vocabulary.</strong> The middle
+term of the code needs, for each sentence, its facts in the ontology’s
+terms. A model given the sentence and the relevant slice of the ontology
+in its context can produce them. The slice is the restriction of the
+ontology to what the sentence needs, as a parser restricts a grammar to
+the entries for one sentence’s words. The ontology changes with every
+accepted merge or split. A parser that reads the ontology from its
+context needs no retraining for each edit.</p>
+<blockquote>
+<p><strong>Keeping the parser honest.</strong> For the parser’s output
+to count as a code length, the model must define a proper probability
+distribution over valid parses. Each parse needs one canonical output
+order. Otherwise several token sequences encode the same parse, its
+probability is underestimated, and the code grows longer. Decoding must
+be constrained to parses the ontology allows, with the masked
+probabilities renormalized. A base model is preferable to an
+instruction-tuned one, whose probabilities are poorly calibrated.
+Training can alternate two phases. In the first, sample facts and texts
+from the current model, across many perturbed versions of the ontology,
+and train the parser on these pairs. In the second, train the parser
+toward the posterior on real text, for instance with the GFlowNet
+objectives that <a href="https://arxiv.org/abs/2310.04363">Edward Hu and
+colleagues</a> used to fine-tune language models for intractable
+inference. A parser that only approximates the posterior still yields a
+valid code through <em>bits-back coding</em>, in which the encoder
+chooses a parse using bits that the decoder recovers once it has the
+text. The cost of the approximation is then measured in bits.</p>
+</blockquote>
+<p><strong>It proposes edits.</strong> Shown a batch of parsed sentences
+with the concepts they use, a model can propose merges, splits, new
+roles, rules and context boundaries. Each proposal is checked by
+re-scoring the data it touches, so a high rate of bad proposals costs
+compute but not quality. The division of labour echoes program
+synthesis. In <a href="https://arxiv.org/abs/2310.19791">LILO</a>, a
+language model writes programs, the compression algorithm <a
+href="https://arxiv.org/abs/2211.16605">Stitch</a> extracts the
+abstractions worth adding to the library, and the language model names
+and documents them. Here the model would propose the edits themselves.
+COMPOSE, the operation that forms larger units, is where proposals help
+most, because its candidates multiply combinatorially.</p>
+<p><strong>It is one more source.</strong> “A language model asked to
+explain dogs to a child” is a provenance like any other, with its own
+reliability and reporting policy. Its answers draw on implicatures that
+no single text states, which makes it valuable for the common ground. It
+also confabulates, and its reliability is estimated against the other
+sources in the same code. It gets no special trust.</p>
+<p>One risk is worth naming. A model pretrained on human language will
+propose the structures that human linguistics and folk taxonomy already
+contain. The code length cannot make a bad ontology score well, but the
+proposer decides what gets considered, so the search’s local optima will
+lean toward the familiar. A control with a proposer that has no
+linguistic pretraining, or a domain without a human prior, such as
+biochemical pathways, would show how much.</p>
+</section>
+<section id="what-compression-cannot-do" class="level2">
+<h2>What compression cannot do</h2>
+<p>The induced ontology will not be the best compressor of its corpus.
+Compressors that work by inducing grammars already lose to statistical
+ones on text. <a href="https://doi.org/10.1109/DCC.1994.305932">Craig
+Nevill-Manning, Ian Witten and David Maulsby’s</a> grammar-inducing
+compressor, the precursor of Sequitur, did 8 to 23 percent worse than
+the statistical compressor PPMC on the Calgary corpus, depending on how
+the grammar was transmitted. Large language models used as compressors
+<a href="https://arxiv.org/abs/2309.10668">beat general-purpose
+compressors</a> on text by wide margins, at least when their own size is
+not counted. Code length here is the criterion for choosing structure,
+not a contest that the structure wins. By the measure that leaves model
+size out, the neural model is the better compressor, and it gives no
+ontology at all.</p>
+<p>The search is the bottleneck, not the scoring. USP ran on about two
+thousand biomedical abstracts, and Brown clustering scales because its
+seeds are the simplest possible. Proposals from a language model may
+make the search over merges, splits and compositions feasible at scale,
+but nothing yet shows that they do. The criterion is also unlikely to
+single out one ontology. Many ontologies will come within a few bits of
+each other, differing in how roles are named and where defaults sit, so
+compression picks a family of near-ties. Nothing here has been
+implemented, so there are no results. An implementation should be
+evaluated against WordNet, Wikidata and OpenCyc, after aligning its
+concepts with theirs, and never trained toward them. The one thing
+compression offers is concepts justified by the data, not by curators,
+and training toward a curated ontology would give that away.</p>
+<p>Return to Mary. Whether <em>walked</em>, <em>ran</em> and
+<em>drove</em> belong together is settled by the bits the merge saves
+across everything else the corpus says about walking, running and
+driving. Whether Mammal belongs in the ontology is settled the same way,
+one level up. And who says that Mary drove home, to whom, and in which
+world, is recorded by the one judgment the ontology makes.</p>
+</section>
+</article>
+<section class="prompts-link"><p><em>The prompts behind this essay (the human-side contribution): 
+<a href="an-ontology-that-pays-for-itself.prompts.html">view the prompts &rarr;</a></em></p></section>
+<script src="/assets/theme-toggle.js"></script>
+</body>
+</html>
