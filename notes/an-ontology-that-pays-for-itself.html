@@ -6,7 +6,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
   <meta name="author" content="Łukasz Stafiniak and Claude (Opus 5.5)">
   <meta name="dcterms.date" content="2026-10-31">
-  <meta property="og:title" content="An Ontology That Pays for Itself">
+  <meta name="description" content="From Vepštas&#x27;s sheaves and unsupervised semantic parsing to an ontology whose concepts must shorten the code: provenance-conditioned compression, unordered role tuples, and one form of judgment. By Claude Opus 5.5, in my voice.">
+  <meta property="og:title" content="An Ontology That Pays for Itself: Inducing a Cyc-like ontology by compression, with provenance as the only judgment">
+  <meta property="og:description" content="From Vepštas&#x27;s sheaves and unsupervised semantic parsing to an ontology whose concepts must shorten the code: provenance-conditioned compression, unordered role tuples, and one form of judgment. By Claude Opus 5.5, in my voice.">
   <meta property="og:url" content="https://lukstafi.github.io/notes/an-ontology-that-pays-for-itself.html">
   <meta property="og:type" content="article">
   <meta property="og:site_name" content="lukstafi&#x27;s blog">
@@ -134,7 +136,7 @@ merge changes the score only through the clusters it touches. Its prior
 is exponential in the number of parameters. “X and Y” usually names two
 different things, so a second prior discourages putting the two halves
 of a conjunction into one cluster, which keeps antonyms apart. <a
-href="https://aclanthology.org/P10-1031/">OntoUSP</a> adds ISA and
+href="https://aclanthology.org/P10-1031/">OntoUSP</a> adds IS-A and
 IS-PART hierarchies over the clusters.</p>
 <p>Scoring of this kind scales. <a
 href="https://aclanthology.org/J92-4003/">Brown clustering</a> is the
@@ -213,10 +215,10 @@ the latent code. World knowledge goes to whichever component can hold it
 most cheaply. So the channel should know grammar, word choice and
 paraphrase, and nothing about the world, and its own description length
 belongs in the code.</p>
-<p>Mammal is worth having because it lets a thousand facts about dogs,
-whales and bats be stated once. The code rewards several kinds of
-structure in this way, most of them in the middle term and two in the
-realization channel:</p>
+<p><em>Mammal</em> is worth having because it lets a thousand facts
+about dogs, whales and bats be stated once. The code rewards several
+kinds of structure in this way, most of them in the middle term and two
+in the realization channel:</p>
 <table>
 <colgroup>
 <col style="width: 33%" />
@@ -393,7 +395,7 @@ create evidence.</p>
 <section id="two-primitives" class="level2">
 <h2>Two primitives</h2>
 <p>Now the representation. It has two primitives that form terms. The
-first is IS-A, which is asymmetric. The second is a tuple of four
+first is IS-A, which has a direction. The second is a tuple of four
 concepts,</p>
 <p><span class="math display">
 \langle A,R,S,B\rangle\equiv\langle B,S,R,A\rangle,
@@ -426,19 +428,19 @@ the relation stands under it:</p>
 <p>That gives domains and ranges for free, as ordinary IS-A: whatever
 plays the role <span class="math inline">R</span> IS-A <span
 class="math inline">R</span>. A relation is a concept, so it can fill a
-role in another tuple. So can a single link, which a Davidsonian reading
-treats as a state that can be talked about. The design treats every link
-as something that can play a role, so the most general relation falls
-under the most general role:</p>
+role in another tuple. So can a single link, treated, in the manner of
+Donald Davidson, as a state that can be talked about. The design treats
+every link as something that can play a role, so the most general
+relation falls under the most general role:</p>
 <p><span class="math display">
 \langle\textit{Role},\textit{Role},\textit{Role},\textit{Role}\rangle\
 \text{IS-A}\ \textit{Role}.
 </span></p>
 <p>Every relation then falls under <em>Role</em>, and reification is
 uniform.</p>
-<p><strong>Events.</strong> Only binary tuples exist, so a fact with
-more participants is reified as an event, in Donald Davidson’s style.
-“John gave Mary a book” becomes <span class="math inline">\langle
+<p><strong>Events.</strong> Every tuple has exactly two fillers, so a
+fact with more participants is reified as an event, again in Davidson’s
+style. “John gave Mary a book” becomes <span class="math inline">\langle
 g,\textit{Giving},\textit{giver},\textit{John}\rangle</span>, <span
 class="math inline">\langle
 g,\textit{Giving},\textit{recipient},\textit{Mary}\rangle</span> and
@@ -460,17 +462,20 @@ link. Its extension is the set of all</p>
 a filler. The outer pair is unordered, so <span
 class="math inline">\langle A,R,S,B\rangle</span> and <span
 class="math inline">\langle B,S,R,A\rangle</span> denote the same set.
-The inner pairs are ordered, so a role is never matched with a filler.
-Roles are quantified like fillers, and that is what makes a subrole give
-a subrelation: since <em>mother</em> IS-A <em>parent</em>, the
-motherhood links form part of the parenthood links. The extension
+The inner pairs are ordered, so a role never trades places with its
+filler. Roles are quantified like fillers, and that is what makes a
+subrole give a subrelation: since <em>mother</em> IS-A <em>parent</em>,
+the motherhood links form part of the parenthood links. The extension
 contains every combination of its components, linked or not, so it
 presupposes no prior universe of relationships. IS-A between tuple terms
 is inclusion of these sets, and it behaves like IS-A anywhere. It is
 transitive, and whatever holds of every link of a type holds of every
 link of its subtypes. In this sense every instance tuple IS-A its
 relation, and every tuple IS-A <span
-class="math inline">\langle\textit{Role},\textit{Role},\textit{Role},\textit{Role}\rangle</span>.</p>
+class="math inline">\langle\textit{Role},\textit{Role},\textit{Role},\textit{Role}\rangle</span>.
+A term can occur without being asserted, as the content of someone’s
+claim does. Assertion therefore needs its own form, which the next
+section supplies.</p>
 <p><strong>Both directions.</strong> Asserting a tuple claims something
 else: that the actual links of its type cover all of <span
 class="math inline">A</span> and all of <span
@@ -489,12 +494,12 @@ colleagues</a> define <code>integral_part_of</code> as part-of in one
 direction together with has-part in the other, and their example shows
 the asymmetry it repairs: “cell nucleus part_of cell, but not cell
 has_part cell nucleus”. They offer it beside the one-directional
-relations. Here it is the only reading an asserted class-level tuple
-has. The second direction is not always news. <em>DogLeg</em> is defined
-as the legs of dogs, so every dog leg belongs to some dog by definition,
-and the tuple adds only that every dog has a leg. The second direction
-says something when <span class="math inline">B</span> has an identity
-of its own: <span
+relations. Here this <em>two-way reading</em> is the only reading an
+asserted class-level tuple has. The second direction is not always news.
+<em>DogLeg</em> is defined as the legs of dogs, so every dog leg belongs
+to some dog by definition, and the tuple adds only that every dog has a
+leg. The second direction says something when <span
+class="math inline">B</span> has an identity of its own: <span
 class="math inline">\langle\textit{Car},\textit{whole},\textit{part},\textit{Engine}\rangle</span>
 claims, beyond every car having an engine, that every engine sits in
 some car, and boat engines refute it. The ontology fills up with
@@ -503,7 +508,7 @@ supplies them: a block of facts that is dense in both directions is
 approximately a true tuple of this kind.</p>
 <p>Coverage is a property of the links taken together, not of any one
 link. Asserting a class-level tuple is therefore a <em>collective</em>
-claim, and collective claims do not pass down IS-A. <span
+claim. Collective claims do not pass down IS-A. <span
 class="math inline">\langle\textit{Puppy},\textit{whole},\textit{part},\textit{DogLeg}\rangle</span>
 is a subtype of a true tuple, and it is false, because most dog legs
 belong to grown dogs. The claim does split into two claims that pass
@@ -538,13 +543,11 @@ A,\textit{mother},\textit{child},B\rangle</span> implies <span
 class="math inline">\langle
 A,\textit{parent},\textit{child},B\rangle</span>. Changing a filler is
 not safe in general, because each filler stands under “every” in one
-conjunct and under “some” in the other. The step to the relation’s
-schema is safe for its own reason: <span class="math inline">R</span>
+conjunct and under “some” in the other. The step from a tuple to its
+relation is safe for its own reason: <span class="math inline">R</span>
 and <span class="math inline">S</span> are exactly the things playing
 those roles, so <span class="math inline">\langle R,R,S,S\rangle</span>
-is true by definition. A term can also occur without being asserted, as
-the content of someone’s claim does. Assertion therefore needs its own
-form, which the next section supplies.</p>
+is true by definition.</p>
 <p><strong>Singular terms.</strong> Take <em>John</em> and <em>Mary</em>
 as terms with one member each. “Every member of <em>John</em> is a
 parent of some member of <em>Mary</em>, and every member of
@@ -553,21 +556,19 @@ than that John is Mary’s parent. In the term logic of Fred Sommers and
 George Englebretsen, singular terms have <em>wild quantity</em>: for
 them, “every” and “some” agree. This is why the ontology needs no
 primitive distinction between individuals and classes. A tuple over
-individuals is a plain fact, and the same semantics covers both. Being
-singular, having exactly one member, can still be defined where counting
-needs it.</p>
+individuals is a plain fact, read by the same semantics as a tuple over
+classes. Being singular, having exactly one member, can still be defined
+where counting needs it.</p>
 <p><strong>No individuals, no classes.</strong> Dropping the distinction
 is in the spirit of term logic, and we accept that contradictions may
-arise. The danger is not Russell’s paradox. With a reflexive IS-A, the
-concepts that are not IS-A themselves form an empty class, and the empty
-class IS-A itself without contradiction. The danger is collective
-predication. “Dogs are mammals” says something of every dog. “Humans are
-a species” says something of the kind. If both were IS-A, John would be
-a species. So IS-A is <em>distributive</em>: it says only what holds of
-every member. Asserted class-level tuples, as we saw, are collective
-claims about links, and the same rule keeps them from passing down. A
-collective fact is about a kind, and the kind gets a singular term of
-its own, distinct from the class of its members: <span
+arise. The danger is collective predication. “Dogs are mammals” says
+something of every dog. “Humans are a species” says something of the
+kind. If both were IS-A, John would be a species. So IS-A is
+<em>distributive</em>: it says only what holds of every member. The same
+rule keeps asserted class-level tuples, which are collective claims
+about links, from passing down. A collective fact is about a kind, and
+the kind gets a singular term of its own, distinct from the class of its
+members: <span
 class="math inline">\langle\textit{HomoSapiens},\textit{taxon},\textit{rank},\textit{SpeciesRank}\rangle</span>,
 together with <span
 class="math inline">\langle\textit{Human},\textit{member},\textit{taxon},\textit{HomoSapiens}\rangle</span>.
@@ -575,22 +576,21 @@ Membership in a kind is a tuple, not an IS-A: every human is a member of
 the taxon, and the taxon has human members, but nothing said of the kind
 passes down to its members. Wikidata likewise records taxonomic rank as
 a property of the taxon.</p>
-<p><em>Role</em> covers everything that takes part in a relation,
-including relations and their links, so it is the top concept, and it
-falls under itself. That alone is harmless: Quine’s New Foundations has
-a universal set. Paradoxes need a diagonal construction, a term for “the
-concepts that do not fall under themselves”. The term language cannot
-form one. Images are taken over tuples, and IS-A is not a tuple, so no
-image can collect the concepts that are not IS-A themselves.</p>
-<p><strong>Roles are concepts like any other.</strong> Anything that
-takes part in a relation IS-A some role, so <em>Role</em> is the top
-concept. Some roles hold only for a while. OntoClean, the method of
-Nicola Guarino and Christopher Welty, calls such roles
-<em>anti-rigid</em>: John can stop being an employee without ceasing to
-be John. One rule handles this. An IS-A derived from a tuple is asserted
-where the tuple is asserted. If the employment is an event with its own
-time and context, then “John IS-A Employee” holds in that context, not
-in the timeless shared world.</p>
+<p><strong>A top concept without paradox.</strong> <em>Role</em> covers
+everything that takes part in a relation, including relations and their
+links, so it is the top concept, and it falls under itself. That alone
+is harmless: Quine’s New Foundations has a universal set. Paradoxes need
+a diagonal construction, a term for “the concepts that do not fall under
+themselves”. The term language cannot form one. Images are taken over
+tuples, and IS-A is not a tuple, so no image can collect the concepts
+that are not IS-A themselves.</p>
+<p><strong>Roles that lapse.</strong> Some roles hold only for a while.
+OntoClean, the method of Nicola Guarino and Christopher Welty, calls
+such roles <em>anti-rigid</em>: John can stop being an employee without
+ceasing to be John. One rule handles this. An IS-A derived from a tuple
+is asserted where the tuple is asserted. If the employment is an event
+with its own time and context, then <em>John</em> IS-A <em>Employee</em>
+holds in that context, not in the timeless shared world.</p>
 <p><strong>Counting and exceptions.</strong> “Four legs” is beyond the
 two-way reading. It needs fine-grained roles, such as
 <em>front-left-leg</em>, each marked as taking exactly one filler and as
@@ -606,9 +606,10 @@ href="https://sites.pitt.edu/~rbrandom/Courses/2024%20Philosophy%20of%20Language
 Fine</a> argued that relations have no intrinsic argument order. John
 Sowa’s conceptual graphs, Leśniewski’s Ontology and OntoClean’s analysis
 of roles each cover part of the ground. The closest system overall is
-Wang’s NARS, in which inheritance is the only basic relation, instance
-is derived from inheritance, a relation is a product term inheriting
-from a relation term, and images are compound terms. NARS differs in its
+NARS, the Non-Axiomatic Reasoning System that Wang built on his logic,
+in which inheritance is the only basic relation, instance is derived
+from inheritance, a relation is a product term inheriting from a
+relation term, and images are compound terms. NARS differs in its
 ordered products and its evidential truth values. What the design here
 adds is the combination: the two-way reading as the only class-level
 semantics, the relation as a tuple of its own roles, and the provenance
@@ -630,16 +631,16 @@ class="math inline">\mathrm{Prov}</span> judgment.</p>
 class="math inline">\mathrm{Prov}(T,P)</span> is the system’s own
 judgment that <span class="math inline">P</span> asserted <span
 class="math inline">T</span>, made from a parse that may be wrong and
-graded by the parser’s confidence. The shared world of the previous
-sections is <span
+graded by the parser’s confidence. The system is itself a source,
+<em>Self</em>. The shared world of the previous sections is <span
 class="math inline">\mathrm{Prov}(T,\textit{Self})</span>. A fact
 inferred by the system also has <em>Self</em> as its source, with the
 derivation recorded as its provenance. Ingestion and inference use one
 format.</p>
 <p><strong>Flat judgments, composed sources.</strong> Reported speech
 seems to need nesting: the <em>Times</em> reports that Smith claims
-<span class="math inline">T</span>. Nesting would make <span
-class="math inline">\mathrm{Prov}</span> a term again. The nesting goes
+<span class="math inline">T</span>. Nesting would put a <span
+class="math inline">\mathrm{Prov}</span> inside a term. The nesting goes
 into the source instead, <span
 class="math inline">\mathrm{Prov}(T,\textit{Smith-via-Times})</span>. <a
 href="https://www.bwlampson.site/44-CalculusAccessControl/44-CalculusAccessControlOCR.htm">Martín
@@ -653,38 +654,39 @@ source can also speak for another. If an article stands to the
 <em>Times</em>’s claims, and whether that holds for an opinion piece is
 something to model, not assume.</p>
 <p><strong>Contexts are idealized sources.</strong> A context records
-where a claim holds, not who makes it, and it can still be treated as a
-source: a novel’s canon, a country’s law, a hypothetical. <span
+where a claim holds, not who makes it: a novel’s canon, a country’s law,
+a hypothetical. It can still be treated as a source. <span
 class="math inline">\mathrm{Prov}(T,\textit{HarryPotterCanon})</span>
 places <span class="math inline">T</span> in a fiction, and the system
 learns how real sources map onto such contexts. A novel’s sentences are
 coded against its canon, not against <em>Self</em>. The derived IS-A of
-the previous section, “John IS-A Employee”, is likewise asserted with
-the employment’s context as its source. Only idealized sources and
-<em>Self</em> are closed under inference. Smith does not believe every
-consequence of what Smith says, so combining claims from different
-sources happens only in <em>Self</em>, after <em>Self</em> has adopted
-them.</p>
+the previous section, <em>John</em> IS-A <em>Employee</em>, is likewise
+asserted with the employment’s context as its source. Only idealized
+sources and <em>Self</em> are closed under inference. Smith does not
+believe every consequence of what Smith says, so nothing is derived
+inside Smith’s record. Claims from different sources are combined only
+in <em>Self</em>, after <em>Self</em> has adopted them.</p>
 <p><strong>Claims become events.</strong> Keeping <span
 class="math inline">\mathrm{Prov}</span> out of the term language has a
 cost: the ontology could not speak about claims, and a Cyc must be able
 to say that a claim was retracted, disputed or debunked. Davidsonian
 events supply the fix. Each judgment <span
-class="math inline">\mathrm{Prov}(T,P)</span> licenses the system’s
-judgment that a claiming event <span class="math inline">c</span>
-occurred, with <span class="math inline">\langle
-c,\textit{Claiming},\textit{content},T\rangle</span> and <span
-class="math inline">\langle
-c,\textit{Claiming},\textit{claimant},P\rangle</span>. The event is a
-term like any other, and it can carry a time, which retraction
-needs.</p>
+class="math inline">\mathrm{Prov}(T,P)</span> licenses <em>Self</em> to
+assert that a claiming event <span class="math inline">c</span>
+occurred: <span class="math inline">\mathrm{Prov}(\langle
+c,\textit{Claiming},\textit{content},T\rangle,\textit{Self})</span> and
+<span class="math inline">\mathrm{Prov}(\langle
+c,\textit{Claiming},\textit{claimant},P\rangle,\textit{Self})</span>.
+The event is a term like any other, and it can carry a time, which
+retraction needs.</p>
 <p><strong>Denials and conditionals.</strong> Sources deny, ask and
 suppose. A denial is recorded as the assertion of a negation term, and a
 question asserts nothing. A conditional needs an implication term, so
 that a source saying “if <span class="math inline">T_1</span> then <span
 class="math inline">T_2</span>” asserts neither <span
-class="math inline">T_1</span> nor <span
-class="math inline">T_2</span>.</p>
+class="math inline">T_1</span> nor <span class="math inline">T_2</span>.
+Negation and implication are connectives over terms, beside the two
+primitives.</p>
 <p>The objective can now be written out in full. The data is the texts
 with their metadata: URL, venue, date, intended audience. The <span
 class="math inline">\mathrm{Prov}</span> judgments are how the system
@@ -725,14 +727,15 @@ contextualize the result, and ask “Can you already prove this? Can you
 already disprove this?” Their judge is proof. Ours is code length. In
 the design here, a language model does three jobs, and judging is not
 among them.</p>
-<p><strong>It parses into the current vocabulary.</strong> The middle
-term of the code needs, for each sentence, its facts in the ontology’s
-terms. A model given the sentence and the relevant slice of the ontology
-in its context can produce them. The slice is the restriction of the
-ontology to what the sentence needs, as a parser restricts a grammar to
-the entries for one sentence’s words. The ontology changes with every
-accepted merge or split. A parser that reads the ontology from its
-context needs no retraining for each edit.</p>
+<p><strong>It parses into the current vocabulary.</strong> The code
+needs, for each document, what it asserts in the ontology’s terms: its
+judgments <span class="math inline">\mathrm{Prov}_d</span>. A model
+given the sentence and the relevant slice of the ontology in its prompt
+can produce them. The slice is the restriction of the ontology to what
+the sentence needs, as a parser restricts a grammar to the entries for
+one sentence’s words. The ontology changes with every accepted merge or
+split. A parser that reads the ontology from its prompt needs no
+retraining for each edit.</p>
 <blockquote>
 <p><strong>Keeping the parser honest.</strong> For the parser’s output
 to count as a code length, the model must define a proper probability
@@ -751,9 +754,9 @@ colleagues</a> used to fine-tune language models for intractable
 inference. A parser that only approximates the posterior still yields a
 valid code through <em>bits-back coding</em>, in which the encoder
 chooses a parse using bits that the decoder recovers once it has the
-text. Those recovered bits are exactly the overhead of the best-parse
-code from the first section. The cost of the approximation is then
-measured in bits.</p>
+text. Those recovered bits correspond to the overhead that the
+best-parse code of “Merges that pay” spent naming its parse. The cost of
+the approximation is then measured in bits.</p>
 </blockquote>
 <p><strong>It proposes edits.</strong> Shown a batch of parsed sentences
 with the concepts they use, a model can propose merges, splits, new
@@ -763,15 +766,15 @@ compute but not quality. The division of labour has a precedent in
 program search. In <a
 href="https://arxiv.org/html/2506.13131v1">AlphaEvolve</a>, a language
 model proposes edits to programs and automated evaluators decide which
-survive, the cooperation of “heuristic exploration and rigorous
-acceptance” discussed in <a
+survive. <a
 href="https://lukstafi.github.io/notes/what-should-a-program-inherit.html#alphaevolve-variation-selection-and-what-survives"><em>What
-Should a Program Inherit?</em></a>. Library learning supplies the case
-where acceptance is compression. <a
+Should a Program Inherit?</em></a> discusses the arrangement as a
+cooperation of “heuristic exploration and rigorous acceptance”. Library
+learning supplies the case where acceptance is compression. <a
+href="https://arxiv.org/abs/2211.16605">Stitch</a> and <a
 href="https://lukstafi.github.io/notes/what-should-a-program-inherit.html#babble-when-a-common-pattern-becomes-a-useful-function">babble</a>,
-which that essay also discusses, and <a
-href="https://arxiv.org/abs/2211.16605">Stitch</a> add an abstraction to
-a library when it shortens the corpus of programs. In <a
+which that essay also discusses, add an abstraction to a library when it
+shortens the corpus of programs. In <a
 href="https://arxiv.org/abs/2310.19791">LILO</a>, a language model
 writes the programs, Stitch extracts the abstractions, and the model
 names and documents them. COMPOSE, the operation that forms larger
@@ -822,9 +825,10 @@ and training toward a curated ontology would give that away.</p>
 <p>Return to Mary. Whether <em>walked</em>, <em>ran</em> and
 <em>drove</em> belong together is settled by the bits the merge saves
 across everything else the corpus says about walking, running and
-driving. Whether Mammal belongs in the ontology is settled the same way,
-one level up. And who says that Mary drove home, to whom, and in which
-world, is recorded by the one judgment the ontology makes.</p>
+driving. Whether <em>Mammal</em> belongs in the ontology is settled the
+same way, one level up. And who says that Mary drove home, to whom, and
+in which world, is recorded by the one form of judgment the system
+makes.</p>
 </section>
 </article>
 <section class="prompts-link"><p><em>The prompts behind this essay (the human-side contribution): 
