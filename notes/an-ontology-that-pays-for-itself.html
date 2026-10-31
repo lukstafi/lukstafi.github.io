@@ -147,16 +147,24 @@ Brants</a> ran a distributed exchange algorithm for a related class
 model on up to 31 billion tokens. The locality of the score is what lets
 the work be split across machines.</p>
 <p>Two details keep the accounting honest. Coding each sentence with its
-single best parse is still a valid code, only a longer one than a code
-that sums over all parses, so hard parses are allowed. And the
-likelihood term alone never asks for merging, since finer classes always
-fit the data better. Brown clustering sidesteps the question by fixing
-the number of classes in advance. A two-part code answers it: the prior
-is what pays for merging. Turning its weight up should yield coarse
-classes, the parts of speech. Turning it down should yield synonym sets,
-where <em>plate</em> goes with <em>dish</em> but not with <em>cup</em>.
-Vepštas observed the same thing informally: “the amount of compression
-applied can reveal different kinds of structures”. <a
+single best parse is still a valid code. The encoder sends the parse and
+then the words given the parse, which costs <span
+class="math inline">-\log P(x,t^*)</span> bits, and the decoder recovers
+the sentence without needing to know that the parse was the best one.
+Since <span class="math inline">P(x,t^*)</span> is one term of the sum
+<span class="math inline">P(x)</span> over all parses, this code is
+longer than the best the grammar allows, by <span
+class="math inline">-\log P(t^*\mid x)</span>: the bits spent naming a
+parse the decoder never needed. Hard parses are therefore allowed, at a
+cost that stays small wherever the grammar is nearly unambiguous. And
+the likelihood term alone never asks for merging, since finer classes
+always fit the data better. Brown clustering sidesteps the question by
+fixing the number of classes in advance. A two-part code answers it: the
+prior is what pays for merging. Turning its weight up should yield
+coarse classes, the parts of speech. Turning it down should yield
+synonym sets, where <em>plate</em> goes with <em>dish</em> but not with
+<em>cup</em>. Vepštas observed the same thing informally: “the amount of
+compression applied can reveal different kinds of structures”. <a
 href="https://aclanthology.org/P93-1024/">Fernando Pereira, Naftali
 Tishby and Lillian Lee</a> obtained such a hierarchy of word classes in
 1993 by annealing a temperature. Behind all of this stand <a
@@ -711,7 +719,9 @@ colleagues</a> used to fine-tune language models for intractable
 inference. A parser that only approximates the posterior still yields a
 valid code through <em>bits-back coding</em>, in which the encoder
 chooses a parse using bits that the decoder recovers once it has the
-text. The cost of the approximation is then measured in bits.</p>
+text. Those recovered bits are exactly the overhead of the best-parse
+code from the first section. The cost of the approximation is then
+measured in bits.</p>
 </blockquote>
 <p><strong>It proposes edits.</strong> Shown a batch of parsed sentences
 with the concepts they use, a model can propose merges, splits, new
