@@ -1,0 +1,116 @@
+# Outline: an ontology induced by compression
+
+Status: outline for review, 31 Oct 2026. Title open (candidates: *An Ontology That Pays for Itself*; *Who Says So*). Sample sentences show register only. Sections carry no word budgets; length follows content. Citations were given from memory in the seeding conversation and checked on 31 Oct by two agent reports, which hold the quotes, DOIs and URLs: `citecheck-ontology-biblio-2026-10-31.md` (39 items; 10 corrected) and `citecheck-ontology-priorart-2026-10-31.md` (novelty of each design element). Corrections and prior-art credits are folded in below. Two items remain confirmed only at second hand: the meaning of Cyc's `genlInverse`, and Sommers's "wild quantity" (through Englebretsen).
+
+## Seeds
+
+- Vepštas, "Sheaves: A Topological Approach to Big Data" (arXiv 1901.01341, written Nov 2017, posted Jan 2019; read in full). An unfinished draft: seeds (a vertex with typed half-edges, i.e. Link Grammar disjuncts), stalks (a word's disjuncts as a feature vector), clustering morphisms (quotients by similar stalks), gluing as parsing. The real content is the pipeline (MI-scored MST parses, disjunct extraction, stalk merging) and the diagonalization test (names ⊗ actions: high co-occurrence on the block, low off it). There is no scoring objective: similarity is "up to the user".
+- Vepštas, "Purely Symbolic Induction of Structure" (AGI 2022, LNCS 13539, pp. 134–144; PDF in `~/Downloads/vesptas-grammar-induction.pdf`; only the opening read so far). Extends the same machinery to vision and audio. Its companion experiments paper reports no evaluation of grammar quality.
+- Poon & Domingos, "Unsupervised Semantic Parsing" (EMNLP 2009) and OntoUSP ("Unsupervised Ontology Induction from Text", ACL 2010; adds ISA and IS-PART hierarchies through an ABSTRACT operator and uses ISA for smoothing; the induced hierarchy is shallow). The user's reading (31 Oct): the lambda forms are a red herring; USP is structural clustering with probabilistically motivated scoring, i.e. compression as maximizing the corpus probability under the hypothesis.
+- The design worked out in conversation on 31 Oct (decisions recorded in §D below).
+- Related essays: *A Parser Without a Grammar* (where the transformer sits among grammar formalisms) and *The Algebraic Mind Meets the Neural World*. The adaptive-logics + ASP essay (outline `notes/research/adaptive-logics-asp-essay-outline.md` on branch `claude/adaptive-reasoning-systems-asp-1e82e7`) can supply the inference layer this design leaves open: contradiction kept local, defaults with exceptions.
+
+## Thesis
+
+An ontology can be induced, not curated, if every concept, role and relation has to pay for itself in code length. The induced material is already ontology-shaped: Vepštas's links are pairs of typed half-edges, and USP's argument slots are typed by clusters. What the induction lacks is an objective (Vepštas leaves similarity to the user; USP supplies one) and a separation of the world from the talk about it. A three-part code (ontology, facts given the ontology, text given facts and provenance) supplies both. Provenance conditioning, the move that metadata-conditioned language models make, turns reporting bias from noise into a channel the model can identify. The representation that fits this induction has two term-forming primitives (IS-A and symmetric role-labelled tuples) and one judgment form (provenance); nothing asserts except a source.
+
+What makes this more than a tour:
+
+1. **Compression is the acceptance test.** A merge, a role split, a class-level tuple or a default is accepted when the total code length drops. Brown clustering shows that likelihood-scored merging scales; USP shows the same scoring over richer structure.
+2. **Provenance makes the unsaid measurable.** Cyc existed because common sense is what nobody writes down. Conditioning on audience turns that into a contrast: what text for novices states and text for experts omits is, roughly, the common ground.
+3. **The representation is shaped by the induction.** Symmetric tuples read as ∀∃ in both directions, no individual/class split, distributive IS-A, and provenance as the only judgment. Each choice either removes an arbitrary convention (argument order, inverse predicates) or makes a code-length accounting possible.
+4. **The LLM proposes; the code length decides.** Neural models parse into the current vocabulary, propose edits, and count as one more source. None of them can make a bad ontology score well.
+
+Novelty, after the prior-art check: no single primitive is new, and the essay credits each predecessor where its element appears. What appears new is the combination and a few narrower pieces: bi-totality as the *only* class-level semantics and the image terms it forces; the relation as the self-typed tuple ⟨R, R, S, S⟩ with the Role fixed point; one non-nesting provenance judgment ending at Self, with promotion to the shared world decided by code length; an audience term in the reporting policy; the novice-minus-expert contrast as a measure of common ground; exact code-length change as the test for LLM-proposed edits; the LLM as one more reliability-modelled source.
+
+Sample sentence: "A concept earns its place by the bits it saves: Mammal is worth having because a thousand facts about dogs, whales and bats no longer need saying three times."
+
+## Sections
+
+### §0 Opening
+Vepštas's toy corpus: "Mary walked home", "Mary ran home", "Mary drove home". The three seeds beg to be merged into one, walked/ran/drove: Mary- & home+, and the merge reads like the distributive law. The question the essay answers: when is such a merge true to the data, and when is it a grammar-school error? Vepštas says the decision is up to the user. The essay's answer: the merge is right when it shortens the description of the corpus.
+
+### §1 Structure from compression
+Vepštas's pipeline in one paragraph, with seeds and stalks as the only vocabulary kept. The diagonalization table as evidence for a block (names ⊗ actions). USP as the same programme with a score: log P(corpus | H) + log P(H), i.e. minus a two-part code length. Its weights are closed-form log relative frequencies, so a merge's score change is local to the clusters it touches. Its prior is exponential in the number of parameters (α = −5), with a second prior (β = −10) against putting the two halves of a conjunction in one cluster, which keeps antonyms apart. The search is greedy and hard-EM-like and applies an operation only if the log-likelihood gain exceeds 10. Brown clustering as proof of scale: merging word classes to maximize class-bigram likelihood (average MI between adjacent classes); Uszkoreit & Brants 2008 ran a distributed exchange algorithm for a one-sided class-bigram model on up to 31 billion tokens.
+
+Honesty about the pipeline's record: the OpenCog unsupervised language learning project (AGI 2018/2019) scored its induced grammars against the Link Grammar parser's own output, not human treebanks, with no standard baselines, and reached F1 around 0.48–0.50 from unsupervised parses. The essay takes Vepštas's representation and diagnosis, not his results. Coding each sentence with its best parse is still a valid code, so hard parses keep the accounting honest. The P(H) term is what stops merging; sweeping its weight gives the hierarchy from parts of speech to synonym sets (Pereira–Tishby–Lee annealing as precedent). Lineage in one sentence: Stolcke–Omohundro model merging, Grünwald and de Marcken MDL grammars, Wolff's SP theory. Credit Vepštas fairly: Vepštas & Goertzel 2014 already score link-grammar learning by an Occam criterion ("sum of the (logarithm of) the number of rules, and the (logarithmic) complexity"), with an animate/inanimate subclassing example, and the 2017 sheaves paper notes that the degree of compression separates syntactic from semantic classes. What the essay adds is the objective as the acceptance test throughout, and its extension past grammar to the fact layer.
+
+Sheaf language: keep only what does work. The restriction of a grammar to the open subgraph of one sentence is what a parser retrieves, and gluing holds only where validity is local; Link Grammar's no-crossing and connectivity constraints are global. One paragraph at most.
+
+### §2 Text is not the world
+Grammar induction compresses talk; an ontology must compress what the talk is about. The three-part code: L(ontology) + L(facts | ontology) + L(text | facts, lexicon). The third term is the realization channel (syntax, word choice, paraphrase), where grammar induction lives. The second is where a concept earns its place. The separation stops "things that take a determiner" competing with "physical objects".
+
+What the second term produces, as a table: collections (shared facts), ISA (a property stated once at the parent), typed role slots (arguments predictable from the type), disjointness (the "Low" cells), defaults with exceptions (exceptions cost bits, so a default survives while they are rare), paraphrase equivalence (USP's merged forms: *is next to* = *borders*), word senses (a split shortens both halves: "fly"), microtheories (a mixture code beats one global code). Precedents for the fact layer: Li & Abe 1998 (MDL picks the class level of a relation's arguments, the closest early ancestor of typed role slots); Katz et al. 2008 (theories as compressive laws plus core facts); the Infinite Relational Model (Kemp et al. 2006), which jointly co-clusters entities and relations, literally Vepštas's block induction with a nonparametric prior; KGist (Belth et al. 2020), MDL rule mining on knowledge graphs; Kemp–Tenenbaum's discovery of structural form, because not every domain is a tree.
+
+### §3 Who says so: provenance conditioning
+Reporting bias runs against compression: "people have two hands" is almost never written (Gordon & Van Durme 2013, "Reporting Bias and Knowledge Acquisition"). The user's move, from LLM practice: do not model P(corpus); model P(text | provenance). Metadata-conditioned pretraining states explicitly the latent that pretraining learns implicitly (Xie et al. on in-context learning as implicit Bayesian inference). CTRL used control codes; MeCo (Gao et al. 2025) prepends only the domain name for the first 90% of training and matches the baseline with 33% less data. Its telling result: hashed URLs work as well as real ones, so the gain comes from grouping documents by source, not from what the URL says. That is the provenance move in miniature: knowing *which* source matters even before knowing anything about it.
+
+The decomposition: a shared world; per source, a context (which world it describes) and a reporting policy P(mention f | f, source, audience); text given the selected facts. What this buys:
+- **Audience contrast.** Gricean writers omit what their readers know. Facts stated for novices (children's books, ESL texts, how-to guides, definitions) and omitted for experts on the same topic estimate the common ground. Ingredients exist: Romero & Razniewski 2022 (children's texts state more common sense), Srikanth & Li 2021 (elaborative simplification adds what experts leave implicit), Cao et al. 2020 (the Merck Manuals' consumer and professional versions as a paired corpus, the natural testbed). No contrast-based measurement was found.
+- **Consensus as compression.** A claim made by one source is cheaper coded as that source's belief; once enough independent sources state it, coding it once in the shared world is cheaper. Promotion to fact is decided by the objective.
+- **Reliability in the same code.** Truth discovery (Dawid–Skene; the Latent Truth Model, with per-source false-positive and false-negative rates, which is the reporting policy without the audience term; Knowledge-Based Trust) becomes part of one objective with the ontology.
+- **Shared myths.** Compression rewards mutual consistency, not truth: Krestnikov 2026 argues that gradient descent "favors the most compressible answer cluster, not truth per se". A coherent myth told by many independent sources is promoted to the shared world. Say so plainly: Self is consensus, and only sources outside text (measurement, perception, action) can break a coherent myth.
+- **Copying.** Mirrors manufacture consensus; copy detection (Dong et al. 2009) is required, and source chains (§5) are what it runs on.
+
+Limit stated plainly: a fact no source states stays unrecoverable. Conditioning makes the mention channel identifiable; it does not create evidence.
+
+### §4 Two primitives
+The format. IS-A is primitive and asymmetric. Every other relation is a tuple ⟨A, R, S, B⟩ ≡ ⟨B, S, R, A⟩: A plays role R, B plays role S. Relations and roles are concepts; the relation is its role pair; ⟨A, R, S, B⟩ IS-A ⟨R, R, S, S⟩, which gives domain and range as ordinary IS-A; ⟨Role, Role, Role, Role⟩ = Role, so every relation can fill a role and reification is uniform. Converses come free (Cyc needs `genlInverse`; meaning from memory, confirm in the Cyc docs); symmetric relations are R = S; subrelations come from role subsumption (mother IS-A parent).
+
+Decisions and their consequences, one subsection each:
+- **Events.** n-ary facts are Davidsonian: ⟨G1, Giving, Giver, John⟩, with the event class as the event-side role.
+- **Fine-grained roles.** The relation is identified by its role pair, so spatial part, temporal part and member must be distinct roles organized by IS-A, and role names get sense splits like words.
+- **Both directions.** A class-level tuple asserts ∀∃ both ways, so ⟨Dog, whole, part, DogLeg⟩ holds and ⟨Dog, whole, part, Leg⟩ does not (table legs). Smith et al. 2005 ("Relations in biomedical ontologies") define the same construction, `integral_part_of` = part_of ∧ has_part, with the converse example: "cell nucleus part_of cell, but not cell has_part cell nucleus". They offer it beside the one-directional relations; the design makes it the only class-level reading. In databases it is mandatory (total) participation on both roles, but as a closed-world constraint, not an open-world assertion. Singular terms are where "every" and "some" coincide (Sommers' wild quantity, confirmed so far only through Englebretsen), so a tuple over singular terms is just the fact; this is why the individual/class split can be dropped.
+- **Inheritance forms terms.** Generalizing or specializing one side of a true tuple breaks the other side; what holds is matched specialization, ⟨Puppy, whole, part, PuppyLeg⟩. Inheritance needs an image constructor (NARS images; DL ∃R.C). The induction already produces such pairs: an IRM block dense in both directions is approximately a valid tuple.
+- **No individual/class split.** Term logic in spirit, accepting that contradictions may arise. The hazard is not Russell (with reflexive IS-A the Russell class is empty) but collective predication: Human IS-A Species would make John a species. IS-A is distributive only; kind-level facts go into tuples (⟨Human, taxon, rank, SpeciesRank⟩).
+- **Roles as concepts.** Anything that participates in a relation IS-A some role, so Role is effectively the top concept. The fixed point ⟨Role, Role, Role, Role⟩ = Role invites the Type:Type worry (Girard's paradox); say why it is harmless here: there is no unrestricted comprehension or abstraction operator to build the paradoxical term. Anti-rigidity is handled by one rule: an IS-A derived from a tuple inherits that tuple's qualifications (John IS-A Employee only where the employment state holds).
+- **Exceptions and counting.** One amputee breaks a strict ∀; the tuple carries a typicality strength as a meta-tuple. "Four legs" needs functional fine-grained roles and a functionality marker.
+
+Nearest neighbours, credited where their element appears: Codd 1970 (relation columns unordered and named by role), Object-Role Modeling (named roles, forward and inverse readings), Fine 2000 on positionalism and Orilia's o-roles (the metaphysics of unordered relations), Sowa's conceptual graphs, UFO relators; NARS for images (NAL-4) and for treating instance as derived inheritance; description logic ∃R.C and the SEP triplets of Schulz, Romacker & Hahn (still used in SNOMED CT) for image-like constructions; Sommers and Englebretsen for wild quantity; Leśniewski's Ontology as the classical system without the individual/class split; Wikidata's `taxon rank` (P105) as collective predication done in practice; OntoClean on rigidity.
+
+### §5 One judgment: provenance
+Tuples and IS-A statements are terms; nothing inside a term asserts. The only judgment is Prov(T, P), valid only when asserted. Consequences:
+- **The regress stops at the system.** Prov(T, P) is the system's judgment that P asserted T, graded by parse confidence. The shared world is Prov(T, Self); inferred facts have Self as source, with the derivation as provenance.
+- **Flat judgments, composed sources.** Reported speech goes into the source term (Smith-via-Times), not into nesting; source chains are what copy detection needs; IS-A among sources gives "speaks for" inheritance. The composed source is not new: Abadi, Burrows, Lampson & Plotkin 1993 have the quoting principal, "(B|A) says s iff B says A says s", and MPQA/FactBank annotate nested-source chains such as ⟨writer, Sue⟩. What differs is that Prov never nests and has an outermost judge; McCarthy's ist allows nesting and has no outermost context.
+- **Contexts as idealized sources.** Fiction canons, jurisdictions and hypotheticals are sources whose claims are canonical. Only idealized sources and Self are deductively closed; combining claims across sources happens in Self.
+- **Claims as events.** A bridge rule mirrors each judgment into the term language as a Davidsonian claim event, so the ontology can say that a claim was retracted or disputed.
+- **Polarity and conditionals.** Sources deny, ask and suppose; Prov needs polarity, and the term language needs negation and implication terms so that "if T₁ then T₂" does not assert T₁.
+
+The objective, restated: the corpus is a set of Prov records, and everything else is model. Relatives: McCarthy's ist(c, p) and Cyc microtheories, RDF named graphs with `assertedBy` warrants (Carroll et al. 2005), nanopublications, NARS stamps. Inference with contradictions kept local hands off to the adaptive-logics essay.
+
+### §6 The neural side
+Three jobs, none of them judging. The pipeline has a named precedent to start from: Lenat & Marcus 2023 (§3) propose asking an LLM to translate sentences into CycL, letting Cyc repair and contextualize the result, and asking "Can you already prove this? Can you already disprove this?" Logical vetting is their judge; code length is ours. Wong et al. 2023 (LLM into a probabilistic language of thought) and Ellis 2023 (LLM proposes, Bayesian scoring decides) are the probabilistic relatives. LLMs4OL and OLLM, by contrast, make the LLM the ontology learner itself.
+- **Amortized parsing into the vocabulary.** q(logical form | sentence, ontology slice in context). In-context conditioning gives what amortization across ontology edits needs: the ontology is an input, not a fixed output layer. The slice is the restriction of the ontology to the sentence. A proper q needs a canonical output order and constrained decoding; trained by sleep (sample from the generative model, across many perturbed ontologies) and wake (toward the posterior, GFlowNet-style, Hu et al., "Amortizing Intractable Inference in Large Language Models", ICLR 2024; the last author is listed differently across records, see the biblio report). The ELBO is a code length via bits-back, so the accounting stays honest.
+- **Proposing edits.** Show the LLM parsed batches and the relevant concepts; it proposes merges, splits, roles, rules, context boundaries; the exact code-length change decides. The LILO pattern (LLM proposes, Stitch compresses). Compose, the expensive operator, is where proposals pay most.
+- **One more source.** "LLM asked to explain X to a child" is a provenance with its own reliability and reporting model; elicitation gets no special trust.
+
+Risk: the LLM's prior steers which structures are proposed toward conventional linguistics. A control without language pretraining, or a domain without an LLM prior (biochemical pathways, Vepštas's other example), tests how much.
+
+### §7 What stays open
+Counting and functionality; exceptions under strict ∀; copy detection at web scale; deductive closure only where it is safe; coherent shared myths (§3); no implementation, so no results. The induced ontology will not be the best compressor in bits: grammar-based compressors already lose to PPM on text (Sequitur 8–23% worse than PPMC on the Calgary corpus; Re-Pair "clearly outperformed by Bzip2, Ppmdj and 7-zip"), and neural models beat both. Code length here is the criterion for choosing structure, not a contest the structure wins. Evaluation against WordNet, Wikidata and OpenCyc, never training toward them: the one thing compression offers is concepts justified by data, not by curators.
+
+## D. Design decisions (user, 31 Oct 2026)
+
+Recorded so the draft keeps the author's choices in the author's voice.
+
+1. The goal is an ontology for something like a neurosymbolic Cyc, not a parser.
+2. Provenance conditioning in place of absolute P(corpus), by analogy with LLMs.
+3. Format: IS-A asymmetric; symmetric ⟨A, R, S, B⟩ ≡ ⟨B, S, R, A⟩ over concepts; relations are concepts; ⟨A, R, S, B⟩ IS-A ⟨R, R, S, S⟩.
+4. Davidsonian events for n-ary relations.
+5. Fine-grained roles required.
+6. Symmetry implies ∀∃ and ∃∀, so only ⟨Dog, whole, part, DogLeg⟩ is valid.
+7. No individual/class distinction, term-logic style, accepting possible contradictions as the spirit of the approach.
+8. Roles are not separated from non-roles (otherwise non-roles could not participate); ⟨Role, Role, Role, Role⟩ = Role so that reification works.
+9. IS-A is primitive.
+10. A separate provenance meta-relation, valid only when asserted, through which all assertion of IS-A and tuples factors.
+
+Refinements proposed in the conversation and accepted by the user ("Sounds good!"): wild quantity as the reason the individual/class split can go; image constructors for inheritance; distributive-only IS-A; Self as the end of the regress; composed sources; contexts as idealized sources; claim events; polarity.
+
+## Open questions for the user
+
+1. Title.
+2. Opening: Vepštas's "Mary walked/ran/drove home" (planned) or Cyc's founding observation?
+3. How much of §6 belongs in the essay, versus a companion page on amortized inference?
+4. NARS was dropped from the adaptive-logics essay; here it is the nearest neighbour. A short comparison section, or a paragraph in §4?
+5. Order relative to the adaptive-logics essay, which would supply the inference layer.
+6. A running toy example through §4–§5 (Dog / DogLeg / Puppy; John employed by Acme; a children's book and a veterinary paper on dogs)?
