@@ -414,9 +414,8 @@ order their arguments, and relating a predicate to its converse takes
 extra vocabulary. A symmetric relation is simply one whose roles
 coincide: <span class="math inline">\langle
 A,\textit{sibling},\textit{sibling},B\rangle</span>. A subrelation comes
-from a subrole. The design takes IS-A between roles to carry over to the
-links they label: since <em>mother</em> IS-A <em>parent</em>, every
-motherhood tuple is a parenthood tuple.</p>
+from a subrole: since <em>mother</em> IS-A <em>parent</em>, every
+motherhood tuple IS-A a parenthood tuple, for a reason given below.</p>
 <p>Roles and relations are concepts too. A relation is identified with
 its pair of roles, written as the tuple <span
 class="math inline">\langle R,R,S,S\rangle</span>, and every instance of
@@ -452,9 +451,31 @@ one. Spatial parthood, temporal parthood and membership need distinct
 roles, organized by IS-A under a general <em>part</em>. Role names need
 sense splitting just as words do: the <em>child</em> of a parent is not
 the <em>child</em> of an age group.</p>
-<p><strong>Both directions.</strong> When <span
-class="math inline">A</span> and <span class="math inline">B</span> are
-classes, the tuple asserts in both directions: every <span
+<p><strong>Tuples as terms.</strong> A tuple term denotes a type of
+link. Its extension is the set of all</p>
+<p><span class="math display">
+\{(r,a),(s,b)\}\qquad r\in R,\ a\in A,\ s\in S,\ b\in B:
+</span></p>
+<p>unordered pairs of ordered pairs, each ordered pair joining a role to
+a filler. The outer pair is unordered, so <span
+class="math inline">\langle A,R,S,B\rangle</span> and <span
+class="math inline">\langle B,S,R,A\rangle</span> denote the same set.
+The inner pairs are ordered, so a role is never matched with a filler.
+Roles are quantified like fillers, and that is what makes a subrole give
+a subrelation: since <em>mother</em> IS-A <em>parent</em>, the
+motherhood links form part of the parenthood links. The extension
+contains every combination of its components, linked or not, so it
+presupposes no prior universe of relationships. IS-A between tuple terms
+is inclusion of these sets, and it behaves like IS-A anywhere. It is
+transitive, and whatever holds of every link of a type holds of every
+link of its subtypes. In this sense every instance tuple IS-A its
+relation, and every tuple IS-A <span
+class="math inline">\langle\textit{Role},\textit{Role},\textit{Role},\textit{Role}\rangle</span>.</p>
+<p><strong>Both directions.</strong> Asserting a tuple claims something
+else: that the actual links of its type cover all of <span
+class="math inline">A</span> and all of <span
+class="math inline">B</span>. When <span class="math inline">A</span>
+and <span class="math inline">B</span> are classes, every <span
 class="math inline">A</span> stands in the relation to some <span
 class="math inline">B</span>, <em>and</em> every <span
 class="math inline">B</span> stands in it to some <span
@@ -468,20 +489,61 @@ colleagues</a> define <code>integral_part_of</code> as part-of in one
 direction together with has-part in the other, and their example shows
 the asymmetry it repairs: “cell nucleus part_of cell, but not cell
 has_part cell nucleus”. They offer it beside the one-directional
-relations. Here it is the only reading a class-level tuple has. A
-one-directional fact remains expressible as IS-A into a constructed
-class, introduced below: <em>CellNucleus</em> IS-A “part of some
-<em>Cell</em>”. The second direction is not always news. <em>DogLeg</em>
-is defined as the legs of dogs, so every dog leg belongs to some dog by
-definition, and the tuple adds only that every dog has a leg. The second
-direction says something when <span class="math inline">B</span> has an
-identity of its own: <span
+relations. Here it is the only reading an asserted class-level tuple
+has. The second direction is not always news. <em>DogLeg</em> is defined
+as the legs of dogs, so every dog leg belongs to some dog by definition,
+and the tuple adds only that every dog has a leg. The second direction
+says something when <span class="math inline">B</span> has an identity
+of its own: <span
 class="math inline">\langle\textit{Car},\textit{whole},\textit{part},\textit{Engine}\rangle</span>
 claims, beyond every car having an engine, that every engine sits in
-some car, and boat engines refute it. The ontology fills up with such
-fine-grained classes, and the induction is what supplies them: a block
-of facts that is dense in both directions is approximately a true tuple
-of this kind.</p>
+some car, and boat engines refute it. The ontology fills up with
+fine-grained classes like <em>DogLeg</em>, and the induction is what
+supplies them: a block of facts that is dense in both directions is
+approximately a true tuple of this kind.</p>
+<p>Coverage is a property of the links taken together, not of any one
+link. Asserting a class-level tuple is therefore a <em>collective</em>
+claim, and collective claims do not pass down IS-A. <span
+class="math inline">\langle\textit{Puppy},\textit{whole},\textit{part},\textit{DogLeg}\rangle</span>
+is a subtype of a true tuple, and it is false, because most dog legs
+belong to grown dogs. The claim does split into two claims that pass
+down. Write “whole of some <em>DogLeg</em>” for the things that stand as
+whole to some dog leg. Pei Wang’s <em>Non-Axiomatic Logic</em> (2013)
+calls such a term an <em>image</em>, and description logics write it
+<span
+class="math inline">\exists\textit{hasPart}.\textit{DogLeg}</span>.
+Then</p>
+<p><span class="math display">
+\langle\textit{Dog},\textit{whole},\textit{part},\textit{DogLeg}\rangle\iff\textit{Dog}\
+\text{IS-A}\ (\text{whole of some }\textit{DogLeg})\ \land\
+\textit{DogLeg}\ \text{IS-A}\ (\text{part of some }\textit{Dog}).
+</span></p>
+<p>The “every” comes from IS-A and the “some” from the image, once in
+each direction. A one-directional fact is one of the two conjuncts on
+its own: <em>CellNucleus</em> IS-A (part of some <em>Cell</em>).</p>
+<p><strong>Inheritance runs through images.</strong> The two conjuncts
+are ordinary IS-A statements and are inherited as such. <em>Puppy</em>
+IS-A <em>Dog</em> gives <em>Puppy</em> IS-A (whole of some
+<em>DogLeg</em>): every puppy has a dog leg. The other conjunct is what
+fails, since <em>DogLeg</em> IS-A (part of some <em>Puppy</em>) is
+false. The true tuple about puppies is the matched one, <span
+class="math inline">\langle\textit{Puppy},\textit{whole},\textit{part},\textit{PuppyLeg}\rangle</span>,
+where <em>PuppyLeg</em> is the dog legs that are part of some puppy: the
+intersection of <em>DogLeg</em> with an image, <span
+class="math inline">\textit{DogLeg}\sqcap\exists\textit{partOf}.\textit{Puppy}</span>
+in description logic. Generalizing a role is always safe, because images
+only grow: <span class="math inline">\langle
+A,\textit{mother},\textit{child},B\rangle</span> implies <span
+class="math inline">\langle
+A,\textit{parent},\textit{child},B\rangle</span>. Changing a filler is
+not safe in general, because each filler stands under “every” in one
+conjunct and under “some” in the other. The step to the relation’s
+schema is safe for its own reason: <span class="math inline">R</span>
+and <span class="math inline">S</span> are exactly the things playing
+those roles, so <span class="math inline">\langle R,R,S,S\rangle</span>
+is true by definition. A term can also occur without being asserted, as
+the content of someone’s claim does. Assertion therefore needs its own
+form, which the next section supplies.</p>
 <p><strong>Singular terms.</strong> Take <em>John</em> and <em>Mary</em>
 as terms with one member each. “Every member of <em>John</em> is a
 parent of some member of <em>Mary</em>, and every member of
@@ -493,44 +555,6 @@ primitive distinction between individuals and classes. A tuple over
 individuals is a plain fact, and the same semantics covers both. Being
 singular, having exactly one member, can still be defined where counting
 needs it.</p>
-<p><strong>Inheritance forms new terms.</strong> Under the two-way
-reading, neither generalizing nor specializing one side of a true tuple
-is safe. Generalizing a side can break that side’s own “every”: <span
-class="math inline">\langle\textit{Dog},\textit{whole},\textit{part},\textit{Leg}\rangle</span>
-fails because of table legs. Specializing a side can break the other
-side’s: <span
-class="math inline">\langle\textit{Puppy},\textit{whole},\textit{part},\textit{DogLeg}\rangle</span>
-fails because most dog legs belong to grown dogs. What holds is the
-matched specialization <span
-class="math inline">\langle\textit{Puppy},\textit{whole},\textit{part},\textit{PuppyLeg}\rangle</span>,
-where <em>PuppyLeg</em> is “the DogLegs that are part of some Puppy”.
-Inheritance therefore needs constructors that form such terms: an image,
-“the things that are part of some Puppy”, and an intersection with
-<em>DogLeg</em>. Pei Wang’s <em>Non-Axiomatic Logic</em> (2013) has
-both, the first under the name <em>image</em>, and description logics
-write <em>PuppyLeg</em> as <span
-class="math inline">\textit{DogLeg}\sqcap\exists\textit{partOf}.\textit{Puppy}</span>.</p>
-<p><strong>Tuples as terms.</strong> A tuple term is identified by its
-four components. Its extension is the set of <span
-class="math inline">R</span>–<span class="math inline">S</span> links
-between members of <span class="math inline">A</span> and members of
-<span class="math inline">B</span>. IS-A between tuple terms is
-inclusion of extensions, and enlarging <span
-class="math inline">A</span>, <span class="math inline">B</span> or a
-role can only enlarge the set of links. In this sense every instance
-tuple IS-A its relation. Asserting a tuple claims more than its
-extension: it claims that the links cover all of <span
-class="math inline">A</span> and all of <span
-class="math inline">B</span>. Truth therefore depends on the components,
-not on the extension alone. The tuples <span
-class="math inline">\langle\textit{Dog},\textit{whole},\textit{part},\textit{Leg}\rangle</span>
-and <span
-class="math inline">\langle\textit{Dog},\textit{whole},\textit{part},\textit{DogLeg}\rangle</span>
-have the same links, since every leg that is part of a dog is a dog leg.
-Those links cover every dog leg but not every leg, so only the second
-tuple is true. A term can also occur without being asserted, as the
-content of someone’s claim does. Assertion therefore needs its own form,
-which the next section supplies.</p>
 <p><strong>No individuals, no classes.</strong> Dropping the distinction
 is in the spirit of term logic, and we accept that contradictions may
 arise. The danger is not Russell’s paradox. With a reflexive IS-A, the
@@ -539,8 +563,10 @@ class IS-A itself without contradiction. The danger is collective
 predication. “Dogs are mammals” says something of every dog. “Humans are
 a species” says something of the kind. If both were IS-A, John would be
 a species. So IS-A is <em>distributive</em>: it says only what holds of
-every member. A collective fact is about a kind, and the kind gets a
-singular term of its own, distinct from the class of its members: <span
+every member. Asserted class-level tuples, as we saw, are collective
+claims about links, and the same rule keeps them from passing down. A
+collective fact is about a kind, and the kind gets a singular term of
+its own, distinct from the class of its members: <span
 class="math inline">\langle\textit{HomoSapiens},\textit{taxon},\textit{rank},\textit{SpeciesRank}\rangle</span>,
 together with <span
 class="math inline">\langle\textit{Human},\textit{member},\textit{taxon},\textit{HomoSapiens}\rangle</span>.
