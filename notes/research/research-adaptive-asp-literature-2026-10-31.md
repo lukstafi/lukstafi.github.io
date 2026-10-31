@@ -193,3 +193,7 @@ The visible trend is that the Bochum group's work has moved into argumentation a
 - s(CASP) (Arias & Carro, TPLP 2018) is constraint ASP without grounding. Whether it supports constraint-valued abduction, and whether it cites Maher, is unverified.
 - **Pollock/OSCAR and ASP:** not searched beyond Dung §4.2.
 - dblp could not be queried, so the coverage of OpenAlex and Crossref limits the null results. Stafiniak's own JCA thesis is not in OpenAlex.
+
+## Correction (31 Oct, from the draft's fact-check)
+
+Batens 2007 (*Logica Universalis*), fn. 10, mentions a program, pdp2.exe, that implements the goal-directed procedure for propositional ACLuNr. So the procedure has been implemented, against what question 1 above suggests. The fact-check report sits in the session scratchpad, and its corrections went into `notes/presumed-normal.md`.
