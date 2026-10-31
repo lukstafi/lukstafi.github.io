@@ -42,6 +42,16 @@ The outline (`standard-of-motion-essay-outline.md`) has been corrected to match.
 10. **Goldt–Seifert's** bound concerns the weights as physical degrees of freedom, not hardware dissipation.
 11. **New source close to the thesis:** Boyd, Crutchfield & Gu, New J. Phys. 24 (2022) 083040: choosing the agent that extracts the most work is maximum-likelihood model selection. B§4 should lead with it.
 
+## Addendum: LifeWiki "List of spaceships" (checked by hand, 31 Oct)
+
+The user saved the page to `notes/private/List of spaceships - LifeWiki.html` (oldid 173798, last edited 30 June 2026). Rows are coloured by kind: from an asymmetric soup, from a symmetric soup, elementary, engineered, adjustable.
+
+- **Glider:** c/4 diagonal, discovered by Richard K. Guy; the page gives **1970**, not 1969 as the essay-A report said.
+- **Speeds that arise from random soups** (the closest Life has to "nature"): asymmetric soup, c/2 orthogonal (lightweight spaceship), c/7 orthogonal (loafer) and c/4 diagonal (glider); symmetric soup also gives 2c/5, c/3 and c/10 orthogonal. Six speeds in all.
+- **Elementary ships** (not built from interacting parts) add a handful more: 3c/7, 2c/7, c/4, c/5, c/6 orthogonal; c/5, c/6, c/7, c/8, c/12 diagonal; Sir Robin (2,1)c/6.
+- **Every other listed speed is engineered or adjustable.** The adjustable families, Simkin's caterloopillars (2016; forum thread "Caterloopillar WIP (all speeds < c/4)"), the Demonoids and the Gemini family, are designs whose speed is a construction parameter. The page lists the instances actually built (e.g. caterloopillars from 5c/21 down to c/87, 63k–915k cells). The "all speeds < c/4" claim is the thread title; the page itself lists only built instances.
+- **For the essay:** the adjustable families are the nearest thing Life has to boosted twins, and they still are not boosts. Changing speed means building a different pattern from a recipe, not moving the same body differently. And what arises unaided from random initial conditions moves at six speeds. This sharpens A§0 and A§4: in Life, motion at a given speed is natural only at a few speeds and engineered everywhere else.
+
 ## Still unverified
 
-Isham's page range; Faddeev's 1990 proceedings pages; Lévy-Leblond's 1965 Carroll paper; Penrose as an earlier user of "Aristotelian spacetime"; a closed-form Frenkel–Kontorova barrier; the Li–Vitányi section for E_P K = H(P) + O(K(P)); LHAASO arXiv v3 (Feb 2026) numbers; LifeWiki claims (caterloopillar speeds).
+Isham's page range; Faddeev's 1990 proceedings pages; Lévy-Leblond's 1965 Carroll paper; Penrose as an earlier user of "Aristotelian spacetime"; a closed-form Frenkel–Kontorova barrier; the Li–Vitányi section for E_P K = H(P) + O(K(P)); LHAASO arXiv v3 (Feb 2026) numbers; LifeWiki claims (now checked; see the addendum).
