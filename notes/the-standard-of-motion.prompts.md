@@ -61,3 +61,17 @@ I saved "List of spaceships" to private/
 Does the qualitative theory of differential equations have any relevance to this discussion?
 
 This was the seminar's opening chapter IIRC, before introducing Largangian (? I don't quite remember) and Hamiltonian (definitely) pictures.
+
+## Which speed is c
+
+In Wolfram Physics, speed of light is something like the speed of the glider: slower than the speed of computation propagation "in principle".
+
+Are Life's failures effective, i.e. can they be exploited? Could agar play the role of pure vacuum or is it structurally disqualified?
+
+"what Gorard claims to have" -- we should bring this up (primary source)
+
+Re (1) -- we shouldn't claim that Gorard and Wolfram claim or insist that the physical speed of light is the rule application limit speed. I've heard them say that a computationally umbounded creatures could use our physics' medium to communicate faster than the speed of light (presumably by a fixed factor?)
+
+## Pointing to the companion
+
+When "the frame bundle of the frame bundle" first appears, it's a good point to remind the reader the mathematical companion exists.
