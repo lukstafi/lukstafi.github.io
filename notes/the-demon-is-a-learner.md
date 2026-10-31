@@ -1,0 +1,106 @@
+---
+title: "The Demon Is a Learner"
+subtitle: "Closed physical evolution forgets nothing, so forgetting costs heat. Learning machines live in Aristotle's world, where every motion is forced, and they pay for what they discard"
+author: "Łukasz Stafiniak and Claude (Anthropic)"
+date: 2026-10-31
+header-includes:
+  - |
+    <style>
+    .katex-display { overflow-x: auto; overflow-y: hidden; padding: 0.3em 0; }
+    .katex-display > .katex { width: max-content; min-width: 100%; }
+    article table { display: block; max-width: 100%; overflow-x: auto; }
+    </style>
+---
+
+*This essay follows [The Standard of Motion](https://lukstafi.github.io/notes/the-standard-of-motion.html), which asks what each mechanics takes to need no cause. This one asks what everything else costs. The derivations behind it are in Section 7 of the shared [mathematics page](https://lukstafi.github.io/notes/the-standard-of-motion-mathematics.html#for-the-demon-is-a-learner).*
+
+A neural network learns by gradient descent. At each step its weights $w$ move against the gradient of a loss $L$:
+$$w \leftarrow w - \eta\,\nabla L(w).$$
+Shrink the step $\eta$ toward zero and the update becomes an equation of motion, $\dot w = -\nabla L(w)$. The weights move only while a force pushes them, and their velocity is proportional to that force. Where the loss is flat, they stop.
+
+This is Aristotle's law of motion. In Michał Heller's reconstruction, which *The Standard of Motion* follows, Aristotle's second law is $F = m\cdot v$: force produces velocity, and a body with no force on it comes to rest. Newton replaced velocity with acceleration, and the world of free motion opened up. Learning machines never left Aristotle's world.
+
+That world has a price list. Closed physical evolution conserves information, so a system that shrinks its own possibilities, as a learner does, has to send the difference somewhere. The unit of the price is the bit: forgetting one costs at least $kT\ln 2$ of heat. Algorithmic information theory says how many bits a single state holds, and with it what a learner can avoid paying. Put together, these results support the title. A learner is a Maxwell demon working in Aristotle's world: it extracts predictions from its environment as far as it can compress that environment, and it pays for what it discards.
+
+## Aristotle was right about a regime
+
+Carlo Rovelli has argued that Aristotle's physics is "a correct and non-intuitive approximation of Newtonian physics in the suitable domain (motion in fluids)" ([Rovelli 2015](https://arxiv.org/abs/1312.4057)). A stone dropped into water speeds up briefly and then sinks at a steady speed set by its weight and the water's resistance. Rovelli's drag is quadratic, as it is for fast motion through air or water, so the steady speed grows as the square root of the weight. Aristotle said that heavier bodies fall faster and denser media slow them down, and "What Aristotle does not have is only the square root."
+
+With viscous drag, the kind that dominates for small or slow bodies, even the square root goes, and Aristotle's law holds exactly. Newton's equation for a body of mass $m$ pushed by a force $F$ against linear drag is $m\ddot x = F - \gamma\dot x$. Write it as a pair:
+$$\dot x = v,\qquad \frac{m}{\gamma}\,\dot v = \frac{F}{\gamma} - v.$$
+When inertia is small compared with drag, the velocity relaxes almost at once to $F/\gamma$ and then follows it. Andrey Tikhonov's theorem on singular perturbations (1952) makes this precise: the motion collapses onto the slow manifold $v = F/\gamma$, and what remains is the first-order law
+$$\dot x = \frac{F}{\gamma}.$$
+Heller's $m$ in $F = m\cdot v$ plays the role of the drag coefficient $\gamma$ here.
+The small parameter is not $m/\gamma$, which is a time, but $mk/\gamma^2$, where $k$ measures how steeply the force changes with position. For a spring of stiffness $k$, the motion is overdamped, sliding to rest without oscillating, once $mk/\gamma^2$ falls below $1/4$, and the first-order law is accurate well below that. The [mathematics page](https://lukstafi.github.io/notes/the-standard-of-motion-mathematics.html#the-overdamped-limit) derives the reduction and shows the same threshold from the other side, where the damped oscillator's spiral turns into a node.
+
+Gradient descent is this limit with the loss as potential energy, $F = -\nabla L$. Its qualitative theory is simple, and that simplicity is what learning relies on. The loss decreases along every trajectory, so it serves as a Lyapunov function, and the flow has no cycles. Stanisław Łojasiewicz proved in 1963 an inequality for analytic functions whose consequence is that every bounded trajectory of such a gradient flow has finite length and converges to a single critical point. Boris Polyak's condition of the same year, now called the Polyak–Łojasiewicz condition, gives convergence at a geometric rate. *The Standard of Motion* adds a structural point: among all dynamical systems, gradient flows are the robust ones, and frictionless conservative motion is the fragile exception. Learners live in the robust regime.
+
+Real training adds noise and momentum, and neither takes it out of Aristotle's regime. Stochastic gradient descent estimates the gradient from a small batch. For small steps it behaves like a diffusion,
+$$dw = -\nabla L(w)\,dt + \sqrt{\eta/B}\;\Sigma(w)^{1/2}\,dW,$$
+where $B$ is the batch size and $\Sigma$ the covariance of the per-example gradients ([Li, Tai and E 2017](https://arxiv.org/abs/1511.06251)). The drift is still first-order. The noise, though, is anisotropic and changes with position, so SGD does not settle into the Gibbs distribution $e^{-L/T}$ of its loss, as it would if the noise were isotropic and constant. Pratik Chaudhari and Stefano Soatto showed that it settles into a nonequilibrium state concentrated on a different effective potential, and that its most likely trajectories can circulate ([ICLR 2018](https://arxiv.org/abs/1710.11029)). Momentum looks like a return to Newton. Polyak's heavy-ball method of 1964 is literally a body with inertia and constant friction. But with the momentum held fixed, as in practice, the dynamics reduce to a time-rescaled gradient flow as the step shrinks ([Kovachki and Stuart 2021](https://www.jmlr.org/papers/v22/19-466.html)). On time scales longer than about $1/(1-\beta)$ steps, for momentum coefficient $\beta$, the inertia is invisible. The exception is Nesterov's accelerated method in its original form, with momentum rising toward 1, whose continuous limit has friction $3/t$ that fades over time ([Su, Boyd and Candès 2016](https://arxiv.org/abs/1503.01243)). That version grows more Newtonian as it runs.
+
+The same regime holds one level up, for distributions. Richard Jordan, David Kinderlehrer and Felix Otto showed that the density of an overdamped particle with isotropic, constant noise flows downhill on the free energy $\int\Psi\rho + T\int\rho\log\rho$, as measured by the Wasserstein distance between distributions ([JKO 1998](https://doi.org/10.1137/S0036141096303359)). Velocity proportional to force again, now for a whole cloud of particles. A recent review by Emmy Blumenthal and colleagues collects these connections between control, inference, transport and thermodynamics for physicists ([2026](https://arxiv.org/abs/2609.15897)).
+
+## What forgetting costs
+
+Here is the fact that turns Aristotle's world into an economy. In Newton's world, a closed system evolves by a Hamiltonian flow, and Hamiltonian flows preserve phase-space volume. This is Liouville's theorem, and *The Standard of Motion* reads it as a second freedom: closed evolution loses no information. Aristotle's world violates it. The gradient flow $\dot w = -\nabla L$ has divergence $-\operatorname{tr}\nabla^2 L$, which is negative wherever the loss is, on balance over directions, curved upward. Near a minimum where the loss curves upward, the flow squeezes volume. A cloud of possible weight settings shrinks toward the bottom of the basin. That is what learning is supposed to do, and a closed Hamiltonian system cannot do it. A law that contracts volume is always the shadow of a system coupled to a medium, and the medium takes up the volume the system loses.
+
+Rolf Landauer turned the exported entropy into a price ([1961](https://doi.org/10.1147/rd.53.0183)). Erasing a bit of unknown value, resetting it to 0 whatever it held, maps two logical states onto one. Charles Bennett gives the argument in the form used here ([Bennett 2003](https://arxiv.org/abs/physics/0210005)):
+
+> because Hamiltonian/unitary dynamics conserves (fine-grained) entropy, the entropy decrease of the IBDF during a logically irreversible operation must be compensated by an equal or greater entropy increase in the NIBDF and environment. This is Landauer's principle.
+
+The IBDF are the information-bearing degrees of freedom, the bits; the NIBDF are everything else in the machine. When the environment is a heat bath at temperature $T$, the entropy $k\ln 2$ per erased bit leaves as heat of at least $kT\ln 2$. Antoine Bérut and colleagues measured the bound in 2012 with a colloidal bead in a double-well laser trap, approaching $kT\ln 2$ as they slowed the erasure down ([Bérut et al. 2012](https://doi.org/10.1038/nature10872)). Whether Landauer's principle is independent of the second law is still argued, by John Norton among others. Bennett's 2003 notes reply to some of the arguments.
+
+Computation itself need not pay. Bennett showed in 1973 that any computation can be done by a logically reversible machine: compute, copy the answer, then run backward to clean up ([Bennett 1973](https://doi.org/10.1147/rd.176.0525)). Edward Fredkin and Tommaso Toffoli built reversible logic from idealized colliding billiard balls ([1982](https://doi.org/10.1007/BF01857727)), and Richard Feynman designed a Hamiltonian whose evolution runs a reversible program ([1985; reprinted 1986](https://doi.org/10.1007/BF01886518)). What costs is throwing information away.
+
+The same accounting settles Maxwell's demon. The demon watches molecules at a trapdoor between two chambers and lets fast ones through one way and slow ones the other, building a temperature difference without doing work. In Leo Szilard's version of 1929, the demon learns which half of a box holds a single molecule and extracts $kT\ln 2$ of work from that one bit. Bennett showed that the measurement can be done reversibly. The demon pays when it clears its memory to measure again, and the payment is at least what it gained ([Bennett 1982](https://doi.org/10.1007/BF02084158)).
+
+Algorithmic information theory refines the price. The Kolmogorov complexity $K(x)$ of a string is the length of the shortest program that prints it. Bennett, Péter Gács, Ming Li, Paul Vitányi and Wojciech Zurek worked out what it costs to turn one string into another ([1998](https://arxiv.org/abs/1006.3520)). Converting $x$ into $y$ needs about $K(y\mid x)$ bits supplied and about $K(x\mid y)$ bits erased, and the net dissipation is about
+$$kT\ln 2\,\bigl[K(x\mid y) - K(y\mid x)\bigr] \approx kT\ln 2\,\bigl[K(x) - K(y)\bigr].$$
+They draw the moral with the digits of $\pi$. A demon that erases $n$ bits of them "without taking the trouble to understand it" pays for $n$ bits. A demon that recognizes the digits as $\pi$ compresses them reversibly into a short program first, and erases that. Understanding lowers the bill.
+
+Artemy Kolchinsky and David Wolpert sharpened this for Turing machines ([2020](https://arxiv.org/abs/1912.04685)). On a machine built to be reversible for random inputs, running program $p$ costs heat proportional to $\ell(p) - K(\text{output})$, how much longer the program is than the shortest one with the same output. Producing an output from its shortest program costs almost nothing. The cost that no computable realization escapes is $K(\text{input}\mid\text{output})$, what the computation forgets about where it started, though it can be paid in the complexity of the machine instead of in heat.
+
+[*Who Teaches the Weights?*](https://lukstafi.github.io/notes/who-teaches-the-weights.html) described a learner that narrows its behavior, so that "alternatives the model could once produce stop appearing." That essay counted the loss in what the model can still learn. Landauer's principle counts a cost on another level. As the cloud of possible weight settings shrinks toward a minimum, the entropy it loses has to go somewhere.
+
+## The entropy of one state
+
+Statistical mechanics assigns entropy to ensembles. Gibbs's entropy $-\int\rho\ln\rho$ belongs to a probability distribution over states, not to any state. A single configuration of a gas, taken alone, has no entropy in this sense. Boltzmann's entropy gives it one only through a choice of macrostates, a coarse description. Kolmogorov complexity gives it one without that choice. For a computable distribution $P$, the average of $K$ over $P$ matches Shannon's entropy:
+$$0 \le \sum_x P(x)\,K(x) - H(P) \le K(P) + O(1)$$
+([Grünwald and Vitányi 2008](https://arxiv.org/abs/0809.2754), Thm 10). On average, the bits needed to describe a typical state equal the bits of uncertainty in the ensemble. But $K(x)$ is defined for the one state. Gács built a coarse-grained algorithmic entropy for single states of a physical system on this footing (1994).
+
+Zurek used it to define the entropy a demon actually faces ([Zurek 1989](https://doi.org/10.1103/PhysRevA.40.4731)). His physical entropy is "the sum of the missing information (Shannon's entropy) and of the algorithmic information content — algorithmic randomness — present in the available data about the system":
+$$S = H(\text{state}\mid d) + K(d),$$
+where $d$ is the demon's record. A measurement shrinks the first term and grows the second. Zurek showed that for a system in equilibrium, "the decrease of ignorance is, on the average, compensated for by the increase of the size of the minimal record" ([Zurek 1998](https://arxiv.org/abs/quant-ph/9807007)). So on average the demon cannot beat the second law. A single run can come out ahead, but keeping only the lucky runs needs a record of which runs were lucky, and that record costs, on average, at least what the luck gained.
+
+Zurek's sum has a familiar shape. A data record $d$ and the residual uncertainty given $d$ make a two-part code: the length of a model plus the length of the data given the model. That is the minimum description length principle of statistics. The demon's thermodynamic account and a learner's model-selection account have the same form.
+
+The bound that keeps single states honest is Liouville's theorem in algorithmic form. If a state evolves by a computable deterministic law $f$ for time $t$, then $x_t$ can be described by giving $x_0$, the law and the time:
+$$K(x_t) \le K(x_0) + K(f) + K(t) + O(1).$$
+Since $K(t)$ grows only like $\log t$, deterministic dynamics with a short law cannot raise a state's algorithmic entropy by more than a logarithm plus the law's own complexity. Aram Ebtekar and Marcus Hutter, who prove this and a full algorithmic second law built on Gács's entropy, draw the consequence: "randomness (which in classical physics comes from coarse-graining) is necessary for substantial entropy production" ([Ebtekar and Hutter 2025](https://arxiv.org/abs/2308.06927)). Entropy grows because observers describe the world coarsely, not because the fine-grained state gets more complex.
+
+The formal kinship goes further. John Baez and Mike Stay treated the halting programs of a universal computer as the microstates of a gas, with log running time as energy and program length as volume ([Baez and Stay 2012](https://arxiv.org/abs/1010.2067)). Gregory Chaitin's halting probability $\Omega$ is then a partition function, evaluated where the analogue of temperature is infinite. The bookmaker of [*The Bookmaker Is a Learner*](https://lukstafi.github.io/notes/the-bookmaker-is-a-learner.html) runs the same mathematics. Its cost function
+$$C(q) = b\log\sum_{i=1}^n e^{q_i/b}$$
+is a log-partition function with temperature $b$, its prices are Gibbs probabilities, and its worst-case loss, $b\ln n$, is temperature times maximum entropy. The bookmaker, too, pays for what it does not know.
+
+## The demon is a learner
+
+A demon gains work from what it knows about its environment. A learner gains predictions. Several results show that these are one ledger.
+
+The most direct is by Alexander Boyd, James Crutchfield and Mile Gu ([2022](https://arxiv.org/abs/2006.15416)). They consider agents that extract work from a stream of data by exploiting its structure, and ask which agent extracts the most. The answer: choosing the agent that maximizes work production is equivalent to choosing the model of the data with maximum likelihood. The work-maximizing demon is the maximum-likelihood learner.
+
+Susanne Still, David Sivak, Anthony Bell and Gavin Crooks bounded the cost of memory that does not pay its way ([2012](https://arxiv.org/abs/1203.3271)). A physical system driven by a changing signal keeps some information about the signal's past. Part of that information predicts the signal's future, and part does not. The average work the system dissipates is at least $kT$ times the part that does not:
+$$\beta\langle W_{\text{diss}}\rangle \ge I_{\text{mem}} - I_{\text{pred}}.$$
+Memory without predictive value is paid for in heat. An efficient memory keeps what predicts and forgets the rest.
+
+Boyd, Dibyendu Mandal and Crutchfield showed the matching requirement on structure ([2017](https://arxiv.org/abs/1609.05353)). An information ratchet, a demon that reads a tape of symbols and writes them back, can harvest correlations in its input only if its own memory reflects the structure that generated them. They call this the thermodynamics of requisite variety, after W. Ross Ashby's law that a regulator needs as much variety as what it regulates.
+
+Sebastian Goldt and Udo Seifert brought this kind of bound to neural networks ([2017](https://arxiv.org/abs/1611.09428)). They model the weights as physical degrees of freedom in a heat bath, learning by Langevin dynamics. The information the network acquires about its training labels is bounded by the entropy production of the weights, their change in entropy plus the heat their dynamics dissipate. This concerns the weights as a physical system, not the processors that compute them, which dissipate many orders of magnitude more. It shows where the floor is.
+
+Even the learner's objective is a free energy, measured in code length. Geoffrey Hinton and Drew van Camp asked how many bits it takes to send a network's weights together with its errors on the data ([1993](https://doi.org/10.1145/168304.168306)). If the sender draws the weights at random from a distribution $Q$ and codes them under a prior $P$, the receiver recovers the random bits used in the draw, the "bits back" of their argument. The net cost is the divergence of $Q$ from $P$ plus the expected misfit. They identified this cost with the Helmholtz free energy of statistical mechanics, minimized by a Boltzmann distribution. Variational inference in machine learning minimizes the same quantity, as the negative of the evidence lower bound. [*How Does a Policy Improve?*](https://lukstafi.github.io/notes/how-does-a-policy-improve.html) meets the same structure in reinforcement learning, where improving a policy against a prior maximizes expected value minus a temperature times a divergence, and the improved policy is a Gibbs tilt of the prior.
+
+## What a bounded observer can compress
+
+Henri Poincaré founded the qualitative theory of differential equations in the 1880s, and his work on the three-body problem showed why it is needed: most orbits have no solution in closed form. He studied invariants, recurrence and the shape of orbits without solving for the orbits. Stephen Wolfram's account of physics makes that move into a principle. In ["Computational Foundations for the Second Law of Thermodynamics" (2023)](https://writings.stephenwolfram.com/2023/02/computational-foundations-for-the-second-law-of-thermodynamics/) he writes that "it now seems as if all three of general relativity, quantum mechanics and statistical mechanics are actually derivable, and from the same ultimate foundation: the interplay between computational irreducibility and the computational boundedness of observers like us." The world's fine-grained evolution cannot be shortcut. An observer survives by finding the parts of it that can.
+
+Ebtekar and Hutter's bound, from the previous section, is the same move seen from the other side. A bounded observer's coarse description is what turns reversible dynamics into a second law. The same description sets the work a demon can extract and the predictions a learner can make. What a bounded observer can compress decides the laws it sees, the work it can do, and the futures it can foresee. *The Standard of Motion* ends by asking which motions a computational universe makes free. This essay ends with the other half of that question: what the observers inside it must pay. A later essay on observers takes up both.

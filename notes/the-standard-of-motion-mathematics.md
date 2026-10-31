@@ -1,6 +1,6 @@
 ---
 title: "The Standard of Motion: The Mathematics"
-subtitle: "Heller's ladder of space-times in frame-bundle terms, the Hamiltonian brackets, the kinematical Lie algebras and their contractions, mass as a central charge, algebraic and structural stability, moving patterns in cellular automata, and the Bombelli–Henson–Sorkin theorem"
+subtitle: "For The Standard of Motion and The Demon Is a Learner: Heller's ladder of space-times in frame-bundle terms, the Hamiltonian brackets, the kinematical Lie algebras and their contractions, mass as a central charge, algebraic and structural stability, moving patterns in cellular automata, the Bombelli–Henson–Sorkin theorem, the overdamped limit, the entropy that learning exports, and algorithmic bounds"
 author: "Łukasz Stafiniak and Claude (Anthropic)"
 date: 2026-10-31
 header-includes:
@@ -12,7 +12,7 @@ header-includes:
     </style>
 ---
 
-*This page accompanies [The Standard of Motion](https://lukstafi.github.io/notes/the-standard-of-motion.html). It writes out the structures the essay describes in prose. Section 1 follows Michał Heller, "Evolution of Space-Time Structures", Concepts of Physics 3 (2006) 117–131; the other sections are standard material, with sources given where they are used.*
+*This page accompanies [The Standard of Motion](https://lukstafi.github.io/notes/the-standard-of-motion.html) and its sequel, [The Demon Is a Learner](https://lukstafi.github.io/notes/the-demon-is-a-learner.html). It writes out the structures the essays describe in prose; Sections 1–6 serve the first essay and Section 7 the second. Section 1 follows Michał Heller, "Evolution of Space-Time Structures", Concepts of Physics 3 (2006) 117–131; the other sections are standard material, with sources given where they are used.*
 
 Notation: indices $i, j, k$ run over three spatial directions; $\varepsilon_{ijk}$ is the Levi-Civita symbol; repeated indices are summed.
 
@@ -144,3 +144,55 @@ Let $\Omega$ be the space of Poisson sprinklings of Minkowski space $\mathbb M^n
 *Idea of proof.* Such a map would push the Lorentz-invariant probability measure on $\Omega$ forward to a Lorentz-invariant probability measure on $\mathcal H$. No such measure exists, because the invariant measure on the hyperboloid has infinite total volume.
 
 **Corollary** (stated in the same paper). "There is no way to associate a finite-valency graph to a sprinkling consistently with Lorentz invariance." Intuitively, a point in a sprinkling has no nearest neighbor: every Lorentz-invariant neighborhood has infinite volume, so infinitely many points lie arbitrarily close to its light cone.
+
+## 7. For *The Demon Is a Learner*
+
+This part supports the sequel essay, [The Demon Is a Learner](https://lukstafi.github.io/notes/the-demon-is-a-learner.html). Entropies are in nats with Boltzmann's constant set to 1; a bit is $\ln 2$ nats. Kolmogorov complexities and Shannon entropies in §7.3 are in bits.
+
+### 7.1 The overdamped limit
+
+Take Newton's equation for a body of mass $m$ under a force $F(x)$ and linear drag $\gamma$, $m\ddot x = F(x) - \gamma\dot x$. Let $\ell$ be a length scale and $k$ a stiffness scale for the force, so that $F = k\ell\,\varphi(X)$ with $x = \ell X$ and $\varphi$ of order one. Measure time in the slow unit $\gamma/k$, the time drag needs to move the body a distance $\ell$ against forces of size $k\ell$: $t = (\gamma/k)\tau$. The equation becomes
+$$\varepsilon X'' + X' = \varphi(X),\qquad \varepsilon = \frac{mk}{\gamma^2},$$
+with primes for $d/d\tau$. As a first-order system,
+$$X' = U,\qquad \varepsilon\,U' = \varphi(X) - U.$$
+For fixed $X$, the fast equation has the equilibrium $U = \varphi(X)$, and its linearization has eigenvalue $-1/\varepsilon < 0$, so the equilibrium attracts. Tikhonov's theorem (A. N. Tikhonov, "Systems of differential equations containing small parameters in the derivatives", Mat. Sb. 31(73) (1952) 575–586) then gives: as $\varepsilon\to 0$, after an initial layer of duration $O(\varepsilon)$, solutions converge on bounded time intervals to those of the reduced equation $X' = \varphi(X)$, that is,
+$$\dot x = \frac{F(x)}{\gamma}.$$
+N. Fenichel's geometric theory ("Geometric singular perturbation theory for ordinary differential equations", [J. Differential Equations 31 (1979) 53–98](https://doi.org/10.1016/0022-0396(79)90152-9)) adds that for small $\varepsilon > 0$ an invariant slow manifold $U = \varphi(X) + O(\varepsilon)$ persists and attracts. The small parameter is the dimensionless $mk/\gamma^2$, not $m/\gamma$, which is a time.
+
+**The linear case.** For $\varphi(X) = -X$ (a spring), the characteristic equation is $\varepsilon\lambda^2 + \lambda + 1 = 0$, with roots
+$$\lambda_\pm = \frac{-1\pm\sqrt{1-4\varepsilon}}{2\varepsilon}.$$
+They are real, and the motion is overdamped, exactly when $\varepsilon\le 1/4$, i.e. $\gamma^2\ge 4mk$. The slow root is $\lambda_+ = -1 - \varepsilon - 2\varepsilon^2 - O(\varepsilon^3)$, which tends to the reduced rate $-1$; the fast root is $\lambda_- \approx -1/\varepsilon$. At the threshold $\varepsilon = 1/4$ both roots equal $-2$, so the first-order law is off by a factor of 2 there and becomes accurate only well below it. In the units of §4's damped oscillator ($m = k = 1$, friction $\gamma$), the threshold is $\gamma = 2$, where the focus becomes a node.
+
+### 7.2 Volume contraction and the entropy it exports
+
+**Deterministic flows.** Let a density $\rho$ on $\mathbb R^n$ be carried by a flow $\dot x = v(x)$, so that $\partial_t\rho + \nabla\cdot(\rho v) = 0$. Its Gibbs entropy $S = -\int\rho\ln\rho$ changes at the rate
+$$\frac{dS}{dt} = \int(\ln\rho + 1)\,\nabla\cdot(\rho v) = -\int\rho\, v\cdot\nabla\ln\rho = -\int v\cdot\nabla\rho = \int\rho\,\nabla\cdot v = \mathbb E_\rho[\nabla\cdot v],$$
+integrating by parts twice with vanishing boundary terms. For a Hamiltonian flow $\nabla\cdot v = 0$, and $S$ is constant: this is the entropy form of Liouville's theorem (§2). For a gradient flow $v = -\nabla L$,
+$$\frac{dS}{dt} = -\,\mathbb E_\rho\bigl[\operatorname{tr}\nabla^2 L\bigr],$$
+which is negative while $\rho$ sits where the loss curves upward on balance, as near a nondegenerate minimum. The flow concentrates the density, and the entropy falls.
+
+**With thermal noise.** Couple the body to a bath at temperature $T$ (overdamped Langevin dynamics with mobility $1/\gamma$ and isotropic noise): $dx = -\gamma^{-1}\nabla L\,dt + \sqrt{2T/\gamma}\,dW$. The density obeys the Fokker–Planck equation $\partial_t\rho = -\nabla\cdot J$ with probability current
+$$J = -\frac{1}{\gamma}\bigl(\rho\nabla L + T\nabla\rho\bigr).$$
+The system's entropy changes at the rate $\dot S_{\text{sys}} = -\int J\cdot\nabla\ln\rho$. The force $-\nabla L$ does work that the drag passes to the bath, so heat flows into the bath at the rate $\dot Q = -\int\nabla L\cdot J$ (with $L$ time-independent, $\dot Q = -\tfrac{d}{dt}\mathbb E_\rho[L]$). Adding the two,
+$$\dot S_{\text{sys}} + \frac{\dot Q}{T} = -\int J\cdot\frac{\rho\nabla L + T\nabla\rho}{T\rho} = \int\frac{\gamma\,|J|^2}{T\rho}\ \ge\ 0.$$
+The left side is the total entropy production, of system and bath together (U. Seifert, "Stochastic thermodynamics, fluctuation theorems and molecular machines", [Rep. Prog. Phys. 75 (2012) 126001](https://doi.org/10.1088/0034-4885/75/12/126001)). Integrated over a process, $\Delta S_{\text{sys}} + Q/T\ge 0$: if the system's entropy falls by $\Delta$ nats, at least $T\Delta$ of heat goes to the bath. One bit is $\ln 2$ nats, so a process that removes one bit of uncertainty from the system releases at least $T\ln 2$, in units with Boltzmann's constant 1. This is Landauer's bound inside the model. Goldt and Seifert's bound on learning, discussed in *The Demon Is a Learner*, is built on this balance, with the weights as the system.
+
+With anisotropic, position-dependent noise, as in SGD, the diffusion term becomes $\nabla\cdot(D\nabla\rho)$ with a matrix $D(x)$, the stationary state generally carries a nonzero current, and entropy production continues at stationarity. This is the nonequilibrium steady state that Chaudhari and Soatto describe.
+
+### 7.3 Algorithmic bounds
+
+Let $K$ be prefix Kolmogorov complexity, in bits, relative to a fixed universal machine.
+
+**Average complexity and Shannon entropy.** For a computable distribution $P$ on strings,
+$$0\ \le\ \sum_x P(x)\,K(x) - H(P)\ \le\ K(P) + O(1).$$
+The lower bound holds because the shortest programs form a prefix-free code, so by Kraft's inequality their average length is at least $H(P)$ (Shannon's noiseless coding theorem). The upper bound holds because $x$ can be described by a description of $P$ followed by the Shannon–Fano codeword for $x$ under $P$, of length $\lceil-\log_2P(x)\rceil$; averaging gives $H(P) + K(P) + O(1)$. See P. Grünwald and P. Vitányi, ["Algorithmic information theory"](https://arxiv.org/abs/0809.2754) (2008), Theorem 10.
+
+**Logarithmic growth under deterministic laws.** Let $x_t = f^t(x_0)$ for a computable map $f$. A program for $x_t$ can consist of a shortest program for $x_0$, a self-delimiting description of $f$, a self-delimiting description of $t$, and a fixed routine that applies $f$ $t$ times. So
+$$K(x_t)\ \le\ K(x_0) + K(f) + K(t) + O(1),\qquad K(t)\le\log_2 t + 2\log_2\log_2 t + O(1).$$
+If $f$ is a computable bijection, the same argument run backward bounds $K(x_0)$ by $K(x_t) + K(f) + K(t) + O(1)$, so the complexity can neither rise nor fall by more than these terms. A. Ebtekar and M. Hutter, ["Foundations of algorithmic thermodynamics"](https://arxiv.org/abs/2308.06927) (Phys. Rev. E, 2025), Corollaries 3–4, give the sharp form and build an algorithmic second law on it.
+
+**Zurek's accounting of a measurement.** Zurek's physical entropy for a demon holding a record $d$ is $S = H(\text{state}\mid d) + K(d)$ (W. H. Zurek, [Phys. Rev. A 40 (1989) 4731](https://doi.org/10.1103/PhysRevA.40.4731)). Consider an ideal measurement with outcome $d$ drawn from a distribution $P_D$. On average it lowers the demon's missing information by $H(P_D)$, the information the outcome carries. The record's average complexity is at least $H(P_D)$, by the lower bound above. So on average $\Delta S\ge 0$: the decrease of ignorance is paid for by the growth of the record. The work the demon can extract from what it learned is at most $T\ln 2$ per bit of ignorance removed, and returning to its initial state means erasing the record, which costs at least $T\ln 2$ per bit of its compressed length. Over a cycle the demon gains nothing on average (Zurek, ["Algorithmic randomness, physical entropy, measurements, and the demon of choice"](https://arxiv.org/abs/quant-ph/9807007), 1998).
+
+**Converting one string into another.** C. H. Bennett, P. Gács, M. Li, P. M. B. Vitányi and W. H. Zurek, ["Information distance"](https://arxiv.org/abs/1006.3520) (IEEE Trans. Inf. Theory 44 (1998) 1407–1423), show that a computation from $x$ to $y$ that is otherwise reversible needs $K(x\mid y) + K(y\mid x)$ irreversible bit operations, up to logarithmic terms: about $K(y\mid x)$ bits supplied and $K(x\mid y)$ bits erased. The net thermodynamic cost they propose is $T\ln 2\,[K(x\mid y) - K(y\mid x)]$, which equals $T\ln 2\,[K(x) - K(y)]$ up to logarithmic terms; it is antisymmetric, as a cost of conversion should be.
+
+**The bookmaker's loss.** The cost function $C(q) = b\log\sum_i e^{q_i/b}$ of the logarithmic market scoring rule is a log-partition function at temperature $b$, and the market maker's worst-case loss is $b\ln n$, temperature times the maximum entropy of a distribution on $n$ outcomes. The derivation is on [the mathematics page for *The Bookmaker Is a Learner*](https://lukstafi.github.io/notes/the-bookmaker-is-a-learner-mathematics.html).
