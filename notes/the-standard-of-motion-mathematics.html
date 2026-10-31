@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <meta name="author" content="Łukasz Stafiniak and Claude (Anthropic)">
+  <meta name="dcterms.date" content="2026-10-31">
+  <meta property="og:title" content="The Standard of Motion: The Mathematics">
+  <meta property="og:url" content="https://lukstafi.github.io/notes/the-standard-of-motion-mathematics.html">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="lukstafi&#x27;s blog">
+  <meta name="twitter:card" content="summary">
+  <title>The Standard of Motion: The Mathematics</title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <link rel="stylesheet" href="/assets/tufte.css">
+  <link rel="stylesheet" href="/assets/pandoc-tufte.css">
+  <link rel="stylesheet" href="/assets/site.css">
+  <script defer=""
+  src="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.js"></script>
+  <script>document.addEventListener("DOMContentLoaded", function () {
+ var mathElements = document.getElementsByClassName("math");
+ var macros = [];
+ for (var i = 0; i < mathElements.length; i++) {
+  var texText = mathElements[i].firstChild;
+  if (mathElements[i].tagName == "SPAN") {
+   katex.render(texText.data, mathElements[i], {
+    displayMode: mathElements[i].classList.contains('display'),
+    throwOnError: false,
+    macros: macros,
+    fleqn: false
+   });
+}}});
+  </script>
+  <link rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.css" />
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+  <script>(function(){var t=localStorage.getItem('theme-preference');if(t)document.documentElement.setAttribute('data-theme',t);})()</script>
+  <style>
+  .katex-display { overflow-x: auto; overflow-y: hidden; padding: 0.3em 0; }
+  .katex-display > .katex { width: max-content; min-width: 100%; }
+  article table { display: block; max-width: 100%; overflow-x: auto; }
+  </style>
+</head>
+<body>
+<nav class="site-nav">
+  <a href="/">Home</a> &middot; <a href="/about.html">About</a> &middot; <a href="https://lukstafi.substack.com">Substack</a>
+</nav>
+<div class="theme-toggle">
+  <button id="theme-btn" aria-label="Toggle dark mode">&#9788;</button>
+</div>
+<article>
+<header>
+<h1 class="title">The Standard of Motion: The Mathematics</h1>
+<p class="subtitle">Heller’s ladder of space-times in frame-bundle
+terms, the Hamiltonian brackets, the kinematical Lie algebras and their
+contractions, mass as a central charge, algebraic and structural
+stability, moving patterns in cellular automata, and the
+Bombelli–Henson–Sorkin theorem</p>
+<p class="byline">2026-10-31 &ndash; Łukasz Stafiniak and Claude
+(Anthropic)</p>
+</header>
+<p><em>This page accompanies <a
+href="https://lukstafi.github.io/notes/the-standard-of-motion.html">The
+Standard of Motion</a>. It writes out the structures the essay describes
+in prose. Section 1 follows Michał Heller, “Evolution of Space-Time
+Structures”, Concepts of Physics 3 (2006) 117–131; the other sections
+are standard material, with sources given where they are used.</em></p>
+<p>Notation: indices <span class="math inline">i, j, k</span> run over
+three spatial directions; <span
+class="math inline">\varepsilon_{ijk}</span> is the Levi-Civita symbol;
+repeated indices are summed.</p>
+<section id="hellers-ladder-in-frame-bundle-terms" class="level2">
+<h2>1. Heller’s ladder in frame-bundle terms</h2>
+<p><strong>Projections.</strong> A space-time is a four-dimensional
+manifold <span class="math inline">X</span>. <em>Absolute time</em> is a
+surjection <span class="math inline">\mathrm{pr}_T: X\to T</span> onto a
+one-dimensional manifold whose fibers are the sets of simultaneous
+events. <em>Absolute space</em> is a surjection <span
+class="math inline">\mathrm{pr}_S: X\to S</span> onto a
+three-dimensional manifold whose fibers are the world lines of bodies at
+absolute rest. If both exist and <span
+class="math inline">(\mathrm{pr}_T,\mathrm{pr}_S)</span> is a
+diffeomorphism, <span class="math inline">X\cong T\times S</span>.</p>
+<p><strong>Aristotle.</strong> The first law (a free body stays at
+absolute rest) supplies <span class="math inline">\mathrm{pr}_S</span>;
+absolute simultaneity supplies <span
+class="math inline">\mathrm{pr}_T</span>. So Aristotelian space-time is
+<span class="math inline">A = T\times S</span>, a trivial bundle over
+<span class="math inline">S</span> (and over <span
+class="math inline">T</span>). The second law in Heller’s stylization is
+<span class="math inline">F = m v</span>, a first-order equation: no
+force, no velocity.</p>
+<p><strong>Frame bundles.</strong> For a manifold <span
+class="math inline">X</span> with a structure group <span
+class="math inline">G</span> acting on frames, the frame bundle <span
+class="math inline">\pi: F(X)\to X</span> has as its fiber over <span
+class="math inline">x</span> the set of admissible frames at <span
+class="math inline">x</span>, and <span class="math inline">G</span>
+acts freely and transitively on each fiber. A global section of <span
+class="math inline">F(X)</span> is a global field of frames. A principal
+bundle with a global section is trivial, <span
+class="math inline">F(X)\cong X\times G</span>.</p>
+<p><em>In what sense “product”.</em> As a bare bundle, a frame bundle is
+often trivial anyway: <span class="math inline">F(N)</span> over <span
+class="math inline">\mathbb R^4</span> is, and so is the Lorentz frame
+bundle of any noncompact space-time with a spin structure (Geroch 1968).
+The product structure that matters here is one compatible with the
+connection, a global field of frames that is parallel. “Not a product”
+below means that no such parallel field exists.</p>
+<p><strong>Teleparallelism.</strong> A connection on <span
+class="math inline">F(X)</span> defines parallel transport of frames. If
+the connection is flat and its holonomy is trivial, transporting one
+frame to every point gives a global section, so <span
+class="math inline">F(X)\cong X\times G</span>. Conversely, a product
+structure defines such a flat connection. Heller uses “teleparallelism”
+for this property.</p>
+<p><strong>Newton without gravity.</strong> The first law (a free body
+moves uniformly) makes all inertial frames equivalent, so <span
+class="math inline">\mathrm{pr}_S</span> is gone. Absolute time
+survives, since instantaneous signals synchronize distant clocks. The
+second law <span class="math inline">F = ma</span> makes acceleration
+absolute, so non-accelerated world lines define a flat affine connection
+with trivial holonomy. The structure group acting on frames is the
+homogeneous Galileo group (rotations and boosts), and <span
+class="math inline">F(N) = N\times G_{\text{Gal}}</span> with a parallel
+product structure.</p>
+<p><strong>Newton with gravity (Newton–Cartan).</strong> The geometric
+form is due to Cartan (1923–24); see D. Malament, <em>Topics in the
+Foundations of General Relativity and Newtonian Gravitation Theory</em>
+(Chicago, 2012), ch. 4. Its ingredients:</p>
+<ul>
+<li>a closed one-form <span class="math inline">\tau = dt</span>, the
+absolute time;</li>
+<li>a degenerate symmetric tensor <span
+class="math inline">h^{ab}</span> of rank 3 with <span
+class="math inline">h^{ab}\tau_b = 0</span>, the spatial metric (there
+is no nondegenerate space-time metric);</li>
+<li>a torsion-free affine connection <span
+class="math inline">\nabla</span> compatible with both, <span
+class="math inline">\nabla\tau = 0</span> and <span
+class="math inline">\nabla h = 0</span>;</li>
+<li>the field equation <span class="math inline">R_{ab} = 4\pi
+G\rho\,\tau_a\tau_b</span>.</li>
+</ul>
+<p>Free fall follows the geodesics of <span
+class="math inline">\nabla</span>. Because <span
+class="math inline">\nabla</span> is curved, the holonomy is nontrivial,
+and <span class="math inline">F(N)</span> has no global parallel
+section: there is no product <span class="math inline">F(N) = N\times
+G</span> compatible with the connection. Recovering a Newtonian
+potential needs further curvature conditions (Trautman 1963;
+Künzle).</p>
+<p><strong>Special relativity.</strong> Minkowski space-time <span
+class="math inline">M</span> has neither <span
+class="math inline">\mathrm{pr}_T</span> nor <span
+class="math inline">\mathrm{pr}_S</span>. It is flat, so <span
+class="math inline">F(M) = M\times G_{\text{Lor}}</span>.</p>
+<p><strong>General relativity.</strong> <span
+class="math inline">M</span> is curved, so <span
+class="math inline">F(M)</span> has no parallel product structure. But
+the bundle of frames of a manifold with a linear connection is
+parallelizable; this uses the solder form, which a general principal
+bundle lacks. On the bundle of linear frames <span class="math inline">P
+= F(X)</span>, with <span class="math inline">n = \dim X</span>, the
+canonical one-form <span class="math inline">\theta</span> (with values
+in <span class="math inline">\mathbb R^n</span>) and the connection form
+<span class="math inline">\omega</span> (with values in <span
+class="math inline">\mathfrak{gl}(n)</span>) together give <span
+class="math inline">n + n^2 = \dim P</span> linearly independent
+one-forms at every point, a global coframe (Kobayashi and Nomizu,
+<em>Foundations of Differential Geometry</em>, vol. 1, ch. III). A
+global coframe makes the frame bundle of <span
+class="math inline">P</span> trivial, so <span
+class="math inline">F(F(M))\cong F(M)\times G&#39;</span> for the
+relevant structure group <span class="math inline">G&#39;</span>. This
+is Heller’s observation that the product reappears two levels up. Heller
+states it for general relativity, but the argument uses only the
+connection, so it holds equally for Newton–Cartan space-time: <span
+class="math inline">F(F(N))</span> is a product too.</p>
+<p><strong>Heller’s next rung.</strong> Heller proposes the
+transformation groupoid <span class="math inline">\Gamma = F(M)\times
+G</span>, with composition <span class="math inline">(p, g_1)\circ(pg_1,
+g_2) = (p, g_1g_2)</span>, and the convolution algebra of compactly
+supported functions on it, <span class="math display">(f_1 *
+f_2)(\gamma) = \int_{\Gamma_p}
+f_1(\gamma_1)\,f_2(\gamma_1^{-1}\gamma)\,d\gamma_1,</span> which is
+noncommutative. In the resulting geometry, points and their
+neighborhoods have no meaning; the usual space-time appears only at
+lower energies. The dynamics is the Tomita–Takesaki modular flow of a
+state on this algebra (M. Heller, L. Pysiak, W. Sasin, “Noncommutative
+dynamics of random operators”, <a
+href="https://arxiv.org/abs/gr-qc/0409063">Int. J. Theor. Phys. 44
+(2005) 619</a>).</p>
+</section>
+<section id="one-bracket-three-mechanics" class="level2">
+<h2>2. One bracket, three mechanics</h2>
+<p>On phase space with coordinates <span class="math inline">(x_i,
+p_i)</span>, <span class="math display">\{f, g\} = \frac{\partial
+f}{\partial x_i}\frac{\partial g}{\partial p_i} - \frac{\partial
+f}{\partial p_i}\frac{\partial g}{\partial x_i},\qquad \{x_i, p_j\} =
+\delta_{ij}.</span></p>
+<p><strong>Liouville’s theorem.</strong> The Hamiltonian vector field
+<span class="math inline">X_H = (\partial H/\partial p,\, -\partial
+H/\partial x)</span> has zero divergence, so its flow <span
+class="math inline">\phi_t</span> preserves phase-space volume. A
+density transported by the flow, <span class="math inline">\rho_t =
+\rho_0\circ\phi_t^{-1}</span>, satisfies <span
+class="math inline">\partial_t\rho = \{H,\rho\}</span>, and for any
+function <span class="math inline">s</span>, <span
+class="math display">\frac{d}{dt}\int s(\rho_t)\,dx\,dp = 0,</span> by
+the change of variables <span class="math inline">\phi_t</span> with
+unit Jacobian. With <span class="math inline">s(\rho) =
+-\rho\ln\rho</span> this is the constancy of the Gibbs–Shannon entropy.
+In quantum mechanics, <span class="math inline">\hat\rho_t =
+U_t\hat\rho_0U_t^\dagger</span> with <span
+class="math inline">U_t</span> unitary, so the spectrum of <span
+class="math inline">\hat\rho</span>, and with it the von Neumann entropy
+<span class="math inline">-\operatorname{tr}\hat\rho\ln\hat\rho</span>,
+is constant.</p>
+<p><strong>Stationary states.</strong> If <span class="math inline">\rho
+= \varphi(H)</span>, then <span class="math inline">\{H, \rho\} =
+\varphi&#39;(H)\{H, H\} = 0</span>. The Gibbs state <span
+class="math inline">\rho = e^{-\beta H}/Z</span> is the case <span
+class="math inline">\varphi(h) = e^{-\beta h}/Z</span>.</p>
+<p><strong>Moyal bracket.</strong> With the bidifferential operator
+<span class="math inline">\overleftrightarrow{\Lambda} =
+\overleftarrow{\partial_x}\cdot\overrightarrow{\partial_p} -
+\overleftarrow{\partial_p}\cdot\overrightarrow{\partial_x}</span>, <span
+class="math display">\{f, g\}_M = \frac{2}{\hbar}\,
+f\,\sin\!\Big(\frac{\hbar}{2}\overleftrightarrow{\Lambda}\Big)\,g = \{f,
+g\} + O(\hbar^2).</span> Under the Weyl correspondence between
+phase-space functions and operators, <span class="math inline">\{f,
+g\}_M</span> corresponds to <span class="math inline">[\hat f, \hat
+g]/(i\hbar)</span> exactly. Quantum mechanics on phase space is thus a
+deformation of the Poisson algebra in the parameter <span
+class="math inline">\hbar</span>.</p>
+<p><strong>Problem of time.</strong> In the canonical (ADM) form of
+general relativity on a closed spatial slice, the Hamiltonian is a sum
+of constraints, <span class="math inline">H = \int(N\mathcal H +
+N^i\mathcal H_i)</span> with <span class="math inline">\mathcal H\approx
+0</span> and <span class="math inline">\mathcal H_i\approx 0</span>. It
+vanishes on solutions, and quantizing gives the Wheeler–DeWitt equation
+<span class="math inline">\hat{\mathcal H}\Psi = 0</span> with no time
+parameter. For asymptotically flat data, a boundary term survives and
+equals the ADM energy. See C. J. Isham, <a
+href="https://arxiv.org/abs/gr-qc/9210011">“Canonical quantum gravity
+and the problem of time”</a> (1993).</p>
+</section>
+<section id="kinematical-lie-algebras" class="level2">
+<h2>3. Kinematical Lie algebras</h2>
+<section id="the-free-particle-as-a-realization" class="level3">
+<h3>3.1 The free particle as a realization</h3>
+<p>For a free relativistic particle of mass <span
+class="math inline">m\neq 0</span>, realize the generators by
+phase-space functions: <span class="math display">H = \sqrt{p^2c^2 +
+m^2c^4},\qquad J_i = L_i = \varepsilon_{ijk}x_jp_k,\qquad K_i =
+\frac{H}{c^2}x_i - t\,p_i,</span> with <span class="math inline">P_i =
+p_i</span>. The <span class="math inline">K_i</span> are conserved:
+<span class="math inline">\partial_t K_i + \{K_i, H\} = -p_i + p_i =
+0</span>. Using <span class="math inline">\{x_i, H\} = \partial
+H/\partial p_i = c^2p_i/H</span>:</p>
+<ul>
+<li><span class="math inline">\{K_i, p_j\} = \dfrac{H}{c^2}\{x_i, p_j\}
+= \dfrac{H}{c^2}\,\delta_{ij}</span>,</li>
+<li><span class="math inline">\{K_i, H\} = \dfrac{H}{c^2}\{x_i, H\} =
+p_i</span>,</li>
+<li><span class="math inline">\{K_i, K_j\} = \dfrac{1}{c^4}\{Hx_i,
+Hx_j\} + t\,\dfrac{H}{c^2}\delta_{ij} - t\,\dfrac{H}{c^2}\delta_{ij} =
+\dfrac{1}{c^4}\Big(H\dfrac{c^2p_i}{H}x_j - x_iH\dfrac{c^2p_j}{H}\Big) =
+-\dfrac{1}{c^2}\,\varepsilon_{ijk}L_k</span>,</li>
+<li><span class="math inline">\{L_i, L_j\} =
+\varepsilon_{ijk}L_k</span>, <span class="math inline">\{L_i, K_j\} =
+\varepsilon_{ijk}K_k</span>, <span class="math inline">\{L_i, p_j\} =
+\varepsilon_{ijk}p_k</span>, and <span class="math inline">\{p_i, p_j\}
+= \{p_i, H\} = \{L_i, H\} = 0</span>.</li>
+</ul>
+<p>These are the brackets of the Poincaré algebra, realized on the
+particle’s phase space. (In the third item, the cross terms come from
+<span class="math inline">\{Hx_i/c^2, -tp_j\} =
+-t\,H\delta_{ij}/c^2</span> and <span class="math inline">\{-tp_i,
+Hx_j/c^2\} = +t\,H\delta_{ij}/c^2</span>, using that <span
+class="math inline">H</span> depends on <span
+class="math inline">p</span> only.)</p>
+</section>
+<section id="the-galilean-limit-and-the-mass" class="level3">
+<h3>3.2 The Galilean limit and the mass</h3>
+<p>Write <span class="math inline">H = mc^2 + E</span>, so that <span
+class="math inline">E = p^2/2m + O(1/c^2)</span>. As <span
+class="math inline">c\to\infty</span>: <span class="math display">\{K_i,
+p_j\} = \Big(m + \frac{E}{c^2}\Big)\delta_{ij}\ \to\
+m\,\delta_{ij},\qquad \{K_i, K_j\}\to 0,\qquad \{K_i, E\} = p_i,</span>
+and <span class="math inline">K_i\to m\,x_i - t\,p_i</span>, the
+Galilean boost. The constant <span class="math inline">mc^2</span>
+commutes with everything, so it drops out of the brackets once
+subtracted from <span class="math inline">H</span>, and the limit is the
+Galilei algebra with one extra central generator whose value is <span
+class="math inline">m</span>: the <em>Bargmann algebra</em>. Without
+that central term, the Galilei algebra has <span
+class="math inline">\{K_i, P_j\} = 0</span>, and its realization on the
+phase space of a free particle is impossible. Mass is the
+obstruction.</p>
+<p>Quantum mechanically, V. Bargmann, <a
+href="https://doi.org/10.2307/1969831">“On unitary ray representations
+of continuous groups”</a>, Ann. Math. 59 (1954) 1–46, showed that
+projective representations of the Galilei group do not reduce to
+ordinary ones: their cocycle is labeled by a real parameter, the mass.
+For the Poincaré group the second cohomology vanishes and the projective
+representations reduce to ordinary ones; mass there is fixed by a
+Casimir, <span class="math inline">H^2 - p^2c^2 = m^2c^4</span>, not by
+a central charge. (A superselection rule for mass is often attributed to
+Bargmann; that attribution is disputed.)</p>
+<p>Contracting the Poincaré group itself, as E. İnönü and E. P. Wigner
+did in <a href="https://doi.org/10.1073/pnas.39.6.510">“On the
+contraction of groups and their representations”</a> (PNAS 39, 1953),
+gives the Galilei group without the central term. The central term
+appears when the rest energy <span class="math inline">mc^2</span> is
+separated off before the limit, as above.</p>
+</section>
+<section id="the-family-of-contractions" class="level3">
+<h3>3.3 The family of contractions</h3>
+<p>Using the conventions of §3.1, the kinematical algebras connected by
+contraction differ in three brackets (rotations act on <span
+class="math inline">K</span>, <span class="math inline">P</span> as
+vectors and commute with <span class="math inline">H</span> in all of
+them):</p>
+<table>
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+</colgroup>
+<thead>
+<tr>
+<th>Algebra</th>
+<th><span class="math inline">\{K_i, H\}</span></th>
+<th><span class="math inline">\{K_i, P_j\}</span></th>
+<th><span class="math inline">\{K_i, K_j\}</span></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Poincaré</td>
+<td><span class="math inline">P_i</span></td>
+<td><span class="math inline">\delta_{ij}H/c^2</span></td>
+<td><span class="math inline">-\varepsilon_{ijk}J_k/c^2</span></td>
+</tr>
+<tr>
+<td>Galilei (<span class="math inline">c\to\infty</span>)</td>
+<td><span class="math inline">P_i</span></td>
+<td><span class="math inline">0</span> (Bargmann: <span
+class="math inline">m\,\delta_{ij}</span>)</td>
+<td><span class="math inline">0</span></td>
+</tr>
+<tr>
+<td>Carroll (<span class="math inline">c\to 0</span>, <span
+class="math inline">K\mapsto c^2K</span>)</td>
+<td><span class="math inline">0</span></td>
+<td><span class="math inline">\delta_{ij}H</span></td>
+<td><span class="math inline">0</span></td>
+</tr>
+<tr>
+<td>static</td>
+<td><span class="math inline">0</span></td>
+<td><span class="math inline">0</span></td>
+<td><span class="math inline">0</span></td>
+</tr>
+</tbody>
+</table>
+<p>For the Carroll limit, set <span class="math inline">K&#39; =
+c^2K</span>; then <span class="math inline">\{K&#39;_i, P_j\} =
+\delta_{ij}H</span>, <span class="math inline">\{K&#39;_i, H\} =
+c^2P_i\to 0</span> and <span class="math inline">\{K&#39;_i, K&#39;_j\}
+= -c^2\varepsilon_{ijk}J_k\to 0</span>. The Carroll group was introduced
+by J.-M. Lévy-Leblond (Ann. Inst. Henri Poincaré A 3, 1965). In it a
+single free particle has no motion: its velocity vanishes identically
+(E. Bergshoeff, J. Gomis, G. Longhi, <a
+href="https://arxiv.org/abs/1405.2264">“Dynamics of Carroll
+particles”</a>, 2014). H. Bacry and J.-M. Lévy-Leblond, <a
+href="https://doi.org/10.1063/1.1664490">“Possible kinematics”</a> (J.
+Math. Phys. 9, 1968), classified the kinematical algebras under three
+assumptions (isotropy; parity and time reversal are automorphisms;
+boosts generate non-compact subgroups) and found eleven, including the
+de Sitter and Newton–Hooke algebras, connected by contractions.</p>
+<p><strong>Aristotelian algebras.</strong> J. Figueroa-O’Farrill and S.
+Prohazka, <a href="https://arxiv.org/abs/1809.01224">“Spatially
+isotropic homogeneous spacetimes”</a> (JHEP 01 (2019) 229), call a Lie
+algebra <em>aristotelian</em> if it is spanned by rotations, spatial
+translations and time translation, with no boosts. The homogeneous
+spaces of such algebras are “spacetimes without boosts”. They carry both
+an invariant clock form and an invariant time vector field, that is,
+absolute time and absolute space together. The simplest, the static
+aristotelian space-time, is <span class="math inline">\mathbb
+R\times\mathbb R^3</span> with both structures, Heller’s <span
+class="math inline">A = T\times S</span>. The step from Aristotle to
+Newton adds the boosts; the steps after Newton deform their
+brackets.</p>
+</section>
+</section>
+<section id="stability" class="level2">
+<h2>4. Stability</h2>
+<p>A deformation of a Lie algebra <span class="math inline">(\mathfrak
+g, [\cdot,\cdot])</span> is a family of brackets <span
+class="math inline">[\cdot,\cdot]_t = [\cdot,\cdot] + t\,\varphi_1 +
+t^2\varphi_2 + \cdots</span> satisfying the Jacobi identity. The
+first-order term <span class="math inline">\varphi_1</span> must be a
+2-cocycle in the Chevalley–Eilenberg complex with coefficients in the
+adjoint representation, and deformations that differ by a change of
+basis correspond to coboundaries. If <span
+class="math inline">H^2(\mathfrak g, \mathfrak g) = 0</span>, every
+deformation is trivial and <span class="math inline">\mathfrak g</span>
+is <em>rigid</em> (stable). Semisimple Lie algebras are rigid, by
+Whitehead’s second lemma.</p>
+<p><strong>Galilei to Lorentz.</strong> The homogeneous Galilei algebra
+(rotations <span class="math inline">J</span> and boosts <span
+class="math inline">K</span> with <span class="math inline">[K_i, K_j] =
+0</span>) has a single nontrivial deformation, which switches on <span
+class="math display">[K_i, K_j] = t\,\varepsilon_{ijk}J_k.</span> At
+<span class="math inline">t = -1/c^2</span> this is the Lorentz algebra
+<span class="math inline">\mathfrak{so}(3,1)</span>; at <span
+class="math inline">t &gt; 0</span> it is <span
+class="math inline">\mathfrak{so}(4)</span>. Both are semisimple, hence
+rigid. Stability selects semisimplicity; the sign of <span
+class="math inline">t</span>, and so Lorentzian signature, is an
+empirical input (C. Chryssomalakos and E. Okon, <a
+href="https://arxiv.org/abs/hep-th/0410212">“Generalized quantum
+relativistic kinematics: a stability point of view”</a>, Int. J. Mod.
+Phys. D 13 (2004) 2003–2034, §2).</p>
+<p><strong>Faddeev’s thesis.</strong> L. D. Faddeev, <a
+href="https://doi.org/10.5802/pmihes.19">“A mathematician’s view of the
+development of physics”</a> (1989 talk; reprinted Publ. Math. IHÉS S88
+(1998) 73–79): “quantum mechanics is a deformation of the classical one
+with ħ playing the role of deformation parameter”; “classical mechanics
+is not stable”; “the Lorentz group is stable”; and “the two main
+revolutions in physics … are deformations from unstable structures into
+stable ones.” He adds general relativity as a third deformation, with
+Newton’s constant as parameter.</p>
+<p><strong>The inhomogeneous algebras.</strong> The Poincaré algebra is
+not semisimple, and it is not rigid: switching on <span
+class="math inline">[H, P_i]</span> and <span class="math inline">[P_i,
+P_j]</span> proportional to <span class="math inline">1/R^2</span> times
+boosts and rotations deforms it to the de Sitter or anti-de Sitter
+algebra, <span class="math inline">\mathfrak{so}(4,1)</span> or <span
+class="math inline">\mathfrak{so}(3,2)</span>, which are semisimple. R.
+Vilela Mendes, <a
+href="https://doi.org/10.1088/0305-4470/27/24/019">“Deformations, stable
+theories and fundamental constants”</a> (J. Phys. A 27 (1994)
+8091–8104), considered the algebra of relativistic quantum mechanics,
+Poincaré together with the canonical position–momentum commutators. He
+found it unstable and found a two-parameter stabilizing deformation; in
+his later summary the parameters are a fundamental length <span
+class="math inline">\ell</span> and a curvature <span
+class="math inline">1/R</span>. Chryssomalakos and Okon (2004) extend
+the analysis and find a three-dimensional space of stable algebras “with
+an instability double cone at its origin.”</p>
+<p><strong>Structural stability of vector fields.</strong> A <span
+class="math inline">C^1</span> vector field <span
+class="math inline">X</span> on a compact manifold is <em>structurally
+stable</em> if every vector field <span
+class="math inline">C^1</span>-close to <span
+class="math inline">X</span> is topologically equivalent to it: a
+homeomorphism carries the orbits of one onto the orbits of the other,
+preserving their direction. A. A. Andronov and L. S. Pontryagin
+introduced the notion for planar systems on a disc, as “systèmes
+grossiers” (Dokl. Akad. Nauk SSSR 14 (1937) 247–250); the global form on
+compact manifolds is M. Peixoto’s. This is the dynamical counterpart of
+rigidity.</p>
+<ul>
+<li><em>Conservative systems are not structurally stable.</em> The
+harmonic oscillator <span class="math inline">\dot x = p</span>, <span
+class="math inline">\dot p = -x</span> has a center: every orbit is
+closed. The perturbation <span class="math inline">\dot p = -x -
+\varepsilon p</span> makes the origin an attracting equilibrium for
+every <span class="math inline">\varepsilon &gt; 0</span> (a stable
+focus while <span class="math inline">\varepsilon &lt; 2</span>, a node
+beyond), and no homeomorphism carries closed orbits onto orbits that
+converge to a point. On compact orientable surfaces, M. Peixoto
+(“Structural stability on two-dimensional manifolds”, <a
+href="https://doi.org/10.1016/0040-9383(65)90018-2">Topology 1 (1962)
+101–120</a>) showed that the structurally stable flows are exactly the
+Morse–Smale ones: finitely many equilibria and periodic orbits, all
+hyperbolic; every other orbit tends to one of them in both directions of
+time; and no orbit joins two saddles. So there are no centers. Such
+flows are open and dense.</li>
+<li><em>Gradient flows are robust.</em> For a Morse function <span
+class="math inline">V</span> on a compact manifold, the flow <span
+class="math inline">\dot x = -\nabla V</span> has <span
+class="math inline">V</span> as a strict Lyapunov function, so it has no
+periodic orbits, and its equilibria are hyperbolic, since the
+linearization <span class="math inline">-\mathrm{Hess}\,V</span> is
+self-adjoint with nonzero eigenvalues. It need not be Morse–Smale: on an
+upright torus, the height function’s two saddles are joined by an orbit.
+An arbitrarily <span class="math inline">C^1</span>-small perturbation,
+again a gradient flow for a modified metric, makes the stable and
+unstable manifolds meet transversally, and the result is Morse–Smale (S.
+Smale, “On gradient dynamical systems”, <a
+href="https://doi.org/10.2307/1970311">Ann. Math. 74 (1961)
+199–206</a>). Morse–Smale flows are structurally stable in any dimension
+(J. Palis and S. Smale, “Structural stability theorems”, <a
+href="https://doi.org/10.1090/pspum/014/0267603">Proc. Sympos. Pure
+Math. 14 (1970) 223–231</a>); the converse fails from dimension 3.</li>
+<li><em>Hamiltonian systems keep most of their order, but only under
+Hamiltonian perturbations.</em> For a nearly integrable Hamiltonian
+<span class="math inline">H_0 + \varepsilon H_1</span>, analytic, with
+<span class="math inline">\det\partial^2H_0/\partial I^2\neq 0</span>,
+the Kolmogorov–Arnold–Moser theorem shows that the invariant tori of
+<span class="math inline">H_0</span> with Diophantine frequencies
+persist, deformed, for small <span
+class="math inline">\varepsilon</span>, and the measure of the rest
+tends to zero (A. N. Kolmogorov, Dokl. Akad. Nauk SSSR 98 (1954)
+527–530; V. I. Arnold, <a
+href="https://doi.org/10.1070/RM1963v018n05ABEH004130">Russian Math.
+Surveys 18:5 (1963) 9–36</a>; J. Moser, Nachr. Akad. Wiss. Göttingen
+(1962) 1–20). Resonant tori break up, so with two or more degrees of
+freedom an integrable system is not structurally stable even among
+Hamiltonian systems. A dissipative perturbation contracts phase-space
+volume, so no invariant set of positive volume survives, and the family
+of tori is destroyed. Isolated tori can persist as attractors when a
+parameter is tuned (R. Calleja, A. Celletti, R. de la Llave, <a
+href="https://doi.org/10.1016/j.jde.2013.05.001">J. Differential
+Equations 255 (2013) 978–1049</a>).</li>
+<li><em>The class of perturbations decides.</em> The rotation of the
+sphere about an axis is structurally stable among divergence-free vector
+fields and unstable among all vector fields (Scholarpedia, “Structural
+stability”).</li>
+</ul>
+<p>The two notions of stability rank the same theories in opposite
+orders. Among Lie algebras of symmetries, Galilei is unstable and
+Lorentz rigid. Among vector fields, the conservative dynamics of both is
+unstable and the dissipative, first-order dynamics of Aristotle is
+generic.</p>
+</section>
+<section id="moving-patterns-in-a-cellular-automaton" class="level2">
+<h2>5. Moving patterns in a cellular automaton</h2>
+<p>Let a pattern in a two-dimensional cellular automaton be a
+<em>spaceship</em> if, after <span class="math inline">p</span>
+generations, it reappears translated by a nonzero vector <span
+class="math inline">(d_x, d_y)</span>, and <span
+class="math inline">p</span> is the least such period. Its speed, in
+Life’s convention, is <span class="math inline">\max(|d_x|,
+|d_y|)/p</span> times <span class="math inline">c</span>.</p>
+<p><strong>Fact 1 (speeds are rational).</strong> Immediate from the
+definition.</p>
+<p><strong>Fact 2 (dense speeds need unbounded size).</strong> Suppose
+every phase of a spaceship fits, up to translation, in an <span
+class="math inline">a\times b</span> box. Then the ship has at most
+<span class="math inline">2^{ab}</span> distinct phases, so <span
+class="math inline">p\le 2^{ab}</span>, and since the displacement per
+generation is bounded by the automaton’s radius, <span
+class="math inline">|d_x|, |d_y|\le rp</span>. So ships fitting in a
+given box have speeds in a finite set. A family of ships whose speeds
+are dense in an interval must contain ships of unbounded size.</p>
+<p>In Conway’s Life the radius is 1, and Conway showed in 1970 that a
+spaceship’s speed is at most <span class="math inline">c/2</span>
+orthogonally and <span class="math inline">c/4</span> diagonally. Below
+these caps, engineered ships exist in every rational direction, and
+adjustable designs (Simkin’s caterloopillars, 2016) reportedly reach
+every rational orthogonal speed below <span
+class="math inline">c/4</span> (<a
+href="https://conwaylife.com/wiki/Caterloopillar">LifeWiki,
+“Caterloopillar”</a>). Each built instance is a separate pattern (<a
+href="https://conwaylife.com/wiki/List_of_spaceships">LifeWiki, “List of
+spaceships”</a>, revision of 30 June 2026).</p>
+<p>The counting assumes a fixed lattice and a uniform background, as in
+Life. A hypergraph rewriting system has neither, so Fact 2 shows what a
+fixed-lattice carrier of motion cannot do, not what a hypergraph carrier
+cannot do.</p>
+</section>
+<section id="the-bombellihensonsorkin-theorem" class="level2">
+<h2>6. The Bombelli–Henson–Sorkin theorem</h2>
+<p>Let <span class="math inline">\Omega</span> be the space of Poisson
+sprinklings of Minkowski space <span class="math inline">\mathbb
+M^n</span> with <span class="math inline">n &gt; 1</span>, with its
+Lorentz-invariant probability measure, and let <span
+class="math inline">\mathcal H</span> be the hyperboloid of
+future-directed unit timelike vectors. <strong>Theorem</strong> (L.
+Bombelli, J. Henson, R. D. Sorkin, <a
+href="https://arxiv.org/abs/gr-qc/0605006">“Discreteness without
+symmetry breaking: a theorem”</a>, Mod. Phys. Lett. A 24 (2009)
+2579–2587): there is no measurable map <span
+class="math inline">D:\Omega\to\mathcal H</span> with <span
+class="math inline">D(\Lambda\omega) = \Lambda D(\omega)</span> for all
+<span class="math inline">\Lambda</span> in the connected Lorentz
+group.</p>
+<p><em>Idea of proof.</em> Such a map would push the Lorentz-invariant
+probability measure on <span class="math inline">\Omega</span> forward
+to a Lorentz-invariant probability measure on <span
+class="math inline">\mathcal H</span>. No such measure exists, because
+the invariant measure on the hyperboloid has infinite total volume.</p>
+<p><strong>Corollary</strong> (stated in the same paper). “There is no
+way to associate a finite-valency graph to a sprinkling consistently
+with Lorentz invariance.” Intuitively, a point in a sprinkling has no
+nearest neighbor: every Lorentz-invariant neighborhood has infinite
+volume, so infinitely many points lie arbitrarily close to its light
+cone.</p>
+</section>
+</article>
+<script src="/assets/theme-toggle.js"></script>
+</body>
+</html>

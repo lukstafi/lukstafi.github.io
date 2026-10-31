@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <meta name="author" content="Łukasz Stafiniak and Claude (Anthropic)">
+  <meta name="dcterms.date" content="2026-10-31">
+  <meta property="og:title" content="The Standard of Motion">
+  <meta property="og:url" content="https://lukstafi.github.io/notes/the-standard-of-motion.html">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="lukstafi&#x27;s blog">
+  <meta name="twitter:card" content="summary">
+  <title>The Standard of Motion</title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <link rel="stylesheet" href="/assets/tufte.css">
+  <link rel="stylesheet" href="/assets/pandoc-tufte.css">
+  <link rel="stylesheet" href="/assets/site.css">
+  <script defer=""
+  src="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.js"></script>
+  <script>document.addEventListener("DOMContentLoaded", function () {
+ var mathElements = document.getElementsByClassName("math");
+ var macros = [];
+ for (var i = 0; i < mathElements.length; i++) {
+  var texText = mathElements[i].firstChild;
+  if (mathElements[i].tagName == "SPAN") {
+   katex.render(texText.data, mathElements[i], {
+    displayMode: mathElements[i].classList.contains('display'),
+    throwOnError: false,
+    macros: macros,
+    fleqn: false
+   });
+}}});
+  </script>
+  <link rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.css" />
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+  <script>(function(){var t=localStorage.getItem('theme-preference');if(t)document.documentElement.setAttribute('data-theme',t);})()</script>
+  <style>
+  .katex-display { overflow-x: auto; overflow-y: hidden; padding: 0.3em 0; }
+  .katex-display > .katex { width: max-content; min-width: 100%; }
+  article table { display: block; max-width: 100%; overflow-x: auto; }
+  </style>
+</head>
+<body>
+<nav class="site-nav">
+  <a href="/">Home</a> &middot; <a href="/about.html">About</a> &middot; <a href="https://lukstafi.substack.com">Substack</a>
+</nav>
+<div class="theme-toggle">
+  <button id="theme-btn" aria-label="Toggle dark mode">&#9788;</button>
+</div>
+<article>
+<header>
+<h1 class="title">The Standard of Motion</h1>
+<p class="subtitle">Every mechanics opens by saying what happens without
+a cause. From Aristotle’s rest to Newton’s uniform motion, that first
+law carries the geometry and the algebra, and a computational universe
+would have to derive it</p>
+<p class="byline">2026-10-31 &ndash; Łukasz Stafiniak and Claude
+(Anthropic)</p>
+</header>
+<p><em>The mathematics behind this essay, with the frame bundles, the
+brackets and the contractions written out, is on a <a
+href="https://lukstafi.github.io/notes/the-standard-of-motion-mathematics.html">companion
+page</a>.</em></p>
+<p>In Conway’s Game of Life, a pattern of five live cells called the
+glider crawls across the grid. Every four generations it reappears one
+cell further along a diagonal, after passing through three other shapes
+on the way. Life measures speed against <span
+class="math inline">c</span>, one cell per generation, so the glider
+moves at <span class="math inline">c/4</span>. It cannot go any faster
+or any slower.</p>
+<p>Life has other moving patterns, called spaceships. Started from
+random noise, sometimes with an imposed symmetry, it produces them at
+six speeds: the glider’s, and five orthogonal ones, <span
+class="math inline">c/2</span>, <span class="math inline">2c/5</span>,
+<span class="math inline">c/3</span>, <span
+class="math inline">c/7</span> and <span
+class="math inline">c/10</span>. The community that catalogs Life
+patterns has built ships for many more speeds, and a design called the
+caterloopillar can reportedly be tuned to any rational orthogonal speed
+below <span class="math inline">c/4</span> (<a
+href="https://conwaylife.com/wiki/Caterloopillar">LifeWiki,
+“Caterloopillar”</a>). LifeWiki’s <a
+href="https://conwaylife.com/wiki/List_of_spaceships">list of
+spaceships</a> records the ships actually built, and every one is a
+different pattern. The <span class="math inline">c/87</span>
+caterloopillar has 62,343 cells, the <span
+class="math inline">5c/21</span> one has 915,290, and nothing carries
+one into the other. A pattern that repeats itself every <span
+class="math inline">p</span> generations, displaced by <span
+class="math inline">d</span> cells, moves at <span
+class="math inline">d/p</span> of light speed. To change its speed you
+build a different machine.</p>
+<p>Our world is different. A stone can be thrown at any speed below the
+speed of light, and it is the same stone at every speed. Once moving, it
+keeps moving with nothing pushing it. This is Newton’s first law,
+usually taught as the dull one before the law that does the work. Life
+shows that it is not dull. In a world built by rewriting, nothing is
+carried along; a body that moves has to be rebuilt somewhere else, step
+after step, and stay itself.</p>
+<p>Every mechanics opens by saying what happens without a cause.
+Aristotle’s said that bodies come to rest. Newton’s said that they keep
+their velocity. Einstein’s said that they fall freely. Michał Heller has
+argued that this first law carries the geometry of space and time. I
+follow his argument first. Hamiltonian mechanics then adds a second
+thing that comes free: evolution that loses no information. The same
+Hamiltonian framework carries the symmetries of a first law, and the
+steps from Aristotle to Einstein can be read as limits and deformations
+of their algebra. At the end I turn to a computational physics, where
+nothing comes free and the first law has to be derived. That derivation
+is the test such a physics has not yet passed.</p>
+<section id="the-first-law-carries-the-geometry" class="level2">
+<h2>The first law carries the geometry</h2>
+<p>Heller is a cosmologist and philosopher in Kraków. In a short paper,
+“Evolution of Space-Time Structures” (<em>Concepts of Physics</em> 3,
+2006, 117–131), he reconstructs the space-times of Aristotle, Newton and
+Einstein in the language of modern differential geometry, and finds a
+pattern in the sequence. His starting point is that a dynamics must
+first say how to tell whether a force is acting. It does this by naming
+the motions that need no force:</p>
+<blockquote>
+<p>This can be thought of as a “standard of motion”. A deviation from a
+free motion witnesses to the appearance of a force. To establish such a
+standard of motion is a task of the first law of dynamics.</p>
+</blockquote>
+<p>Heller adds that in many theories the free motions are set by the
+geometry of space-time. Then the first law carries information about
+that geometry, and “suitably interpreted geometry becomes a part of
+physics, and as such it can be subject to empirical verification.”</p>
+<p><strong>Aristotle.</strong> Heller states Aristotle’s first law in
+Newton’s form: “A body, non acted upon by any force, remains in the
+absolute rest.” Absolute rest lets one speak of the same place at
+different times, since a body at rest stays in its place. That gives a
+projection from space-time onto absolute space, which sends each event
+to its place. Absolute simultaneity, which Aristotle also assumed, gives
+a projection onto absolute time. With both projections, space-time is a
+Cartesian product, <span class="math inline">A = T\times S</span>: an
+event is a pair (when, where). Aristotle’s second law, in Heller’s
+stylization, is <span class="math inline">F = m\cdot v</span>: force is
+proportional to the velocity it produces, so a body with no force on it
+has no velocity. Heller stresses that this is a reconstruction.
+Aristotle spoke of a “moving factor” and a “body”, not of force and
+mass, and the operational concepts took a long evolution of science to
+arrive.</p>
+<p><strong>Newton.</strong> Newton’s first law says that a body with no
+force on it stays in uniform motion. That makes rest relative. Each
+inertial observer means something different by being at rest, and the
+law, in Heller’s words, “introduces a full democracy among all inertial
+reference frames.” The projection onto absolute space is gone, replaced
+by many private projections, one per inertial observer. The projection
+onto absolute time survives, because Newtonian mechanics allows signals
+of unlimited speed, which can synchronize distant clocks. So Newtonian
+space-time <span class="math inline">N</span> is no longer a product.
+Heller notes that Newton himself kept absolute space, and that he
+“misinterpreted his own first law of dynamics as implying the existence
+of absolute space.”</p>
+<p>The second law becomes <span class="math inline">F = m\cdot a</span>.
+The change from velocity to acceleration looks small and is decisive:
+“Now, it is acceleration that is absolute.” Whether two distant bodies
+have parallel velocities is then a fact, the same in every inertial
+frame. Newtonian space-time therefore has absolute parallelism at a
+distance, which Heller calls teleparallelism. Geometry expresses it
+through the frame bundle: the space of all local reference frames at all
+events, together with the group that takes one frame to another, here
+the group <span class="math inline">G</span> of rotations and Galilean
+boosts. Teleparallelism says this bundle is a product, <span
+class="math inline">F(N) = N\times G</span>. The product structure lost
+from space-time has reappeared one level up, in the space of frames.</p>
+<p><strong>Newton with gravity.</strong> All bodies fall with the same
+acceleration, so freely falling frames can be treated as locally
+unaccelerated. But free-fall paths converge: bodies dropped around the
+Earth meet at its center. Parallel transport then depends on the path,
+and teleparallelism is lost: no field of frames is parallel everywhere.
+The frame bundle acquires curvature. This is Newtonian gravity as a
+curvature, which Élie Cartan worked out in 1923–24 and Andrzej Trautman
+developed in the 1960s. What curves is a connection, not a metric,
+because Newtonian space-time has no space-time metric to curve. Absolute
+time survives.</p>
+<p><strong>Einstein.</strong> Special relativity removes both
+projections: there is neither absolute space nor absolute time.
+Minkowski space-time is flat, so it has teleparallelism, and its frame
+bundle under the Lorentz group is again a product. General relativity
+curves space-time, and teleparallelism is lost again. Heller then
+observes that the product reappears one level higher still. A connection
+on space-time, curved or not, supplies a global field of frames on the
+frame bundle itself, so the frame bundle of the frame bundle is a
+product. Heller notes this for general relativity. The same holds for
+Newton with gravity, whose free fall also defines a connection.</p>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr>
+<th>Theory</th>
+<th>First law: free bodies…</th>
+<th>Where the parallel product lives</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Aristotle</td>
+<td>stay at rest</td>
+<td>space-time itself: <span class="math inline">A = T\times
+S</span></td>
+</tr>
+<tr>
+<td>Newton</td>
+<td>move uniformly</td>
+<td>the frame bundle: <span class="math inline">F(N) = N\times
+G_{\text{Galileo}}</span></td>
+</tr>
+<tr>
+<td>Newton with gravity</td>
+<td>fall freely</td>
+<td>the frame bundle of the frame bundle, <span
+class="math inline">F(F(N))</span>; absolute time remains</td>
+</tr>
+<tr>
+<td>Special relativity</td>
+<td>move uniformly</td>
+<td>the frame bundle: <span class="math inline">F(M) = M\times
+G_{\text{Lorentz}}</span></td>
+</tr>
+<tr>
+<td>General relativity</td>
+<td>fall freely</td>
+<td>the frame bundle of the frame bundle, <span
+class="math inline">F(F(M))</span></td>
+</tr>
+</tbody>
+</table>
+<p>Heller reads the sequence, which his figures draw as a stack of
+boxes, as “a logic inherent in the evolutionary chain of physical
+space-time theories.” My own reading of the pattern is this. Each new
+first law makes relative something that was absolute. The product that
+reappears higher up marks what stays absolute after the step:
+acceleration for Newton, and the free-fall connection once gravity
+enters, in Newton–Cartan theory and in general relativity alike. The
+companion page spells out the bundles, and in what sense “product” is
+meant.</p>
+<p>Aristotle’s rung is not a mistake to be outgrown. Carlo Rovelli has
+argued that Aristotle’s physics is “a correct and non-intuitive
+approximation of Newtonian physics in the suitable domain (motion in
+fluids)” (<a href="https://arxiv.org/abs/1312.4057">Rovelli 2015</a>). A
+body falling through air or water reaches a steady speed set by its
+weight and the medium’s resistance, and Aristotle’s claims about such
+motion hold up; “What Aristotle does not have is only the square root.”
+His first law was a true report about the world he could observe, where
+friction stops everything. The sequel, <em>The Demon Is a Learner</em>,
+returns to that world, because learning machines live in it.</p>
+</section>
+<section id="one-bracket-three-mechanics" class="level2">
+<h2>One bracket, three mechanics</h2>
+<p>A seminar Piotr Biler ran around 2003 opened with the qualitative
+theory of differential equations and then put classical, statistical and
+quantum mechanics into one Hamiltonian framework. The qualitative theory
+returns in the next section. Here is the framework, in the form I
+need.</p>
+<p>A classical system lives in a phase space of positions <span
+class="math inline">x</span> and momenta <span
+class="math inline">p</span>. Observables are functions on it, and any
+two of them have a Poisson bracket, <span class="math display">\{f, g\}
+= \sum_i \left(\frac{\partial f}{\partial x_i}\frac{\partial g}{\partial
+p_i} - \frac{\partial f}{\partial p_i}\frac{\partial g}{\partial
+x_i}\right).</span> The bracket makes the observables a Lie algebra: it
+is antisymmetric, bilinear, and satisfies the Jacobi identity. A single
+function <span class="math inline">H</span>, the Hamiltonian, generates
+time evolution through the bracket. The three mechanics differ in what
+<span class="math inline">H</span> moves.</p>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr>
+<th></th>
+<th>What evolves</th>
+<th>Equation of motion</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Classical</td>
+<td>a point in phase space</td>
+<td><span class="math inline">\dot f = \{f, H\}</span></td>
+</tr>
+<tr>
+<td>Statistical</td>
+<td>a probability density <span class="math inline">\rho</span> on phase
+space</td>
+<td><span class="math inline">\partial_t\rho = \{H, \rho\}</span>
+(Liouville)</td>
+</tr>
+<tr>
+<td>Quantum</td>
+<td>a density operator <span class="math inline">\hat\rho</span></td>
+<td><span class="math inline">\partial_t\hat\rho =
+-\tfrac{i}{\hbar}[\hat H, \hat\rho]</span> (von Neumann)</td>
+</tr>
+</tbody>
+</table>
+<p>The quantum row replaces the Poisson bracket by the commutator
+divided by <span class="math inline">i\hbar</span>. This replacement can
+be made precise as a deformation: on phase-space functions, the Moyal
+bracket equals the Poisson bracket plus corrections of order <span
+class="math inline">\hbar^2</span>, and it encodes the commutator
+exactly. Any density that is a function of <span
+class="math inline">H</span> alone is stationary, because <span
+class="math inline">H</span> commutes with itself. The Gibbs state <span
+class="math inline">e^{-\beta H}/Z</span> of statistical mechanics is
+the example that matters.</p>
+<p>The framework names a freedom of its own. Hamiltonian flow preserves
+phase-space volume. This is Liouville’s theorem. A cloud of initial
+conditions can be stretched and folded but never compressed, so the
+entropy <span class="math inline">-\int\rho\ln\rho</span> of an evolving
+density stays constant. Unitary quantum evolution likewise preserves the
+von Neumann entropy. So closed evolution loses no information. The first
+law said which motions need no force; Liouville’s theorem says that
+evolution which needs nothing from outside forgets nothing. Forgetting
+needs something outside the system, and what it costs is the subject of
+<em>The Demon Is a Learner</em>.</p>
+<p>General relativity strains this framework. For a closed universe its
+Hamiltonian is a constraint, <span class="math inline">H\approx
+0</span>, and the generator of time evolution generates nothing
+observable: there is no external time for evolution to happen in. This
+is the problem of time of canonical quantum gravity (<a
+href="https://arxiv.org/abs/gr-qc/9210011">Isham 1993</a>). For an
+isolated system in asymptotically flat space-time, the Hamiltonian is
+the total energy measured far away, and evolution goes on as usual.</p>
+</section>
+<section id="the-algebra-of-free-motions" class="level2">
+<h2>The algebra of free motions</h2>
+<p>The bracket also carries the symmetries of a first law. A first law
+picks out the free motions. Its symmetry group is the set of
+transformations that carry free motions to free motions while keeping
+clocks and rulers: rotations, translations in space and time, and
+changes of velocity, called boosts. Each has a generator, and the
+generators form a Lie algebra: rotations <span
+class="math inline">J_i</span>, spatial translations <span
+class="math inline">P_i</span>, time translation <span
+class="math inline">H</span>, boosts <span
+class="math inline">K_i</span>.</p>
+<p>Heller’s ladder shows up in this algebra. Aristotle’s first law is
+preserved only by transformations that keep the rest frame. Its algebra
+has rotations and translations and no boosts at all. José
+Figueroa-O’Farrill and Stefan Prohazka call homogeneous space-times of
+this kind <em>Aristotelian</em> in their classification of spatially
+isotropic homogeneous space-times (<a
+href="https://arxiv.org/abs/1809.01224">2019</a>). In theirs as in
+Heller’s, rest is absolute. Newton’s first law adds the boosts, so the
+step from Aristotle to Newton enlarges the symmetry. The steps after
+Newton deform it.</p>
+<p>The bracket shows the deformation directly. For a free particle, the
+boost generator in special relativity is <span class="math inline">K_i =
+(H/c^2)\,x_i - t\,p_i</span>, where <span class="math inline">H =
+\sqrt{p^2c^2 + m^2c^4}</span> is its energy. Bracketing a boost with a
+translation gives <span class="math display">\{K_i, p_j\} =
+\frac{H}{c^2}\,\delta_{ij}.</span> Two boosts bracket to a rotation,
+<span class="math inline">\{K_i, K_j\} =
+-\varepsilon_{ijk}L_k/c^2</span>, where <span
+class="math inline">L</span> is the angular momentum. Now let <span
+class="math inline">c\to\infty</span>. The boosts commute with each
+other and the Poincaré algebra goes over to the Galilei algebra. This is
+the contraction of <a href="https://doi.org/10.1073/pnas.39.6.510">İnönü
+and Wigner (1953)</a>. And since <span class="math inline">H/c^2 \to
+m</span>, the first bracket becomes <span class="math display">\{K_i,
+p_j\} = m\,\delta_{ij}.</span> In Newton’s world, the bracket of a boost
+with a translation is the body’s mass. The Galilei group proper has
+these two commuting; mass enters as a central extension, the one
+Valentine Bargmann found in the projective representations of the
+Galilei group (<a href="https://doi.org/10.2307/1969831">Bargmann
+1954</a>). A body’s inertia is thus written into the algebra of its free
+motions. Mass measures how much a change of velocity fails to commute
+with a change of place. The companion page derives these brackets.</p>
+<p>The contraction runs the other way as well. Letting <span
+class="math inline">c\to 0</span> closes the light cones and gives the
+Carroll algebra, introduced by Jean-Marc Lévy-Leblond in 1965. A free
+Carroll particle cannot move at all (<a
+href="https://arxiv.org/abs/1405.2264">Bergshoeff, Gomis and Longhi
+2014</a>), so Aristotle’s first law returns at the far end. Henri Bacry
+and Lévy-Leblond classified the possible kinematical algebras and the
+contractions that connect them in <a
+href="https://doi.org/10.1063/1.1664490">“Possible kinematics”
+(1968)</a>.</p>
+<p>Why should the ladder run upward, from Galilei to Lorentz? Ludvig
+Faddeev gave an answer in a 1989 talk, <a
+href="https://doi.org/10.5802/pmihes.19">“A mathematician’s view of the
+development of physics”</a>. An algebraic structure is <em>stable</em>
+if every small deformation of it is equivalent to it. Take the rotations
+and boosts alone. In Newton’s world the boosts commute, and that algebra
+is not stable: the bracket of two boosts can be switched on as a small
+multiple of a rotation. With parameter <span
+class="math inline">-1/c^2</span> the result is the Lorentz algebra,
+which is semisimple and therefore stable; in Faddeev’s words, “the
+Lorentz group is stable.” Classical mechanics is not stable either, and
+quantum mechanics deforms it with parameter <span
+class="math inline">\hbar</span>. Faddeev concludes that “the two main
+revolutions in physics … are deformations from unstable structures into
+stable ones.”</p>
+<p>Stability does not settle everything. The same deformation with the
+opposite sign of the parameter gives the rotation algebra of
+four-dimensional Euclidean space instead of the Lorentz algebra;
+stability selects a semisimple algebra, and experiment selects the sign
+(<a href="https://arxiv.org/abs/hep-th/0410212">Chryssomalakos and Okon
+2004</a>). And the ladder has not reached a stable top. The Poincaré
+algebra, Lorentz plus translations, still deforms to the de Sitter
+algebras when a cosmological constant is switched on. R. Vilela Mendes
+found that the algebra of relativistic quantum mechanics, Poincaré
+together with the canonical commutators, is unstable as a whole, and
+that it admits a stabilizing deformation with two parameters (<a
+href="https://doi.org/10.1088/0305-4470/27/24/019">Mendes 1994</a>),
+which he later named a fundamental length and a curvature. Faddeev’s
+criterion gives Heller’s “logic inherent in the evolutionary chain” an
+engine, and it points to a further rung, with a fundamental length in
+the symmetry of free motion.</p>
+<p>Mendes defines stable theories as those that “do not change in a
+qualitative manner under a small change of parameters.” The idea comes
+from the qualitative theory of differential equations, the subject
+Biler’s seminar opened with. There a system is <em>structurally
+stable</em> if every small perturbation of its equations leaves its
+phase portrait topologically the same, a notion due to Aleksandr
+Andronov and Lev Pontryagin (1937). Applied to dynamics rather than to
+symmetry algebras, the criterion points the other way. A frictionless
+pendulum swings on closed orbits around its rest point. The slightest
+friction turns those orbits into spirals, so conservative systems are
+structurally unstable among all systems. Gradient flows, in which every
+motion runs downhill, are the robust ones: a generic gradient flow is
+structurally stable (Stephen Smale 1961; Jacob Palis and Smale 1970).
+Within the class of Hamiltonian systems, the Kolmogorov–Arnold–Moser
+theorem shows that most of the regular motion of an integrable system
+survives small perturbations. Outside that class, dissipation destroys
+it: a flow that shrinks phase-space volume cannot keep tori that fill a
+region, and at most a few survive, as attractors.</p>
+<p>So stability depends on which perturbations one allows. Among
+symmetry algebras, Faddeev’s ladder climbs toward Lorentz. Among all
+dynamics, Aristotle’s first law is the generic one and Newton’s is
+fragile. Newton’s first law, and Liouville’s theorem with it, holds
+where a symmetry protects it: invariance under spatial translations,
+which by Noether’s theorem conserves momentum. Friction breaks the
+symmetry, and the law goes with it.</p>
+</section>
+<section id="a-computational-physics-must-earn-its-first-law"
+class="level2">
+<h2>A computational physics must earn its first law</h2>
+<p>The Wolfram Physics Project models the universe as a hypergraph that
+a rule rewrites, one local event at a time (<a
+href="https://lukstafi.github.io/notes/wolfram-physics-quantum-mechanics.html">an
+exposition on this blog</a>). Space is the large-scale structure of the
+hypergraph. Space-time is the causal graph of rewriting events: one
+event depends on another if it consumes something the other produced. A
+rule is causal invariant if every order of applying it produces the same
+causal graph. Jonathan Gorard proved that causal invariance acts as a
+discrete general covariance, from which he derived a discrete Lorentz
+covariance and, with further assumptions, the vacuum Einstein equations
+(<a href="https://arxiv.org/abs/2004.14810">Gorard 2020</a>). In
+Heller’s terms, that is the geometry, derived under assumptions the
+paper lists, a well-behaved continuum limit among them. The first law is
+the other half, and it is open.</p>
+<p>The project’s technical introduction gives motion a short entry:
+“motion: possible because of causal invariance; associated with change
+of causal foliations” (<a
+href="https://www.wolframphysics.org/technical-introduction/potential-relation-to-physics/potential-basic-translations/">Wolfram
+2020, §8.3</a>). A foliation slices the causal graph into successive
+moments, and a moving observer slices it at a tilt. Causal invariance
+guarantees that every slicing describes the same causal graph. Gorard’s
+Lorentz argument re-slices one fixed causal graph in this way. I call
+this passive invariance: the description does not depend on the
+observer’s frame.</p>
+<p>Newton’s first law needs more. It needs active invariance: for a body
+at rest there must be a moving twin, the same body at another speed, and
+the speeds available must be dense below <span
+class="math inline">c</span>. Passive invariance does not supply this,
+for the reason Life showed at the start. In a continuum theory, a boost
+acts on states, so a symmetry of the description carries every body to
+its moving twin. In a rewriting system, a moving body is a pattern that
+the rule rebuilds at each new place, and nothing guarantees that such a
+pattern exists at each speed. A pattern with period <span
+class="math inline">p</span> and displacement <span
+class="math inline">d</span> moves at <span
+class="math inline">d/p</span>, so a family of periodic patterns can be
+dense in speed only if their periods, and so their sizes, grow without
+bound. On a fixed lattice like Life’s, whatever carries motion at every
+speed cannot be a small periodic pattern, as the glider is. A hypergraph
+has no fixed lattice, which leaves room for other carriers, but none
+comes for free.</p>
+<p>Stephen Wolfram has said as much. In <a
+href="https://writings.stephenwolfram.com/2022/03/on-the-concept-of-motion/">“On
+the Concept of Motion” (2022)</a> he writes of “carriers of pure
+motion”, collective features of space persistent enough to “just move”
+without changing:</p>
+<blockquote>
+<p>At the outset it’s not obvious that any such features should exist at
+all, and that pure motion should ever be possible. Unlike in the
+traditional “pure geometrical” view of space, in our Physics Project
+it’s something one has to explicitly derive from the underlying
+structure of the model—though it seems quite likely that it’s ultimately
+an inevitable and ubiquitous consequence of rather general “topological”
+features of hypergraph rewriting.</p>
+</blockquote>
+<p>The candidate carriers are topological. If a rule preserves the
+planarity of a graph, a tangle of non-planarity inserted into a planar
+graph can never be removed, only moved or annihilated with another.
+Wolfram and Gorard both offer such tangles as models of particles. The
+project’s own readings of mass and time show what a derivation would
+have to connect. Energy is the flux of causal edges through moments of
+time, in excess of a background flux that maintains space, and rest mass
+is the part of that flux that reuses the same hypergraph elements rather
+than reaching out to new ones (<a
+href="https://writings.stephenwolfram.com/2020/04/finally-we-may-have-a-path-to-the-fundamental-theory-of-physics-and-its-beautiful/">Wolfram
+2020</a>). Time dilation becomes a budget: “if the object moves, then in
+effect it has to be ‘re-created at a different place in space’—and this
+process takes up a certain number of rewritings, leaving fewer for the
+intrinsic evolution of the object itself” (<a
+href="https://writings.stephenwolfram.com/2024/10/on-the-nature-of-time/">Wolfram
+2024</a>). This picture is active, but it presupposes the carrier it
+describes. The only exhibited particle-like structures live on
+one-dimensional or grid-like backgrounds, and in 2022 Wolfram wrote that
+“we know less about the specifics of how particles work.” I found no
+work since 2024 that changes this.</p>
+<p>So the test is a theorem: a natural class of rules under which
+persistent structures exist with moving twins at speeds dense below
+<span class="math inline">c</span>. The qualitative theory suggests what
+such a class needs. Friction is the generic outcome, so a discrete
+substrate left to itself should give Aristotelian motion. The rules must
+protect motion the way translation symmetry protects it in the
+continuum, through a discrete analogue of conserved momentum that rules
+out drag. “Natural” carries weight as well. In Life the answer is
+engineering: a recipe with the speed as a construction parameter. Random
+noise gives six speeds. A physics in which every speed of every particle
+had to be built would not be our physics.</p>
+<p><strong>The obstacle.</strong> Exact Lorentz symmetry may be out of
+reach for a discrete substrate. Luca Bombelli, Joe Henson and Rafael
+Sorkin proved that no measurable rule can pick out a timelike direction
+from a random scattering of points in Minkowski space while respecting
+Lorentz symmetry (<a
+href="https://arxiv.org/abs/gr-qc/0605006">2009</a>). As a corollary, no
+graph in which each point has finitely many neighbors can be attached to
+such a scattering in a Lorentz-invariant way. The causal graphs of
+rewriting rules have finitely many edges at each event. Gorard has
+argued that his construction is compatible with the theorem (<a
+href="https://arxiv.org/abs/2011.12174">Gorard 2020b</a>), so the
+question is open, not settled against him. The experimental margin is
+thin. Photon arrival times from the gamma-ray burst GRB 221009A rule out
+a speed of light that varies linearly with energy, at any scale below
+ten times the Planck energy (<a
+href="https://doi.org/10.1103/PhysRevLett.133.071501">LHAASO
+2024</a>).</p>
+<p><strong>Precedents.</strong> Discrete models of motion have kept
+relativity at a price, and the precedents show three kinds of price. A
+substrate with a lattice has a rest frame, and it shows the generic
+outcome. A defect in a crystal, such as a dislocation, glides through
+the lattice against a periodic resistance, the Peierls–Nabarro barrier,
+which falls off exponentially with the defect’s width (<a
+href="https://doi.org/10.1016/S0370-1573(98)00029-5">Braun and Kivshar
+1998</a>). A wide defect moves almost freely; a narrow one is pinned. A
+moving defect also radiates vibrations into the lattice and slows down.
+On such a substrate the first law holds up to an exponentially small
+friction against the lattice’s rest frame: Aristotle at the Planck
+grain. A random substrate, a causal set, keeps exact Lorentz symmetry
+and has no rest frame. Fay Dowker, Henson and Sorkin modeled a massive
+particle on it and found that it swerves: its momentum diffuses in a
+Lorentz-invariant way, so the first law holds only on average (<a
+href="https://arxiv.org/abs/gr-qc/0311055">2004</a>). Relic neutrinos
+bound the diffusion constant below <span
+class="math inline">10^{-61}\,\text{GeV}^3</span> (<a
+href="https://arxiv.org/abs/astro-ph/0607485">Kaloper and Mattingly
+2006</a>), for neutrino masses above about 0.01 eV. Quantum cellular
+automata show the third price. Alessandro Bisio, Giacomo Mauro D’Ariano
+and Paolo Perinotti showed that a quantum walk’s symmetries include the
+Lorentz group as an exact limit at low energies, “while at the Planck
+scale the covariance is nonlinearly distorted,” in the manner of doubly
+special relativity (<a
+href="https://arxiv.org/abs/1503.01017">2016</a>). Their nonlinear
+representation is a different construction from Mendes’s new Lie
+algebra, but it lands where the stability argument points: relativity
+modified at a fundamental scale.</p>
+<p>A deterministic rewriting rule sits between these cases. It is
+discrete like a lattice, and if its causal graph has a preferred
+slicing, its particles should feel Aristotelian friction. If causal
+invariance removes every preferred slicing, as Gorard’s compatibility
+argument suggests, its particles might swerve instead. Either outcome is
+a prediction with an experimental bound attached. Neither has been
+derived.</p>
+<p><strong>An observer-based reply.</strong> Wolfram ties pure motion to
+observers as well as to rules. In 2022 he wrote that “pure motion is in
+a sense an operational consequence not necessarily of an actual
+continuum world, but of a continuum perception of the world by an
+embedded observer like us.” One way to develop this, my reading rather
+than his argument, is as selection: only observers who persist while
+they move can do physics, so any observer finds itself where motion
+works. That would make the first law a postulate about observers rather
+than a property of a rule. It may be true, since persistence does need
+carriers of motion. But a postulate cannot be checked against the rule,
+and a theorem can. A later essay on observers takes up the selection
+argument.</p>
+<p>Heller’s ladder ends in a structure of its own. His next rung
+replaces space-time by a groupoid built from the frame bundle, with a
+noncommutative algebra of functions on it, so that points and instants
+lose meaning below the Planck scale. Its dynamics comes from the
+Tomita–Takesaki theorem and depends on the state, the device Alain
+Connes and Rovelli used for their thermal time hypothesis, though Heller
+and his coauthors expect the state dependence to disappear in realistic
+models (<a href="https://arxiv.org/abs/gr-qc/0409063">Heller, Pysiak and
+Sasin 2005</a>). The Wolfram model and Heller’s groupoid agree that
+space-time emerges at low energies from a structure without points.
+Neither says yet which motions in that structure need no cause.</p>
+</section>
+<section id="what-is-free" class="level2">
+<h2>What is free</h2>
+<p>The first laws in this essay were discoveries, not conventions. Each
+could be tested, and Heller’s point is that testing the first law tests
+the geometry. Aristotle’s held in the fluids he could observe, and fails
+in the void. Newton’s held in the void, and its geometry, absolute time
+with relative rest, fails near the speed of light.</p>
+<p>A computational physics inherits the question in its sharpest form.
+Its substrate gives nothing for free. Every motion is a rebuilding.
+Recovering our world means deriving which rebuildings look like no
+change at all. The geometry has been derived, under assumptions. The
+standard of motion has not. <em>The Demon Is a Learner</em> takes up the
+other side of the ledger: what everything that is not free costs, and
+why a learning machine pays it.</p>
+</section>
+</article>
+<section class="prompts-link"><p><em>The prompts behind this essay (the human-side contribution): 
+<a href="the-standard-of-motion.prompts.html">view the prompts &rarr;</a></em></p></section>
+<script src="/assets/theme-toggle.js"></script>
+</body>
+</html>

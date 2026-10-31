@@ -5,7 +5,7 @@ Status: outline for review, 31 Oct 2026. The user chose two essays the same day:
 ## Seeds
 
 - Heller, "Evolution of Space-Time Structures", *Concepts of Physics* III (2006) 117–131. The first law fixes a "standard of motion"; the geometry of space-time encodes it. The Cartesian product structure disappears at one level and reappears one level up (A = T × S; F(N) = N × Galileo; F(M) = M × Lorentz; F(F(M)) for GR; the groupoid F(M) × G as the proposed next step, where points and instants lose meaning below the Planck level).
-- The user's old seminar, led by Piotr Biler around 2003, probably the winter semester 2003/2004 (user, 31 Oct: "around 2003" is certain, the semester is not; the seminar's exact name not found): classical, statistical and quantum mechanics in one Lagrangian/Hamiltonian framework. The user doesn't remember its details, so the essay credits Biler with the seminar and its unifying frame only, and the derivations in A§3 are the essay's own.
+- The user's old seminar, led by Piotr Biler around 2003, probably the winter semester 2003/2004 (user, 31 Oct: "around 2003" is certain, the semester is not; the seminar's exact name not found): classical, statistical and quantum mechanics in one Lagrangian/Hamiltonian framework. Its opening chapter was the qualitative theory of differential equations, before the Lagrangian (user unsure) and Hamiltonian (certain) pictures (user, 31 Oct). The user doesn't remember its details, so the essay credits Biler with the seminar and its unifying frame only, and the derivations in A§3 are the essay's own.
 - Rovelli, "Aristotle's Physics: A Physicist's Look" (J. Am. Philos. Assoc. 1, 2015): Aristotle's dynamics is a correct *approximation* of Newton's for motion in fluids, with quadratic drag ("What Aristotle does not have is only the square root"). Heller's F = m·v is the linear-drag (Stokes) case; "overdamped" is our gloss.
 - Algorithmic information and thermodynamics: Landauer, Bennett, Zurek 1989, Bennett–Gács–Li–Vitányi–Zurek 1998, Baez–Stay.
 - Learning thermodynamics: Still et al. 2012, Goldt–Seifert 2017, Boyd–Mandal–Crutchfield 2017; bits-back (Hinton–van Camp 1993).
@@ -118,3 +118,16 @@ The companion does not retell the essay. B's equations (Landauer, Zurek's split,
 6. ~~Math density.~~ **Decided (user, 31 Oct): as in the bookmaker essay, "in case of doubt higher".**
 
 All open questions are settled. Citation check done 31 Oct (`standard-of-motion-citation-check.md`); the LifeWiki claims were checked by hand the same day (addendum), and the rest of its "Still unverified" list needs a manual check before the affected sentences are drafted. Next: draft A and its companion.
+
+---
+
+## E. Qualitative theory of differential equations (31 Oct; the A items are folded into the draft, the B items wait for B)
+
+Provenance: the seminar opened with it (see Seeds), so A§2's credit line can say so.
+
+- **A, stability section: two notions of stability.** Faddeev/Mendes stability is structural stability (Andronov–Pontryagin 1937, *systèmes grossiers*) carried to Lie algebras; Mendes's abstract defines stable theories as those that "do not change in a qualitative manner under a small change of parameters". Among all vector fields, conservative systems are structurally unstable (centers become foci under friction; Peixoto 1962 on surfaces), gradient/Morse–Smale flows are structurally stable (Palis–Smale 1970), and Hamiltonian behavior is stable only within the Hamiltonian class (KAM). So Aristotle's first law is the generic one and Newton's (with Liouville) is protected by symmetry (Noether: translation invariance → momentum).
+- **A, Wolfram test refined.** A generic discrete substrate should give Aristotelian motion (the Peierls–Nabarro precedent agrees); the natural class of rules probably needs a discrete Noether-type invariant that forbids drag. A sharper target than "motion is easy".
+- **B§1.** Overdamped limit as singular perturbation: m ẍ = F − γẋ, m/γ → 0, reduces to the slow manifold ẋ = F/γ (Tikhonov 1952; Fenichel 1979), the ODE counterpart of A's contractions. Gradient flows have Lyapunov functions and no recurrence; learning-convergence proofs use the Łojasiewicz gradient inequality (1963) and the Polyak–Łojasiewicz condition (Polyak 1963).
+- **B§5.** Poincaré founded the qualitative theory because the three-body problem has no closed-form solution; studying invariants without solving is what a computationally bounded observer does.
+
+Citations checked 31 Oct (`citecheck-qualitative-2026-10-31.md`), all verified for B. For B§1: write the limit as ẋ = v, (m/γ) v̇ = F/γ − v; m/γ has units of time, so the true small parameter is mk/γ² (stiffness k), and overdamping begins at mk/γ² ≥ 1/4, the same threshold at which the damped oscillator's focus becomes a node (ε = 2). Cite Łojasiewicz 1963 (CNRS colloque 117, pp. 87–89) with Kurdyka 1998 for the finite-length consequence; the "Polyak–Łojasiewicz" name is from Karimi–Nutini–Schmidt 2016.

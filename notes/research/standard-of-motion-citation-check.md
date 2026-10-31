@@ -54,4 +54,8 @@ The user saved the page to `notes/private/List of spaceships - LifeWiki.html` (o
 
 ## Still unverified
 
+Added 31 Oct with the qualitative-theory material, then checked the same day (`citecheck-qualitative-2026-10-31.md`; corrections applied to the essay and companion): Andronov & Pontryagin 1937 ("Grubye sistemy", Doklady); Peixoto 1962 (Topology 1; structurally stable flows on compact orientable surfaces = Morse–Smale); Smale 1961 ("On gradient dynamical systems", Ann. Math. 74); Palis & Smale 1970 ("Structural stability theorems", Proc. Symp. Pure Math. 14); KAM persistence statement; and for essay B, Tikhonov 1952, Fenichel 1979, Łojasiewicz 1963, Polyak 1963.
+
+Earlier items:
+
 Isham's page range; Faddeev's 1990 proceedings pages; Lévy-Leblond's 1965 Carroll paper; Penrose as an earlier user of "Aristotelian spacetime"; a closed-form Frenkel–Kontorova barrier; the Li–Vitányi section for E_P K = H(P) + O(K(P)); LHAASO arXiv v3 (Feb 2026) numbers; LifeWiki claims (now checked; see the addendum).
