@@ -71,7 +71,7 @@ and <span class="math inline">\sim p</span> every sentence follows, so
 class="math inline">s</span> follow, and so do their negations. A
 paraconsistent logic blocks that explosion, but it pays elsewhere. In
 the paraconsistent logic CLuN, a sentence and its negation may both be
-true, so <em>disjunctive syllogism</em> fails: from <span
+true. So <em>disjunctive syllogism</em> fails: from <span
 class="math inline">q</span> and <span class="math inline">\sim q\lor
 s</span> we may not conclude <span class="math inline">s</span>, since
 <span class="math inline">q</span> and <span class="math inline">\sim
@@ -165,9 +165,9 @@ ever derives <span class="math inline">q\land\sim q</span>, so line 6
 stands.</p>
 <p>The proof took back a conclusion it had drawn. The premises did not
 change between line 5 and line 8; the proof only grew. The premise <span
-class="math inline">\sim p</span> could have come first, but a proof
-that records reasoning in progress need not see everything at once, and
-it can draw on whatever it has so far.</p>
+class="math inline">\sim p</span> could have come first. But a proof
+records reasoning in progress, and reasoning in progress need not see
+everything at once. It draws on whatever it has so far.</p>
 <p>Reasoning that withdraws conclusions is called <em>defeasible</em>.
 This essay follows where the withdrawal happens in four kinds of system:
 in the lines of a proof, in Batens’s adaptive logics; in a graph of
@@ -221,10 +221,24 @@ proof can derive <span class="math inline">r</span> twice, once on the
 condition <span class="math inline">\{p\land\sim p\}</span>, from the
 fourth premise, and once on the condition <span
 class="math inline">\{q\land\sim q\}</span>, from the fifth.</p>
-<p><strong>Reliability</strong>, the older strategy, treats every
-abnormality that occurs in a minimal Dab-formula as unreliable. Here
-both contradictions are unreliable, so both lines for <span
-class="math inline">r</span> are marked, and <span
+<p><strong>Reliability</strong>, the older strategy, asks which
+abnormalities the premises implicate. A Dab-formula implicates each of
+its disjuncts as a possible culprit, but only when it is
+<em>minimal</em>: when no disjunction of a proper subset of its
+disjuncts is derivable as well. Minimality matters because any
+Dab-formula can be weakened by adding disjuncts. From <span
+class="math inline">(p\land\sim p)\lor(q\land\sim q)</span> follows
+<span class="math inline">(p\land\sim p)\lor(q\land\sim
+q)\lor(s\land\sim s)</span>, and that says nothing against <span
+class="math inline">s</span>. The abnormalities that occur in some
+minimal Dab-formula form the <em>unreliable set</em>, written <span
+class="math inline">U(\Gamma)</span> for premises <span
+class="math inline">\Gamma</span>. Reliability presumes normal every
+abnormality outside <span class="math inline">U(\Gamma)</span> and
+refuses to presume anything about those inside it. Here <span
+class="math inline">U(\Gamma)</span> contains both contradictions. Each
+line for <span class="math inline">r</span> rests on an unreliable
+abnormality, so both lines are marked, and <span
 class="math inline">r</span> is not derived.</p>
 <p><strong>Minimal Abnormality</strong> looks at the ways the premises
 could be as normal as possible. One way makes only <span
@@ -238,18 +252,29 @@ Minimal Abnormality derives it.</p>
 <p>Both strategies have a semantics. Write <span
 class="math inline">\mathrm{Ab}(M)</span> for the set of abnormalities
 true in a model <span class="math inline">M</span> of the lower limit
-logic. Reliability keeps the models whose abnormalities all lie in the
-unreliable set. Minimal Abnormality keeps the models <span
-class="math inline">M</span> for which no other model <span
-class="math inline">M&#39;</span> of the premises has <span
+logic. Reliability keeps the models <span class="math inline">M</span>
+with <span class="math inline">\mathrm{Ab}(M)\subseteq U(\Gamma)</span>:
+models that make true no abnormality the premises do not implicate.
+Among them, in the example, is a model in which both <span
+class="math inline">p</span> and <span class="math inline">q</span> are
+contradictory and <span class="math inline">r</span> is false, so <span
+class="math inline">r</span> does not follow. Minimal Abnormality keeps
+the models <span class="math inline">M</span> for which no other model
+<span class="math inline">M&#39;</span> of the premises has <span
 class="math inline">\mathrm{Ab}(M&#39;)\subset\mathrm{Ab}(M)</span>. A
 formula follows when it holds in all the models kept. Minimal
 Abnormality keeps fewer models, so it derives at least as much:</p>
 <p><span class="math display">
 \mathrm{Cn}_{\mathrm{LLL}}(\Gamma)\subseteq\mathrm{Cn}_{\mathrm{AL}^r}(\Gamma)\subseteq\mathrm{Cn}_{\mathrm{AL}^m}(\Gamma)\subseteq\mathrm{Cn}_{\mathrm{ULL}}(\Gamma).
 </span></p>
-<p>For abnormal premise sets the inclusions are typically strict. The
-second inclusion is strict in the example above.</p>
+<p>(Here <span
+class="math inline">\mathrm{Cn}_{\mathrm{L}}(\Gamma)</span> is the set
+of formulas that follow from <span class="math inline">\Gamma</span> in
+the logic L, and <span class="math inline">\mathrm{AL}^r</span> and
+<span class="math inline">\mathrm{AL}^m</span> are the adaptive logic
+under Reliability and under Minimal Abnormality.) For abnormal premise
+sets the inclusions are typically strict. The second inclusion is strict
+in the example above.</p>
 </section>
 <section id="proofs-that-change-their-minds" class="level2">
 <h2>Proofs that change their minds</h2>
@@ -298,8 +323,8 @@ propositional premise sets the question is decidable, as <a
 href="https://doi.org/10.1007/s11229-007-9268-4">Batens, De Clercq,
 Verdée and Meheus</a> note. Beyond that it gets hard quickly. <a
 href="https://doi.org/10.1007/s11229-006-9049-5">Leon Horsten and Philip
-Welch</a> showed that already for infinite propositional premise sets,
-final consequence can be <span
+Welch</a> showed that already for infinite but decidable propositional
+premise sets, final consequence can be <span
 class="math inline">\Sigma^0_3</span>-complete. <a
 href="https://doi.org/10.1007/s11229-007-9291-5">Peter Verdée</a> showed
 that for Minimal Abnormality, some recursive premise sets have <span
@@ -307,14 +332,118 @@ class="math inline">\Pi^1_1</span>-complete consequence sets. For
 comparison, theoremhood in first-order classical logic is <span
 class="math inline">\Sigma^0_1</span>: a positive answer can always be
 confirmed by finding a proof.</p>
-<p>Batens’s answer is that the stage is what a reasoner has, and it is
-not worthless. A proof’s insight into the premises never decreases as
-the proof grows: even a marked line records something learned, namely
-which presumption failed. A stage is, in his words, “a fallible but
-sensible estimate” of what finally follows. Whether to keep proving or
-to rely on the present insight is a practical decision. Pollock, whose
-work comes next, says the same about agents: they have to act, and they
-cannot wait for reasoning that may never end.</p>
+<blockquote>
+<p><strong>Counting quantifiers.</strong> The arithmetical hierarchy
+sorts problems by the quantifiers that their simplest definition needs
+in front of a decidable check <span class="math inline">R</span>. A
+<span class="math inline">\Sigma^0_1</span> problem has the form “there
+is an <span class="math inline">n</span> such that <span
+class="math inline">R(n)</span>”. A yes is confirmed when a witness
+turns up, and a no may never be. Theoremhood is like this, with a proof
+as the witness. A <span class="math inline">\Pi^0_1</span> problem has
+the form “for every <span class="math inline">n</span>, <span
+class="math inline">R(n)</span>”, and there a counterexample confirms a
+no. Each alternation of quantifiers adds a level. <span
+class="math inline">\Sigma^0_2</span> is “there is an <span
+class="math inline">n</span> such that for every <span
+class="math inline">m</span>”, <span class="math inline">\Pi^0_2</span>
+is “for every <span class="math inline">n</span> there is an <span
+class="math inline">m</span>”, and <span
+class="math inline">\Sigma^0_3</span> is “there is, for every, there
+is”. From the second level up, in general neither answer can be
+confirmed by a finite computation. Under Reliability, final derivability
+has the <span class="math inline">\Sigma^0_3</span> shape: there is a
+stage at which the line is unmarked, such that every extension that
+marks it has a further extension that unmarks it.</p>
+<p>A problem is <em>complete</em> for a class when it belongs to the
+class and every problem in the class reduces to it. A complete problem
+cannot be defined with fewer alternations. A standard <span
+class="math inline">\Sigma^0_3</span>-complete problem asks whether a
+program halts on all but finitely many inputs: there is a bound such
+that for every larger input there is a halting time.</p>
+<p>The superscript says what the quantifiers range over. With
+superscript 0 they range over numbers, or over finite objects coded by
+numbers, such as proofs. With superscript 1 they range over infinite
+objects, such as infinite sequences or sets of numbers. A <span
+class="math inline">\Pi^1_1</span> problem has the form “for every
+infinite sequence <span class="math inline">f</span> there is an <span
+class="math inline">n</span> such that <span
+class="math inline">R(f,n)</span>”. The standard complete example asks
+whether a computable tree has no infinite branch. Every problem in the
+arithmetical hierarchy, at any level, lies strictly below a <span
+class="math inline">\Pi^1_1</span>-complete problem. Minimal Abnormality
+is defined by quantifying over models, and the set of abnormalities of a
+model can be infinite. Verdée’s result shows that this quantifier cannot
+be traded for any number of quantifiers over finite proofs.</p>
+</blockquote>
+<blockquote>
+<p><strong>Where the third quantifier comes from.</strong> Under
+Reliability, final derivability can be restated so that each quantifier
+has a visible job. <span class="math inline">A</span> is finally
+derivable from <span class="math inline">\Gamma</span> iff there is a
+finite condition <span class="math inline">\Theta</span> such that <span
+class="math inline">A\lor\mathrm{Dab}(\Theta)</span> is derivable in the
+lower limit logic and no member of <span
+class="math inline">\Theta</span> is in <span
+class="math inline">U(\Gamma)</span>. The first clause is <span
+class="math inline">\Sigma^0_1</span>, since a proof confirms it.
+Membership of <span class="math inline">B</span> in <span
+class="math inline">U(\Gamma)</span> is <span
+class="math inline">\Sigma^0_2</span>. It says that some <span
+class="math inline">\mathrm{Dab}(\Delta)</span> with <span
+class="math inline">B</span> in <span class="math inline">\Delta</span>
+is derivable, and that <span
+class="math inline">\mathrm{Dab}(\Delta&#39;)</span> is not derivable
+for any of the finitely many proper subsets <span
+class="math inline">\Delta&#39;</span> of <span
+class="math inline">\Delta</span>. So “no member of <span
+class="math inline">\Theta</span> is in <span
+class="math inline">U(\Gamma)</span>” is <span
+class="math inline">\Pi^0_2</span>, and the whole statement is <span
+class="math inline">\Sigma^0_3</span>.</p>
+<p>The outer quantifier chooses which derivation to trust. Take the
+premises <span class="math inline">p</span>, <span
+class="math inline">\sim p</span>, <span class="math inline">\sim p\lor
+r</span>, <span class="math inline">q</span>, <span
+class="math inline">\sim q\lor r</span>. One derivation gives <span
+class="math inline">r</span> on the condition <span
+class="math inline">\{p\land\sim p\}</span>, and another gives <span
+class="math inline">r</span> on <span class="math inline">\{q\land\sim
+q\}</span>. Neither derivation has a redundant step, and neither
+condition contains the other. The first condition is unreliable, because
+<span class="math inline">p\land\sim p</span> is derivable outright. The
+second is reliable, so <span class="math inline">r</span> follows. With
+the premises <span class="math inline">p</span>, <span
+class="math inline">q</span>, <span class="math inline">\sim p\lor\sim
+q</span>, <span class="math inline">\sim p\lor r</span>, <span
+class="math inline">\sim q\lor r</span> the same two derivations exist,
+but both conditions are unreliable, and <span
+class="math inline">r</span> does not follow. Requiring every derivation
+of <span class="math inline">r</span> to survive would be too strong.
+Any condition can be enlarged with <span class="math inline">p\land\sim
+p</span>, which gives a line for <span class="math inline">r</span> that
+stays marked forever.</p>
+<p>For a finite propositional premise set, only finitely many conditions
+are worth considering, and the choice is a finite disjunction. For an
+infinite premise set there can be infinitely many, and the quantifier
+does real work. Horsten and Welch’s completeness result shows that it
+cannot be removed. If some normal form for proofs replaced the choice
+with a universal quantifier or with a computation, final derivability
+would be <span class="math inline">\Pi^0_2</span>, and a <span
+class="math inline">\Sigma^0_3</span>-complete set is not. Horsten and
+Welch had claimed the <span class="math inline">\Sigma^0_3</span> bound
+for Minimal Abnormality as well. Verdée’s <span
+class="math inline">\Pi^1_1</span> result shows that it fails there.</p>
+</blockquote>
+<p>What, then, is a stage of a proof worth? Batens answers that the
+stage is what a reasoner has, and it is not worthless. A proof’s insight
+into the premises never decreases as the proof grows: even a marked line
+records something learned, namely which presumption failed. A stage is,
+in his words, “a fallible but sensible estimate” of what finally
+follows. Whether to keep proving or to rely on the present insight is a
+practical decision. Pollock, whose work comes next, says the same about
+agents: they have to act, and they cannot wait for reasoning that may
+never end.</p>
 <blockquote>
 <p><strong>A goal-directed procedure.</strong> Batens also gave
 procedures that search for a proof of a given goal <span
@@ -337,9 +466,9 @@ for another. If no attack survives, <span class="math inline">G</span>
 is derived. If every line for <span class="math inline">G</span> falls,
 the procedure tries another derivation of <span
 class="math inline">G</span>. When the search space runs out, <span
-class="math inline">G</span> is not derivable. For propositional premise
-sets it always halts, and Batens wrote a program that runs it. Argument,
-attack, counter-attack is the shape that Pollock’s theory and
+class="math inline">G</span> is not derivable. For finite propositional
+premise sets it always halts, and Batens wrote a program that runs it.
+Argument, attack, counter-attack is the shape that Pollock’s theory and
 argumentation frameworks make explicit.</p>
 </blockquote>
 </section>
@@ -351,7 +480,7 @@ on purpose.</p>
 <p><strong>Induction.</strong> In <a
 href="https://users.ugent.be/~dbatens/publ/2001DLn_induct2.pdf">Batens
 and Lieven Haesaert’s logics of induction</a> the lower limit logic is
-classical logic, and an abnormality has the form <span
+classical logic. An abnormality has the form <span
 class="math inline">\exists A\land\exists\sim A</span>, where <span
 class="math inline">A</span> is a formula built from predicates and
 variables alone, with no constants, quantifiers or sentence letters, and
@@ -375,8 +504,8 @@ class="math inline">\forall x\,Px</span> and <span
 class="math inline">\forall x\,Qx</span>: everything is <span
 class="math inline">P</span>, and everything is <span
 class="math inline">Q</span>.</p>
-<p>That structure comes from <em>background generalizations</em>. They
-enter as premises with priorities, and when observations contradict them
+<p>Background knowledge enters as <em>background generalizations</em>.
+They are premises with priorities, and when observations contradict them
 jointly, those of lower priority give way first. A further variant,
 <em>pragmatic</em> background generalizations, keeps the instances of a
 generalization after the generalization itself is refuted. A refuted
@@ -429,7 +558,7 @@ falsify.</p>
 <a href="https://doi.org/10.1207/s15516709cog1104_4">his account</a> the
 basic unit is a <em>prima facie reason</em>: a reason that supports a
 conclusion until something defeats it. Something looks red, so it is
-red. A defeater comes in two kinds. A <em>rebutting</em> defeater is a
+red. Defeaters come in two kinds. A <em>rebutting</em> defeater is a
 reason for the opposite conclusion: a reliable instrument reports that
 the object is not red. An <em>undercutting</em> defeater attacks the
 connection between reason and conclusion without supporting the
@@ -439,10 +568,10 @@ nothing about its colour.</p>
 abnormality removes a line’s support without supporting the opposite
 conclusion: line 8 of the first proof showed that <span
 class="math inline">p</span> is contradictory, not that <span
-class="math inline">r</span> is false. Undercutters are also the more
-common kind in perception and testimony. Learning that the witness was
-not at the scene gives no reason to think the event did not happen; it
-only removes the reason to think it did.</p>
+class="math inline">r</span> is false. Undercutters are common in
+perception and testimony. Learning that the witness was not at the scene
+gives no reason to think the event did not happen; it only removes the
+reason to think it did.</p>
 <p>Arguments built from reasons and defeaters form an <em>inference
 graph</em>. An argument is defeated when an undefeated defeater attacks
 it. A defeated defeater no longer defeats anything, so the argument it
@@ -455,22 +584,24 @@ general. Pollock’s architecture OSCAR therefore reasons with conclusions
 <em>justified</em> at the current stage, revises them as new arguments
 and defeaters are built, and acts on what it currently has. OSCAR
 searches both forward from what it knows and backward from what it is
-interested in, and its interests shape its investigation, much like the
-goal-directed procedure of the previous box.</p>
+interested in, and its interests shape its investigation, much like
+Batens’s goal-directed procedure in the box above.</p>
 <p><a href="https://doi.org/10.1016/0004-3702(94)00041-X">Phan Minh
 Dung</a> abstracted away from what arguments are made of. An
 <em>argumentation framework</em> is a set of arguments with an attack
 relation, and its semantics says which sets of arguments, called
 <em>extensions</em>, a reasoner may accept together. A set is
-<em>admissible</em> when no two of its arguments attack each other and
-it defends each member against every attacker. A <em>stable</em>
-extension attacks every argument outside it. The <em>grounded</em>
-extension is the least set closed under defence: start from the
-unattacked arguments, add whatever they defend, and repeat. Dung showed
-that Pollock’s system corresponds to grounded semantics. He also showed
-that the stable models of a logic program, the subject of the next
-section, correspond to stable extensions of a framework built from the
-program.</p>
+<em>conflict-free</em> when no two of its arguments attack each other,
+and <em>admissible</em> when it also defends each member against every
+attacker. A <em>naive</em> extension is a maximal conflict-free set, and
+a <em>preferred</em> extension is a maximal admissible set. A
+<em>stable</em> extension attacks every argument outside it. The
+<em>grounded</em> extension is the least set closed under defence: start
+from the unattacked arguments, add whatever they defend, and repeat.
+Dung showed that Pollock’s system corresponds to grounded semantics. He
+also showed that the stable models of a logic program, the subject of
+the next section, correspond to stable extensions of a framework built
+from the program.</p>
 <p>Adaptive logics fit into the same picture. <a
 href="https://arxiv.org/abs/1604.00162">Jesse Heyninck and Christian
 Straßer</a> translated adaptive logics in the standard format into
@@ -478,20 +609,20 @@ Straßer</a> translated adaptive logics in the standard format into
 deductions from assumptions and an attack derives the negation of an
 assumption. The assumptions are the negations of abnormalities, that is,
 the normality presumptions. Under the naive, preferred and stable
-semantics, the Minimal Abnormality consequences are the
-<em>sceptical</em> conclusions, those supported in every extension. The
-Reliability consequences are the conclusions derivable from the
-intersection of the extensions. The difference between the two
-strategies thus has a plain reading. Minimal Abnormality reasons inside
-each extension and keeps what they agree on. Reliability first discards
-every assumption that some extension rejects and then reasons with what
-remains. In the second example, one extension keeps the presumption that
-<span class="math inline">p</span> is consistent and the other keeps the
-presumption about <span class="math inline">q</span>. Each extension
-derives <span class="math inline">r</span>, so <span
-class="math inline">r</span> is sceptically accepted. Their intersection
-contains neither presumption, so Reliability does not derive <span
-class="math inline">r</span>.</p>
+semantics, the two strategies differ in the order of two operations.
+Minimal Abnormality first derives conclusions from each extension
+separately and then keeps those that every extension yields, the
+<em>sceptical</em> conclusions. Reliability first intersects the
+extensions, keeping only the presumptions that all of them share, and
+then derives conclusions from that intersection. Deriving after
+intersecting yields less, because a conclusion may rest on different
+presumptions in different extensions. In the second example, one
+extension keeps the presumption that <span class="math inline">p</span>
+is consistent and the other keeps the presumption about <span
+class="math inline">q</span>. Each extension derives <span
+class="math inline">r</span>, so <span class="math inline">r</span> is
+sceptically accepted. Their intersection contains neither presumption,
+so Reliability does not derive <span class="math inline">r</span>.</p>
 </section>
 <section id="answer-sets" class="level2">
 <h2>Answer sets</h2>
@@ -531,8 +662,8 @@ class="math inline">\{a\}</span>. ASP rejects it because “<span
 class="math inline">a</span>, since not <span
 class="math inline">a</span>” is no derivation of <span
 class="math inline">a</span>. Atoms in an answer set must be derived.
-Negative literals need only be true. This gives ASP a constructive
-flavour.</p>
+Negative literals need only be true. That requirement gives ASP a
+constructive flavour.</p>
 <p>The logic behind ASP is a constructive logic too. Stable models were
 generalized from programs to arbitrary propositional theories through <a
 href="https://doi.org/10.1007/BFb0023801">David Pearce’s</a>
@@ -547,22 +678,74 @@ between are not yet settled. An <em>equilibrium model</em> is a total
 pair <span class="math inline">(Y,Y)</span> that satisfies the theory
 while no pair <span class="math inline">(X,Y)</span> with <span
 class="math inline">X\subset Y</span> does. The answer sets are exactly
-the <span class="math inline">Y</span> of the equilibrium models. <a
+the <span class="math inline">Y</span> of the equilibrium models. Two
+programs are <em>strongly equivalent</em> when they have the same answer
+sets in every context, so that either can replace the other inside a
+larger program. <a
 href="https://doi.org/10.1145/383779.383783">Lifschitz, Pearce and
-Agustín Valverde</a> proved that two programs have the same answer sets
-in every context, which makes them interchangeable as parts of larger
-programs, exactly when they are equivalent in the logic of
-here-and-there.</p>
-<p>The structure matches the adaptive format closely. In both, a
+Agustín Valverde</a> proved that two programs are strongly equivalent
+exactly when they are equivalent in the logic of here-and-there.</p>
+<blockquote>
+<p><strong>Here-and-there as a truth table.</strong> The logic of
+here-and-there is also Gödel’s three-valued logic. A pair <span
+class="math inline">(X,Y)</span> gives each atom one of three values: 1
+if it is in <span class="math inline">X</span>, ½ if it is in <span
+class="math inline">Y</span> but not in <span
+class="math inline">X</span>, and 0 if it is outside <span
+class="math inline">Y</span>. Conjunction takes the minimum and
+disjunction the maximum. An implication <span class="math inline">a\to
+b</span> takes the value 1 when <span class="math inline">a\le b</span>,
+and the value <span class="math inline">b</span> otherwise. Negation
+<span class="math inline">\neg a</span> abbreviates <span
+class="math inline">a\to 0</span>, so <span
+class="math inline">\neg\tfrac12 = 0</span>. A formula holds when it
+takes the value 1. Excluded middle fails: at <span
+class="math inline">p=\tfrac12</span>, <span
+class="math inline">p\lor\neg p</span> takes the value ½. An equilibrium
+model is a valuation with no atom at ½ that satisfies the theory, such
+that lowering any nonempty set of its true atoms to ½ breaks it.</p>
+<p>The rule <code>a :- not a.</code> is the formula <span
+class="math inline">\neg a\to a</span>. Classically it is equivalent to
+<span class="math inline">a</span>, so <span
+class="math inline">a=1</span> satisfies it. Lowering <span
+class="math inline">a</span> to ½ gives <span
+class="math inline">\neg\tfrac12\to\tfrac12 = 0\to\tfrac12 = 1</span>,
+so the formula still holds. Nothing forces <span
+class="math inline">a</span> to be true here, and <span
+class="math inline">a=1</span> is not an equilibrium model. The
+valuation <span class="math inline">a=0</span> fails the formula, since
+<span class="math inline">\neg 0\to 0 = 1\to 0 = 0</span>. The program
+has no answer set, as the reduct showed above.</p>
+<p>The rule <code>a :- not not a.</code> is the formula <span
+class="math inline">\neg\neg a\to a</span>. At <span
+class="math inline">a=1</span> it holds. Lowering <span
+class="math inline">a</span> to ½ gives <span
+class="math inline">\neg\neg\tfrac12\to\tfrac12 = 1\to\tfrac12 =
+\tfrac12</span>, so the formula fails, and <span
+class="math inline">a=1</span> is an equilibrium model. At <span
+class="math inline">a=0</span> it holds with nothing to lower, so <span
+class="math inline">a=0</span> is one too. The answer sets are <span
+class="math inline">\varnothing</span> and <span
+class="math inline">\{a\}</span>: the rule lets the solver guess <span
+class="math inline">a</span> either way. This is what the choice rule
+<code>{a}.</code> means, and the line
+<code>{ true(A) : atom(A) }.</code> in the clingo box makes one such
+guess per atom.</p>
+</blockquote>
+<p>ASP’s semantics matches the adaptive format closely. In both, a
 monotonic logic is followed by a selection of minimal models. The
 adaptive logic minimizes abnormality, and ASP minimizes truth itself,
-subject to the guess. When the lower limit logic is classical, Minimal
-Abnormality is McCarthy’s circumscription of the abnormalities, with
-everything else allowed to vary: Batens’s minimally abnormal models are
-the models minimal in their abnormal part. We have not found this
-identification stated as a theorem in the literature, but it holds by
-the definitions. It means that ASP can compute Minimal Abnormality
-directly.</p>
+subject to the guess. Minimal Abnormality, in particular, coincides with
+McCarthy’s circumscription. Batens’s minimally abnormal models are the
+models of the premises whose sets of abnormalities are ⊆-minimal.
+Circumscribing the abnormalities, with every other symbol allowed to
+vary, selects the same models. Circumscription is defined over classical
+models, so the coincidence is literal when the lower limit logic is
+classical, or when its models can be encoded classically, as the box
+below does for CLuN. We have not found it stated as a theorem in the
+literature, but it follows from the two definitions. Since ASP can
+compute models that are minimal in chosen atoms, it can compute Minimal
+Abnormality directly.</p>
 <blockquote>
 <p><strong>Minimal Abnormality in clingo.</strong> This program encodes
 the second example. It represents each sentence letter <span
@@ -584,15 +767,16 @@ ab(A) :- true(A), neg(A).
 % Prefer ab(A) false, and enumerate subset-minimal sets of abnormalities.
 #heuristic ab(A) : atom(A). [1,false]
 #show ab/1.</code></pre>
-<p>Run with <code>clingo --heuristic=Domain --enum-mode=domRec 0</code>,
-clingo 5.8 reports two minimal sets of abnormalities, <code>ab(q)</code>
-and <code>ab(p)</code>. To ask whether <span
-class="math inline">r</span> follows, add the constraint
-<code>:- true(r).</code>, which keeps only the models without <span
-class="math inline">r</span>. Among those models there is a single
-minimal set of abnormalities, <code>ab(p) ab(q)</code>, and it is not
-minimal for the premises as a whole. No minimally abnormal model lacks
-<span class="math inline">r</span>, so Minimal Abnormality derives <span
+<p>When the program is run with
+<code>clingo --heuristic=Domain --enum-mode=domRec 0</code>, clingo 5.8
+reports two minimal sets of abnormalities, <code>ab(q)</code> and
+<code>ab(p)</code>. To ask whether <span class="math inline">r</span>
+follows, add the constraint <code>:- true(r).</code>, which keeps only
+the models without <span class="math inline">r</span>. Among those
+models there is a single minimal set of abnormalities,
+<code>ab(p) ab(q)</code>, and it is not minimal for the premises as a
+whole. No minimally abnormal model lacks <span
+class="math inline">r</span>, so Minimal Abnormality derives <span
 class="math inline">r</span>. On the five premises from the opening, the
 same query for <span class="math inline">r</span> returns
 <code>ab(p)</code>, which is minimal, so <span
@@ -604,19 +788,21 @@ href="https://doi.org/10.1145/1243996.1244001">Ofer Arieli</a> computed
 ACLuNs2, the Minimal Abnormality logic over a relative of CLuN, with
 solvers for quantified Boolean formulas.</p>
 </blockquote>
-<p>The identification also places the computational cost. Propositional
-circumscription is <span class="math inline">\Pi^p_2</span>-complete, by
-<a href="https://doi.org/10.1016/0304-3975(93)90073-3">Thomas Eiter and
+<p>The identification with circumscription also places the computational
+cost. Propositional circumscription is <span
+class="math inline">\Pi^p_2</span>-complete, by <a
+href="https://doi.org/10.1016/0304-3975(93)90073-3">Thomas Eiter and
 Georg Gottlob</a>. So is cautious reasoning, truth in all answer sets,
 for disjunctive logic programs, <a
 href="https://doi.org/10.1007/BF01536399">by the same authors</a>.
 Arieli’s paper places Minimal Abnormality for ACLuNs2-type logics in
 <span class="math inline">\Pi^p_2</span>. In both cases, checking a
-candidate model is easy, while confirming that no smaller model exists
-needs a universal quantifier over all of them. This is the second level
-of the polynomial hierarchy. Under standard complexity assumptions, a
-single call to a satisfiability solver cannot settle such questions, and
-ASP solvers for disjunctive programs are built to.</p>
+candidate model is easy. Whether a conclusion holds in every minimal
+model asks, for every model, whether a smaller one exists: a universal
+quantifier over an existential one. That alternation puts the problem at
+the second level of the polynomial hierarchy. Under standard complexity
+assumptions, a single call to a satisfiability solver cannot settle such
+questions, and ASP solvers for disjunctive programs are built to.</p>
 </section>
 <section id="the-solver-keeps-no-proof" class="level2">
 <h2>The solver keeps no proof</h2>
@@ -644,9 +830,55 @@ does, but its intermediate states are not results. A user gets answer
 sets, and the trail of assignments, conflicts and backjumps that
 produced them is not part of the answer. In an adaptive logic the proof
 is the result, and a stage of it is something a reasoner can use. ASP’s
-optimization statements are a partial exception: the solver reports a
-sequence of improving answer sets, each usable, while it searches for an
-optimal one.</p>
+optimization statements are a partial exception. They give each answer
+set a cost, the total weight of the atoms they count, and the solver
+reports answer sets of decreasing cost while it searches. Each is a
+stable model and can be used. The last is known to be optimal only once
+the search for a cheaper one has failed.</p>
+<blockquote>
+<p><strong>Abnormality with a price.</strong> Weights turn a selection
+of models into a distribution over them. In <a
+href="https://doi.org/10.1007/s10994-006-5833-1">Markov logic</a>,
+Matthew Richardson and Pedro Domingos attach a weight to each
+first-order formula. A world that violates a formula is not excluded,
+only made less probable, by a factor that grows with the weight. A
+weighted formula is a presumption that can be broken at a price. <a
+href="https://aaai.org/papers/16-12901-weighted-rules-under-the-stable-model-semantics/">Joohyung
+Lee and Yi Wang</a> carried the scheme into ASP as LP<sup>MLN</sup>,
+which assigns probabilities to stable models and into which Markov logic
+networks can be embedded. <a
+href="https://arxiv.org/abs/2206.11515">plingo</a> implements it on top
+of clingo.</p>
+<p>Applied to abnormalities, weights extend the range of strategies.
+Reliability refuses to presume anything about the unreliable
+abnormalities. Minimal Abnormality keeps the models whose sets of
+abnormalities are ⊆-minimal. An optimization statement with a price on
+each abnormality keeps the models of least total price, which are also
+the most probable ones. Counting keeps every model and weighs it, and
+the probability of a conclusion is the weighted share of the models in
+which it holds.</p>
+<p>In the encoding of the clingo box, the second example has seven
+models. Give each model the weight <span
+class="math inline">e^{-wk}</span>, where <span
+class="math inline">k</span> is its number of abnormalities. The only
+model in which <span class="math inline">r</span> fails has two
+abnormalities, those of <span class="math inline">p</span> and <span
+class="math inline">q</span>. Two of the models in which <span
+class="math inline">r</span> holds have a single abnormality. With <span
+class="math inline">w=0</span> every model counts equally, and <span
+class="math inline">r</span> holds in six of the seven. With <span
+class="math inline">w=2</span> the probability of <span
+class="math inline">r</span> is about 0.95, and as <span
+class="math inline">w</span> grows it approaches 1, the verdict of
+Minimal Abnormality. In the limit the probability concentrates on the
+models of least total price. These are minimal by cardinality, not by
+inclusion, and in this example the two coincide.</p>
+<p>Counting answer sets is harder than finding one. clingo counts only
+by enumerating them. Dedicated counters such as <a
+href="https://doi.org/10.1016/j.artint.2024.104109">aspmc</a>, by Thomas
+Eiter, Markus Hecher and Rafael Kiesel, exploit the structure of the
+program to count without enumerating.</p>
+</blockquote>
 <p>ASP obtains exact answers by being finite. A solver works on a ground
 program, with every variable replaced by ground terms, and grounding is
 where the difficulty of first-order reasoning goes. Over a finite
@@ -696,11 +928,12 @@ the premises together with the hypothesis “every member of <span
 class="math inline">\Theta</span> is normal” entail <span
 class="math inline">G</span>. A condition is a hypothesis under which
 the goal follows. It is consistent with the premises exactly when <span
-class="math inline">\mathrm{Dab}(\Theta)</span> is not derivable. An
-adaptive derivation of <span class="math inline">G</span> is an
-abductive answer for <span class="math inline">G</span>, drawn from a
-fixed language of normality presumptions, and the strategies are
-policies for which answers to trust.</p>
+class="math inline">\mathrm{Dab}(\Theta)</span> is not derivable. The
+condition of an adaptive derivation of <span
+class="math inline">G</span> is an abductive answer for <span
+class="math inline">G</span>, drawn from a fixed language of normality
+presumptions, and the strategies are policies for which answers to
+trust.</p>
 <blockquote>
 <p><strong>Joint constraint abduction as an adaptive problem.</strong>
 <a
@@ -734,9 +967,12 @@ fewer presumptions.</p>
 equations, they may introduce fresh variables, and their depth is
 unbounded. Nothing presumes them true in advance. The nearest adaptive
 analogues are the logic of induction and LA∀, whose hypotheses are
-generalizations of a given form, infinite in number. LA∀ even admits
-relational formulas, and the answer <span class="math inline">x\doteq
-y</span> in that essay’s example is a relation.</p>
+generalizations of a given form, infinite in number. Batens’s 2017
+logics allow only explanations that ascribe a property to a single
+individual. LA∀ also admits relations between individuals, which joint
+constraint abduction needs: the answer <span class="math inline">x\doteq
+y</span> in the elementary example of <em>What Must Be True?</em>
+relates two variables.</p>
 <p>The recasting shows where the difficulty lies. In an adaptive logic,
 final derivability lacks a positive test because marking depends on what
 cannot be derived. For equations over finite trees, consistency is
@@ -760,14 +996,14 @@ True?</em>.</p>
 <p>ASP stops, because the search begins only after grounding has made
 the problem finite. The solver’s withdrawals happen inside the search
 and leave no trace in the result. The price is paid in grounding, and a
-program whose derivable atoms are infinite is outside what the solver
-can finish.</p>
+program with infinitely many possibly derivable atoms is outside what
+the solver can finish.</p>
 <p>An adaptive logic need not stop, and it does not ask to. Final
-derivability can lie beyond every positive test, as it can for warrant
-in Pollock’s sense. What the reasoner has at any time is a stage: the
-proof so far, with its marks. The first proof in this essay derived
-<span class="math inline">r</span> at line 5 and withdrew it at line 8.
-Before line 8 a reasoner would have acted on <span
+derivability can lie beyond every positive test, as warrant in Pollock’s
+sense can. What the reasoner has at any time is a stage: the proof so
+far, with its marks. The first proof in this essay derived <span
+class="math inline">r</span> at line 5 and withdrew it at line 8. Before
+line 8 a reasoner would have acted on <span
 class="math inline">r</span>, and would have been right to, given what
 the proof had found so far.</p>
 <p>Joint constraint abduction sits between them. It has a positive test:
