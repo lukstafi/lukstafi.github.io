@@ -450,10 +450,48 @@ entropy that defines the LMSR is the regularizer that yields Hedge.</p>
 <span class="math inline">b</span> is an inverse learning rate. A deep
 market, with large <span class="math inline">b</span>, moves slowly in
 response to each trade and risks a larger subsidy. A shallow one moves
-quickly and risks little. The bookmaker pays for information at most
-what a learner pays in regret for not knowing in advance which expert is
-best. Its worst case comes when the best expert is the outcome that
-occurs.</p>
+quickly and risks little, but it pays traders little for being right,
+and one trade can carry its price far from any consensus. A learner
+faces the same choice of temperature. A high learning rate costs little
+regret when one expert leads from the start, and a great deal when the
+lead changes hands. The bookmaker pays for information at most what a
+learner pays in regret for not knowing in advance which expert is best.
+Its worst case comes when the traders were right: the outcome that
+occurs is the one they bought most, much of it while its price was still
+low.</p>
+<blockquote>
+<p><strong>Hedging and exploring.</strong> Hedge sees every expert’s
+gain in every round. A <em>multi-armed bandit</em> sees only the gain of
+the arm it pulls, as a gambler learns only what the machine they played
+paid out. To learn about the other arms it must sometimes pull them,
+giving up gains it expects from the arm it favors. That is
+<em>exploration</em>. The standard algorithm for adversarial bandits, <a
+href="https://cseweb.ucsd.edu/~yfreund/papers/bandits.pdf">Exp3</a>,
+runs Hedge on estimated gains. Each round it divides the observed gain
+by the probability of the arm it pulled, and credits nothing to the
+other arms. The estimates are right on average, and their noise is the
+price of exploration. Exp3’s regret grows like <span
+class="math inline">\sqrt{Tn\log n}</span>, against Hedge’s <span
+class="math inline">\sqrt{T\log n}</span>, and no bandit algorithm does
+better than order <span class="math inline">\sqrt{Tn}</span>.</p>
+<p>In a bandit, the temperature does two jobs. Spreading the weights
+hedges, as in Hedge, and it also keeps sampling the arms the learner
+disfavors. A cold learner pulls those arms so rarely that dividing by
+their probabilities turns its estimates into noise, which is why Exp3
+mixes a little uniform probability into its weights. A policy in
+reinforcement learning learns only from the actions it takes, and for
+the same reason its softmax temperature serves as an exploration
+knob.</p>
+<p>The bookmaker is in Hedge’s position, not the bandit’s. Traders can
+buy any outcome, so the bookmaker hears about all of them without
+acting. What it pays is the regret of hedging. The exploration happens
+outside the mechanism, in the research traders do before they trade, and
+the subsidy is what makes that research pay. A bandit pays for
+information with its own gains; the bookmaker buys it. My 2010 notes
+went on from experts to bandits, and their <a
+href="https://lukstafi.github.io/notes/the-bookmaker-is-a-learner-mathematics.html#regret-minimization-and-the-multi-armed-bandit-april-2010">exercises</a>
+are on the companion page.</p>
+</blockquote>
 <p>The same exponential reweighting has appeared on this blog twice
 before. In <em>How Does a Policy Improve?</em> the regularized
 improvement step reweights a reference policy by <span
