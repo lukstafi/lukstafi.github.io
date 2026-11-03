@@ -1,0 +1,186 @@
+# Outline: from Memorizing Transformers to Latent Sparse Attention
+
+Status: outline, 3 Nov 2026, from a discussion in one session. Nothing drafted. Lands after *Filling the Stores* (the training essay that follows [*Every Layer a Store*](../every-layer-a-store.md)), so it links rather than re-explains anything those two cover. Sections carry no word budget; length follows content. Citations were checked the same day (`citecheck-retrieval-lineage-2026-11-03.md`); items still marked † are unverified.
+
+Title: the user's working candidate is *How LLMs Could Place Explicit Memories* (3 Nov). "Place" fits all three answers the essay compares: by position (slots, the cache), by content (a kNN index, LSA's clusters, the hippocampal index), and into connections (consolidation). Earlier candidates: *The Index and the Store*; *When Memory Became Context*.
+
+Subtitle (agreed 3 Nov), roughly: "From Memorizing Transformers to Latent Sparse Attention, and the placement neither has".
+
+Figures (agreed 3 Nov; matplotlib SVG with generated dark variants, as in *Every Layer a Store*): (1) a timeline with memory or context size on a log axis, from Memorizing Transformers' 262K through Focused Transformer's 256K and Landmark's 32K+ to LSA's 10M, marking which layer reads the store; (2) the three placements, brain beside LLM.
+
+Timing: drafting waits for the *Filling the Stores* draft (see "Before drafting" at the end).
+
+User decisions (3 Nov): the email is the source of truth for §0; quotes from it correct spelling typos ("rearangement") silently but keep wording and grammar; the indexer-as-student reading stays here (§5); the brain strand is a full section (§7), now built on the Oxford/UCL prefrontal review as well; the ACT-R part of the email gets one sentence.
+
+## Seeds
+
+- The user's email to Markus Rabe of 13 Dec 2021, `notes/private/emergent_scratchpad-to_Marcus_Rabe.txt` (gitignored; the user's own words, theirs to quote). The user attended Christian Szegedy's weekly reading group online. The meeting notes stayed in a former work account and are lost, so the note is the only written record.
+- Memorizing Transformers: Wu, Rabe, Hutchins & Szegedy, [arXiv 2203.08913](https://arxiv.org/abs/2203.08913) (16 Mar 2022; ICLR 2022 spotlight).
+- Latent Sparse Attention: Kubicek, Caciolai, Peng, Sumant, Hoover, Greenlee, Battleday, Urban, Hoefler & Whittington (Prefrontal AI and ETH Zurich), [arXiv 2610.42147](https://arxiv.org/abs/2610.42147), and the [Prefrontal post](https://prefrontal.ai/news/lsa/) (Oct 2026). Full text read 3 Nov.
+- **The lineage is conceptual, not a citation chain.** LSA's bibliography cites none of Memorizing Transformers, kNN-LM, Landmark Attention, Focused Transformer, Hopfield networks or Whittington's hippocampus paper (checked 3 Nov against the full text). The ancestry it claims is Reformer and Routing Transformer (clustering at short context); training-free clustering of the cache (ClusterKV, RetroInfer, Squeezed and Multipole Attention, LycheeCluster, IceCache, RetrievalAttention); and learned block or token indexers (NSA, MoBA, DSA, InfLLM-V2, SSA, HSA). The essay says this outright: it traces a line of ideas the papers don't draw.
+
+Prior essays and what each supplies (link, do not recap):
+
+- [*Every Layer a Store*](../every-layer-a-store.md): §2's outer-product store and the Kanerva box (point back to it, don't retell); §3 "Memory along the context", with its five ways of keeping the past, worked example 2 (a million tokens) and "Selection is learned retrieval" ("A selector is a second, cheaper store placed in front of the first"); "Long context is an interference problem" (the distraction issue is a case of it). The opening's 1M-token prompt sets the scale; LSA takes it to 10M.
+- *Filling the Stores* (in progress; outline §9 in `architectures-and-training-outline.md`): "Selectors cannot learn through top-*k*": MSA's KL objective toward the main attention, stop-gradients, dense-then-sparse schedules. **That essay owns the mechanism of training indexers.** This essay adds only the reading in §5 below.
+- [*Who Teaches the Weights?*](../who-teaches-the-weights.md): a teacher must know more than the student, and its targets must be ones the student can absorb (l. 21); "a weak in-context learner is a weak teacher" (l. 118).
+- [*Where Experience Goes*](../where-experience-goes.md): the ladder of stores (l. 35–58). The context rung's table row reads "grows with the cache, or with the selection under sparse attention". Also "What survives of the argument for parametric memory" (l. 116–132): "the case for consolidation is the case for amortization". This is the **deflationary view** of consolidation.
+- [*What Breadth Reaches*](../what-breadth-reaches.md) §2 (l. 37–57): the **substantive view**. Integration across sessions comes in species. For *facts about the user*, "Retrieval and explicit memory substitute for this with no important loss"; for *procedural patterns*, substitution works "with some loss but tractably"; for *taste*, it falls short, "because the taste is the integration". The work consolidation does is representation learning: gradient descent "discovers representations that encode the structure of the data: features, abstractions and relations not specified in advance". §4 adds participatory knowing as a species breadth cannot reach in principle; this essay does not need §4.
+- [*Building Minds*](../building-minds.md) §7 and the [cognitive architectures report](../cognitive-architectures-report.md) §8: complementary learning systems, hippocampal replay. Link them for §7 below.
+- `research/associative-memory-view.md`: the associative-memory reading. Hoover's Energy Transformer (arXiv 2302.07253) belongs there; link only.
+
+## Thesis
+
+Between 2022 and 2026 the external memory merged into the context. Memorizing Transformers kept a separate store beside the context: it took no gradients, one layer read it by kNN, and its keys went stale. By LSA the key–value cache *is* the store, selection runs in every attention layer, and a hierarchical index finds the right keys among ten million. The open problem moved from what to keep to how to find it, and LSA makes finding cheap: on one of its two test models as accurate as dense attention, on the other a few points behind (§4). What it leaves is what the lineage never addressed. The store still grows linearly ("LSA reduces the cost of finding keys, not of storing them"), and what it holds leaves with the session unless something consolidates it. The user's 2021 note named both ways out of the context store: train the model to predict what it would retrieve, and let the retrieved material become reasoning. The continual-learning series is about the first; reasoning models took the second.
+
+What makes this more than a history:
+
+1. **The store and the index split, and the split survived.** A kNN index over a memory in 2022, a bucket cache over the KV cache in 2026. Staleness returns as a design choice: LSA's buckets "never change once built".
+2. **Cheaper reading bears on only one of the two cases for consolidation.** On the deflationary view (*Where Experience Goes*), consolidation is amortization: paying once in training for what would otherwise be rebuilt from context. Lowering the cost of reading the context then raises the number of uses a competence needs before training pays for itself, so LSA argues for consolidating less often; automaticity and storage cost still favour the weights. On the substantive view (*What Breadth Reaches*), consolidation builds representations that retrieval does not reach, however good the retriever: features and abstractions not present in any stored item. Read cost does not enter that case at all, so LSA leaves it where it was. The two views divide the ground rather than compete: the deflationary one is right about explicit memories (facts, episodes, the species *What Breadth Reaches* says retrieval substitutes for "with no important loss"), and the substantive one about what consolidation builds beyond them. The title's "explicit" marks the scope. Memorizing Transformers' ambition, to "read and memorize new data at inference time" instead of training, is right for that scope and only for it.
+3. **The index is a student of attention.** D-LSA's indexer learns where the frozen model would look. That is the teacher condition of *Who Teaches the Weights?* in its cleanest form: the dense attention knows more (it sees every key), and its target, a ranking of clusters, is absorbable by 64-dimensional projections.
+4. **The 2021 note's two halves.** Training on retrieval inserts is consolidation; leaving inserts unpenalized when the predictions after them succeed is the reward Quiet-STaR later used for thoughts. The two halves went separate ways.
+5. **Three placements.** A memory can be placed by position (prefrontal slots, the KV cache), by content (the hippocampal index, LSA's clusters), or into connections (consolidation). Within its context a language model now has the first two; the lineage never built the third.
+
+Sample sentences (register only):
+
+- "Memorizing Transformers kept a memory beside the context. LSA has no memory beside the context; the context is the memory."
+- "Finding is solved to ten million tokens. Keeping is not."
+- "The indexer is the cheapest student in the model: it learns where to look, never what it sees."
+
+## Sections
+
+### §0 Opening: a note to Markus Rabe, December 2021
+
+The user's email of 13 Dec 2021, three months before Memorizing Transformers reached arXiv. It proposed synthesizing scratchpads "using the dataset-rearangement-by-memory-retrieval idea": iteratively fine-tune a decoder on a dataset rearranged by retrieval, so that "the model learns to predict the retrieval inserts", and "not penalize inserts if the predictions following them are successful. Emergent scratchpad behavior!" It also asked whether such a model, given a curriculum, would invent the right-to-left school algorithm or the left-to-right expert algorithm for long multiplication from the ACT-R study, and mentioned MIRI's Visible Thoughts Project, announced two weeks earlier (30 Nov 2021: thought-annotated dungeon runs, $1.2M total, so that people could "watch the AI think about how to design its output").
+
+Use: one or two quoted sentences, then the turn to the paper. The ACT-R question gets one sentence (user's choice); [*Building Minds*](../building-minds.md) and the cognitive architectures report already cover ACT-R. MIRI gets a clause at most here; it returns in §6.
+
+Provenance (user, 3 Nov): the paper was discussed in the reading group before it reached arXiv, and the email's "dataset-rearrangement-by-memory-retrieval idea" refers to it. The emergent-scratchpad proposal built on it is the user's own. The user also recalls (hedged: "if I remember correctly") that the group was working on retrieval-augmented contrastive training, in which the training batch was used contrastively. The email is the source of truth: quote it, and give the contrastive-training recollection as a recollection. Approved wording (user, 3 Nov): "The group was also working, as I remember it, on retrieval-augmented training that used the batch contrastively; Focused Transformer, whose authors include Wu and which thanks Rabe and Szegedy, later published a method of that kind." Say no more than that: the essay does not claim that FoT *is* the group's work (FoT credits no earlier discussion and cites TRIME for in-batch memory). Its natural place is the FoT entry in §2, with §0 only foreshadowing it.
+
+Constraints: credit the Memorizing Transformers authors only with what they published. Spell the name Markus (the file name has "Marcus"). Say the user attended online; don't mention the employer unless the user wants it.
+
+### §1 What Memorizing Transformers built
+
+From the full text (checked 3 Nov):
+
+- One kNN-augmented attention layer: "Unless specified otherwise, we use the 9th layer" of 12 (§4.2; the HTML's "99th" is a rendering glitch). The ablation (App. A.1) tried layers 3, 6, 9 and 12 (perplexities 2.40, 2.36, 2.37, 2.43): "adding memory to the middle of the layer stack will obtain the best result".
+- Each head caches the most recent M (key, value) pairs of the document; the memory is cleared at each document boundary. "Gradients are not backpropagated into the external memory", which the paper calls "critical to the scalability of our technique".
+- Retrieval: top-32 keys per query by approximate kNN (about 90% recall on TPU, with little quality loss from worse approximations). "Unlike standard dense attention, the retrieved memories contain a different set of (key, value) pairs for each query."
+- A learned per-head scalar gate mixes memory attention with local attention. It does not depend on content, and most heads came to rely almost entirely on memory.
+- Staleness: stored keys came from older parameters. "To reduce the effects of staleness, we normalize keys and queries." Training from scratch with very large memories was sometimes unstable, so they pretrained with 8K and fine-tuned larger.
+- Results: perplexity improved on all five corpora (C4, arXiv math, PG-19, GitHub, Isabelle) and kept improving as memory grew to 262K. At 1B and 8B parameters, an 8K memory matched a vanilla model about 5× larger. A pretrained 1B model fine-tuned to use memory closed 85% of the gap in 20K steps.
+- The Isabelle case: gains concentrated on rare tokens (names, citations, function names). "The model looked up the definition from earlier in the proof"; in a manual check of 10 lemma-name predictions, the needed body was retrieved in 8.
+- The ambition, the abstract's opening: "Language models typically need to be trained or finetuned in order to acquire new knowledge, which involves updating their weights. We instead envision language models that can simply read and memorize new data at inference time, thus acquiring new knowledge immediately."
+
+Placement, one sentence each: the neural cache (Grave et al. 2017) and kNN-LM (Khandelwal et al. 2020) retrieve at the output; Transformer-XL and the Compressive Transformer extend the cache; REALM, RAG and RETRO retrieve *text from a corpus*. Memorizing Transformers retrieves the model's own internal representations of its own past. That branch is the one that survived into attention.
+
+### §2 2023: making the memory trainable
+
+- [Focused Transformer](https://arxiv.org/abs/2307.03170) (Tworkowski, Staniszewski, Pacek, Wu, Michalewski & Miłoś, Jul 2023) is the direct heir. §3.1: "Our memory attention layer design is closely related to [Wu et al., 2022], we follow most of its design choices, except for the gating"; §5.5: "we have followed the Memorizing Transformer in the choice of memory layers". The problem it names is the "distraction issue": as documents are added, relevant keys become a smaller share of the memory, and keys for different values overlap. Link "Long context is an interference problem" for the general point.
+  - **Crossbatch training** (§3.2, App. B.3): each batch slot holds one document. The memory layers attend, differentiably and in one softmax, to the current context, the previous context of the same document (positives), and previous contexts of d−1 other documents in the batch (negatives). There is no separate contrastive loss ("uses the standard transformer training objective") and no kNN memory during training.
+  - Wu did the work "while at Google Research". The acknowledgments thank "Markus Rabe for reviewing the initial manuscript and Christian Szegedy, Charles Staats, and DeLesley Hutchins for helpful discussions." The paper calls crossbatch "a novel way of training" and credits no earlier discussion; the prior work it names for training memory with negatives is TRIME (Zhong, Lei & Chen, [arXiv 2205.12674](https://arxiv.org/abs/2205.12674), May 2022), which "directly takes in-batch examples as accessible memory".
+  - LongLLaMA (OpenLLaMA 3B and 7B fine-tuned with FoT) handles 256K passkey retrieval.
+- [Landmark Attention](https://arxiv.org/abs/2305.16300) (Mohtashami & Jaggi, May 2023): a landmark token per block, trained so that attention itself selects blocks. Retrieval moves inside attention and stops being a separate step.
+- [Unlimiformer](https://arxiv.org/abs/2305.01625) (Bertsch, Alon, Neubig & Gormley, NeurIPS 2023): kNN over the encoder's hidden states in an encoder–decoder's cross-attention, "the top-k hidden states from the kNN index for each cross-attention head", with one index shared by all heads and layers.
+- Two published ways of rearranging a dataset by retrieval, the move the 2021 note built on:
+  - [In-Context Pretraining](https://arxiv.org/abs/2310.10638) (Shi, Min, Lomeli et al., ICLR 2024): Contriever embeddings and approximate nearest neighbours build a document graph; a greedy path through it, stepping to the "unvisited neighboring document with highest weight", is cut into training contexts.
+  - [SPLiCe](https://arxiv.org/abs/2312.17296) (Staniszewski, Tworkowski, Jaszczur, Zhao, Michalewski, Kuciński & Miłoś, Dec 2023): uses retrieval "to collate mutually relevant documents into long and coherent training examples".
+  Neither trains the model to predict the inserts, which was the note's addition.
+
+The section's point: the memory became blocks of the context, read through attention, with training that teaches the model to tell the right block from distractors.
+
+### §3 2024–2025: the memory is the cache
+
+- Training-free block retrieval over the cache: Quest, InfLLM ("an efficient context memory"; the word "memory" lasts into the title), MInference, HiP.
+- Clustering at inference: ClusterKV, RetrievalAttention (a nearest-neighbour graph), RetroInfer, IceCache (a tree). LSA's related work notes that these are training-free, none is evaluated above 1M tokens, and only Squeezed Attention speeds up prefill, partially.
+- Native learned selection: NSA, MoBA, DSA. Link [*Every Layer a Store*](../every-layer-a-store.md) §3 for DSA and its lightning indexer; don't retell.
+- Hierarchical indexers beside LSA: HSA (Hu et al. 2025 and follow-ups, which weight each block's output by its score) and Meituan's LongCat Sparse Attention (arXiv 2608.01662 †, built on DSA, reported at 1M). The latter is also abbreviated "LSA"; the essay spells out Latent Sparse Attention at first mention and says which LSA it means.
+
+The section's point: the vocabulary moved from "memory" to "sparse attention", and the problem from what to store to what to read. The LSA paper (§1) measures it: "at 10M tokens, 98% of the prefill time of a sparse attention layer is spent on indexing" (one GLM-5.3-Flash layer on one H200; prefill only). §2 adds that a "'free' indexer would make sparse attention a further 58× faster in prefill and 8.9× in decode".
+
+### §4 Latent Sparse Attention
+
+- Mechanism, briefly: index keys are L2-normalized, pooled four at a time, and clustered bottom-up with Ward's method into buckets, each holding a unit-norm centroid and its key positions. Buckets never change once built. A query scores centroids, takes the top buckets, and attends to about *k* long-range keys plus sink keys and a recent window; one index serves all query heads. Flat search scores every bucket. Tree search descends a hierarchy by beam search, with O(log T) centroid scores per query.
+- Numbers (paper, not post): on Qwen-3.8-27B at 10M tokens, D-LSA (Flat) scores 63.9 on RULER against 59.9 for full attention, and 29.1 against 19.8 on PaperTrail. One layer at 10M: 72.4× faster prefill and 42.5× faster decode than Qwen's full attention; 22.7× and 4.6× faster than GLM-5.3-Flash's DSA. End to end, time to first token at 10M falls 9.2× on Qwen and about 2.2× on GLM. N-LSA (about 0.5B, hybrid, 128K): validation loss 1.085, the same as full attention; 1.6× faster per layer at 128K, and 1.24× faster for the whole model's decay phase, since only every fourth layer is attention. (The post's "1.24×" and the paper's "1.6×" measure different things.)
+- Accuracy, stated with both models: on Qwen-3.8-27B, D-LSA matches or beats full attention to 10M; on GLM-5.3-Flash it trails on RULER by up to about 8 points at 2M–5M (within 4 at 10M) and on PaperTrail by about 6–7 points from 2M to 10M. Don't write "solves finding" without this.
+- Limits the authors state: storage still grows linearly; tree search loses accuracy faster than flat past 1M on GLM (55.8 vs 66.8 RULER at 10M); N-LSA has been tested only at small scale, to 128K, with flat search; the bucket cache is replicated on every context-parallel rank.
+- *Box: long-context attention is retrieval.* Appendix A (Fig. 8), Qwen-3.8-27B at 128K on RULER: "Top-k Oracle Attention keeps 98% of the RULER accuracy of Full Attention down to k = 512, while each query attends to 0.8% of the keys." Each query also keeps a 4-token sink and a 512-token window, and one top-*k* list is shared by all heads (scores summed over heads). This is the empirical licence for the whole lineage.
+- *Box: PaperTrail and the Isabelle lemma.* PaperTrail plants a trail of fabricated facts in unseen 2026 arXiv papers and asks questions in three tiers. It tests what Memorizing Transformers showed on Isabelle: use of a fact the model met only in its context. Four years later the test has 10M tokens and fabricated facts, so recall cannot come from the weights.
+- *Table: two memories, four years apart.* Rows: where the store lives; what writes it; which layers read it; how many keys a read touches; the index; staleness; gradients; largest tested scale; what is learned at test time (nothing in the weights, in both).
+
+| | Memorizing Transformers (2022) | LSA (2026) |
+| --- | --- | --- |
+| Store | a per-head cache of past (key, value) pairs, beside the local context | the KV cache itself |
+| Read by | one layer, gated against local attention | every attention layer |
+| Index | approximate kNN, about 90% recall | hierarchical clusters in a learned 64-dim latent space (D-LSA) or the keys themselves (N-LSA) |
+| Staleness | keys from older parameters; normalized keys | buckets fixed once built |
+| Gradient into selection | none | none (stop-gradient), or a KL target from the frozen model |
+| Scale tested | 262K | 10M |
+
+### §5 Who teaches the index
+
+D-LSA trains only its 64-dimensional index projections and a temperature, by KL divergence from the frozen layer's attention over the selectable keys to the indexer's scores, on 352M tokens. A training-free variant uses the keys' leading principal directions instead. N-LSA has no teacher: it clusters the attention's own keys, with gradients stopped through selection, and learns from the next-token loss alone.
+
+The reading: the indexer meets both teacher conditions of *Who Teaches the Weights?* in their cleanest form. The teacher sees every key; the student needs only a ranking of clusters. The training-free variant shows how little teaching retrieval needs once the model has learned its keys, compared with what learning content needs (the inferences fine-tuning must be fed, *Where Experience Goes*). One paragraph; the KL mechanism itself is *Filling the Stores*' (open question 3).
+
+### §6 Two ways out of the context store
+
+- **Consolidation.** The note's first half: fine-tune on retrieval-rearranged data so that the model predicts the inserts, i.e. what retrieval would have supplied. That is retrieval distilled into the weights, the move *Who Teaches the Weights?* calls the model with privileged context as teacher. Memorizing Transformers' ambition ran the other way: read and memorize at inference time *instead of* training. The ladder says both are needed. Thesis point 2 goes here, in two steps:
+  - *Deflationary.* LSA lowers the read cost of the context rung, which raises the break-even for amortization without removing the storage and automaticity arguments. For explicit memories, this is most of the story. The concrete payoff: at 10M tokens much of what an agent now keeps in harness memory (notes, retrieved documents, earlier sessions) fits in the context, where it composes better (Lampinen et al., via *Where Experience Goes*). LSA moves explicit memory from rung 3 of the ladder to rung 1. It also postpones compaction, whose cost *What Breadth Reaches* §2 shows with Dwarkesh Patel's case: the summary kept what was decided but not why.
+  - *Substantive.* What consolidation builds beyond explicit memories is untouched by read cost. The note's proposal is a case of it: a model trained to predict its retrieval inserts learns *when* a retrieval would help and *what* it would bring, which is structure over the store, not a copy of any item in it. Compare the SEAL and synthetic-continued-pretraining evidence in *Where Experience Goes* (the inferences fine-tuning must be fed): it shows that consolidated *facts* trail facts in context. It is silent on representations no retrieved item contains, which is where the substantive view lives. Present the two views as dividing the ground, and don't adjudicate the general question; *What Breadth Reaches* already says it is partly empirical.
+- **Visible reasoning.** The note's second half: don't penalize inserts when the predictions after them succeed. [Quiet-STaR](https://arxiv.org/abs/2403.09629) (Zelikman et al., Mar 2024) trains rationales at each token "to explain future text, improving their predictions". §4.4.3: "We use REINFORCE to optimize the likelihoods of the rationales based on their usefullness: the log-likelihood of the ntrue true next tokens", with the reward measured against the average over sampled rationales for that token. And: "We found it useful to exclude the negative reward from the REINFORCE loss term", which is the note's "not penalize" almost word for word. Say this plainly as a convergence, not as influence. MIRI's Visible Thoughts Project wanted thoughts that steer the output: "allowing us to watch the AI think about how to design its output, and to verify that we can get different sensible outputs by intervening on the thoughts" (So8res, LessWrong, 30 Nov 2021 UTC; MIRI's blog dates it 29 Nov). Reasoning models then made the scratchpad the main place where retrieved material is used. One paragraph; reasoning training is *Filling the Stores*' territory.
+- The 2021 note joined the two halves: an insert the model learns to predict, kept because what follows it goes better. The field split them. Whether they should be rejoined (training on inserts that proved useful, i.e. reasoning traces as consolidation targets) is the essay's forward question. *Who Teaches the Weights?*'s self-distillation answers it in part; don't overclaim.
+
+### §7 Where the brain places memories (a full section, user's choice)
+
+The section compares three ways a brain places a memory with what a language model has. LSA itself makes no brain claim; the essay makes the comparison and says so. The people link the two literatures: LSA's senior author, James Whittington, is a co-author of both the 2021 transformer–hippocampus paper and the prefrontal review below, whose senior author is Timothy Behrens. The company is called Prefrontal.
+
+- **By content: the hippocampal index.** Hippocampal indexing theory: "the role of the hippocampus is to form and retain an index of neocortical areas activated by experiential events" (Teyler & DiScenna, "The hippocampal memory indexing theory", *Behav. Neurosci.* 100(2), 147–154, 1986; updated in Teyler & Rudy, "The hippocampal indexing theory and episodic memory: Updating the index", *Hippocampus* 17(12), 1158–1169, 2007). LSA's bucket cache is an index over a store in the same sense. [Whittington, Warren & Behrens](https://arxiv.org/abs/2112.04035) (Dec 2021) show that "the memory component of TEM [the Tolman–Eichenbaum Machine] can be viewed as a transformer self-attention" and that TEM's path integration learns a position encoding (§5, "TEM as a transformer"); their introduction calls the work "an instantiation of hippocampal indexing theory (Teyler & Rudy, 2007)". So the self-attention–index link is Whittington's own, four years before LSA. Hoover's [Energy Transformer](https://arxiv.org/abs/2302.07253) (with Krotov, NeurIPS 2023) is the associative-memory side of the same company; link `associative-memory-view.md` territory at most.
+- **By position: prefrontal slots.** El-Gaby, Jensen et al. (with Whittington, Warren and Behrens), "From structured knowledge to flexible behaviour: the importance of local prefrontal computations", [PsyArXiv j75zw](https://osf.io/preprints/psyarxiv/j75zw_v1) (v1, 22 Oct 2026; full text read 3 Nov). Their framework of duplicated and structured representations (DSRs) holds that "the abstract structure of the world is embedded locally in connections between prefrontal neurons encoding conjunctions of action and context". In sequence working memory, monkeys hold each element of a remembered sequence "in near-orthogonal subspaces of the dorsolateral PFC", and trained RNNs learn the same "slots - according to ordinal position" (Whittington, Dorrell, Behrens, Ganguli & El-Gaby, *Neuron* 113, 2025, "Structured slots explain prefrontal sequence memory and are unified with hippocampal cognitive maps"). The review draws the transformer comparison itself: "These flexible operations over concurrent representations bear a striking resemblance to the transformer architecture ... The PFC may have arrived at the same solution: parallelising representations to enable powerful inferences and abstract operations through network dynamics."
+- **Into connections: consolidation.** The same review: "Domain-specific structured knowledge may first arise in the hippocampus, which encodes individual episodes, and then gradually consolidate into the PFC with repeated task experience", with replay "ideally suited to catalyse the transfer of the transition structure of hippocampal memories into synaptic connections between prefrontal action" representations. And meta-RL as "learning through dynamics": the PFC learns a class of tasks' structure "through slow synaptic plasticity across many experiences", after which it "can rapidly adapt to new tasks of the same class through fast recurrent dynamics alone, without further synaptic changes".
+
+What the comparison shows, mapped onto the ladder of stores:
+
+- The split between structure in connections and content in activity is the split between weights and context. "Learning through dynamics" is the review's term for meta-RL (Wang et al. 2018); reading it as in-context learning is ours, and the essay says so.
+- The KV cache places content by position, as the slots do. LSA adds a content address to that positional store: its buckets group keys by similarity, wherever they sit in the sequence. A language model now has both kinds of placement within the context, where the brain divides them between prefrontal slots and the hippocampal index.
+- What the brain has and LSA lacks is the third placement. The hippocampal index drives replay, and replay writes structure into prefrontal connections (complementary learning systems; link *Building Minds* §7). In the review, what transfers is "the transition structure of hippocampal memories", not the episodes themselves, and the PFC ends up holding "abstract structure". That is consolidation in the substantive sense of thesis point 2: it builds what no single stored episode contains. LSA's index drives nothing after the session. A context store with a hippocampal index but no replay is a hippocampus without sleep. Link *Language Models Need Sleep* through *Where Experience Goes* l. 84 rather than re-cite it.
+- The fast-weights objection, answered in a paragraph. Delta-rule recurrent states (K3, Qwen3.8) and Titans-style memorization at test time do write into connections within a session, so "the lineage never built the third placement" needs a qualifier. That store is bounded, it carries settings such as output language and persona rather than content (arXiv 2609.04434, already in *Every Layer a Store* §3 and *Where Experience Goes*), and it ends with the session. The third placement exists only in a fast form that does not outlive the session. Link, don't retell.
+- A disanalogy to state, not hide: prefrontal working memory holds a few items, while the context holds ten million tokens. The brain's capacity limit is part of what forces consolidation; the model's is a matter of cost, which is §6's break-even argument again. That disanalogy touches only the deflationary case. If consolidation builds structure, a brain with unlimited working memory would still need it, and so does a model with ten million tokens of cheap context.
+
+Constraint: the review is a theoretical framework over reviewed data, not a test of LLM claims. Use it for the placement taxonomy and its quotes; don't present DSRs as established fact.
+
+### §8 Staleness returns (the forward problem; candidate closing section)
+
+Suppose the third placement is added: a deployed model consolidates into its weights while it keeps a large indexed context. The keys in the old cache, and LSA's fixed buckets, were computed by the previous weights. That is Memorizing Transformers' staleness problem again, at deployment instead of in training. The two ways out of the context store interfere.
+
+- **It is the off-policy problem for representations** (user, 3 Nov). The cache is experience recorded by an older checkpoint and read by the current one, as in *Learning About What You Do Not Do* (worked example E: "Let the behaviour policy be an older checkpoint and the target a slightly updated one"; l. 192, "traces from older checkpoints").
+- **Where the analogy breaks.** For tokens, a language model's importance ratios are exact (that essay, l. 111). A stale key has no ratio: it is not a sample with a probability but a deterministic function of the old weights, so the drift is in representation, not distribution. Nothing reweights it.
+- **The three remedies, read off-policy.**
+  - Re-encode the context under the new weights, the on-policy option. Its cost is a prefill, and LSA's prefill speedups (72× per layer, 9.2× time to first token at 10M on Qwen) make exactly this cheaper.
+  - Tolerate the drift: Memorizing Transformers' normalized keys, and its finding that models "can tolerate a limited amount" of staleness by adjusting their queries †(locate the exact wording).
+  - Learn a correction, a map from the old key space to the new, the analogue of an importance correction. Speculative; say so.
+- Related: asynchronous RL calls rollouts from older weights "stale" too. If *Filling the Stores* covers that, link it.
+- Novelty: two quick searches (3 Nov) found no statement of cache staleness under deployment-time weight updates. Memorizing Transformers discusses staleness only within training; prefix caches in serving systems are simply keyed to a model and adapter and recomputed when those change. Search more before claiming novelty.
+
+### Closing
+
+Back to Isabelle: in 2022 the model looked up a lemma's definition from earlier in the same proof. In 2026 it finds a fabricated fact in ten million tokens of papers it has never seen. Both forget it when the document ends. A sentence returning to the 2021 note: what the note asked for was not a bigger memory but a model that learns from what it retrieves.
+
+## Freshness (checked 3 Nov)
+
+- arXiv 2610.42147 is at v1 only (submitted 30 Oct 2026).
+- Code: [Prefrontal-AI/latent-sparse-attention](https://github.com/Prefrontal-AI/latent-sparse-attention) (Apache-2.0, created 27 Oct, last push 2 Nov, 172 stars) and an SGLang fork, Prefrontal-AI/sglang (cited in the paper's footnote).
+- Adoption: none found in open models. Kimi K3.1 Pro's config (due 4 Nov) is still to check, together with *Every Layer a Store*'s pending check. Recheck all three before drafting.
+
+## Open questions for the user
+
+Settled 3 Nov: the reading group and the email (§0), the Focused Transformer wording (§0), ownership of §5, §7 as a full section, the ACT-R sentence. Still open:
+
+1. **Title.** *How LLMs Could Place Explicit Memories* is the working title.
+2. **The emergent-scratchpad idea in practice.** Did the user ever run an experiment on it? If so, it belongs in §0.
+
+## Before drafting
+
+- Wait for the *Filling the Stores* draft, then settle with it: (a) whether its §9 uses D-LSA's KL distillation as an October 2026 example of training selectors (then §5 here only adds the teacher-conditions reading); (b) whether it covers stale rollouts in asynchronous RL (then §8 links it); (c) the reasoning-training paragraph in §6.
+- Redo the freshness check (LSA v2, adoption, Kimi K3.1 Pro's config).
+- Run a proper prior-art search for §8.
