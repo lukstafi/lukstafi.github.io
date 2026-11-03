@@ -33,3 +33,46 @@ Nitpick: I'd drop "Neither development shows what the notes were about." I'd pus
 ## Editorial pass
 
 Can you do an editorial pass, or are things fresh enough so it wouldn't make a difference?
+
+## Second reading pass (3 Nov 2026)
+
+Doing one more pass over the prediction markets essay notes/the-bookmaker-is-a-learner.md
+Beginning with a nitpick: why does it say "ln n" instead of "log n", in the 3rd paragraph of "One bookmaker, four faces" and at least one more place?
+
+## The worst case and the temperature
+
+"Its worst case comes when the best expert is the outcome that occurs." -- How so? In what sense is that the best expert, and if it was getting best weights why is it the bad case?
+
+Can it be phrased as the price of optimal exploration (in terms of regret rather than expected value)?
+
+What I'm thinking is, if the learner uses a lower temperature, it gets less regret in this (worst) case, but a lower temperature is not always best.
+
+I think we should make the analogy to exploration and compare this situation to the bandit problems. I'm guessing in a box to not distract.
+
+## Mirror descent
+
+What is "stochastic mirror descent"?
+
+Is it worth adding a whole box for it? Reason: it improves intuition for learning-theoretic concerns, not only prediction markets but also RL.
+
+", which the box below explains" not needed. The box is prominent by itself.
+
+Somewhat off-topic, is it good to think of mirror descent in differential geometry terms? More on topic: Could you check if the new additions, or this essay in general, have relevance that the essays that come after it have missed?
+
+## The combinatorial wall
+
+How relevant the section "The combinatorial wall" is to our blog, generally? I put emphasis on this sub-topic because of the algorithmic content seemed a good fit for a Computer Science curriculum course.
+
+What does it mean "shaped like the bracket"? Is about being bipartite?
+
+We need to define "bracket" where it first appears (alternatively in a box)
+
+Let's build out "The section has a crisp point it never states" you observed, thanks!
+
+## Nitpicks and the final pass
+
+"The vendor conceded that market prices had been about as accurate as the alternatives." -- Do you mean "had not been more accurate"?
+
+Nitpick: "A market aggregates diversity of information, not the number of traders." -- I'd remove ", not the number of traders", it's cumbersome and doesn't add value.
+
+Okay! The last two sections are not the best ones of the article, but surprisingly I don't have concrete improvement suggestions, so this looks good enough! Would you like to make a second, final editorial pass? (The previous session made one.)

@@ -31,3 +31,9 @@ Can you draft essay B while I read essay A?
 Does "The Demon Is a Learner" share the mathematics supplement with "The Standard of Motion"? Does it not need additions there yet?
 
 Yes, add B's details where they help to the existing companion.
+
+## Connections from the bookmaker essay's revision (3 Nov 2026)
+
+From a revision session for *The Bookmaker Is a Learner*, which added boxes on bandits and on mirror descent:
+
+Could you check if the new additions, or this essay in general, have relevance that the essays that come after it have missed?

@@ -35,3 +35,9 @@ Maybe we need a separate meta-relation for provenance? This third meta-relation 
 Sounds good! Is this setup and your findings worth turning into an essay?
 
 Commit and draft the essay, thanks! You can assume the Adaptive Reasoning essay goes first / together with this one.
+
+## Connections from the bookmaker essay's revision (3 Nov 2026)
+
+From a revision session for *The Bookmaker Is a Learner*, which added boxes on bandits and on mirror descent:
+
+Could you check if the new additions, or this essay in general, have relevance that the essays that come after it have missed?

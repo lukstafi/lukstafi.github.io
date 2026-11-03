@@ -53,3 +53,9 @@ Yes, this is connected to probabilistic logics and, for example, Pedro Domingos'
 ## Editorial pass
 
 Very good. Let's do a final editorial pass. Thanks.
+
+## Connections from the bookmaker essay's revision (3 Nov 2026)
+
+From a revision session for *The Bookmaker Is a Learner*, which added that matching is pricing at zero temperature:
+
+Could you check if the new additions, or this essay in general, have relevance that the essays that come after it have missed?
