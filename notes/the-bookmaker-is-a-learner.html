@@ -511,9 +511,56 @@ Wortman Vaughan</a> derived the duality-based cost function, for any
 space of securities, from three axioms: path independence, no arbitrage
 and responsiveness to trades. They showed that trading in such a market
 is follow the regularized leader. Later work read the price dynamics as
-stochastic mirror descent. What my notes presented as a surprising pair
-of theorems is now the standard way to design a market maker in the
-literature.</p>
+<em>stochastic mirror descent</em>, which the box below explains. What
+my notes presented as a surprising pair of theorems is now the standard
+way to design a market maker in the literature.</p>
+<blockquote>
+<p><strong>Mirror descent.</strong> A price vector lives on the simplex,
+where gradient steps are awkward. A step added to the prices can push
+one below zero, and it treats a price of 0.001 and a price of 0.5 as
+equally easy to move by 0.01. The bookmaker never takes such a step. A
+trade adds to the share counts <span class="math inline">q</span>, which
+range over all vectors, and the prices follow as <span
+class="math inline">p=\nabla C(q)</span>. <em>Mirror descent</em> is the
+general recipe: take the gradient step in a second set of coordinates,
+given by the gradient of a convex function, and map the result back.
+With the negative entropy as that function, the second coordinates are
+log-probabilities, the step is multiplicative, and the algorithm is
+Hedge.</p>
+<p>The same step has a second form. Mirror descent from <span
+class="math inline">p</span> maximizes the gain minus a divergence from
+<span class="math inline">p</span>, and for the negative entropy that
+divergence is the Kullback–Leibler divergence. The regularized
+improvement step of <em>How Does a Policy Improve?</em>, which maximizes
+<span
+class="math inline">\mathbb{E}_q[Q]-\eta\,\mathrm{KL}(q\|p)</span>, is
+one such step, and so is an LMSR trade that buys <span
+class="math inline">Q</span> shares at <span
+class="math inline">b=\eta</span>. For a softmax policy over a table of
+states and actions, the natural policy gradient takes this step, as <a
+href="https://arxiv.org/abs/1908.00261">Alekh Agarwal, Sham Kakade,
+Jason Lee and Gaurav Mahajan</a> show. TRPO and PPO approximate it by
+limiting how far each update may move: TRPO bounds the KL divergence,
+and PPO clips the ratio of new to old probabilities.</p>
+<p>The method is <em>stochastic</em> when the gradient is estimated from
+samples. In reinforcement learning the samples are returns. In Exp3 they
+are the importance-weighted gains of the bandit box. In a market they
+are traders. <a
+href="https://proceedings.neurips.cc/paper/2012/hash/41a60377ba920919939d83326ebee5a1-Abstract.html">Rafael
+Frongillo, Nicolas Della Penna and Mark Reid</a> showed that when
+traders arrive with demands drawn from a fixed distribution, a natural
+class of bookmakers runs stochastic mirror descent. Under some
+conditions, the prices settle at the market’s competitive equilibrium in
+the sense of classical economics.</p>
+<p>The geometry also says what moves slowly. A multiplicative step
+changes a probability in proportion to its size, so a probability near
+zero barely moves until the evidence for it is large. In a bandit or an
+on-policy learner, that evidence arrives only through sampling, and an
+action near zero is rarely sampled. That is the cold learner’s problem
+in the bandit box, and the reason a policy whose entropy has collapsed
+rarely regains the actions it gave up. A market escapes it, because a
+trader who believes in a cheap outcome profits most by buying it.</p>
+</blockquote>
 </section>
 <section id="the-combinatorial-wall" class="level2">
 <h2>The combinatorial wall</h2>

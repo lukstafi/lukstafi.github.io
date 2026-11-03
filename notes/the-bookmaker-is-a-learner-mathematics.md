@@ -393,7 +393,7 @@ An LMSR trade on an event $E$ multiplies the probability of every outcome in $E$
 ## 7. After 2010
 
 - [Abernethy, Chen and Wortman Vaughan](https://doi.org/10.1145/2465769.2465777), "Efficient market making via convex optimization, and a connection to online learning," *ACM TEAC* 1(2), 2013, derive the duality-based cost function from axioms (path independence, no arbitrage, information incorporation) for arbitrary securities, identify trading with FTRL, and subsume most of §5. They also give an efficient pair-betting market maker by relaxing the no-arbitrage set.
-- Frongillo, Della Penna and Reid, NIPS 2012: price dynamics as stochastic mirror descent. Abernethy, Kutty, Lahaie and Sami, EC 2014: exponential-family markets, with the cost function a log-partition function.
+- [Frongillo, Della Penna and Reid](https://proceedings.neurips.cc/paper/2012/hash/41a60377ba920919939d83326ebee5a1-Abstract.html), NIPS 2012: price dynamics as stochastic mirror descent. Abernethy, Kutty, Lahaie and Sami, EC 2014: exponential-family markets, with the cost function a log-partition function.
 - Combinatorial market making as optimization over the marginal polytope: Dudík, Lahaie and Pennock, EC 2012 (constraint generation); [Kroer, Dudík, Lahaie and Balakrishnan](https://doi.org/10.1145/2940716.2940767), EC 2016 (Frank–Wolfe projection with an integer-programming oracle, on a $2^{63}$-outcome market for a 64-team tournament); Hossain, Wang and Yu, SODA 2025 (a geometric view, with pricing as range queries).
 - [Frongillo, Papireddygari and Waggoner](https://arxiv.org/abs/2302.00196), ITCS 2024: constant-function market makers with concave potentials, such as Uniswap, are equivalent to cost-function prediction markets and define proper scoring rules.
 
