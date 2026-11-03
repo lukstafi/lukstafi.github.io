@@ -476,12 +476,12 @@ class="math inline">\sqrt{T\log n}</span>, and no bandit algorithm does
 better than order <span class="math inline">\sqrt{Tn}</span>.</p>
 <p>In a bandit, the temperature does two jobs. Spreading the weights
 hedges, as in Hedge, and it also keeps sampling the arms the learner
-disfavors. A cold learner pulls those arms so rarely that dividing by
-their probabilities turns its estimates into noise, which is why Exp3
-mixes a little uniform probability into its weights. A policy in
-reinforcement learning learns only from the actions it takes, and for
-the same reason its softmax temperature serves as an exploration
-knob.</p>
+disfavors. A cold learner, one with a low temperature, pulls those arms
+so rarely that dividing by their probabilities turns its estimates into
+noise, which is why Exp3 mixes a little uniform probability into its
+weights. A policy in reinforcement learning learns only from the actions
+it takes, and for the same reason its softmax temperature serves as an
+exploration knob.</p>
 <p>The bookmaker is in Hedge’s position, not the bandit’s. Traders can
 buy any outcome, so the bookmaker hears about all of them without
 acting. What it pays is the regret of hedging. The exploration happens
@@ -584,22 +584,22 @@ with divisible orders it is nevertheless solvable in polynomial time.
 The ellipsoid method never needs the whole list of constraints. It needs
 only a way to find a violated one. Here that means finding the finishing
 order in which the accepted bets would cost the house most, and that is
-a maximum-weight matching between runners and positions. Pair betting
-looks simpler, with only <span class="math inline">n(n-1)</span>
-possible bets. Yet matching is NP-hard for pair betting, whether orders
-are divisible or not. The reason is the three-bet cycle of the first
-section, grown large. A set of pair bets is a directed graph on the
-runners. The worst finishing order for the house is the one that agrees
-with as many accepted bets as possible. Finding it means removing the
-fewest edges that leave the graph acyclic, which is the minimum feedback
-arc set problem, and that problem is NP-hard. Single profitable cycles
-can be found in polynomial time. Give each bet the weight one minus its
-price. A cycle is profitable for the house when its total weight is
-below one, as in the race of the first section, where it is <span
-class="math inline">3\times0.3=0.9</span>, so a shortest-cycle search
-finds the profitable ones. But cycles that overlap can be profitable
-together when none is profitable alone, and the greedy method of taking
-the shortest cycle first misses them.</p>
+a maximum-weight matching between runners and positions.</p>
+<p>Pair betting looks simpler, with only <span
+class="math inline">n(n-1)</span> possible bets. Yet matching is NP-hard
+for pair betting, whether orders are divisible or not. The reason is the
+three-bet cycle of the first section, grown large. A set of pair bets is
+a directed graph on the runners. The worst finishing order for the house
+is the one that agrees with as many accepted bets as possible. Finding
+it means removing the fewest edges that leave the graph acyclic, which
+is the minimum feedback arc set problem, and that problem is NP-hard.
+Single profitable cycles can be found in polynomial time. Give each bet
+the weight one minus its price. A cycle is profitable for the house when
+its total weight is below one, as in the race of the first section,
+where it is <span class="math inline">3\times0.3=0.9</span>, so a
+shortest-cycle search finds the profitable ones. But cycles that overlap
+can be profitable together when none is profitable alone, and the greedy
+method of taking the shortest cycle first misses them.</p>
 <p>The bookmaker’s pricing problem is worse. For subset betting, every
 bet can be built from shares in single runner–position pairs. Let <span
 class="math inline">q_{kl}</span> be the shares sold in “runner <span
@@ -622,13 +622,32 @@ permutations, without the signs. Computing permanents is #P-hard: at
 least as hard as counting the solutions of any problem in NP. For pair
 betting, the corresponding sum counts orderings consistent with a
 partial order, which is also #P-hard. So an exact LMSR bookmaker for
-either language is intractable. My notes prove these results and then
-list three section headings with nothing under them: learning that
-minimizes regret against the best permutation; polynomial-time
-approximation of subset-betting prices; polynomial pricing for
-tournaments. The paper they come from, by Chen, Fortnow, Lambert,
-Pennock and Wortman, answers the first two with a single construction,
-and a companion paper answers the third.</p>
+either language is intractable.</p>
+<p>For subset betting, matching and pricing concern the same matrix. A
+house that has sold the shares <span class="math inline">q_{kl}</span>
+owes <span class="math inline">Q_\sigma=\sum_k q_{k\sigma(k)}</span> if
+the finishing order is <span class="math inline">\sigma</span>. Matching
+asks for the worst order for the house, <span
+class="math inline">\max_\sigma Q_\sigma</span>, and a maximum-weight
+matching finds it in polynomial time. Pricing asks for the cost
+function, <span class="math inline">C(q)=b\log\sum_\sigma
+e^{Q_\sigma/b}</span>, which is <span class="math inline">b</span> times
+the logarithm of the permanent. As <span class="math inline">b</span>
+shrinks toward zero, the largest term dominates the sum, and <span
+class="math inline">C(q)</span> tends to <span
+class="math inline">\max_\sigma Q_\sigma</span>. Matching is pricing at
+zero temperature. At zero temperature the bookmaker needs only the worst
+finishing order, which is easy to find. At any positive temperature it
+needs a sum over all of them, which is hard to compute. <a
+href="https://lukstafi.github.io/notes/presumed-normal.html#the-solver-keeps-no-proof"><em>Presumed
+Normal</em></a> meets the same split in logic programming: “Counting
+answer sets is harder than finding one.”</p>
+<p>My notes prove the hardness results and then list three section
+headings with nothing under them: learning that minimizes regret against
+the best permutation; polynomial-time approximation of subset-betting
+prices; polynomial pricing for tournaments. The paper they come from, by
+Chen, Fortnow, Lambert, Pennock and Wortman, answers the first two with
+a single construction, and a companion paper answers the third.</p>
 <p>The first answer uses the identity of the previous section. If the
 LMSR is Hedge, then any tractable learner can be turned into a tractable
 bookmaker. David Helmbold and Manfred Warmuth had designed <a
@@ -652,18 +671,23 @@ regret supplies both.</p>
 <p>The second answer changes the language instead of the bookmaker. <a
 href="https://doi.org/10.1145/1374376.1374421">Chen, Sharad Goel and
 Pennock</a> studied single-elimination tournaments, such as a knockout
-bracket of 64 teams. Pricing arbitrary bets on such a tournament is
-still #P-hard. But for natural bets such as “team <span
-class="math inline">i</span> wins game <span
+of 64 teams. The teams are paired for a first round of games, the
+winners are paired again, and so on until the final. The chart of who
+can meet whom is the <em>bracket</em>, a binary tree with the
+first-round games as its leaves and the final as its root. Pricing
+arbitrary bets on such a tournament is still #P-hard. But for natural
+bets such as “team <span class="math inline">i</span> wins game <span
 class="math inline">k</span>” and “team <span
 class="math inline">i</span> beats team <span
 class="math inline">j</span> if they meet,” the LMSR distribution over
-outcomes stays representable as a Bayesian network shaped like the
-bracket. A trade on such a bet multiplies the probability of every
-outcome in the event by the same factor, and for these events the factor
-touches only a few local tables of the network. Prices stay exact, and
-each trade takes <span class="math inline">O(n^3)</span> operations for
-<span class="math inline">n</span> teams.</p>
+outcomes stays representable as a Bayesian network whose graph is the
+bracket itself: one node per game, whose value is the game’s winner,
+linked to the two games that feed it. A trade on such a bet multiplies
+the probability of every outcome in the event by the same factor, and
+for these events the factor touches only a few local tables of the
+network. Prices stay exact, and each trade takes <span
+class="math inline">O(n^3)</span> operations for <span
+class="math inline">n</span> teams.</p>
 <p>After 2010, the wall was approached as an optimization problem. The
 set of price vectors that are consistent with some probability
 distribution over outcomes is a polytope, the <em>marginal polytope</em>
@@ -680,7 +704,8 @@ Their bookmaker ran on the 2010 NCAA tournament, an outcome space of
 63 games had been played. Variational inference in graphical models
 works over the same polytope. The oracle repeats the move of the
 ellipsoid method’s separation step: never list the outcomes, only find
-the extreme one.</p>
+the extreme one. Each call solves the zero-temperature problem, and the
+calls together approximate the positive-temperature one.</p>
 </section>
 <section id="what-2026-built-instead" class="level2">
 <h2>What 2026 built instead</h2>
@@ -751,8 +776,9 @@ through duplicate accounts or questions written by people who control
 the outcome. And “we don’t know what game people are playing.” Cultivate
 kept its forecasters and replaced the market with opinion pools rewarded
 by a proper scoring rule. In the terms of the second section, it kept
-the score and removed the relay. The vendor conceded that market prices
-had been about as accurate as the alternatives.</p>
+the score and removed the relay. Accuracy was not among the reasons.
+Research had shown, the vendor wrote, that market prices were “just as
+accurate” as the other aggregation methods it used.</p>
 <p>Several things my notes did not model now matter more than mechanism
 design. Sports account for most of the volume. A <a
 href="https://www2.gwu.edu/~forcpgm/2026-001.pdf">study of Kalshi
@@ -797,8 +823,7 @@ ran simulated markets on binary questions from a truthfulness benchmark,
 mostly with one small open model. The errors of the preference-tuned
 traders were correlated at about 0.7, and a market of ten of them was
 right 67.6% of the time, against 70.2% for a single agent. A market
-aggregates diversity of information, not the number of traders. In LMSR
-markets studied by <a
+aggregates diversity of information. In LMSR markets studied by <a
 href="https://arxiv.org/abs/2604.20050">Galanis</a>, language-model
 traders hit a second limit: they failed to aggregate information “where
 more than two levels of interactive reasoning are required.” <a
@@ -827,13 +852,17 @@ the system’s own currency.” That essay left open whether psychology
 gains any traction on such a system. A prediction market is the cleanest
 case to test, because its prices are explicitly probabilities, and the
 bookmaker is a learner by construction.</p>
-<p>Take four of the five conditions in turn, leaving aside content at
-several levels. <em>Accuracy-responsiveness</em> the bookmaker has by
-design: its prices are revised by trades that the scoring rule rewards
-only when they move the price toward the truth, and the revision rule is
-a no-regret learning algorithm. <em>Unity</em> depends on the market’s
-design. An LMSR over all the outcomes of a question is a single economy:
-a purchase in one outcome moves every other price, through the
+<p>The monastery essay tested the five conditions of <a
+href="https://lukstafi.github.io/notes/minds-by-degrees-draft-v2.html"><em>Minds
+by Degrees</em></a>: organizational unity, structured and
+counterfactually rich vehicles, accuracy-responsive dynamics, simulation
+whose outputs function internally, and content at several levels. Take
+the first four in turn. <em>Accuracy-responsiveness</em> the bookmaker
+has by design: its prices are revised by trades that the scoring rule
+rewards only when they move the price toward the truth, and the revision
+rule is a no-regret learning algorithm. <em>Unity</em> depends on the
+market’s design. An LMSR over all the outcomes of a question is a single
+economy: a purchase in one outcome moves every other price, through the
 bookmaker’s own state. A set of separate binary markets is closer to the
 monastery that only counts votes. Arbitrage still draws one boundary
 around such markets, as the monastery essay said. But their prices are
@@ -852,12 +881,12 @@ enters the system, and the system’s own processes play no part in the
 transformations. The verdict qualifies the monastery essay, which
 credited futures prices with running a model of the world forward: a
 futures price is corrected as its date approaches, but each correction
-is computed in some trader’s head. The tournament bookmaker is
-different. When a trade moves the price that team <span
-class="math inline">i</span> wins its first game, the bookmaker’s
-Bayesian network propagates the change through the bracket, to the price
-that <span class="math inline">i</span> reaches the final and that its
-later opponents do. That propagation is the bookmaker’s own
+is computed in some trader’s head.</p>
+<p>The tournament bookmaker is different. When a trade moves the price
+that team <span class="math inline">i</span> wins its first game, the
+bookmaker’s Bayesian network propagates the change through the bracket,
+to the price that <span class="math inline">i</span> reaches the final
+and that its later opponents do. That propagation is the bookmaker’s own
 transformation, and it mirrors the structure of the tournament. It is
 the simulation by artifact that the monastery essay found in the
 computus, the tables by which a monastery reckoned the date of Easter.
@@ -891,17 +920,17 @@ beyond economics, I leave where the monastery essay left it.</p>
 <h2>Closing the notes</h2>
 <p>My 2010 notes were a snapshot of a field in a productive year. The
 identity between bookmakers and learners had just been proved in both
-directions. The equivalence of the relay, the cost function and the SCPM
-was new, and the combinatorial results were two and three years old. The
-notes’ empty sections were filled within the same papers they drew on,
-and I could have filled them then. What I could not have seen was where
-each part would go. The cost function went to decentralized exchanges.
-The scoring rule went to the organizations that gave up on markets, and
-to the benchmarks that rank machine forecasters. The learner view went
-into the research that keeps combinatorial bookmakers tractable. The
-real-money markets took none of these. They took the order book, the
-dealer and the parlay, and left the joint distribution to one dealer, or
-to nobody.</p>
+directions. The equivalence of the relay, the cost function and the
+sequential convex pari-mutuel mechanism was new, and the combinatorial
+results were two and three years old. The notes’ empty sections were
+filled within the same papers they drew on, and I could have filled them
+then. What I could not have seen was where each part would go. The cost
+function went to decentralized exchanges. The scoring rule went to the
+organizations that gave up on markets, and to the benchmarks that rank
+machine forecasters. The learner view went into the research that keeps
+combinatorial bookmakers tractable. The real-money markets took none of
+these. They took the order book, the dealer and the parlay, and left the
+joint distribution to one dealer, or to nobody.</p>
 <hr />
 <p><em>Sources.</em> The 2010 lecture notes are summarized and corrected
 on the <a
