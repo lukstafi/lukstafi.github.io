@@ -6,9 +6,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
   <meta name="author" content="Łukasz Stafiniak and Claude (Anthropic)">
   <meta name="dcterms.date" content="2026-10-28">
-  <meta name="description" content="Revisiting my 2010 lecture on prediction markets: a market maker with bounded loss is a no-regret learner, what the 2026 markets built instead, and whether a market is minded. With a companion page of the mathematics. By Claude Opus 5.5, in my voice.">
+  <meta name="description" content="A market maker with bounded loss is a no-regret learner, prediction markets in 2026, and whether a market is minded. By Claude Opus 5.5, in my voice.">
   <meta property="og:title" content="The Bookmaker Is a Learner">
-  <meta property="og:description" content="Revisiting my 2010 lecture on prediction markets: a market maker with bounded loss is a no-regret learner, what the 2026 markets built instead, and whether a market is minded. With a companion page of the mathematics. By Claude Opus 5.5, in my voice.">
+  <meta property="og:description" content="A market maker with bounded loss is a no-regret learner, prediction markets in 2026, and whether a market is minded. By Claude Opus 5.5, in my voice.">
   <meta property="og:url" content="https://lukstafi.github.io/notes/the-bookmaker-is-a-learner.html">
   <meta property="og:type" content="article">
   <meta property="og:site_name" content="lukstafi&#x27;s blog">
@@ -196,9 +196,9 @@ outcome <span class="math inline">i</span> occurs is</p>
 </span></p>
 <p>The bookmaker in effect pays one forecaster, the last, for improving
 on the first. With the logarithmic rule and a uniform starting forecast,
-that payment is at most <span class="math inline">b\ln 1-b\ln(1/n)=b\ln
-n</span>. The bookmaker’s subsidy is bounded, however many traders
-arrive and whatever they do. The parameter <span
+that payment is at most <span class="math inline">b\log
+1-b\log(1/n)=b\log n</span>. The bookmaker’s subsidy is bounded, however
+many traders arrive and whatever they do. The parameter <span
 class="math inline">b</span> sets both the size of the subsidy and, as
 we will see, how fast prices move.</p>
 <blockquote>
@@ -206,15 +206,16 @@ we will see, how fast prices move.</p>
 class="math inline">b=100</span>. The market stands at 50%. A trader who
 believes YES has probability 70% moves the forecast to 70%. If YES
 occurs they receive <span
-class="math inline">100\ln(0.7/0.5)\approx\$33.65</span>. If NO occurs
-they pay <span class="math inline">100\ln(0.5/0.3)\approx\$51.08</span>.
-At their own belief the expected gain is <span
-class="math inline">0.7\cdot 33.65-0.3\cdot 51.08\approx\$8.23</span>,
-which is <span class="math inline">b</span> times the Kullback–Leibler
-divergence of their belief from the market’s previous forecast. If they
-moved the market to any other number, their expected gain at a belief of
-70% would be smaller. The most this market can ever cost its operator is
-<span class="math inline">100\ln 2\approx\$69.31</span>.</p>
+class="math inline">100\log(0.7/0.5)\approx\$33.65</span>. If NO occurs
+they pay <span
+class="math inline">100\log(0.5/0.3)\approx\$51.08</span>. At their own
+belief the expected gain is <span class="math inline">0.7\cdot
+33.65-0.3\cdot 51.08\approx\$8.23</span>, which is <span
+class="math inline">b</span> times the Kullback–Leibler divergence of
+their belief from the market’s previous forecast. If they moved the
+market to any other number, their expected gain at a belief of 70% would
+be smaller. The most this market can ever cost its operator is <span
+class="math inline">100\log 2\approx\$69.31</span>.</p>
 </blockquote>
 <p>Properness makes honesty optimal one trade at a time. A trader who
 expects to trade again may do better by bluffing: moving the price the
@@ -294,7 +295,7 @@ announces it, and each of the two determines the other. For the LMSR,
 <span class="math inline">b</span> times the negative entropy. The
 bookmaker’s worst-case loss is the range of <span
 class="math inline">\alpha</span> over the simplex. For the LMSR that
-range is <span class="math inline">b\ln n</span> again, as it must be.
+range is <span class="math inline">b\log n</span> again, as it must be.
 (<a href="https://arxiv.org/abs/1003.0034">Chen and Jennifer Wortman
 Vaughan</a> proved the general correspondence, and the companion page
 gives the details.)</p>
@@ -401,9 +402,9 @@ exponential weights or weighted majority), sets</p>
 w_{i,t}=\frac{e^{\eta G_{i,t-1}}}{\sum_j e^{\eta G_{j,t-1}}},
 \qquad G_{i,t}=\sum_{\tau\le t} g_{i,\tau},
 </span></p>
-<p>and its regret is at most <span class="math inline">\ln n/\eta</span>
-plus a term that grows with <span class="math inline">\eta</span> and
-with the size of the gains.</p>
+<p>and its regret is at most <span class="math inline">\log
+n/\eta</span> plus a term that grows with <span
+class="math inline">\eta</span> and with the size of the gains.</p>
 <p>Now make the outcomes of a market the experts, and let the shares a
 trader buys in outcome <span class="math inline">i</span> at step <span
 class="math inline">t</span> be expert <span
@@ -421,7 +422,7 @@ class="math inline">\sum_t w_t\cdot g_t</span>. When outcome <span
 class="math inline">i</span> occurs, the bookmaker pays out <span
 class="math inline">q_i</span>, which is at most the best expert’s total
 gain. The bookmaker’s loss is therefore at most the learner’s regret.
-Hedge’s bound is <span class="math inline">b\ln n</span> plus a term
+Hedge’s bound is <span class="math inline">b\log n</span> plus a term
 that vanishes as trades become small, the same subsidy the telescoping
 relay gave directly. <a href="https://arxiv.org/abs/0802.1362">Chen,
 Fortnow, Lambert, Pennock and Wortman</a> noticed this in 2008. My notes
@@ -433,11 +434,11 @@ bookmaker with bounded loss <span class="math inline">B</span> and
 smoothly varying prices yields a no-regret learner, with regret at most
 <span class="math inline">\sqrt{2B\varphi T}</span>, where <span
 class="math inline">\varphi</span> bounds how fast prices respond to
-trades. For the LMSR, <span class="math inline">B=b\ln n</span> and
+trades. For the LMSR, <span class="math inline">B=b\log n</span> and
 <span class="math inline">\varphi=2/b</span>, so the regret is at most
-<span class="math inline">2\sqrt{T\ln n}</span>. The liquidity parameter
-cancels, as it should: a learner’s regret cannot depend on the currency
-in which the market is denominated. The function <span
+<span class="math inline">2\sqrt{T\log n}</span>. The liquidity
+parameter cancels, as it should: a learner’s regret cannot depend on the
+currency in which the market is denominated. The function <span
 class="math inline">\alpha</span> of the dual description is the
 regularizer of the learning algorithm called <em>follow the regularized
 leader</em>. That algorithm picks the weights <span
@@ -555,14 +556,14 @@ exponential factor and then rescales rows and columns alternately until
 every row and column sums to one, a procedure called Sinkhorn balancing.
 Run as a bookmaker, it quotes subset-betting prices in polynomial time,
 and its regret bound becomes a bound on its loss: <span
-class="math inline">b\,n\ln n</span> when trades are split finely, close
-to the <span class="math inline">b\ln n!\approx b\,(n\ln n-n)</span> of
-the exact LMSR. This bookmaker is not the exact LMSR. It is a different
-bookmaker, whose price matrix plays the role of the runner-by-position
-marginals. The identity is what licenses the substitution: what we need
-from a bookmaker is a bounded loss and prices that move toward the
-traders’ information, and a learner with bounded regret supplies
-both.</p>
+class="math inline">b\,n\log n</span> when trades are split finely,
+close to the <span class="math inline">b\log n!\approx b\,(n\log
+n-n)</span> of the exact LMSR. This bookmaker is not the exact LMSR. It
+is a different bookmaker, whose price matrix plays the role of the
+runner-by-position marginals. The identity is what licenses the
+substitution: what we need from a bookmaker is a bounded loss and prices
+that move toward the traders’ information, and a learner with bounded
+regret supplies both.</p>
 <p>The second answer changes the language instead of the bookmaker. <a
 href="https://doi.org/10.1145/1374376.1374421">Chen, Sharad Goel and
 Pennock</a> studied single-elimination tournaments, such as a knockout
@@ -608,7 +609,7 @@ order book during 2022. By the Uniswap result of the four-faces section,
 that design was a cost-function bookmaker too. I found no notable
 real-money venue running one in 2026. The subsidy survives as liquidity
 rewards paid to the firms that quote, a cash budget rather than a bound
-like <span class="math inline">b\ln n</span>. The play-money venue
+like <span class="math inline">b\log n</span>. The play-money venue
 Manifold uses automated market makers, and the mechanism-design
 literature continues to propose new ones.</p>
 <p>The largest product of 2026 is combinatorial, in the simplest bidding

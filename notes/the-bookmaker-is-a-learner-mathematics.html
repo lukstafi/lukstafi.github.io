@@ -183,7 +183,7 @@ class="math inline">s_k(p&#39;)</span> when the outcome is <span
 class="math inline">k</span>. The operator’s total payout telescopes to
 <span class="math inline">s_k(p^T)-s_k(p^0)</span>. For the logarithmic
 rule with uniform <span class="math inline">p^0</span>, this is at most
-<span class="math inline">b\ln n</span>.</p>
+<span class="math inline">b\log n</span>.</p>
 <p><strong>Cost-function markets</strong> (<a
 href="https://arxiv.org/abs/1206.5252">Chen and Pennock</a>, UAI 2007).
 The operator sells shares; a share in <span class="math inline">i</span>
@@ -461,13 +461,13 @@ class="math inline">\max_iG_{i,T}-\sum_tw_t\cdot r_t</span>. The
 standard bound for gains in an interval of width <span
 class="math inline">2\varepsilon</span> (by Hoeffding’s lemma) is</p>
 <p><span class="math display">
-\max_iG_{i,T}-\sum_tw_t\cdot r_t\le\frac{\ln n}{\eta}+\frac{\eta
-T(2\varepsilon)^2}{8}=b\ln n+\frac{T\varepsilon^2}{2b}.
+\max_iG_{i,T}-\sum_tw_t\cdot r_t\le\frac{\log n}{\eta}+\frac{\eta
+T(2\varepsilon)^2}{8}=b\log n+\frac{T\varepsilon^2}{2b}.
 </span></p>
 <p>For a fixed trading volume <span
 class="math inline">V=T\varepsilon</span>, the second term is <span
 class="math inline">V\varepsilon/(2b)\to0</span> as trades become small,
-and the bookmaker’s worst-case loss is <span class="math inline">b\ln
+and the bookmaker’s worst-case loss is <span class="math inline">b\log
 n</span>, matching the telescoping bound of §2.</p>
 </section>
 <section id="from-a-bookmaker-to-a-learner" class="level3">
@@ -523,8 +523,8 @@ class="math inline">\square</span></p>
 <p>For the LMSR, <span class="math inline">\partial p_i/\partial
 q_j=p_i(\delta_{ij}-p_j)/b</span>, so <span
 class="math inline">\varphi=2/b</span> suffices, and with <span
-class="math inline">B=b\ln n</span> the regret bound is <span
-class="math inline">2\sqrt{T\ln n}</span>, independent of <span
+class="math inline">B=b\log n</span> the regret bound is <span
+class="math inline">2\sqrt{T\log n}</span>, independent of <span
 class="math inline">b</span>.</p>
 </section>
 <section id="market-scoring-rules-and-cost-functions-are-one-family"
@@ -987,7 +987,7 @@ decomposes <span class="math inline">W_t</span> into a convex
 combination of at most <span class="math inline">n^2-2n+2</span>
 permutation matrices (Birkhoff–von Neumann) and samples one. Its regret
 against the best fixed permutation is of order <span
-class="math inline">\sqrt{L^*n\ln n}+n\ln n</span>, where <span
+class="math inline">\sqrt{L^*n\log n}+n\log n</span>, where <span
 class="math inline">L^*</span> is the best permutation’s loss.</p>
 </section>
 <section id="approximate-subset-betting-prices-in-polynomial-time-new"
@@ -1007,12 +1007,12 @@ bookmaker quotes <span class="math inline">P_{kj}</span> as the price of
 <span class="math inline">\langle k\mid j\rangle</span>. Every step is
 polynomial, with Sinkhorn balancing run to a fixed precision.
 Translating the learner’s regret bound gives a worst-case loss of at
-most <span class="math inline">b\,n\ln n</span> in the limit of small
+most <span class="math inline">b\,n\log n</span> in the limit of small
 trades (their Theorem 11 and Corollary 12; for a fixed step size <span
 class="math inline">\varepsilon&gt;0</span>, the paper notes that the
 bound “can grow arbitrarily large” as the number of steps grows). The
 exact LMSR over permutations would have worst-case loss <span
-class="math inline">b\ln n!</span>.</p>
+class="math inline">b\log n!</span>.</p>
 <p>Two remarks. First, this bookmaker is not the exact LMSR over
 permutations. The exact LMSR’s matrix of runner-by-position prices is
 also doubly stochastic, but computing it requires permanents; Sinkhorn
@@ -1254,8 +1254,8 @@ properties, not seven; individual rationality and monotonicity are
 consequences. Individual rationality concerns nonnegative expected
 <em>profit</em> (the notes said “nonzero payout”), and monotonicity
 concerns the magnitude of expected profit.</li>
-<li>§5.1: the Weighted Majority bound has <span class="math inline">\ln
-n/\eta</span>, not <span class="math inline">\ln\eta/\eta</span>, and
+<li>§5.1: the Weighted Majority bound has <span class="math inline">\log
+n/\eta</span>, not <span class="math inline">\log\eta/\eta</span>, and
 the bookmaker’s loss bound has <span
 class="math inline">4\varepsilon^2T/b</span>, not <span
 class="math inline">4\varepsilon^2Tb</span>. The second slip is already

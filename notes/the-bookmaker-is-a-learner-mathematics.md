@@ -58,7 +58,7 @@ s_i(p)=b\log p_i\quad\text{(logarithmic)},\qquad
 s_i(p)=b\Bigl(2p_i-\sum_j p_j^2\Bigr)\quad\text{(quadratic)}.
 $$
 
-**Market scoring rules** ([Hanson 2003, 2007](https://mason.gmu.edu/~rhanson/mktscore.pdf)). The market starts at $p^0$. A trader who moves it from $p$ to $p'$ pays $s_k(p)$ and receives $s_k(p')$ when the outcome is $k$. The operator's total payout telescopes to $s_k(p^T)-s_k(p^0)$. For the logarithmic rule with uniform $p^0$, this is at most $b\ln n$.
+**Market scoring rules** ([Hanson 2003, 2007](https://mason.gmu.edu/~rhanson/mktscore.pdf)). The market starts at $p^0$. A trader who moves it from $p$ to $p'$ pays $s_k(p)$ and receives $s_k(p')$ when the outcome is $k$. The operator's total payout telescopes to $s_k(p^T)-s_k(p^0)$. For the logarithmic rule with uniform $p^0$, this is at most $b\log n$.
 
 **Cost-function markets** ([Chen and Pennock](https://arxiv.org/abs/1206.5252), UAI 2007). The operator sells shares; a share in $i$ pays \$1 if $i$ occurs. With $q$ shares outstanding, buying a bundle $a$ costs $C(q+a)-C(q)$. Instantaneous prices are $p_i(q)=\partial C(q)/\partial q_i$. $C$ is a *valid* cost function if $p_i(q)\ge0$ and $\sum_i p_i(q)=1$ for all $q$. The logarithmic market scoring rule (LMSR) is
 
@@ -154,10 +154,10 @@ $$
 which for $\eta=1/b$ equals the LMSR price $p_i(q_{t-1})$. The bookmaker's revenue is $\sum_t\bigl(C(q_t)-C(q_{t-1})\bigr)\ge\sum_tp(q_{t-1})\cdot r_t=\sum_tw_t\cdot r_t$ by convexity of $C$. If the outcome is $\omega$, it pays $q_{\omega,T}\le\max_iG_{i,T}$. Its loss is therefore at most Hedge's regret, $\max_iG_{i,T}-\sum_tw_t\cdot r_t$. The standard bound for gains in an interval of width $2\varepsilon$ (by Hoeffding's lemma) is
 
 $$
-\max_iG_{i,T}-\sum_tw_t\cdot r_t\le\frac{\ln n}{\eta}+\frac{\eta T(2\varepsilon)^2}{8}=b\ln n+\frac{T\varepsilon^2}{2b}.
+\max_iG_{i,T}-\sum_tw_t\cdot r_t\le\frac{\log n}{\eta}+\frac{\eta T(2\varepsilon)^2}{8}=b\log n+\frac{T\varepsilon^2}{2b}.
 $$
 
-For a fixed trading volume $V=T\varepsilon$, the second term is $V\varepsilon/(2b)\to0$ as trades become small, and the bookmaker's worst-case loss is $b\ln n$, matching the telescoping bound of §2.
+For a fixed trading volume $V=T\varepsilon$, the second term is $V\varepsilon/(2b)\to0$ as trades become small, and the bookmaker's worst-case loss is $b\log n$, matching the telescoping bound of §2.
 
 ### 5.2 From a bookmaker to a learner
 
@@ -186,7 +186,7 @@ $$
 
 which is minimized at $\varepsilon=\sqrt{2B/(\varphi T)}$ with value $\sqrt{2B\varphi T}$. $\square$
 
-For the LMSR, $\partial p_i/\partial q_j=p_i(\delta_{ij}-p_j)/b$, so $\varphi=2/b$ suffices, and with $B=b\ln n$ the regret bound is $2\sqrt{T\ln n}$, independent of $b$.
+For the LMSR, $\partial p_i/\partial q_j=p_i(\delta_{ij}-p_j)/b$, so $\varphi=2/b$ suffices, and with $B=b\log n$ the regret bound is $2\sqrt{T\log n}$, independent of $b$.
 
 ### 5.3 Market scoring rules and cost functions are one family
 
@@ -372,11 +372,11 @@ The same paper proves analogous hardness results for Boolean betting, with outco
 
 The 2010 notes left this section empty. It is §6.3 of Chen et al. 2008, which uses the learner of [Helmbold and Warmuth](https://jmlr.org/papers/v10/helmbold09a.html), "Learning permutations with exponential weights" (COLT 2007; *JMLR* 10, 2009).
 
-The comparison class is the $n!$ permutations, with a loss matrix $\mathcal L_t$ each round, where a permutation $\sigma$ suffers $\sum_k\mathcal L_{t,k\sigma(k)}$. Running Hedge over permutations directly needs $n!$ weights. PermELearn instead keeps an $n\times n$ doubly stochastic matrix $W_t$, whose entry $(k,j)$ plays the role of the probability that $k$ is mapped to $j$. Each round it multiplies entries by $e^{-\eta\mathcal L_{t,kj}}$ and then applies *Sinkhorn balancing*: alternately rescale rows and columns to sum to one, which converges to a doubly stochastic matrix. To act, it decomposes $W_t$ into a convex combination of at most $n^2-2n+2$ permutation matrices (Birkhoff–von Neumann) and samples one. Its regret against the best fixed permutation is of order $\sqrt{L^*n\ln n}+n\ln n$, where $L^*$ is the best permutation's loss.
+The comparison class is the $n!$ permutations, with a loss matrix $\mathcal L_t$ each round, where a permutation $\sigma$ suffers $\sum_k\mathcal L_{t,k\sigma(k)}$. Running Hedge over permutations directly needs $n!$ weights. PermELearn instead keeps an $n\times n$ doubly stochastic matrix $W_t$, whose entry $(k,j)$ plays the role of the probability that $k$ is mapped to $j$. Each round it multiplies entries by $e^{-\eta\mathcal L_{t,kj}}$ and then applies *Sinkhorn balancing*: alternately rescale rows and columns to sum to one, which converges to a doubly stochastic matrix. To act, it decomposes $W_t$ into a convex combination of at most $n^2-2n+2$ permutation matrices (Birkhoff–von Neumann) and samples one. Its regret against the best fixed permutation is of order $\sqrt{L^*n\log n}+n\log n$, where $L^*$ is the best permutation's loss.
 
 ### 6.3.1 Approximate subset-betting prices in polynomial time *(new)*
 
-Chen et al. 2008, §6.4, turn PermELearn into a bookmaker by the equivalence of §5.1. Start from the uniform matrix $P^1$ with all entries $1/n$. After a trade in securities $\langle k\mid j\rangle$, multiply entry $(k,j)$ by $e^{q_{kj}/b}$ for the shares bought and Sinkhorn-balance. The resulting matrices coincide with PermELearn's weights for the corresponding loss sequence (their Lemma 10), and the bookmaker quotes $P_{kj}$ as the price of $\langle k\mid j\rangle$. Every step is polynomial, with Sinkhorn balancing run to a fixed precision. Translating the learner's regret bound gives a worst-case loss of at most $b\,n\ln n$ in the limit of small trades (their Theorem 11 and Corollary 12; for a fixed step size $\varepsilon>0$, the paper notes that the bound "can grow arbitrarily large" as the number of steps grows). The exact LMSR over permutations would have worst-case loss $b\ln n!$.
+Chen et al. 2008, §6.4, turn PermELearn into a bookmaker by the equivalence of §5.1. Start from the uniform matrix $P^1$ with all entries $1/n$. After a trade in securities $\langle k\mid j\rangle$, multiply entry $(k,j)$ by $e^{q_{kj}/b}$ for the shares bought and Sinkhorn-balance. The resulting matrices coincide with PermELearn's weights for the corresponding loss sequence (their Lemma 10), and the bookmaker quotes $P_{kj}$ as the price of $\langle k\mid j\rangle$. Every step is polynomial, with Sinkhorn balancing run to a fixed precision. Translating the learner's regret bound gives a worst-case loss of at most $b\,n\log n$ in the limit of small trades (their Theorem 11 and Corollary 12; for a fixed step size $\varepsilon>0$, the paper notes that the bound "can grow arbitrarily large" as the number of steps grows). The exact LMSR over permutations would have worst-case loss $b\log n!$.
 
 Two remarks. First, this bookmaker is not the exact LMSR over permutations. The exact LMSR's matrix of runner-by-position prices is also doubly stochastic, but computing it requires permanents; Sinkhorn balancing of the matrix $e^{q_{kj}/b}$ gives a different doubly stochastic matrix. Second, the approximation is not the Jerrum–Sinclair–Vigoda approximation of the permanent. The bookmaker is designed as a learner, and its guarantee is a regret bound, not an approximation ratio for LMSR prices.
 
@@ -441,7 +441,7 @@ The second sheet I wrote for the course, on the chapter of Nisan, Roughgarden, T
 The instructive ones, applied above:
 
 1. §2 (now §1): the "if and only if" of Theorem 1 covers five properties, not seven; individual rationality and monotonicity are consequences. Individual rationality concerns nonnegative expected *profit* (the notes said "nonzero payout"), and monotonicity concerns the magnitude of expected profit.
-2. §5.1: the Weighted Majority bound has $\ln n/\eta$, not $\ln\eta/\eta$, and the bookmaker's loss bound has $4\varepsilon^2T/b$, not $4\varepsilon^2Tb$. The second slip is already in the 2008 source paper. (§5.1 above uses a gains formulation instead, with the Hoeffding constant.)
+2. §5.1: the Weighted Majority bound has $\log n/\eta$, not $\log\eta/\eta$, and the bookmaker's loss bound has $4\varepsilon^2T/b$, not $4\varepsilon^2Tb$. The second slip is already in the 2008 source paper. (§5.1 above uses a gains formulation instead, with the Hoeffding constant.)
 3. Theorem 4: the proof's last line dropped the factor 2 in $\varepsilon=\sqrt{2B/(\varphi T)}$.
 4. Lemma 6 needs "convex"; Theorem 10 needs "differentiable" scoring rules.
 5. §5.3 (now §5.5): the original SCPM charges $p(x^*)^\top a\,x^*$, not $p(l)$.
