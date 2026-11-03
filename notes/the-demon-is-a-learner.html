@@ -184,6 +184,26 @@ proportional to force again, now for a whole cloud of particles. A
 recent review by Emmy Blumenthal and colleagues collects these
 connections between control, inference, transport and thermodynamics for
 physicists (<a href="https://arxiv.org/abs/2609.15897">2026</a>).</p>
+<p>In a third geometry the drag depends on position. Mirror descent
+moves the prices of the bookmaker in <a
+href="https://lukstafi.github.io/notes/the-bookmaker-is-a-learner.html#the-bookmaker-is-a-learner"><em>The
+Bookmaker Is a Learner</em></a>, and a policy improved by natural policy
+gradient. It takes its gradient steps in the coordinates <span
+class="math inline">\log p</span> of a probability distribution <span
+class="math inline">p</span>, not in <span class="math inline">p</span>
+itself. In the limit of small steps it is a gradient flow under the
+Fisher information metric, whose inverse is <span
+class="math inline">\mathrm{diag}(p)</span>: <span
+class="math display">\dot p_i = -p_i\Bigl(\partial_i L - \sum_j
+p_j\,\partial_j L\Bigr).</span> Heller’s <span
+class="math inline">m</span>, the drag coefficient, becomes <span
+class="math inline">1/p_i</span>. Under a given force, a probability
+near zero barely moves. Evolutionary game theory knows this equation as
+the replicator dynamics, with fitness in place of <span
+class="math inline">-\nabla L</span>. The discrete step is built like
+JKO’s: minimize the loss plus a divergence from the current point,
+scaled by the step, with the Kullback–Leibler divergence in place of the
+Wasserstein distance.</p>
 </section>
 <section id="what-forgetting-costs" class="level2">
 <h2>What forgetting costs</h2>
@@ -353,9 +373,14 @@ Bookmaker Is a Learner</em></a> runs the same mathematics. Its cost
 function <span class="math display">C(q) = b\log\sum_{i=1}^n
 e^{q_i/b}</span> is a log-partition function with temperature <span
 class="math inline">b</span>, its prices are Gibbs probabilities, and
-its worst-case loss, <span class="math inline">b\ln n</span>, is
+its worst-case loss, <span class="math inline">b\log n</span>, is
 temperature times maximum entropy. The bookmaker, too, pays for what it
-does not know.</p>
+does not know, and at a fixed rate. Each trader is paid <span
+class="math inline">b</span> for every nat by which they reduce the
+surprisal of the outcome that occurs. Szilard’s engine yields <span
+class="math inline">kT</span> per nat, which is <span
+class="math inline">kT\ln 2</span> per bit. The traders are the
+bookmaker’s demons.</p>
 </section>
 <section id="the-demon-is-a-learner" class="level2">
 <h2>The demon is a learner</h2>
