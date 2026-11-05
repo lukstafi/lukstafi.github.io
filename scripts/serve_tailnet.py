@@ -1,9 +1,11 @@
 #!/usr/bin/env python3
 """Serve the site from the repo root to devices on the Tailnet.
 
-Binds to this machine's Tailscale address only, so the LAN cannot reach it.
-The repo root also holds credentials and private notes, so the server refuses
-dotfiles, git-ignored paths, and directory listings.
+Binds to this machine's Tailscale address and to loopback, so the LAN cannot
+reach it. `tailscale serve` adds HTTPS on port 443 for as long as this script
+runs, forwarding to the loopback listener. The repo root also holds credentials
+and private notes, so the server refuses dotfiles, git-ignored paths, and
+directory listings.
 
 Usage: scripts/serve_tailnet.py [--port 8000]
 """
@@ -13,16 +15,19 @@ import functools
 import http
 import http.server
 import json
+import signal
 import subprocess
 import sys
+import threading
 import urllib.parse
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
+LOOPBACK = "127.0.0.1"
 
 
 def tailscale_address():
-    """Return this machine's Tailscale IPv4 address and MagicDNS name."""
+    """Return the Tailscale IPv4 address, MagicDNS name, and HTTPS availability."""
     try:
         ip = subprocess.run(
             ["tailscale", "ip", "-4"], capture_output=True, text=True, check=True
@@ -35,8 +40,23 @@ def tailscale_address():
         ).stdout
     except (OSError, subprocess.CalledProcessError, IndexError) as error:
         sys.exit(f"Cannot get the Tailscale address, is Tailscale up? ({error})")
-    dns_name = json.loads(status).get("Self", {}).get("DNSName", "").rstrip(".")
-    return ip, dns_name
+    status = json.loads(status)
+    dns_name = status.get("Self", {}).get("DNSName", "").rstrip(".")
+    return ip, dns_name, dns_name in (status.get("CertDomains") or [])
+
+
+def start_https(port):
+    """Start `tailscale serve` in the foreground; return it, or None on failure."""
+    process = subprocess.Popen(
+        ["tailscale", "serve", "--yes", "--https=443", f"http://{LOOPBACK}:{port}"],
+        stdout=subprocess.DEVNULL,
+    )
+    try:
+        process.wait(timeout=2)
+    except subprocess.TimeoutExpired:
+        return process
+    print("tailscale serve exited, so HTTPS is off.", file=sys.stderr)
+    return None
 
 
 def is_public(path):
@@ -78,18 +98,33 @@ def main():
     parser.add_argument("--port", type=int, default=8000)
     args = parser.parse_args()
 
-    ip, dns_name = tailscale_address()
+    ip, dns_name, https_available = tailscale_address()
     handler = functools.partial(SiteHandler, directory=str(ROOT))
-    with http.server.ThreadingHTTPServer((ip, args.port), handler) as server:
-        print(f"Serving {ROOT}")
-        print(f"  http://{ip}:{args.port}/")
-        if dns_name:
-            print(f"  http://{dns_name}:{args.port}/")
-        print("Press Ctrl-C to stop.", flush=True)
-        try:
-            server.serve_forever()
-        except KeyboardInterrupt:
-            pass
+    for host in (ip, LOOPBACK):
+        server = http.server.ThreadingHTTPServer((host, args.port), handler)
+        threading.Thread(target=server.serve_forever, daemon=True).start()
+
+    # Without this, `kill` would leave `tailscale serve` running.
+    signal.signal(signal.SIGTERM, lambda *_: sys.exit(0))
+    https = start_https(args.port) if https_available else None
+
+    print(f"Serving {ROOT}")
+    if https:
+        print(f"  https://{dns_name}/")
+    elif not https_available:
+        print("HTTPS needs HTTPS Certificates on in the Tailscale admin console.")
+    print(f"  http://{ip}:{args.port}/")
+    if dns_name:
+        print(f"  http://{dns_name}:{args.port}/")
+    print("Press Ctrl-C to stop.", flush=True)
+    try:
+        threading.Event().wait()
+    except KeyboardInterrupt:
+        pass
+    finally:
+        if https:
+            https.terminate()
+            https.wait()
 
 
 if __name__ == "__main__":

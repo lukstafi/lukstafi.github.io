@@ -150,8 +150,11 @@ python3 -m http.server --bind 127.0.0.1
 CSS paths are absolute (`/assets/...`), so a local HTTP server is required for previewing — opening HTML files directly via `file://` won't load the stylesheets.
 
 To preview the site from other devices on the Tailnet, run
-`./scripts/serve_tailnet.py [--port 8000]`. It listens on the Tailscale address
-only and refuses dotfiles and git-ignored paths such as `notes/private/`. It
+`./scripts/serve_tailnet.py [--port 8000]`. It prints an HTTPS address without a
+port, plus HTTP addresses on the given port. HTTPS comes from `tailscale serve`,
+stops with the script, and needs HTTPS Certificates enabled in the Tailscale
+admin console. The script listens on the Tailscale address and loopback, not the
+LAN, and refuses dotfiles and git-ignored paths such as `notes/private/`. It
 serves the built HTML, so build a note before opening it.
 
 ## Design
