@@ -17,11 +17,6 @@ Requires [Pandoc](https://pandoc.org/) 3.x.
 ./scripts/build_agent_collab_html.sh
 ```
 
-To preview the site from other devices on the Tailnet, run
-`./scripts/serve_tailnet.py [--port 8000]`. It listens on the Tailscale address
-only and refuses dotfiles and git-ignored paths such as `notes/private/`. It
-serves the built HTML, so build a note before opening it.
-
 Each built page gets link-preview meta tags (Open Graph and a Twitter
 `summary` card) from `scripts/og_meta.py`. Title and description come from the
 page's entry in `index.html`, so rebuild a page after adding or editing its
@@ -148,11 +143,16 @@ The links are injected automatically, never written into the article bodies:
 ### Local preview
 
 ```bash
-python3 -m http.server
+python3 -m http.server --bind 127.0.0.1
 # Then open http://localhost:8000
 ```
 
 CSS paths are absolute (`/assets/...`), so a local HTTP server is required for previewing — opening HTML files directly via `file://` won't load the stylesheets.
+
+To preview the site from other devices on the Tailnet, run
+`./scripts/serve_tailnet.py [--port 8000]`. It listens on the Tailscale address
+only and refuses dotfiles and git-ignored paths such as `notes/private/`. It
+serves the built HTML, so build a note before opening it.
 
 ## Design
 
