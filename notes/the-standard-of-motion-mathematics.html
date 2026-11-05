@@ -55,39 +55,218 @@
 <header>
 <h1 class="title">The Standard of Motion: The Mathematics</h1>
 <p class="subtitle">For The Standard of Motion and The Demon Is a
-Learner: Heller’s ladder of space-times in frame-bundle terms, the
-Hamiltonian brackets, the kinematical Lie algebras and their
-contractions, mass as a central charge, algebraic and structural
-stability, moving patterns in cellular automata, the
-Bombelli–Henson–Sorkin theorem, the overdamped limit, the entropy that
-learning exports, and algorithmic bounds</p>
+Learner: a primer on bundles and connections, Heller’s ladder of
+space-times in frame-bundle terms, the Hamiltonian brackets, the
+kinematical Lie algebras and their contractions, mass as a central
+charge, algebraic and structural stability, moving patterns in cellular
+automata, the Bombelli–Henson–Sorkin theorem, the overdamped limit, the
+entropy that learning exports, and algorithmic bounds</p>
 <p class="byline">2026-10-31 &ndash; Łukasz Stafiniak and Claude
 (Anthropic)</p>
 </header>
 <p><em>This page accompanies <a
 href="https://lukstafi.github.io/notes/the-standard-of-motion.html">The
-Standard of Motion</a> and its sequel, <a
-href="https://lukstafi.github.io/notes/the-demon-is-a-learner.html">The
-Demon Is a Learner</a>. It writes out the structures the essays describe
-in prose; Sections 1–6 serve the first essay and Section 7 the second.
-Section 1 follows Michał Heller, “Evolution of Space-Time Structures”,
-Concepts of Physics 3 (2006) 117–131; the other sections are standard
-material, with sources given where they are used.</em></p>
+Standard of Motion</a> and its forthcoming sequel, The Demon Is a
+Learner. It writes out the structures the essays describe in prose.
+Section 0 is a short primer on bundles and connections; Sections 1–6
+serve the first essay and Section 7 the second. Section 1 follows Michał
+Heller, “Evolution of Space-Time Structures”, Concepts of Physics 3
+(2006) 117–131; the other sections are standard material, with sources
+given where they are used.</em></p>
 <p>Notation: indices <span class="math inline">i, j, k</span> run over
 three spatial directions; <span
 class="math inline">\varepsilon_{ijk}</span> is the Levi-Civita symbol;
 repeated indices are summed.</p>
+<section id="bundles-and-connections-in-brief" class="level2">
+<h2>0. Bundles and connections in brief</h2>
+<p>This section collects the differential geometry that Section 1 uses.
+It aims at the ideas, with one or two formulas each; Kobayashi and
+Nomizu, <em>Foundations of Differential Geometry</em>, vol. 1, is the
+standard full treatment.</p>
+<p><strong>Manifolds and tangent spaces.</strong> A manifold <span
+class="math inline">X</span> of dimension <span
+class="math inline">n</span> is a space that looks like <span
+class="math inline">\mathbb R^n</span> near each point: it can be
+covered by coordinate charts that overlap smoothly. Space-time is a
+manifold of dimension 4. At each point <span
+class="math inline">x</span> the velocities of curves through <span
+class="math inline">x</span> form an <span
+class="math inline">n</span>-dimensional vector space, the tangent space
+<span class="math inline">T_xX</span>. Vectors at different points live
+in different tangent spaces, and nothing in the bare manifold says how
+to compare them. Whether two distant bodies move in parallel is not yet
+a meaningful question.</p>
+<p><strong>Bundles.</strong> A fiber bundle over <span
+class="math inline">X</span> is a space <span
+class="math inline">E</span> with a projection <span
+class="math inline">\pi: E\to X</span> whose fibers <span
+class="math inline">\pi^{-1}(x)</span> are all copies of one space <span
+class="math inline">F</span>, and which looks like a product <span
+class="math inline">U\times F</span> over every small enough region
+<span class="math inline">U</span> of <span
+class="math inline">X</span>. It is <em>trivial</em> if it is a product
+<span class="math inline">X\times F</span> globally. The standard pair
+of examples are bundles over a circle with an interval as fiber: the
+cylinder is trivial, and the Möbius band is not, though every short arc
+of it looks like a strip of cylinder. Aristotelian space-time <span
+class="math inline">A = T\times S</span> is a trivial bundle over <span
+class="math inline">T</span> and over <span
+class="math inline">S</span>. Newtonian space-time is a bundle over
+absolute time whose fibers are the simultaneity slices; it is not a
+product, because there is no absolute place to identify the slices with
+one another. The tangent spaces of a manifold together form the
+<em>tangent bundle</em> <span class="math inline">TX</span>, with fiber
+<span class="math inline">\mathbb R^n</span>.</p>
+<p><strong>Sections.</strong> A section of a bundle picks one point of
+each fiber, smoothly: a map <span class="math inline">\sigma: X\to
+E</span> with <span class="math inline">\pi\circ\sigma =
+\mathrm{id}</span>. The familiar example is a vector field. It attaches
+one tangent vector to each point of <span class="math inline">X</span>,
+so it picks one point in each fiber of the tangent bundle. Some bundles
+have no sections of a desired kind. On the sphere <span
+class="math inline">S^2</span>, every vector field vanishes somewhere.
+This is the hairy ball theorem.</p>
+<p><strong>Frame bundles.</strong> A frame at <span
+class="math inline">x</span> is an ordered basis of <span
+class="math inline">T_xX</span>, equivalently a linear isomorphism <span
+class="math inline">u:\mathbb R^n\to T_xX</span>. The frame bundle <span
+class="math inline">F(X)</span> collects all frames at all points. When
+the manifold carries extra structure, one keeps only the adapted frames:
+orthonormal frames of a Lorentzian metric, related to one another by
+Lorentz transformations, or the frames of Newtonian space-time that
+respect absolute time and the spatial metric, related by rotations and
+Galilean boosts. In each case a group <span class="math inline">G</span>
+acts on every fiber, and any two frames at the same point differ by
+exactly one element of <span class="math inline">G</span>. A bundle with
+this property is a <em>principal <span
+class="math inline">G</span>-bundle</em>. For a principal bundle, a
+global section already gives a global product: once one frame is chosen
+at each point, every other frame is that frame times a unique group
+element, so <span class="math inline">F(X)\cong X\times G</span>. A
+manifold whose frame bundle has a global section is called
+<em>parallelizable</em>: it carries <span class="math inline">n</span>
+vector fields that form a basis at every point.</p>
+<ul>
+<li><em>The plane and the torus are parallelizable.</em> A torus can be
+glued from a square by identifying opposite edges. The two directions of
+the square’s sides survive the gluing, and they give two vector fields
+that are independent everywhere.</li>
+<li><em>The sphere <span class="math inline">S^2</span> is not.</em> The
+first vector of a global frame would be a vector field with no zeros.
+Choosing a nonzero vector at each point separately is easy; what the
+hairy ball theorem rules out is a choice that varies continuously, as a
+section must. In the theorem’s usual image, a continuous field is a way
+of combing hair flat over the sphere, with no partings, and a zero is a
+cowlick: however the sphere is combed, a cowlick remains. The theorem
+needs only continuity, so smoothness adds nothing to the obstruction.
+More generally, by the Poincaré–Hopf theorem, a compact surface has a
+vector field without zeros only if its Euler characteristic is zero. The
+sphere’s is 2, the torus’s is 0.</li>
+<li><em>The sphere’s frame bundle can be seen whole.</em> Take a point
+<span class="math inline">x</span> of the unit sphere and an orthonormal
+frame <span class="math inline">(e_1, e_2)</span> of the tangent plane
+there, oriented so that <span class="math inline">(x, e_1, e_2)</span>
+is right-handed. The three vectors are the columns of a rotation matrix,
+and every rotation arises from exactly one such choice. So the bundle of
+oriented orthonormal frames of <span class="math inline">S^2</span> is
+the rotation group <span class="math inline">SO(3)</span>. A product
+would be <span class="math inline">S^2\times SO(2)</span>, a sphere
+times a circle, and the two spaces differ. In <span
+class="math inline">S^2\times S^1</span>, a loop that runs once around
+the circle factor cannot be shrunk to a point, and neither can that loop
+run twice. In <span class="math inline">SO(3)</span>, the corresponding
+loop is a full turn about one axis. It cannot be shrunk either, but run
+twice it can, which is Dirac’s belt trick.</li>
+<li><em>Some parallelizable spaces are less obvious.</em> The
+three-sphere <span class="math inline">S^3</span> is the group of unit
+quaternions. Choosing a frame at the identity and multiplying it by each
+group element spreads it over the whole space, and the same works for
+every Lie group, a group whose elements vary continuously (<a
+href="#kinematical-lie-algebras">Section 3</a> explains Lie groups and
+their Lie algebras, starting from time). Among space-times, Geroch
+showed that a noncompact four-dimensional space-time has a spin
+structure exactly when it is parallelizable (§1, <em>In what sense
+“product”</em>). The space-times of physics are typically parallelizable
+as bare manifolds, which is why Section 1 asks for frames that are
+parallel, not merely global.</li>
+</ul>
+<p><strong>Connections.</strong> A connection is a rule for carrying
+vectors along curves, <em>parallel transport</em>. Infinitesimally it is
+a covariant derivative <span class="math inline">\nabla</span>, which in
+coordinates reads <span class="math display">\nabla_\mu V^\nu =
+\partial_\mu V^\nu + \Gamma^\nu_{\mu\lambda}V^\lambda,</span> with the
+connection coefficients <span
+class="math inline">\Gamma^\nu_{\mu\lambda}</span> saying how the
+coordinate basis turns from point to point. A vector field along a curve
+is parallel if its covariant derivative along the curve vanishes. A
+curve whose own velocity is parallel is a <em>geodesic</em>: <span
+class="math display">\ddot x^\nu + \Gamma^\nu_{\mu\lambda}\,\dot
+x^\mu\dot x^\lambda = 0.</span> This is the first law in geometric form.
+A connection on space-time picks out the curves that need no force, so
+it is Heller’s standard of motion as a piece of geometry. Newton’s first
+law says that the geodesics are straight lines traversed uniformly;
+general relativity says that they are the paths of free fall.</p>
+<p><strong>Curvature.</strong> Carry a vector around a small closed loop
+and it may come back rotated. The rotation, per unit of enclosed area,
+is the curvature, recorded in the Riemann tensor <span
+class="math inline">R^\rho{}_{\sigma\mu\nu}</span>. On the unit sphere,
+a vector carried around a geodesic triangle comes back turned by an
+angle equal to the triangle’s area. The set of all such rotations, over
+all loops at a point, is the holonomy group. If the curvature vanishes
+and the space has no holes, transport is independent of the path. Then
+one frame, carried everywhere, gives a global parallel frame, a section
+of the frame bundle compatible with the connection. That is
+teleparallelism, and it is the sense of “product” used in Section 1.
+Curvature is also what free fall cannot remove. At any one point, a
+freely falling frame can be chosen so that <span
+class="math inline">\Gamma = 0</span> there, and gravity vanishes
+locally, as the equivalence principle says. The curvature remains, as
+the tidal convergence of nearby free-fall paths.</p>
+<p><strong>Metric and connection.</strong> A metric measures lengths and
+angles. For each metric there is exactly one connection that preserves
+it and has no torsion, the Levi-Civita connection, so in general
+relativity the connection is determined by the metric. Newtonian
+space-time has no nondegenerate space-time metric, only a clock form and
+a spatial metric. The connections compatible with these are not unique,
+and the connection becomes independent data. That is why Newtonian
+gravity, written geometrically, is the curvature of a connection rather
+than of a metric (§1, Newton–Cartan).</p>
+<p><strong>Two forms on the frame bundle.</strong> Section 1 needs one
+more construction. A point of <span class="math inline">F(X)</span> is a
+frame <span class="math inline">u</span> at some <span
+class="math inline">x</span>. A small displacement of <span
+class="math inline">u</span> moves the base point <span
+class="math inline">x</span> and may also rotate the frame. The
+<em>canonical</em> (or solder) form <span
+class="math inline">\theta</span> reads off the first part: it takes the
+base displacement and expresses it in the frame <span
+class="math inline">u</span> itself, as a vector in <span
+class="math inline">\mathbb R^n</span>. A connection supplies the second
+part: its connection form <span class="math inline">\omega</span>, with
+values in the Lie algebra of the structure group, measures how far the
+displacement departs from parallel transport. Together <span
+class="math inline">\theta</span> and <span
+class="math inline">\omega</span> give, at every point of <span
+class="math inline">F(X)</span>, a full set of linearly independent
+one-forms, a global coframe. So a frame bundle carrying a connection is
+itself parallelizable, and its own frame bundle is a product. A general
+principal bundle has no canonical form, which is why this works for
+frame bundles specifically.</p>
+</section>
 <section id="hellers-ladder-in-frame-bundle-terms" class="level2">
 <h2>1. Heller’s ladder in frame-bundle terms</h2>
+<p>Section 0 introduces the terms used here.</p>
 <p><strong>Projections.</strong> A space-time is a four-dimensional
 manifold <span class="math inline">X</span>. <em>Absolute time</em> is a
 surjection <span class="math inline">\mathrm{pr}_T: X\to T</span> onto a
 one-dimensional manifold whose fibers are the sets of simultaneous
 events. <em>Absolute space</em> is a surjection <span
 class="math inline">\mathrm{pr}_S: X\to S</span> onto a
-three-dimensional manifold whose fibers are the world lines of bodies at
-absolute rest. If both exist and <span
-class="math inline">(\mathrm{pr}_T,\mathrm{pr}_S)</span> is a
+three-dimensional manifold whose fibers are the sets of co-located
+events: all the events, at every time, that happen at one place. A world
+line at absolute rest stays within a single fiber, but the fibers are
+defined by place, whether or not anything rests there. If both exist and
+<span class="math inline">(\mathrm{pr}_T,\mathrm{pr}_S)</span> is a
 diffeomorphism, <span class="math inline">X\cong T\times S</span>.</p>
 <p><strong>Aristotle.</strong> The first law (a free body stays at
 absolute rest) supplies <span class="math inline">\mathrm{pr}_S</span>;
@@ -96,18 +275,13 @@ class="math inline">\mathrm{pr}_T</span>. So Aristotelian space-time is
 <span class="math inline">A = T\times S</span>, a trivial bundle over
 <span class="math inline">S</span> (and over <span
 class="math inline">T</span>). The second law in Heller’s stylization is
-<span class="math inline">F = m v</span>, a first-order equation: no
-force, no velocity.</p>
-<p><strong>Frame bundles.</strong> For a manifold <span
-class="math inline">X</span> with a structure group <span
-class="math inline">G</span> acting on frames, the frame bundle <span
-class="math inline">\pi: F(X)\to X</span> has as its fiber over <span
-class="math inline">x</span> the set of admissible frames at <span
-class="math inline">x</span>, and <span class="math inline">G</span>
-acts freely and transitively on each fiber. A global section of <span
-class="math inline">F(X)</span> is a global field of frames. A principal
-bundle with a global section is trivial, <span
-class="math inline">F(X)\cong X\times G</span>.</p>
+<span class="math inline">F = m v</span>, a first-order equation. With
+<span class="math inline">F = 0</span> it gives <span
+class="math inline">v = 0</span>: the velocity relative to absolute
+space vanishes, and the body is at absolute rest, as the first law says.
+Heller notes that the first law is not made redundant by this, since it
+is what fixes absolute space, the frame in which <span
+class="math inline">v</span> is measured.</p>
 <p><em>In what sense “product”.</em> As a bare bundle, a frame bundle is
 often trivial anyway: <span class="math inline">F(N)</span> over <span
 class="math inline">\mathbb R^4</span> is, and so is the Lorentz frame
@@ -207,11 +381,303 @@ p_i)</span>, <span class="math display">\{f, g\} = \frac{\partial
 f}{\partial x_i}\frac{\partial g}{\partial p_i} - \frac{\partial
 f}{\partial p_i}\frac{\partial g}{\partial x_i},\qquad \{x_i, p_j\} =
 \delta_{ij}.</span></p>
+<p><strong>The Hamiltonian.</strong> A mechanical system with <span
+class="math inline">n</span> degrees of freedom is described by
+positions <span class="math inline">x_i</span> and momenta <span
+class="math inline">p_i</span>, the <span class="math inline">2n</span>
+coordinates of its phase space. The <em>Hamiltonian</em> <span
+class="math inline">H(x, p, t)</span> is a function on phase space, in
+the usual cases the total energy written in terms of positions and
+momenta. For a particle of mass <span class="math inline">m</span> in a
+potential <span class="math inline">V</span>, <span
+class="math display">H = \frac{p^2}{2m} + V(x).</span> The Hamiltonian
+generates the motion through Hamilton’s equations, <span
+class="math display">\dot x_i = \frac{\partial H}{\partial p_i},\qquad
+\dot p_i = -\frac{\partial H}{\partial x_i}.</span> For the particle,
+the first gives <span class="math inline">p = m\dot x</span> and the
+second <span class="math inline">\dot p = -\nabla V</span>, which
+together are Newton’s second law. By the chain rule, any observable
+<span class="math inline">f(x, p)</span> then changes at the rate <span
+class="math display">\dot f = \frac{\partial f}{\partial x_i}\dot x_i +
+\frac{\partial f}{\partial p_i}\dot p_i = \{f, H\},</span> so the
+bracket with <span class="math inline">H</span> is the time derivative,
+and Hamilton’s equations are the cases <span class="math inline">f =
+x_i</span> and <span class="math inline">f = p_i</span>. A function that
+commutes with <span class="math inline">H</span>, <span
+class="math inline">\{f, H\} = 0</span>, is conserved. If <span
+class="math inline">f</span> also depends on time explicitly, <span
+class="math inline">f(x, p, t)</span>, the chain rule adds a term for
+that dependence, <span class="math inline">\dot f = \partial f/\partial
+t + \{f, H\}</span>: the bracket counts the change due to the motion,
+and the partial derivative the change written into <span
+class="math inline">f</span> itself. Such an <span
+class="math inline">f</span> is conserved when the two cancel. In
+particular <span class="math inline">H</span> itself is conserved when
+it does not depend on time explicitly, which is conservation of energy.
+Starting from a Lagrangian <span class="math inline">L(x, \dot x)</span>
+instead, one sets <span class="math inline">p_i = \partial
+L/\partial\dot x_i</span> and <span class="math inline">H = p_i\dot x_i
+- L</span>, the Legendre transform. For <span class="math inline">L =
+\tfrac12 m\dot x^2 - V</span> this returns the <span
+class="math inline">H</span> above. In quantum mechanics <span
+class="math inline">H</span> becomes an operator <span
+class="math inline">\hat H</span>, and the bracket becomes the
+commutator divided by <span class="math inline">i\hbar</span> (Moyal
+bracket, below).</p>
+<p><strong>Generators.</strong> The exponential turns addition into
+multiplication, <span class="math inline">e^{s+t} = e^s e^t</span>. The
+same holds for a square matrix <span class="math inline">A</span>, with
+<span class="math inline">e^{tA} = I + tA + t^2A^2/2 + \cdots</span>:
+<span class="math display">e^{(s+t)A} = e^{sA}\,e^{tA},\qquad
+\frac{d}{dt}e^{tA}\Big|_{t=0} = A.</span> Multiplying matrices composes
+the linear maps they stand for. So a single matrix <span
+class="math inline">A</span> produces a whole family of transformations
+<span class="math inline">e^{tA}</span>, one for each <span
+class="math inline">t</span>, which compose by adding their parameters,
+and <span class="math inline">A</span> is recovered as the family’s
+velocity at <span class="math inline">t = 0</span>. <span
+class="math inline">A</span> is called the family’s <em>generator</em>:
+the transformation taken in an instant, from which the finite ones are
+built by repetition, <span class="math inline">e^{tA} =
+\lim_{N\to\infty}(I + tA/N)^N</span>. The familiar case is the complex
+number <span class="math inline">i</span>, which generates the rotations
+<span class="math inline">e^{i\theta}</span> of the plane. Its real form
+is <span class="math display">A = \begin{pmatrix}0 &amp; 1\\ -1 &amp;
+0\end{pmatrix},\qquad e^{tA} = \begin{pmatrix}\cos t &amp; \sin t\\
+-\sin t &amp; \cos t\end{pmatrix},</span> and this <span
+class="math inline">A</span> is the right-angle turn of the next
+paragraphs. Applied to <span class="math inline">(x, p)</span> it gives
+<span class="math inline">\dot x = p</span>, <span
+class="math inline">\dot p = -x</span>, Hamilton’s equations for the
+oscillator <span class="math inline">H = (x^2 + p^2)/2</span>, so the
+oscillator’s motion is the rotation the turn generates.</p>
+<p>For a nonlinear flow the same words apply. A vector field <span
+class="math inline">X</span> generates the family of maps <span
+class="math inline">\phi_t</span>, “follow <span
+class="math inline">X</span> for time <span
+class="math inline">t</span>,” which compose by adding times, <span
+class="math inline">\phi_s\circ\phi_t = \phi_{s+t}</span>, and one
+writes <span class="math inline">\phi_t = \exp(tX)</span>. To first
+order, <span class="math inline">\phi_\varepsilon \approx \mathrm{id} +
+\varepsilon X</span>. “<span class="math inline">H</span> generates time
+translation” means that the vector field <span
+class="math inline">X_H</span> built from <span
+class="math inline">H</span> by the bracket is the velocity of the
+family of time evolutions, and that following it for time <span
+class="math inline">t</span> is the same as letting the system evolve
+for time <span class="math inline">t</span>.</p>
+<p><strong>What energy is.</strong> Three answers fit together.</p>
+<ul>
+<li><em>Work.</em> Pushing with a force <span
+class="math inline">F</span> through a small distance <span
+class="math inline">dx</span> costs work <span
+class="math inline">F\,dx</span>. The kinetic energy <span
+class="math inline">\tfrac12 mv^2</span> is the work needed to bring a
+body from rest to speed <span class="math inline">v</span>, and the work
+the body can do while it is brought back to rest. Potential energy is
+work stored by moving against a force, as in lifting a weight, and
+returned when the force does the moving.</li>
+<li><em>Bookkeeping.</em> In a closed system, the total of these,
+together with heat and the other forms, never changes. Feynman’s image
+is a child’s set of blocks that always comes to the same number, once
+one knows how to count the hidden ones, and he adds that “in physics
+today, we have no knowledge of what energy is” beyond such rules of
+counting (<a
+href="https://www.feynmanlectures.caltech.edu/I_04.html"><em>Lectures on
+Physics</em> I, ch. 4</a>).</li>
+<li><em>Time.</em> In Hamilton’s equations, energy is the generator of
+time translation, and by Noether’s theorem it is the quantity conserved
+because the laws do not change with time. Momentum is conserved because
+the laws are the same at every place, and energy because they are the
+same at every moment.</li>
+</ul>
+<p>The third answer is the one this page uses: <span
+class="math inline">H</span> generates the motion, and it is conserved
+when it has no explicit time dependence. The Wolfram model in the
+essay’s last section adds a reading of its own, energy as rewriting
+activity in excess of the background that maintains space.</p>
+<p><strong>Reading Hamilton’s equations.</strong> For a particle, the
+work–energy theorem read twice gives both equations. Pushing a body
+costs work <span class="math inline">F\,dx = \dot p\,dx = \dot
+x\,dp</span>. So raising its momentum by <span
+class="math inline">dp</span> costs kinetic energy <span
+class="math inline">\dot x\,dp</span>, and <span
+class="math inline">\dot x = \partial H/\partial p</span>: velocity is
+the price of momentum. Moving it by <span class="math inline">dx</span>
+releases potential energy <span class="math inline">F\,dx</span>, and
+<span class="math inline">\dot p = F = -\partial H/\partial x</span>:
+force is the payout of position, the potential energy released per unit
+distance. Each coordinate changes at the rate the energy changes with
+respect to its partner, with one sign flipped.</p>
+<p>The sign flip has a picture. Over the phase plane, <span
+class="math inline">H(x, p)</span> is a landscape. The flow <span
+class="math inline">(\partial H/\partial p,\ -\partial H/\partial
+x)</span> is the gradient of <span class="math inline">H</span> turned
+through a right angle, so the motion runs along the contours of <span
+class="math inline">H</span>, never across them. This is conservation of
+energy, seen geometrically, and an oscillator’s orbits are its closed
+level curves. Aristotle’s law and gradient descent, <span
+class="math inline">\dot x = -\nabla V</span>, go straight down the
+slope instead. Newton moves along the energy’s contours, keeping
+phase-space area (§2, Liouville); Aristotle moves down its slope,
+contracting volume and exporting entropy (§7.2). The two act on
+different spaces, phase space and configuration space, and the
+overdamped limit of §7.1 is the passage from one to the other: friction
+drains the momentum direction until only the downhill slide remains.</p>
+<p><strong>Momentum as a Lagrange multiplier.</strong> The Lagrangian
+picture has no rotation, because it has no independent momentum: the
+Euler–Lagrange equation <span class="math inline">\frac{d}{dt}\partial
+L/\partial\dot x = \partial L/\partial x</span> is one second-order
+equation in <span class="math inline">x</span>. The rotation appears
+when velocity is made a separate variable <span
+class="math inline">v</span> and the constraint “velocity is the rate of
+change of position” is enforced by a multiplier <span
+class="math inline">p(t)</span>: <span class="math display">S[x, v, p] =
+\int\Bigl[L(x, v) + p\cdot(\dot x - v)\Bigr]dt.</span> Setting the
+variations to zero gives three equations. Varying <span
+class="math inline">v</span>: <span class="math inline">p = \partial
+L/\partial v</span>, so the multiplier is the momentum. Varying <span
+class="math inline">p</span>: <span class="math inline">\dot x =
+v</span>, the constraint. Varying <span class="math inline">x</span>:
+<span class="math inline">\dot p = \partial L/\partial x</span>.
+Eliminating <span class="math inline">v</span> leaves <span
+class="math display">S = \int\bigl(p\cdot\dot x - H(x, p)\bigr)dt,\qquad
+H = p\cdot v - L,</span> the Legendre transform from <em>The
+Hamiltonian</em> above. Varying this action in <span
+class="math inline">p</span> gives <span class="math inline">\dot x =
+\partial H/\partial p</span>. Varying it in <span
+class="math inline">x</span>, the term <span
+class="math inline">p\cdot\dot x</span> must be integrated by parts,
+<span class="math inline">\int p\cdot\delta\dot x\,dt = -\int\dot
+p\cdot\delta x\,dt</span> (with the endpoints fixed), and gives <span
+class="math inline">\dot p = -\partial H/\partial x</span>. The sign
+flip, and so the right-angle turn, comes from that integration by parts:
+the multiplier term <span class="math inline">p\cdot\dot x</span> read
+once in each direction.</p>
+<p><a
+href="https://lukstafi.github.io/notes/how-does-a-policy-improve.html#improving-a-distribution-without-throwing-away-the-prior"><em>How
+Does a Policy Improve?</em></a> introduced Lagrange multipliers as
+prices, measuring “the gain available per unit of relaxation” of a
+constraint, and <a
+href="https://lukstafi.github.io/notes/the-bookmaker-is-a-learner.html#one-bookmaker-four-faces"><em>The
+Bookmaker Is a Learner</em></a> made that reading exact for linear
+programs. Momentum is the price of the constraint that ties position to
+velocity. Hamilton–Jacobi theory makes the price concrete: along the
+actual motion, <span class="math inline">p = \partial S/\partial
+x</span>, the rate at which the action of the optimal path changes as
+its endpoint moves. In optimal control the same multiplier is called the
+costate and equals the gradient of the value function, which ties
+canonical momentum to the value functions of reinforcement learning; the
+review by Blumenthal and colleagues (<a
+href="https://arxiv.org/abs/2609.15897">arXiv:2609.15897</a>, §I.1)
+works through this identification.</p>
+<p>Every phase-space function <span class="math inline">g</span>
+generates a flow in the same way, <span class="math inline">\dot f =
+\{f, g\}</span>. The momentum <span class="math inline">p_i</span>
+generates translations in <span class="math inline">x_i</span>, an
+angular momentum generates rotations, and <span
+class="math inline">H</span> generates time translation. This is why the
+bracket carries the symmetries of Section 3: the generators of a
+symmetry group, realized as phase-space functions, bracket among
+themselves as the group’s Lie algebra.</p>
+<p><strong>Divergence.</strong> For a vector field <span
+class="math inline">v</span> on <span class="math inline">\mathbb
+R^m</span>, the divergence is <span class="math display">\nabla\cdot v =
+\sum_{k=1}^m\frac{\partial v_k}{\partial y_k}.</span> It measures how
+fast the flow of <span class="math inline">v</span> spreads out. Carry a
+small blob of points along the flow; its volume changes at the rate
+<span class="math inline">\nabla\cdot v</span> per unit volume, so a
+positive divergence means the blob swells, a negative one that it
+shrinks. In one dimension, <span class="math inline">\dot y =
+v(y)</span> stretches an interval when <span
+class="math inline">v</span> grows along it, because the front end then
+moves faster than the back. The gradient answers a different question.
+It takes a function and gives the direction of steepest increase; the
+divergence takes a vector field and gives a rate of expansion. Applied
+in turn, they give the Laplacian, <span
+class="math inline">\nabla\cdot\nabla V = \Delta V</span>, which §7.2
+uses for gradient flows.</p>
+<p><strong>The rotation again.</strong> On the phase plane with
+coordinates <span class="math inline">(x, p)</span>, the Hamiltonian
+vector field is <span class="math inline">X_H = (\partial H/\partial p,\
+-\partial H/\partial x)</span>, the gradient of <span
+class="math inline">H</span> turned through a right angle. Its
+divergence is <span class="math display">\frac{\partial}{\partial
+x}\frac{\partial H}{\partial p} + \frac{\partial}{\partial
+p}\Bigl(-\frac{\partial H}{\partial x}\Bigr) = \frac{\partial^2
+H}{\partial x\,\partial p} - \frac{\partial^2 H}{\partial p\,\partial x}
+= 0,</span> because mixed partial derivatives agree. The same turn that
+keeps the motion on the contours of <span class="math inline">H</span>
+makes the volume bookkeeping cancel. The gradient itself, by contrast,
+has divergence <span class="math inline">\Delta H</span>, which is
+generally nonzero: a gradient flow spreads or concentrates, while its
+rotated twin moves area around without changing it. With <span
+class="math inline">n</span> degrees of freedom the cancellation happens
+pair by pair, <span class="math inline">x_i</span> against <span
+class="math inline">p_i</span>.</p>
+<p><strong>Swirl and spread.</strong> Divergence has a sibling, the
+curl, which measures rotation: a tiny paddle wheel placed in the flow
+spins at half the curl, and by Stokes’s theorem the curl is the
+circulation around a small loop per unit of enclosed area. In three
+dimensions it is the cross product <span
+class="math inline">\nabla\times v</span>, where the divergence is the
+dot product <span class="math inline">\nabla\cdot v</span>. In the plane
+it is the scalar <span class="math inline">\partial v_2/\partial y_1 -
+\partial v_1/\partial y_2</span>, and the right-angle turn trades the
+two: the divergence of a field turned through <span
+class="math inline">90°</span> is the curl of the original, and its curl
+is the original’s divergence, each up to a sign set by the direction of
+the turn. A gradient field has no curl, because mixed partials agree,
+and the turned gradient has no divergence, for the same reason. For the
+two dynamics of the essays:</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>divergence (spread)</th>
+<th>curl (swirl)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>gradient flow <span class="math inline">-\nabla V</span>
+(Aristotle)</td>
+<td><span class="math inline">-\Delta V</span></td>
+<td><span class="math inline">0</span></td>
+</tr>
+<tr>
+<td>Hamiltonian flow <span class="math inline">X_H</span> (Newton)</td>
+<td><span class="math inline">0</span></td>
+<td><span class="math inline">-\Delta H</span></td>
+</tr>
+</tbody>
+</table>
+<p>Aristotle’s flow spreads or compresses and never swirls. Newton’s, in
+phase space, swirls and never compresses. On the plane, a field that
+decays suitably splits into the two kinds, a gradient part plus a
+turned-gradient part (the Helmholtz–Hodge decomposition). The damped
+oscillator of §4 shows the split in one line: <span
+class="math display">(\dot x,\ \dot p) = \underbrace{(p,\ -x)}_{X_H,\ H
+= (x^2 + p^2)/2} + \underbrace{(0,\ -\varepsilon
+p)}_{-\nabla_{\!p}\,(\varepsilon p^2/2)}.</span> The first term is
+Newton’s swirl around the contours of the energy, and the second is
+Aristotle’s slide down a slope in the momentum direction. The overdamped
+limit of §7.1 is the regime where the slide dominates. Mechanics with
+dissipation has been written systematically as such a sum, a Hamiltonian
+bracket for the conservative part plus a symmetric bracket for the
+dissipative part: the metriplectic formulation of P. J. Morrison (“A
+paradigm for joined Hamiltonian and dissipative systems”, Physica D 18
+(1986) 410–419) and the GENERIC formalism of M. Grmela and H. C.
+Öttinger (“Dynamics and thermodynamics of complex fluids. I”, <a
+href="https://doi.org/10.1103/PhysRevE.56.6620">Phys. Rev. E 56 (1997)
+6620</a>). In GENERIC the conservative part conserves energy and the
+dissipative part produces entropy, which puts the dynamics of both
+essays into one equation.</p>
 <p><strong>Liouville’s theorem.</strong> The Hamiltonian vector field
-<span class="math inline">X_H = (\partial H/\partial p,\, -\partial
-H/\partial x)</span> has zero divergence, so its flow <span
-class="math inline">\phi_t</span> preserves phase-space volume. A
-density transported by the flow, <span class="math inline">\rho_t =
+therefore has zero divergence, so its flow <span
+class="math inline">\phi_t</span> preserves phase-space volume: a blob
+of initial conditions can be stretched and folded but never compressed.
+A density transported by the flow, <span class="math inline">\rho_t =
 \rho_0\circ\phi_t^{-1}</span>, satisfies <span
 class="math inline">\partial_t\rho = \{H,\rho\}</span>, and for any
 function <span class="math inline">s</span>, <span
@@ -256,17 +722,96 @@ and the problem of time”</a> (1993).</p>
 </section>
 <section id="kinematical-lie-algebras" class="level2">
 <h2>3. Kinematical Lie algebras</h2>
+<p><strong>What a Lie algebra is.</strong> Start with time. Letting a
+system evolve for time <span class="math inline">t</span> is a map <span
+class="math inline">\phi_t</span> of its states, and evolving for <span
+class="math inline">s</span> and then for <span
+class="math inline">t</span> is the same as evolving for <span
+class="math inline">s + t</span>: <span
+class="math display">\phi_t\circ\phi_s = \phi_{s+t},\qquad \phi_0 =
+\mathrm{id}.</span> So the time translations form a group, a copy of the
+real line under addition. It is a <em>Lie group</em>: a group whose
+elements vary continuously, here with the single parameter <span
+class="math inline">t</span>. Its elements are recovered from what
+happens in an instant. The velocity <span
+class="math inline">\frac{d}{dt}\phi_t\big|_{t=0}</span> is the
+Hamiltonian vector field <span class="math inline">X_H</span> of §2, and
+the finite evolution is that infinitesimal step repeated, <span
+class="math inline">\phi_t = \exp(tX_H)</span>. <span
+class="math inline">H</span> is the <em>generator</em> of time
+translation, in the sense of §2 (<em>Generators</em>).</p>
+<p>A larger group of motions, such as the rotations of space, has one
+generator for each independent direction of motion, and the generators
+can be added and scaled: they form a vector space. That space alone does
+not determine the group. What it misses is that motions need not
+commute. Rotate a book a little about one axis, then a little about a
+second axis, then undo the first rotation, then undo the second. The
+book does not return exactly. It ends up rotated, by an amount of the
+second order in the small angles, about the third axis. The <em>Lie
+bracket</em> <span class="math inline">[A, B]</span> of two generators
+is the generator of this leftover motion. For rotations it reads <span
+class="math inline">[J_x, J_y] = J_z</span> and cyclically. A <em>Lie
+algebra</em> is the vector space of generators together with this
+bracket. The bracket is bilinear and antisymmetric, <span
+class="math inline">[B, A] = -[A, B]</span>, and satisfies the Jacobi
+identity, <span class="math display">[[A, B], C] + [[B, C], A] + [[C,
+A], B] = 0.</span> For commutators <span class="math inline">[A, B] = AB
+- BA</span> of matrices, the identity holds automatically, because
+composition is associative: it is what associativity leaves behind in
+the bracket. For the Poisson bracket it reads <span
+class="math inline">\{f, \{g, h\}\} + \{g, \{h, f\}\} + \{h, \{f, g\}\}
+= 0</span>. For a connected group the algebra determines the group near
+the identity.</p>
+<figure>
+<img class="fig-light" src="images/standard-of-motion-book-rotations.svg" alt="Figure 1. Two quarter turns of a book about axes fixed in space; blue marks the front cover and orange the spine. Turning about x and then about y (top row) leaves the book in a different pose from turning about y and then about x (bottom row). For small angles ε the two poses differ by a turn of about ε² about the third axis, z. That leftover is what the Lie bracket [J_x, J_y] = J_z records." />
+<img class="fig-dark" src="images/standard-of-motion-book-rotations-dark.svg" alt="Figure 1. Two quarter turns of a book about axes fixed in space; blue marks the front cover and orange the spine. Turning about x and then about y (top row) leaves the book in a different pose from turning about y and then about x (bottom row). For small angles ε the two poses differ by a turn of about ε² about the third axis, z. That leftover is what the Lie bracket [J_x, J_y] = J_z records." loading="lazy" />
+<figcaption aria-hidden="true">Figure 1. Two quarter turns of a book about axes fixed in space; blue
+marks the front cover and orange the spine. Turning about x and then
+about y (top row) leaves the book in a different pose from turning about
+y and then about x (bottom row). For small angles ε the two poses differ
+by a turn of about ε² about the third axis, z. That leftover is what the
+Lie bracket [J_x, J_y] = J_z records.</figcaption>
+</figure>
+<p>The time group commutes with itself, so its Lie algebra is
+one-dimensional with zero bracket. Its brackets with other motions carry
+the physics. Give a body a small boost, a change of velocity <span
+class="math inline">v</span>, and then let time run for <span
+class="math inline">t</span>; or let time run first and boost
+afterwards. The body ends up displaced by <span
+class="math inline">vt</span> in the first case relative to the second.
+The leftover motion is a spatial translation, which is why the Galilean
+bracket of a boost with the Hamiltonian is a momentum, <span
+class="math inline">\{K_i, H\} = p_i</span> below. On phase space, every
+function generates a flow (§2), and the Poisson bracket of two functions
+generates the leftover motion of their two flows, up to a sign set by
+convention. So the brackets of this section are the Lie algebras of the
+symmetry groups of free motion, realized on the particle’s phase
+space.</p>
 <section id="the-free-particle-as-a-realization" class="level3">
 <h3>3.1 The free particle as a realization</h3>
-<p>For a free relativistic particle of mass <span
-class="math inline">m\neq 0</span>, realize the generators by
-phase-space functions: <span class="math display">H = \sqrt{p^2c^2 +
+<p>The symmetries of a first law are the transformations that carry free
+motions to free motions while keeping clocks and rulers. They come in
+four kinds, each with its generators: rotations <span
+class="math inline">J_i</span>, spatial translations <span
+class="math inline">P_i</span>, time translation <span
+class="math inline">H</span>, and boosts <span
+class="math inline">K_i</span>, the changes of velocity. Here the index
+<span class="math inline">i</span> runs over the three spatial
+directions, so there are ten generators in all. For a free relativistic
+particle of mass <span class="math inline">m\neq 0</span>, realize them
+by phase-space functions: <span class="math display">H = \sqrt{p^2c^2 +
 m^2c^4},\qquad J_i = L_i = \varepsilon_{ijk}x_jp_k,\qquad K_i =
 \frac{H}{c^2}x_i - t\,p_i,</span> with <span class="math inline">P_i =
-p_i</span>. The <span class="math inline">K_i</span> are conserved:
-<span class="math inline">\partial_t K_i + \{K_i, H\} = -p_i + p_i =
-0</span>. Using <span class="math inline">\{x_i, H\} = \partial
-H/\partial p_i = c^2p_i/H</span>:</p>
+p_i</span>. The <span class="math inline">K_i</span> depend on time
+explicitly, through <span class="math inline">-t\,p_i</span>, so their
+rate of change has both terms of §2, and they cancel: <span
+class="math inline">\dot K_i = \partial_t K_i + \{K_i, H\} = -p_i + p_i
+= 0</span>. Dividing by <span class="math inline">H/c^2</span>, which is
+constant, shows what is conserved: <span class="math inline">x_i -
+t\,c^2p_i/H = x_i - t\,v_i</span>, the position the particle had at time
+<span class="math inline">0</span>. A boost generator records where a
+uniformly moving body started. Using <span class="math inline">\{x_i,
+H\} = \partial H/\partial p_i = c^2p_i/H</span>:</p>
 <ul>
 <li><span class="math inline">\{K_i, p_j\} = \dfrac{H}{c^2}\{x_i, p_j\}
 = \dfrac{H}{c^2}\,\delta_{ij}</span>,</li>
@@ -307,16 +852,52 @@ that central term, the Galilei algebra has <span
 class="math inline">\{K_i, P_j\} = 0</span>, and its realization on the
 phase space of a free particle is impossible. Mass is the
 obstruction.</p>
+<p><strong>Why a body needs the extra generator.</strong> The Galilei
+algebra describes the symmetries of space-time, and the Bargmann algebra
+the symmetries of a body moving in it. On events <span
+class="math inline">(x, t)</span>, a translation sends <span
+class="math inline">x\mapsto x + a</span> and a boost sends <span
+class="math inline">x\mapsto x + vt</span>, leaving absolute time alone.
+In either order the result is <span class="math inline">x + a +
+vt</span>, so boosts and translations commute, <span
+class="math inline">[K_i, P_j] = 0</span>. On the states of a particle
+the motions still commute: a boost changes the momentum by <span
+class="math inline">mv</span>, a translation changes the position by
+<span class="math inline">a</span>, and the order does not matter. But
+the generating functions <span class="math inline">p_j</span> and <span
+class="math inline">K_i = m\,x_i - t\,p_i</span> have the bracket <span
+class="math inline">\{K_i, p_j\} = m\,\delta_{ij}</span>. That bracket
+is a constant, and a constant generates no motion, so the leftover
+motion is trivial while the leftover generator is not. Shifting <span
+class="math inline">K_i</span> or <span class="math inline">p_j</span>
+by constants cannot remove it, since constants drop out of every
+bracket. The body needs the extra slot because a boost must change its
+momentum by an amount that depends on the body, <span
+class="math inline">mv</span>, and space-time alone knows no masses. The
+constant records the body’s inertia, the momentum per unit change of
+velocity. It is the trace of the relativistic bracket <span
+class="math inline">\{K_i, p_j\} = H\delta_{ij}/c^2</span> above. In
+relativity boosts and translations do fail to commute, even on events,
+because a boost mixes <span class="math inline">x</span> with <span
+class="math inline">t</span>. As <span
+class="math inline">c\to\infty</span> that part of the leftover
+vanishes, and only the rest mass remains, a constant with no motion
+attached.</p>
 <p>Quantum mechanically, V. Bargmann, <a
 href="https://doi.org/10.2307/1969831">“On unitary ray representations
 of continuous groups”</a>, Ann. Math. 59 (1954) 1–46, showed that
 projective representations of the Galilei group do not reduce to
 ordinary ones: their cocycle is labeled by a real parameter, the mass.
-For the Poincaré group the second cohomology vanishes and the projective
-representations reduce to ordinary ones; mass there is fixed by a
-Casimir, <span class="math inline">H^2 - p^2c^2 = m^2c^4</span>, not by
-a central charge. (A superselection rule for mass is often attributed to
-Bargmann; that attribution is disputed.)</p>
+In quantum mechanics the constant becomes a phase. Translating a
+wavefunction and then boosting it gives the same state as boosting and
+then translating, up to a factor <span class="math inline">e^{\pm
+imva/\hbar}</span>, whose sign depends on conventions. The phase is
+unobservable for one state but not for a superposition of states with
+different masses. For the Poincaré group the second cohomology vanishes
+and the projective representations reduce to ordinary ones; mass there
+is fixed by a Casimir, <span class="math inline">H^2 - p^2c^2 =
+m^2c^4</span>, not by a central charge. (A superselection rule for mass
+is often attributed to Bargmann; that attribution is disputed.)</p>
 <p>Contracting the Poincaré group itself, as E. İnönü and E. P. Wigner
 did in <a href="https://doi.org/10.1073/pnas.39.6.510">“On the
 contraction of groups and their representations”</a> (PNAS 39, 1953),
@@ -411,14 +992,68 @@ brackets.</p>
 g, [\cdot,\cdot])</span> is a family of brackets <span
 class="math inline">[\cdot,\cdot]_t = [\cdot,\cdot] + t\,\varphi_1 +
 t^2\varphi_2 + \cdots</span> satisfying the Jacobi identity. The
-first-order term <span class="math inline">\varphi_1</span> must be a
-2-cocycle in the Chevalley–Eilenberg complex with coefficients in the
-adjoint representation, and deformations that differ by a change of
-basis correspond to coboundaries. If <span
-class="math inline">H^2(\mathfrak g, \mathfrak g) = 0</span>, every
-deformation is trivial and <span class="math inline">\mathfrak g</span>
-is <em>rigid</em> (stable). Semisimple Lie algebras are rigid, by
-Whitehead’s second lemma.</p>
+first-order term <span class="math inline">\varphi_1</span> is an
+antisymmetric bilinear map <span class="math inline">\mathfrak
+g\times\mathfrak g\to\mathfrak g</span>, a candidate correction to the
+bracket. Two conditions sort the candidates.</p>
+<ul>
+<li><em>Cocycles.</em> Expanding the Jacobi identity for <span
+class="math inline">[\cdot,\cdot]_t</span> to first order in <span
+class="math inline">t</span> gives a linear condition on <span
+class="math inline">\varphi_1</span>: <span
+class="math display">[\varphi_1(A, B), C] + \varphi_1([A, B], C) +
+\text{cyclic in } (A, B, C) = 0.</span> A <span
+class="math inline">\varphi_1</span> that satisfies it is a
+<em>2-cocycle</em>: a correction that keeps the Jacobi identity, to
+first order.</li>
+<li><em>Coboundaries.</em> Some corrections change nothing but the names
+of the generators. Relabel them by <span class="math inline">A\mapsto A
++ t f(A)</span> for a linear map <span class="math inline">f:\mathfrak
+g\to\mathfrak g</span>, and the old bracket, rewritten in the new
+labels, acquires the first-order term <span
+class="math display">\varphi_1(A, B) = [f(A), B] + [A, f(B)] - f([A,
+B]).</span> Such a <span class="math inline">\varphi_1</span> is a
+<em>2-coboundary</em>. It is always a cocycle, and the algebra it
+produces is the old one in disguise.</li>
+</ul>
+<p>The second cohomology <span class="math inline">H^2(\mathfrak g,
+\mathfrak g)</span> is the space of cocycles modulo coboundaries: the
+genuinely new first-order deformations. (This is the Chevalley–Eilenberg
+cohomology of <span class="math inline">\mathfrak g</span> with
+coefficients in <span class="math inline">\mathfrak g</span> itself,
+acting by the bracket; the second argument names the coefficients.) If
+<span class="math inline">H^2(\mathfrak g, \mathfrak g) = 0</span>,
+every small deformation is a change of basis, and <span
+class="math inline">\mathfrak g</span> is <em>rigid</em> (stable).
+Semisimple Lie algebras are rigid, by Whitehead’s second lemma. An
+<em>ideal</em> of <span class="math inline">\mathfrak g</span> is a
+subspace <span class="math inline">I</span> that the bracket with
+anything in <span class="math inline">\mathfrak g</span> maps back into
+<span class="math inline">I</span>, <span class="math inline">[\mathfrak
+g, I]\subseteq I</span>; it is <em>abelian</em> if its elements commute
+with one another. A Lie algebra is <em>semisimple</em> if it has no
+abelian ideal other than <span class="math inline">\{0\}</span>.
+Equivalently, it is a direct sum of simple algebras, ones with no ideals
+at all besides <span class="math inline">\{0\}</span> and themselves;
+and by Cartan’s criterion, its Killing form <span
+class="math inline">\kappa(A, B) =
+\operatorname{tr}(\mathrm{ad}_A\,\mathrm{ad}_B)</span>, where <span
+class="math inline">\mathrm{ad}_A = [A, \cdot\,]</span>, is
+nondegenerate. The kinematical algebras show the difference. In the
+homogeneous Galilei algebra the boosts commute, <span
+class="math inline">[K_i, K_j] = 0</span>, and rotations map boosts to
+boosts, so the boosts form an abelian ideal: not semisimple. In the
+Poincaré algebra the translations <span class="math inline">P_i</span>
+and <span class="math inline">H</span> commute and every generator maps
+them to translations, so they form an abelian ideal: not semisimple
+either. The Lorentz algebra, rotations and boosts with <span
+class="math inline">[K_i, K_j] = -\varepsilon_{ijk}J_k/c^2</span>, has
+no such ideal, and it is semisimple. The same construction with
+coefficients in the real numbers, <span
+class="math inline">H^2(\mathfrak g, \mathbb R)</span>, classifies
+central extensions instead, and it is the one behind §3.2: it vanishes
+for the Poincaré algebra and is one-dimensional for the Galilei algebra,
+where its single class is the mass.</p>
 <p><strong>Galilei to Lorentz.</strong> The homogeneous Galilei algebra
 (rotations <span class="math inline">J</span> and boosts <span
 class="math inline">K</span> with <span class="math inline">[K_i, K_j] =
@@ -449,8 +1084,46 @@ class="math inline">[H, P_i]</span> and <span class="math inline">[P_i,
 P_j]</span> proportional to <span class="math inline">1/R^2</span> times
 boosts and rotations deforms it to the de Sitter or anti-de Sitter
 algebra, <span class="math inline">\mathfrak{so}(4,1)</span> or <span
-class="math inline">\mathfrak{so}(3,2)</span>, which are semisimple. R.
-Vilela Mendes, <a
+class="math inline">\mathfrak{so}(3,2)</span>, which are semisimple.</p>
+<p><strong>Where the fifth dimension comes from.</strong> The
+deformation adds no generators. Poincaré has ten, six Lorentz generators
+and four translations, and the rotation algebra of a five-dimensional
+space also has ten, one for each pair of its axes. Once the translations
+stop commuting, <span class="math inline">[P_a, P_b] = \pm
+J_{ab}/R^2</span> with <span class="math inline">a, b</span> running
+over the four space-time directions, they can be written as rotations in
+planes that contain a new fifth axis, <span class="math inline">P_a =
+J_{a4}/R</span>, and all ten generators become the rotations of five
+dimensions. De Sitter space-time is the hyperboloid <span
+class="math inline">-X_0^2 + X_1^2 + X_2^2 + X_3^2 + X_4^2 = R^2</span>
+in a flat five-dimensional Minkowski space, with <span
+class="math inline">R</span> set by the cosmological constant, <span
+class="math inline">\Lambda = 3/R^2</span>. Its “translations” slide
+points over the curved surface the way rotations about an axis through
+the center slide points over a sphere. Nothing moves in the fifth
+direction. It is the room in which the curvature can be drawn.</p>
+<p>Computer graphics uses the same device in its flat form. To make
+translations linear, it writes a point <span
+class="math inline">x</span> as <span class="math inline">(x, 1)</span>,
+and a translation by <span class="math inline">b</span> becomes the
+linear map <span class="math display">\begin{pmatrix} I &amp; b\\ 0
+&amp; 1\end{pmatrix},</span> a shear in one dimension more, with
+generator <span class="math inline">E_{a,w}</span>, the matrix with a
+single entry in the last column. De Sitter uses a rotation in the <span
+class="math inline">(x_a, w)</span> plane instead, whose generator is
+<span class="math inline">E_{a,w} - E_{w,a}</span>. After rescaling
+<span class="math inline">w</span> by <span
+class="math inline">R</span>, the translation generator becomes <span
+class="math display">P_a = E_{a,w} - \frac{1}{R^2}\,E_{w,a},</span> and
+as <span class="math inline">R\to\infty</span> the second term vanishes,
+leaving the homogeneous-coordinate translation. Homogeneous coordinates
+are the contraction, and de Sitter is the deformation. The two differ in
+exactly what the bracket records. Shears in different directions
+commute, because the slice <span class="math inline">w = 1</span> is
+flat; the de Sitter rotations leave a Lorentz rotation of order <span
+class="math inline">1/R^2</span> behind, and that leftover is the
+curvature.</p>
+<p>R. Vilela Mendes, <a
 href="https://doi.org/10.1088/0305-4470/27/24/019">“Deformations, stable
 theories and fundamental constants”</a> (J. Phys. A 27 (1994)
 8091–8104), considered the algebra of relativistic quantum mechanics,
@@ -549,15 +1222,35 @@ Life’s convention, is <span class="math inline">\max(|d_x|,
 |d_y|)/p</span> times <span class="math inline">c</span>.</p>
 <p><strong>Fact 1 (speeds are rational).</strong> Immediate from the
 definition.</p>
-<p><strong>Fact 2 (dense speeds need unbounded size).</strong> Suppose
-every phase of a spaceship fits, up to translation, in an <span
-class="math inline">a\times b</span> box. Then the ship has at most
-<span class="math inline">2^{ab}</span> distinct phases, so <span
-class="math inline">p\le 2^{ab}</span>, and since the displacement per
-generation is bounded by the automaton’s radius, <span
-class="math inline">|d_x|, |d_y|\le rp</span>. So ships fitting in a
-given box have speeds in a finite set. A family of ships whose speeds
-are dense in an interval must contain ships of unbounded size.</p>
+<p><strong>Fact 2 (precision costs size, but only
+logarithmically).</strong> A ship whose speed is <span
+class="math inline">r/q</span> in lowest terms has a period that is a
+multiple of <span class="math inline">q</span>, so it passes through at
+least <span class="math inline">q</span> distinct phases. If every phase
+fits, up to translation, in a box of area <span
+class="math inline">A</span>, there are at most <span
+class="math inline">2^A</span> configurations to pass through, so <span
+class="math inline">q\le 2^A</span>: resolving a speed to precision
+<span class="math inline">1/q</span> costs at least <span
+class="math inline">\log_2 q</span> cells. Speeds are ratios of
+displacement to period, so scaling space and time together leaves them
+unchanged, while a pattern <span class="math inline">k</span> times
+larger in each direction may use denominators up to <span
+class="math inline">2^{k^2A}</span>. Counting therefore limits only
+small patterns. For anything of macroscopic size it forbids no speed an
+observer could resolve.</p>
+<p><strong>What counting misses: gaps.</strong> Quantized speeds are
+expected on a quantized substrate and do no harm. What breaks Newton’s
+first law is a gap: two nearby speeds carried by patterns that have
+nothing in common, so that a small boost turns a body into a different
+kind of thing. A rule passes this test if its carriers come in families
+where neighboring speeds are realized by nearly the same pattern, nearly
+the same at the scale an observer resolves. In Life they do not. The
+glider’s nearest neighbors in speed are unrelated ships of tens to
+hundreds of thousands of cells. The adjustable designs vary their speed
+by rebuilding the machine, and random soups realize six speeds in all.
+The obstruction is in which speeds the dynamics realizes, and by what,
+not in how many speeds a box can hold.</p>
 <p>In Conway’s Life the radius is 1, and Conway showed in 1970 that a
 spaceship’s speed is at most <span class="math inline">c/2</span>
 orthogonally and <span class="math inline">c/4</span> diagonally. Below
@@ -570,9 +1263,10 @@ href="https://conwaylife.com/wiki/Caterloopillar">LifeWiki,
 href="https://conwaylife.com/wiki/List_of_spaceships">LifeWiki, “List of
 spaceships”</a>, revision of 30 June 2026).</p>
 <p>The counting assumes a fixed lattice and a uniform background, as in
-Life. A hypergraph rewriting system has neither, so Fact 2 shows what a
-fixed-lattice carrier of motion cannot do, not what a hypergraph carrier
-cannot do.</p>
+Life. A hypergraph rewriting system has neither, so Fact 2 and the gap
+test are stated for fixed lattices; the gap test carries over to
+hypergraphs, with “nearly the same pattern” read at the observer’s
+scale.</p>
 </section>
 <section id="the-bombellihensonsorkin-theorem" class="level2">
 <h2>6. The Bombelli–Henson–Sorkin theorem</h2>
@@ -621,11 +1315,10 @@ resolution.</p>
 </section>
 <section id="for-the-demon-is-a-learner" class="level2">
 <h2>7. For <em>The Demon Is a Learner</em></h2>
-<p>This part supports the sequel essay, <a
-href="https://lukstafi.github.io/notes/the-demon-is-a-learner.html">The
-Demon Is a Learner</a>. Entropies are in nats with Boltzmann’s constant
-set to 1; a bit is <span class="math inline">\ln 2</span> nats.
-Kolmogorov complexities and Shannon entropies in §7.3 are in bits.</p>
+<p>This part supports the forthcoming sequel, <em>The Demon Is a
+Learner</em>. Entropies are in nats with Boltzmann’s constant set to 1;
+a bit is <span class="math inline">\ln 2</span> nats. Kolmogorov
+complexities and Shannon entropies in §7.3 are in bits.</p>
 <section id="the-overdamped-limit" class="level3">
 <h3>7.1 The overdamped limit</h3>
 <p>Take Newton’s equation for a body of mass <span
