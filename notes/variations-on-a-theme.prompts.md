@@ -54,3 +54,7 @@ And two links from Scott Aaronson, the first one someone posted to Carrier witho
 
 https://scottaaronson.blog/?p=10169
 https://scottaaronson.blog/?p=10232
+
+## The METR assessment
+
+Let's update notes/variations-on-a-theme.md with the new evidence from https://metr.org/blog/2026-11-05-anthropic-ai-rd-acceleration-assessment/

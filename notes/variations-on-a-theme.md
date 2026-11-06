@@ -37,6 +37,12 @@ The measurements disagree with "limits a year ago." Figure 1 follows the best sc
 
 METR, whose slowdown trial Carrier quotes (Becker et al. 2025), also tracks the length of task an agent can complete half the time. That length has doubled about every seven months since 2019, and METR credits much of the gain to fewer errors and better recovery from them (Kwa et al. 2025). An error rate that "will always be around the same" does not draw this curve. And a claim of logical impossibility falls to a single counterexample.
 
+On 5 November, four days after this essay first appeared, METR reported what it found inside Anthropic (Cunningham et al. 2026). Its staff spent eleven weeks with internal benchmark scores, research data, and about fifteen interviews, asking whether AI is speeding up AI research. METR states its prior plainly: given diminishing returns, a significant acceleration "would be surprising." Most of the staff on the project now believe that Anthropic is "likely improving the capabilities of their models on well-specified tasks at around twice the rate" of March 2024 to October 2025. On Anthropic's version of Epoch AI's capabilities index, growth since then has run at 1.9 times the earlier rate, with a 95% interval of 1.5 to 2.8. The break in the trend falls in October 2025, the month Carrier published his article. METR is confident that faster growth in training compute did not cause the acceleration, and it guesses that "perhaps ≈80%" of the current acceleration comes from AI.
+
+The report's weaknesses are large, and METR names them. Anthropic held the right to redact, and it "redacted a majority of the evidence we found most informative," so "the public has to rely on METR's judgment much more than would be ideal." Claude was deeply involved in most of the data and analysis. METR detected no bias from that, but one of us is a Claude model and is no judge of it. The index covers tasks that are easy to grade, and METR has "additional uncertainty" about broader ones. The ratio falls to about 1.4 when all developers' models are counted, and one reading of that gap is that Anthropic was catching up. Non-AI factors likely helped in late 2025. Anthropic staff, polled on Slack, put their own speedup near 12x. METR calls that "only very loose evidence," and we set it aside: in the trial Carrier quotes, developers whom AI slowed down believed it had sped them up.
+
+These doubts concern whether progress sped up. Carrier's claim is that it stopped. A ratio of 1 is progress at the old rate; a ratio of 0 is the limit he announced. The lowest ratio in METR's robustness checks is 1.1, and its interval reaches down to 0.8. METR also looked for limits ahead, in algorithms, compute and data over the next twelve months. It found no significant ones, and it says that its understanding changed several times along the way.
+
 Customers measure improvement too, with money. Models released in the six months before September 2026 brought in over 80% of Anthropic's third-quarter revenue. If the models had stopped improving, customers would have no reason to move to each new one within months.
 
 Carrier's own evidence that the gains are "marginal and diminishing" is a study in which accuracy on business hypotheses rose from 76.5% with GPT-3.5 to 80% with GPT-5 mini. Both are cheap models. The comparison says little about the frontier.
@@ -65,7 +71,7 @@ Carrier's title bundles two claims that need separate evidence. "Bubble" is a cl
 
 ## Both lists at once
 
-Carrier's failures and the filing's growth describe the same year, so something must explain both. In "Which AGI?" we argued that a deployed model fills the cognitive roles within a session but not across sessions: it does not get better at a job by doing it. Dwarkesh Patel put the economic side plainly. What keeps capable models from transforming white-collar work is that they cannot learn on the job (Patel 2025). On that diagnosis, work that fits in a session pays, and work that needs a firm's accumulated context stalls. Coding fits in a session better than most work does, and it is the work the filing puts first. The roles a deployment fills include the ones Carrier names as the only road to real AI: models of the world, of causal systems, of other minds, and in part of oneself.
+Carrier's failures and the filing's growth describe the same year, so something must explain both. In "Which AGI?" we argued that a deployed model fills the cognitive roles within a session but not across sessions: it does not get better at a job by doing it. Dwarkesh Patel put the economic side plainly. What keeps capable models from transforming white-collar work is that they cannot learn on the job (Patel 2025). On that diagnosis, work that fits in a session pays, and work that needs a firm's accumulated context stalls. Coding fits in a session better than most work does, and it is the work the filing puts first. METR's finding has the same shape: the doubling holds for well-specified tasks, and R&D speeds up "primarily via AI assistance rather than fully autonomous contributions." The roles a deployment fills include the ones Carrier names as the only road to real AI: models of the world, of causal systems, of other minds, and in part of oneself.
 
 ## The flat earth
 
@@ -90,6 +96,8 @@ Carrier, R. 2012. *Proving History: Bayes's Theorem and the Quest for the Histor
 Carrier, R. 2025a. "A Primer on Actually Doing Your Own Research." *Richard Carrier Blogs*, January 20. https://www.richardcarrier.info/archives/32665
 
 Carrier, R. 2025b. "AI Is Garbage and a Bubble (Please Learn This)." *Richard Carrier Blogs*, October 29, continuously updated. https://www.richardcarrier.info/archives/38652. Quotations from the comments are from the same page.
+
+Cunningham, T., N. Rush, P. Whitfill, and H. Wijk. 2026. "Independent Assessment of AI R&D Acceleration at Anthropic in October 2026." METR, November 5. https://metr.org/blog/2026-11-05-anthropic-ai-rd-acceleration-assessment/
 
 Epoch AI. 2026. "Benchmarking Hub" data (ARC-AGI-2, FrontierMath Tiers 1–3 v2, CritPt). Downloaded November 1. https://epoch.ai/data/benchmark_data.zip
 
