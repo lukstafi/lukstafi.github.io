@@ -5,7 +5,7 @@
   <meta name="generator" content="pandoc">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
   <meta name="author" content="Łukasz Stafiniak and Claude (Anthropic)">
-  <meta name="dcterms.date" content="2026-11-05">
+  <meta name="dcterms.date" content="2026-11-06">
   <meta property="og:title" content="The Demon Is a Learner: The Mathematics">
   <meta property="og:url" content="https://lukstafi.github.io/notes/the-demon-is-a-learner-mathematics.html">
   <meta property="og:type" content="article">
@@ -60,7 +60,7 @@ temperature from counting, Boltzmann’s H-theorem for a gas of balls and
 where its arrow of time comes from, the price of forgetting, algorithmic
 bounds, and ten tools of statistical mechanics at work in machine
 learning</p>
-<p class="byline">2026-11-05 &ndash; Łukasz Stafiniak and Claude
+<p class="byline">2026-11-06 &ndash; Łukasz Stafiniak and Claude
 (Anthropic)</p>
 </header>
 <p><em>This page continues <a
@@ -1162,6 +1162,56 @@ model’s parameters (<a
 href="https://doi.org/10.1007/978-94-011-5014-9_12">“A view of the EM
 algorithm that justifies incremental, sparse, and other variants”</a>,
 1998).</p>
+<p>Measure entropy against a prior <span class="math inline">p_0</span>
+instead of the uniform measure, and the free energy becomes <span
+class="math display">F[q] = \mathbb E_q[L] + T\,D(q\|p_0),</span> an
+objective plus a strength times a regularizer. Its minimizer is the tilt
+<span class="math inline">q\propto p_0\,e^{-L/T}</span> of §8.3, and its
+minimum value is <span class="math inline">-T\ln\mathbb
+E_{p_0}e^{-L/T}</span>. Statisticians know this as the Donsker–Varadhan
+variational formula. So temperature is regularization strength: as <span
+class="math inline">T\to 0</span> the mass piles onto the minimum of
+<span class="math inline">L</span>, and at large <span
+class="math inline">T</span> it stays near the prior. This <span
+class="math inline">T</span> is statistical. It has no bath and pays no
+joules, so the warning in the essay’s paragraph on Friston applies here
+too.</p>
+<p>Ordinary weight decay is only part of this. Adding <span
+class="math inline">\lambda|w|^2/2</span> to the loss of a single weight
+vector changes the energy: the term is the code length of <span
+class="math inline">w</span> under a Gaussian prior, and no entropy
+appears. Free energy needs a distribution over weights. Take <span
+class="math inline">q = \mathcal N(\mu, \sigma^2I)</span> in <span
+class="math inline">d</span> dimensions and <span
+class="math inline">p_0 = \mathcal N(0, \sigma_0^2I)</span>. Then <span
+class="math display">D(q\|p_0) = \frac{|\mu|^2}{2\sigma_0^2} + \frac
+d2\Bigl(\frac{\sigma^2}{\sigma_0^2} - 1 -
+\ln\frac{\sigma^2}{\sigma_0^2}\Bigr).</span> The first term is weight
+decay. The second rewards keeping a width. A point estimate drops it,
+and it is the term behind the flat minima of §12.4.</p>
+<p>PAC-Bayes says why this objective should generalize. Let the loss
+take values in <span class="math inline">[0, 1]</span>, let <span
+class="math inline">R</span> be its expectation on new data, and let
+<span class="math inline">\hat R</span> be its average on <span
+class="math inline">n</span> training examples. Fix <span
+class="math inline">p_0</span> before seeing the data, and fix <span
+class="math inline">\lambda &gt; 0</span>. With probability at least
+<span class="math inline">1 - \delta</span> over the sample, for every
+<span class="math inline">q</span> at once, <span
+class="math display">\mathbb E_q[R]\ \le\ \mathbb E_q[\hat R] +
+\frac{D(q\|p_0) + \ln(1/\delta)}{\lambda} + \frac{\lambda}{8n}</span>
+(O. Catoni’s bound, as given by P. Alquier, <a
+href="https://doi.org/10.1561/2200000100">“User-friendly introduction to
+PAC-Bayes bounds”</a>, Found. Trends Mach. Learn. 17 (2024) 174–303,
+Theorem 2.1). The part of the right side that depends on <span
+class="math inline">q</span> is the free energy above, with <span
+class="math inline">\hat R</span> as the loss and <span
+class="math inline">T = 1/\lambda</span>, so the Gibbs tilt minimizes
+the bound. The best <span class="math inline">\lambda</span> grows with
+<span class="math inline">n</span>, so the temperature worth using falls
+as data accumulate. Catoni’s own monograph is subtitled <a
+href="https://arxiv.org/abs/0712.0248"><em>The Thermodynamics of
+Statistical Learning</em></a>.</p>
 </section>
 <section id="the-legendre-transform-trades-quantities-for-prices"
 class="level3">
@@ -1677,7 +1727,7 @@ learning rule</td>
 <tr>
 <td>Gibbs variational principle</td>
 <td>Gibbs–Bogoliubov bound on <span class="math inline">F</span></td>
-<td>evidence lower bound, EM</td>
+<td>evidence lower bound, EM, regularized objectives, PAC-Bayes</td>
 </tr>
 <tr>
 <td>Legendre transform, Maxwell relations</td>

@@ -53,3 +53,7 @@ Inference is part of machine learning, broadly speaking (or maybe of AI). Would 
 Learning maximally compressed representations might not be beneficial because the information might be less usable. Is there a notion of usable information in this sense that would fit in the essay?
 
 Do we have a good enough account of coarse graining? Is there anything to be told about that concept?
+
+Are we actually making a connection between free energy and a regularized objective?
+
+Is the recent-ish result about JEPA and Bayesian prior IIRC relevant for us?

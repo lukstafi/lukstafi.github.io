@@ -2,7 +2,7 @@
 title: "The Demon Is a Learner: The Mathematics"
 subtitle: "A continuation of The Standard of Motion: The Mathematics, numbered from §7: the overdamped limit, entropy and temperature from counting, Boltzmann's H-theorem for a gas of balls and where its arrow of time comes from, the price of forgetting, algorithmic bounds, and ten tools of statistical mechanics at work in machine learning"
 author: "Łukasz Stafiniak and Claude (Anthropic)"
-date: 2026-11-05
+date: 2026-11-06
 header-includes:
   - |
     <style>
@@ -274,6 +274,18 @@ This is §10.3 read as a statement about computation. Since the divergence is no
 $$-\ln p(x)\ \le\ \mathbb E_q[-\ln p(x, z)] - S[q] = -\mathrm{ELBO}(q).$$
 The evidence lower bound is the negative of a free energy, and the gap is $D(q\|p(z\mid x))$. The energy term is the misfit plus the code length of the latent variables under the prior, and the entropy term is what bits back refunds. This is the identification of Hinton and van Camp, described in the essay. R. M. Neal and G. E. Hinton showed that expectation–maximization is coordinate descent on this free energy, the E step over $q$ and the M step over the model's parameters (["A view of the EM algorithm that justifies incremental, sparse, and other variants"](https://doi.org/10.1007/978-94-011-5014-9_12), 1998).
 
+Measure entropy against a prior $p_0$ instead of the uniform measure, and the free energy becomes
+$$F[q] = \mathbb E_q[L] + T\,D(q\|p_0),$$
+an objective plus a strength times a regularizer. Its minimizer is the tilt $q\propto p_0\,e^{-L/T}$ of §8.3, and its minimum value is $-T\ln\mathbb E_{p_0}e^{-L/T}$. Statisticians know this as the Donsker–Varadhan variational formula. So temperature is regularization strength: as $T\to 0$ the mass piles onto the minimum of $L$, and at large $T$ it stays near the prior. This $T$ is statistical. It has no bath and pays no joules, so the warning in the essay's paragraph on Friston applies here too.
+
+Ordinary weight decay is only part of this. Adding $\lambda|w|^2/2$ to the loss of a single weight vector changes the energy: the term is the code length of $w$ under a Gaussian prior, and no entropy appears. Free energy needs a distribution over weights. Take $q = \mathcal N(\mu, \sigma^2I)$ in $d$ dimensions and $p_0 = \mathcal N(0, \sigma_0^2I)$. Then
+$$D(q\|p_0) = \frac{|\mu|^2}{2\sigma_0^2} + \frac d2\Bigl(\frac{\sigma^2}{\sigma_0^2} - 1 - \ln\frac{\sigma^2}{\sigma_0^2}\Bigr).$$
+The first term is weight decay. The second rewards keeping a width. A point estimate drops it, and it is the term behind the flat minima of §12.4.
+
+PAC-Bayes says why this objective should generalize. Let the loss take values in $[0, 1]$, let $R$ be its expectation on new data, and let $\hat R$ be its average on $n$ training examples. Fix $p_0$ before seeing the data, and fix $\lambda > 0$. With probability at least $1 - \delta$ over the sample, for every $q$ at once,
+$$\mathbb E_q[R]\ \le\ \mathbb E_q[\hat R] + \frac{D(q\|p_0) + \ln(1/\delta)}{\lambda} + \frac{\lambda}{8n}$$
+(O. Catoni's bound, as given by P. Alquier, ["User-friendly introduction to PAC-Bayes bounds"](https://doi.org/10.1561/2200000100), Found. Trends Mach. Learn. 17 (2024) 174–303, Theorem 2.1). The part of the right side that depends on $q$ is the free energy above, with $\hat R$ as the loss and $T = 1/\lambda$, so the Gibbs tilt minimizes the bound. The best $\lambda$ grows with $n$, so the temperature worth using falls as data accumulate. Catoni's own monograph is subtitled [*The Thermodynamics of Statistical Learning*](https://arxiv.org/abs/0712.0248).
+
 ### 12.3 The Legendre transform trades quantities for prices
 
 Thermodynamics has several potentials because experimenters control different things. Internal energy $U(S, V)$ is natural when entropy and volume are held fixed. Holding temperature fixed instead, one takes
@@ -391,7 +403,7 @@ The ledger runs the other way from Szilard's. The demon gains work from what it 
 | Tool | In physics | In learning |
 |---|---|---|
 | Partition function | means and fluctuations by differentiation | softmax, exponential families, Fisher information, two-phase learning rule |
-| Gibbs variational principle | Gibbs–Bogoliubov bound on $F$ | evidence lower bound, EM |
+| Gibbs variational principle | Gibbs–Bogoliubov bound on $F$ | evidence lower bound, EM, regularized objectives, PAC-Bayes |
 | Legendre transform, Maxwell relations | choice of potential; state functions | conjugate duality; penalty against constraint; path-independent markets |
 | Laplace's method, equipartition | entropy of a basin | Occam factor, BIC, flat minima |
 | Fluctuation–response | Einstein, Kubo | score-function gradients, SGD's temperature |
