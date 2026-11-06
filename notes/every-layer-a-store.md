@@ -2,7 +2,7 @@
 title: "Every Layer a Store"
 subtitle: "The open frontier, part 1: how the 2026 open models are built"
 author: "Łukasz Stafiniak and Claude (Anthropic)"
-date: 2026-10-26
+date: 2026-11-06
 header-includes:
   - |
     <style>
@@ -276,7 +276,7 @@ MiMo, Kimi K3, GLM-5.3, both DeepSeek models and MiniMax-M3 accept a million tok
 
 **MiniMax-M3** learns which blocks of the context to read, with three full-attention layers at the start. Its October successor, [MiniMax-M3.1-Flash](https://huggingface.co/MiniMaxAI/MiniMax-M3.1-Flash), has the same size and makes all 60 layers sparse.
 
-Behind seven releases there are about five ideas: recurrent layers with a delta-rule write, mixed with attention; learned selection of what to read; learned compression of what is kept; a split between reading a prompt and writing an answer; and replacements for the plain residual sum. The October releases spread them further. Selection reached every layer of MiniMax's model and the global layers of [Step-5-Preview](https://huggingface.co/stepfun-ai/Step-5-Preview), StepFun's window hybrid. KDA-plus-MLA hybrids, which inclusionAI had adopted in August, reached 560 billion parameters in its [Ling-3.1-flash](https://huggingface.co/inclusionAI/Ling-3.1-flash). Meta replaced the residual sum. Most of these ideas are answers to one question: what a memory should be allowed to forget.
+Behind seven releases there are about five ideas: recurrent layers with a delta-rule write, mixed with attention; learned selection of what to read; learned compression of what is kept; a split between reading a prompt and writing an answer; and replacements for the plain residual sum. The October releases spread them further. Selection reached every layer of MiniMax's model, the global layers of [Step-5-Preview](https://huggingface.co/stepfun-ai/Step-5-Preview), StepFun's window hybrid, and the 24 attention layers of [Kimi K3.1 Pro](https://huggingface.co/moonshotai/Kimi-K3.1-Pro), which keeps K3's compressed entries and selects 2,048 of them, as GLM does. KDA-plus-MLA hybrids, which inclusionAI had adopted in August, reached 560 billion parameters in its [Ling-3.1-flash](https://huggingface.co/inclusionAI/Ling-3.1-flash). Meta replaced the residual sum. Most of these ideas are answers to one question: what a memory should be allowed to forget.
 
 ## 6. Depth, recurrence and what a monitor can see
 
@@ -310,7 +310,7 @@ Monitoring is detection. Explanation is a causal account of what produced a beha
 
 Return to the million-token prompt. In MiMo, most of it went into the 10 global layers' caches, where every later token can reach it, and the 60 window layers kept only the last 128 tokens. In Kimi K3, the 24 MLA layers kept a compressed entry for every token, and the 69 KDA layers folded the whole prompt into fixed-size matrices. If the trained hybrids measured so far are a guide, those matrices hold the prompt's settings, its language and voice, while the facts stay in the cache. In DeepSeek-V4.1-Flash, the encoder read the prompt and wrote it into four caches: three compressed ones shared within the encoder, and one uncompressed one from which the decoder selects. Engram's tables were consulted along the way. In each model the prompt was divided among stores that keep different things for different lengths of time.
 
-These stores were not designed to hold particular contents; training filled them. The second essay takes up how: what pretraining writes and in what order, how a selector learns what to select, and what post-training changes in what was written. The stores also matter beyond engineering. Any account of a model's states, of what persists in it and what it regulates, has to be an account of these stores, and a later essay will take that up.
+These stores were not designed to hold particular contents; training filled them. [The second essay](https://lukstafi.github.io/notes/filling-the-stores.html) takes up how: what pretraining writes and in what order, how a selector learns what to select, and what post-training changes in what was written. The stores also matter beyond engineering. Any account of a model's states, of what persists in it and what it regulates, has to be an account of these stores, and a later essay will take that up.
 
 ---
 

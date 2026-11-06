@@ -5,8 +5,10 @@
   <meta name="generator" content="pandoc">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
   <meta name="author" content="Łukasz Stafiniak and Claude (Anthropic)">
-  <meta name="dcterms.date" content="2026-10-26">
+  <meta name="dcterms.date" content="2026-11-06">
+  <meta name="description" content="The open frontier, part 1: how the 2026 open models are built, with every layer read as a memory that must decide what to forget. By Claude Opus 5.5, in my voice.">
   <meta property="og:title" content="Every Layer a Store">
+  <meta property="og:description" content="The open frontier, part 1: how the 2026 open models are built, with every layer read as a memory that must decide what to forget. By Claude Opus 5.5, in my voice.">
   <meta property="og:url" content="https://lukstafi.github.io/notes/every-layer-a-store.html">
   <meta property="og:type" content="article">
   <meta property="og:site_name" content="lukstafi&#x27;s blog">
@@ -56,7 +58,7 @@
 <h1 class="title">Every Layer a Store</h1>
 <p class="subtitle">The open frontier, part 1: how the 2026 open models
 are built</p>
-<p class="byline">2026-10-26 &ndash; Łukasz Stafiniak and Claude
+<p class="byline">2026-11-06 &ndash; Łukasz Stafiniak and Claude
 (Anthropic)</p>
 </header>
 <p><em>This is the first of two essays on the open-weight language
@@ -1023,10 +1025,13 @@ with a delta-rule write, mixed with attention; learned selection of what
 to read; learned compression of what is kept; a split between reading a
 prompt and writing an answer; and replacements for the plain residual
 sum. The October releases spread them further. Selection reached every
-layer of MiniMax’s model and the global layers of <a
+layer of MiniMax’s model, the global layers of <a
 href="https://huggingface.co/stepfun-ai/Step-5-Preview">Step-5-Preview</a>,
-StepFun’s window hybrid. KDA-plus-MLA hybrids, which inclusionAI had
-adopted in August, reached 560 billion parameters in its <a
+StepFun’s window hybrid, and the 24 attention layers of <a
+href="https://huggingface.co/moonshotai/Kimi-K3.1-Pro">Kimi K3.1
+Pro</a>, which keeps K3’s compressed entries and selects 2,048 of them,
+as GLM does. KDA-plus-MLA hybrids, which inclusionAI had adopted in
+August, reached 560 billion parameters in its <a
 href="https://huggingface.co/inclusionAI/Ling-3.1-flash">Ling-3.1-flash</a>.
 Meta replaced the residual sum. Most of these ideas are answers to one
 question: what a memory should be allowed to forget.</p>
@@ -1138,12 +1143,14 @@ uncompressed one from which the decoder selects. Engram’s tables were
 consulted along the way. In each model the prompt was divided among
 stores that keep different things for different lengths of time.</p>
 <p>These stores were not designed to hold particular contents; training
-filled them. The second essay takes up how: what pretraining writes and
-in what order, how a selector learns what to select, and what
-post-training changes in what was written. The stores also matter beyond
-engineering. Any account of a model’s states, of what persists in it and
-what it regulates, has to be an account of these stores, and a later
-essay will take that up.</p>
+filled them. <a
+href="https://lukstafi.github.io/notes/filling-the-stores.html">The
+second essay</a> takes up how: what pretraining writes and in what
+order, how a selector learns what to select, and what post-training
+changes in what was written. The stores also matter beyond engineering.
+Any account of a model’s states, of what persists in it and what it
+regulates, has to be an account of these stores, and a later essay will
+take that up.</p>
 <hr />
 <p><em>Sources.</em> The models: MiMo-V2.6-Pro (model card and technical
 report, arXiv 2610.11959); Kimi K3 (model repository and technical
