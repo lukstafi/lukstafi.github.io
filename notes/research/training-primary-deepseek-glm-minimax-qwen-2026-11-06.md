@@ -235,14 +235,14 @@ Hack rates under their GPT-5.6 Sol judge with hand-tuned rubrics. [Fig. 2a, abst
 **The loss** (MSA eqs. 9–11; Alg. 1). For query $i$ and GQA group $r$, on the selected tokens $\mathcal I^{(r)}_{i,\rm tok}$:
 
 $$
-P^{{\rm idx},(r)}_{i,j}=\frac{\exp S^{{\rm idx},(r)}_{i,j}}{\sum_{u}\exp S^{{\rm idx},(r)}_{i,u}},
+P^{ {\rm idx},(r)}_{i,j}=\frac{\exp S^{ {\rm idx},(r)}_{i,j}}{\sum_{u}\exp S^{ {\rm idx},(r)}_{i,u}},
 \qquad
 P^{(r)}_{i,j}=\frac1G\sum_{\ell\in\mathcal H_r}\frac{\exp S^{(\ell)}_{i,j}}{\sum_u\exp S^{(\ell)}_{i,u}},
 $$
 
 $$
 \mathcal L_{\rm KL}=\frac{1}{NH_{kv}}\sum_{i=1}^{N}\sum_{r=1}^{H_{kv}}
-D_{\rm KL}\big(\operatorname{stopgrad}(P^{(r)}_{i,\cdot})\,\big\|\,P^{{\rm idx},(r)}_{i,\cdot}\big),
+D_{\rm KL}\big(\operatorname{stopgrad}(P^{(r)}_{i,\cdot})\,\big\|\,P^{ {\rm idx},(r)}_{i,\cdot}\big),
 $$
 
 $$
