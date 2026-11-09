@@ -45,3 +45,31 @@ Go ahead, thanks!
 Maybe we should replace "my friend" by "my friend at the time" or "a colleague"?
 
 "Fourteen years later the threads of that correspondence look like a table of contents." This maybe implies too much prescience to that correspondence. It's a table of contents for the blog because recently I've been recapitulating the highlights of my intellectual life on the blog, in parallel to inspirations from the latest AI developments.
+
+Let's do another iteration on notes/before-the-search-settles.md . Start by committing the existing changes to keep continuity, since later essays are already committed.
+
+"The last part of the essay asks what they imply for machines that improve themselves without new evidence, which turns out to be the same question." -- this probably overclaims, but I'll need to read to the end to see if the hook is justified.
+
+What's "the problem of old evidence"?
+
+Is it worth adding a box for the problem of old evidence? Could that problem of old evidence be related to cognitive biases among sophisticated people, where they are not empiricist enough despite believing themselves to be empiricist?
+
+Right, maybe there's a bias for what I had in mind but it's in lack of sophistication: refusing to bracket what turns out to be true and see what the hypothesis indicates about that and the alternative.
+
+## Tightening and the final passes
+
+Let's try tightening the presentation in notes/before-the-search-settles.md , keeping the information but maybe rearranging if there's redundancy. A couple other points:
+
+"It enumerates every polynomial-time trader, gives trader k with budget b a fixed weight 2^{−k−b} , and cuts off any trader whose losses exceed its budget." -- Is this meant to be polynomial time? If yes let's show it. Or is it the whole process of the inductor? Does this construction itself show the no-exploitation result?
+
+Might be worthwhile to flesh out the “five-and-ten” example.
+
+I think this article is a great fit to explain Solomonoff induction too, in a box. Let's add it, then give me an overview of concepts presented and wordcounts.
+
+For what "Learning without new evidence" uniquely sheds light on, given prior articles (policy improvement, continual learning...), would it have a better home after the LLM deep dive (part 1 architectures and part 2 training)?
+
+"which reads its program one bit at a time and writes its output one bit at a time" -- this reads nice but I feel is imprecise. A possible reading is it reads and writes a bit at each tick of some clock. Is the actual condition that the input head and the output head only advance, with reading/writing and advancing being one operation?
+
+And also there's an internal tape for computations.
+
+Is there value in doing one more editorial pass before we publish on the blog website?
