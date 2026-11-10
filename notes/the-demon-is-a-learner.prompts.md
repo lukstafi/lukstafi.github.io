@@ -147,3 +147,7 @@ Is there any thermodynamic reading to the layeredness of deep learning models? E
 ## Final editorial pass
 
 Do a final editorial pass, thanks!
+
+## The closing claim
+
+One last thing I noticed maybe too late. Is the bold claim from the end of the Demon essay maybe too strong? Maybe it's fine if it's directionally correct.
