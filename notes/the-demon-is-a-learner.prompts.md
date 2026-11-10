@@ -99,3 +99,51 @@ Are we actually making a connection between free energy and a regularized object
 Is the recent-ish result about JEPA and Bayesian prior IIRC relevant for us?
 
 Ah sorry was recalling it very vaguely, I meant the "isotropic Gaussian" one so you found it.
+
+## The Polyak–Łojasiewicz condition
+
+Let's work on notes/the-demon-is-a-learner.md . "Boris Polyak’s condition of the same year, now called the Polyak–Łojasiewicz condition, says that the squared gradient bounds the height of the loss above its minimum." -- it's unclear but sounds valuable, let's add more detail.
+
+That looks suspicious, doesn't it say L has no local maxima?
+
+## Drag from the Fisher information
+
+"In the limit of small steps it is a gradient flow under the Fisher information metric, whose inverse is diag(p)" -- I wonder if we could give it a bit more exposition? It's just this one sentence leading to this equation, and `diag` is unclear. We can assume the Fisher information box, lines 45 to 54 of who-teaches-the-weights.md
+
+## The seminar
+
+"A seminar I attended, run by Piotr Biler around 2003, took this on directly." -- it's "the" seminar because it was introduced in the previous essay (The Standard of Motion)
+
+## Erasing the digits of π
+
+"A demon that recognizes the digits as π compresses them reversibly into a short program first, and erases that." -- The pragmatics here are confusing, what's the benefit of compressing if you need to spend on the erasure of the difference anyway?
+
+## Ω as a partition function
+
+"John Baez and Mike Stay treated the halting programs of a universal computer as the microstates of a gas, with log running time as energy and program length as volume (Baez and Stay 2012). Gregory Chaitin’s halting probability Ω is then a partition function, the normalizing sum of a Gibbs distribution, evaluated where the analogue of temperature is infinite." -- This is too pithy to be useful. We say "the analogue of temperature is infinite" but then analogize to the bookmaker with temperature b. We also don't learn why the energy and volume "homologues" make sense.
+
+## Levin search
+
+This brings up a nice opportunity: we could add a box about Levin search. WDYT?
+
+The other option is to add it to the next essay, which is otherwise already finalized. It contains Solomonoff induction.
+
+The next essay is overly long. We could move Solomonoff induction out of it if comparison with Levin search justifies it.
+
+## Bottleneck and generalization
+
+"Minimizing the bound on the engine’s dissipation gives the information bottleneck, a standard method of compressing data for prediction, with the ratio of the two temperatures as its trade-off parameter." The information bottleneck technique is meant to drive generalization. Can we relate generalization to either of the two ratios?
+
+"Since [...] the bottleneck pays up to α−1 irrelevant bits for each relevant one." This explanation is not clarifying, I don't see how the implication works and what's the meaning behind the equality in the premise
+
+## The Boltzmann machine as an engine
+
+Is the analogizing for the Boltzmann machine based on: the work that it does being the learning improvement? Intuitively, clamping the inputs lowers the temperature, and the greater the differential, the more learning happens in the dream phase.
+
+## Depth
+
+Is there any thermodynamic reading to the layeredness of deep learning models? Either strict as in deep restricted Boltzmann machines, or with residuals (which also has dynamic system interpretation in the limit)
+
+## Final editorial pass
+
+Do a final editorial pass, thanks!

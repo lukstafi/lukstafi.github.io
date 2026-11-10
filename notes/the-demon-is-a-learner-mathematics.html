@@ -936,29 +936,76 @@ x)}\ I[M, X] - \alpha\,I[M, Y],\qquad \alpha = \frac{T&#39;}{T},</span>
 the information bottleneck of N. Tishby, F. C. Pereira and W. Bialek (<a
 href="https://arxiv.org/abs/physics/0004057">arXiv:physics/0004057</a>).
 A trade-off parameter of lossy compression becomes a ratio of
-temperatures. The cycle concerns a physical memory doing inference, and
-it does not carry over literally to training a network. Carnot’s
-argument needs a conserved energy to give <span class="math inline">W =
-Q_h - Q_c</span>, and a loss is not conserved.</p>
-<p>Training does have something shaped like a cycle, by analogy only. A
-Boltzmann machine (§12.1) has a clamped stroke and a free stroke, and
-its weights <span class="math inline">\theta</span> move by the
-difference of their statistics. In the fully visible case, with <span
+temperatures. Each nat in memory costs <span
+class="math inline">T</span> at writing, and each relevant nat returns
+<span class="math inline">T&#39;</span> at extraction. Splitting the
+memory as <span class="math inline">I_{\text{mem}} = I_{\text{irrel}} +
+I_{\text{rel}}</span> and dividing the bound by <span
+class="math inline">T</span> shows the objective as <span
+class="math display">I[M, X] - \alpha\,I[M, Y] = I_{\text{irrel}} -
+(\alpha - 1)\,I_{\text{rel}}.</span> An irrelevant nat costs 1, and a
+relevant nat earns <span class="math inline">\alpha - 1</span> net of
+its own writing. A change to the memory that adds one relevant nat
+lowers the objective if it brings fewer than <span
+class="math inline">\alpha - 1</span> irrelevant nats with it.</p>
+<p>The irrelevant part also bounds generalization, by a result of pure
+information theory that needs no engine. With <span
+class="math inline">X</span> a network’s input, <span
+class="math inline">Y</span> its label and <span
+class="math inline">M</span> a hidden layer <span
+class="math inline">Z</span>, <span class="math inline">I_{\text{irrel}}
+= I[X, Z\mid Y]</span>. For an encoder fixed independently of the <span
+class="math inline">n</span> training examples, the gap between test and
+training loss is <span class="math inline">O\bigl(\sqrt{(I[X, Z\mid Y] +
+1)/n}\bigr)</span> with high probability, and an encoder trained on the
+examples adds a term for its dependence on them (K. Kawaguchi, Z. Deng,
+X. Ji and J. Huang, <a href="https://arxiv.org/abs/2305.18887">ICML
+2023</a>).</p>
+<p>The cycle itself concerns a physical memory doing inference, and it
+does not carry over literally to training a network. Carnot’s argument
+needs a conserved energy to give <span class="math inline">W = Q_h -
+Q_c</span>, and a loss is not conserved. Training does have something
+shaped like a cycle, by analogy only. A Boltzmann machine (§12.1) has a
+clamped stroke and a free stroke, and its weights <span
+class="math inline">\theta</span> move by the difference of their
+statistics. In the fully visible case, with <span
 class="math inline">E_\theta = -\theta\cdot t</span>, <span
 class="math display">\nabla_\theta D(p\|q_\theta) = \mathbb
 E_{q_\theta}[t] - \mathbb E_p[t],</span> so the update is gradient
 descent on the divergence of the data <span class="math inline">p</span>
-from the model <span class="math inline">q_\theta</span>. Still notes
-that clamping drives the network out of its equilibrium <span
-class="math inline">q_\theta</span> by the free energy <span
-class="math inline">T\,D(p\|q_\theta)</span> of this section. Still
-reads that free energy as heat to be shed at prediction. The engine is
-our reading, not hers. The difference of statistics plays the part of
-<span class="math inline">T&#39; - T</span>: it moves the weights, and
-when it vanishes the engine stalls, which can happen with <span
-class="math inline">D(p\|q_\theta) &gt; 0</span> if the family cannot
-represent <span class="math inline">p</span>. The strokes deliver no
-work, which is where the analogy ends.</p>
+from the model <span class="math inline">q_\theta</span>. The clamped
+term alone would push <span class="math inline">\theta</span> along the
+data’s statistics without limit, and the free term subtracts the model’s
+own. Still notes that clamping drives the network out of its equilibrium
+<span class="math inline">q_\theta</span> by the free energy <span
+class="math inline">T\,D(p\|q_\theta)</span> of §8.4. She reads that
+free energy as heat to be shed at prediction. The engine is our reading,
+not hers.</p>
+<p>The gap <span class="math inline">T\,D(p\|q_\theta)</span> plays the
+part of the temperature difference, and the fall of <span
+class="math inline">D</span> plays the part of the work. Under gradient
+flow, <span class="math display">\frac{d}{dt}D(p\|q_\theta) =
+-\bigl|\mathbb E_{q_\theta}[t] - \mathbb E_p[t]\bigr|^2,</span> so the
+output rate is the squared difference of statistics. In one case the gap
+is a temperature difference exactly. If <span class="math inline">p =
+q_{\theta^*}</span> lies in the family and <span
+class="math inline">\theta = \theta^*/s</span>, then <span
+class="math inline">q_\theta\propto e^{\theta^*\cdot t/s}</span> is the
+Gibbs state of <span class="math inline">E_{\theta^*}</span> at <span
+class="math inline">s</span> times the temperature. The model is the
+data heated <span class="math inline">s</span>-fold, and a small
+initialization is a hot one. Otherwise the gap is a direction in <span
+class="math inline">\theta</span>, not a scalar. The data are held
+fixed, as a bath is, while <span class="math inline">q_\theta</span>
+moves, so the engine runs down like one working between a bath and a
+finite body. Its total output is <span
+class="math display">\int_0^\infty\bigl|\nabla_\theta D\bigr|^2\,dt =
+D(p\|q_{\theta_0}) - D_\infty \le D(p\|q_{\theta_0}).</span> It stalls
+when the difference of statistics vanishes, which can happen with <span
+class="math inline">D_\infty &gt; 0</span> if the family cannot
+represent <span class="math inline">p</span>. The update dissipates the
+free energy instead of delivering it as work, which is where the analogy
+ends.</p>
 <p><strong>Kelly’s gambler.</strong> A bettor faces a bookmaker whose
 odds imply a distribution <span class="math inline">\pi</span> when the
 true distribution is <span class="math inline">p</span>. Betting the
