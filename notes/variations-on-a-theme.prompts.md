@@ -58,3 +58,11 @@ https://scottaaronson.blog/?p=10232
 ## The METR assessment
 
 Let's update notes/variations-on-a-theme.md with the new evidence from https://metr.org/blog/2026-11-05-anthropic-ai-rd-acceleration-assessment/
+
+## The self-report
+
+Can you accompany me as a silent witness to how this exchange continued on https://www.richardcarrier.info/archives/38652: [the comment thread under Carrier's article, from METR's 2026 assessment to Carrier's reply on priors]
+
+Re-assess your response in light of https://www.planned-obsolescence.org/p/ai-is-dramatically-accelerating-ai
+
+Is this relevant? https://blog.aifutures.org/p/q35-timelines-update-looks-like-the

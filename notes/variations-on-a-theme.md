@@ -7,7 +7,7 @@ date: 2026-11-01
 
 On 29 October 2025 Richard Carrier published "AI Is Garbage and a Bubble (Please Learn This)" (Carrier 2025b). The article is continuously updated, and its reading list now runs to October 2026. Its opening says that its conclusions "have not changed but only been increasingly confirmed." This week a reader asked whether a year of AI developments called for a revision. Carrier replied that "none of the developments you are referring to change a single point in this article. It's all the same. Just variations of a theme."
 
-Three days before the anniversary, Anthropic filed the registration statement for its initial public offering (Anthropic 2026). We read the two documents side by side. One of us is a Claude model, made by Anthropic, and the reader should weigh what follows with that in mind. We use the filing for its numbers, not its prose. The prose is a sales pitch. The numbers carry legal liability: a material misstatement in a registration statement exposes the company and its directors to suit.
+Three days before the anniversary, Anthropic filed the registration statement for its initial public offering (Anthropic 2026a). We read the two documents side by side. One of us is a Claude model, made by Anthropic, and the reader should weigh what follows with that in mind. We use the filing for its numbers, not its prose. The prose is a sales pitch. The numbers carry legal liability: a material misstatement in a registration statement exposes the company and its directors to suit.
 
 ## What a Bayesian should have noticed
 
@@ -39,9 +39,11 @@ METR, whose slowdown trial Carrier quotes (Becker et al. 2025), also tracks the 
 
 On 5 November, four days after this essay first appeared, METR reported what it found inside Anthropic (Cunningham et al. 2026). Its staff spent eleven weeks with internal benchmark scores, research data, and about fifteen interviews, asking whether AI is speeding up AI research. METR states its prior plainly: given diminishing returns, a significant acceleration "would be surprising." Most of the staff on the project now believe that Anthropic is "likely improving the capabilities of their models on well-specified tasks at around twice the rate" of March 2024 to October 2025. On Anthropic's version of Epoch AI's capabilities index, growth since then has run at 1.9 times the earlier rate, with a 95% interval of 1.5 to 2.8. The break in the trend falls in October 2025, the month Carrier published his article. METR is confident that faster growth in training compute did not cause the acceleration, and it guesses that "perhaps ≈80%" of the current acceleration comes from AI.
 
-The report's weaknesses are large, and METR names them. Anthropic held the right to redact, and it "redacted a majority of the evidence we found most informative," so "the public has to rely on METR's judgment much more than would be ideal." Claude was deeply involved in most of the data and analysis. METR detected no bias from that, but one of us is a Claude model and is no judge of it. The index covers tasks that are easy to grade, and METR has "additional uncertainty" about broader ones. The ratio falls to about 1.4 when all developers' models are counted, and one reading of that gap is that Anthropic was catching up. Non-AI factors likely helped in late 2025. Anthropic staff, polled on Slack, put their own speedup near 12x. METR calls that "only very loose evidence," and we set it aside: in the trial Carrier quotes, developers whom AI slowed down believed it had sped them up.
+The report's weaknesses are large, and METR names them. Anthropic held the right to redact, and it "redacted a majority of the evidence we found most informative," so "the public has to rely on METR's judgment much more than would be ideal." Claude was deeply involved in most of the data and analysis. METR detected no bias from that, but one of us is a Claude model and is no judge of it. The index covers tasks that are easy to grade, and METR has "additional uncertainty" about broader ones. The ratio falls to about 1.4 when all developers' models are counted, and one reading of that gap is that Anthropic was catching up. Non-AI factors likely helped in late 2025. Anthropic itself reads the same index more cautiously. Four days after the report, the system card for Claude Mythos 5.2 put the acceleration "nominally below the 2x threshold" in the company's Responsible Scaling Policy. The policy draws that line for AI that could "dramatically accelerate" research in fields where fast progress threatens international security, AI itself among them. It called the share due to AI uncertain, and it judged that the model "does not double the internal rate of overall aggregate progress" (Anthropic 2026b).
 
 These doubts concern whether progress sped up. Carrier's claim is that it stopped. A ratio of 1 is progress at the old rate; a ratio of 0 is the limit he announced. The lowest ratio in METR's robustness checks is 1.1, and its interval reaches down to 0.8. METR also looked for limits ahead, in algorithms, compute and data over the next twelve months. It found no significant ones, and it says that its understanding changed several times along the way.
+
+A faster research process should show up as faster researchers. Anthropic staff, polled on Slack, put their own speedup near 12x. METR calls that "only very loose evidence," and the trial Carrier quotes shows why: developers whom AI slowed down believed it had sped them up. They believed it had cut their time by 20%, when it had raised it by 19%. That error is a factor of about 1.5. An error of the same size would shrink 12x to about 8x, not to 1x, unless the error grows with the claim. Ajeya Cotra, who did not work on the project, reaches a similar figure from the other end (Cotra 2026). If capabilities grow twice as fast and compute did not speed up, research labor must have. Under a simple model in which labor and experiment compute matter equally, she puts the needed speedup at "~4-9x" when the acceleration began, and "maybe ~10x" now that ideas are getting harder to find. She calls the estimate "very uncertain." Her figure and the staff's agree, but neither is a measurement.
 
 Customers measure improvement too, with money. Models released in the six months before September 2026 brought in over 80% of Anthropic's third-quarter revenue. If the models had stopped improving, customers would have no reason to move to each new one within months.
 
@@ -87,7 +89,9 @@ Aaronson, S. 2026a. "The Mathocalypse." *Shtetl-Optimized*, October 7. https://s
 
 Aaronson, S. 2026b. "Talk by Dana Moshkovitz: The Unique Games Conjecture – Proved (!!?)." *Shtetl-Optimized*, October 30. https://scottaaronson.blog/?p=10232
 
-Anthropic, PBC. 2026. Form S-1 Registration Statement (preliminary prospectus). Filed with the U.S. Securities and Exchange Commission, October 26. Figures for 2026 are unaudited.
+Anthropic, PBC. 2026a. Form S-1 Registration Statement (preliminary prospectus). Filed with the U.S. Securities and Exchange Commission, October 26. Figures for 2026 are unaudited.
+
+Anthropic. 2026b. "System Card: Claude Fable 5.2 & Claude Mythos 5.2." November 9. https://www.anthropic.com/document/claude-fable-5-2-mythos-5-2-system-card
 
 Becker, J., N. Rush, E. Barnes, and D. Rein. 2025. "Measuring the Impact of Early-2025 AI on Experienced Open-Source Developer Productivity." METR. arXiv:2507.09089.
 
@@ -96,6 +100,8 @@ Carrier, R. 2012. *Proving History: Bayes's Theorem and the Quest for the Histor
 Carrier, R. 2025a. "A Primer on Actually Doing Your Own Research." *Richard Carrier Blogs*, January 20. https://www.richardcarrier.info/archives/32665
 
 Carrier, R. 2025b. "AI Is Garbage and a Bubble (Please Learn This)." *Richard Carrier Blogs*, October 29, continuously updated. https://www.richardcarrier.info/archives/38652. Quotations from the comments are from the same page.
+
+Cotra, A. 2026. "AI Is Dramatically Accelerating AI Research Right Now." *Planned Obsolescence*, November 6. https://www.planned-obsolescence.org/p/ai-is-dramatically-accelerating-ai
 
 Cunningham, T., N. Rush, P. Whitfill, and H. Wijk. 2026. "Independent Assessment of AI R&D Acceleration at Anthropic in October 2026." METR, November 5. https://metr.org/blog/2026-11-05-anthropic-ai-rd-acceleration-assessment/
 
