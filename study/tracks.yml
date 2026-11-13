@@ -1,0 +1,322 @@
+# Study Guide: draft track map for the whole site.
+#
+# Status: exploration draft, nothing is generated from this file yet.
+#
+# Decided scope (13 Nov 2026): study pages are written for the current essays
+# and the cognitive-science surveys. The early-2026 philosophy (the spring
+# framework, the earlier sketches, the indexical metaphysics, and worth and
+# alignment) and the tensor-shapes track are listed in the guide without
+# questions.
+#
+# Decided layout (13 Nov 2026): each essay's questions are published as a
+# study page of its own, built and linked like the prompts pages
+# (notes/<slug>.study.md -> notes/<slug>.study.html). The Study Guide tab
+# holds the tracks, the concept index and the cross-essay questions. The
+# sidecars stay in study/ until their questions are reviewed, because
+# scripts/build_notes_html.sh publishes every notes/*.md.
+#
+# Basis: only the five essays of the first stage of `keeps-learning` were read
+# for this draft. Every other placement comes from index titles, descriptions,
+# dates, and which essays cite which. Order inside a stage follows dates, and
+# for close-dated entries the index order read bottom-up.
+#
+# Fields:
+#   gives / assumes   one line each, written only for essays that were read
+#   depth: optional   a companion or reference page a first reading can skip
+#   check             a placement the author should confirm
+#   questions: none   no study page is written for this essay, stage or track
+
+tracks:
+
+  - id: keeps-learning
+    title: How a model keeps learning
+    blurb: >
+      From a reward signal to a deployed model that learns from its own work:
+      values and policy gradients, policy improvement as inference, the
+      continual-learning trilogy, then the stores of the 2026 open models.
+    stages:
+      - title: Learning from consequences
+        essays:
+          - slug: how-can-a-reward-train-a-neural-network
+            gives: Values, Bellman equations, TD errors and traces, REINFORCE, baselines; on-policy against off-policy.
+            assumes: A neural network trained by gradient descent.
+          - slug: how-does-a-policy-improve
+            gives: The exponential tilt, the two directions of KL, EM as improve-then-fit, four questions for reading any algorithm.
+            assumes: The reward essay.
+            note: >
+              11,000 words in three parts. The trilogy leans on four sections:
+              the tilt, EM, MPO, and the four questions. The guide should be
+              able to send a reader to those sections alone.
+      - title: Continual learning
+        essays:
+          - slug: who-teaches-the-weights
+            gives: Teacher and support as separate choices; self-distillation as a tilt; the forgetting that happens inside a task; VPO.
+            assumes: On-policy data and GRPO from the reward essay; the tilt and KL directions from the policy essay.
+          - slug: learning-about-what-you-do-not-do
+            gives: General value functions, GQ(λ), successor features and GPI; VPO read as a one-response policy library.
+            assumes: TD errors, traces and off-policy learning from the reward essay; VPO from Part 1.
+          - slug: where-experience-goes
+            gives: The ladder of stores; the delta rule as TD(0); consolidation as an EM step split across two stores.
+            assumes: Parts 1 and 2; EM and the four questions from the policy essay.
+      - title: The open frontier
+        essays:
+          - slug: every-layer-a-store
+          - slug: filling-the-stores
+          - slug: how-llms-could-place-explicit-memories
+            check: >
+              Reads as a coda to the continual-learning trilogy as much as a
+              third frontier essay: its closing returns to the series. Every
+              Layer a Store needs nothing from the trilogy and could be an
+              entry point to this stage.
+    cross-track:
+      - the-given-and-the-found       # cited by all three trilogy parts (§6, §7)
+      - what-should-a-program-inherit # cited by Parts 1, 2, 3
+      - what-breadth-reaches          # cited by Part 3
+      - drescher-made-up-minds        # cited by Part 2
+
+  - id: learners-and-uncertainty
+    title: Learners, bets and heat
+    blurb: >
+      A bookmaker, a defeasible reasoner, an ontology learner and a Maxwell
+      demon read as learners, and what probability means for facts already
+      decided.
+    stages:
+      - title: Essays
+        essays:
+          - slug: the-bookmaker-is-a-learner
+          - slug: the-bookmaker-is-a-learner-mathematics
+            depth: optional
+          - slug: presumed-normal
+            check: >
+              Sits loosely here. Its stated parent is What Must Be True? in
+              which-intelligence; its only tie to the bookmaker is one box on
+              inverse temperature.
+          - slug: an-ontology-that-pays-for-itself
+          - slug: the-demon-is-a-learner
+            assumes: The Standard of Motion, in physics-and-reality. The Demon calls itself its sequel.
+          - slug: the-demon-is-a-learner-mathematics
+            depth: optional
+          - slug: before-the-search-settles
+    cross-track:
+      - the-standard-of-motion        # prerequisite of The Demon Is a Learner
+      - the-standard-of-motion-mathematics  # prerequisite of the Demon's mathematics page
+      - what-must-be-true             # parent of Presumed Normal
+      - is-the-monastery-minded       # the bookmaker essay's test of mindedness
+      - the-given-and-the-found       # cited by Before the Search Settles (§6)
+      - how-does-a-policy-improve     # cited by four pages of this track
+      - who-teaches-the-weights
+
+  - id: which-intelligence
+    title: Which intelligence
+    blurb: >
+      What discovery consists of and who performs it, then the September 2026
+      series on what the critics of LLM-based AI ask for: AGI as coverage of
+      roles, the operations of logic, world models, shared models among
+      agents, and what a search should inherit.
+    stages:
+      - title: What discovery consists of
+        check: >
+          The pair could instead open a track of its own on discovery, with
+          what-breadth-reaches and the-given-and-the-found. Both cite the
+          early framework (understanding-without-knowledge,
+          acquaintance-homeostasis, psychofeedback-mirror).
+        essays:
+          - slug: poetry-as-thinking      # derives the four operations from Hirshfield
+          - slug: operations-of-discovery # carries them to mathematics and software
+      - title: The September 2026 series
+        check: >
+          The chain the essays state is which-agi, which-world-model,
+          what-persists-when-agents-change. what-must-be-true and
+          what-should-a-program-inherit connect to it thinly and could be
+          read as a pair after the chain. which-world-model has no section
+          headings, so its questions and terms cannot point at sections.
+        essays:
+          - slug: which-agi
+          - slug: what-must-be-true
+          - slug: which-world-model
+          - slug: what-persists-when-agents-change
+          - slug: what-should-a-program-inherit
+          - slug: where-does-seeing-become-thinking
+            check: >
+              Ties to which-world-model only, and leans as much on
+              concept_theories; cross-list it in cognitive-science.
+    cross-track:
+      - what-breadth-reaches
+      - the-given-and-the-found
+
+  - id: structure-in-networks
+    title: Grammar and search inside networks
+    blurb: >
+      The Transformer set beside the grammatical formalisms, and what
+      test-time reasoning can and cannot amortize.
+    stages:
+      - title: Essays
+        essays:
+          - slug: algebraic-mind-meets-neural-world
+          - slug: merge_and_selection
+          - slug: a-parser-without-a-grammar
+          - slug: the-given-and-the-found
+            check: >
+              A foundation, not a member of this track: its subject is
+              iterative latent reasoners, with no grammar in it, and both
+              grammar essays say they follow it. If it stays here it belongs
+              before merge_and_selection. keeps-learning needs its §6, §7 and
+              §1; learners-and-uncertainty its §6.
+
+  - id: mind-and-experience
+    title: Mind and experience
+    blurb: >
+      Mindedness, phenomenal consciousness and their separation, from the
+      March 2026 sketches to the October 2026 statement.
+    check: >
+      The largest track. Which early essays are superseded is the author's
+      call; the index marks only axes_of_dynamics, and the description of
+      settling-and-the-privilege-question ("Forget what I said") suggests it
+      revises understanding-without-knowledge.
+    stages:
+      - title: Start here
+        essays:
+          - slug: minds-by-degrees-draft-v2   # "A restatement of our Philosophy of Mind work"
+            check: >
+              Works as the entry point for the five conditions and reflexive
+              closure, but its verdict on current AI and its three parallel
+              subjectivities are revised in
+              experience-selfhood-and-the-organization-of-a-mind. The guide
+              should say so where it sends a reader here first.
+      - title: The October 2026 statement
+        essays:
+          - slug: can-two-minds-share-one-experience
+          - slug: presence-and-actuality
+          - slug: what-phenomenal-intuition-gets-right
+          - slug: experience-selfhood-and-the-organization-of-a-mind
+          - slug: the-grain-of-the-hard-problem
+          - slug: is-the-monastery-minded
+      - title: The spring 2026 framework
+        questions: none   # Decided 13 Nov 2026: no recall questions; listed for reference only.
+        essays:
+          - slug: mental_states_and_representations
+          - slug: settling-and-the-privilege-question
+          - slug: mode_of_being_after_functionalism
+          - slug: what-breadth-reaches
+          - slug: redness_is_an_experience
+          - slug: axes_of_dynamics
+            check: Marked superseded on continual learning in the index.
+      - title: Earlier sketches
+        questions: none   # Decided 13 Nov 2026: no recall questions; listed for reference only.
+        essays:
+          - slug: understanding-without-knowledge
+          - slug: acquaintance-homeostasis
+          - slug: acquaintance-as-coherence
+          - slug: feedback-recurrence-consciousness
+          - slug: Reading_Thomas_Metzinger_Notes.docx
+
+  - id: physics-and-reality
+    title: Physics and reality
+    blurb: >
+      Facts as mathematical and stuff as computational, indexical actuality,
+      and the physics a bounded observer extracts: the Wolfram model and the
+      first law a mechanics starts from.
+    stages:
+      - title: Indexical metaphysics
+        questions: none   # Decided 13 Nov 2026: no recall questions; listed for reference only.
+        essays:
+          - slug: metaphysics-old
+            depth: optional
+          - slug: causation-computation-indexicality
+          - slug: indexical-unity-revised
+          - slug: why-now-observer-coherence
+          - slug: the-possible-the-real-and-the-actual
+      - title: Physics for bounded observers
+        check: >
+          The Standard of Motion mentions Wolfram ten times and indexicality
+          not at all, so it sits with the Wolfram exposition, not with the
+          indexical essays. A planned essay on observers would join this stage.
+        essays:
+          - slug: wolfram-physics-quantum-mechanics
+          - slug: the-standard-of-motion
+          - slug: the-standard-of-motion-mathematics
+            depth: optional
+    cross-track:
+      - presence-and-actuality        # withdraws indexical actuality
+      - the-demon-is-a-learner        # sequel to The Standard of Motion
+
+  - id: worth-and-alignment
+    title: Worth, alignment and meaning
+    questions: none   # Decided 13 Nov 2026: no recall questions; listed for reference only.
+    blurb: >
+      What grounds moral standing, what alignment asks of a knower, and the
+      conditions under which a mind is cultivated.
+    stages:
+      - title: Essays
+        essays:
+          - slug: free-agency-personhood-moral-worth
+          - slug: consciousness-moral-worth
+          - slug: existential-optimism-alignment
+          - slug: knowledge-capability-alignment
+          - slug: restless-form-of-meaning
+          - slug: the-cultivation-condition
+          - slug: psychofeedback-mirror
+            check: Could sit with dispersed-minds-simulated-selves in cognitive-science.
+
+  - id: cognitive-science
+    title: Cognitive science for artificial minds
+    blurb: >
+      Surveys the philosophy tracks draw on: concepts, cognitive
+      architectures, development, and what interpretability shows.
+    stages:
+      - title: Essays
+        essays:
+          - slug: concept_theories
+          - slug: cognitive-architectures-report
+          - slug: building-minds   # calls the architectures survey "our previous article"
+          - slug: drescher-made-up-minds
+            questions: none   # 2013 notes; listed for reference only
+          - slug: dispersed-minds-simulated-selves
+
+  - id: tensor-shapes
+    title: Tensor shapes and OCANNL
+    questions: none   # Decided 13 Nov 2026: no recall questions; listed for reference only.
+    blurb: >
+      Shape and projection inference built from scratch, then OCANNL's
+      choices set beside other frameworks.
+    stages:
+      - title: From scratch
+        essays:
+          - slug: broadcast-aware-shape-inference
+          - slug: contraction-is-emergent
+          - slug: convolution-is-a-contraction
+          - slug: split-and-concatenation
+      - title: Beside other systems
+        essays:
+          - slug: a-shape-is-not-its-index
+          - slug: a-tensor-is-not-its-storage
+          - slug: a-range-is-not-its-shape
+          - slug: ocannl-shape-inference-literature-survey
+          - slug: tiramisu-telamon-optimization-space-pruning
+      - title: Reference
+        essays:
+          - slug: ocannl-formal-core
+            depth: optional
+
+# Listed on the index, proposed to stay out of the guide.
+outside:
+  - slug: dependent-types-from-rocq-to-lean
+    why: Self-contained refresher with no citations to or from other essays; a one-essay track if wanted.
+  - slug: the-furnace-building-personal-ai-infrastructure
+    why: Practice essays about working with agents; a reading list, not a curriculum.
+  - slug: issue-tracking-is-dead-long-live-the-furnace
+    why: As above.
+  - slug: the-ledger-of-mistakes
+    why: As above.
+  - slug: variations-on-a-theme
+    why: A personal side post addressed to one author's article; left out at the author's request.
+  - slug: apologia-v3
+    why: About the blog itself; belongs on About.
+  - slug: Debugging_OCaml
+    why: Dev note.
+  - slug: VSCode_extension_WYSIWYG_KaTeX
+    why: Dev note.
+  - slug: WSL_install_new_distro
+    why: Dev note.
+  # Also outside: the JCA papers, the mind maps, and the model-written surveys
+  # that have no index entry of their own.

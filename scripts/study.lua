@@ -13,7 +13,7 @@
 --                       against, in quotes (a bare 12e3456 is a number in YAML)
 --     requires          list of {at: slug or slug#section, for: text,
 --                       strength: helpful (optional)}
---     introduces        list of {term, at: section, gloss (optional)}
+--     introduces        list of {term, at: section (optional), gloss (optional)}
 --     uses              list of {term, from: slug}; the term must be in the
 --                       "introduces" of that essay's study page
 --     see-also          list of {term, at: slug#section}
@@ -159,7 +159,7 @@ local function introduced_at(slug, term)
     end
   end
   for _, entry in ipairs(sidecars[slug] or {}) do
-    if stringify(entry.term) == term then return stringify(entry.at) end
+    if stringify(entry.term) == term then return entry.at and stringify(entry.at) or "" end
   end
   return nil
 end
@@ -200,8 +200,10 @@ local function terms(meta, essay)
   local blocks = pandoc.Blocks({})
   local introduced, assumed = {}, {}
   for _, entry in ipairs(meta.introduces or {}) do
-    local section = stringify(entry.at)
-    local found = section_title(essay, section)
+    -- A term from the essay's introduction, or from an essay without
+    -- headings, has no section and links to the essay itself.
+    local section = entry.at and stringify(entry.at) or nil
+    local found = section and section_title(essay, section)
     local link = pandoc.Link(inlines(entry.term), essay_url(essay, found and section or nil))
     if entry.gloss then
       table.insert(introduced, item({ link }, { pandoc.Str(":"), pandoc.Space() }, entry.gloss, "."))
