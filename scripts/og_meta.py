@@ -6,8 +6,8 @@ usage: og_meta.py PAGE_PATH FALLBACK_TITLE
 PAGE_PATH is the page's path relative to the site root (e.g. notes/foo.html).
 Title and description come from the page's entry in index.html: the entry's
 main link text and its <span class="description">. A page with no entry falls
-back to FALLBACK_TITLE (its <title>); a "*.prompts.html" page borrows its
-parent essay's entry for the description.
+back to FALLBACK_TITLE (its <title>); a "*.prompts.html" or "*.study.html"
+page borrows its parent essay's entry for the description.
 """
 
 import html
@@ -112,6 +112,11 @@ def meta_tags(page, fallback_title):
         if parent in entries:
             title = f"Prompts: {entries[parent][0]}"
             desc = f"The prompts behind the essay “{entries[parent][0]}”."
+    if page not in entries and page.endswith(".study.html"):
+        parent = page[: -len(".study.html")] + ".html"
+        if parent in entries:
+            title = f"Study notes: {entries[parent][0]}"
+            desc = f"Recall questions for the essay “{entries[parent][0]}”."
     esc = lambda s: html.escape(s, quote=True)
     props = [
         ("og:title", title),

@@ -272,13 +272,14 @@ article > ul {
   font-size: 1.3rem;
 }
 
-.post-item a:not(.substack-link):not(.prompts-link) {
+.post-item a:not(.substack-link):not(.prompts-link):not(.study-link) {
   display: block;
   margin-top: 0.2rem;
 }
 
-/* Prompts link badge — links to the companion prompts page */
-.post-item .prompts-link {
+/* Prompts and study link badges — link to the essay's companion pages */
+.post-item .prompts-link,
+.post-item .study-link {
   display: inline-block;
   font-family: et-book-roman-old-style, et-book, Georgia, serif;
   font-size: 0.85rem;
@@ -291,18 +292,68 @@ article > ul {
   text-decoration: none;
 }
 
-.post-item .prompts-link:visited {
+.post-item .prompts-link:visited,
+.post-item .study-link:visited {
   color: var(--tag-fg);
 }
 
-.post-item .prompts-link:hover {
+.post-item .prompts-link:hover,
+.post-item .study-link:hover {
   text-decoration: underline;
 }
 
-/* Prompts link footer at the end of an article (injected by the build) */
-.prompts-link {
+/* Prompts and study link footers at the end of an article (injected by the build) */
+.prompts-link,
+.study-link {
   margin-top: 2rem;
   font-size: 1.1rem;
+}
+
+.prompts-link + .study-link {
+  margin-top: 0;
+}
+
+/* ===== Study pages (recall questions, built by scripts/study.lua) ===== */
+
+/* The line under a question: its kind, and a link to the section it draws on */
+.study-meta {
+  font-size: 1.1rem;
+  color: var(--tag-fg);
+  margin-top: 0.4rem;
+}
+
+.study-kind {
+  display: inline-block;
+  font-size: 0.85rem;
+  padding: 0.1rem 0.5rem;
+  border-radius: 1rem;
+  background: var(--tag-bg);
+  color: var(--tag-fg);
+  margin-right: 0.4rem;
+  vertical-align: middle;
+}
+
+details.answer {
+  width: 55%;
+  box-sizing: border-box;
+  margin: 1rem 0 2rem 0;
+  padding: 0.3rem 1rem;
+  border-left: 4px solid var(--border);
+}
+
+details.answer > summary {
+  font-size: 1.2rem;
+  color: var(--tag-fg);
+  cursor: pointer;
+}
+
+details.answer > p:last-child,
+details.answer > ul:last-child {
+  margin-bottom: 0.6rem;
+}
+
+@media (max-width: 760px) {
+  details.answer { width: 100%; }
 }
 
 .post-item .description {
