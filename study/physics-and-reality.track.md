@@ -1,8 +1,9 @@
 ---
-title: "Across the track: Physics for bounded observers"
+title: "Across the track: Physics and reality"
 track: physics-and-reality
-stage: physics-for-bounded-observers
 ---
+
+## Physics for bounded observers
 
 Questions whose answers draw on more than one page. Attempt them after the mathematics page.
 

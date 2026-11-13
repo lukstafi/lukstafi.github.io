@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <meta property="og:title" content="Across the track: How a model keeps learning">
+  <meta property="og:url" content="https://lukstafi.github.io/study/keeps-learning.track.html">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="lukstafi&#x27;s blog">
+  <meta name="twitter:card" content="summary">
+  <title>Across the track: How a model keeps learning</title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <link rel="stylesheet" href="/assets/tufte.css">
+  <link rel="stylesheet" href="/assets/pandoc-tufte.css">
+  <link rel="stylesheet" href="/assets/site.css">
+  <script defer=""
+  src="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.js"></script>
+  <script>document.addEventListener("DOMContentLoaded", function () {
+ var mathElements = document.getElementsByClassName("math");
+ var macros = [];
+ for (var i = 0; i < mathElements.length; i++) {
+  var texText = mathElements[i].firstChild;
+  if (mathElements[i].tagName == "SPAN") {
+   katex.render(texText.data, mathElements[i], {
+    displayMode: mathElements[i].classList.contains('display'),
+    throwOnError: false,
+    macros: macros,
+    fleqn: false
+   });
+}}});
+  </script>
+  <link rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.css" />
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+  <script>(function(){var t=localStorage.getItem('theme-preference');if(t)document.documentElement.setAttribute('data-theme',t);})()</script>
+</head>
+<body>
+<nav class="site-nav">
+  <a href="/">Home</a> &middot; <a href="/study/">Study Guide</a> &middot; <a href="/about.html">About</a> &middot; <a href="https://lukstafi.substack.com">Substack</a>
+</nav>
+<div class="theme-toggle">
+  <button id="theme-btn" aria-label="Toggle dark mode">&#9788;</button>
+</div>
+<article>
+<header>
+<h1 class="title">Across the track: How a model keeps learning</h1>
+</header>
+<p>Questions whose answers draw on more than one essay. Attempt each
+group after the last essay of its stage.</p>
+<section id="continual-learning" class="level2">
+<h2>Continual learning</h2>
+<p>Questions whose answers draw on more than one essay. Attempt them
+after the last essay of the stage.</p>
+<section id="one-formula-four-uses" class="level3" data-kind="connect">
+<h3 data-kind="connect">One formula, four uses</h3>
+<div class="study-meta">
+<span class="study-kind">connect</span>
+</div>
+<p>The exponential tilt <span class="math inline">q^*\propto
+p\,e^{Q/\eta}</span> is derived in <em>How Does a Policy Improve?</em>
+Name four places the continual-learning series uses it.</p>
+<details class="answer"><summary>Answer</summary>
+<ul>
+<li>The self-teacher is the bare model tilted by the context’s log-ratio
+at <span class="math inline">\eta=1</span> (<a
+href="/notes/who-teaches-the-weights.html#the-model-with-privileged-context-as-teacher">Part
+1</a>).</li>
+<li>A half step of distillation, and iSDFT’s per-token budget, are tilts
+at higher temperature (same section).</li>
+<li>A sequence-level reward preserves the ratios among equally rewarded
+answers, which a token-level target does not (<a
+href="/notes/who-teaches-the-weights.html#where-self-teaching-breaks">Part
+1</a>).</li>
+<li>Repeated on-policy improvement lowers the effective temperature to
+<span class="math inline">\eta/k</span>, which is why alternatives
+vanish (<a
+href="/notes/who-teaches-the-weights.html#what-on-policy-training-forgets">Part
+1</a>).</li>
+</ul>
+</details>
+</section>
+<section id="the-roles-of-in-context-learning" class="level3"
+data-kind="connect">
+<h3 data-kind="connect">The roles of in-context learning</h3>
+<div class="study-meta">
+<span class="study-kind">connect</span>
+</div>
+<p>In-context learning does a different job in each part of the trilogy.
+What are they?</p>
+<details class="answer"><summary>Answer</summary>
+<p>Teacher: the model with privileged context supplies the targets (Part
+1). Explorer: the model reads its first answer and writes a different
+second one (Part 1). Library builder: writing answer <span
+class="math inline">i</span> after reading the earlier ones performs the
+step “add the policy that most improves the set” (Part 2). E-step: the
+context is the fastest store and the best learner on the ladder, and
+slower stores absorb what it builds (Part 3).</p>
+</details>
+</section>
+<section id="nothing-outside-the-support" class="level3"
+data-kind="connect">
+<h3 data-kind="connect">Nothing outside the support</h3>
+<div class="study-meta">
+<span class="study-kind">connect</span>
+</div>
+<p>Four statements across the track say that what is never produced
+cannot be learned. Find one in each essay from the policy essay onward,
+and the reward essay’s version.</p>
+<details class="answer"><summary>Answer</summary>
+<ul>
+<li>Reward essay: a robot that never opens the door has no example
+revealing the <span class="math inline">6</span>.</li>
+<li>Policy essay: regularization toward a prior cannot produce
+alternatives outside the prior’s support.</li>
+<li>Part 1: a strategy the model no longer produces is a strategy
+nothing can teach it, short of an outside demonstration.</li>
+<li>Part 2: where the behaviour never acts as the target would, the
+importance ratio is zero and nothing is learned.</li>
+<li>Part 3: a mass-covering fit cannot restore the alternatives a
+teacher lost.</li>
+</ul>
+</details>
+</section>
+<section id="the-door-through-three-essays" class="level3"
+data-kind="connect">
+<h3 data-kind="connect">The door through three essays</h3>
+<div class="study-meta">
+<span class="study-kind">connect</span>
+</div>
+<p>The delivery problem appears in the reward essay and again in Part 2.
+What does each use it to show?</p>
+<details class="answer"><summary>Answer</summary>
+<p>The reward essay uses it for policy evaluation (<span
+class="math inline">V^\pi(J)=1.675</span>), for policy iteration (a
+second greedy step finds the door) and for the policy gradient at the
+door (estimates <span class="math inline">4.5</span> and <span
+class="math inline">0</span>, mean <span
+class="math inline">1.125</span>). Part 2 asks an off-policy question
+about it: the return of “approach and open” estimated from a behaviour
+that mostly does neither, by reweighting (<span
+class="math inline">\lambda=1</span>) or by bootstrapping (<span
+class="math inline">\lambda=0</span>), and not at all once the behaviour
+always takes the detour.</p>
+</details>
+</section>
+<section id="where-improvement-is-kept" class="level3"
+data-kind="connect">
+<h3 data-kind="connect">Where improvement is kept</h3>
+<div class="study-meta">
+<span class="study-kind">connect</span>
+</div>
+<p>Apply the policy essay’s four questions to GQ(λ) heads and to
+self-distillation. Where do they differ?</p>
+<details class="answer"><summary>Answer</summary>
+<p>For self-distillation the candidates are the student’s samples, the
+evaluation is the same model with context, the improved distribution is
+the teacher’s conditional, and the improvement is kept in core weights.
+For GQ(λ) heads the candidates are the behaviour’s experience,
+reweighted toward many target policies, and what is kept is a
+prediction. No policy is fitted. They differ in the last question: one
+stores what to do, the other stores what would happen.</p>
+</details>
+</section>
+</section>
+<section id="the-open-frontier" class="level2">
+<h2>The open frontier</h2>
+<p>Questions whose answers draw on more than one essay of the stage, and
+on the continual-learning trilogy where the essays themselves make the
+link. Attempt them after <em>How LLMs Could Place Explicit
+Memories</em>.</p>
+<section id="one-selector-three-essays" class="level3"
+data-kind="connect">
+<h3 data-kind="connect">One selector, three essays</h3>
+<div class="study-meta">
+<span class="study-kind">connect</span>
+</div>
+<p>A selector appears in each essay of the stage. What does each say
+about it?</p>
+<details class="answer"><summary>Answer</summary>
+<ul>
+<li><a
+href="/notes/every-layer-a-store.html#selection-is-learned-retrieval"><em>Every
+Layer a Store</em></a>: a selector is a second, cheaper store placed in
+front of the cache. Its choice is a hard top-<span
+class="math inline">k</span>, so no gradient flows through it, and it
+brings a new failure, the miss.</li>
+<li><a
+href="/notes/filling-the-stores.html#selectors-cannot-learn-through-top-k"><em>Filling
+the Stores</em></a>: the selector gets a teacher, the attention it
+replaces. The KL sits behind stop-gradients so that the student does not
+teach the teacher. Selection has been added at every point from the
+first token to a released, frozen checkpoint.</li>
+<li><a
+href="/notes/how-llms-could-place-explicit-memories.html#who-teaches-the-index">The
+memory essay</a>: the teacher meets both conditions of <em>Who Teaches
+the Weights?</em> in a clean form. Dense attention has looked at every
+key, and the student only has to learn where the teacher would look. An
+indexer that scores every key makes finding the bottleneck, and Latent
+Sparse Attention replaces the scan with an index. A later weight update
+would stale that index along with the keys.</li>
+</ul>
+</details>
+</section>
+<section id="reading-everything-hurts" class="level3"
+data-kind="connect">
+<h3 data-kind="connect">Reading everything hurts</h3>
+<div class="study-meta">
+<span class="study-kind">connect</span>
+</div>
+<p>The first essay calls long context an interference problem. How does
+the claim return in the second essay and in the third?</p>
+<details class="answer"><summary>Answer</summary>
+<p>In <a
+href="/notes/every-layer-a-store.html#long-context-is-an-interference-problem"><em>Every
+Layer a Store</em></a>, a longer context puts more keys in competition
+with the right one. Sharpening the softmax handles random competitors
+and cannot separate the near-duplicate keys of real text, so a model
+that accepts a million tokens may still fail to use them. <a
+href="/notes/filling-the-stores.html#long-context-comes-late-and-it-comes-cheaply"><em>Filling
+the Stores</em></a> treats this as a training problem. The longest
+context arrives late and in a small share of the tokens, and it can
+leave as fast: self-distillation could erase long-context behaviour,
+which may be the same interference problem in the weights. The <a
+href="/notes/how-llms-could-place-explicit-memories.html#full-context-is-not-an-upper-bound">memory
+essay</a> finds the problem at both ends of its line. In 2023 it was
+named the distraction issue and met by training on other documents as
+negatives. In 2026 full context trails both a trained reader and a
+distilled sparse attention.</p>
+</details>
+</section>
+<section id="the-recurrent-state-from-the-ladder-to-the-placements"
+class="level3" data-kind="connect">
+<h3 data-kind="connect">The recurrent state, from the ladder to the
+placements</h3>
+<div class="study-meta">
+<span class="study-kind">connect</span>
+</div>
+<p>Follow the delta-rule state from <em>Where Experience Goes</em>
+through this stage. What is it on the ladder? What does the first essay
+add about how it writes and what it holds? Where does the memory essay
+put it among the three placements?</p>
+<details class="answer"><summary>Answer</summary>
+<p>On the <a
+href="/notes/where-experience-goes.html#a-ladder-of-stores">ladder</a>
+it is the second rung: a fixed-size matrix that every token updates by
+one error-correcting step, a TD(0) learner with no future to bootstrap
+from, and parametric continual learning already running inside frontier
+models. <a
+href="/notes/every-layer-a-store.html#the-recurrent-state-learns-while-it-reads"><em>Every
+Layer a Store</em></a> adds the learned decay before the write, per head
+in Gated DeltaNet and per channel in KDA, and that the rule buys
+overwriting, not capacity. In trained hybrids the state holds settings
+such as language and voice, the cache holds the content, and the state
+forgets quickly by design. The <a
+href="/notes/how-llms-could-place-explicit-memories.html#where-the-brain-places-memories">memory
+essay</a> calls it a fast form of the third placement, into connections.
+But the store is bounded, it carries settings and not content, and it
+ends with the session.</p>
+</details>
+</section>
+<section id="written-by-older-weights" class="level3"
+data-kind="connect">
+<h3 data-kind="connect">Written by older weights</h3>
+<div class="study-meta">
+<span class="study-kind">connect</span>
+</div>
+<p>Three things in the track are produced by an older checkpoint and
+consumed by a newer one: off-policy experience in <em>Learning About
+What You Do Not Do</em>, rollouts in <em>Filling the Stores</em>, and
+cached keys in the memory essay. What is done about each, and where does
+the parallel break?</p>
+<details class="answer"><summary>Answer</summary>
+<p>In <a
+href="/notes/learning-about-what-you-do-not-do.html#learning-off-the-policy">Part
+2</a> the behaviour policy is an older checkpoint and the target a
+slightly updated one. A language model’s token ratios are exact, but
+their product over a long episode has enormous variance, so traces are
+cut. In <a
+href="/notes/filling-the-stores.html#what-rl-optimizes-and-how-it-goes-wrong"><em>Filling
+the Stores</em></a> sampling and learning run at once, and the labs cap
+the staleness: they discard rollouts past a bound and mask tokens whose
+ratios leave a band. The <a
+href="/notes/how-llms-could-place-explicit-memories.html#an-off-policy-problem-without-a-ratio">memory
+essay</a> is where the parallel breaks. A stale key has no ratio. It is
+a vector computed by a function that no longer exists, and reweighting
+does not change coordinates. The remedies are of another kind:
+re-encode, tolerate, translate, constrain, or keep keys the model did
+not compute.</p>
+</details>
+</section>
+<section id="consolidation-from-the-trilogy-to-the-frontier"
+class="level3" data-kind="connect">
+<h3 data-kind="connect">Consolidation, from the trilogy to the
+frontier</h3>
+<div class="study-meta">
+<span class="study-kind">connect</span>
+</div>
+<p>The trilogy described consolidation as self-distillation and as an
+M-step split across two stores, and argued for it by amortization. What
+does this stage add about consolidation as the labs practise it, and
+about its worth once reading is cheap?</p>
+<details class="answer"><summary>Answer</summary>
+<p><a
+href="/notes/filling-the-stores.html#post-training-edits-the-stores"><em>Filling
+the Stores</em></a> shows the release cycle’s consolidation from the
+inside. Specialists are distilled on-policy into one checkpoint,
+cheaply, with students falling below the base model outside the
+teachers’ domains. Self-distillation on a run’s own rollouts can copy a
+policy too exactly and can erase long-context behaviour. It also <a
+href="/notes/filling-the-stores.html#what-the-weights-keep">repairs a
+collapsed run</a>, because it copies what the model does and leaves the
+weights behind. The <a
+href="/notes/how-llms-could-place-explicit-memories.html#consolidation">memory
+essay</a> splits the argument in two. Cheap reading raises the
+break-even of the amortization case, which is the right account of
+explicit memories. It leaves untouched what consolidation builds beyond
+them: representations no retrieved item contains. And a model that
+consolidates while it keeps a cache <a
+href="/notes/how-llms-could-place-explicit-memories.html#staleness-returns">meets
+stale keys</a>: a store written by old weights can undo what
+consolidation taught the new ones.</p>
+</details>
+</section>
+</section>
+</article>
+<section class="study-link"><p><em>Back to the tracks: 
+<a href="/study/">Study Guide &rarr;</a></em></p></section>
+<script src="/assets/theme-toggle.js"></script>
+</body>
+</html>

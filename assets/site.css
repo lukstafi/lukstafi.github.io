@@ -356,6 +356,89 @@ details.answer > ul:last-child {
   details.answer { width: 100%; }
 }
 
+/* ===== Study Guide tab (built by scripts/build_study_guide.py) ===== */
+
+/* "study" badge and "optional" tag beside an essay in a reading list */
+a.study-badge,
+span.study-badge,
+.study-tag {
+  display: inline-block;
+  font-family: et-book-roman-old-style, et-book, Georgia, serif;
+  font-size: 0.85rem;
+  padding: 0.1rem 0.5rem;
+  border-radius: 1rem;
+  border: 1px solid var(--tag-fg);
+  color: var(--tag-fg);
+  vertical-align: middle;
+  text-decoration: none;
+}
+
+a.study-badge:visited { color: var(--tag-fg); }
+a.study-badge:hover { text-decoration: underline; }
+
+.study-tag {
+  border: none;
+  background: var(--tag-bg);
+}
+
+/* Description and prerequisites under an essay's title */
+.study-desc,
+.study-builds {
+  font-size: 1.1rem;
+  line-height: 1.5;
+  color: var(--tag-fg);
+}
+
+.study-builds a,
+.study-builds a:visited { color: var(--tag-fg); }
+
+/* A track's map: essays in reading order, arcs to what each builds on */
+figure.study-map {
+  max-width: 55%;
+  margin: 1.5rem 0 2rem 0;
+  overflow-x: auto;
+}
+
+figure.study-map svg {
+  max-width: 100%;
+  height: auto;
+  font-family: et-book, Palatino, Georgia, serif;
+}
+
+figure.study-map figcaption {
+  float: none;
+  clear: none;
+  max-width: none;
+  margin: 0.4rem 0 0 0;
+  font-size: 1rem;
+  color: var(--tag-fg);
+}
+
+.study-map .arc { fill: none; stroke: var(--fg); stroke-width: 1.2; opacity: 0.55; }
+.study-map .arc.helpful { stroke-dasharray: 3 4; opacity: 0.4; }
+.study-map .node { fill: var(--bg); stroke: var(--fg); stroke-width: 1.2; }
+.study-map .node.muted { stroke: var(--border); }
+.study-map .num { font-size: 11px; text-anchor: middle; fill: var(--fg); }
+.study-map .label { font-size: 16px; fill: var(--link); }
+.study-map .label.muted,
+.study-map .num.muted { fill: var(--tag-fg); }
+.study-map .stage { font-size: 13px; font-style: italic; fill: var(--tag-fg); }
+
+/* The index of terms: a definition list per letter */
+.study-terms { width: 55%; }
+.study-terms dt { margin-top: 0.9rem; }
+.study-terms dd {
+  margin-left: 1.5rem;
+  font-size: 1.2rem;
+  line-height: 1.6;
+  color: var(--tag-fg);
+}
+
+@media (max-width: 760px) {
+  figure.study-map { max-width: 100%; }
+  .study-terms { width: 100%; }
+}
+
 .post-item .description {
   display: block;
   font-size: 1.1rem;

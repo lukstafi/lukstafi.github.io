@@ -30,9 +30,10 @@ trap 'rm -f "$after_body"' EXIT
 for md_file in "${md_files[@]}"; do
   [ -f "$md_file" ] || continue
   base_name="$(basename "$md_file" .md)"
-  # Pages are written to notes/. The one exception is a study page still under
-  # review: its source lives in study/, and its preview is built beside it, so
-  # nothing is published until the source is moved into notes/.
+  # Pages are written to notes/. The exception is a source in study/, which is
+  # built beside itself: a track's cross-essay questions (published there), or
+  # a study page still under review (a preview, published only once its source
+  # is moved into notes/).
   out_dir="$root_dir/notes"
   if [ "$(cd -- "$(dirname -- "$md_file")" && pwd)" = "$root_dir/study" ]; then
     out_dir="$root_dir/study"
@@ -50,7 +51,8 @@ for md_file in "${md_files[@]}"; do
   # Build the optional after-body links and page-specific filters.
   #   - A "*.prompts" page links back to its parent article.
   #   - A "*.study" page (recall questions) links back to its parent article
-  #     and is laid out by scripts/study.lua; so is a "*.track" page.
+  #     and is laid out by scripts/study.lua. So is a "*.track" page (the
+  #     cross-essay questions of a track), which links back to the Study Guide.
   #   - A regular article links forward to its companion prompts and study
   #     pages, where notes/ has them.
   : > "$after_body"
@@ -73,6 +75,10 @@ for md_file in "${md_files[@]}"; do
       filter_args+=(--lua-filter="$root_dir/scripts/study.lua" --metadata=notes-dir:"$root_dir/notes")
       ;;
     *.track)
+      printf '%s\n' \
+        '<section class="study-link"><p><em>Back to the tracks: ' \
+        '<a href="/study/">Study Guide &rarr;</a></em></p></section>' \
+        > "$after_body"
       filter_args+=(--lua-filter="$root_dir/scripts/study.lua" --metadata=notes-dir:"$root_dir/notes")
       ;;
     *)

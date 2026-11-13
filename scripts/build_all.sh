@@ -6,6 +6,9 @@ root_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)"
 echo "=== Building notes ==="
 "$root_dir/scripts/build_notes_html.sh"
 
+echo "=== Building study guide ==="
+python3 "$root_dir/scripts/build_study_guide.py"
+
 echo "=== Building JCA paper ==="
 "$root_dir/scripts/build_jca_html.sh"
 

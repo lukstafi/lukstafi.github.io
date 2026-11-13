@@ -1,8 +1,9 @@
 ---
-title: "Across the track: Mind and experience, the October 2026 statement"
+title: "Across the track: Mind and experience"
 track: mind-and-experience
-stage: the-october-2026-statement
 ---
+
+## The October 2026 statement
 
 Questions whose answers draw on more than one essay. Attempt them after the last essay of the stage. The answers state what the essays argue.
 
