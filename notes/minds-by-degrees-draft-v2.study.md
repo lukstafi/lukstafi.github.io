@@ -4,17 +4,17 @@ essay: minds-by-degrees-draft-v2
 track: mind-and-experience
 reviewed-against: "6d21a3c"
 introduces:
-  - {term: non-deflationary mentality, at: the-question-and-why-it-keeps-going-wrong, gloss: "real, thickly individuated structures in the system have the mental properties attributed to it; the attribution is not an interpretive gloss"}
-  - {term: graded mentality, at: the-question-and-why-it-keeps-going-wrong, gloss: "degrees along several partially independent dimensions, so that the useful answer is a profile"}
-  - {term: minds as the kind of psychology, at: selective-structural-realism, gloss: "the natural kind that a selective, structural realism about psychology's cumulative core commits us to"}
-  - {term: grain-plural integration, at: organizational-unity, gloss: "integration without IIT's exclusion postulate: a system can be weakly integrated at one grain and strongly at another, and both facts are real"}
-  - {term: five conditions of mentality, at: a-framework-for-mentality, gloss: "organizational unity, structured vehicles, accuracy-responsive dynamics, simulation with internal function, multi-level content"}
-  - {term: internality, at: simulation-as-constitutive-internality-indispensability-and-the-emulator, gloss: "simulation outputs function as inputs to the system's own further processing, not only for outside consumers"}
-  - {term: central conjecture, at: the-kind-the-mechanism-and-the-programs-central-conjecture, gloss: "psychological explanation gains valid traction on a system if and only if the five-component mechanism is running in it"}
-  - {term: evaluative mentality, at: minded-without-being-a-perspective-the-residual, gloss: "the five conditions plus valenced states that function as evaluations within the economy"}
-  - {term: reflexive closure, at: minded-without-being-a-perspective-the-residual, gloss: "the economy targets its own vehicles with pointers, the targeting is a real pattern of the economy, and it is put to regulatory use"}
-  - {term: three subjectivities, at: disambiguating-nagel, gloss: "structural perspectivality, cognitive subjectivity and agentic subjectivity, which Nagel's formula bundles"}
-  - {term: saturation, at: phenomenal-consciousness-as-a-graded-mode, gloss: "the mode of a vehicle whose configuration is continuously held against its target by sustained regulatory coupling over the specious present"}
+  - {term: non-deflationary mentality, at: the-question-and-why-it-keeps-going-wrong, gloss: "real, thickly individuated structures in the system have the mental properties attributed to it; the attribution is not an interpretive gloss", related: ["ontology ladder", "three tiers of understanding"]}
+  - {term: graded mentality, at: the-question-and-why-it-keeps-going-wrong, gloss: "degrees along several partially independent dimensions, so that the useful answer is a profile", related: ["five conditions of mentality"]}
+  - {term: minds as the kind of psychology, at: selective-structural-realism, gloss: "the natural kind that a selective, structural realism about psychology's cumulative core commits us to", related: ["central conjecture"]}
+  - {term: grain-plural integration, at: organizational-unity, gloss: "integration without IIT's exclusion postulate: a system can be weakly integrated at one grain and strongly at another, and both facts are real", related: ["residual integration", "metastable overlap", "three grains"]}
+  - {term: five conditions of mentality, at: a-framework-for-mentality, gloss: "organizational unity, structured vehicles, accuracy-responsive dynamics, simulation with internal function, multi-level content", related: ["ontology ladder", "wealth of traders as a second learner"]}
+  - {term: internality, at: simulation-as-constitutive-internality-indispensability-and-the-emulator, gloss: "simulation outputs function as inputs to the system's own further processing, not only for outside consumers", related: ["outer loop"]}
+  - {term: central conjecture, at: the-kind-the-mechanism-and-the-programs-central-conjecture, gloss: "psychological explanation gains valid traction on a system if and only if the five-component mechanism is running in it", related: ["five conditions of mentality"]}
+  - {term: evaluative mentality, at: minded-without-being-a-perspective-the-residual, gloss: "the five conditions plus valenced states that function as evaluations within the economy", related: ["five conditions of mentality"]}
+  - {term: reflexive closure, at: minded-without-being-a-perspective-the-residual, gloss: "the economy targets its own vehicles with pointers, the targeting is a real pattern of the economy, and it is put to regulatory use", related: ["pointer content and descriptive content", "primary persona", "for-me-ness, me-ness and mineness"]}
+  - {term: three subjectivities, at: disambiguating-nagel, gloss: "structural perspectivality, cognitive subjectivity and agentic subjectivity, which Nagel's formula bundles", related: ["perspectival subjectivity", "for-me-ness, me-ness and mineness"]}
+  - {term: saturation, at: phenomenal-consciousness-as-a-graded-mode, gloss: "the mode of a vehicle whose configuration is continuously held against its target by sustained regulatory coupling over the specious present", related: ["acquaintance", "content-sensitive regulation", "truth-tracking and truth-bearers", "persistent carrier"]}
 ---
 
 The answers state what the essay argues. It calls itself a framework within theoretical psychology, to be judged by what it explains and predicts, and the last question asks what it leaves open.

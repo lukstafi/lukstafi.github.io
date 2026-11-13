@@ -9,16 +9,16 @@ requires:
   - {at: how-can-a-reward-train-a-neural-network#from-evaluating-behavior-to-choosing-better-behavior, for: the delivery problem and policy improvement}
   - {at: who-teaches-the-weights#what-on-policy-training-forgets, for: VPO and the collapse of alternatives}
 introduces:
-  - {term: general value function, at: questions-and-answers}
+  - {term: general value function, at: questions-and-answers, related: ["correctness condition", "schema mechanism", "ladder of stores"]}
   - {term: deadly triad, at: learning-off-the-policy}
   - {term: projected Bellman error and gradient TD, at: learning-off-the-policy}
   - {term: GQ(λ), at: learning-off-the-policy}
-  - {term: importance ratio, at: learning-off-the-policy}
+  - {term: importance ratio, at: learning-off-the-policy, related: ["stale keys"]}
   - {term: successor features, at: from-many-predictions-to-a-choice}
   - {term: generalized policy improvement, at: from-many-predictions-to-a-choice}
   - {term: set-max policy, at: from-many-predictions-to-a-choice}
   - {term: per-answer weighting, at: vpo-builds-a-library-in-one-response}
-  - {term: coverage condition, at: diversity-is-a-coverage-condition}
+  - {term: coverage condition, at: diversity-is-a-coverage-condition, related: ["bandit and exploration"]}
 uses:
   - {term: temporal-difference error, from: how-can-a-reward-train-a-neural-network}
   - {term: λ-return and eligibility trace, from: how-can-a-reward-train-a-neural-network}

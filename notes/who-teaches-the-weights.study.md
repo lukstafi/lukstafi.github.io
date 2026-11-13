@@ -8,14 +8,14 @@ requires:
   - {at: how-does-a-policy-improve#improving-a-distribution-without-throwing-away-the-prior, for: the tilt and the two directions of KL}
   - {at: how-does-a-policy-improve#mpo-separates-improvement-from-fitting, for: improvement and fitting as separate jobs}
 introduces:
-  - {term: teacher and support, at: where-the-model-trains-and-what-it-imitates}
-  - {term: self-distillation with privileged context, at: the-model-with-privileged-context-as-teacher}
+  - {term: teacher and support, at: where-the-model-trains-and-what-it-imitates, related: ["on-policy distillation of specialists", "distilling a selector from the attention it replaces"]}
+  - {term: self-distillation with privileged context, at: the-model-with-privileged-context-as-teacher, related: ["grounded and ungrounded targets", "self-distillation on a run's own rollouts", "consolidation as an M-step"]}
   - {term: implicit value of a context, at: the-model-with-privileged-context-as-teacher}
-  - {term: forgetting within a task, at: what-on-policy-training-forgets}
-  - {term: Vector Policy Optimization, at: what-on-policy-training-forgets}
-  - {term: two conditions on a teacher, gloss: "it must know more than the student, and its targets must be ones the student can absorb"}
-  - {term: usable information, at: the-model-with-privileged-context-as-teacher}
-  - {term: moving teacher and fixed anchor, at: where-the-model-trains-and-what-it-imitates}
+  - {term: forgetting within a task, at: what-on-policy-training-forgets, related: ["coverage condition", "depth and breadth", "self-distillation on a run's own rollouts"]}
+  - {term: Vector Policy Optimization, at: what-on-policy-training-forgets, related: ["set-max policy", "per-answer weighting", "depth and breadth"]}
+  - {term: two conditions on a teacher, gloss: "it must know more than the student, and its targets must be ones the student can absorb", related: ["Latent Sparse Attention", "on-policy distillation of specialists"]}
+  - {term: usable information, at: the-model-with-privileged-context-as-teacher, related: ["amortization argument for weights"]}
+  - {term: moving teacher and fixed anchor, at: where-the-model-trains-and-what-it-imitates, related: ["distilling a selector from the attention it replaces"]}
 uses:
   - {term: exponential tilt, from: how-does-a-policy-improve}
   - {term: mass-covering and mode-seeking KL, from: how-does-a-policy-improve}

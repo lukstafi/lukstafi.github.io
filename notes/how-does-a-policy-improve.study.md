@@ -6,26 +6,26 @@ reviewed-against: "4b16cbf"
 requires:
   - {at: how-can-a-reward-train-a-neural-network#values-evaluate-a-particular-policy, for: action values}
 introduces:
-  - {term: policy-improvement argument, at: evaluating-a-policy-and-improving-it}
-  - {term: discounted occupancy, at: evaluating-a-policy-and-improving-it}
-  - {term: three jobs of a world model, at: the-different-jobs-of-a-world-model}
-  - {term: amortization, at: the-different-jobs-of-a-world-model}
+  - {term: policy-improvement argument, at: evaluating-a-policy-and-improving-it, related: ["generalized policy improvement", "projected Bellman error and gradient TD"]}
+  - {term: discounted occupancy, at: evaluating-a-policy-and-improving-it, related: ["flow conservation"]}
+  - {term: three jobs of a world model, at: the-different-jobs-of-a-world-model, related: ["transition model", "five capacities of a world model", "successor features"]}
+  - {term: amortization, at: the-different-jobs-of-a-world-model, related: ["amortization argument for weights", "amortization as learning and as efficiency"]}
   - {term: reparameterization trick, at: the-different-jobs-of-a-world-model}
-  - {term: model-predictive control, at: planning-over-trajectories-and-trees}
-  - {term: mass-covering and mode-seeking KL, at: improving-a-distribution-without-throwing-away-the-prior}
+  - {term: model-predictive control, at: planning-over-trajectories-and-trees, related: ["search as regularized policy improvement"]}
+  - {term: mass-covering and mode-seeking KL, at: improving-a-distribution-without-throwing-away-the-prior, related: ["self-distillation with privileged context", "consolidation as an M-step", "coverage condition"]}
   - {term: exponential tilt, at: improving-a-distribution-without-throwing-away-the-prior}
-  - {term: temperature as a Lagrange multiplier, at: improving-a-distribution-without-throwing-away-the-prior}
+  - {term: temperature as a Lagrange multiplier, at: improving-a-distribution-without-throwing-away-the-prior, related: ["momentum as the price of a constraint", "forgetting within a task"]}
   - {term: control as inference, at: the-evidence-lower-bound-and-expectation-maximization}
-  - {term: E-step and M-step of policy improvement, at: the-evidence-lower-bound-and-expectation-maximization}
-  - {term: restricted ELBO, at: the-evidence-lower-bound-and-expectation-maximization}
+  - {term: E-step and M-step of policy improvement, at: the-evidence-lower-bound-and-expectation-maximization, related: ["consolidation as an M-step", "improvement separated from fitting"]}
+  - {term: restricted ELBO, at: the-evidence-lower-bound-and-expectation-maximization, related: ["return-conditioned policy"]}
   - {term: flow conservation, at: reps-and-the-consistency-of-state-distributions}
-  - {term: improvement separated from fitting, at: mpo-separates-improvement-from-fitting}
-  - {term: advantage-weighted regression, at: weighted-regression-and-learning-from-a-fixed-dataset}
+  - {term: improvement separated from fitting, at: mpo-separates-improvement-from-fitting, related: ["self-distillation with privileged context"]}
+  - {term: advantage-weighted regression, at: weighted-regression-and-learning-from-a-fixed-dataset, related: ["return-conditioned policy"]}
   - {term: aleatoric and epistemic uncertainty, at: from-return-distributions-to-return-conditioned-policies}
-  - {term: return-conditioned policy, at: from-return-distributions-to-return-conditioned-policies}
-  - {term: search as regularized policy improvement, at: search-as-regularized-policy-improvement}
-  - {term: Direct Preference Optimization, at: from-relative-entropy-to-preference-learning}
-  - {term: four questions for reading an algorithm, at: a-reusable-way-to-read-the-algorithms}
+  - {term: return-conditioned policy, at: from-return-distributions-to-return-conditioned-policies, related: ["generalized policy improvement"]}
+  - {term: search as regularized policy improvement, at: search-as-regularized-policy-improvement, related: ["bandit and exploration"]}
+  - {term: Direct Preference Optimization, at: from-relative-entropy-to-preference-learning, related: ["implicit value of a context", "moving teacher and fixed anchor"]}
+  - {term: four questions for reading an algorithm, at: a-reusable-way-to-read-the-algorithms, related: ["consolidation as an M-step"]}
 uses:
   - {term: state value and action value, from: how-can-a-reward-train-a-neural-network}
   - {term: policy iteration, from: how-can-a-reward-train-a-neural-network}

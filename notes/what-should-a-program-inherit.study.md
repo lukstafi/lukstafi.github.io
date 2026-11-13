@@ -8,12 +8,12 @@ requires:
   - {at: what-must-be-true#reading-a-contract-out-of-the-code, for: "the 2015 thesis, where generalization and abduction reconstruct contracts from programs", strength: helpful}
   - {at: what-persists-when-agents-change, for: "how an inquiry continues across changing participants and records", strength: helpful}
 introduces:
-  - {term: genealogical identity, at: finding-the-parts-that-can-vary-together, gloss: "a module stays a descendant of the same module while its implementation changes; duplication creates a new identity"}
-  - {term: linear schema, at: finding-the-parts-that-can-vary-together, gloss: "a common pattern in which each schema variable occurs only once, so that every hole can vary independently"}
-  - {term: library learning, at: babble-when-a-common-pattern-becomes-a-useful-function, gloss: "finding definitions that let a collection of programs be rewritten more economically, paying for the definitions as well as their uses"}
-  - {term: e-graph, at: babble-when-a-common-pattern-becomes-a-useful-function}
-  - {term: algorithm C, at: tyflow-which-choices-should-remain-choices, gloss: "the 2005 thesis's procedure that constructs a term from a sequence of choices alongside type inference, returning a term and a substitution"}
-  - {term: provenance graph, at: alphaevolve-variation-selection-and-what-survives, gloss: "a record of which versions, documents and evaluation results were supplied to an attempt and which edits it produced"}
+  - {term: genealogical identity, at: finding-the-parts-that-can-vary-together, gloss: "a module stays a descendant of the same module while its implementation changes; duplication creates a new identity", related: ["provenance graph"]}
+  - {term: linear schema, at: finding-the-parts-that-can-vary-together, gloss: "a common pattern in which each schema variable occurs only once, so that every hole can vary independently", related: ["anti-unification"]}
+  - {term: library learning, at: babble-when-a-common-pattern-becomes-a-useful-function, gloss: "finding definitions that let a collection of programs be rewritten more economically, paying for the definitions as well as their uses", related: ["anti-unification", "amortization argument for weights"]}
+  - {term: e-graph, at: babble-when-a-common-pattern-becomes-a-useful-function, related: ["anti-unification"]}
+  - {term: algorithm C, at: tyflow-which-choices-should-remain-choices, gloss: "the 2005 thesis's procedure that constructs a term from a sequence of choices alongside type inference, returning a term and a substitution", related: ["precondition and postcondition"]}
+  - {term: provenance graph, at: alphaevolve-variation-selection-and-what-survives, gloss: "a record of which versions, documents and evaluation results were supplied to an attempt and which edits it produced", related: ["persistent inquiry with replaceable interpreters"]}
 uses:
   - {term: anti-unification, from: what-must-be-true}
   - {term: "deduction, generalization and abduction", from: what-must-be-true}

@@ -7,6 +7,7 @@ the descriptions in index.html, and writes:
 
   study/index.html          the tracks: a map and a reading list for each
   study/terms.html          every term the essays introduce, alphabetically
+  study/concepts.html       the same terms as a graph of related concepts
   study/<track>.track.html  the cross-essay questions of a track, from
                             study/<track>.track.md (via build_notes_html.sh)
 
@@ -242,7 +243,8 @@ def guide_markdown(site):
         "",
         "An essay marked [study ↗]{.study-badge} has a page of recall questions. Answer each from memory, "
         "then open the answer to compare. Each track with questions also has a page of questions that "
-        "span its essays. The terms the essays introduce are collected in the [index of terms](terms.html).",
+        "span its essays. The terms the essays introduce are collected in the [index of terms](terms.html), "
+        "and the [concept graph](concepts.html) shows which of them are studied together.",
         "",
         "Essays that belong to no track are listed on the [home page](/).",
         "",
@@ -303,7 +305,7 @@ def terms_markdown(site):
            f"The {len(entries)} terms that the essays with study pages introduce. Each links to the section "
            "that introduces it. Where a term is the essays' own, or is used in a stipulated sense, a gloss follows.",
            "",
-           "[Back to the Study Guide](/study/)", "",
+           "[Back to the Study Guide](/study/) · [Concept graph](concepts.html)", "",
            " · ".join(f"[{letter}](#{anchor(letter)})" for letter in letters), ""]
     current = None
     for key, term, slug, section, gloss in entries:
@@ -319,6 +321,251 @@ def terms_markdown(site):
         if users:
             body += " Used in " + ", ".join(f"[{site.short_title(u)}]({essay_url(u)})" for u in users) + "."
         out += [f"[{term}]({essay_url(slug, section)})", f":   {body}", ""]
+    out += [":::", ""]
+    return "\n".join(out)
+
+
+# ---------------------------------------------------------------- the concept graph
+#
+# The graph's concepts are the terms of the index. Its links are derived from
+# the study pages:
+#   section   two terms introduced in the same section of an essay
+#   question  two terms named in one question and its answer, in a study page
+#             (its own terms and the terms it "uses") or a track's cross-essay
+#             questions (the terms of that track)
+#   at        a term named in a question, and the terms introduced in the
+#             section the question draws on (half weight)
+#   related   an optional list on an "introduces" entry, written by hand
+#   chain     consecutive terms of one essay, added only where the essay's
+#             terms would otherwise fall apart
+# A term is named in a text when the text contains it whole, or, for a term
+# like "reason, price and defeater", two of its parts or one part of several
+# words. Links written by hand are always kept and rank first; any other link
+# is kept only if it is among the MAX_LINKS strongest of both its ends.
+
+MAX_LINKS = 10
+WEIGHTS = {"related": 3.0, "section": 2.0, "question": 1.0, "at": 0.5}
+
+
+def term_patterns(term):
+    """Whole-term patterns, and part patterns for a composite term."""
+    text = plain(term)
+    whole = {text}
+    m = re.match(r"^(.*?)\s*\((.*?)\)\s*$", text)
+    if m:   # "symbol manipulation (Marcus's three hypotheses)"; "... (UQOTOM)"
+        whole = {m.group(1)}
+        if re.fullmatch(r"[A-Z0-9λ-]+", m.group(2)):
+            whole.add(m.group(2))
+    base = re.sub(r"\s*\(.*?\)\s*$", "", text)
+    parts = re.split(r",\s*(?:and\s+)?|\s+and\s+|\s*/\s*", base)
+    if len(parts) < 2:
+        parts = []
+
+    def rx(v):
+        acronym = re.fullmatch(r"[A-Z0-9λ()-]+", v) and len(v) <= 6
+        return re.compile(r"(?<![\w-])" + re.escape(v) + r"(?:s|es)?(?![\w-])", 0 if acronym else re.I)
+    return [rx(v) for v in whole], [(rx(v), " " in v) for v in parts]
+
+
+def names(patterns, text):
+    whole, parts = patterns
+    if any(p.search(text) for p in whole):
+        return True
+    found = [long for p, long in parts if p.search(text)]
+    return len(found) >= 2 or any(found)
+
+
+def question_blocks(path):
+    """(section, plain text) of each question with its answer."""
+    text = re.sub(r"^---\n.*?\n---\n", "", path.read_text(encoding="utf-8"), flags=re.S)
+    for block in re.split(r"^(?=#{2,3} )", text, flags=re.M):
+        if block.startswith("### "):
+            at = re.search(r"\bat=([\w-]+)", block.split("\n", 1)[0])
+            yield (at.group(1) if at else None), plain(block)
+
+
+def concept_graph(site):
+    """Concepts in reading order (track, essay, then the essay's own order) and
+    their links: {(i, j): kinds}, i < j."""
+    concepts = []
+    for track_no, track in enumerate(t for t in site.tracks if any(
+            e["slug"] in site.sidecars for st in t["stages"] for e in st["essays"])):
+        for stage in track["stages"]:
+            for essay in stage["essays"]:
+                slug = essay["slug"]
+                for item in (site.sidecars.get(slug) or {}).get("introduces") or []:
+                    concepts.append({
+                        "term": item["term"], "slug": slug, "track": track_no,
+                        "section": slug_of(item["at"]) if item.get("at") else None,
+                        "gloss": (item.get("gloss") or "").strip(),
+                        "related": item.get("related") or [],
+                    })
+    index = {c["term"]: i for i, c in enumerate(concepts)}
+    pats = [term_patterns(c["term"]) for c in concepts]
+    of_essay, of_section, of_track = {}, {}, {}
+    for i, c in enumerate(concepts):
+        of_essay.setdefault(c["slug"], []).append(i)
+        of_track.setdefault(site.track_of[c["slug"]]["id"], []).append(i)
+        if c["section"]:
+            of_section.setdefault((c["slug"], c["section"]), []).append(i)
+
+    weight, kinds = {}, {}
+
+    def link(x, y, kind):
+        if x == y:
+            return
+        key = (min(x, y), max(x, y))
+        weight[key] = weight.get(key, 0) + WEIGHTS[kind]
+        kinds.setdefault(key, set()).add(kind)
+
+    for group in of_section.values():
+        for a in group:
+            for b in group:
+                if a < b:
+                    link(a, b, "section")
+    for i, c in enumerate(concepts):
+        for other in c["related"]:
+            if other not in index:
+                print(f"warning: {c['slug']}: related term not in the index: {other}", file=sys.stderr)
+                continue
+            link(i, index[other], "related")
+
+    sources = []
+    for slug, meta in site.sidecars.items():
+        used = [index[u["term"]] for u in meta.get("uses") or [] if u["term"] in index]
+        sources.append((ROOT / "notes" / f"{slug}.study.md", slug, of_essay.get(slug, []) + used))
+    for path in sorted((ROOT / "study").glob("*.track.md")):
+        sources.append((path, None, of_track.get(path.name.split(".")[0], [])))
+    for path, slug, candidates in sources:
+        for at, text in question_blocks(path):
+            named = [i for i in candidates if names(pats[i], text)]
+            for a in named:
+                for b in named:
+                    if a < b:
+                        link(a, b, "question")
+            for a in of_section.get((slug, at), []):
+                for b in named:
+                    link(a, b, "at")
+
+    # Keep the strongest links of each concept.
+    rank = {}
+    for i in range(len(concepts)):
+        mine = sorted((key for key in weight if i in key), key=lambda k: -weight[k])
+        for r, key in enumerate(mine):
+            rank[(i, key)] = r
+    links = {key: kinds[key] for key in weight
+             if "related" in kinds[key]
+             or (rank[(key[0], key)] < MAX_LINKS and rank[(key[1], key)] < MAX_LINKS)}
+
+    # Keep each essay's terms connected among themselves.
+    for slug, members in of_essay.items():
+        parent = {i: i for i in members}
+
+        def find(i):
+            while parent[i] != i:
+                parent[i] = parent[parent[i]]
+                i = parent[i]
+            return i
+        for a, b in links:
+            if a in parent and b in parent:
+                parent[find(a)] = find(b)
+        for a, b in zip(members, members[1:]):
+            if find(a) != find(b):
+                links[(min(a, b), max(a, b))] = {"chain"}
+                parent[find(a)] = find(b)
+    return concepts, links
+
+
+def concept_id(term, taken):
+    text = unicodedata.normalize("NFKD", plain(term).replace("λ", "lambda")).casefold()
+    base = "concept-" + (re.sub(r"[^a-z0-9]+", "-", text).strip("-") or "term")
+    cid, n = base, 2
+    while cid in taken:
+        cid, n = f"{base}-{n}", n + 1
+    taken.add(cid)
+    return cid
+
+
+def concepts_markdown(site):
+    concepts, links = concept_graph(site)
+    taken = set()
+    for c in concepts:
+        c["id"] = concept_id(c["term"], taken)
+    neighbours = {i: [] for i in range(len(concepts))}
+    for a, b in links:
+        neighbours[a].append(b)
+        neighbours[b].append(a)
+    tracks = [t for t in site.tracks if any(e["slug"] in site.sidecars for st in t["stages"] for e in st["essays"])]
+    essays = list(dict.fromkeys(c["slug"] for c in concepts))
+    data = {
+        "tracks": [plain(t["title"]) for t in tracks],
+        "essays": [plain(site.short_title(s)) for s in essays],
+        "concepts": [[plain(c["term"]), c["id"], c["track"], essays.index(c["slug"])] for c in concepts],
+        "links": [[a, b, 1 if kinds == {"chain"} else 0] for (a, b), kinds in sorted(links.items())],
+    }
+    payload = json.dumps(data, ensure_ascii=False, separators=(",", ":")).replace("</", "<\\/")
+
+    legend = "".join(
+        f'<li><button type="button" data-track="{n}"><span class="swatch t{n + 1}"></span>'
+        f'{html.escape(plain(t["title"]))}</button></li>' for n, t in enumerate(tracks))
+    view = f"""<div class="concept-view" hidden>
+<div class="concept-graph">
+<div class="concept-controls">
+<input type="search" id="concept-search" list="concept-names" placeholder="Find a concept" aria-label="Find a concept">
+<button type="button" id="concept-overview">Whole graph</button>
+</div>
+<svg id="concept-svg" viewBox="-340 -340 680 680" role="img" aria-label="Concept graph: the focused concept at the center, its linked concepts on a ring around it, the rest shrinking toward the rim"></svg>
+<ul class="concept-legend">{legend}</ul>
+</div>
+<div class="concept-panel" aria-live="polite">
+<p class="concept-hint">Click a concept, or find one by name. Its linked concepts move to the ring around it.</p>
+</div>
+</div>
+<datalist id="concept-names"></datalist>
+<script type="application/json" id="concept-data">{payload}</script>
+<script src="/assets/concept-graph.js" defer></script>"""
+
+    out = ["---", 'title: "Concept graph"',
+           'subtitle: "The terms of the Study Guide and the links between them"', "---", "",
+           f"The {len(concepts)} terms of the [index of terms](terms.html), each linked to the terms it is "
+           "studied with. Most links were written by hand, from what the essays say about one another. "
+           "The rest come from the study pages: two terms introduced in the same section, or named together "
+           "in a recall question and its answer. A dashed line only joins consecutive terms of an essay "
+           "that would otherwise fall apart.",
+           "",
+           "Click a concept to bring it to the center. The concepts linked to it form the ring around it; "
+           "the rest keep their direction and shrink toward the rim with distance. "
+           "The color of a concept is its track.",
+           "",
+           "[Back to the Study Guide](/study/) · [Index of terms](terms.html)", "",
+           "```{=html}", view, "```", "",
+           "::: concept-list", ""]
+    current_track = current_essay = None
+    for i, c in enumerate(concepts):
+        if c["track"] != current_track:
+            current_track = c["track"]
+            out += [f"## {tracks[c['track']]['title']} {{.concept-heading .unnumbered}}", ""]
+        if c["slug"] != current_essay:
+            current_essay = c["slug"]
+            out += [f"### {site.short_title(c['slug'])} {{.concept-heading .unnumbered}}", ""]
+        out += [f"::: {{.concept #{c['id']}}}", "",
+                f"[{c['term']}]{{.concept-term .t{c['track'] + 1}}}", ""]
+        if c["gloss"]:
+            out += [c["gloss"][0].upper() + c["gloss"][1:].rstrip(".") + ".", ""]
+        out += [f"Introduced in [*{site.short_title(c['slug'])}*]({essay_url(c['slug'], c['section'])}) "
+                f"· [study page](/notes/{c['slug']}.study.html) "
+                f"· [{tracks[c['track']]['title']}](/study/#{tracks[c['track']]['id']})"
+                "{.concept-where}", ""]
+        near = sorted(neighbours[i], key=lambda j: (concepts[j]["slug"] != c["slug"], j))
+        if near:
+            items = []
+            for j in near:
+                item = f"[{concepts[j]['term']}](#{concepts[j]['id']})"
+                if concepts[j]["slug"] != c["slug"]:
+                    item += f" [({site.short_title(concepts[j]['slug'])})]{{.concept-from}}"
+                items.append(item)
+            out += ["Linked to: " + "; ".join(items) + ".", ""]
+        out += [":::", ""]
     out += [":::", ""]
     return "\n".join(out)
 
@@ -356,6 +603,8 @@ def main():
            "Reading tracks through the essays, with a map of what builds on what and recall questions for each essay.")
     render(terms_markdown(site), "study/terms.html", "Index of terms",
            "Every term the essays with study pages introduce, with the section that introduces it.")
+    render(concepts_markdown(site), "study/concepts.html", "Concept graph",
+           "The terms of the Study Guide as a graph: each linked to the terms it is studied with.")
     for path in sorted((ROOT / "study").glob("*.track.md")):
         subprocess.run([str(ROOT / "scripts" / "build_notes_html.sh"), str(path)], check=True)
 

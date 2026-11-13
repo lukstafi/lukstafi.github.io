@@ -7,13 +7,13 @@ requires:
   - {at: poetry-as-thinking#what-poetry-does-four-operations, for: "the four operations, derived there from Hirshfield's poems", strength: helpful}
   - {at: apologia-v3, for: "the failure mode of collaborative writing with an LLM", strength: helpful}
 introduces:
-  - {term: breadth and depth, at: breadth-and-depth, gloss: "Tao's distinction between what AI tools and human researchers each excel at"}
-  - {term: jumping machines, at: breadth-and-depth, gloss: "Tao's image for tools that solve a problem in one leap or fail, with no partial progress"}
+  - {term: breadth and depth, at: breadth-and-depth, gloss: "Tao's distinction between what AI tools and human researchers each excel at", related: ["trajectory and front", "depth and breadth"]}
+  - {term: jumping machines, at: breadth-and-depth, gloss: "Tao's image for tools that solve a problem in one leap or fail, with no partial progress", related: ["persistent inquiry with replaceable interpreters"]}
   - {term: operations of discovery, at: what-discovery-actually-consists-of, gloss: "the four operations of poetic thinking, claimed to be those of discovery in general"}
   - {term: evidential weight, at: the-evidential-weight, gloss: "the pressure of a real unsolved problem, brought by someone for whom it is unresolved"}
   - {term: slop, at: the-evidential-weight, gloss: "in the deeper sense, output that is coherent and formally sophisticated but shaped by pressures that do not track truth"}
-  - {term: jaggedness, at: three-practitioners, gloss: "Karpathy's word for a model that is brilliant and childish at once"}
-  - {term: temporal coherence, at: three-practitioners, gloss: "one observer's sustained encounter with a problem over years, which accumulates orientation"}
+  - {term: jaggedness, at: three-practitioners, gloss: "Karpathy's word for a model that is brilliant and childish at once", related: ["efficacy-matching"]}
+  - {term: temporal coherence, at: three-practitioners, gloss: "one observer's sustained encounter with a problem over years, which accumulates orientation", related: ["trajectory and front", "compiled/interpreted gap"]}
   - {term: Neptune-proof, at: the-verification-problem, gloss: "said of a result that the next data point will not destroy, as Neptune destroyed Bode's law"}
 uses:
   - {term: organ of perception, from: poetry-as-thinking}

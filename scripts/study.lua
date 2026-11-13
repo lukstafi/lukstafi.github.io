@@ -13,7 +13,10 @@
 --                       against, in quotes (a bare 12e3456 is a number in YAML)
 --     requires          list of {at: slug or slug#section, for: text,
 --                       strength: helpful (optional)}
---     introduces        list of {term, at: section (optional), gloss (optional)}
+--     introduces        list of {term, at: section (optional), gloss (optional),
+--                       related: [term, ...] (optional)}; "related" names terms
+--                       of any study page, as they are written there, and is
+--                       read only by scripts/build_study_guide.py (the concept graph)
 --     uses              list of {term, from: slug}; the term must be in the
 --                       "introduces" of that essay's study page
 --     see-also          list of {term, at: slug#section}

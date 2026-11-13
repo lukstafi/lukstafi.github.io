@@ -11,11 +11,11 @@ introduces:
   - {term: multiway system, at: the-source-of-quantum-behavior-non-determinism-and-multiway-systems}
   - {term: confluence, at: confluence-causal-invariance-and-their-tension}
   - {term: causal invariance, at: confluence-causal-invariance-and-their-tension}
-  - {term: measurement as Knuth-Bendix completion, at: measurement-as-knuth-bendix-completion}
+  - {term: measurement as Knuth-Bendix completion, at: measurement-as-knuth-bendix-completion, related: ["bounded and persistent observer"]}
   - {term: branchlike hypersurface and foliation, at: measurement-as-knuth-bendix-completion}
   - {term: multiway invariance, at: multiway-relativity-quantum-mechanics-as-general-relativity-in-branchial-space}
-  - {term: bounded and persistent observer, at: the-observer-as-the-source-of-physical-law, gloss: "Wolfram's two conditions on an observer: computationally bounded, and persistent in time"}
-  - {term: Ruliad and rulial space, at: the-ruliad-why-the-choice-of-rule-shouldnt-matter}
+  - {term: bounded and persistent observer, at: the-observer-as-the-source-of-physical-law, gloss: "Wolfram's two conditions on an observer: computationally bounded, and persistent in time", related: ["coarse graining", "macrostate as predictor", "physics as a coarse-graining", "three grains", "carrier of motion"]}
+  - {term: Ruliad and rulial space, at: the-ruliad-why-the-choice-of-rule-shouldnt-matter, related: ["physics as a coarse-graining"]}
   - {term: universality conjecture, at: the-ruliad-why-the-choice-of-rule-shouldnt-matter}
 ---
 

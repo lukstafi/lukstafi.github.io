@@ -22,7 +22,7 @@ introduces:
   - {term: truth-tracking and truth-bearers, at: an-additional-field, gloss: "experiential regulation keeps vehicles tracking what drives them moment by moment; judgments persist long enough to be assessed and revised"}
   - {term: "reach, latency and bandwidth", at: an-additional-field, gloss: "three properties of a channel between members: whether it lands on vehicles still under regulation, whether its loops close while they last, whether it carries the distinctions their regulation respects"}
   - {term: reporters and relays, at: an-additional-field, gloss: "members who report their own contents, against members who relay the whole's fine-grained signals"}
-  - {term: residual integration, at: the-nation-and-residual-integration, gloss: "the organization a level loses when its parts are severed along the boundaries that lose least"}
+  - {term: residual integration, at: the-nation-and-residual-integration, gloss: "the organization a level loses when its parts are severed along the boundaries that lose least", related: ["wealth of traders as a second learner"]}
 uses:
   - {term: five conditions of mentality, from: minds-by-degrees-draft-v2}
   - {term: internality, from: minds-by-degrees-draft-v2}

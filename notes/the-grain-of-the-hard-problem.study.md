@@ -9,12 +9,12 @@ requires:
   - {at: presence-and-actuality#existence-and-construction, for: physics as a coarse-graining performed by bounded observers, strength: helpful}
   - {at: experience-selfhood-and-the-organization-of-a-mind#implementation-without-indifference, for: the persistent carrier and the grain at which regulation corrects it, strength: helpful}
 introduces:
-  - {term: overflow beyond the discriminative profile, at: overflow-beyond-the-whole-profile, gloss: "experiential character that no matching relation available to the subject fixes"}
+  - {term: overflow beyond the discriminative profile, at: overflow-beyond-the-whole-profile, gloss: "experiential character that no matching relation available to the subject fixes", related: ["weak and strong unfolding"]}
   - {term: grain dependency, at: why-zombies-are-conceivable, gloss: "experiential character depends on organization at a particular grain, which no concept the subject deploys can express"}
-  - {term: cognition (narrow sense), at: why-zombies-are-conceivable, gloss: "the recipients of access: reasoning, speech and the selection of action"}
-  - {term: three grains, at: physics-has-a-grain, gloss: "cognition, experience and physics, from coarse to fine"}
+  - {term: cognition (narrow sense), at: why-zombies-are-conceivable, gloss: "the recipients of access: reasoning, speech and the selection of action", related: ["global broadcast", "truth-tracking and truth-bearers"]}
+  - {term: three grains, at: physics-has-a-grain, gloss: "cognition, experience and physics, from coarse to fine", related: ["bounded and persistent observer"]}
   - {term: physics as a science and physicalism as a metaphysics, at: physics-has-a-grain, gloss: "one articulation of reality's structure at one grain, against the claim that experience is part of that structure"}
-  - {term: knowledge by construction, at: marys-photograph, gloss: "a reasoner derives an organization from a description and realizes it in its own regulated vehicles"}
+  - {term: knowledge by construction, at: marys-photograph, gloss: "a reasoner derives an organization from a description and realizes it in its own regulated vehicles", related: ["outer loop"]}
 ---
 
 The answers state what the essay argues. Several of its claims are contested, and the last questions ask where it says so.

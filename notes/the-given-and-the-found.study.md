@@ -6,22 +6,22 @@ reviewed-against: "2fd78b8"
 requires:
   - {at: who-teaches-the-weights, for: "the collapse onto one strategy under on-policy reinforcement learning, and Vector Policy Optimization as a remedy", strength: helpful}
 introduces:
-  - {term: correctness condition, at: three-things-the-field-conflates, gloss: "what makes an answer right: a fact about the task, prior to any network"}
+  - {term: correctness condition, at: three-things-the-field-conflates, gloss: "what makes an answer right: a fact about the task, prior to any network", related: ["spectrum of givenness", "general value function"]}
   - {term: landscape and search, at: three-things-the-field-conflates, gloss: "the learned dynamics whose attractors are a trained surrogate for the condition, and the trajectory followed through it at inference"}
   - {term: spectrum of givenness, at: the-spectrum-of-givenness, gloss: "how much of the correctness condition is guaranteed by construction, and how much is approximated by a surrogate trustworthy only in distribution"}
   - {term: sound but incomplete deduction, at: the-spectrum-of-givenness}
   - {term: spurious attractor, at: convergence-is-not-self-certifying, gloss: "a stable, low-residual state that decodes to the wrong answer"}
-  - {term: convergence as a learned proxy, at: convergence-is-not-self-certifying, gloss: "the system's internal signal of having settled is a trained artifact, calibrated only as far as the data that shaped it"}
-  - {term: depth and breadth, at: depth-and-breadth-are-two-knobs-not-one, gloss: "iterations within one trajectory, which entrench its basin, and independent restarts, which cover more basins"}
+  - {term: convergence as a learned proxy, at: convergence-is-not-self-certifying, gloss: "the system's internal signal of having settled is a trained artifact, calibrated only as far as the data that shaped it", related: ["independent check"]}
+  - {term: depth and breadth, at: depth-and-breadth-are-two-knobs-not-one, gloss: "iterations within one trajectory, which entrench its basin, and independent restarts, which cover more basins", related: ["Vector Policy Optimization"]}
   - {term: limit cycle as terminal behavior, at: depth-and-breadth-are-two-knobs-not-one, gloss: "a single trajectory that visits the valid answers in turn and does not settle; the essay's own suggestion"}
-  - {term: amortization as learning and as efficiency, at: amortization-is-learning, gloss: "raising the ceiling attainable at fixed data, against cutting the compute needed to reach a ceiling already attainable"}
-  - {term: equilibrium internalization, at: amortization-is-learning}
-  - {term: manufactured target, at: the-engine-is-signal-amplification, gloss: "a training target produced by a confident intermediate computation, such as a converged loop state or a search's visit counts"}
-  - {term: amplitude and sign of a learning signal, at: the-engine-is-signal-amplification, gloss: "the target's confidence sets the size of the update; whether the target is grounded in truth sets its direction"}
-  - {term: grounded and ungrounded targets, at: the-engine-is-signal-amplification}
-  - {term: underdetermination of the landscape, at: the-engine-is-signal-amplification, gloss: "supervision constrains the model only along the trajectories training visits and leaves the rest free"}
+  - {term: amortization as learning and as efficiency, at: amortization-is-learning, gloss: "raising the ceiling attainable at fixed data, against cutting the compute needed to reach a ceiling already attainable", related: ["amortization", "amortization argument for weights", "deflationary and substantive answers about consolidation"]}
+  - {term: equilibrium internalization, at: amortization-is-learning, related: ["amortization"]}
+  - {term: manufactured target, at: the-engine-is-signal-amplification, gloss: "a training target produced by a confident intermediate computation, such as a converged loop state or a search's visit counts", related: ["search as regularized policy improvement"]}
+  - {term: amplitude and sign of a learning signal, at: the-engine-is-signal-amplification, gloss: "the target's confidence sets the size of the update; whether the target is grounded in truth sets its direction", related: ["independent check"]}
+  - {term: grounded and ungrounded targets, at: the-engine-is-signal-amplification, related: ["self-distillation with privileged context", "moving teacher and fixed anchor"]}
+  - {term: underdetermination of the landscape, at: the-engine-is-signal-amplification, gloss: "supervision constrains the model only along the trajectories training visits and leaves the rest free", related: ["learned update rule"]}
   - {term: optimal granularity, at: the-engine-is-signal-amplification, gloss: "the step size at which the pull toward fewer, bigger steps balances the difficulty of learning a bigger step"}
-  - {term: amortizing search versus amortizing discovery, at: the-boundary-amortizing-search-versus-amortizing-discovery, gloss: "speeding up search under a correctness condition that is given, against finding the condition"}
+  - {term: amortizing search versus amortizing discovery, at: the-boundary-amortizing-search-versus-amortizing-discovery, gloss: "speeding up search under a correctness condition that is given, against finding the condition", related: ["deduction, generalization and abduction", "logical induction criterion"]}
 uses:
   - {term: Vector Policy Optimization, from: who-teaches-the-weights}
 ---

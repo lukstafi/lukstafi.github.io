@@ -11,14 +11,14 @@ requires:
   - {at: causation-computation-indexicality, for: "pattern-level causation: real patterns cause through a structure-preserving grounding", strength: helpful}
   - {at: the-possible-the-real-and-the-actual, for: "the earlier response on suffering, which this essay qualifies", strength: helpful}
 introduces:
-  - {term: content-sensitive regulation, at: experience-without-determinate-content, gloss: "organized activity that maintains, revises and coordinates representing states, responsive to differences relevant to their representational roles"}
-  - {term: vehicle role without determinate content, at: experience-without-determinate-content, gloss: "an occurrence keeps its place in an economy organized around representing when no particular content can be attributed to it"}
+  - {term: content-sensitive regulation, at: experience-without-determinate-content, gloss: "organized activity that maintains, revises and coordinates representing states, responsive to differences relevant to their representational roles", related: ["tracking, assessment and intervention"]}
+  - {term: vehicle role without determinate content, at: experience-without-determinate-content, gloss: "an occurrence keeps its place in an economy organized around representing when no particular content can be attributed to it", related: ["vehicle and content of a concept", "identity proposal"]}
   - {term: esse, at: what-does-michał-mean-by-actuality, gloss: "Aquinas's act of being, borrowed by Wójcik for the actuality a theory of consciousness must account for"}
-  - {term: operational individuation, at: what-does-michał-mean-by-actuality, gloss: "the middle step of Thomas Epistemes's reconstruction: an objectively operative organization whose relations matter to physical interactions"}
+  - {term: operational individuation, at: what-does-michał-mean-by-actuality, gloss: "the middle step of Thomas Epistemes's reconstruction: an objectively operative organization whose relations matter to physical interactions", related: ["three grains"]}
   - {term: route to determination, at: existence-and-construction, gloss: "what a proposed distinction needs: an account of what would make it obtain, distinguish its instances, or establish its possibility"}
-  - {term: physics as a coarse-graining, at: existence-and-construction, gloss: "in the Ruliad framework, bounded observers aggregate distinctions, and physical objects, states and relations emerge through that aggregation"}
-  - {term: constructive criterion, at: existence-and-construction, gloss: "a proof that a constructible model of an organization is possible, preserving its constitutive relations and embedding, establishes that the organization is real"}
-  - {term: reality measure, at: existence-and-construction, gloss: "how occurrences should be counted or weighted; left unresolved"}
+  - {term: physics as a coarse-graining, at: existence-and-construction, gloss: "in the Ruliad framework, bounded observers aggregate distinctions, and physical objects, states and relations emerge through that aggregation", related: ["three grains", "bounded and persistent observer", "Ruliad and rulial space", "macrostate as predictor", "intrinsic character (structural sense)"]}
+  - {term: constructive criterion, at: existence-and-construction, gloss: "a proof that a constructible model of an organization is possible, preserving its constitutive relations and embedding, establishes that the organization is real", related: ["knowledge by construction"]}
+  - {term: reality measure, at: existence-and-construction, gloss: "how occurrences should be counted or weighted; left unresolved", related: ["externalist attribution"]}
 uses:
   - {term: acquaintance, from: can-two-minds-share-one-experience}
   - {term: experiential occurrence, from: can-two-minds-share-one-experience}

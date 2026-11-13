@@ -13,13 +13,13 @@ requires:
 introduces:
   - {term: "pretraining, mid-training, SFT, RL, distillation and drafter training", at: the-stages-kept-apart}
   - {term: rollout and policy, at: the-stages-kept-apart}
-  - {term: plateau before the facts, at: what-pretraining-writes-and-in-what-order, gloss: "the stretch of training in which a model knows the kind of answer a template wants and not which answer"}
-  - {term: Muon, at: normalizing-a-matrix}
+  - {term: plateau before the facts, at: what-pretraining-writes-and-in-what-order, gloss: "the stretch of training in which a model knows the kind of answer a template wants and not which answer", related: ["stores written in training and stores written while reading"]}
+  - {term: Muon, at: normalizing-a-matrix, related: ["Sinkhorn iteration"]}
   - {term: distilling a selector from the attention it replaces, at: selectors-cannot-learn-through-top-k}
   - {term: dense warm-up, at: selectors-cannot-learn-through-top-k}
-  - {term: Sinkhorn iteration, at: residual-mixers-must-stay-stable}
-  - {term: context extension, at: long-context-comes-late-and-it-comes-cheaply}
-  - {term: stale rollout, at: what-rl-optimizes-and-how-it-goes-wrong}
+  - {term: Sinkhorn iteration, at: residual-mixers-must-stay-stable, related: ["Manifold-Constrained Hyper-Connections"]}
+  - {term: context extension, at: long-context-comes-late-and-it-comes-cheaply, related: ["interference between stored keys"]}
+  - {term: stale rollout, at: what-rl-optimizes-and-how-it-goes-wrong, related: ["stale keys"]}
   - {term: reward hacking, at: what-rl-optimizes-and-how-it-goes-wrong}
   - {term: on-policy distillation of specialists, at: specialists-then-one-checkpoint}
   - {term: self-distillation on a run's own rollouts, at: self-distillation-at-production-scale, gloss: "SFT on rollouts collected from an RL run, started from a mid-trained checkpoint, after which RL resumes"}

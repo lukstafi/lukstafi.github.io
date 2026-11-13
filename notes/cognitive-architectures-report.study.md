@@ -7,26 +7,26 @@ requires:
   - {at: concept_theories#prototypes-and-exemplars, for: "prototype and exemplar theories, which section 8 assigns to two memory systems", strength: helpful}
   - {at: concept_theories#macherys-heterogeneity-challenge, for: "Machery's claim that 'concept' covers several kinds of structure", strength: helpful}
 introduces:
-  - {term: cognitive architecture, at: introduction-the-question-that-drives-it-all}
-  - {term: chunks and activation, at: human-associative-memory-and-rational-analysis}
-  - {term: rational analysis, at: human-associative-memory-and-rational-analysis}
+  - {term: cognitive architecture, at: introduction-the-question-that-drives-it-all, related: ["cog view"]}
+  - {term: chunks and activation, at: human-associative-memory-and-rational-analysis, related: ["symbolic data and quantitative metadata"]}
+  - {term: rational analysis, at: human-associative-memory-and-rational-analysis, related: ["bounded rationality"]}
   - {term: bounded rationality, at: the-adaptive-control-of-thought}
-  - {term: sensory-based account of conscious thought, at: the-sensory-based-account-of-thought}
+  - {term: sensory-based account of conscious thought, at: the-sensory-based-account-of-thought, related: ["global broadcast", "outer loop"]}
   - {term: working memory, at: working-memory-as-the-theater-of-consciousness}
-  - {term: global broadcast, at: attention-as-the-mechanism-of-consciousness}
-  - {term: Standard Model of the Mind, at: why-a-standard-model}
-  - {term: cognitive cycle, at: core-structure-and-processing}
-  - {term: symbolic data and quantitative metadata, at: memory-and-content-the-hybrid-representation}
-  - {term: chunking, at: the-xaps-prelude-and-the-power-law-of-practice}
+  - {term: global broadcast, at: attention-as-the-mechanism-of-consciousness, related: ["Global Workspace markers", "working-memory pointers", "cognition (narrow sense)", "broadcast that returns"]}
+  - {term: Standard Model of the Mind, at: why-a-standard-model, related: ["Common Model of Cognition"]}
+  - {term: cognitive cycle, at: core-structure-and-processing, related: ["serial bottleneck", "dreaming phase"]}
+  - {term: symbolic data and quantitative metadata, at: memory-and-content-the-hybrid-representation, related: ["Continuity and Compositionality Principles"]}
+  - {term: chunking, at: the-xaps-prelude-and-the-power-law-of-practice, related: ["compiled/interpreted gap", "amortization as learning and as efficiency", "library learning", "M-capacity"]}
   - {term: functional elegance, at: sigma-grand-unification-through-graphical-models}
-  - {term: appraisal variables, at: emotion-as-architectural-modulation}
+  - {term: appraisal variables, at: emotion-as-architectural-modulation, related: ["motley mix", "violation of expectation"]}
   - {term: Common Model of Cognition, at: the-common-model-of-cognition}
-  - {term: dichotomic maps, at: dichotomic-maps-understanding-the-space-of-architectures}
-  - {term: serial bottleneck, at: the-serial-bottleneck}
-  - {term: Complementary Learning Systems, at: hippocampal-systems-and-complementary-learning}
-  - {term: catastrophic interference, at: hippocampal-systems-and-complementary-learning}
-  - {term: working-memory pointers, at: four-pointers-and-the-merge-conjecture}
-  - {term: Merge conjecture, at: four-pointers-and-the-merge-conjecture, gloss: "the authors' proposal that Merge over working-memory pointers is the domain-general operation behind chunking and linguistic syntax"}
+  - {term: dichotomic maps, at: dichotomic-maps-understanding-the-space-of-architectures, related: ["symbolic data and quantitative metadata", "formalisms as coordinates"]}
+  - {term: serial bottleneck, at: the-serial-bottleneck, related: ["executive function", "Global Workspace markers"]}
+  - {term: Complementary Learning Systems, at: hippocampal-systems-and-complementary-learning, related: ["three placements of a memory", "hippocampal indexing", "dreaming phase"]}
+  - {term: catastrophic interference, at: hippocampal-systems-and-complementary-learning, related: ["ladder of stores", "interference between stored keys"]}
+  - {term: working-memory pointers, at: four-pointers-and-the-merge-conjecture, related: ["fast mapping", "M-capacity", "relational complexity"]}
+  - {term: Merge conjecture, at: four-pointers-and-the-merge-conjecture, gloss: "the authors' proposal that Merge over working-memory pointers is the domain-general operation behind chunking and linguistic syntax", related: ["Merge-without-Move", "fast mapping"]}
 uses:
   - {term: prototype and exemplar theories, from: concept_theories}
   - {term: proxytypes, from: concept_theories}

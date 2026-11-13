@@ -8,17 +8,17 @@ requires:
 introduces:
   - {term: mixture of experts, at: from-the-2017-transformer-to-todays-layer}
   - {term: four questions of a store, at: every-layer-is-a-store, gloss: "what writes the store, when, how much it holds before its entries interfere, and what reading it costs"}
-  - {term: outer-product store, at: the-outer-product-store}
+  - {term: outer-product store, at: the-outer-product-store, related: ["tensor product representation"]}
   - {term: interference between stored keys, at: the-outer-product-store}
-  - {term: stores written in training and stores written while reading, at: softmax-attention-uses-every-power, gloss: "the feed-forward layer holds what the model knows; the attention cache holds what the model has been told"}
+  - {term: stores written in training and stores written while reading, at: softmax-attention-uses-every-power, gloss: "the feed-forward layer holds what the model knows; the attention cache holds what the model has been told", related: ["operator/operand split"]}
   - {term: clean recall and picking the right answer, at: what-counts-as-remembering}
   - {term: five ways to keep the past of a context, at: memory-along-the-context, gloss: "full history, a rolling window, selected entries, compressed entries, a recurrent state"}
   - {term: selector, at: selection-is-learned-retrieval, gloss: "a second, cheaper store in front of the cache; it scores keys and the main attention reads only the winners"}
   - {term: Gated DeltaNet and Kimi Delta Attention, at: the-recurrent-state-learns-while-it-reads}
-  - {term: store over depth, at: memory-along-depth, gloss: "a memory written and read by the layers of one token's pass"}
+  - {term: store over depth, at: memory-along-depth, gloss: "a memory written and read by the layers of one token's pass", related: ["residual stream as blackboard", "monotone merge"]}
   - {term: Manifold-Constrained Hyper-Connections, at: several-streams-mixed}
   - {term: Attention Residuals, at: attention-over-depth}
-  - {term: five meanings of depth, at: depth-recurrence-and-what-a-monitor-can-see}
+  - {term: five meanings of depth, at: depth-recurrence-and-what-a-monitor-can-see, related: ["outer loop", "depth and breadth"]}
 uses:
   - {term: delta-rule memory, from: where-experience-goes}
 ---

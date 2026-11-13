@@ -13,16 +13,16 @@ requires:
   - {at: who-teaches-the-weights, for: "the two conditions on a teacher, and self-distillation as consolidation", strength: helpful}
   - {at: what-breadth-reaches, for: the species of integration across sessions, strength: helpful}
 introduces:
-  - {term: explicit memory, at: a-memory-beside-the-context, gloss: "a fact the weights do not contain, found where it was written down"}
+  - {term: explicit memory, at: a-memory-beside-the-context, gloss: "a fact the weights do not contain, found where it was written down", related: ["stores written in training and stores written while reading"]}
   - {term: stale keys, at: a-memory-beside-the-context, gloss: "keys read by newer weights than the ones that wrote them"}
-  - {term: distraction issue, at: teaching-the-memory-to-ignore-distractors}
-  - {term: Latent Sparse Attention, at: ten-million-tokens}
-  - {term: Memorilla, at: memory-moves-back-out}
+  - {term: distraction issue, at: teaching-the-memory-to-ignore-distractors, related: ["interference between stored keys"]}
+  - {term: Latent Sparse Attention, at: ten-million-tokens, related: ["distilling a selector from the attention it replaces", "hippocampal indexing"]}
+  - {term: Memorilla, at: memory-moves-back-out, related: ["ladder of stores"]}
   - {term: break-even for consolidation, at: consolidation}
-  - {term: deflationary and substantive answers about consolidation, at: consolidation, gloss: "consolidation as amortization, against consolidation as representation learning"}
-  - {term: three placements of a memory, at: where-the-brain-places-memories, gloss: "by position, where it arrived; by content, what it resembles; into connections, what it taught"}
-  - {term: hippocampal indexing, at: where-the-brain-places-memories}
-  - {term: five remedies for stale keys, at: five-remedies}
+  - {term: deflationary and substantive answers about consolidation, at: consolidation, gloss: "consolidation as amortization, against consolidation as representation learning", related: ["amortization as learning and as efficiency"]}
+  - {term: three placements of a memory, at: where-the-brain-places-memories, gloss: "by position, where it arrived; by content, what it resembles; into connections, what it taught", related: ["ladder of stores"]}
+  - {term: hippocampal indexing, at: where-the-brain-places-memories, related: ["Complementary Learning Systems"]}
+  - {term: five remedies for stale keys, at: five-remedies, related: ["Memorilla"]}
 uses:
   - {term: selector, from: every-layer-a-store}
   - {term: distilling a selector from the attention it replaces, from: filling-the-stores}

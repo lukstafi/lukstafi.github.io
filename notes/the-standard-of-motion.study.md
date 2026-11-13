@@ -9,18 +9,18 @@ requires:
   - {at: how-does-a-policy-improve#improving-a-distribution-without-throwing-away-the-prior, for: a Lagrange multiplier read as a price, strength: helpful}
 introduces:
   - {term: standard of motion, at: the-first-law-carries-the-geometry, gloss: "Heller's term: the motions a dynamics counts as free, against which a force shows as a deviation"}
-  - {term: "Aristotle's first and second law", at: the-first-law-carries-the-geometry, gloss: "in Heller's reconstruction: a free body stays at absolute rest, and force is proportional to velocity"}
+  - {term: "Aristotle's first and second law", at: the-first-law-carries-the-geometry, gloss: "in Heller's reconstruction: a free body stays at absolute rest, and force is proportional to velocity", related: ["overdamped limit", "three geometries of gradient flow", "Carroll algebra"]}
   - {term: frame bundle and teleparallelism, at: the-first-law-carries-the-geometry}
-  - {term: Poisson bracket and Hamiltonian, at: one-bracket-three-mechanics}
-  - {term: "Liouville's theorem", at: one-bracket-three-mechanics, gloss: "Hamiltonian flow preserves phase-space volume, so closed evolution loses no information"}
-  - {term: momentum as the price of a constraint, at: one-bracket-three-mechanics}
-  - {term: kinematical algebra, at: the-algebra-of-free-motions, gloss: "the Lie algebra of the rotations, translations and boosts that preserve a first law"}
-  - {term: contraction and deformation, at: the-algebra-of-free-motions}
-  - {term: mass as a central extension, at: the-algebra-of-free-motions}
-  - {term: stable algebra, at: the-algebra-of-free-motions, gloss: "Faddeev's criterion: every small deformation of the structure is equivalent to it"}
-  - {term: structural stability, at: the-algebra-of-free-motions, gloss: "every small perturbation of the equations leaves the phase portrait topologically the same"}
-  - {term: passive and active invariance, at: a-computational-physics-must-earn-its-first-law, gloss: "the description does not depend on the observer's frame; against it, every body has a moving twin at each speed"}
-  - {term: carrier of motion, at: a-computational-physics-must-earn-its-first-law, gloss: "after Wolfram's \"carriers of pure motion\": a persistent structure that moves without changing"}
+  - {term: Poisson bracket and Hamiltonian, at: one-bracket-three-mechanics, related: ["Hamiltonian vector field", "generator of a flow"]}
+  - {term: "Liouville's theorem", at: one-bracket-three-mechanics, gloss: "Hamiltonian flow preserves phase-space volume, so closed evolution loses no information", related: ["Landauer's principle", "Kolmogorov complexity"]}
+  - {term: momentum as the price of a constraint, at: one-bracket-three-mechanics, related: ["temperature as a Lagrange multiplier", "shadow price", "state value and action value"]}
+  - {term: kinematical algebra, at: the-algebra-of-free-motions, gloss: "the Lie algebra of the rotations, translations and boosts that preserve a first law", related: ["Lie algebra and Lie bracket"]}
+  - {term: contraction and deformation, at: the-algebra-of-free-motions, related: ["Carroll algebra", "Bargmann algebra"]}
+  - {term: mass as a central extension, at: the-algebra-of-free-motions, related: ["Bargmann algebra"]}
+  - {term: stable algebra, at: the-algebra-of-free-motions, gloss: "Faddeev's criterion: every small deformation of the structure is equivalent to it", related: ["rigid Lie algebra"]}
+  - {term: structural stability, at: the-algebra-of-free-motions, gloss: "every small perturbation of the equations leaves the phase portrait topologically the same", related: ["overdamped limit"]}
+  - {term: passive and active invariance, at: a-computational-physics-must-earn-its-first-law, gloss: "the description does not depend on the observer's frame; against it, every body has a moving twin at each speed", related: ["gap test", "Bombelli–Henson–Sorkin theorem"]}
+  - {term: carrier of motion, at: a-computational-physics-must-earn-its-first-law, gloss: "after Wolfram's \"carriers of pure motion\": a persistent structure that moves without changing", related: ["gap test"]}
   - {term: emergent invariant speed, at: a-computational-physics-must-earn-its-first-law, gloss: "the cap on the carriers of motion, which observers built from them would measure in place of the substrate's own limit"}
 uses:
   - {term: hypergraph rewriting, from: wolfram-physics-quantum-mechanics}

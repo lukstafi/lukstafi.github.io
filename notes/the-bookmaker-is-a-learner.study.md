@@ -8,22 +8,22 @@ requires:
   - {at: is-the-monastery-minded#simulation, for: "simulation by delegation and by artifact, which the last section applies to markets", strength: helpful}
   - {at: is-the-monastery-minded#the-nation-and-residual-integration, for: "the price system as the case that essay left open", strength: helpful}
 introduces:
-  - {term: the relay, at: paying-for-honesty, gloss: "the essay's name for Hanson's market scoring rule: a trader is paid the score of their forecast minus the score of the forecast they replaced"}
-  - {term: liquidity parameter, at: the-bookmaker-is-a-learner, gloss: "the $b$ of the LMSR, which bounds the subsidy at $b\\log n$ and acts as an inverse learning rate"}
-  - {term: regret and no-regret learning, at: the-bookmaker-is-a-learner}
-  - {term: bandit and exploration, at: the-bookmaker-is-a-learner}
-  - {term: mirror descent, at: the-bookmaker-is-a-learner}
-  - {term: constant-function market maker, at: one-bookmaker-four-faces}
+  - {term: the relay, at: paying-for-honesty, gloss: "the essay's name for Hanson's market scoring rule: a trader is paid the score of their forecast minus the score of the forecast they replaced", related: ["liquidity parameter"]}
+  - {term: liquidity parameter, at: the-bookmaker-is-a-learner, gloss: "the $b$ of the LMSR, which bounds the subsidy at $b\\log n$ and acts as an inverse learning rate", related: ["temperature as a Lagrange multiplier", "temperature as an exchange rate", "moving teacher and fixed anchor"]}
+  - {term: regret and no-regret learning, at: the-bookmaker-is-a-learner, related: ["Solomonoff's prior", "logical induction criterion"]}
+  - {term: bandit and exploration, at: the-bookmaker-is-a-learner, related: ["importance ratio", "on-policy and off-policy", "forgetting within a task", "non-dogmatism"]}
+  - {term: mirror descent, at: the-bookmaker-is-a-learner, related: ["exponential tilt", "thermodynamic length"]}
+  - {term: constant-function market maker, at: one-bookmaker-four-faces, related: ["proper scoring rule"]}
   - {term: matching as pricing at zero temperature, at: the-combinatorial-wall, gloss: "as $b\\to0$ the LMSR cost function tends to the house's worst-case liability, which is what matching computes"}
-  - {term: marginal polytope, at: the-combinatorial-wall}
-  - {term: proper scoring rule, at: paying-for-honesty}
+  - {term: marginal polytope, at: the-combinatorial-wall, related: ["mean field and the cavity method", "multicalibration"]}
+  - {term: proper scoring rule, at: paying-for-honesty, related: ["table of adversaries"]}
   - {term: subset betting and pair betting, at: the-combinatorial-wall}
   - {term: market scoring rule, at: paying-for-honesty}
-  - {term: cost-function market and the LMSR, at: one-bookmaker-four-faces}
-  - {term: Hedge as a bookmaker, at: the-bookmaker-is-a-learner}
+  - {term: cost-function market and the LMSR, at: one-bookmaker-four-faces, related: ["exponential tilt", "Gibbs state"]}
+  - {term: Hedge as a bookmaker, at: the-bookmaker-is-a-learner, related: ["wealth of traders as a second learner", "Solomonoff's prior", "forgetting within a task"]}
   - {term: follow the regularized leader, at: the-bookmaker-is-a-learner}
-  - {term: combinatorial wall, at: the-combinatorial-wall, gloss: "over the $n!$ finishing orders of a race, matching pair bets is NP-hard and exact LMSR pricing is #P-hard for both betting languages"}
-  - {term: wealth of traders as a second learner, at: is-the-market-minded, gloss: "across many questions a market reweights its traders through their accumulated money, multiplicatively for those who stake a fixed fraction of their wealth, as Hedge reweights experts"}
+  - {term: combinatorial wall, at: the-combinatorial-wall, gloss: "over the $n!$ finishing orders of a race, matching pair bets is NP-hard and exact LMSR pricing is #P-hard for both betting languages", related: ["logical induction criterion", "Sinkhorn iteration"]}
+  - {term: wealth of traders as a second learner, at: is-the-market-minded, gloss: "across many questions a market reweights its traders through their accumulated money, multiplicatively for those who stake a fixed fraction of their wealth, as Hedge reweights experts", related: ["Solomonoff's prior", "logical induction criterion"]}
 uses:
   - {term: exponential tilt, from: how-does-a-policy-improve}
   - {term: five conditions of mentality, from: minds-by-degrees-draft-v2}

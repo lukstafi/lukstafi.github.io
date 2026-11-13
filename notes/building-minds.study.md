@@ -11,22 +11,22 @@ requires:
   - {at: concept_theories#vehicles-content-and-the-polysemy-provocation, for: "the vehicle-content distinction, used to answer the circularity challenge", strength: helpful}
   - {at: concept_theories#careys-core-knowledge, for: "a first statement of core knowledge and Quinean bootstrapping", strength: helpful}
 introduces:
-  - {term: assimilation and accommodation, at: the-core-idea}
+  - {term: assimilation and accommodation, at: the-core-idea, related: ["schema mechanism"]}
   - {term: equilibration, at: the-core-idea}
-  - {term: violation of expectation, at: the-violation-of-expectation-revolution}
-  - {term: composition problem, at: the-composition-problem, gloss: "how modular core knowledge systems come to exchange information"}
-  - {term: placeholder symbols, at: quinean-bootstrapping}
+  - {term: violation of expectation, at: the-violation-of-expectation-revolution, related: ["synthetic item"]}
+  - {term: composition problem, at: the-composition-problem, gloss: "how modular core knowledge systems come to exchange information", related: ["shared intentionality"]}
+  - {term: placeholder symbols, at: quinean-bootstrapping, related: ["vehicle and content of a concept"]}
   - {term: executive function, at: executive-function-and-conceptual-change}
   - {term: M-capacity, at: executive-function-and-conceptual-change}
-  - {term: relational complexity, at: stages-as-working-memory-growth}
-  - {term: schema mechanism, at: the-radical-constructivist-wager}
+  - {term: relational complexity, at: stages-as-working-memory-growth, related: ["2-simplicial attention"]}
+  - {term: schema mechanism, at: the-radical-constructivist-wager, related: ["theory-theory", "general value function", "GQ(λ)"]}
   - {term: marginal attribution, at: how-the-schema-mechanism-works}
-  - {term: synthetic item, at: how-the-schema-mechanism-works}
+  - {term: synthetic item, at: how-the-schema-mechanism-works, related: ["belief state"]}
   - {term: nativist kernel, at: counterfactuals-and-non-naive-induction, gloss: "the domain-general learning biases that even a constructivist learner must have built in"}
-  - {term: zone of proximal development, at: the-zone-of-proximal-development}
+  - {term: zone of proximal development, at: the-zone-of-proximal-development, related: ["two conditions on a teacher", "self-distillation with privileged context"]}
   - {term: fast mapping, at: fast-mapping-and-the-tomasello-bridge}
-  - {term: shared intentionality, at: fast-mapping-and-the-tomasello-bridge}
-  - {term: secondhand inheritance, at: the-developmental-desideratum, gloss: "a learner trained on text receives the structure that development put into the text, without undergoing the development"}
+  - {term: shared intentionality, at: fast-mapping-and-the-tomasello-bridge, related: ["secondhand inheritance"]}
+  - {term: secondhand inheritance, at: the-developmental-desideratum, gloss: "a learner trained on text receives the structure that development put into the text, without undergoing the development", related: ["primary persona"]}
 uses:
   - {term: core knowledge, from: concept_theories}
   - {term: Quinean bootstrapping, from: concept_theories}

@@ -10,14 +10,14 @@ requires:
   - {at: redness_is_an_experience, for: "the earlier position this essay refines: its objection to property language, and its argument against detachable qualities", strength: helpful}
   - {at: mode_of_being_after_functionalism, for: why the authors avoid the label functionalism, strength: helpful}
 introduces:
-  - {term: identity proposal, at: the-occurrence-is-the-vehicle, gloss: "an experience is a representational vehicle in its constitutive organization, not a further event it supports and not its abstract content"}
-  - {term: content-tracking difference, at: distinctness-without-a-little-inner-picture, gloss: "relations among vehicles mirror relations among what they represent, in the causal structure of their organization; Shepard and Chipman's second-order isomorphism"}
-  - {term: intrinsic character (structural sense), at: distinctness-without-a-little-inner-picture, gloss: "character fixed by structure within the occurrence's boundary, constitutive regulation included; not a categorical nature beneath structure"}
+  - {term: identity proposal, at: the-occurrence-is-the-vehicle, gloss: "an experience is a representational vehicle in its constitutive organization, not a further event it supports and not its abstract content", related: ["grain dependency", "vehicle and content of a concept"]}
+  - {term: content-tracking difference, at: distinctness-without-a-little-inner-picture, gloss: "relations among vehicles mirror relations among what they represent, in the causal structure of their organization; Shepard and Chipman's second-order isomorphism", related: ["iconic representation", "externalist attribution"]}
+  - {term: intrinsic character (structural sense), at: distinctness-without-a-little-inner-picture, gloss: "character fixed by structure within the occurrence's boundary, constitutive regulation included; not a categorical nature beneath structure", related: ["physics as a science and physicalism as a metaphysics"]}
   - {term: availability through character, at: available-through-its-character, gloss: "an occurrence is selected for attention through what distinguishes it, as in a content-addressable memory, without a separate address"}
-  - {term: slip into simplicity, at: the-slip-into-simplicity, gloss: "the unity of access to an occurrence is taken as evidence that what is accessed has no constitutive complexity"}
+  - {term: slip into simplicity, at: the-slip-into-simplicity, gloss: "the unity of access to an occurrence is taken as evidence that what is accessed has no constitutive complexity", related: ["physics as a science and physicalism as a metaphysics", "grain dependency"]}
   - {term: presentation and uptake, at: what-simplicity-would-have-to-be, gloss: "features of a presentation make a difference to what it enables the system to discriminate and do; the uptake is a further characterization of what is presented"}
-  - {term: presence finer than recognition, at: presence-finer-than-recognition, gloss: "the exact character of an experience is undergone at a grain finer than concepts, memory and report can carry"}
-  - {term: fine-grained functionalism, at: what-the-realist-still-owes, gloss: "a label the position could bear if function means the actual causal organization at the relevant grain; the author avoids it"}
+  - {term: presence finer than recognition, at: presence-finer-than-recognition, gloss: "the exact character of an experience is undergone at a grain finer than concepts, memory and report can carry", related: ["overflow beyond the discriminative profile", "knowledge by construction", "grain at which the carrier is corrected"]}
+  - {term: fine-grained functionalism, at: what-the-realist-still-owes, gloss: "a label the position could bear if function means the actual causal organization at the relevant grain; the author avoids it", related: ["three grains", "grain at which the carrier is corrected", "weak and strong unfolding"]}
 uses:
   - {term: experiential occurrence, from: can-two-minds-share-one-experience}
   - {term: acquaintance, from: can-two-minds-share-one-experience}

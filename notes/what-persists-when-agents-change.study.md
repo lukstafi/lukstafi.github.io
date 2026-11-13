@@ -9,12 +9,12 @@ requires:
   - {at: which-agi#what-a-deployment-has-and-what-it-lacks, for: "roles against fillers, and interpreted consolidation as filling a role"}
   - {at: which-world-model, for: "the standard that competence does not locate a mechanism, and the separation of having a map from tracking, predicting, acting and retaining"}
 introduces:
-  - {term: model identity and trajectory identity, at: shared-weights-divergent-trajectories, gloss: "copies of one model given one prompt still make different attempts, and each attempt becomes part of its own later context"}
-  - {term: persistent inquiry with replaceable interpreters, at: when-discoveries-accumulate, gloss: "Wójcik's proposal: explicit records carry an inquiry's history so that it is recoverable across interpreters"}
+  - {term: model identity and trajectory identity, at: shared-weights-divergent-trajectories, gloss: "copies of one model given one prompt still make different attempts, and each attempt becomes part of its own later context", related: ["trajectory and front"]}
+  - {term: persistent inquiry with replaceable interpreters, at: when-discoveries-accumulate, gloss: "Wójcik's proposal: explicit records carry an inquiry's history so that it is recoverable across interpreters", related: ["compiled/interpreted gap", "stale keys"]}
   - {term: transactive memory, at: where-experience-persists, gloss: "a shared repository of trajectories from which other agents retrieve, matched to their current state"}
   - {term: local memory, at: where-experience-persists, gloss: "explicit, role-specific state that gives a shared conversation a different retained interpretation for each participant"}
-  - {term: hosting and judging perspectives, at: representations-in-use, gloss: "representing two traditions in shared machinery against assessing their claims well"}
-  - {term: representational conjecture, at: what-should-persist, gloss: "that training insulated within a trajectory reaches representational spaces which shared training and contextual adaptation do not"}
+  - {term: hosting and judging perspectives, at: representations-in-use, gloss: "representing two traditions in shared machinery against assessing their claims well", related: ["possessing versus using a representation", "primary persona"]}
+  - {term: representational conjecture, at: what-should-persist, gloss: "that training insulated within a trajectory reaches representational spaces which shared training and contextual adaptation do not", related: ["trajectory and front", "deflationary and substantive answers about consolidation"]}
 uses:
   - {term: "process, deployment and lineage", from: which-agi}
   - {term: cog view, from: which-agi}

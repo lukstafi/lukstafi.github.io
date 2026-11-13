@@ -9,14 +9,14 @@ requires:
   - {at: mode_of_being_after_functionalism, for: the dynamical commitments of the regulatory account, strength: helpful}
   - {at: wolfram-physics-quantum-mechanics, for: physical regularities as emergent for observers, strength: helpful}
 introduces:
-  - {term: ontology ladder, at: the-agreement-behind-the-stalemate, gloss: "actual computation, minded understanding, phenomenal occurrence: three demands, each short of the next"}
-  - {term: worldliness, at: from-the-multiverse-to-worldliness, gloss: "a subject and its experiences are constituted by the actual processes that sustain them, not by an abstract specification realized across worlds"}
+  - {term: ontology ladder, at: the-agreement-behind-the-stalemate, gloss: "actual computation, minded understanding, phenomenal occurrence: three demands, each short of the next", related: ["esse"]}
+  - {term: worldliness, at: from-the-multiverse-to-worldliness, gloss: "a subject and its experiences are constituted by the actual processes that sustain them, not by an abstract specification realized across worlds", related: ["esse", "Ruliad and rulial space", "constructive criterion"]}
   - {term: experiential occurrence, at: what-the-identity-claim-commits-us-to, gloss: "a representational vehicle sustained in a particular mode of content-sensitive regulation; the proposal identifies an experience with it"}
-  - {term: acquaintance, at: what-the-identity-claim-commits-us-to, gloss: "the actual regulatory involvement with representational vehicles, which requires the vehicle to exist"}
-  - {term: epistemic regulation, at: what-the-identity-claim-commits-us-to, gloss: "regulation that addresses content through its vehicles, responsive to what they carry and how they function in the cognitive economy"}
-  - {term: center of epistemic gravity, at: one-occurrence-in-two-cognitive-economies, gloss: "the organization around which epistemic regulation coheres, named without installing an observer; adapted from Dennett's center of narrative gravity"}
-  - {term: shared occurrence, at: one-occurrence-in-two-cognitive-economies, gloss: "one experiential occurrence jointly sustained by the compatible regulation of two distinct subjects"}
-  - {term: metastable overlap, at: metastability-and-larger-subjects, gloss: "sharing sustained over the phenomenal now by centers whose own dynamics can pull them apart"}
+  - {term: acquaintance, at: what-the-identity-claim-commits-us-to, gloss: "the actual regulatory involvement with representational vehicles, which requires the vehicle to exist", related: ["content-sensitive regulation", "availability through character", "tracking, assessment and intervention"]}
+  - {term: epistemic regulation, at: what-the-identity-claim-commits-us-to, gloss: "regulation that addresses content through its vehicles, responsive to what they carry and how they function in the cognitive economy", related: ["content-sensitive regulation", "tracking, assessment and intervention"]}
+  - {term: center of epistemic gravity, at: one-occurrence-in-two-cognitive-economies, gloss: "the organization around which epistemic regulation coheres, named without installing an observer; adapted from Dennett's center of narrative gravity", related: ["perspectival subjectivity"]}
+  - {term: shared occurrence, at: one-occurrence-in-two-cognitive-economies, gloss: "one experiential occurrence jointly sustained by the compatible regulation of two distinct subjects", related: ["criterion of belonging", "role-process", "reality measure", "field of its own"]}
+  - {term: metastable overlap, at: metastability-and-larger-subjects, gloss: "sharing sustained over the phenomenal now by centers whose own dynamics can pull them apart", related: ["field of its own", "reach, latency and bandwidth"]}
 uses:
   - {term: five conditions of mentality, from: minds-by-degrees-draft-v2}
 ---

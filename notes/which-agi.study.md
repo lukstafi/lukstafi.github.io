@@ -13,15 +13,15 @@ requires:
   - {at: existential-optimism-alignment, for: the constructivist and Parfitian routes past orthogonality, strength: helpful}
   - {at: indexical-unity-revised, for: the integration axis on which inner life turns, strength: helpful}
 introduces:
-  - {term: "process, deployment and lineage", at: the-question, gloss: "the three referents of \"AGI\": a network in its inference loop, the agent built around it, and the succession of such agents that a lab, its users and its retraining pipeline constitute"}
-  - {term: the ladder, at: the-word-moved, gloss: "six dimensions along which a system was successively required to be unrestricted: domain, modality, horizon, memory, autonomy, ends"}
+  - {term: "process, deployment and lineage", at: the-question, gloss: "the three referents of \"AGI\": a network in its inference loop, the agent built around it, and the succession of such agents that a lab, its users and its retraining pipeline constitute", related: ["wealth of traders as a second learner"]}
+  - {term: the ladder, at: the-word-moved, gloss: "six dimensions along which a system was successively required to be unrestricted: domain, modality, horizon, memory, autonomy, ends", related: ["graded mentality"]}
   - {term: maximal pole, at: the-word-moved, gloss: "the position that the ladder has no natural break between intelligence and agency"}
-  - {term: cog view, at: roles-not-parts, gloss: "general intelligence as coverage of a set of functional roles, each of which may be absent, underpowered or filled outside the network"}
+  - {term: cog view, at: roles-not-parts, gloss: "general intelligence as coverage of a set of functional roles, each of which may be absent, underpowered or filled outside the network", related: ["cognitive architecture", "five conditions of mentality"]}
   - {term: profile, at: roles-not-parts, gloss: "an assignment of fillers to the functional roles"}
-  - {term: efficacy-matching, at: roles-not-parts, gloss: "two profiles attain comparable general capability without being behaviorally equivalent"}
-  - {term: dreaming phase, at: what-a-deployment-has-and-what-it-lacks, gloss: "a consolidation pass in which the same model re-reads, merges and prunes its memory files after activity"}
-  - {term: compiled/interpreted gap, at: what-a-deployment-has-and-what-it-lacks, gloss: "a skill followed as written instructions against a skill consolidated into fluent, implicit, composable competence"}
-  - {term: trajectory and front, at: the-trajectory-and-the-front, gloss: "a single agent's cumulative, path-dependent learning against what the lineage as a whole has absorbed"}
+  - {term: efficacy-matching, at: roles-not-parts, gloss: "two profiles attain comparable general capability without being behaviorally equivalent", related: ["internality"]}
+  - {term: dreaming phase, at: what-a-deployment-has-and-what-it-lacks, gloss: "a consolidation pass in which the same model re-reads, merges and prunes its memory files after activity", related: ["cognitive cycle", "Complementary Learning Systems", "ladder of stores"]}
+  - {term: compiled/interpreted gap, at: what-a-deployment-has-and-what-it-lacks, gloss: "a skill followed as written instructions against a skill consolidated into fluent, implicit, composable competence", related: ["chunking", "amortization argument for weights", "deflationary and substantive answers about consolidation"]}
+  - {term: trajectory and front, at: the-trajectory-and-the-front, gloss: "a single agent's cumulative, path-dependent learning against what the lineage as a whole has absorbed", related: ["secondhand inheritance"]}
   - {term: self-sustainment, at: three-grains-three-thresholds, gloss: "the lineage produces the data, research and capital for its own next generation"}
 ---
 

@@ -17,14 +17,14 @@ requires:
 introduces:
   - {term: pointer content and descriptive content, at: what-brown-requires-us-to-distinguish, gloss: "Brown's terms: a HOROR's descriptive content determines what is experienced, and its pointer content targets particular states without appearing in experience"}
   - {term: externalist attribution, at: a-broadcast-into-another-universe, gloss: "attributing an experience to a source while making its phenomenal status depend on downstream uptake that cannot affect the source"}
-  - {term: broadcast that returns, at: a-broadcast-into-another-universe, gloss: "broadcast that gathers information from which corrections come back to the vehicles; the outbound half of a regulatory loop"}
-  - {term: "tracking, assessment and intervention", at: what-experiential-regulation-adds-to-minded-regulation, gloss: "the three aspects of the coordinated regulation conjectured to constitute an experiential episode"}
-  - {term: binding regulation, at: what-experiential-regulation-adds-to-minded-regulation, gloss: "regulation that holds contents together in one field of co-present items; a candidate for what the experiential mode adds to minded regulation"}
-  - {term: "local, global and hybrid variants", at: what-experiential-regulation-adds-to-minded-regulation, gloss: "corrections computed within a region, from information only broadcast supplies, or locally for character and globally for unity"}
-  - {term: persistent carrier, at: implementation-without-indifference, gloss: "something individuated by its causal structure whose later states receive the corrections computed from assessing its earlier ones"}
-  - {term: grain at which the carrier is corrected, at: implementation-without-indifference, gloss: "fine enough to individuate the regulated vehicles, coarse enough to abstract from where their components sit"}
-  - {term: criterion of belonging, at: belonging, gloss: "an occurrence belongs to the subject whose regulation partly constitutes it"}
-  - {term: perspectival subjectivity, at: belonging, gloss: "revised sense: the unity and centering of a binding economy, with no represented viewer and no self-model"}
+  - {term: broadcast that returns, at: a-broadcast-into-another-universe, gloss: "broadcast that gathers information from which corrections come back to the vehicles; the outbound half of a regulatory loop", related: ["global broadcast", "reach, latency and bandwidth"]}
+  - {term: "tracking, assessment and intervention", at: what-experiential-regulation-adds-to-minded-regulation, gloss: "the three aspects of the coordinated regulation conjectured to constitute an experiential episode", related: ["role-process"]}
+  - {term: binding regulation, at: what-experiential-regulation-adds-to-minded-regulation, gloss: "regulation that holds contents together in one field of co-present items; a candidate for what the experiential mode adds to minded regulation", related: ["field of its own", "truth-tracking and truth-bearers"]}
+  - {term: "local, global and hybrid variants", at: what-experiential-regulation-adds-to-minded-regulation, gloss: "corrections computed within a region, from information only broadcast supplies, or locally for character and globally for unity", related: ["global broadcast", "role-process"]}
+  - {term: persistent carrier, at: implementation-without-indifference, gloss: "something individuated by its causal structure whose later states receive the corrections computed from assessing its earlier ones", related: ["residual stream as blackboard", "outer loop", "store over depth"]}
+  - {term: grain at which the carrier is corrected, at: implementation-without-indifference, gloss: "fine enough to individuate the regulated vehicles, coarse enough to abstract from where their components sit", related: ["three grains"]}
+  - {term: criterion of belonging, at: belonging, gloss: "an occurrence belongs to the subject whose regulation partly constitutes it", related: ["role-process"]}
+  - {term: perspectival subjectivity, at: belonging, gloss: "revised sense: the unity and centering of a binding economy, with no represented viewer and no self-model", related: ["primary persona"]}
   - {term: "for-me-ness, me-ness and mineness", at: belonging, gloss: "Guillot's distinctions: an experience's presence to its subject, awareness of oneself, and awareness of an experience as one's own"}
 uses:
   - {term: content-sensitive regulation, from: presence-and-actuality}

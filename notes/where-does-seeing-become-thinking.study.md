@@ -8,13 +8,13 @@ requires:
   - {at: concept_theories#the-format-question-crystallized-block-and-quilty-dunn, for: "Block's border by format and Quilty-Dunn's perceptual pluralism"}
   - {at: concept_theories#synthesis-questions-for-artificial-minds, for: "concepts characterized by role so that format can be investigated, and the closing conjecture that perceptual engagement calibrates abstract reasoning", strength: helpful}
 introduces:
-  - {term: "source, format and operations", at: what-visual-reasoning-requires, gloss: "where information comes from, how it is represented internally, and which operations are available over the representation; none determines the others"}
-  - {term: iconic representation, at: which-perceptioncognition-boundary, gloss: "Block's sense, stated more exactly than in the concept survey: analog tracking and mirroring, in which degrees of difference in what is represented correspond to degrees of difference in the representation"}
-  - {term: three levels of evidence, at: when-geometry-does-computational-work, gloss: "recovering a variable from internal states, showing by intervention that it affects the answer, and explaining the transformation the model performs"}
-  - {term: recoverability and learned operation, at: from-representations-to-reliable-operations, gloss: "information that could in principle answer a question, against a procedure that makes it available at a particular cost and reliability"}
-  - {term: efference copy, at: what-architectural-differences-change}
-  - {term: epistemic action, at: thinking-with-the-environment, gloss: "Kirsh and Maglio's term for a move that makes information easier to obtain or compute, as against one that directly advances the objective"}
-  - {term: revisable abstraction, at: thinking-with-the-environment, gloss: "keeping access to the source and revising an abstraction when the task changes"}
+  - {term: "source, format and operations", at: what-visual-reasoning-requires, gloss: "where information comes from, how it is represented internally, and which operations are available over the representation; none determines the others", related: ["content, format, origin and dynamics", "five capacities of a world model"]}
+  - {term: iconic representation, at: which-perceptioncognition-boundary, gloss: "Block's sense, stated more exactly than in the concept survey: analog tracking and mirroring, in which degrees of difference in what is represented correspond to degrees of difference in the representation", related: ["iconic and discursive formats"]}
+  - {term: three levels of evidence, at: when-geometry-does-computational-work, gloss: "recovering a variable from internal states, showing by intervention that it affects the answer, and explaining the transformation the model performs", related: ["possessing versus using a representation"]}
+  - {term: recoverability and learned operation, at: from-representations-to-reliable-operations, gloss: "information that could in principle answer a question, against a procedure that makes it available at a particular cost and reliability", related: ["possessing versus using a representation", "usable information", "cost of elicitation"]}
+  - {term: efference copy, at: what-architectural-differences-change, related: ["transition model"]}
+  - {term: epistemic action, at: thinking-with-the-environment, gloss: "Kirsh and Maglio's term for a move that makes information easier to obtain or compute, as against one that directly advances the objective", related: ["process, deployment and lineage", "meta-epistemic grounding"]}
+  - {term: revisable abstraction, at: thinking-with-the-environment, gloss: "keeping access to the source and revising an abstraction when the task changes", related: ["three achievements of an open-ended reasoner", "JEPA"]}
 uses:
   - {term: "process, deployment and lineage", from: which-agi}
   - {term: possessing versus using a representation, from: which-world-model}

@@ -9,12 +9,12 @@ requires:
 introduces:
   - {term: level and trajectory claims, gloss: "\"this system falls short\" reports a level of performance; \"this approach is a dead end\" is a claim about a trend, and needs a metric, its movement across systems, and an expectation"}
   - {term: possessing versus using a representation, gloss: "a representation is a model when its organization supports inferences about the represented system, and explanatory when the agent uses those inferences; competence shows neither where the structure sits nor how it is used"}
-  - {term: transition model, gloss: "the control sense of \"world model\": a predictor of the next state from an estimated state and a candidate action"}
-  - {term: five capacities of a world model, gloss: "representing structure, tracking the current situation, predicting consequences, using a model, and maintaining a model; they vary independently"}
+  - {term: transition model, gloss: "the control sense of \"world model\": a predictor of the next state from an estimated state and a candidate action", related: ["three jobs of a world model"]}
+  - {term: five capacities of a world model, gloss: "representing structure, tracking the current situation, predicting consequences, using a model, and maintaining a model; they vary independently", related: ["three jobs of a world model"]}
   - {term: goal compass, gloss: "Beckmann, Queloz and Freitas's name for a directional representation, separate from the map, that steers travel toward a distant goal"}
-  - {term: belief state, gloss: "in the NextLat paper's sense: a hidden state sufficient for predicting the future sequence"}
-  - {term: JEPA, gloss: "Joint Embedding Predictive Architecture: predict representations of targets and not the targets themselves"}
-  - {term: "Systems A, B and M", gloss: "Dupoux, LeCun and Malik's division: learning from observation, learning through action, and the control of their interaction"}
+  - {term: belief state, gloss: "in the NextLat paper's sense: a hidden state sufficient for predicting the future sequence", related: ["Markov state"]}
+  - {term: JEPA, gloss: "Joint Embedding Predictive Architecture: predict representations of targets and not the targets themselves", related: ["three jobs of a world model"]}
+  - {term: "Systems A, B and M", gloss: "Dupoux, LeCun and Malik's division: learning from observation, learning through action, and the control of their interaction", related: ["compiled/interpreted gap", "self-sustainment", "pretraining, mid-training, SFT, RL, distillation and drafter training"]}
   - {term: cost of elicitation, gloss: "the examples, additional training, search, tool calls and experimenter-supplied information needed to bring a capacity out"}
 uses:
   - {term: "process, deployment and lineage", from: which-agi}

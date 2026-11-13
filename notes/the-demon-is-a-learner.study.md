@@ -11,18 +11,18 @@ requires:
   - {at: who-teaches-the-weights, for: "a learner that narrows its behavior, and the Fisher information as the divergence a small move causes", strength: helpful}
   - {at: how-does-a-policy-improve, for: "the improved policy as a Gibbs tilt of a prior", strength: helpful}
 introduces:
-  - {term: overdamped limit, at: aristotle-was-right-about-a-regime}
-  - {term: Polyak–Łojasiewicz condition, at: aristotle-was-right-about-a-regime}
-  - {term: three geometries of gradient flow, at: aristotle-was-right-about-a-regime, gloss: "weights under constant drag, densities under the Wasserstein distance, and probabilities under the Fisher drag; in each, velocity follows force"}
-  - {term: Boltzmann's assumption, at: a-gas-of-balls, gloss: "two balls about to collide are independent"}
-  - {term: coarse graining, at: a-gas-of-balls}
-  - {term: Landauer's principle, at: what-forgetting-costs}
-  - {term: Kolmogorov complexity, at: the-entropy-of-one-state}
-  - {term: physical entropy, at: the-entropy-of-one-state, gloss: "Zurek's sum of the missing information and the algorithmic information content of the record"}
+  - {term: overdamped limit, at: aristotle-was-right-about-a-regime, related: ["Aristotle's first and second law", "fluctuation–dissipation relation", "structural stability"]}
+  - {term: Polyak–Łojasiewicz condition, at: aristotle-was-right-about-a-regime, related: ["log-Sobolev inequality"]}
+  - {term: three geometries of gradient flow, at: aristotle-was-right-about-a-regime, gloss: "weights under constant drag, densities under the Wasserstein distance, and probabilities under the Fisher drag; in each, velocity follows force", related: ["thermodynamic length", "free energy"]}
+  - {term: Boltzmann's assumption, at: a-gas-of-balls, gloss: "two balls about to collide are independent", related: ["presumption of independence", "mean field and the cavity method"]}
+  - {term: coarse graining, at: a-gas-of-balls, related: ["macrostate and microstate", "total correlation", "physics as a coarse-graining", "bounded and persistent observer"]}
+  - {term: Landauer's principle, at: what-forgetting-costs, related: ["entropy production", "nonequilibrium free energy", "forgetting within a task"]}
+  - {term: Kolmogorov complexity, at: the-entropy-of-one-state, related: ["Solomonoff's prior"]}
+  - {term: physical entropy, at: the-entropy-of-one-state, gloss: "Zurek's sum of the missing information and the algorithmic information content of the record", related: ["Landauer's principle"]}
   - {term: score, at: the-demon-is-a-learner}
-  - {term: relevant and irrelevant memory, at: the-demon-is-a-learner}
-  - {term: macrostate as predictor, at: what-a-bounded-observer-can-compress, gloss: "a state that predicts its own future; what a predictor needs to keep"}
-  - {term: Levin search, at: what-a-bounded-observer-can-compress}
+  - {term: relevant and irrelevant memory, at: the-demon-is-a-learner, related: ["information bottleneck", "macrostate as predictor"]}
+  - {term: macrostate as predictor, at: what-a-bounded-observer-can-compress, gloss: "a state that predicts its own future; what a predictor needs to keep", related: ["reason, price and defeater", "belief state", "macrostate and microstate"]}
+  - {term: Levin search, at: what-a-bounded-observer-can-compress, related: ["Solomonoff's prior"]}
 uses:
   - {term: "Aristotle's first and second law", from: the-standard-of-motion}
   - {term: "Liouville's theorem", from: the-standard-of-motion}

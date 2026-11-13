@@ -9,18 +9,18 @@ requires:
   - {at: what-should-a-program-inherit#alphaevolve-variation-selection-and-what-survives, for: "search in which a language model proposes edits and an automated evaluator decides which survive", strength: helpful}
   - {at: what-should-a-program-inherit#babble-when-a-common-pattern-becomes-a-useful-function, for: "library learning, the case where acceptance is compression", strength: helpful}
 introduces:
-  - {term: seed and stalk, at: merges-that-pay}
-  - {term: two-part code, at: merges-that-pay}
+  - {term: seed and stalk, at: merges-that-pay, related: ["role tuple"]}
+  - {term: two-part code, at: merges-that-pay, related: ["library learning"]}
   - {term: best-parse code, at: merges-that-pay, gloss: "coding a sentence by its single best parse and then the words given the parse, at a cost of $-\\log P(t^*\\mid x)$ bits above the best the grammar allows"}
   - {term: three-part code and realization channel, at: text-is-not-the-world, gloss: "ontology, facts given the ontology, and text given the facts and a lexicon; the last part is the channel, which should know syntax, word choice and paraphrase and nothing about the world"}
-  - {term: reporting policy, at: who-says-so, gloss: "the probability that a source mentions a fact, given the fact, the source and the audience it writes for"}
+  - {term: reporting policy, at: who-says-so, gloss: "the probability that a source mentions a fact, given the fact, the source and the audience it writes for", related: ["provenance judgment"]}
   - {term: common ground, at: who-says-so}
   - {term: role tuple, at: two-primitives, gloss: "$\\langle A,R,S,B\\rangle\\equiv\\langle B,S,R,A\\rangle$: $A$ plays role $R$ toward $B$, which plays role $S$"}
   - {term: two-way reading, at: two-primitives, gloss: "an asserted class-level tuple claims that every $A$ stands in the relation to some $B$ and every $B$ stands in it to some $A$"}
   - {term: image, at: two-primitives}
   - {term: distributive IS-A, at: two-primitives, gloss: "IS-A says only what holds of every member, so a fact about a kind needs a singular term for the kind"}
-  - {term: provenance judgment, at: one-judgment, gloss: "$\\mathrm{Prov}(T,P)$, source $P$ asserts $T$: the only form of judgment, never itself a term"}
-  - {term: Self and idealized sources, at: one-judgment, gloss: "the system as the last judge, and contexts such as a novel's canon treated as sources; only these are closed under inference"}
+  - {term: provenance judgment, at: one-judgment, gloss: "$\\mathrm{Prov}(T,P)$, source $P$ asserts $T$: the only form of judgment, never itself a term", related: ["table of adversaries"]}
+  - {term: Self and idealized sources, at: one-judgment, gloss: "the system as the last judge, and contexts such as a novel's canon treated as sources; only these are closed under inference", related: ["gaps and gluts"]}
 uses:
   - {term: adaptive logic, from: presumed-normal}
   - {term: bandit and exploration, from: the-bookmaker-is-a-learner}

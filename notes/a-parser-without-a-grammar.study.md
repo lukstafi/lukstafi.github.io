@@ -10,13 +10,13 @@ requires:
   - {at: the-given-and-the-found#depth-and-breadth-are-two-knobs-not-one, for: "depth and breadth as separate instruments of test-time computation, and the limit cycle"}
   - {at: the-given-and-the-found#the-boundary-amortizing-search-versus-amortizing-discovery, for: "the line between amortizing search under a given condition and discovering the condition"}
 introduces:
-  - {term: formalisms as coordinates, at: the-wrong-question, gloss: "each grammatical tradition fixes one axis of design, and the architecture's position on each axis is read off; none is a candidate for being the Transformer's grammar"}
-  - {term: Merge-without-Move, at: monotonicity-hpsg-and-the-rewrite-grammar-at-the-far-pole, gloss: "combination that only adds, with no operation that relocates or deletes"}
+  - {term: formalisms as coordinates, at: the-wrong-question, gloss: "each grammatical tradition fixes one axis of design, and the architecture's position on each axis is read off; none is a candidate for being the Transformer's grammar", related: ["un-bundling", "parser without a grammar"]}
+  - {term: Merge-without-Move, at: monotonicity-hpsg-and-the-rewrite-grammar-at-the-far-pole, gloss: "combination that only adds, with no operation that relocates or deletes", related: ["Merge conjecture"]}
   - {term: un-bundling, at: directionality-ccg-and-the-head-the-join-throws-away, gloss: "the architecture runs as separate mechanisms the design choices that a formalism's single combinatory operation fuses"}
   - {term: collapse of strata, at: strata-lfg-and-the-conflation-of-position-with-function, gloss: "positional and functional information superimposed in one residual stream"}
   - {term: grammar as process, at: time-dynamic-syntax-and-the-grammar-that-is-a-parser}
-  - {term: lexicon-grammar continuum as feature continuum, at: inventory-construction-grammar-and-what-lives-in-the-weights}
-  - {term: operator/operand split, at: topology-word-grammar-and-the-grammar-that-is-an-activation-network, gloss: "abstractions live in the weights, which act on the activations and carry none; activation rides only token positions"}
+  - {term: lexicon-grammar continuum as feature continuum, at: inventory-construction-grammar-and-what-lives-in-the-weights, related: ["superposition", "stores written in training and stores written while reading"]}
+  - {term: operator/operand split, at: topology-word-grammar-and-the-grammar-that-is-an-activation-network, gloss: "abstractions live in the weights, which act on the activations and carry none; activation rides only token positions", related: ["stores written in training and stores written while reading"]}
   - {term: override as additive cancellation, at: topology-word-grammar-and-the-grammar-that-is-an-activation-network}
   - {term: parser without a grammar, at: the-shape-of-the-answer, gloss: "structure without a discrete, stored, declarative grammar object"}
 uses:

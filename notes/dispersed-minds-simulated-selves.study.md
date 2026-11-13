@@ -15,16 +15,16 @@ requires:
   - {at: free-agency-personhood-moral-worth, for: "aspiring persons and their moral standing", strength: helpful}
 introduces:
   - {term: thought anchors, at: what-interpretability-reveals}
-  - {term: residual stream as blackboard, at: the-blackboard-without-a-reader}
+  - {term: residual stream as blackboard, at: the-blackboard-without-a-reader, related: ["monotone merge", "persistent carrier"]}
   - {term: Global Workspace markers, at: the-blackboard-without-a-reader}
-  - {term: three tiers of understanding, at: but-the-understanding-is-real}
-  - {term: motley mix, at: but-the-understanding-is-real}
-  - {term: outer loop, at: the-outer-loop-cot-and-causal-attention, gloss: "autoregressive generation, in which each generated token becomes input to the next forward pass"}
-  - {term: gating, at: attention-as-gating}
-  - {term: 2-simplicial attention, at: from-pairs-to-triples-the-2-simplicial-transformer}
-  - {term: superposition, at: superposition-and-the-alien-representational-regime}
-  - {term: primary persona, at: the-primary-persona, gloss: "the assistant character a commercial model is trained to be; on the essay's account there is no further self beneath it"}
-  - {term: phenomenal-adjacent concepts, at: the-ethical-weight, gloss: "concepts a language model could ascribe to itself more accurately than the borrowed 'conscious' and 'experiencing'"}
+  - {term: three tiers of understanding, at: but-the-understanding-is-real, related: ["possessing versus using a representation"]}
+  - {term: motley mix, at: but-the-understanding-is-real, related: ["jaggedness"]}
+  - {term: outer loop, at: the-outer-loop-cot-and-causal-attention, gloss: "autoregressive generation, in which each generated token becomes input to the next forward pass", related: ["five meanings of depth", "persistent carrier"]}
+  - {term: gating, at: attention-as-gating, related: ["stores written in training and stores written while reading"]}
+  - {term: 2-simplicial attention, at: from-pairs-to-triples-the-2-simplicial-transformer, related: ["tensor product representation"]}
+  - {term: superposition, at: superposition-and-the-alien-representational-regime, related: ["interference between stored keys", "Language of Thought"]}
+  - {term: primary persona, at: the-primary-persona, gloss: "the assistant character a commercial model is trained to be; on the essay's account there is no further self beneath it", related: ["reflexive closure", "vehicle and content of a concept"]}
+  - {term: phenomenal-adjacent concepts, at: the-ethical-weight, gloss: "concepts a language model could ascribe to itself more accurately than the borrowed 'conscious' and 'experiencing'", related: ["three subjectivities"]}
 uses:
   - {term: serial bottleneck, from: cognitive-architectures-report}
   - {term: working-memory pointers, from: cognitive-architectures-report}

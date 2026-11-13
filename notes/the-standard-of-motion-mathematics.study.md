@@ -11,14 +11,14 @@ introduces:
   - {term: canonical form and connection form, at: bundles-and-connections-in-brief}
   - {term: Newton–Cartan space-time, at: hellers-ladder-in-frame-bundle-terms}
   - {term: generator of a flow, at: one-bracket-three-mechanics}
-  - {term: Hamiltonian vector field, at: one-bracket-three-mechanics}
+  - {term: Hamiltonian vector field, at: one-bracket-three-mechanics, related: ["overdamped limit"]}
   - {term: Lie algebra and Lie bracket, at: kinematical-lie-algebras}
   - {term: Bargmann algebra, at: the-galilean-limit-and-the-mass}
   - {term: Carroll algebra, at: the-family-of-contractions}
   - {term: rigid Lie algebra, at: stability, gloss: "one whose every small deformation is a change of basis: its second cohomology with coefficients in itself vanishes"}
-  - {term: Morse–Smale flow, at: stability}
-  - {term: gap test, at: moving-patterns-in-a-cellular-automaton, gloss: "neighboring speeds must be realized by nearly the same pattern, at the scale an observer resolves"}
-  - {term: Bombelli–Henson–Sorkin theorem, at: the-bombellihensonsorkin-theorem}
+  - {term: Morse–Smale flow, at: stability, related: ["Polyak–Łojasiewicz condition"]}
+  - {term: gap test, at: moving-patterns-in-a-cellular-automaton, gloss: "neighboring speeds must be realized by nearly the same pattern, at the scale an observer resolves", related: ["hypergraph rewriting"]}
+  - {term: Bombelli–Henson–Sorkin theorem, at: the-bombellihensonsorkin-theorem, related: ["causal graph"]}
 uses:
   - {term: standard of motion, from: the-standard-of-motion}
   - {term: frame bundle and teleparallelism, from: the-standard-of-motion}

@@ -9,16 +9,16 @@ requires:
   - {at: psychofeedback-mirror, for: "the grammar of cognitive self-report presupposes a centered, phenomenally unified mind", strength: helpful}
   - {at: apologia-v3, for: "the risk that an LLM builds a plausible world around what its user wants", strength: helpful}
 introduces:
-  - {term: organ of perception, at: the-organ-of-perception, gloss: "Hirshfield's thesis that a poem discovers what is imperceptible without it"}
-  - {term: generative constraint, at: the-organ-of-perception, gloss: "a formal restriction, such as sound-patterning, that makes otherwise unlikely associations discoverable"}
-  - {term: renewable surprise, at: surprise-as-the-signal-of-discovery, gloss: "Hirshfield's term for discovery that cannot be cached and must be re-enacted at each reading"}
+  - {term: organ of perception, at: the-organ-of-perception, gloss: "Hirshfield's thesis that a poem discovers what is imperceptible without it", related: ["operations of discovery"]}
+  - {term: generative constraint, at: the-organ-of-perception, gloss: "a formal restriction, such as sound-patterning, that makes otherwise unlikely associations discoverable", related: ["forced adjacency", "register collision"]}
+  - {term: renewable surprise, at: surprise-as-the-signal-of-discovery, gloss: "Hirshfield's term for discovery that cannot be cached and must be re-enacted at each reading", related: ["precision through compression"]}
   - {term: fake thinking, at: attunement-the-missing-mode, gloss: "Carlsmith's term for the form of cognition without its function"}
   - {term: attunement, at: attunement-the-missing-mode, gloss: "Carlsmith's term for meaning-laden receptivity to the world"}
   - {term: forced adjacency, at: what-poetry-does-four-operations, gloss: "placing together things that analytic thinking must keep separate"}
   - {term: thinking in negative space, at: what-poetry-does-four-operations, gloss: "letting what is not said carry the content"}
   - {term: precision through compression, at: what-poetry-does-four-operations, gloss: "a density that would become less precise if unpacked"}
   - {term: register collision, at: what-poetry-does-four-operations, gloss: "unlike vocabularies meeting in a small textual space"}
-  - {term: meaning without the mouth, at: attunement-and-the-age-of-ai, gloss: "an LLM's access to what a poem says without its sound, rhythm and breath as vehicle"}
+  - {term: meaning without the mouth, at: attunement-and-the-age-of-ai, gloss: "an LLM's access to what a poem says without its sound, rhythm and breath as vehicle", related: ["vehicle and content of a concept", "meta-epistemic grounding"]}
 ---
 
 The answers state what the essay argues and whose view each claim is. The sections on LLMs are written in Claude's first person, and the last questions ask what they leave undetermined.

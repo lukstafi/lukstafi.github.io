@@ -7,10 +7,10 @@ requires:
   - {at: which-agi#three-grains-three-thresholds, for: "the difference between a model and a deployment, which the essay applies to its own collaboration", strength: helpful}
   - {at: what-breadth-reaches, for: "an earlier approach to Deutsch through the question of knowledge creation", strength: helpful}
 introduces:
-  - {term: "deduction, generalization and abduction", at: peirces-three-operations, gloss: "Peirce's three operations as the thesis uses them: work out consequences, find a common description of cases, supply the missing condition"}
+  - {term: "deduction, generalization and abduction", at: peirces-three-operations, gloss: "Peirce's three operations as the thesis uses them: work out consequences, find a common description of cases, supply the missing condition", related: ["anti-unification", "joint constraint abduction", "amortizing search versus amortizing discovery"]}
   - {term: precondition and postcondition, at: reading-a-contract-out-of-the-code}
-  - {term: joint constraint abduction, at: finding-an-assumption-that-survives-every-case, gloss: "find one condition $A$ with $D_i\\land A\\models C_i$ for every case $i$, each $D_i\\land A$ consistent"}
-  - {term: semidecision procedure, at: the-open-question-is-whether-we-can-always-stop}
+  - {term: joint constraint abduction, at: finding-an-assumption-that-survives-every-case, gloss: "find one condition $A$ with $D_i\\land A\\models C_i$ for every case $i$, each $D_i\\land A$ consistent", related: ["anti-unification"]}
+  - {term: semidecision procedure, at: the-open-question-is-whether-we-can-always-stop, related: ["Levin search"]}
   - {term: constant-test fragment, at: where-the-difficulty-first-appears, gloss: "premises only test variables against the two constants, and conclusions contain no constructors"}
   - {term: anti-unification, at: can-generalization-tell-us-when-to-stop}
   - {term: three achievements of an open-ended reasoner, at: when-the-framing-itself-becomes-a-hypothesis, gloss: "generating admissible hypotheses, selecting and testing them under a budget, revising the framing"}

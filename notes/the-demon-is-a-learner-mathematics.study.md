@@ -10,21 +10,21 @@ requires:
   - {at: how-does-a-policy-improve, for: "Lagrange multipliers as prices, and the tilt of a prior", strength: helpful}
 introduces:
   - {term: macrostate and microstate, at: entropy-counts}
-  - {term: temperature as an exchange rate, at: temperature-is-an-exchange-rate, gloss: "the energy that buys one nat of entropy"}
-  - {term: Gibbs state, at: the-gibbs-state}
-  - {term: free energy, at: free-energy}
+  - {term: temperature as an exchange rate, at: temperature-is-an-exchange-rate, gloss: "the energy that buys one nat of entropy", related: ["temperature as a Lagrange multiplier"]}
+  - {term: Gibbs state, at: the-gibbs-state, related: ["exponential tilt", "temperature as a Lagrange multiplier"]}
+  - {term: free energy, at: free-energy, related: ["E-step and M-step of policy improvement"]}
   - {term: Stosszahlansatz, at: counting-collisions}
   - {term: total correlation, at: the-entropy-that-rises-is-a-marginal}
-  - {term: H-theorem for a Markov chain, at: an-h-theorem-for-any-markov-chain}
+  - {term: H-theorem for a Markov chain, at: an-h-theorem-for-any-markov-chain, related: ["score", "usable information"]}
   - {term: fluctuation–dissipation relation, at: friction-from-a-hamiltonian-bath}
   - {term: entropy production, at: with-thermal-noise}
   - {term: log-Sobolev inequality, at: with-thermal-noise}
-  - {term: nonequilibrium free energy, at: information-as-work}
+  - {term: nonequilibrium free energy, at: information-as-work, related: ["relevant and irrelevant memory", "wealth of traders as a second learner"]}
   - {term: information bottleneck, at: information-as-work}
   - {term: detailed balance, at: detailed-balance-lets-you-sample-without-knowing-z}
-  - {term: fluctuation theorem and Jarzynski equality, at: the-jarzynski-equality-is-annealed-importance-sampling}
+  - {term: fluctuation theorem and Jarzynski equality, at: the-jarzynski-equality-is-annealed-importance-sampling, related: ["importance ratio", "mass-covering and mode-seeking KL"]}
   - {term: thermodynamic length, at: thermodynamic-length-sets-the-schedule}
-  - {term: mean field and the cavity method, at: mean-field-and-the-cavity}
+  - {term: mean field and the cavity method, at: mean-field-and-the-cavity, related: ["interference between stored keys"]}
 uses:
   - {term: "Liouville's theorem", from: the-standard-of-motion}
   - {term: Hamiltonian vector field, from: the-standard-of-motion-mathematics}

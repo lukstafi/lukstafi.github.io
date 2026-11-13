@@ -11,11 +11,11 @@ requires:
   - {at: how-does-a-policy-improve#the-evidence-lower-bound-and-expectation-maximization, for: E-step and M-step}
   - {at: how-does-a-policy-improve#a-reusable-way-to-read-the-algorithms, for: the four questions}
 introduces:
-  - {term: learned update rule, at: learning-the-update-rule}
-  - {term: ladder of stores, at: a-ladder-of-stores}
-  - {term: delta-rule memory, at: a-ladder-of-stores}
-  - {term: consolidation as an M-step, at: consolidation-is-an-m-step}
-  - {term: amortization argument for weights, at: what-survives-of-the-argument-for-parametric-memory}
+  - {term: learned update rule, at: learning-the-update-rule, related: ["underdetermination of the landscape", "delta-rule memory", "Gated DeltaNet and Kimi Delta Attention"]}
+  - {term: ladder of stores, at: a-ladder-of-stores, related: ["four questions of a store", "Complementary Learning Systems", "stores written in training and stores written while reading"]}
+  - {term: delta-rule memory, at: a-ladder-of-stores, related: ["Gated DeltaNet and Kimi Delta Attention", "outer-product store", "interference between stored keys", "catastrophic interference"]}
+  - {term: consolidation as an M-step, at: consolidation-is-an-m-step, related: ["on-policy distillation of specialists", "deflationary and substantive answers about consolidation"]}
+  - {term: amortization argument for weights, at: what-survives-of-the-argument-for-parametric-memory, related: ["library learning", "compiled/interpreted gap", "break-even for consolidation", "deflationary and substantive answers about consolidation"]}
 uses:
   - {term: temporal-difference error, from: how-can-a-reward-train-a-neural-network}
   - {term: E-step and M-step of policy improvement, from: how-does-a-policy-improve}

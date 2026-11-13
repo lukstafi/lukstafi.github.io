@@ -7,9 +7,9 @@ requires:
   - {at: the-bookmaker-is-a-learner, for: what the mechanisms are for, strength: helpful}
 exercises: exercises
 introduces:
-  - {term: sequential convex pari-mutuel mechanism, at: three-automated-market-makers}
-  - {term: shadow price, at: convex-duality-toolkit}
-  - {term: conjugate representation of a cost function, at: market-scoring-rules-and-cost-functions-are-one-family}
+  - {term: sequential convex pari-mutuel mechanism, at: three-automated-market-makers, related: ["cost-function market and the LMSR"]}
+  - {term: shadow price, at: convex-duality-toolkit, related: ["temperature as a Lagrange multiplier", "flow conservation", "momentum as the price of a constraint", "temperature as an exchange rate"]}
+  - {term: conjugate representation of a cost function, at: market-scoring-rules-and-cost-functions-are-one-family, related: ["follow the regularized leader", "proper scoring rule", "free energy"]}
 see-also:
   - {term: Lagrange multipliers and complementary slackness, at: how-does-a-policy-improve#improving-a-distribution-without-throwing-away-the-prior}
 uses:

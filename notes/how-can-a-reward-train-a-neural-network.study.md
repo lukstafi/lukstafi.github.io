@@ -6,20 +6,20 @@ reviewed-against: "eb169c2"
 requires: []
 introduces:
   - {term: policy, at: actions-change-the-examples-we-learn-from}
-  - {term: Markov state, at: actions-change-the-examples-we-learn-from}
-  - {term: return and discount factor, at: returns-give-delayed-consequences-a-number}
-  - {term: state value and action value, at: values-evaluate-a-particular-policy}
-  - {term: Bellman expectation equation, at: values-evaluate-a-particular-policy}
-  - {term: policy iteration, at: from-evaluating-behavior-to-choosing-better-behavior}
-  - {term: Bellman optimality equations, at: from-evaluating-behavior-to-choosing-better-behavior}
-  - {term: temporal-difference error, at: learning-values-from-experience}
-  - {term: bootstrapping, at: learning-values-from-experience}
-  - {term: λ-return and eligibility trace, at: learning-values-from-experience}
-  - {term: on-policy and off-policy, at: learning-values-from-experience}
-  - {term: REINFORCE, at: from-one-choice-to-a-complete-journey}
-  - {term: baseline and advantage, at: better-than-expected-is-more-informative-than-positive}
-  - {term: generalized advantage estimation, at: what-values-and-policy-gradients-make-possible}
-  - {term: GRPO, at: what-values-and-policy-gradients-make-possible}
+  - {term: Markov state, at: actions-change-the-examples-we-learn-from, related: ["belief state", "macrostate as predictor"]}
+  - {term: return and discount factor, at: returns-give-delayed-consequences-a-number, related: ["λ-return and eligibility trace", "general value function"]}
+  - {term: state value and action value, at: values-evaluate-a-particular-policy, related: ["general value function", "successor features", "baseline and advantage"]}
+  - {term: Bellman expectation equation, at: values-evaluate-a-particular-policy, related: ["policy-improvement argument", "projected Bellman error and gradient TD"]}
+  - {term: policy iteration, at: from-evaluating-behavior-to-choosing-better-behavior, related: ["policy-improvement argument", "generalized policy improvement"]}
+  - {term: Bellman optimality equations, at: from-evaluating-behavior-to-choosing-better-behavior, related: ["flow conservation"]}
+  - {term: temporal-difference error, at: learning-values-from-experience, related: ["delta-rule memory", "GQ(λ)"]}
+  - {term: bootstrapping, at: learning-values-from-experience, related: ["deadly triad"]}
+  - {term: λ-return and eligibility trace, at: learning-values-from-experience, related: ["generalized advantage estimation", "GQ(λ)"]}
+  - {term: on-policy and off-policy, at: learning-values-from-experience, related: ["stale rollout", "teacher and support", "five remedies for stale keys"]}
+  - {term: REINFORCE, at: from-one-choice-to-a-complete-journey, related: ["reparameterization trick", "GRPO"]}
+  - {term: baseline and advantage, at: better-than-expected-is-more-informative-than-positive, related: ["advantage-weighted regression", "GRPO"]}
+  - {term: generalized advantage estimation, at: what-values-and-policy-gradients-make-possible, related: ["GQ(λ)"]}
+  - {term: GRPO, at: what-values-and-policy-gradients-make-possible, related: ["Vector Policy Optimization", "forgetting within a task"]}
 ---
 
 The delivery problem, used by several questions: at the junction $J$ the detour ends the episode with reward $2$; approaching the door gives $0$ and leads to $D$; at the door, opening gives $6$ and giving up gives $0$; $\gamma=0.9$.

@@ -8,12 +8,12 @@ requires:
   - {at: algebraic-mind-meets-neural-world#attention-as-approximate-tpr-unbinding, for: "attention read as approximate unbinding, and Smolensky's complaint that the attention graph is used within a layer and not encoded"}
   - {at: the-given-and-the-found, for: "looped and equilibrium models, which this essay calls the architecturally interesting case", strength: helpful}
 introduces:
-  - {term: monotone merge, at: the-residual-stream-is-a-join-not-a-rewrite, gloss: "the residual stream only adds, so it builds structure as a constraint grammar joins descriptions, not as a rewrite grammar replaces symbols"}
-  - {term: "target directs, sources supply, MLP assembles", at: the-residual-stream-is-a-join-not-a-rewrite, gloss: "the three-way split of what unification does in one structure-driven step"}
-  - {term: query as valence specification, at: two-analogues-the-query-selects-the-stream-merges, gloss: "the query says what a position seeks, as a head's valence list says what it must combine with"}
-  - {term: Harmony and scheduled quantization, at: tensor-product-representations-and-gradient-symbolic-computation}
-  - {term: gradient blend, at: tensor-product-representations-and-gradient-symbolic-computation, gloss: "a single continuous state superposing partial structures, not a probability distribution over parses"}
-  - {term: binding problem of stacked attention, at: the-explicit-binding-program}
+  - {term: monotone merge, at: the-residual-stream-is-a-join-not-a-rewrite, gloss: "the residual stream only adds, so it builds structure as a constraint grammar joins descriptions, not as a rewrite grammar replaces symbols", related: ["Merge-without-Move", "residual stream as blackboard", "override as additive cancellation"]}
+  - {term: "target directs, sources supply, MLP assembles", at: the-residual-stream-is-a-join-not-a-rewrite, gloss: "the three-way split of what unification does in one structure-driven step", related: ["un-bundling", "the selector is not in the value space"]}
+  - {term: query as valence specification, at: two-analogues-the-query-selects-the-stream-merges, gloss: "the query says what a position seeks, as a head's valence list says what it must combine with", related: ["un-bundling"]}
+  - {term: Harmony and scheduled quantization, at: tensor-product-representations-and-gradient-symbolic-computation, related: ["Gibbs state", "depth and breadth", "limit cycle as terminal behavior"]}
+  - {term: gradient blend, at: tensor-product-representations-and-gradient-symbolic-computation, gloss: "a single continuous state superposing partial structures, not a probability distribution over parses", related: ["grammar as process", "collapse of strata"]}
+  - {term: binding problem of stacked attention, at: the-explicit-binding-program, related: ["missing selection relation and bag problem"]}
   - {term: the selector is not in the value space, at: why-the-two-analogues-cannot-be-reconciled, gloss: "the query drives each combination and is never among the vectors the merge sums"}
   - {term: missing selection relation and bag problem, at: why-the-two-analogues-cannot-be-reconciled, gloss: "the two manifestations of the selector's exclusion: no record of which position governed, and no record of which daughter paired with which"}
 uses:

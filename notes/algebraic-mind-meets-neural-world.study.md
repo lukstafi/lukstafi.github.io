@@ -4,16 +4,16 @@ essay: algebraic-mind-meets-neural-world
 track: structure-in-networks
 reviewed-against: "48c1ffd"
 introduces:
-  - {term: words and rules, at: two-tricks-behind-language}
-  - {term: "symbol manipulation (Marcus's three hypotheses)", at: what-symbol-manipulation-actually-means}
-  - {term: training independence, at: the-training-independence-argument}
+  - {term: words and rules, at: two-tricks-behind-language, related: ["lexicon-grammar continuum as feature continuum"]}
+  - {term: "symbol manipulation (Marcus's three hypotheses)", at: what-symbol-manipulation-actually-means, related: ["Language of Thought"]}
+  - {term: training independence, at: the-training-independence-argument, related: ["underdetermination of the landscape"]}
   - {term: universally quantified one-to-one mapping (UQOTOM), at: the-training-independence-argument}
   - {term: registers and treelets, at: what-marcus-thinks-is-needed}
-  - {term: tensor product representation, at: technical-sidebar-smolenskys-tensor-product-representations}
-  - {term: Continuity and Compositionality Principles, at: the-central-paradox}
-  - {term: generations of neurocompositional computing, at: generations-of-neurocompositionality}
-  - {term: expressive power and learnability, at: interlude-what-can-networks-compute-versus-what-can-they-learn}
-  - {term: attention as approximate unbinding, at: attention-as-approximate-tpr-unbinding}
+  - {term: tensor product representation, at: technical-sidebar-smolenskys-tensor-product-representations, related: ["outer-product store", "interference between stored keys", "2-simplicial attention", "Language of Thought", "Harmony and scheduled quantization"]}
+  - {term: Continuity and Compositionality Principles, at: the-central-paradox, related: ["gradient blend"]}
+  - {term: generations of neurocompositional computing, at: generations-of-neurocompositionality, related: ["binding problem of stacked attention", "Harmony and scheduled quantization"]}
+  - {term: expressive power and learnability, at: interlude-what-can-networks-compute-versus-what-can-they-learn, related: ["five meanings of depth"]}
+  - {term: attention as approximate unbinding, at: attention-as-approximate-tpr-unbinding, related: ["working-memory pointers", "binding problem of stacked attention", "query as valence specification"]}
 ---
 
 The essay is a survey. The answers say whose position each claim is, and the last two questions ask where the essay itself objects and what it leaves open.

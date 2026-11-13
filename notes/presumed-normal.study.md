@@ -8,19 +8,19 @@ requires:
   - {at: what-must-be-true#finding-an-assumption-that-survives-every-case, for: "joint constraint abduction, which a box recasts as an adaptive problem", strength: helpful}
   - {at: the-bookmaker-is-a-learner#the-combinatorial-wall, for: "matching against pricing, the gap the box on weighted abnormalities returns to", strength: helpful}
 introduces:
-  - {term: adaptive logic, at: a-logic-in-three-parts, gloss: "a lower limit logic, a set of abnormalities presumed false, and a strategy for reading the premises as normally as possible"}
-  - {term: Dab-formula and unreliable set, at: a-logic-in-three-parts}
-  - {term: Reliability and Minimal Abnormality, at: a-logic-in-three-parts}
-  - {term: condition and marking, at: proofs-that-change-their-minds}
-  - {term: internal and external dynamics, at: proofs-that-change-their-minds}
-  - {term: final derivability, at: proofs-that-change-their-minds}
-  - {term: rebutting and undercutting defeaters, at: defeaters}
-  - {term: argumentation framework and extension, at: defeaters}
-  - {term: stable model and reduct, at: answer-sets}
+  - {term: adaptive logic, at: a-logic-in-three-parts, gloss: "a lower limit logic, a set of abnormalities presumed false, and a strategy for reading the premises as normally as possible", related: ["Self and idealized sources"]}
+  - {term: Dab-formula and unreliable set, at: a-logic-in-three-parts, related: ["nogood"]}
+  - {term: Reliability and Minimal Abnormality, at: a-logic-in-three-parts, related: ["gaps and gluts"]}
+  - {term: condition and marking, at: proofs-that-change-their-minds, related: ["paradox resistance"]}
+  - {term: internal and external dynamics, at: proofs-that-change-their-minds, related: ["logical omniscience"]}
+  - {term: final derivability, at: proofs-that-change-their-minds, related: ["semidecision procedure"]}
+  - {term: rebutting and undercutting defeaters, at: defeaters, related: ["reason, price and defeater", "presumption of independence"]}
+  - {term: argumentation framework and extension, at: defeaters, related: ["stable model and reduct"]}
+  - {term: stable model and reduct, at: answer-sets, related: ["paradox resistance"]}
   - {term: here-and-there and equilibrium model, at: answer-sets}
   - {term: nogood, at: the-solver-keeps-no-proof}
-  - {term: abnormality with a price, at: the-solver-keeps-no-proof, gloss: "a weight $w$ on each abnormality, which turns the selection of minimal models into a distribution over models and plays the part of an inverse temperature"}
-  - {term: condition as an abductive answer, at: explanations-as-conditions, gloss: "the condition of an adaptive derivation of $G$, read as a hypothesis of normality under which the premises entail $G$"}
+  - {term: abnormality with a price, at: the-solver-keeps-no-proof, gloss: "a weight $w$ on each abnormality, which turns the selection of minimal models into a distribution over models and plays the part of an inverse temperature", related: ["matching as pricing at zero temperature", "presumption of independence", "gaps and gluts"]}
+  - {term: condition as an abductive answer, at: explanations-as-conditions, gloss: "the condition of an adaptive derivation of $G$, read as a hypothesis of normality under which the premises entail $G$", related: ["deduction, generalization and abduction"]}
 uses:
   - {term: matching as pricing at zero temperature, from: the-bookmaker-is-a-learner}
   - {term: joint constraint abduction, from: what-must-be-true}

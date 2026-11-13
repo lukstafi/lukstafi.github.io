@@ -7,24 +7,24 @@ requires:
   - {at: feedback-recurrence-consciousness, for: "the claim that phenomenal acquaintance is a kind of vehicle with a homeostatic regulatory role, which the commentary applies to grounding", strength: helpful}
   - {at: free-agency-personhood-moral-worth, for: "the claim that agency requires recursive self-modeling, which the commentary applies to the agentive primes", strength: helpful}
 introduces:
-  - {term: "cognition, broad and narrow", at: what-are-we-talking-about, gloss: "information processing of any kind, against conceptual processing only"}
+  - {term: "cognition, broad and narrow", at: what-are-we-talking-about, gloss: "information processing of any kind, against conceptual processing only", related: ["cognition (narrow sense)"]}
   - {term: "content, format, origin and dynamics", at: what-are-we-talking-about, gloss: "the four axes along which the essay sorts theories of concepts"}
-  - {term: prototype and exemplar theories, at: prototypes-and-exemplars}
-  - {term: theory-theory, at: theory-theory}
-  - {term: conceptual atomism, at: fodors-atomism}
-  - {term: "Machery's heterogeneity thesis", at: macherys-heterogeneity-challenge}
-  - {term: functional characterization of concepts, at: macherys-heterogeneity-challenge, gloss: "concepts are whatever plays the concept role: structures in long-term memory that are activated, compose into thoughts, and guide inference and action"}
-  - {term: format turn, at: macherys-heterogeneity-challenge, gloss: "asking how concepts represent, in what vehicle, before settling what they represent"}
-  - {term: Language of Thought, at: the-language-of-thought}
-  - {term: iconic and discursive formats, at: the-format-question-crystallized-block-and-quilty-dunn}
+  - {term: prototype and exemplar theories, at: prototypes-and-exemplars, related: ["Complementary Learning Systems"]}
+  - {term: theory-theory, at: theory-theory, related: ["core knowledge"]}
+  - {term: conceptual atomism, at: fodors-atomism, related: ["Language of Thought", "semantic primes", "Quinean bootstrapping"]}
+  - {term: "Machery's heterogeneity thesis", at: macherys-heterogeneity-challenge, related: ["prototype and exemplar theories", "theory-theory", "Complementary Learning Systems"]}
+  - {term: functional characterization of concepts, at: macherys-heterogeneity-challenge, gloss: "concepts are whatever plays the concept role: structures in long-term memory that are activated, compose into thoughts, and guide inference and action", related: ["chunks and activation"]}
+  - {term: format turn, at: macherys-heterogeneity-challenge, gloss: "asking how concepts represent, in what vehicle, before settling what they represent", related: ["source, format and operations", "iconic and discursive formats"]}
+  - {term: Language of Thought, at: the-language-of-thought, related: ["symbol manipulation (Marcus's three hypotheses)", "Continuity and Compositionality Principles"]}
+  - {term: iconic and discursive formats, at: the-format-question-crystallized-block-and-quilty-dunn, related: ["iconic representation", "efficacy-matching"]}
   - {term: cognitive envelope, at: the-format-question-crystallized-block-and-quilty-dunn}
   - {term: perceptual pluralism, at: the-format-question-crystallized-block-and-quilty-dunn}
-  - {term: vehicle and content of a concept, at: vehicles-content-and-the-polysemy-provocation}
+  - {term: vehicle and content of a concept, at: vehicles-content-and-the-polysemy-provocation, related: ["five conditions of mentality", "Quinean bootstrapping"]}
   - {term: semantic primes, at: wierzbickas-semantic-primes}
-  - {term: core knowledge, at: careys-core-knowledge}
-  - {term: Quinean bootstrapping, at: careys-core-knowledge}
-  - {term: proxytypes, at: prinzs-grounding-story}
-  - {term: meta-epistemic grounding, at: synthesis-questions-for-artificial-minds, gloss: "perceptual contact that supports the truth-preserving character of processing without contributing to the content processed"}
+  - {term: core knowledge, at: careys-core-knowledge, related: ["nativist kernel"]}
+  - {term: Quinean bootstrapping, at: careys-core-knowledge, related: ["Complementary Learning Systems"]}
+  - {term: proxytypes, at: prinzs-grounding-story, related: ["sensory-based account of conscious thought"]}
+  - {term: meta-epistemic grounding, at: synthesis-questions-for-artificial-minds, gloss: "perceptual contact that supports the truth-preserving character of processing without contributing to the content processed", related: ["epistemic action", "motley mix"]}
 ---
 
 The essay is a survey with commentary. The answers say whose view each claim is, and "the essay" marks the authors' own commentary.

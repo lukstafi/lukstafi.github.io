@@ -13,21 +13,21 @@ requires:
   - {at: the-given-and-the-found, for: "grounding sets the sign of an update, and search over a given condition differs from discovering the condition", strength: helpful}
   - {at: how-does-a-policy-improve, for: "search in a known model, and amortization", strength: helpful}
 introduces:
-  - {term: logical omniscience, at: logical-omniscience}
-  - {term: logical prior, at: a-prior-over-theories, gloss: "Demski's distribution over theories: draw sentences at random and keep each one that does not contradict those already kept"}
+  - {term: logical omniscience, at: logical-omniscience, related: ["Solomonoff's prior", "self-distillation with privileged context", "usable information", "bounded rationality"]}
+  - {term: logical prior, at: a-prior-over-theories, gloss: "Demski's distribution over theories: draw sentences at random and keep each one that does not contradict those already kept", related: ["semidecision procedure"]}
   - {term: Solomonoff's prior, at: a-prior-over-theories}
-  - {term: Gaifman inductivity, at: a-prior-over-theories}
-  - {term: logical induction criterion, at: a-bookmaker-over-sentences}
+  - {term: Gaifman inductivity, at: a-prior-over-theories, related: ["non-dogmatism", "amortizing search versus amortizing discovery"]}
+  - {term: logical induction criterion, at: a-bookmaker-over-sentences, related: ["cost-function market and the LMSR", "defensive forecasting", "No Expected Net Update"]}
   - {term: non-dogmatism, at: a-bookmaker-over-sentences}
   - {term: paradox resistance, at: what-a-truth-maintenance-system-lacks}
   - {term: defensive forecasting, at: what-a-truth-maintenance-system-lacks}
   - {term: multicalibration, at: what-a-truth-maintenance-system-lacks}
   - {term: outcome indistinguishability, at: tests-instead-of-worlds}
-  - {term: table of adversaries, at: tests-instead-of-worlds, gloss: "where the adversary sits, inside the believer or outside, against what holds it to account, settlement over time or checks on demand"}
-  - {term: presumption of independence, at: presumed-independent}
+  - {term: table of adversaries, at: tests-instead-of-worlds, gloss: "where the adversary sits, inside the believer or outside, against what holds it to account, settlement over time or checks on demand", related: ["independent check"]}
+  - {term: presumption of independence, at: presumed-independent, related: ["combinatorial wall"]}
   - {term: "reason, price and defeater", at: three-answers, gloss: "a reason is a latent structure with independence presumed beyond it; a price is the marginal probability it implies for one sentence; a defeater is structure found outside it"}
   - {term: gaps and gluts, at: what-explosion-becomes}
-  - {term: independent check, at: learning-without-new-evidence, gloss: "a check that does not depend on the beliefs being trained, whether it is internal or external"}
+  - {term: independent check, at: learning-without-new-evidence, gloss: "a check that does not depend on the beliefs being trained, whether it is internal or external", related: ["grounded and ungrounded targets", "amplitude and sign of a learning signal"]}
   - {term: No Expected Net Update, at: steering-the-search}
 uses:
   - {term: regret and no-regret learning, from: the-bookmaker-is-a-learner}

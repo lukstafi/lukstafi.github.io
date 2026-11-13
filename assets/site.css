@@ -434,9 +434,164 @@ figure.study-map figcaption {
   color: var(--tag-fg);
 }
 
+/* The concept graph (study/concepts.html, drawn by assets/concept-graph.js).
+   Track colors: slots 1-7 of the dataviz skill's reference palette, checked
+   with its validator against #fffff8 and #151515. Adjacent pairs pass every
+   check in both themes; as in any scatter, some non-adjacent pairs are close,
+   so the legend highlights a track and the text names it. */
+:root {
+  --track-1: #2a78d6; --track-2: #eb6834; --track-3: #1baf7a; --track-4: #eda100;
+  --track-5: #e87ba4; --track-6: #008300; --track-7: #6250d6;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --track-1: #3987e5; --track-2: #d95926; --track-3: #199e70; --track-4: #c98500;
+    --track-5: #d55181; --track-6: #008300; --track-7: #9085e9;
+  }
+}
+:root[data-theme="dark"] {
+  --track-1: #3987e5; --track-2: #d95926; --track-3: #199e70; --track-4: #c98500;
+  --track-5: #d55181; --track-6: #008300; --track-7: #9085e9;
+}
+:root[data-theme="light"] {
+  --track-1: #2a78d6; --track-2: #eb6834; --track-3: #1baf7a; --track-4: #eda100;
+  --track-5: #e87ba4; --track-6: #008300; --track-7: #6250d6;
+}
+
+.t1 { --track: var(--track-1); } .t2 { --track: var(--track-2); }
+.t3 { --track: var(--track-3); } .t4 { --track: var(--track-4); }
+.t5 { --track: var(--track-5); } .t6 { --track: var(--track-6); }
+.t7 { --track: var(--track-7); }
+
+.concept-view[hidden] { display: none; }
+.concept-view {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 1.5rem 2.5rem;
+  width: 100%;
+  margin: 1.5rem 0 2rem 0;
+}
+
+.concept-graph { flex: 1 1 30rem; max-width: 48rem; min-width: 0; }
+.concept-panel { flex: 1 1 18rem; max-width: 26rem; font-size: 1.2rem; line-height: 1.55; }
+
+.concept-controls { display: flex; gap: 0.6rem; flex-wrap: wrap; margin-bottom: 0.4rem; }
+.concept-controls input,
+.concept-controls button,
+.concept-legend button {
+  font-family: et-book, Palatino, Georgia, serif;
+  font-size: 1.05rem;
+  color: var(--fg);
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 0.3rem;
+  padding: 0.25rem 0.6rem;
+}
+.concept-controls input { flex: 1 1 12rem; min-width: 0; }
+.concept-controls input.no-match { border-color: var(--substack-fg); }
+.concept-controls button,
+.concept-legend button { cursor: pointer; }
+.concept-controls button:hover { border-color: var(--fg); }
+
+#concept-svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  font-family: et-book, Palatino, Georgia, serif;
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+#concept-svg .edges line { stroke: var(--fg); stroke-width: 0.7; opacity: 0.16; }
+#concept-svg .edges line.chain { stroke-dasharray: 2 3; }
+#concept-svg.focused .edges line { opacity: 0.07; }
+#concept-svg.focused .edges line.among { opacity: 0.3; }
+#concept-svg.focused .edges line.touch { opacity: 0.75; stroke-width: 1.2; }
+
+#concept-svg .node { fill: var(--track); stroke: var(--bg); stroke-width: 1; }
+#concept-svg.focused .node { opacity: 0.6; }
+#concept-svg.focused .node.is-near,
+#concept-svg.focused .node.is-focus { opacity: 1; stroke-width: 2; }
+#concept-svg.track-hl .node { opacity: 0.15; }
+#concept-svg.track-hl .node.hl { opacity: 1; }
+
+#concept-svg .label {
+  fill: var(--fg);
+  paint-order: stroke;
+  stroke: var(--bg);
+  stroke-width: 4px;
+  stroke-linejoin: round;
+}
+#concept-svg .labels { animation: concept-fade 0.25s ease-out; }
+#concept-svg .near-label { font-size: calc(13px * var(--fs, 1)); }
+#concept-svg .focus-label { font-size: calc(17px * var(--fs, 1)); font-weight: bold; }
+#concept-svg .hover-label { font-size: calc(14px * var(--fs, 1)); }
+#concept-svg .hover-essay { font-size: calc(12px * var(--fs, 1)); font-style: italic; fill: var(--tag-fg); }
+#concept-svg .leader { fill: none; stroke: var(--tag-fg); stroke-width: 0.7; }
+#concept-svg .hover-ring { fill: none; stroke: var(--fg); stroke-width: 1.2; }
+
+@keyframes concept-fade { from { opacity: 0; } to { opacity: 1; } }
+
+.concept-legend {
+  list-style: none;
+  padding: 0;
+  margin: 0.6rem 0 0 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  width: auto;
+}
+.concept-legend li { margin: 0; padding: 0; font-size: 1rem; }
+.concept-legend button { font-size: 0.95rem; padding: 0.15rem 0.5rem; border-color: transparent; }
+.concept-legend button:hover,
+.concept-legend button.on { border-color: var(--border); }
+.concept-legend button[aria-pressed="true"] { border-color: var(--fg); }
+.swatch {
+  display: inline-block;
+  width: 0.7rem;
+  height: 0.7rem;
+  border-radius: 50%;
+  background: var(--track);
+  margin-right: 0.35rem;
+  vertical-align: baseline;
+}
+
+/* The concepts as text: a list without JavaScript, one block in the panel with it */
+.concept-list .concept { margin: 0 0 1.4rem 0; }
+.concept-list .concept p { width: 55%; font-size: 1.2rem; line-height: 1.55; margin: 0.3rem 0; }
+.concept-list.js .concept p { width: auto; }
+.concept-term { font-size: 1.5rem; }
+.concept-term::before {
+  content: "";
+  display: inline-block;
+  width: 0.65rem;
+  height: 0.65rem;
+  border-radius: 50%;
+  background: var(--track);
+  margin-right: 0.45rem;
+  vertical-align: 0.15rem;
+}
+.concept-where,
+.concept-from { color: var(--tag-fg); }
+.concept-where a,
+.concept-where a:visited { color: var(--tag-fg); }
+.concept-list.js h2.concept-heading,
+.concept-list.js h3.concept-heading,
+.concept-list.js .concept { display: none; }
+.concept-list.js section { padding: 0; }
+.concept-list.js .concept.current { display: block; }
+.concept-panel .concept-hint { width: auto; font-size: 1.2rem; color: var(--tag-fg); }
+
 @media (max-width: 760px) {
   figure.study-map { max-width: 100%; }
   .study-terms { width: 100%; }
+  .concept-panel { max-width: none; }
+  .concept-list .concept p { width: 100%; }
+  /* The graph takes the whole width of a phone, past the body's padding
+     (8% of the page on each side of a body 84% wide). */
+  #concept-svg { width: calc(100% * 100 / 84); max-width: none; margin-left: calc(-100% * 8 / 84); }
 }
 
 .post-item .description {
