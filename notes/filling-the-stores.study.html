@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <meta name="description" content="Recall questions for the essay “Filling the Stores”.">
+  <meta property="og:title" content="Study notes: Filling the Stores">
+  <meta property="og:description" content="Recall questions for the essay “Filling the Stores”.">
+  <meta property="og:url" content="https://lukstafi.github.io/notes/filling-the-stores.study.html">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="lukstafi&#x27;s blog">
+  <meta name="twitter:card" content="summary">
+  <title>Study notes: Filling the Stores</title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <link rel="stylesheet" href="/assets/tufte.css">
+  <link rel="stylesheet" href="/assets/pandoc-tufte.css">
+  <link rel="stylesheet" href="/assets/site.css">
+  <script defer=""
+  src="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.js"></script>
+  <script>document.addEventListener("DOMContentLoaded", function () {
+ var mathElements = document.getElementsByClassName("math");
+ var macros = [];
+ for (var i = 0; i < mathElements.length; i++) {
+  var texText = mathElements[i].firstChild;
+  if (mathElements[i].tagName == "SPAN") {
+   katex.render(texText.data, mathElements[i], {
+    displayMode: mathElements[i].classList.contains('display'),
+    throwOnError: false,
+    macros: macros,
+    fleqn: false
+   });
+}}});
+  </script>
+  <link rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.css" />
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+  <script>(function(){var t=localStorage.getItem('theme-preference');if(t)document.documentElement.setAttribute('data-theme',t);})()</script>
+</head>
+<body>
+<nav class="site-nav">
+  <a href="/">Home</a> &middot; <a href="/about.html">About</a> &middot; <a href="https://lukstafi.substack.com">Substack</a>
+</nav>
+<div class="theme-toggle">
+  <button id="theme-btn" aria-label="Toggle dark mode">&#9788;</button>
+</div>
+<article>
+<header>
+<h1 class="title">Study notes: Filling the Stores</h1>
+</header>
+<p>Recall questions for <a
+href="/notes/filling-the-stores.html"><em>Filling the Stores</em></a>.
+Answer each from memory, then open the answer to compare. The link under
+a question leads to the section it draws on.</p>
+<section id="before-reading" class="level2">
+<h2>Before reading</h2>
+<p>The essay and these questions assume:</p>
+<ul>
+<li><a
+href="/notes/every-layer-a-store.html#selection-is-learned-retrieval"><em>Every
+Layer a Store</em>, “Selection is learned retrieval”</a>: selectors and
+the miss.</li>
+<li><a
+href="/notes/every-layer-a-store.html#memory-along-depth"><em>Every
+Layer a Store</em>, “4. Memory along depth”</a>: mHC and worked example
+4.</li>
+<li><a
+href="/notes/every-layer-a-store.html#the-seven-assembled"><em>Every
+Layer a Store</em>, “5. The seven assembled”</a>: the seven models, and
+which stores are written in training.</li>
+</ul>
+<p>Helpful, not required:</p>
+<ul>
+<li><a href="/notes/how-does-a-policy-improve.html"><em>How Does a
+Policy Improve?</em></a>: the GRPO family.</li>
+<li><a href="/notes/who-teaches-the-weights.html"><em>Who Teaches the
+Weights?</em></a>: self-distillation, and why a student absorbs only
+what lies close to it.</li>
+<li><a href="/notes/where-experience-goes.html"><em>Where Experience
+Goes</em></a>: the continual-learning consequences of forgetting.</li>
+</ul>
+</section>
+<section id="questions" class="level2">
+<h2>Questions</h2>
+<section id="the-plateau-before-the-facts" class="level3"
+data-kind="explain">
+<h3 data-kind="explain">The plateau before the facts</h3>
+<div class="study-meta">
+<span class="study-kind">explain</span> <a
+href="/notes/filling-the-stores.html#what-pretraining-writes-and-in-what-order">2.
+What pretraining writes, and in what order ↗</a>
+</div>
+<p>A small Transformer is trained on biographies of invented people.
+Describe the three phases of its loss on the attributes. What is learned
+on the plateau, and which experiment shows it? What limits does the
+essay put on the result?</p>
+<details class="answer"><summary>Answer</summary>
+<p>The loss fell at first, as the model learned the language and the
+kinds of answer a template wants. It then stopped at the entropy of the
+attribute values: the model knew that a birthplace is a city and did not
+know which city. After a plateau, knowledge of the individuals emerged.
+What is learned on the plateau is a circuit in the attention. When
+training restarted from the same initial parameters, with the attention
+patterns of a later checkpoint fed in and only the feed-forward weights
+learning, the plateau disappeared. The experiment ran at 44 million
+parameters on data with one task in it, the order in the weights is not
+“attention first”, and in a larger model on natural text the heads
+specialized for answers are still turning over at the end of training.
+The result is offered as a mechanism, not as a measurement of the
+seven.</p>
+</details>
+</section>
+<section id="one-gradient-two-normalizations" class="level3"
+data-kind="compute">
+<h3 data-kind="compute">One gradient, two normalizations</h3>
+<div class="study-meta">
+<span class="study-kind">compute</span> <a
+href="/notes/filling-the-stores.html#normalizing-a-matrix">Normalizing a
+matrix ↗</a>
+</div>
+<p>Muon takes the matrix of momenta <span
+class="math inline">M=USV^\top</span> and steps along <span
+class="math inline">UV^\top</span>. Let a gradient be <span
+class="math inline">G=10\,u_1v_1^\top+1\,u_2v_2^\top</span> with <span
+class="math inline">u_1=(0.8,0.6)</span>, <span
+class="math inline">u_2=(-0.6,0.8)</span>, <span
+class="math inline">v_1=(0.6,0.8)</span>, <span
+class="math inline">v_2=(0.8,-0.6)</span>. Compute Adam’s first step,
+which keeps the sign of each entry, and Muon’s step. What does each
+normalization keep, and what do both throw away?</p>
+<details class="answer"><summary>Answer</summary>
+<p><span
+class="math inline">G=\begin{pmatrix}4.32&amp;6.76\\4.24&amp;4.32\end{pmatrix}</span>.
+All four entries are positive, so Adam’s step is the all-ones matrix, of
+rank 1, and the weak direction is gone. Muon sets both singular values
+to 1: <span
+class="math inline">u_1v_1^\top+u_2v_2^\top=\begin{pmatrix}0&amp;1\\1&amp;0\end{pmatrix}</span>.
+The weak direction now counts as much as the strong one. Both updates
+throw away the gradient’s overall scale. Adam keeps the signs of the
+entries, Muon the singular vectors.</p>
+</details>
+</section>
+<section id="what-a-selector-can-see" class="level3"
+data-kind="compute">
+<h3 data-kind="compute">What a selector can see</h3>
+<div class="study-meta">
+<span class="study-kind">compute</span> <a
+href="/notes/filling-the-stores.html#selectors-cannot-learn-through-top-k">Selectors
+cannot learn through top-<span class="math inline">k</span> ↗</a>
+</div>
+<p>One query reads four entries, and the selector keeps two. The main
+attention’s target is <span
+class="math inline">p=(0.40,0.20,0.35,0.05)</span>. The indexer’s scores
+<span class="math inline">(2,1,0,-1)</span> give <span
+class="math inline">q=(0.644,0.237,0.087,0.032)</span>.</p>
+<ol type="a">
+<li>Which entries are selected, and what is missed? (b) Raise entry 3’s
+score from 0 to 0.1. What happens to the task loss, and why? (c) The
+gradient of the KL from <span class="math inline">p</span> to <span
+class="math inline">q</span> on the scores is <span
+class="math inline">q-p</span>. Compute it and say what a descent step
+does. (d) Take the KL over the selected entries only. What does it
+report?</li>
+</ol>
+<details class="answer"><summary>Answer</summary>
+<ol type="a">
+<li><p>Top-2 picks entries 1 and 2. Entry 3, with 35 percent of the
+attention, is missed.</p></li>
+<li><p>Nothing happens. The selected set stays the same, and so do the
+attention, the output and the loss. The main attention receives the
+selected positions as integers, so the task loss is a step function of
+the scores. That is the missing gradient.</p></li>
+<li><p><span
+class="math inline">q-p=(+0.244,+0.037,-0.263,-0.018)</span>. A descent
+step lowers entry 1’s score and raises entry 3’s.</p></li>
+<li><p>Both distributions are confined to entries 1 and 2: <span
+class="math inline">(2/3,1/3)</span> against <span
+class="math inline">(0.731,0.269)</span>, a KL of 0.010 and no gradient
+at all on entry 3. The student looks nearly done while 40 percent of the
+attention lies outside what it selected. This is why most recipes begin
+with a dense warm-up, in which the indexer learns from the whole
+distribution before it controls anything.</p></li>
+</ol>
+</details>
+</section>
+<section id="when-selection-can-be-added" class="level3"
+data-kind="case">
+<h3 data-kind="case">When selection can be added</h3>
+<div class="study-meta">
+<span class="study-kind">case</span> <a
+href="/notes/filling-the-stores.html#selectors-cannot-learn-through-top-k">Selectors
+cannot learn through top-<span class="math inline">k</span> ↗</a>
+</div>
+<p>At which points of a pipeline has selection been added? What did the
+one experiment that held everything else fixed find, and what does it
+leave unexplained? Which selectors need no teacher?</p>
+<details class="answer"><summary>Answer</summary>
+<p>Every position from the first token to the released checkpoint has
+been tried:</p>
+<ul>
+<li>From the first token, with no dense warm-up
+(DeepSeek-V4.1-Flash).</li>
+<li>After a trillion dense tokens (V4-Flash).</li>
+<li>From mid-training (GLM-5.2), or at the end of it (GLM-5).</li>
+<li>In post-training, on a model released without a selector (Kimi K3.1
+Pro).</li>
+<li>After release, by distilling an indexer onto a frozen checkpoint
+(Latent Sparse Attention, ZHA).</li>
+</ul>
+<p>MSA ran one model on the same tokens twice, once sparse from the
+start and once with selection added late. The native model led on every
+retrieval, mathematics, image and video row, and the converted one on
+five rows of the general and code groups. That sparse pretraining beat
+full attention itself is unexplained, and the table gives no error bars.
+Designs that select with the attention’s own keys, or retrofit a dense
+model with no gradient updates, drop the student: only a separate
+selector needs a teacher to select well.</p>
+</details>
+</section>
+<section id="projecting-a-mixer" class="level3" data-kind="compute">
+<h3 data-kind="compute">Projecting a mixer</h3>
+<div class="study-meta">
+<span class="study-kind">compute</span> <a
+href="/notes/filling-the-stores.html#residual-mixers-must-stay-stable">Residual
+mixers must stay stable ↗</a>
+</div>
+<p>Let a layer’s raw mixing matrix be <span
+class="math inline">\begin{pmatrix}3&amp;1\\1&amp;1\end{pmatrix}</span>.
+Do one round of the Sinkhorn iteration: divide each column by its sum,
+then each row by its sum. Apply the raw matrix to the streams <span
+class="math inline">(2,4)</span>, and then the doubly stochastic limit,
+which has <span class="math inline">0.634</span> on its diagonal. What
+would the raw matrix’s top eigenvalue do to a signal over ten layers?
+Why can training pass through this constraint and not through top-<span
+class="math inline">k</span>?</p>
+<details class="answer"><summary>Answer</summary>
+<p>The column sums are 4 and 2, giving <span
+class="math inline">\begin{pmatrix}.75&amp;.5\\.25&amp;.5\end{pmatrix}</span>.
+The row sums are 1.25 and 0.75, giving <span
+class="math inline">\begin{pmatrix}.600&amp;.400\\.333&amp;.667\end{pmatrix}</span>.
+The raw matrix sends <span class="math inline">(2,4)</span> to <span
+class="math inline">(10,6)</span>, a total of 16. Its top eigenvalue is
+<span class="math inline">2+\sqrt2\approx3.41</span>, which would
+multiply the signal by about 200,000 over ten layers. The limit sends
+<span class="math inline">(2,4)</span> to <span
+class="math inline">(2.73,3.27)</span>, and the total stays 6. Sinkhorn
+is division repeated, so it is smooth, and DeepSeek backpropagates
+through all twenty iterations. Top-<span class="math inline">k</span> is
+a choice, so a separate selector needs a teacher.</p>
+</details>
+</section>
+<section id="a-router-put-back" class="level3" data-kind="case">
+<h3 data-kind="case">A router put back</h3>
+<div class="study-meta">
+<span class="study-kind">case</span> <a
+href="/notes/filling-the-stores.html#experts-must-stay-balanced">Experts
+must stay balanced ↗</a>
+</div>
+<p>Why is RL where routing goes wrong fastest? MiMo intervened on a run
+whose expert loads had become unbalanced. What did it restore, what did
+it keep, and what did the outcome show? What did MiMo and MAI each
+decide about the router in RL?</p>
+<details class="answer"><summary>Answer</summary>
+<p>RL’s data are narrow. With a trainable router, the share of cold
+experts, which receive almost no tokens, rose within twenty steps. MiMo
+restored the router’s parameters to their pre-RL values and kept every
+other weight from step 20. Load balance recovered, and benchmark scores
+did not move. The expert stores had kept what they learned under a
+router that was put back. MiMo froze the router for RL. MAI keeps it
+free, with a balancing coefficient of <span
+class="math inline">10^{-2}</span> during self-distillation and <span
+class="math inline">10^{-5}</span> during RL. A large coefficient during
+RL harms the climb, while the balance that self-distillation installs
+carries over.</p>
+</details>
+</section>
+<section id="long-context-comes-late" class="level3"
+data-kind="explain">
+<h3 data-kind="explain">Long context comes late</h3>
+<div class="study-meta">
+<span class="study-kind">explain</span> <a
+href="/notes/filling-the-stores.html#long-context-comes-late-and-it-comes-cheaply">Long
+context comes late, and it comes cheaply ↗</a>
+</div>
+<p>MAI’s last stage, at 256K, is 150 billion of about 33.5 trillion
+tokens. What share is that? What do MAI’s ablations say about why so
+little is enough? Who disagrees about the data? What does the essay warn
+about a capability that arrives this fast?</p>
+<details class="answer"><summary>Answer</summary>
+<p><span class="math inline">150/33{,}500\approx0.45</span> percent,
+less than half a percent. On small models, the vast majority of the
+improvement in loss at 256K came in the first 1 to 10 percent of the
+extension phase, and upweighting long documents gave no meaningful
+improvement. MAI’s reading is that “the model is not acquiring
+fundamentally new capabilities during context extension, but rather
+calibrating its positional and attention mechanisms”. Kimi K3’s report
+disagrees: “Length alone, however, does not confer long-range
+capability”, and Moonshot synthesizes documents that can be solved only
+by attending across the full million tokens. What comes fast can leave
+fast. MAI’s self-distillation could erase long-context behaviour unless
+mid-training data was mixed back in.</p>
+</details>
+</section>
+<section id="how-rl-goes-wrong" class="level3" data-kind="explain">
+<h3 data-kind="explain">How RL goes wrong</h3>
+<div class="study-meta">
+<span class="study-kind">explain</span> <a
+href="/notes/filling-the-stores.html#what-rl-optimizes-and-how-it-goes-wrong">What
+RL optimizes, and how it goes wrong ↗</a>
+</div>
+<p>In GRPO, what is an answer’s advantage, and what does the importance
+ratio correct for? The essay then sets three headings over RL at scale:
+stale rollouts, verifiers, and environments. State the point of
+each.</p>
+<details class="answer"><summary>Answer</summary>
+<p>For each prompt the model samples a group of answers, and an answer’s
+advantage is its reward relative to the group, <span
+class="math inline">(R_i-\operatorname{mean})/\operatorname{std}</span>.
+Every token of the answer gets that advantage. The importance ratio
+<span class="math inline">\pi_\theta/\pi_{\rm old}</span> corrects for
+the policy having moved since sampling.</p>
+<ul>
+<li>Stale rollouts: sampling and learning run at once, so a rollout may
+come from weights the learner has since left behind. The asynchronous
+recipes buy throughput with a loss of freshness, and most of them cap
+it.</li>
+<li>Verifiers are the attack surface: a passing test does not
+distinguish a solution from an exploit, and the models find the
+exploits. Without a grader that zeroes confirmed hacks, policies under
+pressure to raise pass rates drift toward the reward’s shortcuts, and
+those are written into the stores.</li>
+<li>Most of the gain is in the environments: the labs credit the scale,
+diversity and verifiability of their environments, not new algorithms.
+These attributions are the labs’ own.</li>
+</ul>
+</details>
+</section>
+<section id="two-jobs-for-distillation" class="level3"
+data-kind="distinguish">
+<h3 data-kind="distinguish">Two jobs for distillation</h3>
+<div class="study-meta">
+<span class="study-kind">distinguish</span> <a
+href="/notes/filling-the-stores.html#post-training-edits-the-stores">4.
+Post-training edits the stores ↗</a>
+</div>
+<p>Post-training uses distillation in two ways: to consolidate
+specialists into one checkpoint, and on a run’s own rollouts. Describe
+each, and give one known cost or risk of each.</p>
+<details class="answer"><summary>Answer</summary>
+<p>Consolidation: a lab trains several specialist policies, which are
+whole models and have nothing to do with routed experts, and distils
+them into one checkpoint. On-policy distillation lets the student
+generate and has the teacher score each token, so the student learns on
+the states it actually visits. It is cheap, and on small models students
+match their teachers on the teachers’ domains while falling below the
+base model outside them. The teachers’ origin matters, since a student
+can absorb only what lies close to it.</p>
+<p>Self-distillation: MAI periodically collects rollouts from an RL
+climb, runs SFT on them starting from a mid-trained checkpoint, and
+resumes RL from the result. It uses the loop to change the prompt
+format, to carry a climb onto a new base model, to filter out reward
+hacking, and to recover from collapses. The risk is that distillation
+can copy a policy too exactly. On the order of a million traces match
+the teacher, and many more narrow the policy, which leaves “little room
+for exploration once RL resumes”.</p>
+</details>
+</section>
+<section id="what-post-training-changes-inside" class="level3"
+data-kind="explain">
+<h3 data-kind="explain">What post-training changes inside</h3>
+<div class="study-meta">
+<span class="study-kind">explain</span> <a
+href="/notes/filling-the-stores.html#what-changes-inside">What changes
+inside ↗</a>
+</div>
+<p>Which contents of the trained stores are the fragile case, and what
+does the damage? Give the essay’s evidence that some forgetting is not
+erasure, and that how far a store moves does not say how much it
+matters.</p>
+<details class="answer"><summary>Answer</summary>
+<p>Facts are the fragile case. In a small model, fine-tuning on new
+people collapsed old facts within about a hundred steps while attention
+patterns stayed stable, and fine-tuning on people it already knew did no
+such harm. New keys do the damage. Which stores take it is unsettled:
+one study puts it in the feed-forward layers, another divides it almost
+equally between attention’s value and output weights and the
+feed-forward layers. Some forgetting is not erasure: removing the top
+singular direction of each weight update brought much of the recall of
+old facts back, at a cost in new-fact recall. And in one model the
+weights move about equally at all depths under full RL, yet training one
+layer alone recovers very different shares of RL’s gain, with the
+strongest layers in the middle of the stack.</p>
+</details>
+</section>
+<section id="the-line-bends-back" class="level3" data-kind="case">
+<h3 data-kind="case">The line bends back</h3>
+<div class="study-meta">
+<span class="study-kind">case</span> <a
+href="/notes/filling-the-stores.html#the-line-bends-back">5. The line
+bends back ↗</a>
+</div>
+<p>Self-distillation already carries RL’s rollouts back onto a
+mid-trained checkpoint. Give four further cases in which a later stage
+reached into an earlier one. Which holds the sharpest warning?</p>
+<details class="answer"><summary>Answer</summary>
+<ul>
+<li>MAI decays its pretraining learning rate only to a tenth of its
+peak, because decaying less improved results after RL.</li>
+<li>MiMo saw a tendency toward reward hacking in early experiments,
+synthesized examples of the model correcting itself, and put them into
+mid-training.</li>
+<li>Moonshot watched vulnerability research improve as post-training
+scaled, found one root in the mid-training corpus and one in the RL
+environments, and removed the data from both stages.</li>
+<li>Qwen let each block read only the two strongest branches of its
+gated residual. Pretraining loss and benchmarks were almost unaffected,
+but quality degraded clearly after post-training.</li>
+</ul>
+<p>The last is the sharpest: “pre-training metrics alone would have led
+to the wrong decision.” Choosing what to write early for what it will do
+late is a bet.</p>
+</details>
+</section>
+<section id="open-process-open-weights" class="level3"
+data-kind="distinguish">
+<h3 data-kind="distinguish">Open process, open weights</h3>
+<div class="study-meta">
+<span class="study-kind">distinguish</span> <a
+href="/notes/filling-the-stores.html#open-process-open-weights">6. Open
+process, open weights ↗</a>
+</div>
+<p>What question does an open process answer, and what question do open
+weights answer? Give a case of each without the other. In the essay’s
+comparison of four public pairs of checkpoints, which pair isolates a
+single stage, and what did that stage change?</p>
+<details class="answer"><summary>Answer</summary>
+<p>An open process says what was done and what its authors believe it
+did. Open weights let anyone check what happened to the stores.
+MAI-Thinking-1 has closed weights and an open process. GLM-5.2 and
+GLM-5.3 supply the checkpoints with an account of method and few
+numbers. A question like “what did RL change in the gates?” needs both.
+MiMo’s pair is the only one that isolates a stage, the distillation that
+followed RL. That pass changed the stored weights by at most about 0.2
+percent, near the format’s resolution, and left the routers
+byte-identical. In the three pairs that span post-training, attention
+and shared experts moved near 10 percent, and the selectors moved
+most.</p>
+</details>
+</section>
+<section id="what-the-weights-keep" class="level3" data-kind="explain">
+<h3 data-kind="explain">What the weights keep</h3>
+<div class="study-meta">
+<span class="study-kind">explain</span> <a
+href="/notes/filling-the-stores.html#what-the-weights-keep">What the
+weights keep ↗</a>
+</div>
+<p>When one of MAI’s climbs collapsed, why did going back to an earlier
+checkpoint often fail, and why did distillation work as a repair? What
+does the essay conclude about reading a store, and about the order of
+the stages?</p>
+<details class="answer"><summary>Answer</summary>
+<p>Going back fails “as some instabilities are already embedded in the
+model parameters many steps before the actual collapse occurs.” A store
+takes good updates and bad ones alike, as the same kind of number, and
+nothing in the weights says which is which. Behaviour is the only label,
+and it arrives late. Distillation copies what the model does and leaves
+the weights behind, along with whatever was broken in them and not yet
+showing. Nobody can tell what a store holds by reading its numbers, only
+by running it forward and seeing what survives. That is why the line
+bends back. The stages keep their order because a few orders are known
+to fail, and the rest are too expensive to test.</p>
+</details>
+</section>
+<section id="what-the-evidence-cannot-show" class="level3"
+data-kind="limits">
+<h3 data-kind="limits">What the evidence cannot show</h3>
+<div class="study-meta">
+<span class="study-kind">limits</span>
+</div>
+<p>On what does the essay’s evidence rest? Name four places where it
+says its findings are not established for the frontier models.</p>
+<details class="answer"><summary>Answer</summary>
+<p>Almost everything rests on what the labs chose to say, so the
+evidence is open process, not open weights.</p>
+<ul>
+<li>The order of writing: the plateau experiment ran at 44 million
+parameters on one task, and nobody has run it at scale.</li>
+<li>Capacity: a frontier run mixes facts into other text, so no number
+from a pure-facts experiment says what a trillion-parameter model
+holds.</li>
+<li>Inside a post-trained model: the studies run from 44 million to 70
+billion parameters, mostly on mathematics. No published measurement
+resolves the 2026 frontier’s own stores, the delta-rule gates, the
+indexers and the routed experts across a long climb.</li>
+<li>The weight comparison: endpoints, on a handful of tensors. GLM’s
+“same base model” may mean two post-training runs from one base, and
+K3.1 Pro appears to include a rerun of mid-training. The table is
+offered as evidence that the measurement is within reach.</li>
+</ul>
+</details>
+</section>
+</section>
+<section id="terms" class="level2">
+<h2>Terms</h2>
+<p>Introduced in this essay:</p>
+<ul>
+<li><a
+href="/notes/filling-the-stores.html#the-stages-kept-apart">pretraining,
+mid-training, SFT, RL, distillation and drafter training</a></li>
+<li><a
+href="/notes/filling-the-stores.html#the-stages-kept-apart">rollout and
+policy</a></li>
+<li><a
+href="/notes/filling-the-stores.html#what-pretraining-writes-and-in-what-order">plateau
+before the facts</a>: the stretch of training in which a model knows the
+kind of answer a template wants and not which answer.</li>
+<li><a
+href="/notes/filling-the-stores.html#normalizing-a-matrix">Muon</a></li>
+<li><a
+href="/notes/filling-the-stores.html#selectors-cannot-learn-through-top-k">distilling
+a selector from the attention it replaces</a></li>
+<li><a
+href="/notes/filling-the-stores.html#selectors-cannot-learn-through-top-k">dense
+warm-up</a></li>
+<li><a
+href="/notes/filling-the-stores.html#residual-mixers-must-stay-stable">Sinkhorn
+iteration</a></li>
+<li><a
+href="/notes/filling-the-stores.html#long-context-comes-late-and-it-comes-cheaply">context
+extension</a></li>
+<li><a
+href="/notes/filling-the-stores.html#what-rl-optimizes-and-how-it-goes-wrong">stale
+rollout</a></li>
+<li><a
+href="/notes/filling-the-stores.html#what-rl-optimizes-and-how-it-goes-wrong">reward
+hacking</a></li>
+<li><a
+href="/notes/filling-the-stores.html#specialists-then-one-checkpoint">on-policy
+distillation of specialists</a></li>
+<li><a
+href="/notes/filling-the-stores.html#self-distillation-at-production-scale">self-distillation
+on a run’s own rollouts</a>: SFT on rollouts collected from an RL run,
+started from a mid-trained checkpoint, after which RL resumes.</li>
+<li><a
+href="/notes/filling-the-stores.html#open-process-open-weights">open
+process and open weights</a></li>
+</ul>
+<p>From other essays:</p>
+<ul>
+<li>selector (<a
+href="/notes/every-layer-a-store.html#selection-is-learned-retrieval"><em>Every
+Layer a Store</em></a>)</li>
+<li>mixture of experts (<a
+href="/notes/every-layer-a-store.html#from-the-2017-transformer-to-todays-layer"><em>Every
+Layer a Store</em></a>)</li>
+<li>Manifold-Constrained Hyper-Connections (<a
+href="/notes/every-layer-a-store.html#several-streams-mixed"><em>Every
+Layer a Store</em></a>)</li>
+<li>stores written in training and stores written while reading (<a
+href="/notes/every-layer-a-store.html#softmax-attention-uses-every-power"><em>Every
+Layer a Store</em></a>)</li>
+<li>importance ratio (<a
+href="/notes/learning-about-what-you-do-not-do.html#learning-off-the-policy"><em>Learning
+About What You Do Not Do</em></a>)</li>
+<li>on-policy and off-policy (<a
+href="/notes/how-can-a-reward-train-a-neural-network.html#learning-values-from-experience"><em>How
+Can a Reward Train a Neural Network?</em></a>)</li>
+<li>GRPO (<a
+href="/notes/how-can-a-reward-train-a-neural-network.html#what-values-and-policy-gradients-make-possible"><em>How
+Can a Reward Train a Neural Network?</em></a>)</li>
+</ul>
+</section>
+</article>
+<section class="study-link"><p><em>From the study questions back to the essay: 
+<a href="/notes/filling-the-stores.html">filling-the-stores.html &rarr;</a></em></p></section>
+<script src="/assets/theme-toggle.js"></script>
+</body>
+</html>

@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <meta name="description" content="Recall questions for the essay “An Ontology That Pays for Itself”.">
+  <meta property="og:title" content="Study notes: An Ontology That Pays for Itself">
+  <meta property="og:description" content="Recall questions for the essay “An Ontology That Pays for Itself”.">
+  <meta property="og:url" content="https://lukstafi.github.io/notes/an-ontology-that-pays-for-itself.study.html">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="lukstafi&#x27;s blog">
+  <meta name="twitter:card" content="summary">
+  <title>Study notes: An Ontology That Pays for Itself</title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <link rel="stylesheet" href="/assets/tufte.css">
+  <link rel="stylesheet" href="/assets/pandoc-tufte.css">
+  <link rel="stylesheet" href="/assets/site.css">
+  <script defer=""
+  src="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.js"></script>
+  <script>document.addEventListener("DOMContentLoaded", function () {
+ var mathElements = document.getElementsByClassName("math");
+ var macros = [];
+ for (var i = 0; i < mathElements.length; i++) {
+  var texText = mathElements[i].firstChild;
+  if (mathElements[i].tagName == "SPAN") {
+   katex.render(texText.data, mathElements[i], {
+    displayMode: mathElements[i].classList.contains('display'),
+    throwOnError: false,
+    macros: macros,
+    fleqn: false
+   });
+}}});
+  </script>
+  <link rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.css" />
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+  <script>(function(){var t=localStorage.getItem('theme-preference');if(t)document.documentElement.setAttribute('data-theme',t);})()</script>
+</head>
+<body>
+<nav class="site-nav">
+  <a href="/">Home</a> &middot; <a href="/about.html">About</a> &middot; <a href="https://lukstafi.substack.com">Substack</a>
+</nav>
+<div class="theme-toggle">
+  <button id="theme-btn" aria-label="Toggle dark mode">&#9788;</button>
+</div>
+<article>
+<header>
+<h1 class="title">Study notes: An Ontology That Pays for Itself</h1>
+</header>
+<p>Recall questions for <a
+href="/notes/an-ontology-that-pays-for-itself.html"><em>An Ontology That
+Pays for Itself</em></a>. Answer each from memory, then open the answer
+to compare. The link under a question leads to the section it draws
+on.</p>
+<section id="before-reading" class="level2">
+<h2>Before reading</h2>
+<p>Helpful, not required:</p>
+<ul>
+<li><a href="/notes/presumed-normal.html"><em>Presumed Normal</em></a>:
+reasoning over the ontology, with defaults that tolerate exceptions and
+contradictions kept local.</li>
+<li><a
+href="/notes/the-bookmaker-is-a-learner.html#the-bookmaker-is-a-learner"><em>The
+Bookmaker Is a Learner</em>, “The bookmaker is a learner”</a>: bandits
+and exploration, the terms in which the essay states the risk of a
+proposer with a prior.</li>
+<li><a
+href="/notes/what-should-a-program-inherit.html#alphaevolve-variation-selection-and-what-survives"><em>What
+Should a Program Inherit?</em>, “AlphaEvolve: variation, selection, and
+what survives”</a>: search in which a language model proposes edits and
+an automated evaluator decides which survive.</li>
+<li><a
+href="/notes/what-should-a-program-inherit.html#babble-when-a-common-pattern-becomes-a-useful-function"><em>What
+Should a Program Inherit?</em>, “babble: when a common pattern becomes a
+useful function”</a>: library learning, the case where acceptance is
+compression.</li>
+</ul>
+</section>
+<section id="questions" class="level2">
+<h2>Questions</h2>
+<p>The answers state what the essay proposes. Nothing in it has been
+implemented, and the last question asks where it says so.</p>
+<section id="the-merge-that-begs-to-be-made" class="level3"
+data-kind="explain">
+<h3 data-kind="explain">The merge that begs to be made</h3>
+<div class="study-meta">
+<span class="study-kind">explain</span>
+</div>
+<p>“Mary walked home”, “Mary ran home”, “Mary drove home”: cutting the
+dependency links in half gives each verb the same entry,
+<code>Mary- &amp; home+</code>. Why is merging the three entries not an
+application of the distributive law? What decides the merge in Vepštas’s
+draft, and what decides it in the essay?</p>
+<details class="answer"><summary>Answer</summary>
+<p>The merge is safe only if the three verbs occur nowhere else. In a
+real corpus they do: people run companies and drive nails. Whether the
+merge is right depends on everything else the corpus says. Vepštas
+leaves the decision to whatever similarity measure the user supplies.
+The essay leaves it to compression: a merge is right when it shortens
+the description of the data.</p>
+</details>
+</section>
+<section id="what-pays-for-merging" class="level3" data-kind="explain">
+<h3 data-kind="explain">What pays for merging</h3>
+<div class="study-meta">
+<span class="study-kind">explain</span> <a
+href="/notes/an-ontology-that-pays-for-itself.html#merges-that-pay">Merges
+that pay ↗</a>
+</div>
+<p>Unsupervised Semantic Parsing keeps an operation only when <span
+class="math inline">\log P(\text{corpus}\mid H)+\log P(H)</span> rises.
+Read the score as a code length. Why does the likelihood term alone
+never ask for a merge? What should turning the weight of the prior up or
+down yield?</p>
+<details class="answer"><summary>Answer</summary>
+<p>The score is minus a two-part code length: the bits needed to
+describe the hypothesis <span class="math inline">H</span>, plus the
+bits needed to describe the corpus once <span
+class="math inline">H</span> is known. Finer classes always fit the data
+better, so the likelihood term alone never asks for merging. Brown
+clustering sidesteps the question by fixing the number of classes in
+advance. In a two-part code the prior is what pays for merging. Turning
+its weight up should yield coarse classes, the parts of speech. Turning
+it down should yield synonym sets, where <em>plate</em> goes with
+<em>dish</em> but not with <em>cup</em>.</p>
+</details>
+</section>
+<section id="the-cost-of-a-single-parse" class="level3"
+data-kind="compute">
+<h3 data-kind="compute">The cost of a single parse</h3>
+<div class="study-meta">
+<span class="study-kind">compute</span> <a
+href="/notes/an-ontology-that-pays-for-itself.html#merges-that-pay">Merges
+that pay ↗</a>
+</div>
+<p>A grammar gives a sentence <span class="math inline">x</span> two
+parses, with <span class="math inline">P(x,t_1)=0.03</span> and <span
+class="math inline">P(x,t_2)=0.01</span>. How many bits does the
+best-parse code spend on <span class="math inline">x</span>? How many
+would the best code the grammar allows spend? Write the difference as a
+probability and say what it pays for. Why is the best-parse code still a
+valid code?</p>
+<details class="answer"><summary>Answer</summary>
+<p>The best-parse code spends <span
+class="math inline">-\log_2P(x,t_1)=-\log_20.03\approx5.06</span> bits.
+The best the grammar allows spends <span
+class="math inline">-\log_2P(x)=-\log_20.04\approx4.64</span> bits. The
+difference is <span class="math inline">-\log_2P(t_1\mid
+x)=-\log_20.75\approx0.42</span> bits: the bits spent naming a parse the
+decoder never needed. The code is valid because the encoder sends the
+parse and then the words given the parse, and the decoder recovers the
+sentence without needing to know that the parse was the best one. The
+overhead stays small wherever the grammar is nearly unambiguous.</p>
+</details>
+</section>
+<section id="three-parts-of-the-code" class="level3" data-kind="state">
+<h3 data-kind="state">Three parts of the code</h3>
+<div class="study-meta">
+<span class="study-kind">state</span> <a
+href="/notes/an-ontology-that-pays-for-itself.html#text-is-not-the-world">Text
+is not the world ↗</a>
+</div>
+<p>Grammar induction compresses talk. What must an ontology compress
+instead? Write the three-part code and say what each part does. Why must
+the last part be kept weak?</p>
+<details class="answer"><summary>Answer</summary>
+<p>An ontology has to compress what the talk is about. “Things that take
+a determiner” is a fine class for a grammar and a poor concept for an
+ontology, and “physical object” is the reverse. The code is</p>
+<p><span class="math display">
+L(\text{ontology})+L(\text{facts}\mid\text{ontology})+L(\text{text}\mid\text{facts},\
+\text{lexicon}).
+</span></p>
+<p>The first part keeps the ontology from growing a concept for every
+fact. The middle part is where the ontology earns its keep: a concept is
+worth having when it shortens the description of the facts. The last
+part is the realization channel: syntax, word choice, paraphrase. If the
+channel were a large language model, it would already know that dogs
+have four legs, and text about dogs would cost few bits whatever the
+facts said. World knowledge goes to whichever component can hold it most
+cheaply, so the channel should know nothing about the world.</p>
+</details>
+</section>
+<section id="which-term-pays" class="level3" data-kind="recall">
+<h3 data-kind="recall">Which term pays</h3>
+<div class="study-meta">
+<span class="study-kind">recall</span> <a
+href="/notes/an-ontology-that-pays-for-itself.html#text-is-not-the-world">Text
+is not the world ↗</a>
+</div>
+<p>For each element say why it shortens the code and which term pays: a
+concept, a place in the IS-A hierarchy, a typed argument slot, a default
+with exceptions, a paraphrase equivalence, a word sense. For a default,
+which question does the code answer and which does it leave to
+inference?</p>
+<details class="answer"><summary>Answer</summary>
+<ul>
+<li>A concept: its members share many facts. Facts.</li>
+<li>A place in the IS-A hierarchy: a property is stated once at the
+parent, not at every child. Facts.</li>
+<li>A typed argument slot: arguments become predictable from the type.
+Facts.</li>
+<li>A default with exceptions: a rule plus a list of its exceptions
+beats listing every case. Facts.</li>
+<li>A paraphrase equivalence: several forms map to one predicate.
+Text.</li>
+<li>A word sense: each sense becomes predictable from its contexts.
+Text.</li>
+</ul>
+<p>The code decides whether a default exists at all: it survives while
+the rule plus its list of exceptions is cheaper than the alternatives,
+such as listing every case or splitting the class. Whether it applies to
+a given dog is a separate question, for inference.</p>
+</details>
+</section>
+<section id="the-reporting-policy-and-the-audience" class="level3"
+data-kind="explain">
+<h3 data-kind="explain">The reporting policy and the audience</h3>
+<div class="study-meta">
+<span class="study-kind">explain</span> <a
+href="/notes/an-ontology-that-pays-for-itself.html#who-says-so">Who says
+so ↗</a>
+</div>
+<p>Why does compressing text miss the knowledge Cyc set out to write
+down? What does conditioning on provenance split the description into?
+How does a contrast between audiences estimate the common ground?</p>
+<details class="answer"><summary>Answer</summary>
+<p>The knowledge an intelligent system most needs is what nobody writes
+down: people seldom write that they have two hands. A model of the
+corpus learns what gets said, and what gets said is a poor sample of
+what is true. Conditioning on provenance splits the description into a
+shared world and a model of each source. A source has a reporting
+policy: the probability that it mentions a fact, given the fact, the
+source and the audience it writes for. Writers omit what their readers
+already know. A children’s book about dogs says that a dog has four
+legs, and a veterinary paper never does. So the facts stated for novices
+and omitted for experts on the same topic are an estimate of the common
+ground.</p>
+</details>
+</section>
+<section id="three-consequences-of-provenance" class="level3"
+data-kind="recall">
+<h3 data-kind="recall">Three consequences of provenance</h3>
+<div class="study-meta">
+<span class="study-kind">recall</span> <a
+href="/notes/an-ontology-that-pays-for-itself.html#who-says-so">Who says
+so ↗</a>
+</div>
+<p>Conditioning on provenance has three further consequences: for
+consensus, for reliability and for copying. State each.</p>
+<details class="answer"><summary>Answer</summary>
+<ul>
+<li><em>Consensus as compression.</em> A claim made by one source is
+cheapest to code as that source’s belief. Once enough independent
+sources state it, coding it once in the shared world becomes cheaper
+than repeating it per source. The objective decides when a claim becomes
+a fact.</li>
+<li><em>Reliability in the same code.</em> Each source has a rate of
+false claims and a rate of omissions, and an unreliable source pays for
+its errors in bits.</li>
+<li><em>Copying.</em> Mirrors and syndication manufacture consensus.
+Shared errors give copying away, and detecting copies is a prerequisite
+for counting sources as independent.</li>
+</ul>
+</details>
+</section>
+<section id="the-tuple" class="level3" data-kind="state">
+<h3 data-kind="state">The tuple</h3>
+<div class="study-meta">
+<span class="study-kind">state</span> <a
+href="/notes/an-ontology-that-pays-for-itself.html#two-primitives">Two
+primitives ↗</a>
+</div>
+<p>Name the two primitives that form terms. How is <span
+class="math inline">\langle A,R,S,B\rangle</span> read, and which tuple
+is it identical to? What becomes of converses, symmetric relations and
+subrelations? How is a relation itself written?</p>
+<details class="answer"><summary>Answer</summary>
+<p>IS-A, which has a direction, and a tuple of four concepts, <span
+class="math inline">\langle A,R,S,B\rangle\equiv\langle
+B,S,R,A\rangle</span>, read “<span class="math inline">A</span> plays
+role <span class="math inline">R</span> toward <span
+class="math inline">B</span>, which plays role <span
+class="math inline">S</span>”. A relation has no argument order, so no
+relation needs a separately named converse: <span
+class="math inline">\langle\textit{John},\textit{parent},\textit{child},\textit{Mary}\rangle</span>
+and <span
+class="math inline">\langle\textit{Mary},\textit{child},\textit{parent},\textit{John}\rangle</span>
+are the same fact. A symmetric relation is one whose roles coincide, as
+in <span class="math inline">\langle
+A,\textit{sibling},\textit{sibling},B\rangle</span>. A subrelation comes
+from a subrole: since <em>mother</em> IS-A <em>parent</em>, every
+motherhood tuple IS-A a parenthood tuple. A relation is identified with
+its pair of roles and written <span class="math inline">\langle
+R,R,S,S\rangle</span>. Every instance stands under it, which gives
+domains and ranges as ordinary IS-A.</p>
+</details>
+</section>
+<section id="the-two-way-reading" class="level3" data-kind="case">
+<h3 data-kind="case">The two-way reading</h3>
+<div class="study-meta">
+<span class="study-kind">case</span> <a
+href="/notes/an-ontology-that-pays-for-itself.html#two-primitives">Two
+primitives ↗</a>
+</div>
+<p>What does asserting a class-level tuple claim? Judge each of these:
+<span
+class="math inline">\langle\textit{Dog},\textit{whole},\textit{part},\textit{DogLeg}\rangle</span>,
+<span
+class="math inline">\langle\textit{Dog},\textit{whole},\textit{part},\textit{Leg}\rangle</span>,
+<span
+class="math inline">\langle\textit{Car},\textit{whole},\textit{part},\textit{Engine}\rangle</span>,
+<span
+class="math inline">\langle\textit{Puppy},\textit{whole},\textit{part},\textit{DogLeg}\rangle</span>.</p>
+<details class="answer"><summary>Answer</summary>
+<p>It claims that the actual links of its type cover all of <span
+class="math inline">A</span> and all of <span
+class="math inline">B</span>: every <span class="math inline">A</span>
+stands in the relation to some <span class="math inline">B</span>, and
+every <span class="math inline">B</span> stands in it to some <span
+class="math inline">A</span>.</p>
+<ul>
+<li><em>Dog</em> and <em>DogLeg</em>: holds. Every dog leg belongs to
+some dog by definition, and the tuple adds that every dog has a
+leg.</li>
+<li><em>Dog</em> and <em>Leg</em>: does not hold, because tables have
+legs too.</li>
+<li><em>Car</em> and <em>Engine</em>: refuted by boat engines, which sit
+in no car.</li>
+<li><em>Puppy</em> and <em>DogLeg</em>: false, although it is a subtype
+of a true tuple, because most dog legs belong to grown dogs.</li>
+</ul>
+</details>
+</section>
+<section id="inheritance-runs-through-images" class="level3"
+data-kind="derive">
+<h3 data-kind="derive">Inheritance runs through images</h3>
+<div class="study-meta">
+<span class="study-kind">derive</span> <a
+href="/notes/an-ontology-that-pays-for-itself.html#two-primitives">Two
+primitives ↗</a>
+</div>
+<p>Split <span
+class="math inline">\langle\textit{Dog},\textit{whole},\textit{part},\textit{DogLeg}\rangle</span>
+into two IS-A statements. Use the split to show what <em>Puppy</em>
+inherits and what fails, and give the true tuple about puppies. Why is
+generalizing a role always safe when changing a filler is not?</p>
+<details class="answer"><summary>Answer</summary>
+<p>The tuple holds iff <em>Dog</em> IS-A (whole of some <em>DogLeg</em>)
+and <em>DogLeg</em> IS-A (part of some <em>Dog</em>). The “every” comes
+from IS-A and the “some” from the image, once in each direction. The two
+conjuncts are ordinary IS-A statements and are inherited as such.
+<em>Puppy</em> IS-A <em>Dog</em> gives <em>Puppy</em> IS-A (whole of
+some <em>DogLeg</em>): every puppy has a dog leg. The other conjunct
+fails, since <em>DogLeg</em> IS-A (part of some <em>Puppy</em>) is
+false. The true tuple is the matched one, <span
+class="math inline">\langle\textit{Puppy},\textit{whole},\textit{part},\textit{PuppyLeg}\rangle</span>,
+where <em>PuppyLeg</em> is the dog legs that are part of some puppy.</p>
+<p>Roles stand only under “some” in both conjuncts, so generalizing a
+role only makes the images grow. Each filler stands under “every” in one
+conjunct and under “some” in the other, so changing a filler is not safe
+in general.</p>
+</details>
+</section>
+<section id="no-individuals-no-classes" class="level3"
+data-kind="explain">
+<h3 data-kind="explain">No individuals, no classes</h3>
+<div class="study-meta">
+<span class="study-kind">explain</span> <a
+href="/notes/an-ontology-that-pays-for-itself.html#two-primitives">Two
+primitives ↗</a>
+</div>
+<p>Why does the ontology need no primitive distinction between
+individuals and classes? What danger does dropping the distinction
+bring, and how does the essay meet it?</p>
+<details class="answer"><summary>Answer</summary>
+<p>Take <em>John</em> and <em>Mary</em> as terms with one member each.
+For singular terms “every” and “some” agree, so a tuple over individuals
+is a plain fact, read by the same semantics as a tuple over classes. The
+danger is collective predication. “Dogs are mammals” says something of
+every dog, and “Humans are a species” says something of the kind. If
+both were IS-A, John would be a species. So IS-A is distributive: it
+says only what holds of every member. A collective fact is about a kind,
+and the kind gets a singular term of its own: <span
+class="math inline">\langle\textit{HomoSapiens},\textit{taxon},\textit{rank},\textit{SpeciesRank}\rangle</span>.
+Membership in the kind is a tuple, <span
+class="math inline">\langle\textit{Human},\textit{member},\textit{taxon},\textit{HomoSapiens}\rangle</span>,
+and not an IS-A, so nothing said of the kind passes down to its
+members.</p>
+</details>
+</section>
+<section id="one-judgment" class="level3" data-kind="state">
+<h3 data-kind="state">One judgment</h3>
+<div class="study-meta">
+<span class="study-kind">state</span> <a
+href="/notes/an-ontology-that-pays-for-itself.html#one-judgment">One
+judgment ↗</a>
+</div>
+<p>State the only form of judgment. Who makes it, and where does the
+regress stop? How are reported speech and contexts handled without
+nesting? Which sources are closed under inference?</p>
+<details class="answer"><summary>Answer</summary>
+<p><span class="math inline">\mathrm{Prov}(T,P)</span>: source <span
+class="math inline">P</span> asserts <span class="math inline">T</span>.
+<span class="math inline">\mathrm{Prov}</span> is never itself a term
+and never occurs inside one. It is the system’s own judgment, made from
+a parse that may be wrong. The system is itself a source, <em>Self</em>,
+and the shared world is <span
+class="math inline">\mathrm{Prov}(T,\textit{Self})</span>. For reported
+speech the nesting goes into the source: <span
+class="math inline">\mathrm{Prov}(T,\textit{Smith-via-Times})</span>. A
+context, such as a novel’s canon or a country’s law, is treated as an
+idealized source: <span
+class="math inline">\mathrm{Prov}(T,\textit{HarryPotterCanon})</span>.
+Only idealized sources and <em>Self</em> are closed under inference,
+since Smith does not believe every consequence of what Smith says.
+Claims from different sources are combined only in <em>Self</em>, after
+<em>Self</em> has adopted them.</p>
+</details>
+</section>
+<section id="three-jobs-and-judging-is-not-one" class="level3"
+data-kind="recall">
+<h3 data-kind="recall">Three jobs, and judging is not one</h3>
+<div class="study-meta">
+<span class="study-kind">recall</span> <a
+href="/notes/an-ontology-that-pays-for-itself.html#what-the-language-model-is-for">What
+the language model is for ↗</a>
+</div>
+<p>Lenat and Marcus’s neurosymbolic Cyc judges by proof. What judges in
+the essay’s design? Name the three jobs the language model does, and say
+for each what keeps it from needing special trust. Which risk does the
+essay name?</p>
+<details class="answer"><summary>Answer</summary>
+<p>The judge is code length.</p>
+<ul>
+<li>The model parses into the current vocabulary. Given a sentence and
+the relevant slice of the ontology in its prompt, it produces the
+judgments <span class="math inline">\mathrm{Prov}_d</span>, and it needs
+no retraining when the ontology is edited.</li>
+<li>It proposes edits: merges, splits, new roles, rules and context
+boundaries. Each proposal is checked by re-scoring the data it touches,
+so a high rate of bad proposals costs compute but not quality.</li>
+<li>It is one more source, with its own reliability and reporting
+policy, estimated against the other sources in the same code. Several
+prompts to one model do not count as several sources.</li>
+</ul>
+<p>The risk: a model pretrained on human language will propose the
+structures that human linguistics and folk taxonomy already contain. The
+code length cannot make a bad ontology score well, but the proposer
+decides what gets considered, so the search’s local optima will lean
+toward the familiar.</p>
+</details>
+</section>
+<section id="what-compression-cannot-do" class="level3"
+data-kind="limits">
+<h3 data-kind="limits">What compression cannot do</h3>
+<div class="study-meta">
+<span class="study-kind">limits</span> <a
+href="/notes/an-ontology-that-pays-for-itself.html#what-compression-cannot-do">What
+compression cannot do ↗</a>
+</div>
+<p>Give the two limits the essay states for conditioning on provenance,
+and four things its closing section concedes about the proposal as a
+whole.</p>
+<details class="answer"><summary>Answer</summary>
+<p>Limits of provenance (<a
+href="/notes/an-ontology-that-pays-for-itself.html#who-says-so">Who says
+so</a>):</p>
+<ul>
+<li>Compression rewards mutual consistency, not truth. A coherent myth
+told by many independent sources will be promoted to the shared world,
+and only sources outside text, such as measurement and action, can break
+it.</li>
+<li>A fact that no source states remains out of reach.</li>
+</ul>
+<p>Conceded in closing:</p>
+<ul>
+<li>The induced ontology will not be the best compressor of its corpus.
+Code length is the criterion for choosing structure, not a contest that
+the structure wins.</li>
+<li>The search is the bottleneck, not the scoring. Nothing yet shows
+that proposals from a language model make it feasible at scale.</li>
+<li>The criterion is unlikely to single out one ontology: compression
+picks a family of near-ties.</li>
+<li>Nothing has been implemented, so there are no results. An
+implementation should be evaluated against WordNet, Wikidata and OpenCyc
+and never trained toward them.</li>
+</ul>
+</details>
+</section>
+</section>
+<section id="terms" class="level2">
+<h2>Terms</h2>
+<p>Introduced in this essay:</p>
+<ul>
+<li><a
+href="/notes/an-ontology-that-pays-for-itself.html#merges-that-pay">seed
+and stalk</a></li>
+<li><a
+href="/notes/an-ontology-that-pays-for-itself.html#merges-that-pay">two-part
+code</a></li>
+<li><a
+href="/notes/an-ontology-that-pays-for-itself.html#merges-that-pay">best-parse
+code</a>: coding a sentence by its single best parse and then the words
+given the parse, at a cost of <span class="math inline">-\log P(t^*\mid
+x)</span> bits above the best the grammar allows.</li>
+<li><a
+href="/notes/an-ontology-that-pays-for-itself.html#text-is-not-the-world">three-part
+code and realization channel</a>: ontology, facts given the ontology,
+and text given the facts and a lexicon; the last part is the channel,
+which should know syntax, word choice and paraphrase and nothing about
+the world.</li>
+<li><a
+href="/notes/an-ontology-that-pays-for-itself.html#who-says-so">reporting
+policy</a>: the probability that a source mentions a fact, given the
+fact, the source and the audience it writes for.</li>
+<li><a
+href="/notes/an-ontology-that-pays-for-itself.html#who-says-so">common
+ground</a></li>
+<li><a
+href="/notes/an-ontology-that-pays-for-itself.html#two-primitives">role
+tuple</a>: <span class="math inline">\langle A,R,S,B\rangle\equiv\langle
+B,S,R,A\rangle</span>: <span class="math inline">A</span> plays role
+<span class="math inline">R</span> toward <span
+class="math inline">B</span>, which plays role <span
+class="math inline">S</span>.</li>
+<li><a
+href="/notes/an-ontology-that-pays-for-itself.html#two-primitives">two-way
+reading</a>: an asserted class-level tuple claims that every <span
+class="math inline">A</span> stands in the relation to some <span
+class="math inline">B</span> and every <span
+class="math inline">B</span> stands in it to some <span
+class="math inline">A</span>.</li>
+<li><a
+href="/notes/an-ontology-that-pays-for-itself.html#two-primitives">image</a></li>
+<li><a
+href="/notes/an-ontology-that-pays-for-itself.html#two-primitives">distributive
+IS-A</a>: IS-A says only what holds of every member, so a fact about a
+kind needs a singular term for the kind.</li>
+<li><a
+href="/notes/an-ontology-that-pays-for-itself.html#one-judgment">provenance
+judgment</a>: <span class="math inline">\mathrm{Prov}(T,P)</span>,
+source <span class="math inline">P</span> asserts <span
+class="math inline">T</span>: the only form of judgment, never itself a
+term.</li>
+<li><a
+href="/notes/an-ontology-that-pays-for-itself.html#one-judgment">Self
+and idealized sources</a>: the system as the last judge, and contexts
+such as a novel’s canon treated as sources; only these are closed under
+inference.</li>
+</ul>
+<p>From other essays:</p>
+<ul>
+<li>adaptive logic (<a
+href="/notes/presumed-normal.html#a-logic-in-three-parts"><em>Presumed
+Normal</em></a>)</li>
+<li>bandit and exploration (<a
+href="/notes/the-bookmaker-is-a-learner.html#the-bookmaker-is-a-learner"><em>The
+Bookmaker Is a Learner</em></a>)</li>
+<li>library learning (<a
+href="/notes/what-should-a-program-inherit.html#babble-when-a-common-pattern-becomes-a-useful-function"><em>What
+Should a Program Inherit?</em></a>)</li>
+</ul>
+</section>
+</article>
+<section class="study-link"><p><em>From the study questions back to the essay: 
+<a href="/notes/an-ontology-that-pays-for-itself.html">an-ontology-that-pays-for-itself.html &rarr;</a></em></p></section>
+<script src="/assets/theme-toggle.js"></script>
+</body>
+</html>

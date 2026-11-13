@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <meta property="og:title" content="Study notes: The Bookmaker Is a Learner: The Mathematics">
+  <meta property="og:url" content="https://lukstafi.github.io/notes/the-bookmaker-is-a-learner-mathematics.study.html">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="lukstafi&#x27;s blog">
+  <meta name="twitter:card" content="summary">
+  <title>Study notes: The Bookmaker Is a Learner: The
+Mathematics</title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <link rel="stylesheet" href="/assets/tufte.css">
+  <link rel="stylesheet" href="/assets/pandoc-tufte.css">
+  <link rel="stylesheet" href="/assets/site.css">
+  <script defer=""
+  src="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.js"></script>
+  <script>document.addEventListener("DOMContentLoaded", function () {
+ var mathElements = document.getElementsByClassName("math");
+ var macros = [];
+ for (var i = 0; i < mathElements.length; i++) {
+  var texText = mathElements[i].firstChild;
+  if (mathElements[i].tagName == "SPAN") {
+   katex.render(texText.data, mathElements[i], {
+    displayMode: mathElements[i].classList.contains('display'),
+    throwOnError: false,
+    macros: macros,
+    fleqn: false
+   });
+}}});
+  </script>
+  <link rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.css" />
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+  <script>(function(){var t=localStorage.getItem('theme-preference');if(t)document.documentElement.setAttribute('data-theme',t);})()</script>
+</head>
+<body>
+<nav class="site-nav">
+  <a href="/">Home</a> &middot; <a href="/about.html">About</a> &middot; <a href="https://lukstafi.substack.com">Substack</a>
+</nav>
+<div class="theme-toggle">
+  <button id="theme-btn" aria-label="Toggle dark mode">&#9788;</button>
+</div>
+<article>
+<header>
+<h1 class="title">Study notes: The Bookmaker Is a Learner: The
+Mathematics</h1>
+</header>
+<p>Recall questions for <a
+href="/notes/the-bookmaker-is-a-learner-mathematics.html"><em>The
+Bookmaker Is a Learner: The Mathematics</em></a>. Answer each from
+memory, then open the answer to compare. The link under a question leads
+to the section it draws on.</p>
+<section id="before-reading" class="level2">
+<h2>Before reading</h2>
+<p>Helpful, not required:</p>
+<ul>
+<li><a href="/notes/the-bookmaker-is-a-learner.html"><em>The Bookmaker
+Is a Learner</em></a>: what the mechanisms are for.</li>
+</ul>
+</section>
+<section id="questions" class="level2">
+<h2>Questions</h2>
+<p>These questions cover the spine of the page: three market makers and
+the equivalences among them.</p>
+<section id="proper-and-strictly-proper" class="level3"
+data-kind="state">
+<h3 data-kind="state">Proper and strictly proper</h3>
+<div class="study-meta">
+<span class="study-kind">state</span> <a
+href="/notes/the-bookmaker-is-a-learner-mathematics.html#three-automated-market-makers">2.
+Three automated market makers ↗</a>
+</div>
+<p>Define a proper scoring rule and a strictly proper one. Give the
+logarithmic rule.</p>
+<details class="answer"><summary>Answer</summary>
+<p>A scoring rule pays <span class="math inline">s_i(p)</span> for a
+reported distribution <span class="math inline">p</span> when outcome
+<span class="math inline">i</span> occurs. It is proper if <span
+class="math inline">\mathbb E_{i\sim r}s_i(r)\ge\mathbb E_{i\sim
+r}s_i(p)</span> for all <span class="math inline">r,p</span>: reporting
+one’s belief maximizes expected score. It is strictly proper if equality
+holds only at <span class="math inline">p=r</span>. The logarithmic rule
+is <span class="math inline">s_i(p)=b\log p_i</span>.</p>
+</details>
+</section>
+<section id="what-the-operator-can-lose" class="level3"
+data-kind="derive">
+<h3 data-kind="derive">What the operator can lose</h3>
+<div class="study-meta">
+<span class="study-kind">derive</span> <a
+href="/notes/the-bookmaker-is-a-learner-mathematics.html#three-automated-market-makers">2.
+Three automated market makers ↗</a>
+</div>
+<p>In a market scoring rule each trader pays the previous score and
+receives the new one. Bound the operator’s loss for the logarithmic rule
+started at the uniform distribution.</p>
+<details class="answer"><summary>Answer</summary>
+<p>The payments telescope: the operator pays <span
+class="math inline">s_k(p^T)-s_k(p^0)</span> when the outcome is <span
+class="math inline">k</span>. For the logarithmic rule this is <span
+class="math inline">b\log p^T_k-b\log\frac1n\le b\log n</span>, since
+<span class="math inline">\log p^T_k\le0</span>.</p>
+</details>
+</section>
+<section id="one-trade-in-the-lmsr" class="level3" data-kind="compute">
+<h3 data-kind="compute">One trade in the LMSR</h3>
+<div class="study-meta">
+<span class="study-kind">compute</span> <a
+href="/notes/the-bookmaker-is-a-learner-mathematics.html#three-automated-market-makers">2.
+Three automated market makers ↗</a>
+</div>
+<p>Take two outcomes, <span class="math inline">b=1</span> and no shares
+outstanding. A trader buys one share of outcome 1. What does it cost,
+what is the new price of outcome 1, and what does the bookmaker lose if
+outcome 1 occurs?</p>
+<details class="answer"><summary>Answer</summary>
+<p><span class="math inline">C(q)=\log(e^{q_1}+e^{q_2})</span>. The cost
+is <span
+class="math inline">C(1,0)-C(0,0)=\log\frac{e+1}{2}\approx0.620</span>.
+The new price is <span
+class="math inline">\frac{e}{e+1}\approx0.731</span>. If outcome 1
+occurs the bookmaker pays <span class="math inline">1</span> and has
+collected <span class="math inline">0.620</span>, a loss of <span
+class="math inline">0.380</span>, within the bound <span
+class="math inline">\log 2\approx0.693</span>.</p>
+</details>
+</section>
+<section id="valid-cost-functions" class="level3" data-kind="state">
+<h3 data-kind="state">Valid cost functions</h3>
+<div class="study-meta">
+<span class="study-kind">state</span> <a
+href="/notes/the-bookmaker-is-a-learner-mathematics.html#market-scoring-rules-and-cost-functions-are-one-family">5.3
+Market scoring rules and cost functions are one family ↗</a>
+</div>
+<p>A cost function is valid if its prices are nonnegative and sum to
+one. Give the equivalent three properties, and say what translation
+invariance means for a trader.</p>
+<details class="answer"><summary>Answer</summary>
+<p>Differentiable, monotone, and translation-invariant: <span
+class="math inline">C(q+k\mathbf 1)=C(q)+k</span> (Lemma 5). Translation
+invariance says that <span class="math inline">k</span> shares of every
+outcome cost exactly <span class="math inline">k</span>, as they must,
+since they pay <span class="math inline">k</span> whatever happens.
+Differentiating it in <span class="math inline">k</span> gives prices
+that sum to one.</p>
+</details>
+</section>
+<section id="the-lmsr-is-hedge" class="level3" data-kind="explain">
+<h3 data-kind="explain">The LMSR is Hedge</h3>
+<div class="study-meta">
+<span class="study-kind">explain</span> <a
+href="/notes/the-bookmaker-is-a-learner-mathematics.html#the-lmsr-is-hedge">5.1
+The LMSR is Hedge ↗</a>
+</div>
+<p>State the dictionary between the LMSR and Hedge, and the resulting
+bound on the bookmaker’s loss.</p>
+<details class="answer"><summary>Answer</summary>
+<p>Outcomes are experts. The shares outstanding <span
+class="math inline">q_{i,t}</span> are expert <span
+class="math inline">i</span>’s cumulative gains. The learning rate is
+<span class="math inline">\eta=1/b</span>, and Hedge’s weights are the
+LMSR prices. By convexity of <span class="math inline">C</span> the
+bookmaker’s revenue is at least <span class="math inline">\sum_tw_t\cdot
+r_t</span>, and it pays at most <span
+class="math inline">\max_iG_{i,T}</span>, so its loss is at most Hedge’s
+regret: <span class="math inline">b\log n+T\varepsilon^2/(2b)</span> for
+trades of size at most <span class="math inline">\varepsilon</span>. For
+fixed volume the second term vanishes as trades become small, leaving
+<span class="math inline">b\log n</span>.</p>
+</details>
+</section>
+<section id="from-a-bookmaker-to-a-learner" class="level3"
+data-kind="derive">
+<h3 data-kind="derive">From a bookmaker to a learner</h3>
+<div class="study-meta">
+<span class="study-kind">derive</span> <a
+href="/notes/the-bookmaker-is-a-learner-mathematics.html#from-a-bookmaker-to-a-learner">5.2
+From a bookmaker to a learner ↗</a>
+</div>
+<p>Given a valid cost function with worst-case loss <span
+class="math inline">B</span> and <span
+class="math inline">\varphi</span>-stable prices, build a learner and
+bound its regret. Then specialize to the LMSR.</p>
+<details class="answer"><summary>Answer</summary>
+<p>Play <span class="math inline">w_t=p(-\varepsilon L_{t-1})</span>:
+the market’s state is <span class="math inline">q_t=-\varepsilon
+L_t</span>, so step <span class="math inline">t</span> trades <span
+class="math inline">r_t=-\varepsilon l_t</span>. Bounded loss gives
+<span
+class="math inline">\max_i\sum_tr_{i,t}-\sum_t(C(q_t)-C(q_{t-1}))\le
+B</span>, and the Taylor bound of Lemma 3 replaces each cost difference
+by <span class="math inline">w_t\cdot r_t</span> with error <span
+class="math inline">\varepsilon^2\varphi/2</span>. Dividing by <span
+class="math inline">\varepsilon</span>: regret <span
+class="math inline">\le B/\varepsilon+\varepsilon\varphi T/2</span>,
+minimized at <span class="math inline">\varepsilon=\sqrt{2B/(\varphi
+T)}</span> with value <span class="math inline">\sqrt{2B\varphi
+T}</span> (Theorem 4). For the LMSR, <span class="math inline">\partial
+p_i/\partial q_j=p_i(\delta_{ij}-p_j)/b</span> gives <span
+class="math inline">\varphi=2/b</span>, and <span
+class="math inline">B=b\log n</span>, so the bound is <span
+class="math inline">2\sqrt{T\log n}</span>, independent of <span
+class="math inline">b</span>.</p>
+</details>
+</section>
+<section id="the-conjugate-representation" class="level3"
+data-kind="state">
+<h3 data-kind="state">The conjugate representation</h3>
+<div class="study-meta">
+<span class="study-kind">state</span> <a
+href="/notes/the-bookmaker-is-a-learner-mathematics.html#market-scoring-rules-and-cost-functions-are-one-family">5.3
+Market scoring rules and cost functions are one family ↗</a>
+</div>
+<p>Write a valid convex cost function as a supremum. What are the prices
+in that representation, and what bounds the bookmaker’s loss? Check the
+bound for the LMSR.</p>
+<details class="answer"><summary>Answer</summary>
+<p><span class="math inline">C(q)=\sup_{p\in\Delta_n}\bigl(p\cdot
+q-\alpha(p)\bigr)</span> for a convex lower semicontinuous <span
+class="math inline">\alpha</span> (Lemma 6). The prices <span
+class="math inline">\nabla C(q)</span> are the maximizers (Lemma 7). The
+worst-case loss from <span class="math inline">q=0</span> is at most
+<span
+class="math inline">\sup_{p,p&#39;}(\alpha(p)-\alpha(p&#39;))</span>
+(Lemma 8). For the LMSR <span
+class="math inline">\alpha(p)=b\sum_ip_i\log p_i</span>, which ranges
+from <span class="math inline">-b\log n</span> at the uniform
+distribution to <span class="math inline">0</span> at a vertex, so the
+bound is <span class="math inline">b\log n</span>.</p>
+</details>
+</section>
+<section id="scoring-rules-and-cost-functions" class="level3"
+data-kind="state">
+<h3 data-kind="state">Scoring rules and cost functions</h3>
+<div class="study-meta">
+<span class="study-kind">state</span> <a
+href="/notes/the-bookmaker-is-a-learner-mathematics.html#market-scoring-rules-and-cost-functions-are-one-family">5.3
+Market scoring rules and cost functions are one family ↗</a>
+</div>
+<p>Theorem 10 pairs cost-function markets with market scoring rules.
+What is <span class="math inline">\alpha_C</span> in terms of the
+scoring rule? Verify the reverse formula for the LMSR.</p>
+<details class="answer"><summary>Answer</summary>
+<p><span class="math inline">\alpha_C(p)=\sum_ip_is_i(p)</span>, the
+expected score of a truthful report. In reverse, <span
+class="math inline">s_i(p)=\alpha_C(p)-\sum_jp_j\partial_j\alpha_C(p)+\partial_i\alpha_C(p)</span>.
+For the LMSR <span class="math inline">\partial_i\alpha_C=b(\log
+p_i+1)</span>, so <span
+class="math inline">\sum_jp_j\partial_j\alpha_C=\alpha_C+b</span> and
+<span class="math inline">s_i(p)=b\log p_i</span>.</p>
+</details>
+</section>
+<section id="regularized-leaders-are-markets" class="level3"
+data-kind="explain">
+<h3 data-kind="explain">Regularized leaders are markets</h3>
+<div class="study-meta">
+<span class="study-kind">explain</span> <a
+href="/notes/the-bookmaker-is-a-learner-mathematics.html#follow-the-regularized-leader">5.4
+Follow the regularized leader ↗</a>
+</div>
+<p>Follow the regularized leader plays <span
+class="math inline">w_t=\arg\min_{w\in\Delta_n}\bigl(w\cdot
+L_{t-1}+R(w)/\eta\bigr)</span>. Which market quotes these weights as
+prices, and at which state?</p>
+<details class="answer"><summary>Answer</summary>
+<p>The cost-function market with <span
+class="math inline">\alpha_C=R/\eta</span>, at <span
+class="math inline">q=-L_{t-1}</span>: by Lemma 7 its prices maximize
+<span class="math inline">p\cdot q-\alpha_C(p)</span>, which is the same
+problem. With <span class="math inline">R</span> the negative entropy
+this is Hedge and the LMSR.</p>
+</details>
+</section>
+<section id="the-scpms-flaw-and-its-repair" class="level3"
+data-kind="explain">
+<h3 data-kind="explain">The SCPM’s flaw and its repair</h3>
+<div class="study-meta">
+<span class="study-kind">explain</span> <a
+href="/notes/the-bookmaker-is-a-learner-mathematics.html#cost-function-markets-and-the-scpm">5.5
+Cost-function markets and the SCPM ↗</a>
+</div>
+<p>What does the original SCPM charge, why is that a flaw, and what does
+the repaired mechanism turn out to be?</p>
+<details class="answer"><summary>Answer</summary>
+<p>It charges the dual price of the final solution for the whole filled
+quantity, <span class="math inline">p(x^*)^\top a\,x^*</span>, which is
+not truthful. The repair charges the integral of the marginal prices as
+the order is filled, which coincides with VCG pricing. The repaired
+payment is <span class="math inline">C(q+ax^*)-C(q)</span> with <span
+class="math inline">C(q)=\min_t\bigl(t-u(t\mathbf 1-q)\bigr)</span>: a
+convex cost-function market (Theorem 13). Conversely every convex
+cost-function market is an SCPM with <span
+class="math inline">u(s)=-C(-s)</span> (Theorem 14). The step from duals
+to a cost function is sensitivity analysis: optimal multipliers are
+shadow prices.</p>
+</details>
+</section>
+<section id="the-combinatorial-wall" class="level3" data-kind="recall">
+<h3 data-kind="recall">The combinatorial wall</h3>
+<div class="study-meta">
+<span class="study-kind">recall</span> <a
+href="/notes/the-bookmaker-is-a-learner-mathematics.html#combinatorial-markets">6.
+Combinatorial markets ↗</a>
+</div>
+<p>For bets on permutations, say which of these is polynomial and which
+is hard, with the reason: matching divisible subset bets; matching pair
+bets; LMSR pricing of subset bets; LMSR pricing of pair bets.</p>
+<details class="answer"><summary>Answer</summary>
+<ul>
+<li>Divisible subset-bet matching: polynomial. The ellipsoid method
+needs only a separation oracle, and the worst outcome is a
+maximum-weight perfect matching between candidates and positions
+(Theorem 16).</li>
+<li>Pair-bet matching: NP-hard, divisible or not, through minimum
+feedback arc set.</li>
+<li>LMSR pricing of subset bets: #P-hard, by reduction from the
+permanent.</li>
+<li>LMSR pricing of pair bets: #P-hard, by reduction from counting
+linear extensions.</li>
+</ul>
+</details>
+</section>
+<section id="a-learner-in-place-of-the-exact-price" class="level3"
+data-kind="explain">
+<h3 data-kind="explain">A learner in place of the exact price</h3>
+<div class="study-meta">
+<span class="study-kind">explain</span> <a
+href="/notes/the-bookmaker-is-a-learner-mathematics.html#approximate-subset-betting-prices-in-polynomial-time-new">6.3.1
+Approximate subset-betting prices in polynomial time <em>(new)</em>
+↗</a>
+</div>
+<p>How does a bookmaker quote subset-betting prices in polynomial time,
+what does it give up, and what kind of guarantee does it keep?</p>
+<details class="answer"><summary>Answer</summary>
+<p>It keeps an <span class="math inline">n\times n</span> doubly
+stochastic matrix, multiplies entry <span
+class="math inline">(k,j)</span> by <span
+class="math inline">e^{q_{kj}/b}</span> after a trade, and restores
+double stochasticity by Sinkhorn balancing; these are PermELearn’s
+weights. It is not the exact LMSR over permutations, whose prices need
+permanents. Its worst-case loss is at most <span
+class="math inline">b\,n\log n</span> in the limit of small trades,
+against <span class="math inline">b\log n!</span> for the exact LMSR.
+The guarantee is a regret bound, not an approximation ratio for LMSR
+prices.</p>
+</details>
+</section>
+<section id="only-myopically-truthful" class="level3"
+data-kind="limits">
+<h3 data-kind="limits">Only myopically truthful</h3>
+<div class="study-meta">
+<span class="study-kind">limits</span> <a
+href="/notes/the-bookmaker-is-a-learner-mathematics.html#market-types-and-wagering-mechanisms">1.
+Market types and wagering mechanisms ↗</a>
+</div>
+<p>Market makers are built on proper scoring rules. What does properness
+not guarantee?</p>
+<details class="answer"><summary>Answer</summary>
+<p>It makes a dynamic mechanism only myopically incentive compatible:
+reporting one’s estimate is optimal for a trader who ignores the effect
+of the report on later traders. Under some information structures a
+trader gains by bluffing.</p>
+</details>
+<p>For problems that go beyond recall, the essay has its own <a
+href="/notes/the-bookmaker-is-a-learner-mathematics.html#exercises">exercises</a>.</p>
+</section>
+</section>
+<section id="terms" class="level2">
+<h2>Terms</h2>
+<p>Introduced in this essay:</p>
+<ul>
+<li><a
+href="/notes/the-bookmaker-is-a-learner-mathematics.html#three-automated-market-makers">sequential
+convex pari-mutuel mechanism</a></li>
+<li><a
+href="/notes/the-bookmaker-is-a-learner-mathematics.html#convex-duality-toolkit">shadow
+price</a></li>
+<li><a
+href="/notes/the-bookmaker-is-a-learner-mathematics.html#market-scoring-rules-and-cost-functions-are-one-family">conjugate
+representation of a cost function</a></li>
+</ul>
+<p>From other essays:</p>
+<ul>
+<li>proper scoring rule (<a
+href="/notes/the-bookmaker-is-a-learner.html#paying-for-honesty"><em>The
+Bookmaker Is a Learner</em></a>)</li>
+<li>subset betting and pair betting (<a
+href="/notes/the-bookmaker-is-a-learner.html#the-combinatorial-wall"><em>The
+Bookmaker Is a Learner</em></a>)</li>
+<li>market scoring rule (<a
+href="/notes/the-bookmaker-is-a-learner.html#paying-for-honesty"><em>The
+Bookmaker Is a Learner</em></a>)</li>
+<li>cost-function market and the LMSR (<a
+href="/notes/the-bookmaker-is-a-learner.html#one-bookmaker-four-faces"><em>The
+Bookmaker Is a Learner</em></a>)</li>
+<li>Hedge as a bookmaker (<a
+href="/notes/the-bookmaker-is-a-learner.html#the-bookmaker-is-a-learner"><em>The
+Bookmaker Is a Learner</em></a>)</li>
+<li>follow the regularized leader (<a
+href="/notes/the-bookmaker-is-a-learner.html#the-bookmaker-is-a-learner"><em>The
+Bookmaker Is a Learner</em></a>)</li>
+<li>Lagrange multipliers and complementary slackness: also in <a
+href="/notes/how-does-a-policy-improve.html#improving-a-distribution-without-throwing-away-the-prior"><em>How
+Does a Policy Improve?</em>, “Improving a distribution without throwing
+away the prior”</a>.</li>
+</ul>
+</section>
+</article>
+<section class="study-link"><p><em>From the study questions back to the essay: 
+<a href="/notes/the-bookmaker-is-a-learner-mathematics.html">the-bookmaker-is-a-learner-mathematics.html &rarr;</a></em></p></section>
+<script src="/assets/theme-toggle.js"></script>
+</body>
+</html>

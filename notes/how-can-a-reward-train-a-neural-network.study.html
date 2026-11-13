@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <meta name="description" content="Recall questions for the essay “How Can a Reward Train a Neural Network?”.">
+  <meta property="og:title" content="Study notes: How Can a Reward Train a Neural Network?">
+  <meta property="og:description" content="Recall questions for the essay “How Can a Reward Train a Neural Network?”.">
+  <meta property="og:url" content="https://lukstafi.github.io/notes/how-can-a-reward-train-a-neural-network.study.html">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="lukstafi&#x27;s blog">
+  <meta name="twitter:card" content="summary">
+  <title>Study notes: How Can a Reward Train a Neural Network?</title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <link rel="stylesheet" href="/assets/tufte.css">
+  <link rel="stylesheet" href="/assets/pandoc-tufte.css">
+  <link rel="stylesheet" href="/assets/site.css">
+  <script defer=""
+  src="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.js"></script>
+  <script>document.addEventListener("DOMContentLoaded", function () {
+ var mathElements = document.getElementsByClassName("math");
+ var macros = [];
+ for (var i = 0; i < mathElements.length; i++) {
+  var texText = mathElements[i].firstChild;
+  if (mathElements[i].tagName == "SPAN") {
+   katex.render(texText.data, mathElements[i], {
+    displayMode: mathElements[i].classList.contains('display'),
+    throwOnError: false,
+    macros: macros,
+    fleqn: false
+   });
+}}});
+  </script>
+  <link rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.css" />
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+  <script>(function(){var t=localStorage.getItem('theme-preference');if(t)document.documentElement.setAttribute('data-theme',t);})()</script>
+</head>
+<body>
+<nav class="site-nav">
+  <a href="/">Home</a> &middot; <a href="/about.html">About</a> &middot; <a href="https://lukstafi.substack.com">Substack</a>
+</nav>
+<div class="theme-toggle">
+  <button id="theme-btn" aria-label="Toggle dark mode">&#9788;</button>
+</div>
+<article>
+<header>
+<h1 class="title">Study notes: How Can a Reward Train a Neural
+Network?</h1>
+</header>
+<p>Recall questions for <a
+href="/notes/how-can-a-reward-train-a-neural-network.html"><em>How Can a
+Reward Train a Neural Network?</em></a>. Answer each from memory, then
+open the answer to compare. The link under a question leads to the
+section it draws on.</p>
+<section id="questions" class="level2">
+<h2>Questions</h2>
+<p>The delivery problem, used by several questions: at the junction
+<span class="math inline">J</span> the detour ends the episode with
+reward <span class="math inline">2</span>; approaching the door gives
+<span class="math inline">0</span> and leads to <span
+class="math inline">D</span>; at the door, opening gives <span
+class="math inline">6</span> and giving up gives <span
+class="math inline">0</span>; <span
+class="math inline">\gamma=0.9</span>.</p>
+<section id="evaluate-a-half-hearted-policy" class="level3"
+data-kind="compute">
+<h3 data-kind="compute">Evaluate a half-hearted policy</h3>
+<div class="study-meta">
+<span class="study-kind">compute</span> <a
+href="/notes/how-can-a-reward-train-a-neural-network.html#values-evaluate-a-particular-policy">Values
+evaluate a particular policy ↗</a>
+</div>
+<p>The policy approaches the door half the time and opens it a quarter
+of the time. Compute <span class="math inline">V^\pi(D)</span>, <span
+class="math inline">Q^\pi(J,\text{door})</span> and <span
+class="math inline">V^\pi(J)</span>.</p>
+<details class="answer"><summary>Answer</summary>
+<p><span class="math inline">V^\pi(D)=0.25\times6=1.5</span>. <span
+class="math inline">Q^\pi(J,\text{door})=0+0.9\times1.5=1.35</span>.
+<span
+class="math inline">V^\pi(J)=0.5\times2+0.5\times1.35=1.675</span>. The
+door route holds the best return available, <span
+class="math inline">5.4</span>, and is still the worse choice under this
+behavior at the door.</p>
+</details>
+</section>
+<section id="why-one-greedy-step-is-not-enough" class="level3"
+data-kind="explain">
+<h3 data-kind="explain">Why one greedy step is not enough</h3>
+<div class="study-meta">
+<span class="study-kind">explain</span> <a
+href="/notes/how-can-a-reward-train-a-neural-network.html#from-evaluating-behavior-to-choosing-better-behavior">From
+evaluating behavior to choosing better behavior ↗</a>
+</div>
+<p>Improve the policy above greedily, once. Which route does the new
+policy take, and why does it miss the best one? What fixes it?</p>
+<details class="answer"><summary>Answer</summary>
+<p>The new policy opens at the door (<span
+class="math inline">6&gt;0</span>) and takes the detour (<span
+class="math inline">2&gt;1.35</span>), earning <span
+class="math inline">2</span>. The value <span
+class="math inline">1.35</span> assumed the old behavior at the door.
+Re-evaluating gives <span class="math inline">V(D)=6</span> and <span
+class="math inline">Q(J,\text{door})=5.4</span>, and a second greedy
+step takes the door. Evaluate, improve, repeat is policy iteration: a
+better later decision changes which earlier decision is right.</p>
+</details>
+</section>
+<section id="where-the-max-sits" class="level3" data-kind="explain">
+<h3 data-kind="explain">Where the max sits</h3>
+<div class="study-meta">
+<span class="study-kind">explain</span> <a
+href="/notes/how-can-a-reward-train-a-neural-network.html#from-evaluating-behavior-to-choosing-better-behavior">From
+evaluating behavior to choosing better behavior ↗</a>
+</div>
+<p>In <span class="math inline">Q^*(s,a)=\mathbb E[r+\gamma\max_b
+Q^*(s&#39;,b)\mid s,a]</span>, why is the max inside the
+expectation?</p>
+<details class="answer"><summary>Answer</summary>
+<p>The agent chooses actions; it does not choose which random outcome
+the environment produces. Its action value must average over that
+randomness. At the next state it can respond to what actually happened,
+so the max is taken there, after the outcome is known.</p>
+</details>
+</section>
+<section id="two-parameters-two-jobs" class="level3"
+data-kind="distinguish">
+<h3 data-kind="distinguish">Two parameters, two jobs</h3>
+<div class="study-meta">
+<span class="study-kind">distinguish</span> <a
+href="/notes/how-can-a-reward-train-a-neural-network.html#learning-values-from-experience">Learning
+values from experience ↗</a>
+</div>
+<p>What does <span class="math inline">\gamma</span> set, and what does
+<span class="math inline">\lambda</span> set?</p>
+<details class="answer"><summary>Answer</summary>
+<p><span class="math inline">\gamma</span> is part of the objective: how
+much later rewards count. <span class="math inline">\lambda</span> is
+part of the estimator: how observed rewards and value predictions are
+mixed to estimate that objective. Every target in the <span
+class="math inline">\lambda</span> mixture estimates the same <span
+class="math inline">\gamma</span>-discounted return. Lowering <span
+class="math inline">\lambda</span> leans on the value estimates (bias)
+instead of long sampled outcomes (variance).</p>
+</details>
+</section>
+<section id="a-gradient-without-the-worlds-derivative" class="level3"
+data-kind="derive">
+<h3 data-kind="derive">A gradient without the world’s derivative</h3>
+<div class="study-meta">
+<span class="study-kind">derive</span> <a
+href="/notes/how-can-a-reward-train-a-neural-network.html#a-gradient-for-a-sampled-choice">A
+gradient for a sampled choice ↗</a>
+</div>
+<p>A sampled reward has no label for the correct action, and the
+environment cannot be differentiated. Derive an estimator of <span
+class="math inline">\nabla_\theta\,\mathbb E[r]</span> that needs
+neither.</p>
+<details class="answer"><summary>Answer</summary>
+<p>Use <span
+class="math inline">\nabla_\theta\pi_\theta(a)=\pi_\theta(a)\nabla_\theta\log\pi_\theta(a)</span>.
+Then <span class="math inline">\nabla_\theta\sum_a\pi_\theta(a)\bar
+r(a)=\mathbb
+E_{a\sim\pi_\theta}[r\,\nabla_\theta\log\pi_\theta(a)]</span>, so the
+sampled reward times the gradient of the sampled action’s
+log-probability is an unbiased estimate. For a whole episode the
+log-probability of the trajectory is a sum, and the environment’s terms
+do not depend on <span class="math inline">\theta</span>, so only the
+actions’ log-probabilities remain. The environment still decides which
+trajectories are sampled.</p>
+</details>
+</section>
+<section id="one-sample-at-the-door" class="level3" data-kind="compute">
+<h3 data-kind="compute">One sample at the door</h3>
+<div class="study-meta">
+<span class="study-kind">compute</span> <a
+href="/notes/how-can-a-reward-train-a-neural-network.html#better-than-expected-is-more-informative-than-positive">Better
+than expected is more informative than positive ↗</a>
+</div>
+<p>At the door, opening has probability <span
+class="math inline">p=\sigma(\theta)=0.25</span>. Give the two possible
+single-sample gradient estimates and their mean. Repeat with the
+baseline <span class="math inline">1.5</span>.</p>
+<details class="answer"><summary>Answer</summary>
+<p>The log-probability derivatives are <span
+class="math inline">1-p=0.75</span> for opening and <span
+class="math inline">-p=-0.25</span> for giving up. Without a baseline
+the estimates are <span class="math inline">6\times0.75=4.5</span> and
+<span class="math inline">0</span>, with mean <span
+class="math inline">0.25\times4.5=1.125=6p(1-p)</span>. With the
+baseline they are <span class="math inline">4.5\times0.75=3.375</span>
+and <span class="math inline">(-1.5)\times(-0.25)=0.375</span>, with the
+same mean. Both outcomes now push toward opening, and the two estimates
+are closer together.</p>
+</details>
+</section>
+<section id="why-a-baseline-is-free" class="level3" data-kind="derive">
+<h3 data-kind="derive">Why a baseline is free</h3>
+<div class="study-meta">
+<span class="study-kind">derive</span> <a
+href="/notes/how-can-a-reward-train-a-neural-network.html#better-than-expected-is-more-informative-than-positive">Better
+than expected is more informative than positive ↗</a>
+</div>
+<p>Show that subtracting <span class="math inline">b(s)</span> from the
+return leaves the expected gradient unchanged.</p>
+<details class="answer"><summary>Answer</summary>
+<p><span class="math inline">\sum_a\pi_\theta(a\mid
+s)\nabla_\theta\log\pi_\theta(a\mid
+s)=\nabla_\theta\sum_a\pi_\theta(a\mid s)=\nabla_\theta 1=0</span>. A
+baseline that does not depend on the sampled action multiplies this
+zero. Using <span class="math inline">\hat V(s)</span> as the baseline
+turns the weight into an estimate of the advantage <span
+class="math inline">Q^\pi(s,a)-V^\pi(s)</span>.</p>
+</details>
+</section>
+<section id="stored-replayed-off-policy-offline" class="level3"
+data-kind="distinguish">
+<h3 data-kind="distinguish">Stored, replayed, off-policy, offline</h3>
+<div class="study-meta">
+<span class="study-kind">distinguish</span> <a
+href="/notes/how-can-a-reward-train-a-neural-network.html#learning-values-from-experience">Learning
+values from experience ↗</a>
+</div>
+<p>Which of these make learning off-policy: storing a trajectory to
+compute its targets, a replay buffer, a fixed dataset, reusing a batch
+after one policy update?</p>
+<details class="answer"><summary>Answer</summary>
+<p>Off-policy means learning about a policy other than the one that
+generated the data. Storing a trajectory does not do that by itself. A
+replay buffer usually does, because it holds data from older policies.
+Offline RL learns from a fixed dataset with no new collection, so it is
+off-policy for any policy that differs from the dataset’s. Reusing an
+on-policy batch after the update is off-policy, and the
+unbiased-gradient reading no longer holds.</p>
+</details>
+</section>
+<section id="what-no-estimator-recovers" class="level3"
+data-kind="limits">
+<h3 data-kind="limits">What no estimator recovers</h3>
+<div class="study-meta">
+<span class="study-kind">limits</span> <a
+href="/notes/how-can-a-reward-train-a-neural-network.html#learning-values-from-experience">Learning
+values from experience ↗</a>
+</div>
+<p>The robot always takes the detour. What can it learn about the
+door?</p>
+<details class="answer"><summary>Answer</summary>
+<p>Nothing from its own data: no example reveals the reward of <span
+class="math inline">6</span>. A network may generalize from related
+situations, but its prediction about an untried action can be wrong.
+Exploration decides which predictions get tested. Part 2 of the
+continual-learning series returns to this as a coverage condition.</p>
+</details>
+</section>
+</section>
+<section id="terms" class="level2">
+<h2>Terms</h2>
+<p>Introduced in this essay:</p>
+<ul>
+<li><a
+href="/notes/how-can-a-reward-train-a-neural-network.html#actions-change-the-examples-we-learn-from">policy</a></li>
+<li><a
+href="/notes/how-can-a-reward-train-a-neural-network.html#actions-change-the-examples-we-learn-from">Markov
+state</a></li>
+<li><a
+href="/notes/how-can-a-reward-train-a-neural-network.html#returns-give-delayed-consequences-a-number">return
+and discount factor</a></li>
+<li><a
+href="/notes/how-can-a-reward-train-a-neural-network.html#values-evaluate-a-particular-policy">state
+value and action value</a></li>
+<li><a
+href="/notes/how-can-a-reward-train-a-neural-network.html#values-evaluate-a-particular-policy">Bellman
+expectation equation</a></li>
+<li><a
+href="/notes/how-can-a-reward-train-a-neural-network.html#from-evaluating-behavior-to-choosing-better-behavior">policy
+iteration</a></li>
+<li><a
+href="/notes/how-can-a-reward-train-a-neural-network.html#from-evaluating-behavior-to-choosing-better-behavior">Bellman
+optimality equations</a></li>
+<li><a
+href="/notes/how-can-a-reward-train-a-neural-network.html#learning-values-from-experience">temporal-difference
+error</a></li>
+<li><a
+href="/notes/how-can-a-reward-train-a-neural-network.html#learning-values-from-experience">bootstrapping</a></li>
+<li><a
+href="/notes/how-can-a-reward-train-a-neural-network.html#learning-values-from-experience">λ-return
+and eligibility trace</a></li>
+<li><a
+href="/notes/how-can-a-reward-train-a-neural-network.html#learning-values-from-experience">on-policy
+and off-policy</a></li>
+<li><a
+href="/notes/how-can-a-reward-train-a-neural-network.html#from-one-choice-to-a-complete-journey">REINFORCE</a></li>
+<li><a
+href="/notes/how-can-a-reward-train-a-neural-network.html#better-than-expected-is-more-informative-than-positive">baseline
+and advantage</a></li>
+<li><a
+href="/notes/how-can-a-reward-train-a-neural-network.html#what-values-and-policy-gradients-make-possible">generalized
+advantage estimation</a></li>
+<li><a
+href="/notes/how-can-a-reward-train-a-neural-network.html#what-values-and-policy-gradients-make-possible">GRPO</a></li>
+</ul>
+</section>
+</article>
+<section class="study-link"><p><em>From the study questions back to the essay: 
+<a href="/notes/how-can-a-reward-train-a-neural-network.html">how-can-a-reward-train-a-neural-network.html &rarr;</a></em></p></section>
+<script src="/assets/theme-toggle.js"></script>
+</body>
+</html>

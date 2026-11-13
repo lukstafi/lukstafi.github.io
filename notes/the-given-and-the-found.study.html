@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <meta name="description" content="Recall questions for the essay “The Given and the Found: What Test-Time Reasoning Amortizes, and What It Cannot”.">
+  <meta property="og:title" content="Study notes: The Given and the Found: What Test-Time Reasoning Amortizes, and What It Cannot">
+  <meta property="og:description" content="Recall questions for the essay “The Given and the Found: What Test-Time Reasoning Amortizes, and What It Cannot”.">
+  <meta property="og:url" content="https://lukstafi.github.io/notes/the-given-and-the-found.study.html">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="lukstafi&#x27;s blog">
+  <meta name="twitter:card" content="summary">
+  <title>Study notes: The Given and the Found</title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <link rel="stylesheet" href="/assets/tufte.css">
+  <link rel="stylesheet" href="/assets/pandoc-tufte.css">
+  <link rel="stylesheet" href="/assets/site.css">
+  <script defer=""
+  src="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.js"></script>
+  <script>document.addEventListener("DOMContentLoaded", function () {
+ var mathElements = document.getElementsByClassName("math");
+ var macros = [];
+ for (var i = 0; i < mathElements.length; i++) {
+  var texText = mathElements[i].firstChild;
+  if (mathElements[i].tagName == "SPAN") {
+   katex.render(texText.data, mathElements[i], {
+    displayMode: mathElements[i].classList.contains('display'),
+    throwOnError: false,
+    macros: macros,
+    fleqn: false
+   });
+}}});
+  </script>
+  <link rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.css" />
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+  <script>(function(){var t=localStorage.getItem('theme-preference');if(t)document.documentElement.setAttribute('data-theme',t);})()</script>
+</head>
+<body>
+<nav class="site-nav">
+  <a href="/">Home</a> &middot; <a href="/about.html">About</a> &middot; <a href="https://lukstafi.substack.com">Substack</a>
+</nav>
+<div class="theme-toggle">
+  <button id="theme-btn" aria-label="Toggle dark mode">&#9788;</button>
+</div>
+<article>
+<header>
+<h1 class="title">Study notes: The Given and the Found</h1>
+</header>
+<p>Recall questions for <a
+href="/notes/the-given-and-the-found.html"><em>The Given and the Found:
+What Test-Time Reasoning Amortizes, and What It Cannot</em></a>. Answer
+each from memory, then open the answer to compare. The link under a
+question leads to the section it draws on.</p>
+<section id="before-reading" class="level2">
+<h2>Before reading</h2>
+<p>Helpful, not required:</p>
+<ul>
+<li><a href="/notes/who-teaches-the-weights.html"><em>Who Teaches the
+Weights?</em></a>: the collapse onto one strategy under on-policy
+reinforcement learning, and Vector Policy Optimization as a remedy.</li>
+</ul>
+</section>
+<section id="questions" class="level2">
+<h2>Questions</h2>
+<p>The answers state what the essay argues. Where a reading is the
+essay’s own and not that of the papers it draws on, the answer says so.
+The last question collects what the essay marks as unsettled.</p>
+<section id="a-regularizer-toward-correctness" class="level3"
+data-kind="explain">
+<h3 data-kind="explain">A regularizer toward correctness</h3>
+<div class="study-meta">
+<span class="study-kind">explain</span>
+</div>
+<p>At inference a fixed operator <span
+class="math inline">f_\theta</span> injects no information it did not
+already encode. Why is iterating it to a fixed point not idle all the
+same? Which analogy does the essay draw?</p>
+<details class="answer"><summary>Answer</summary>
+<p>A fixed point is a state that <span
+class="math inline">f_\theta</span> leaves unchanged, so requiring one
+admits only answers that are self-consistent under the learned dynamics.
+In an aligned landscape, self-consistency correlates with correctness.
+The requirement is therefore a regularizer toward correctness,
+structurally like a simplicity bias toward generalization. Neither
+contains the answer. Each tilts the search toward it under favorable
+conditions and toward a confident mistake under unfavorable ones. A
+self-consistent state that is wrong is the analogue of the simplest
+hypothesis that is false.</p>
+</details>
+</section>
+<section id="three-things-the-field-conflates" class="level3"
+data-kind="distinguish">
+<h3 data-kind="distinguish">Three things the field conflates</h3>
+<div class="study-meta">
+<span class="study-kind">distinguish</span> <a
+href="/notes/the-given-and-the-found.html#three-things-the-field-conflates">1.
+Three Things the Field Conflates ↗</a>
+</div>
+<p>Name the three objects in play when an iterative reasoner solves a
+puzzle. Which of them does the iteration act on, and where does the
+essay say the interesting questions lie?</p>
+<details class="answer"><summary>Answer</summary>
+<p>The correctness condition is what makes an answer right: Sudoku’s
+constraints, a reward, an energy. It is a fact about the task, prior to
+any network. The landscape is the learned dynamical system, whose
+attractors are supposed to coincide with answers that satisfy the
+condition. Training produces it, and it is an imperfect surrogate. The
+search is the trajectory actually followed at inference, restarts
+included, paid for by iterations and parallel runs. The iteration acts
+on the landscape and the search; the condition comes from somewhere
+else. The interesting questions sit at the seams: where the condition
+comes from, how faithfully the landscape approximates it, and when
+traversing the landscape finds answers to the condition and not to its
+surrogate.</p>
+</details>
+</section>
+<section id="the-spectrum-of-givenness" class="level3"
+data-kind="recall">
+<h3 data-kind="recall">The spectrum of givenness</h3>
+<div class="study-meta">
+<span class="study-kind">recall</span> <a
+href="/notes/the-given-and-the-found.html#the-spectrum-of-givenness">2.
+The Spectrum of Givenness ↗</a>
+</div>
+<p>Order the four families of systems from most to least guaranteed by
+construction. For each, say what is given and what is left to
+training.</p>
+<details class="answer"><summary>Answer</summary>
+<ul>
+<li><em>Energy-based models.</em> Someone wrote the energy down, and
+inference descends it. Convergence is a theorem.</li>
+<li><em>The Lattice Deduction Transformer.</em> The architecture
+guarantees the form of soundness, since the dynamics live on a lattice
+and can only remove candidates. Training supplies the strength of the
+deduction.</li>
+<li><em>MuZero.</em> The condition is given, because the environment
+supplies reward. The search runs on a learned, value-equivalent model
+that is faithful where MuZero already plays and unreliable off-policy.
+The policy prior keeps the search where the surrogate holds.</li>
+<li><em>Pure learned dynamics</em> (Equilibrium Reasoners, HRM, TRM,
+Attractor Models, GRAM). There is no energy, no contraction and no
+guarantee. Training carries the whole burden of making attractors
+coincide with solutions.</li>
+</ul>
+<p>Down the spectrum, correctness migrates from the architecture into a
+trained surrogate, and its guarantee weakens from “theorem” to “holds
+where we trained it”.</p>
+</details>
+</section>
+<section id="deduction-on-a-lattice" class="level3" data-kind="compute">
+<h3 data-kind="compute">Deduction on a lattice</h3>
+<div class="study-meta">
+<span class="study-kind">compute</span> <a
+href="/notes/the-given-and-the-found.html#the-spectrum-of-givenness">2.
+The Spectrum of Givenness ↗</a>
+</div>
+<p>LDT’s abstract state gives each Sudoku cell the set of digits still
+viable. How many binary candidates encode a <span
+class="math inline">9\times9</span> state? Now take a toy row of three
+cells that must hold a permutation of <span
+class="math inline">\{1,2,3\}</span>, in the state <span
+class="math inline">(\{1,2\},\{1,2\},\{1,2,3\})</span>. Apply <span
+class="math inline">\mathit{ded}_p(a)=\alpha(\gamma(a)\cap\lVert
+p\rVert)</span>. The essay calls the operator “sound by design but
+incomplete”. What does that say about the trained approximation?</p>
+<details class="answer"><summary>Answer</summary>
+<p><span class="math inline">9\times9\times9=729</span>. The
+concretization <span class="math inline">\gamma(a)</span>, intersected
+with the valid solutions, leaves the permutations <span
+class="math inline">(1,2,3)</span> and <span
+class="math inline">(2,1,3)</span>. Abstracting back gives <span
+class="math inline">(\{1,2\},\{1,2\},\{3\})</span>: candidates 1 and 2
+leave the third cell because they survive in no valid solution.
+Deduction descends the lattice and only removes candidates. The trained
+operator approximates <span class="math inline">\mathit{ded}_p</span>. A
+step may fail to derive a true fact, and it never derives a false one,
+so the model returns a correct answer or abstains. In the essay’s words,
+“Correctness is architectural; competence is trained.”</p>
+</details>
+</section>
+<section id="convergence-is-not-self-certifying" class="level3"
+data-kind="explain">
+<h3 data-kind="explain">Convergence is not self-certifying</h3>
+<div class="study-meta">
+<span class="study-kind">explain</span> <a
+href="/notes/the-given-and-the-found.html#convergence-is-not-self-certifying">3.
+Convergence Is Not Self-Certifying ↗</a>
+</div>
+<p>Equilibrium Reasoners measure convergence by the residual <span
+class="math inline">\lVert f_\theta(z;x)-z\rVert</span>. In a baseline
+without landscape shaping, choosing the best-converged of several
+restarts does worse than a majority vote among them. What does that
+inversion show? Name the four regimes it belongs among, and the one in
+which “iterate to convergence and trust the result” is valid.</p>
+<details class="answer"><summary>Answer</summary>
+<p>If the residual were a good per-instance signal of correctness, the
+lowest-residual run would win. That it loses means the residual says
+nothing about which answers are right. A falling residual can mean
+convergence to a spurious attractor, a stable state that decodes to the
+wrong answer. The dangerous regime is deployable accuracy paired with a
+confidence signal that cannot be read.</p>
+<ul>
+<li><ol type="a">
+<li>No reachable attractor decodes to a correct answer: misalignment,
+and no amount of compute helps.</li>
+</ol></li>
+<li><ol start="2" type="a">
+<li>Correct and spurious attractors coexist: the failure is basin
+selection.</li>
+</ol></li>
+<li><ol start="3" type="a">
+<li>The correct attractor exists and its basin is too narrow:
+reachability.</li>
+</ol></li>
+<li><ol start="4" type="a">
+<li>The well-aligned regime, where residual decay is coupled to error
+reduction. Only here is trusting convergence valid.</li>
+</ol></li>
+</ul>
+<p>The essay generalizes: wherever the objective at inference is a
+learned surrogate, the signal of having “figured it out” is a trained
+artifact, calibrated only as far as its training data.</p>
+</details>
+</section>
+<section id="depth-and-breadth" class="level3" data-kind="distinguish">
+<h3 data-kind="distinguish">Depth and breadth</h3>
+<div class="study-meta">
+<span class="study-kind">distinguish</span> <a
+href="/notes/the-given-and-the-found.html#depth-and-breadth-are-two-knobs-not-one">4.
+Depth and Breadth Are Two Knobs, Not One ↗</a>
+</div>
+<p>Define depth and breadth. In which two situations does more depth
+fail, and how do the two differ? State the maxim that unifies them and
+name three brakes that serve it.</p>
+<details class="answer"><summary>Answer</summary>
+<p>Depth is the number of iterations in one trajectory, and it
+entrenches whatever basin the trajectory has entered. Breadth is the
+number of independent restarts from different initializations, and it
+covers more basins. The inference budget is their product, but they do
+different work. Depth fails in the spurious-attractor regime: a
+trajectory settled on a wrong answer sinks deeper, and the only escape
+is to start elsewhere. It also fails under genuine multiplicity, where
+several attractors are all correct. Settling on one is then information
+loss, not error. Both are premature convergence, and the maxim is <em>do
+not over-settle</em>: keep the distribution alive until the task demands
+commitment. The brakes are randomized initialization with path noise,
+which also shape the landscape so that convergence can be trusted;
+GRAM’s stochastic transitions; and LDT’s decide-temperature with
+parallel chains.</p>
+</details>
+</section>
+<section id="two-senses-of-amortization" class="level3"
+data-kind="distinguish">
+<h3 data-kind="distinguish">Two senses of amortization</h3>
+<div class="study-meta">
+<span class="study-kind">distinguish</span> <a
+href="/notes/the-given-and-the-found.html#amortization-is-learning">5.
+Amortization Is Learning ↗</a>
+</div>
+<p>“Amortize” has two senses that give opposite verdicts. State them and
+the discriminator between them. What is equilibrium internalization, and
+why does it have two faces?</p>
+<details class="answer"><summary>Answer</summary>
+<p>As learning, the weights change to absorb computation that would
+otherwise happen at inference, and the ceiling attainable at fixed data
+rises. As efficiency, the ceiling stays and compute is reallocated: a
+halting head stops easy instances early, or more training buys fewer
+deployment steps. The discriminator is ceiling versus cost-to-ceiling.
+Equilibrium internalization is observed in Attractor Models. Trained
+only on next-token loss, the backbone’s initial guess drifts toward the
+fixed point, until the solver can be removed at inference with little
+degradation. The loop self-distills into the feedforward initialization.
+The same absorbed computation can be cashed as a higher ceiling at a
+fixed budget or as the same ceiling at lower deployment cost. Which one
+we observe depends on whether we hold accuracy or compute fixed.</p>
+</details>
+</section>
+<section id="what-is-matched" class="level3" data-kind="compute">
+<h3 data-kind="compute">What is matched</h3>
+<div class="study-meta">
+<span class="study-kind">compute</span> <a
+href="/notes/the-given-and-the-found.html#amortization-is-learning">5.
+Amortization Is Learning ↗</a>
+</div>
+<p>A 42-block feedforward Sudoku network is compared with a weight-tied
+network of 2 blocks run for 21 iterations, each trained on about a
+thousand examples. What is matched, and by what factor do the parameter
+counts differ? The tied model scores far higher. What does that show,
+and why does the headline comparison of the feedforward score with the
+fully iterated one not show the same thing?</p>
+<details class="answer"><summary>Answer</summary>
+<p><span class="math inline">2\times21=42</span> block applications, so
+inference compute is matched, and the tied model has about 21 times
+fewer parameters. At fixed compute and far fewer parameters, iterative
+structure raises the ceiling. The gain comes from the structure and not
+from raw depth, and it appears where data is scarce, which is the
+signature of help to learning. The headline comparison does not hold
+test-time effort constant. It shows test-time depth extrapolation: an
+operator trained at 16 iterations generalizes to over a thousand, which
+a feedforward network cannot do at all. That is a capability claim, not
+a measurement of the learning effect.</p>
+</details>
+</section>
+<section id="amplitude-and-sign" class="level3" data-kind="derive">
+<h3 data-kind="derive">Amplitude and sign</h3>
+<div class="study-meta">
+<span class="study-kind">derive</span> <a
+href="/notes/the-given-and-the-found.html#the-engine-is-signal-amplification">6.
+The Engine Is Signal Amplification ↗</a>
+</div>
+<p>For cross-entropy the gradient scales roughly as (prediction −
+target). Why is it then false that a confident prediction gets a
+stronger push? Where does the confidence sit instead? A head now
+predicts <span class="math inline">(0.5,0.5)</span>: compare the push
+from the target <span class="math inline">(0.95,0.05)</span> with the
+push from <span class="math inline">(0.55,0.45)</span>. What sets the
+amplitude of a learning signal, and what sets its sign?</p>
+<details class="answer"><summary>Answer</summary>
+<p>Against a fixed correct label, a confidently correct prediction has
+(prediction − target) near zero and contributes almost nothing. The
+confidence sits on the target side: a confident intermediate computation
+manufactures a peaked target. In Attractor Models the target is the
+loop’s converged state. In MuZero it is the search’s visit counts. In
+LDT it is the <span class="math inline">\alpha</span>-aggregate of
+still-consistent solutions. The peaked target gives <span
+class="math inline">(-0.45,+0.45)</span> and the diffuse one <span
+class="math inline">(-0.05,+0.05)</span>, a push nine times weaker. The
+confidence of the manufactured target sets the amplitude. Whether the
+target is grounded in truth sets the sign.</p>
+</details>
+</section>
+<section id="what-grounding-does-and-does-not-do" class="level3"
+data-kind="explain">
+<h3 data-kind="explain">What grounding does and does not do</h3>
+<div class="study-meta">
+<span class="study-kind">explain</span> <a
+href="/notes/the-given-and-the-found.html#the-engine-is-signal-amplification">6.
+The Engine Is Signal Amplification ↗</a>
+</div>
+<p>What happens to a confident wrong convergence when the target is
+grounded, and when it is not? Then name two failures that grounding does
+not prevent, and the cause of each.</p>
+<details class="answer"><summary>Answer</summary>
+<p>Grounded targets include a supervised label, LDT’s <span
+class="math inline">\alpha</span>-aggregate computed from real
+solutions, and an actual game outcome. Against one, a confident wrong
+convergence meets a large error and is pushed back down: the gradient
+flattens the wrong basin. With an ungrounded target, such as a policy
+head regressed onto its own confidently mistaken search, the same strong
+push writes the error into the weights and biases the next search the
+same way.</p>
+<p>Grounding does not prevent the loss of alternatives. When each step’s
+target is built from the previous iterate, correctly signed pushes
+compound, and a strategy slightly below the best disappears. Nor does it
+prevent spurious attractors. They come from underdetermination:
+output-level supervision constrains the decoded answer only along the
+trajectories training visits, and the rest of the latent landscape is
+free to hold stable states the loss never sees. That is why the remedies
+are geometric. Randomized initialization, path noise and breadth manage
+coverage of the landscape, not the sign of the push.</p>
+</details>
+</section>
+<section id="two-forces-on-step-size" class="level3" data-kind="argue">
+<h3 data-kind="argue">Two forces on step size</h3>
+<div class="study-meta">
+<span class="study-kind">argue</span> <a
+href="/notes/the-given-and-the-found.html#the-engine-is-signal-amplification">6.
+The Engine Is Signal Amplification ↗</a>
+</div>
+<p>Amplification alone would predict that one big step is best. What
+refutes that? State the two hypotheses the essay sets against each
+other, where they settle, and the curriculum that follows. Which
+recurring design choice does the essay read as paying for
+learnability?</p>
+<details class="answer"><summary>Answer</summary>
+<p>The single-step limit is the feedforward network, which solves a
+small fraction of the puzzles the iterated operator solves. Hypothesis
+(1), amplification: compressing toward fewer, bigger steps is
+self-reinforcing, because a more decisive operator manufactures a more
+peaked target. Hypothesis (2), learnability: at a fixed parameter count,
+an operator that must make a bigger change per step is harder to fit.
+The claim is about fitting, not about a fixed operator computing a big
+step badly. Both forces act on the operator during training with
+opposite signs, so they settle at an optimal granularity, finer where
+the target map is harder. Early in training only a small step is
+learnable; as competence accrues the step coarsens and the loop
+compresses. The prescription is to amortize no faster than learnability
+permits. Deep supervision at every iteration is the field paying to keep
+each step learnable, and LDT’s <span
+class="math inline">\alpha</span>-operator is the most principled case:
+it hands over the most precise sound refinement of the current state as
+the target.</p>
+</details>
+</section>
+<section id="shaping-the-sign" class="level3" data-kind="compute">
+<h3 data-kind="compute">Shaping the sign</h3>
+<div class="study-meta">
+<span class="study-kind">compute</span> <a
+href="/notes/the-given-and-the-found.html#the-engine-is-signal-amplification">6.
+The Engine Is Signal Amplification ↗</a>
+</div>
+<p>Two design choices shape the sign of the amplification and not its
+grain. Name them. Then: across a fourfold increase in LDT’s training
+budget, soundness stays at 100% and inference cost falls from <span
+class="math inline">0.78</span> to <span
+class="math inline">0.028</span> seconds per example. Compute the
+reduction. What did training buy, and what was never training’s to
+give?</p>
+<details class="answer"><summary>Answer</summary>
+<p>MuZero’s policy prior is a confidence gate. It lets amplification act
+only where the learned model is reliable, which confines the search and
+the targets it manufactures to the region the surrogate fits. LDT’s
+candidate-elimination head uses an asymmetric cross-entropy that weights
+false eliminations eight times more heavily than false retentions,
+because a wrongly eliminated candidate cannot be recovered. That is
+deliberate de-amplification in the unsound direction. The reduction is
+<span class="math inline">0.78/0.028\approx28</span>-fold. Training
+bought completeness and speed. Soundness never moved, because the
+architecture installed it.</p>
+</details>
+</section>
+<section id="search-and-discovery" class="level3" data-kind="argue">
+<h3 data-kind="argue">Search and discovery</h3>
+<div class="study-meta">
+<span class="study-kind">argue</span> <a
+href="/notes/the-given-and-the-found.html#the-boundary-amortizing-search-versus-amortizing-discovery">7.
+The Boundary: Amortizing Search Versus Amortizing Discovery ↗</a>
+</div>
+<p>State the demarcation. What happens when LDT is ported to ARC, and
+why? Which move do LDT’s authors imagine, and why does the essay say
+that making it dissolves the scaffold that made amortization work?</p>
+<details class="answer"><summary>Answer</summary>
+<p>Everything in the earlier sections amortizes search over a
+correctness condition that is given. None of these systems amortizes the
+discovery of the condition. The line is structural, not a limit on
+compute or parameters. Some problems hand over the condition: the rules,
+the energy, the reward, the task metric, the Galois connection. Others
+require it to be inferred per instance before the machinery can run. ARC
+is of the second kind, since each task carries its own rules. A naive
+port of LDT plateaus and gets no benefit from test-time search, because
+the conflict head becomes unreliable and the search cannot tell good
+branches from bad. The authors imagine an abstract domain “over the
+<em>programs</em> that produce solutions, rather than over the solution
+states themselves”. The essay reads that as the move from deduction to
+abduction and induction. The lattice, the contraction and the energy
+each encode a fixed condition, and that is what the iteration exploits.
+Without a fixed condition the search has no structure to descend.</p>
+</details>
+</section>
+<section id="what-would-refute-it-and-what-is-unsettled" class="level3"
+data-kind="limits">
+<h3 data-kind="limits">What would refute it, and what is unsettled</h3>
+<div class="study-meta">
+<span class="study-kind">limits</span>
+</div>
+<p>What prediction does the demarcation make, and what would show it
+wrong? Name four further places where the essay marks a claim as its own
+reading, as unseparated from alternatives, as untested, or as beyond
+what settling shows.</p>
+<details class="answer"><summary>Answer</summary>
+<p>The prediction: scaling these architectures keeps winning on Sudoku-,
+maze- and SAT-shaped problems and keeps hitting a wall on ARC-shaped
+rule induction, at essentially any scale. The dividing line is
+givenness, not difficulty and not size. It would be wrong if a system in
+this family cracked open-ended rule induction by scaling depth, breadth
+and amortized training alone, with no new mechanism for representing and
+searching over candidate conditions.</p>
+<ul>
+<li>A limit cycle as the right terminal behavior for inputs with many
+solutions is “our reading, not theirs”. No architecture in the cluster
+makes a non-converging recurrent set its terminal competence.</li>
+<li>That the binding constraint on step size is learnability and not
+forward expressivity is isolated by none of the papers. Deep supervision
+confounds learnability with optimization stability, and the separating
+experiment is described, not run.</li>
+<li>Whether iterating a locally competent operator or compressing it
+carries the headline quality is unsettled. The two experiments that
+would tell have not been run cleanly: “We think it; we have not proven
+it.”</li>
+<li>Settling certifies nothing about the world. A system can settle with
+every internal signal of completion into a spurious attractor.</li>
+</ul>
+</details>
+</section>
+</section>
+<section id="terms" class="level2">
+<h2>Terms</h2>
+<p>Introduced in this essay:</p>
+<ul>
+<li><a
+href="/notes/the-given-and-the-found.html#three-things-the-field-conflates">correctness
+condition</a>: what makes an answer right: a fact about the task, prior
+to any network.</li>
+<li><a
+href="/notes/the-given-and-the-found.html#three-things-the-field-conflates">landscape
+and search</a>: the learned dynamics whose attractors are a trained
+surrogate for the condition, and the trajectory followed through it at
+inference.</li>
+<li><a
+href="/notes/the-given-and-the-found.html#the-spectrum-of-givenness">spectrum
+of givenness</a>: how much of the correctness condition is guaranteed by
+construction, and how much is approximated by a surrogate trustworthy
+only in distribution.</li>
+<li><a
+href="/notes/the-given-and-the-found.html#the-spectrum-of-givenness">sound
+but incomplete deduction</a></li>
+<li><a
+href="/notes/the-given-and-the-found.html#convergence-is-not-self-certifying">spurious
+attractor</a>: a stable, low-residual state that decodes to the wrong
+answer.</li>
+<li><a
+href="/notes/the-given-and-the-found.html#convergence-is-not-self-certifying">convergence
+as a learned proxy</a>: the system’s internal signal of having settled
+is a trained artifact, calibrated only as far as the data that shaped
+it.</li>
+<li><a
+href="/notes/the-given-and-the-found.html#depth-and-breadth-are-two-knobs-not-one">depth
+and breadth</a>: iterations within one trajectory, which entrench its
+basin, and independent restarts, which cover more basins.</li>
+<li><a
+href="/notes/the-given-and-the-found.html#depth-and-breadth-are-two-knobs-not-one">limit
+cycle as terminal behavior</a>: a single trajectory that visits the
+valid answers in turn and does not settle; the essay’s own
+suggestion.</li>
+<li><a
+href="/notes/the-given-and-the-found.html#amortization-is-learning">amortization
+as learning and as efficiency</a>: raising the ceiling attainable at
+fixed data, against cutting the compute needed to reach a ceiling
+already attainable.</li>
+<li><a
+href="/notes/the-given-and-the-found.html#amortization-is-learning">equilibrium
+internalization</a></li>
+<li><a
+href="/notes/the-given-and-the-found.html#the-engine-is-signal-amplification">manufactured
+target</a>: a training target produced by a confident intermediate
+computation, such as a converged loop state or a search’s visit
+counts.</li>
+<li><a
+href="/notes/the-given-and-the-found.html#the-engine-is-signal-amplification">amplitude
+and sign of a learning signal</a>: the target’s confidence sets the size
+of the update; whether the target is grounded in truth sets its
+direction.</li>
+<li><a
+href="/notes/the-given-and-the-found.html#the-engine-is-signal-amplification">grounded
+and ungrounded targets</a></li>
+<li><a
+href="/notes/the-given-and-the-found.html#the-engine-is-signal-amplification">underdetermination
+of the landscape</a>: supervision constrains the model only along the
+trajectories training visits and leaves the rest free.</li>
+<li><a
+href="/notes/the-given-and-the-found.html#the-engine-is-signal-amplification">optimal
+granularity</a>: the step size at which the pull toward fewer, bigger
+steps balances the difficulty of learning a bigger step.</li>
+<li><a
+href="/notes/the-given-and-the-found.html#the-boundary-amortizing-search-versus-amortizing-discovery">amortizing
+search versus amortizing discovery</a>: speeding up search under a
+correctness condition that is given, against finding the condition.</li>
+</ul>
+<p>From other essays:</p>
+<ul>
+<li>Vector Policy Optimization (<a
+href="/notes/who-teaches-the-weights.html#what-on-policy-training-forgets"><em>Who
+Teaches the Weights?</em></a>)</li>
+</ul>
+</section>
+</article>
+<section class="study-link"><p><em>From the study questions back to the essay: 
+<a href="/notes/the-given-and-the-found.html">the-given-and-the-found.html &rarr;</a></em></p></section>
+<script src="/assets/theme-toggle.js"></script>
+</body>
+</html>

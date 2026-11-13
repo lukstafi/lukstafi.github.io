@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <meta name="description" content="Recall questions for the essay “What Should a Program Inherit? Revisiting typed genetic programming, twenty-five years later”.">
+  <meta property="og:title" content="Study notes: What Should a Program Inherit? Revisiting typed genetic programming, twenty-five years later">
+  <meta property="og:description" content="Recall questions for the essay “What Should a Program Inherit? Revisiting typed genetic programming, twenty-five years later”.">
+  <meta property="og:url" content="https://lukstafi.github.io/notes/what-should-a-program-inherit.study.html">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="lukstafi&#x27;s blog">
+  <meta name="twitter:card" content="summary">
+  <title>Study notes: What Should a Program Inherit?</title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <link rel="stylesheet" href="/assets/tufte.css">
+  <link rel="stylesheet" href="/assets/pandoc-tufte.css">
+  <link rel="stylesheet" href="/assets/site.css">
+  <script defer=""
+  src="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.js"></script>
+  <script>document.addEventListener("DOMContentLoaded", function () {
+ var mathElements = document.getElementsByClassName("math");
+ var macros = [];
+ for (var i = 0; i < mathElements.length; i++) {
+  var texText = mathElements[i].firstChild;
+  if (mathElements[i].tagName == "SPAN") {
+   katex.render(texText.data, mathElements[i], {
+    displayMode: mathElements[i].classList.contains('display'),
+    throwOnError: false,
+    macros: macros,
+    fleqn: false
+   });
+}}});
+  </script>
+  <link rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.css" />
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+  <script>(function(){var t=localStorage.getItem('theme-preference');if(t)document.documentElement.setAttribute('data-theme',t);})()</script>
+</head>
+<body>
+<nav class="site-nav">
+  <a href="/">Home</a> &middot; <a href="/about.html">About</a> &middot; <a href="https://lukstafi.substack.com">Substack</a>
+</nav>
+<div class="theme-toggle">
+  <button id="theme-btn" aria-label="Toggle dark mode">&#9788;</button>
+</div>
+<article>
+<header>
+<h1 class="title">Study notes: What Should a Program Inherit?</h1>
+</header>
+<p>Recall questions for <a
+href="/notes/what-should-a-program-inherit.html"><em>What Should a
+Program Inherit?</em></a>. Answer each from memory, then open the answer
+to compare. The link under a question leads to the section it draws
+on.</p>
+<section id="before-reading" class="level2">
+<h2>Before reading</h2>
+<p>The essay and these questions assume:</p>
+<ul>
+<li><a
+href="/notes/what-must-be-true.html#can-generalization-tell-us-when-to-stop"><em>What
+Must Be True?</em>, “Can generalization tell us when to stop?”</a>:
+anti-unification, and the example of pair(a,a) and pair(b,b).</li>
+</ul>
+<p>Helpful, not required:</p>
+<ul>
+<li><a
+href="/notes/what-must-be-true.html#reading-a-contract-out-of-the-code"><em>What
+Must Be True?</em>, “Reading a contract out of the code”</a>: the 2015
+thesis, where generalization and abduction reconstruct contracts from
+programs.</li>
+<li><a href="/notes/what-persists-when-agents-change.html"><em>What
+Persists When the Agents Change?</em></a>: how an inquiry continues
+across changing participants and records.</li>
+</ul>
+</section>
+<section id="questions" class="level2">
+<h2>Questions</h2>
+<section id="the-question-and-its-three-answers" class="level3"
+data-kind="state">
+<h3 data-kind="state">The question and its three answers</h3>
+<div class="study-meta">
+<span class="study-kind">state</span>
+</div>
+<p>Why can recombining individually successful pieces of code fail? What
+does each of the three systems the essay visits make explicit? On what
+does the answer to “what should a program inherit?” depend?</p>
+<details class="answer"><summary>Answer</summary>
+<p>Code is full of relationships that a change can break: a function
+expects a kind of argument, two occurrences refer to one binding, one
+calculation prepares the input of another. Recombination need not
+preserve the conditions under which the pieces succeeded. babble makes
+explicit a useful common pattern, TyFlow a valid next construction step,
+AlphaEvolve a candidate worth developing further. The answer depends on
+what the next operation needs to do. A relationship worth preserving in
+an abstraction may be worth relaxing during recombination, and an
+unknown worth leaving to search may instead be resolved by
+inference.</p>
+</details>
+</section>
+<section id="which-parts-correspond" class="level3"
+data-kind="distinguish">
+<h3 data-kind="distinguish">Which parts correspond</h3>
+<div class="study-meta">
+<span class="study-kind">distinguish</span> <a
+href="/notes/what-should-a-program-inherit.html#finding-the-parts-that-can-vary-together">Finding
+the parts that can vary together ↗</a>
+</div>
+<p>Before two programs are combined, their parts must be matched. Why
+does matching by position fail? Why does similarity alone not settle it?
+What did the 2001 proposal distinguish?</p>
+<details class="answer"><summary>Answer</summary>
+<p>The third local definition of one program may correspond to the
+fourth of another because a definition was inserted. Position confuses
+an editorial accident with a functional relationship. Two definitions
+can look alike because they descend from one, because the same idiom was
+useful twice, or because the language offers few ways to say something.
+Corresponding definitions can also acquire quite different
+implementations. The 2001 proposal distinguished a module’s genealogical
+identity from its current implementation. A genealogy records one kind
+of relationship and comparison of current structure discovers another,
+and the proposal gave both a role.</p>
+</details>
+</section>
+<section id="why-genetic-schemata-are-linear" class="level3"
+data-kind="compute">
+<h3 data-kind="compute">Why genetic schemata are linear</h3>
+<div class="study-meta">
+<span class="study-kind">compute</span> <a
+href="/notes/what-should-a-program-inherit.html#finding-the-parts-that-can-vary-together">Finding
+the parts that can vary together ↗</a>
+</div>
+<p>The parents are <span
+class="math inline">\operatorname{pair}(a,a)</span> and <span
+class="math inline">\operatorname{pair}(b,b)</span>. How many offspring
+can be formed by filling the holes of the most specific common pattern
+from the parents’ substitutions? How many from the linear pattern? Why
+did the 2002 draft require linearity, and when is the coupling right
+after all?</p>
+<details class="answer"><summary>Answer</summary>
+<p>The most specific pattern is <span
+class="math inline">\operatorname{pair}(p,p)</span>, with substitutions
+<span class="math inline">p\mapsto a</span> and <span
+class="math inline">p\mapsto b</span>. It yields <span
+class="math inline">2</span> offspring, the parents themselves. The
+linear pattern <span class="math inline">\operatorname{pair}(p,q)</span>
+has two independent holes and yields <span
+class="math inline">2\times2=4</span>: the parents, <span
+class="math inline">\operatorname{pair}(a,b)</span> and <span
+class="math inline">\operatorname{pair}(b,a)</span>. Linearity keeps the
+generalization from tying locations together merely because they
+underwent the same difference in two examples. If the pair holds two
+copies of a checksum, independent variation would usually be
+destructive. If it holds two settings that happened to match, coupling
+them forever could prevent useful exploration. An accurate description
+of the parents need not be a good space in which to search for their
+descendants.</p>
+</details>
+</section>
+<section id="a-generalizer-answers-to-its-mutations" class="level3"
+data-kind="explain">
+<h3 data-kind="explain">A generalizer answers to its mutations</h3>
+<div class="study-meta">
+<span class="study-kind">explain</span> <a
+href="/notes/what-should-a-program-inherit.html#finding-the-parts-that-can-vary-together">Finding
+the parts that can vary together ↗</a>
+</div>
+<p>How did the 2002 work try to make the requirement on a decomposition
+less impressionistic? Give its example of a mutation that strains a
+simple generalizer. Why do bindings make shared code harder to
+recognize?</p>
+<details class="answer"><summary>Answer</summary>
+<p>It related generalization to mutation. Suppose one program arose from
+another by a specified kind of change: a common-schema algorithm should
+recover the material left unchanged and place the difference in an
+appropriate hole. Inserting a wrapper around an expression should not
+make the whole wrapped expression vanish from the common structure, so
+more powerful mutations demand more expressive correspondences. The
+principle is to judge the generalizer partly by the variations it must
+interpret: a representation and its operators are designed together. A
+fragment that mentions a local variable cannot be transplanted wherever
+its syntax fits. Its meaning depends on which definition the name refers
+to, and its type can depend on decisions made outside the fragment.</p>
+</details>
+</section>
+<section id="an-equation-exposes-a-pattern" class="level3"
+data-kind="compute">
+<h3 data-kind="compute">An equation exposes a pattern</h3>
+<div class="study-meta">
+<span class="study-kind">compute</span> <a
+href="/notes/what-should-a-program-inherit.html#babble-when-a-common-pattern-becomes-a-useful-function">babble:
+when a common pattern becomes a useful function ↗</a>
+</div>
+<p>Anti-unify <span class="math inline">2+1</span> and <span
+class="math inline">1+3</span> syntactically. Then use commutativity and
+anti-unify again. What function does the second pattern suggest? In an
+e-graph where class <span class="math inline">A</span> holds <span
+class="math inline">2+1</span> and <span class="math inline">1+2</span>
+and class <span class="math inline">B</span> holds <span
+class="math inline">1+3</span> and <span class="math inline">3+1</span>,
+how many expressions does the single node <span
+class="math inline">\operatorname{pair}(A,B)</span> represent? Name
+babble’s three jobs.</p>
+<details class="answer"><summary>Answer</summary>
+<p>Position by position the two disagree on both sides, so the pattern
+is <span class="math inline">X+Y</span>. Rewriting the second as <span
+class="math inline">3+1</span> gives the pattern <span
+class="math inline">X+1</span>: an increment function, with arguments
+<span class="math inline">2</span> and <span
+class="math inline">3</span>. The node <span
+class="math inline">\operatorname{pair}(A,B)</span> represents <span
+class="math inline">2\times2=4</span> expressions without storing four
+trees. babble’s jobs are to expose equivalent representations, propose
+abstractions, and select a library whose savings justify its costs.
+Whether the increment is worth adding depends on its savings across uses
+after paying for the definition.</p>
+</details>
+</section>
+<section id="inside-an-e-graph" class="level3" data-kind="recall">
+<h3 data-kind="recall">Inside an e-graph</h3>
+<div class="study-meta">
+<span class="study-kind">recall</span> <a
+href="/notes/what-should-a-program-inherit.html#babble-when-a-common-pattern-becomes-a-useful-function">babble:
+when a common pattern becomes a useful function ↗</a>
+</div>
+<p>Define e-class and e-node. What are congruence closure, equality
+saturation and extraction? Why keep the alternatives when one could
+normalize every expression to a preferred form?</p>
+<details class="answer"><summary>Answer</summary>
+<p>An e-class groups alternatives known to be equal. Each alternative is
+an e-node: an operation whose children point to e-classes, so each child
+can itself offer several forms. Applying an equation adds the rewritten
+form to the class of the original, and classes merge when a form already
+belongs to another. Congruence closure propagates this upward: once
+child classes merge, parent nodes with the same operation and
+corresponding children are equivalent too. Equality saturation applies
+rewrites and restores these relationships until nothing new is added or
+a resource limit is reached. Extraction chooses a node from the root
+class and recursively for its children, guided by a cost. Normalizing
+decides in advance what will be easy to notice: the best representation
+for discovering one abstraction may differ from the best for
+another.</p>
+</details>
+</section>
+<section id="compressing-is-not-searching" class="level3"
+data-kind="distinguish">
+<h3 data-kind="distinguish">Compressing is not searching</h3>
+<div class="study-meta">
+<span class="study-kind">distinguish</span> <a
+href="/notes/what-should-a-program-inherit.html#babble-when-a-common-pattern-becomes-a-useful-function">babble:
+when a common pattern becomes a useful function ↗</a>
+</div>
+<p>Read as a function, <span
+class="math inline">\operatorname{pair}(p,p)</span> is
+<code>duplicate(p)</code>. What does installing <code>duplicate</code>
+as a primitive do to later variation? State the three questions the
+essay says can be asked of one pattern. What does babble’s evaluation
+leave open?</p>
+<details class="answer"><summary>Answer</summary>
+<p>With <code>duplicate</code> as a primitive, agreement between the two
+components is effortless. To vary them independently, search must use
+<code>pair</code>, open the definition, or otherwise escape the
+coupling. The dependency that restricted recombination is what the
+function reuses. A smaller description of existing successes is not
+automatically the best neighborhood around them. The three questions:
+what does a pattern say about its instances, what does it save when
+installed as a function, and what variations does it make available?
+They concern one mathematical object and can have different preferred
+answers. babble reports better compression than the compared DreamCoder
+results. Whether its libraries improve later synthesis or evolutionary
+recombination remains open.</p>
+</details>
+</section>
+<section id="a-construction-that-infers" class="level3"
+data-kind="derive">
+<h3 data-kind="derive">A construction that infers</h3>
+<div class="study-meta">
+<span class="study-kind">derive</span> <a
+href="/notes/what-should-a-program-inherit.html#tyflow-which-choices-should-remain-choices">TyFlow:
+which choices should remain choices? ↗</a>
+</div>
+<p>Why is a type not a complete statement of intent? Algorithm C is
+given <span class="math inline">f:\forall a.\,a\to a</span> and <span
+class="math inline">b:\mathrm{bool}</span>, a requested type <span
+class="math inline">\mathrm{bool}</span>, and the choices: application,
+then <span class="math inline">f</span>, then <span
+class="math inline">b</span>. Trace the types. What did the construction
+not have to guess?</p>
+<details class="answer"><summary>Answer</summary>
+<p>Many Boolean expressions have type <span
+class="math inline">\mathrm{bool}</span> and compute different answers.
+The type restricts the search, and the fitness criterion supplies
+further reasons to prefer a candidate. Choosing application introduces
+an unknown argument type <span class="math inline">\beta</span>, so the
+function position must have type <span
+class="math inline">\beta\to\mathrm{bool}</span>. Choosing <span
+class="math inline">f</span> gives a fresh instance <span
+class="math inline">\alpha\to\alpha</span>. Unifying <span
+class="math inline">\alpha\to\alpha</span> with <span
+class="math inline">\beta\to\mathrm{bool}</span> forces <span
+class="math inline">\alpha=\beta=\mathrm{bool}</span>. The argument is
+constructed at <span class="math inline">\mathrm{bool}</span>, and
+choosing <span class="math inline">b</span> succeeds. The requested
+result determined the argument’s type through the selected function, so
+no type that unification can determine was guessed separately. This use
+of <span class="math inline">f</span> is specialized, and its
+polymorphic scheme remains available for other uses.</p>
+</details>
+</section>
+<section id="a-shared-unknown-is-not-a-quantifier" class="level3"
+data-kind="derive">
+<h3 data-kind="derive">A shared unknown is not a quantifier</h3>
+<div class="study-meta">
+<span class="study-kind">derive</span> <a
+href="/notes/what-should-a-program-inherit.html#tyflow-which-choices-should-remain-choices">TyFlow:
+which choices should remain choices? ↗</a>
+</div>
+<p>Now the environment is <span
+class="math inline">p:\alpha\to\mathrm{bool}</span> and <span
+class="math inline">b:\mathrm{bool}</span>, with <span
+class="math inline">\alpha</span> an unknown shared with the context,
+and the construction is <code>let test = p in test b</code>. Why may C
+not give <code>test</code> the scheme <span class="math inline">\forall
+a.\,a\to\mathrm{bool}</span>? What happens at <code>test b</code>, and
+what does C return?</p>
+<details class="answer"><summary>Answer</summary>
+<p>Generalization is relative to the environment: variables already
+shared with the context must stay shared. Here <span
+class="math inline">\alpha</span> occurs in the type of <span
+class="math inline">p</span>, and <code>test</code> is an alias for that
+one binding. Quantifying would invent a freedom the definition does not
+have. So the body sees <span
+class="math inline">p:\alpha\to\mathrm{bool}</span> and <span
+class="math inline">\mathit{test}:\alpha\to\mathrm{bool}</span>.
+Choosing <code>test</code> ties the argument type to <span
+class="math inline">\alpha</span>, and choosing <span
+class="math inline">b</span> forces <span
+class="math inline">\alpha=\mathrm{bool}</span>. The substitution
+refines both bindings, so the outer <span class="math inline">p</span>
+must accept a Boolean too. C returns a term and a substitution: the
+local name disappears outside its scope and the discovered constraint
+does not. Applying <code>test</code> to an integer in the same body
+would conflict. Had <span class="math inline">p</span> been universally
+quantified, a polymorphic alias could have been legitimate.</p>
+</details>
+</section>
+<section id="where-c-and-tyflow-differ" class="level3"
+data-kind="distinguish">
+<h3 data-kind="distinguish">Where C and TyFlow differ</h3>
+<div class="study-meta">
+<span class="study-kind">distinguish</span> <a
+href="/notes/what-should-a-program-inherit.html#tyflow-which-choices-should-remain-choices">TyFlow:
+which choices should remain choices? ↗</a>
+</div>
+<p>Use the environment <span
+class="math inline">f:\mathrm{bool}\to\mathrm{bool}</span>, <span
+class="math inline">b:\mathrm{bool}</span> and the requested type <span
+class="math inline">\mathrm{bool}</span>. After application is chosen,
+how is the goal <span class="math inline">?a</span> settled in C, and
+how in TyFlow’s displayed variable rule? Which difference between the
+systems does the essay keep separate from this one? What do TyFlow’s
+experiments separate, and what do the formal guarantees of both systems
+not promise?</p>
+<details class="answer"><summary>Answer</summary>
+<p>In C, selecting <span class="math inline">f</span> retrieves <span
+class="math inline">\mathrm{bool}\to\mathrm{bool}</span> from the
+environment and unification determines <span
+class="math inline">?a=\mathrm{bool}</span>. In TyFlow’s rule the model
+supplies both the name <span class="math inline">f</span> and the type
+<span class="math inline">?a=\mathrm{bool}</span>, and the engine checks
+membership. Its predicate accepts or rejects a name–type pair and does
+not return a missing type, so a proposal of <span
+class="math inline">f</span> with <span
+class="math inline">?a=\mathrm{int}</span> fails although the
+environment held the answer. The essay’s criticism is that this leaves
+the model to predict what inference could determine. The difference in
+type systems is separate: C handles polymorphic schemes, while TyFlow
+takes typing rules as input, so the introductory example gives no
+expressiveness ranking. The experiments separate validity from task
+success: compilation errors can fall to zero while many tasks stay
+unsolved. A checked construction is well typed under the supplied rules.
+Coverage does not say a finite learned search finds every derivation,
+and C’s completeness concerns the existence of choice paths.</p>
+</details>
+</section>
+<section id="who-defines-the-unit-of-change" class="level3"
+data-kind="explain">
+<h3 data-kind="explain">Who defines the unit of change</h3>
+<div class="study-meta">
+<span class="study-kind">explain</span> <a
+href="/notes/what-should-a-program-inherit.html#alphaevolve-variation-selection-and-what-survives">AlphaEvolve:
+variation, selection, and what survives ↗</a>
+</div>
+<p>Name the four evolutionary roles in AlphaEvolve’s loop. Where did the
+early programme put the responsibility for useful variation, and where
+does learned editing put it? Which three questions does the essay ask of
+an edit?</p>
+<details class="answer"><summary>Answer</summary>
+<p>Candidates (stored programs with outputs and scores), variation
+(LLM-generated edits from a parent and further inspirations), fitness
+(evaluation) and selection (a database that balances improvement with
+diversity). The early programme put the responsibility on the definition
+of the operators: a common schema fixed the correspondence,
+substitutions expressed the parental alternatives, and one could ask
+what an operation preserved before running an experiment. Learned
+editing asks a proposal mechanism to interpret the code and suggest a
+change. A fixed operator needs a representation that makes its unit
+accessible, and a learned editor might infer the unit from the program
+and context. The questions: can an edit change an internal
+representation and adjust its uses together? Can it recognize when
+separate pieces implement one idea? Can it leave a relationship intact
+when the syntax expressing it changes?</p>
+</details>
+</section>
+<section id="two-levels-two-kinds-of-evidence" class="level3"
+data-kind="distinguish">
+<h3 data-kind="distinguish">Two levels, two kinds of evidence</h3>
+<div class="study-meta">
+<span class="study-kind">distinguish</span> <a
+href="/notes/what-should-a-program-inherit.html#alphaevolve-variation-selection-and-what-survives">AlphaEvolve:
+variation, selection, and what survives ↗</a>
+</div>
+<p>In the tensor-decomposition example, what is the evolving object?
+Which two levels and which two kinds of evidence does the example
+separate?</p>
+<details class="answer"><summary>Answer</summary>
+<p>The evolving object is a search procedure: mutations change its
+optimizer, initialization, loss and hyperparameters. The two levels are
+changes to the searcher and the search it conducts, so a candidate
+embodies a way of searching whose fitness depends on the results of that
+search. The 2001 outline had proposed structural evolution with
+numerical optimization inside a parameterized program, and the example
+moves that boundary. The two kinds of evidence: a search procedure may
+be useful without a theorem that it always finds a solution, while a
+particular object it discovers admits an exact check. Heuristic
+exploration and rigorous acceptance cooperate.</p>
+</details>
+</section>
+<section id="what-selection-keeps" class="level3" data-kind="connect">
+<h3 data-kind="connect">What selection keeps</h3>
+<div class="study-meta">
+<span class="study-kind">connect</span> <a
+href="/notes/what-should-a-program-inherit.html#alphaevolve-variation-selection-and-what-survives">AlphaEvolve:
+variation, selection, and what survives ↗</a>
+</div>
+<p>What does a provenance graph record, and what can it not show by
+itself? Why keep a candidate that performs poorly overall? How does the
+essay connect evolutionary search to “What Persists When the Agents
+Change?”, and what may programs and scores leave out?</p>
+<details class="answer"><summary>Answer</summary>
+<p>The graph records which versions, documents and evaluation results
+were supplied to an attempt and which edits it produced. It traces
+access and descent. Which source caused an improvement needs further
+evidence. A weak candidate may contain a component that helps another,
+and retaining it preserves that opportunity if the proposal mechanism
+can identify and adapt it. The question is which retained differences
+become useful under later variation. Evolutionary search is a limited
+instance of the other essay’s problem: past work matters through the
+material retained and the process that can use it, and an executable
+artifact changes the next attempt’s starting point without being
+absorbed into the proposing model’s parameters (<a
+href="/notes/what-persists-when-agents-change.html#representations-in-use">What
+Persists</a>). Programs and scores may omit why an unsuccessful idea
+seemed promising, which objection is unresolved, or why the evaluation
+criterion deserves revision.</p>
+</details>
+</section>
+<section id="warranted-or-nerdsniped" class="level3" data-kind="limits">
+<h3 data-kind="limits">Warranted, or nerdsniped</h3>
+<div class="study-meta">
+<span class="study-kind">limits</span> <a
+href="/notes/what-should-a-program-inherit.html#returning-to-the-unfinished-work">Returning
+to the unfinished work ↗</a>
+</div>
+<p>The author asks whether the move from evolution to type theory was
+warranted. Why does the essay say the two possibilities are not clean
+opposites? What do the formal results not establish? Which comparison is
+missing, and what scope does the essay claim for its own examples?</p>
+<details class="answer"><summary>Answer</summary>
+<p>The environment dependencies are real, and formalizing them gave
+meaningful results. A formal problem also offers a kind of progress that
+an unfinished evolutionary system does not: precise statements and
+results complete within their setting. A proof that every well-typed
+term has a construction path leaves open which paths a search explores,
+and an operator that preserves exactly the declared relationships need
+not improve performance. So the work may have met real obstacles and
+still drawn attention from the experiments that would have tested their
+importance. The absence of those experiments does not prove the
+direction mistaken. The missing comparison is with a smaller implemented
+system, which could have shown which dependencies limit search.
+Contemporary systems sharpen that counterfactual without settling it.
+The construction traces are explanations derived from the algorithms,
+not experiments, and the comparisons claim no influence, priority or
+equivalence.</p>
+</details>
+</section>
+</section>
+<section id="terms" class="level2">
+<h2>Terms</h2>
+<p>Introduced in this essay:</p>
+<ul>
+<li><a
+href="/notes/what-should-a-program-inherit.html#finding-the-parts-that-can-vary-together">genealogical
+identity</a>: a module stays a descendant of the same module while its
+implementation changes; duplication creates a new identity.</li>
+<li><a
+href="/notes/what-should-a-program-inherit.html#finding-the-parts-that-can-vary-together">linear
+schema</a>: a common pattern in which each schema variable occurs only
+once, so that every hole can vary independently.</li>
+<li><a
+href="/notes/what-should-a-program-inherit.html#babble-when-a-common-pattern-becomes-a-useful-function">library
+learning</a>: finding definitions that let a collection of programs be
+rewritten more economically, paying for the definitions as well as their
+uses.</li>
+<li><a
+href="/notes/what-should-a-program-inherit.html#babble-when-a-common-pattern-becomes-a-useful-function">e-graph</a></li>
+<li><a
+href="/notes/what-should-a-program-inherit.html#tyflow-which-choices-should-remain-choices">algorithm
+C</a>: the 2005 thesis’s procedure that constructs a term from a
+sequence of choices alongside type inference, returning a term and a
+substitution.</li>
+<li><a
+href="/notes/what-should-a-program-inherit.html#alphaevolve-variation-selection-and-what-survives">provenance
+graph</a>: a record of which versions, documents and evaluation results
+were supplied to an attempt and which edits it produced.</li>
+</ul>
+<p>From other essays:</p>
+<ul>
+<li>anti-unification (<a
+href="/notes/what-must-be-true.html#can-generalization-tell-us-when-to-stop"><em>What
+Must Be True?</em></a>)</li>
+<li>deduction, generalization and abduction (<a
+href="/notes/what-must-be-true.html#peirces-three-operations"><em>What
+Must Be True?</em></a>)</li>
+</ul>
+</section>
+</article>
+<section class="study-link"><p><em>From the study questions back to the essay: 
+<a href="/notes/what-should-a-program-inherit.html">what-should-a-program-inherit.html &rarr;</a></em></p></section>
+<script src="/assets/theme-toggle.js"></script>
+</body>
+</html>

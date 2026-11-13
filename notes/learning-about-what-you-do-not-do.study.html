@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <meta name="description" content="Recall questions for the essay “Learning About What You Do Not Do”.">
+  <meta property="og:title" content="Study notes: Learning About What You Do Not Do">
+  <meta property="og:description" content="Recall questions for the essay “Learning About What You Do Not Do”.">
+  <meta property="og:url" content="https://lukstafi.github.io/notes/learning-about-what-you-do-not-do.study.html">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="lukstafi&#x27;s blog">
+  <meta name="twitter:card" content="summary">
+  <title>Study notes: Learning About What You Do Not Do</title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <link rel="stylesheet" href="/assets/tufte.css">
+  <link rel="stylesheet" href="/assets/pandoc-tufte.css">
+  <link rel="stylesheet" href="/assets/site.css">
+  <script defer=""
+  src="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.js"></script>
+  <script>document.addEventListener("DOMContentLoaded", function () {
+ var mathElements = document.getElementsByClassName("math");
+ var macros = [];
+ for (var i = 0; i < mathElements.length; i++) {
+  var texText = mathElements[i].firstChild;
+  if (mathElements[i].tagName == "SPAN") {
+   katex.render(texText.data, mathElements[i], {
+    displayMode: mathElements[i].classList.contains('display'),
+    throwOnError: false,
+    macros: macros,
+    fleqn: false
+   });
+}}});
+  </script>
+  <link rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.css" />
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+  <script>(function(){var t=localStorage.getItem('theme-preference');if(t)document.documentElement.setAttribute('data-theme',t);})()</script>
+</head>
+<body>
+<nav class="site-nav">
+  <a href="/">Home</a> &middot; <a href="/about.html">About</a> &middot; <a href="https://lukstafi.substack.com">Substack</a>
+</nav>
+<div class="theme-toggle">
+  <button id="theme-btn" aria-label="Toggle dark mode">&#9788;</button>
+</div>
+<article>
+<header>
+<h1 class="title">Study notes: Learning About What You Do Not Do</h1>
+</header>
+<p>Recall questions for <a
+href="/notes/learning-about-what-you-do-not-do.html"><em>Learning About
+What You Do Not Do</em></a>. Answer each from memory, then open the
+answer to compare. The link under a question leads to the section it
+draws on.</p>
+<section id="before-reading" class="level2">
+<h2>Before reading</h2>
+<p>The essay and these questions assume:</p>
+<ul>
+<li><a
+href="/notes/how-can-a-reward-train-a-neural-network.html#values-evaluate-a-particular-policy"><em>How
+Can a Reward Train a Neural Network?</em>, “Values evaluate a particular
+policy”</a>: value functions.</li>
+<li><a
+href="/notes/how-can-a-reward-train-a-neural-network.html#learning-values-from-experience"><em>How
+Can a Reward Train a Neural Network?</em>, “Learning values from
+experience”</a>: TD errors, bootstrapping, traces, off-policy
+learning.</li>
+<li><a
+href="/notes/how-can-a-reward-train-a-neural-network.html#from-evaluating-behavior-to-choosing-better-behavior"><em>How
+Can a Reward Train a Neural Network?</em>, “From evaluating behavior to
+choosing better behavior”</a>: the delivery problem and policy
+improvement.</li>
+<li><a
+href="/notes/who-teaches-the-weights.html#what-on-policy-training-forgets"><em>Who
+Teaches the Weights?</em>, “What on-policy training forgets”</a>: VPO
+and the collapse of alternatives.</li>
+</ul>
+</section>
+<section id="questions" class="level2">
+<h2>Questions</h2>
+<section id="a-question-in-four-functions" class="level3"
+data-kind="recall">
+<h3 data-kind="recall">A question in four functions</h3>
+<div class="study-meta">
+<span class="study-kind">recall</span> <a
+href="/notes/learning-about-what-you-do-not-do.html#questions-and-answers">Questions
+and answers ↗</a>
+</div>
+<p>Which four functions specify a general value function? Pose one for a
+coding agent.</p>
+<details class="answer"><summary>Answer</summary>
+<p>A target policy <span class="math inline">\pi</span> (the behaviour
+the question is about), a termination function <span
+class="math inline">\beta</span> (when to stop counting), a cumulant
+<span class="math inline">r</span> (the signal summed along the way) and
+an outcome <span class="math inline">z</span> (the signal read at
+stopping). For example: “If I keep editing and rerunning the suite until
+it passes or I give up, how many of the twenty tests will pass?” Asked
+once per test, that is twenty questions. The world’s dynamics fix the
+answer, so the knowledge has a correctness condition the learner does
+not supply.</p>
+</details>
+</section>
+<section id="iterating-or-descending" class="level3"
+data-kind="explain">
+<h3 data-kind="explain">Iterating or descending</h3>
+<div class="study-meta">
+<span class="study-kind">explain</span> <a
+href="/notes/learning-about-what-you-do-not-do.html#learning-off-the-policy">Learning
+off the policy ↗</a>
+</div>
+<p>Name the three ingredients of the deadly triad. Why can ordinary TD
+diverge off-policy while gradient TD cannot, when both aim at the same
+fixed point?</p>
+<details class="answer"><summary>Answer</summary>
+<p>Off-policy learning, function approximation and bootstrapping.
+Ordinary TD iterates: it steps toward <span class="math inline">\Pi
+T^\lambda V_\theta</span> and repeats, which converges only if that
+composition is a contraction. On-policy it is. Off-policy the projection
+is taken under the behaviour’s state distribution and the composition
+can stretch distances. Gradient TD descends the projected Bellman error,
+which is smallest at the fixed point whether or not the operator
+contracts. GQ(λ)’s secondary weights <span class="math inline">h</span>
+estimate one factor of a product of expectations, so each step needs one
+sample.</p>
+</details>
+</section>
+<section id="the-door-off-the-policy" class="level3"
+data-kind="compute">
+<h3 data-kind="compute">The door, off the policy</h3>
+<div class="study-meta">
+<span class="study-kind">compute</span> <a
+href="/notes/learning-about-what-you-do-not-do.html#learning-off-the-policy">Learning
+off the policy ↗</a>
+</div>
+<p>The behaviour approaches the door half the time and opens it a
+quarter of the time. Estimate the return of “approach and open” in two
+ways: by reweighting whole episodes, and by one step followed by
+bootstrapping. Then let the behaviour always take the detour.</p>
+<details class="answer"><summary>Answer</summary>
+<p>The true answer is <span
+class="math inline">0.9\times6=5.4</span>.</p>
+<p><em>Whole episodes</em> (<span class="math inline">\lambda=1</span>):
+approaching has ratio <span class="math inline">1/0.5=2</span> and
+opening <span class="math inline">1/0.25=4</span>; the detour and giving
+up have ratio <span class="math inline">0</span>. One episode in eight
+approaches and opens and counts as <span
+class="math inline">2\cdot4\cdot5.4=43.2</span>. The average is <span
+class="math inline">5.4</span>, with a standard deviation of <span
+class="math inline">14.3</span> per episode.</p>
+<p><em>Bootstrap</em> (<span class="math inline">\lambda=0</span>): the
+door visits that opened give <span
+class="math inline">Q(D,\text{open})=6</span>. The target for
+approaching is <span
+class="math inline">0+0.9\sum_a\pi(D,a)Q(D,a)=5.4</span>, with no ratio:
+the target policy enters through the expectation at the next state.</p>
+<p>If the behaviour never approaches, nothing at the door is observed
+and no method recovers the <span class="math inline">6</span>.</p>
+</details>
+</section>
+<section id="traces-are-not-momentum" class="level3"
+data-kind="distinguish">
+<h3 data-kind="distinguish">Traces are not momentum</h3>
+<div class="study-meta">
+<span class="study-kind">distinguish</span> <a
+href="/notes/learning-about-what-you-do-not-do.html#learning-off-the-policy">Learning
+off the policy ↗</a>
+</div>
+<p>Both are decayed sums of gradients. What does each pair the gradients
+with, and what does each change?</p>
+<details class="answer"><summary>Answer</summary>
+<p>Momentum carries each step’s update forward: <span
+class="math inline">\sum_{k\le t}\mu^{t-k}\delta_k\phi_k</span>, every
+gradient paired with its own error. A trace multiplies old gradients by
+the current error: <span class="math inline">\delta_t\sum_{k\le
+t}\lambda^{t-k}\phi_k</span>, so each gradient meets the decayed sum of
+later errors. Momentum changes how fast a solution is reached. <span
+class="math inline">\lambda</span> changes which solution is
+reached.</p>
+</details>
+</section>
+<section id="why-traces-must-be-cut" class="level3" data-kind="compute">
+<h3 data-kind="compute">Why traces must be cut</h3>
+<div class="study-meta">
+<span class="study-kind">compute</span> <a
+href="/notes/learning-about-what-you-do-not-do.html#learning-off-the-policy">Learning
+off the policy ↗</a>
+</div>
+<p>Per-token log-ratios between two checkpoints have standard deviation
+<span class="math inline">0.1</span>, and each ratio averages <span
+class="math inline">1</span>. What is the variance of the product over
+<span class="math inline">200</span> tokens? Over <span
+class="math inline">2{,}000</span>? What is unusual about importance
+ratios in a language model, and what is the remedy for length?</p>
+<details class="answer"><summary>Answer</summary>
+<p>The variance is <span class="math inline">e^{\sigma^2T}-1</span>:
+<span class="math inline">e^2-1\approx6.4</span> at <span
+class="math inline">200</span> tokens and <span
+class="math inline">e^{20}\approx5\times10^8</span> at <span
+class="math inline">2{,}000</span>. A language model computes the
+probability of every token it emits, so the ratio between two versions
+is exact, where a robot’s must be logged or modelled. The remedy is a
+state-dependent <span class="math inline">\lambda_t</span> set low where
+the policies diverge, which cuts the trace and bootstraps from the
+current prediction. Retrace does this by truncating each ratio at <span
+class="math inline">1</span>.</p>
+</details>
+</section>
+<section id="from-predictions-to-a-choice" class="level3"
+data-kind="derive">
+<h3 data-kind="derive">From predictions to a choice</h3>
+<div class="study-meta">
+<span class="study-kind">derive</span> <a
+href="/notes/learning-about-what-you-do-not-do.html#from-many-predictions-to-a-choice">From
+many predictions to a choice ↗</a>
+</div>
+<p>Suppose every task’s reward is <span class="math inline">r_w=w^\top
+c</span> for fixed cumulants <span class="math inline">c</span>. Define
+successor features, state generalized policy improvement and its
+guarantee, and say how the set-max policy differs.</p>
+<details class="answer"><summary>Answer</summary>
+<p><span class="math inline">\psi^\pi(s,a)=\mathbb
+E_\pi[\sum_t\gamma^tc_t\mid s,a]</span>, one general value function per
+cumulant, so <span class="math inline">Q^\pi_w=w^\top\psi^\pi</span> and
+a new task costs one dot product. GPI acts by <span
+class="math inline">\arg\max_a\max_i w^\top\psi^{\pi_i}(s,a)</span> over
+a library of policies. It is at least as good as every library policy on
+task <span class="math inline">w</span>, up to the error in the learned
+<span class="math inline">\psi</span>’s, with no learning for the new
+task. The set-max policy picks one library policy at the initial state
+and follows it to the end. GPI can switch from state to state and is
+never worse.</p>
+</details>
+</section>
+<section id="vpo-as-a-policy-library" class="level3" data-kind="recall">
+<h3 data-kind="recall">VPO as a policy library</h3>
+<div class="study-meta">
+<span class="study-kind">recall</span> <a
+href="/notes/learning-about-what-you-do-not-do.html#vpo-builds-a-library-in-one-response">VPO
+builds a library in one response ↗</a>
+</div>
+<p>Give the successor-feature counterpart of each: a reward component,
+an answer, an answer’s reward vector, the max over the set, writing
+answer <span class="math inline">i</span> after reading the earlier
+ones, test-time search. Why does VPO need no learned predictions?</p>
+<details class="answer"><summary>Answer</summary>
+<p>A cumulant; a policy in the library; that policy’s successor features
+at the start state; the set-max value; training the next policy against
+the library’s weakest weighting; GPI’s max at deployment. VPO averages
+over weightings where Zahavy’s iteration takes the worst case. At the
+horizon of one answer the tests compute each reward vector exactly, and
+GPI coincides with set-max because there is no later state at which to
+switch.</p>
+</details>
+</section>
+<section id="the-weighting-each-answer-is-trained-under" class="level3"
+data-kind="compute">
+<h3 data-kind="compute">The weighting each answer is trained under</h3>
+<div class="study-meta">
+<span class="study-kind">compute</span> <a
+href="/notes/learning-about-what-you-do-not-do.html#vpo-builds-a-library-in-one-response">VPO
+builds a library in one response ↗</a>
+</div>
+<p>For Part 1’s set (specialists <span class="math inline">(1,0)</span>
+and <span class="math inline">(0,1)</span>, balanced <span
+class="math inline">(0.6,0.6)</span>, <span
+class="math inline">w=(u,1-u)</span>), compute <span
+class="math inline">\bar w_i=\mathbb E_w[w\,\mathbf 1\{w\in
+C_i\}]</span> for each answer.</p>
+<details class="answer"><summary>Answer</summary>
+<p>The first specialist is best for <span
+class="math inline">u\ge0.6</span>: <span class="math inline">\bar
+w_1=\int_{0.6}^{1}(u,\,1-u)\,du=(0.32,\,0.08)</span>. By symmetry <span
+class="math inline">\bar w_2=(0.08,\,0.32)</span>. The balanced answer
+holds <span class="math inline">0.4\le u\le0.6</span>: <span
+class="math inline">\bar w_3=(0.10,\,0.10)</span>. They sum to <span
+class="math inline">(0.5,0.5)</span>, the weighting a scalar method
+would apply to all three. The max splits it by territory.</p>
+</details>
+</section>
+<section id="two-findings-the-mapping-explains" class="level3"
+data-kind="explain">
+<h3 data-kind="explain">Two findings the mapping explains</h3>
+<div class="study-meta">
+<span class="study-kind">explain</span> <a
+href="/notes/learning-about-what-you-do-not-do.html#vpo-builds-a-library-in-one-response">VPO
+builds a library in one response ↗</a>
+</div>
+<p>Why did writing the weighting into the prompt fail, and why did VPO
+stop helping on the preference dataset?</p>
+<details class="answer"><summary>Answer</summary>
+<p>In the successor-feature construction the policy never sees <span
+class="math inline">w</span>. Conditioning on <span
+class="math inline">w</span> happens in the critic, as one dot product,
+and GPI selects among unconditioned behaviours. On the preference
+dataset the five criteria mostly agreed, so five cumulants spanned about
+one direction and a library of one policy covered every weighting. The
+rank of the reward vectors measures how large a library a task can
+use.</p>
+</details>
+</section>
+<section id="diversity-is-a-coverage-condition" class="level3"
+data-kind="explain">
+<h3 data-kind="explain">Diversity is a coverage condition</h3>
+<div class="study-meta">
+<span class="study-kind">explain</span> <a
+href="/notes/learning-about-what-you-do-not-do.html#diversity-is-a-coverage-condition">Diversity
+is a coverage condition ↗</a>
+</div>
+<p>GQ(λ) assumes the behaviour policy is “exciting”. Use that assumption
+to say what the collapse of Part 1 costs, and why VPO’s value does not
+depend on test-time search.</p>
+<details class="answer"><summary>Answer</summary>
+<p>Exciting means <span class="math inline">b(s,a)&gt;0</span>
+everywhere. Where the behaviour never acts as the target would, <span
+class="math inline">\rho_t=0</span>, the trace is cut and nothing is
+learned; where it rarely does, the ratio is too large to use. A
+collapsed model produces no data about its lost alternatives, so no
+critic, later improvement step or self-distillation trained on its data
+can learn about them. A reward-diverse model is a better behaviour
+policy for whatever learning comes next. This is plasticity at the level
+of behaviour: weights that can still change, attached to a policy that
+no longer visits the states from which change would be learned.</p>
+</details>
+</section>
+<section id="two-halves-and-their-shared-boundary" class="level3"
+data-kind="explain">
+<h3 data-kind="explain">Two halves and their shared boundary</h3>
+<div class="study-meta">
+<span class="study-kind">explain</span> <a
+href="/notes/learning-about-what-you-do-not-do.html#two-halves-of-one-strategy">Two
+halves of one strategy ↗</a>
+</div>
+<p>How do Horde and VPO each prepare for an unknown objective, what
+joins them, and where do both stop?</p>
+<details class="answer"><summary>Answer</summary>
+<p>Horde predicts: it learns off-policy what many behaviours would
+achieve, which is knowledge without behaviour. VPO behaves diversely: it
+keeps competent alternatives alive with no critic, which is behaviour
+without knowledge. GPI joins them: a library plus successor features
+meets a new weighting by a max. Both stop at the questions. Someone
+posed each general value function and wrote down each reward component.
+The world supplies the answers and not the questions.</p>
+</details>
+</section>
+<section id="proposals-not-results" class="level3" data-kind="limits">
+<h3 data-kind="limits">Proposals, not results</h3>
+<div class="study-meta">
+<span class="study-kind">limits</span> <a
+href="/notes/learning-about-what-you-do-not-do.html#what-gqλ-would-add">What
+GQ(λ) would add ↗</a>
+</div>
+<p>The essay makes three untested proposals. Name them, and the caution
+about data that passed through a search loop.</p>
+<details class="answer"><summary>Answer</summary>
+<p>Per-answer credit from the marginal gain each answer adds to the set,
+with no critic. A vector critic: linear GQ(λ) heads on frozen hidden
+states, one per reward component, giving a vector form of the
+generalized advantage. Continual VPO under drifting weights, with the
+prediction that a VPO checkpoint recovers best-of-<span
+class="math inline">k</span> performance in fewer updates than a GRPO
+checkpoint. The caution: an answer kept by a max has no known behaviour
+policy, so off-policy correction applies to the raw samples and not to
+the survivors.</p>
+</details>
+</section>
+</section>
+<section id="terms" class="level2">
+<h2>Terms</h2>
+<p>Introduced in this essay:</p>
+<ul>
+<li><a
+href="/notes/learning-about-what-you-do-not-do.html#questions-and-answers">general
+value function</a></li>
+<li><a
+href="/notes/learning-about-what-you-do-not-do.html#learning-off-the-policy">deadly
+triad</a></li>
+<li><a
+href="/notes/learning-about-what-you-do-not-do.html#learning-off-the-policy">projected
+Bellman error and gradient TD</a></li>
+<li><a
+href="/notes/learning-about-what-you-do-not-do.html#learning-off-the-policy">GQ(λ)</a></li>
+<li><a
+href="/notes/learning-about-what-you-do-not-do.html#learning-off-the-policy">importance
+ratio</a></li>
+<li><a
+href="/notes/learning-about-what-you-do-not-do.html#from-many-predictions-to-a-choice">successor
+features</a></li>
+<li><a
+href="/notes/learning-about-what-you-do-not-do.html#from-many-predictions-to-a-choice">generalized
+policy improvement</a></li>
+<li><a
+href="/notes/learning-about-what-you-do-not-do.html#from-many-predictions-to-a-choice">set-max
+policy</a></li>
+<li><a
+href="/notes/learning-about-what-you-do-not-do.html#vpo-builds-a-library-in-one-response">per-answer
+weighting</a></li>
+<li><a
+href="/notes/learning-about-what-you-do-not-do.html#diversity-is-a-coverage-condition">coverage
+condition</a></li>
+</ul>
+<p>From other essays:</p>
+<ul>
+<li>temporal-difference error (<a
+href="/notes/how-can-a-reward-train-a-neural-network.html#learning-values-from-experience"><em>How
+Can a Reward Train a Neural Network?</em></a>)</li>
+<li>λ-return and eligibility trace (<a
+href="/notes/how-can-a-reward-train-a-neural-network.html#learning-values-from-experience"><em>How
+Can a Reward Train a Neural Network?</em></a>)</li>
+<li>on-policy and off-policy (<a
+href="/notes/how-can-a-reward-train-a-neural-network.html#learning-values-from-experience"><em>How
+Can a Reward Train a Neural Network?</em></a>)</li>
+<li>Vector Policy Optimization (<a
+href="/notes/who-teaches-the-weights.html#what-on-policy-training-forgets"><em>Who
+Teaches the Weights?</em></a>)</li>
+<li>forgetting within a task (<a
+href="/notes/who-teaches-the-weights.html#what-on-policy-training-forgets"><em>Who
+Teaches the Weights?</em></a>)</li>
+</ul>
+</section>
+</article>
+<section class="study-link"><p><em>From the study questions back to the essay: 
+<a href="/notes/learning-about-what-you-do-not-do.html">learning-about-what-you-do-not-do.html &rarr;</a></em></p></section>
+<script src="/assets/theme-toggle.js"></script>
+</body>
+</html>

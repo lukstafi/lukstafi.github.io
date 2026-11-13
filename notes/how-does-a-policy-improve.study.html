@@ -1,0 +1,844 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <meta name="description" content="Recall questions for the essay “How Does a Policy Improve? Planning, Imagination, and Learning from Better Choices”.">
+  <meta property="og:title" content="Study notes: How Does a Policy Improve? Planning, Imagination, and Learning from Better Choices">
+  <meta property="og:description" content="Recall questions for the essay “How Does a Policy Improve? Planning, Imagination, and Learning from Better Choices”.">
+  <meta property="og:url" content="https://lukstafi.github.io/notes/how-does-a-policy-improve.study.html">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="lukstafi&#x27;s blog">
+  <meta name="twitter:card" content="summary">
+  <title>Study notes: How Does a Policy Improve?</title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <link rel="stylesheet" href="/assets/tufte.css">
+  <link rel="stylesheet" href="/assets/pandoc-tufte.css">
+  <link rel="stylesheet" href="/assets/site.css">
+  <script defer=""
+  src="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.js"></script>
+  <script>document.addEventListener("DOMContentLoaded", function () {
+ var mathElements = document.getElementsByClassName("math");
+ var macros = [];
+ for (var i = 0; i < mathElements.length; i++) {
+  var texText = mathElements[i].firstChild;
+  if (mathElements[i].tagName == "SPAN") {
+   katex.render(texText.data, mathElements[i], {
+    displayMode: mathElements[i].classList.contains('display'),
+    throwOnError: false,
+    macros: macros,
+    fleqn: false
+   });
+}}});
+  </script>
+  <link rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.css" />
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+  <script>(function(){var t=localStorage.getItem('theme-preference');if(t)document.documentElement.setAttribute('data-theme',t);})()</script>
+</head>
+<body>
+<nav class="site-nav">
+  <a href="/">Home</a> &middot; <a href="/about.html">About</a> &middot; <a href="https://lukstafi.substack.com">Substack</a>
+</nav>
+<div class="theme-toggle">
+  <button id="theme-btn" aria-label="Toggle dark mode">&#9788;</button>
+</div>
+<article>
+<header>
+<h1 class="title">Study notes: How Does a Policy Improve?</h1>
+</header>
+<p>Recall questions for <a
+href="/notes/how-does-a-policy-improve.html"><em>How Does a Policy
+Improve?</em></a>. Answer each from memory, then open the answer to
+compare. The link under a question leads to the section it draws on.</p>
+<section id="before-reading" class="level2">
+<h2>Before reading</h2>
+<p>The essay and these questions assume:</p>
+<ul>
+<li><a
+href="/notes/how-can-a-reward-train-a-neural-network.html#values-evaluate-a-particular-policy"><em>How
+Can a Reward Train a Neural Network?</em>, “Values evaluate a particular
+policy”</a>: action values.</li>
+</ul>
+</section>
+<section id="questions" class="level2">
+<h2>Questions</h2>
+<p>The robot’s junction, used by several questions: the reference policy
+gives waiting, the detour and the shortcut probabilities <span
+class="math inline">(0.6,0.3,0.1)</span>, and their action values are
+<span class="math inline">(0,1,2)</span>.</p>
+</section>
+<section id="part-1" class="level2">
+<h2>Part 1</h2>
+<section id="from-one-decision-to-every-decision" class="level3"
+data-kind="derive">
+<h3 data-kind="derive">From one decision to every decision</h3>
+<div class="study-meta">
+<span class="study-kind">derive</span> <a
+href="/notes/how-does-a-policy-improve.html#evaluating-a-policy-and-improving-it">Evaluating
+a policy and improving it ↗</a>
+</div>
+<p>Suppose <span class="math inline">\sum_a\pi&#39;(a\mid
+s)Q^\pi(s,a)\ge V^\pi(s)</span> at every state. This says that one
+decision under <span class="math inline">\pi&#39;</span>, followed by
+<span class="math inline">\pi</span>, is no worse than <span
+class="math inline">\pi</span>. Show that following <span
+class="math inline">\pi&#39;</span> at every decision is no worse.</p>
+<details class="answer"><summary>Answer</summary>
+<p>Write <span class="math inline">T_{\pi&#39;}</span> for the Bellman
+operator that backs continuation values up through one decision under
+<span class="math inline">\pi&#39;</span>. The assumption is <span
+class="math inline">T_{\pi&#39;}V^\pi\ge V^\pi</span>. The operator is
+monotonic, because it averages with nonnegative probabilities and
+multiplies by <span class="math inline">\gamma\ge0</span>, so applying
+it repeatedly gives <span class="math inline">V^\pi\le
+T_{\pi&#39;}V^\pi\le T_{\pi&#39;}^2V^\pi\le\cdots</span>. It is also a
+contraction: each backup shrinks the largest difference between two
+bounded value functions by at least a factor of <span
+class="math inline">\gamma</span>. After <span
+class="math inline">n</span> decisions the effect of reverting to the
+old policy is at most <span class="math inline">\gamma^n</span> times
+the largest difference between <span class="math inline">V^\pi</span>
+and <span class="math inline">V^{\pi&#39;}</span>, which vanishes. The
+chain converges to <span class="math inline">V^{\pi&#39;}</span>, so
+<span class="math inline">V^{\pi&#39;}\ge V^\pi</span>.</p>
+</details>
+</section>
+<section id="what-a-trust-region-is-for" class="level3"
+data-kind="limits">
+<h3 data-kind="limits">What a trust region is for</h3>
+<div class="study-meta">
+<span class="study-kind">limits</span> <a
+href="/notes/how-does-a-policy-improve.html#evaluating-a-policy-and-improving-it">Evaluating
+a policy and improving it ↗</a>
+</div>
+<p>With <span class="math inline">d^\pi</span> the normalized discounted
+occupancy, <span
+class="math inline">J(\pi&#39;)-J(\pi)=\frac{1}{1-\gamma}\,\mathbb
+E_{s\sim d^{\pi&#39;},\,a\sim\pi&#39;}[A^\pi(s,a)]</span>. Which part of
+the right-hand side is unavailable from the old policy’s data? What
+replaces it, and at what cost?</p>
+<details class="answer"><summary>Answer</summary>
+<p>The expectation is over states visited by the new policy, and the
+data usually come from the old one. Replacing <span
+class="math inline">d^{\pi&#39;}</span> by <span
+class="math inline">d^\pi</span> gives a manageable surrogate. It is an
+approximation whose quality depends on how much the behavior changes. A
+trust region helps keep the data distribution relevant to the policy
+about to be deployed.</p>
+</details>
+</section>
+<section id="three-jobs-of-a-model" class="level3" data-kind="recall">
+<h3 data-kind="recall">Three jobs of a model</h3>
+<div class="study-meta">
+<span class="study-kind">recall</span> <a
+href="/notes/how-does-a-policy-improve.html#the-different-jobs-of-a-world-model">The
+different jobs of a world model ↗</a>
+</div>
+<p>Name the three ways a learned model can take part in control, with a
+system that uses each. Which of them leaves computation to be done at
+deployment, and what is the alternative called?</p>
+<details class="answer"><summary>Answer</summary>
+<ul>
+<li>Supply simulated transitions for value learning: Dyna, and SimPLe at
+the scale of Atari.</li>
+<li>Train an actor through imagined trajectories: Dreamer.</li>
+<li>Evaluate candidate actions during planning: model-predictive
+control, or the tree search of AlphaZero and MuZero.</li>
+</ul>
+<p>Planning makes extra computation available at deployment, and the
+computation must finish before the next action is due. Dreamer’s actor
+amortizes instead: a training cost is paid so that repeated decisions
+become cheaper. Amortization does not guarantee that the cheap action
+matches what a planner with more time would choose.</p>
+</details>
+</section>
+<section id="averaging-two-good-plans" class="level3"
+data-kind="compute">
+<h3 data-kind="compute">Averaging two good plans</h3>
+<div class="study-meta">
+<span class="study-kind">compute</span> <a
+href="/notes/how-does-a-policy-improve.html#planning-over-trajectories-and-trees">Planning
+over trajectories and trees ↗</a>
+</div>
+<p>A planner scores three steering commands: left (<span
+class="math inline">-1</span>) and right (<span
+class="math inline">+1</span>) each have predicted return <span
+class="math inline">2</span>, and straight (<span
+class="math inline">0</span>) runs into the obstacle with predicted
+return <span class="math inline">0</span>. Weight them by <span
+class="math inline">w_k\propto e^{\hat G_k/\eta}</span> with <span
+class="math inline">\eta=0.5</span> and execute the weighted average.
+What does the robot do? Does a lower temperature help?</p>
+<details class="answer"><summary>Answer</summary>
+<p>The weights are <span class="math inline">(e^4,e^4,1)</span>
+normalized, about <span
+class="math inline">(0.495,\,0.495,\,0.009)</span>. The average command
+is <span class="math inline">0</span>: straight into the obstacle, the
+worst candidate. A lower temperature moves the remaining weight onto the
+two tied winners and leaves the average at <span
+class="math inline">0</span>. An expressive distribution over plans can
+preserve alternatives that a single mean collapses. Selecting, mixing
+and fitting candidates are different operations even when their scores
+are identical.</p>
+</details>
+</section>
+</section>
+<section id="part-2" class="level2">
+<h2>Part 2</h2>
+<section id="the-regularized-improvement" class="level3"
+data-kind="derive">
+<h3 data-kind="derive">The regularized improvement</h3>
+<div class="study-meta">
+<span class="study-kind">derive</span> <a
+href="/notes/how-does-a-policy-improve.html#improving-a-distribution-without-throwing-away-the-prior">Improving
+a distribution without throwing away the prior ↗</a>
+</div>
+<p>Maximize <span class="math inline">\sum_a
+q(a)Q(a)-\eta\,D_{\mathrm{KL}}(q\|p)</span> over distributions <span
+class="math inline">q</span>. What is the optimum, and what does <span
+class="math inline">\eta</span> do?</p>
+<details class="answer"><summary>Answer</summary>
+<p>Setting the derivative to zero with a multiplier for normalization
+gives <span class="math inline">q^*(a)=p(a)e^{Q(a)/\eta}/Z</span> with
+<span class="math inline">Z=\sum_b p(b)e^{Q(b)/\eta}</span>. It is a
+softmax of <span class="math inline">\log p(a)+Q(a)/\eta</span>, so a
+rare action needs enough value to overcome its small prior. As <span
+class="math inline">\eta</span> grows the update approaches the
+reference; as it shrinks, probability concentrates on the best supported
+action. The optimal value of the objective is <span
+class="math inline">\eta\log Z</span>.</p>
+</details>
+</section>
+<section id="tilt-the-robots-policy" class="level3" data-kind="compute">
+<h3 data-kind="compute">Tilt the robot’s policy</h3>
+<div class="study-meta">
+<span class="study-kind">compute</span> <a
+href="/notes/how-does-a-policy-improve.html#improving-a-distribution-without-throwing-away-the-prior">Improving
+a distribution without throwing away the prior ↗</a>
+</div>
+<p>With <span class="math inline">p=(0.6,0.3,0.1)</span>, <span
+class="math inline">Q=(0,1,2)</span> and <span
+class="math inline">\eta=0.5</span>, compute <span
+class="math inline">q^*</span> and the expected value before and
+after.</p>
+<details class="answer"><summary>Answer</summary>
+<p>The weights <span class="math inline">p(a)e^{2Q(a)}</span> are about
+<span class="math inline">(0.6,\,2.217,\,5.460)</span>, so <span
+class="math inline">q^*\approx(0.073,\,0.268,\,0.660)</span>. The
+expected value rises from <span class="math inline">0.5</span> to about
+<span class="math inline">1.587</span>. Greedy improvement would reach
+<span class="math inline">2</span> and discard both alternatives.</p>
+</details>
+</section>
+<section id="two-directions-of-kl" class="level3"
+data-kind="distinguish">
+<h3 data-kind="distinguish">Two directions of KL</h3>
+<div class="study-meta">
+<span class="study-kind">distinguish</span> <a
+href="/notes/how-does-a-policy-improve.html#improving-a-distribution-without-throwing-away-the-prior">Improving
+a distribution without throwing away the prior ↗</a>
+</div>
+<p>A target <span class="math inline">p</span> has two separated peaks
+and <span class="math inline">q</span> must be a single Gaussian. What
+does each direction of KL produce, and when does the direction stop
+mattering?</p>
+<details class="answer"><summary>Answer</summary>
+<p>Minimizing <span class="math inline">D_{\mathrm{KL}}(p\|q)</span> is
+mass-covering: the expectation is under <span
+class="math inline">p</span>, so <span class="math inline">q</span> must
+have mass wherever <span class="math inline">p</span> does, and it
+spreads over both peaks and the valley between. Minimizing <span
+class="math inline">D_{\mathrm{KL}}(q\|p)</span> is mode-seeking: the
+expectation is under <span class="math inline">q</span>, so <span
+class="math inline">q</span> avoids the valley and settles on one peak.
+If <span class="math inline">q</span>’s family can represent <span
+class="math inline">p</span> exactly, both give <span
+class="math inline">q=p</span>.</p>
+</details>
+</section>
+<section id="a-budget-in-place-of-a-temperature" class="level3"
+data-kind="explain">
+<h3 data-kind="explain">A budget in place of a temperature</h3>
+<div class="study-meta">
+<span class="study-kind">explain</span> <a
+href="/notes/how-does-a-policy-improve.html#improving-a-distribution-without-throwing-away-the-prior">Improving
+a distribution without throwing away the prior ↗</a>
+</div>
+<p>Replace the penalty with the constraint <span
+class="math inline">D_{\mathrm{KL}}(q\|p)\le\epsilon</span>. How is the
+temperature then determined?</p>
+<details class="answer"><summary>Answer</summary>
+<p>The temperature is the Lagrange multiplier of the constraint, found
+by minimizing <span
+class="math inline">g(\eta)=\eta\epsilon+\eta\log\sum_a
+p(a)e^{Q(a)/\eta}</span>. Since <span
+class="math inline">g&#39;(\eta)=\epsilon-D_{\mathrm{KL}}(q_\eta\|p)</span>,
+the minimization adjusts the temperature until the update spends exactly
+the allowed divergence. If the best action already fits within the
+budget, the constraint is inactive.</p>
+</details>
+</section>
+<section id="what-a-prior-cannot-supply" class="level3"
+data-kind="limits">
+<h3 data-kind="limits">What a prior cannot supply</h3>
+<div class="study-meta">
+<span class="study-kind">limits</span> <a
+href="/notes/how-does-a-policy-improve.html#improving-a-distribution-without-throwing-away-the-prior">Improving
+a distribution without throwing away the prior ↗</a>
+</div>
+<p>What happens to the tilt at an action with <span
+class="math inline">p(a)=0</span>?</p>
+<details class="answer"><summary>Answer</summary>
+<p>It stays at zero: putting mass there makes <span
+class="math inline">D_{\mathrm{KL}}(q\|p)</span> infinite.
+Regularization toward a prior preserves experience and cannot produce
+alternatives outside the prior’s support.</p>
+</details>
+</section>
+<section id="a-posterior-as-a-selected-population" class="level3"
+data-kind="derive">
+<h3 data-kind="derive">A posterior as a selected population</h3>
+<div class="study-meta">
+<span class="study-kind">derive</span> <a
+href="/notes/how-does-a-policy-improve.html#the-evidence-lower-bound-and-expectation-maximization">The
+evidence lower bound and expectation maximization ↗</a>
+</div>
+<p>Draw trajectories from <span
+class="math inline">p_\theta(\tau)</span> and keep each with probability
+<span class="math inline">e^{(R(\tau)-C)/\alpha}</span>, where <span
+class="math inline">C</span> bounds the returns from above. What is the
+distribution of the kept trajectories? Write the evidence lower bound
+for the event <span class="math inline">O=1</span> that a trajectory is
+kept. What is it after multiplying by <span
+class="math inline">\alpha</span>, and when is it tight?</p>
+<details class="answer"><summary>Answer</summary>
+<p>By Bayes’ rule <span class="math inline">p_\theta(\tau\mid
+O=1)=p_\theta(\tau)e^{R(\tau)/\alpha}/\mathbb
+E_{p_\theta}[e^{R/\alpha}]</span>: the current trajectory distribution
+reweighted toward higher returns. For any <span
+class="math inline">q</span> with the same support, Jensen’s inequality
+gives <span class="math inline">\log p_\theta(O=1)\ge\mathbb E_q[\log
+p(O=1\mid\tau)]-D_{\mathrm{KL}}(q\|p_\theta)</span>. Multiplied by <span
+class="math inline">\alpha</span> this is <span
+class="math inline">\mathbb E_q[R(\tau)]-\alpha
+D_{\mathrm{KL}}(q\|p_\theta)</span>, up to the constant <span
+class="math inline">-C</span>: the return-minus-divergence objective.
+The gap is <span
+class="math inline">D_{\mathrm{KL}}(q\,\|\,p_\theta(\tau\mid
+O=1))</span>, so the bound is tight when <span
+class="math inline">q</span> is the posterior.</p>
+</details>
+</section>
+<section id="why-exact-em-cannot-lose" class="level3" data-kind="argue">
+<h3 data-kind="argue">Why exact EM cannot lose</h3>
+<div class="study-meta">
+<span class="study-kind">argue</span> <a
+href="/notes/how-does-a-policy-improve.html#the-evidence-lower-bound-and-expectation-maximization">The
+evidence lower bound and expectation maximization ↗</a>
+</div>
+<p>What does each of the E-step and the M-step hold fixed, and what does
+it change? Why can exact EM not lower the evidence? What weakens the
+argument in practice?</p>
+<details class="answer"><summary>Answer</summary>
+<p>The E-step fixes <span class="math inline">\theta</span> and sets
+<span class="math inline">q</span> to the posterior over trajectories.
+The M-step fixes <span class="math inline">q</span> and adjusts <span
+class="math inline">\theta</span> to raise the bound. Its
+policy-dependent part is <span class="math inline">\max_\theta\mathbb
+E_{\tau\sim q}\bigl[\sum_t\log\pi_\theta(a_t\mid s_t)\bigr]</span>:
+supervised learning on targets constructed to favor good behavior. After
+the E-step the bound equals the evidence at the old parameters, the
+M-step raises the bound, and the evidence at the new parameters is at
+least the new bound. If the E-step is restricted or approximate, the
+starting bound need not be tight, and raising a loose bound does not
+establish that the evidence rose. Sampling error and incomplete neural
+optimization add further qualifications.</p>
+</details>
+</section>
+<section id="a-posterior-that-moves-the-gate" class="level3"
+data-kind="limits">
+<h3 data-kind="limits">A posterior that moves the gate</h3>
+<div class="study-meta">
+<span class="study-kind">limits</span> <a
+href="/notes/how-does-a-policy-improve.html#the-evidence-lower-bound-and-expectation-maximization">The
+evidence lower bound and expectation maximization ↗</a>
+</div>
+<p>The essay keeps two distinctions explicit once control is cast as
+inference. What are they? Which restriction on <span
+class="math inline">q</span> repairs the second?</p>
+<details class="answer"><summary>Answer</summary>
+<p>First, <span class="math inline">\alpha\log\mathbb
+E_{p_\theta}[e^{R/\alpha}]</span> is not the expected return. For large
+<span class="math inline">\alpha</span> it is the mean plus <span
+class="math inline">\operatorname{Var}(R)/(2\alpha)</span>, so
+unrestricted conditioning can favor a risky lottery whose lucky outcomes
+receive enormous weight. Second, a trajectory posterior can change the
+apparent dynamics: among journeys conditioned on success, the gate
+appears open more often than it opens. The robot controls its actions,
+not the gate. The repair restricts <span
+class="math inline">q(\tau)</span> to <span
+class="math inline">\rho_0(s_0)\prod_t q(a_t\mid s_t)P(s_{t+1}\mid
+s_t,a_t)</span>, which can change action probabilities and keeps the
+initial-state distribution and the transitions fixed. The optimizer of
+this restricted ELBO generally does not equal the unrestricted
+posterior.</p>
+</details>
+</section>
+<section id="values-as-prices" class="level3" data-kind="derive">
+<h3 data-kind="derive">Values as prices</h3>
+<div class="study-meta">
+<span class="study-kind">derive</span> <a
+href="/notes/how-does-a-policy-improve.html#reps-and-the-consistency-of-state-distributions">REPS
+and the consistency of state distributions ↗</a>
+</div>
+<p>REPS improves a state-action occupancy <span
+class="math inline">\nu(s,a)</span> against a reference <span
+class="math inline">\mu(s,a)</span> under a KL budget, maximizing
+average reward. Which further constraint must <span
+class="math inline">\nu</span> satisfy, and why? Attach a multiplier
+<span class="math inline">V(s&#39;)</span> to it. What score does each
+pair <span class="math inline">(s,a)</span> receive, and what is the
+optimum?</p>
+<details class="answer"><summary>Answer</summary>
+<p>Flow conservation: <span
+class="math inline">\sum_a\nu(s&#39;,a)=\sum_{s,a}\nu(s,a)P(s&#39;\mid
+s,a)</span>, so the probability flowing into a state equals the state’s
+marginal probability. Without it the optimizer could put all its mass at
+the delivery destination without paying for the journeys that arrive
+there. Raising one <span class="math inline">\nu(s,a)</span> contributes
+<span class="math inline">-V(s)</span> through the marginal at <span
+class="math inline">s</span> and the expected successor multiplier
+through the incoming flows. With the reward, the coefficient of <span
+class="math inline">\nu(s,a)</span> is <span
+class="math inline">\delta_V(s,a)=r(s,a)+\sum_{s&#39;}P(s&#39;\mid
+s,a)V(s&#39;)-V(s)</span>. For fixed <span class="math inline">V</span>
+and <span class="math inline">\eta</span> this is the tilt with
+state-action pairs as candidates: <span
+class="math inline">\nu^*(s,a)\propto\mu(s,a)e^{\delta_V(s,a)/\eta}</span>.
+Here <span class="math inline">V</span> starts as a set of constraint
+multipliers, prices that enforce consistency between states, and not as
+an estimate of a fixed policy’s return.</p>
+</details>
+</section>
+<section id="the-samples-carry-the-prior" class="level3"
+data-kind="compute">
+<h3 data-kind="compute">The samples carry the prior</h3>
+<div class="study-meta">
+<span class="study-kind">compute</span> <a
+href="/notes/how-does-a-policy-improve.html#mpo-separates-improvement-from-fitting">MPO
+separates improvement from fitting ↗</a>
+</div>
+<p>At the robot’s junction MPO draws ten actions from <span
+class="math inline">\pi_i=(0.6,0.3,0.1)</span>: suppose six waits, three
+detours and one shortcut. The critic gives <span
+class="math inline">Q=(0,1,2)</span> and <span
+class="math inline">\eta=0.5</span>. What weight does each sample get,
+and which distribution do the weighted samples represent? What if each
+weight were also multiplied by <span
+class="math inline">\pi_i(a)</span>?</p>
+<details class="answer"><summary>Answer</summary>
+<p>Each sample gets a weight proportional to <span
+class="math inline">e^{Q/\eta}</span>: <span
+class="math inline">1</span> for a wait, <span
+class="math inline">7.39</span> for a detour, <span
+class="math inline">54.6</span> for the shortcut. The three groups total
+<span class="math inline">(6,\,22.2,\,54.6)</span>, which normalizes to
+<span class="math inline">(0.073,\,0.268,\,0.660)</span>: the tilt <span
+class="math inline">q^*</span>. Sampling from <span
+class="math inline">\pi_i</span> already represents the reference
+factor. Multiplying by the density again weights the actions by <span
+class="math inline">\pi_i^2e^{Q/\eta}</span>, about <span
+class="math inline">(0.229,\,0.423,\,0.348)</span>. The reference is
+counted twice, and the shortcut loses its lead.</p>
+</details>
+</section>
+<section id="two-responsibilities" class="level3" data-kind="explain">
+<h3 data-kind="explain">Two responsibilities</h3>
+<div class="study-meta">
+<span class="study-kind">explain</span> <a
+href="/notes/how-does-a-policy-improve.html#mpo-separates-improvement-from-fitting">MPO
+separates improvement from fitting ↗</a>
+</div>
+<p>What does MPO gain by constructing <span
+class="math inline">q_i</span> before fitting <span
+class="math inline">\pi_\theta</span>? In which direction of KL is the
+fit? For the robot, what do a good and a poor M-step look like?</p>
+<details class="answer"><summary>Answer</summary>
+<p>One gradient step in policy parameters need not simultaneously
+discover good actions, preserve sensible exploration and represent the
+improved behavior. The E-step constructs a better distribution from
+estimated values, and the M-step solves a supervised fitting problem.
+The quality of the estimate and the quality of the fit are distinct
+responsibilities. The fit maximizes weighted likelihood, which minimizes
+<span class="math inline">D_{\mathrm{KL}}(q_i\|\pi_\theta)</span>: the
+mass-covering direction, with a further trust region on how far the
+parameterized policy moves. A successful M-step learns what
+distinguishes this junction from other junctions. A poor one memorizes a
+background texture or pushes all similar scenes toward the shortcut.</p>
+</details>
+</section>
+<section id="a-baseline-that-cancels-and-still-matters" class="level3"
+data-kind="explain">
+<h3 data-kind="explain">A baseline that cancels and still matters</h3>
+<div class="study-meta">
+<span class="study-kind">explain</span> <a
+href="/notes/how-does-a-policy-improve.html#weighted-regression-and-learning-from-a-fixed-dataset">Weighted
+regression and learning from a fixed dataset ↗</a>
+</div>
+<p>At a fixed state, replacing <span class="math inline">Q(s,a)</span>
+by <span class="math inline">A(s,a)=Q(s,a)-V(s)</span> leaves the tilted
+distribution unchanged. Why does the baseline still matter in
+advantage-weighted regression? Take two junctions with the same action
+preferences, where every journey from the second earns an extra <span
+class="math inline">100</span>.</p>
+<details class="answer"><summary>Answer</summary>
+<p>Subtracting <span class="math inline">V(s)</span> multiplies every
+action weight at <span class="math inline">s</span> by the same factor,
+and the factor cancels when each state’s distribution is normalized
+separately. Weighted regression does not normalize state by state: it
+fits one network across states with the unnormalized weights <span
+class="math inline">e^{\hat A(s,a)/\beta}</span>. With raw returns the
+second junction’s weights are larger by <span
+class="math inline">e^{100/\beta}</span>, and that junction dominates
+the dataset-wide objective. Subtracting each junction’s baseline removes
+the common offset. The intended conditional choices stay the same; the
+allocation of the learner’s finite capacity changes. Weight clipping can
+further break the cancellation.</p>
+</details>
+</section>
+<section id="good-decisions-and-good-luck" class="level3"
+data-kind="compute">
+<h3 data-kind="compute">Good decisions and good luck</h3>
+<div class="study-meta">
+<span class="study-kind">compute</span> <a
+href="/notes/how-does-a-policy-improve.html#from-return-distributions-to-return-conditioned-policies">From
+return distributions to return-conditioned policies ↗</a>
+</div>
+<p>One action pays <span class="math inline">2</span> for certain.
+Another pays <span class="math inline">10</span> with probability <span
+class="math inline">0.1</span> and nothing otherwise. With equal action
+priors and <span class="math inline">\eta=1</span>, compare the weights
+obtained by exponentiating expected returns with those obtained by
+exponentially weighting realized returns. What does conditioning on a
+return of <span class="math inline">10</span> select, and what does
+playing the selection again achieve?</p>
+<details class="answer"><summary>Answer</summary>
+<p>The means are <span class="math inline">2</span> and <span
+class="math inline">1</span>. Exponentiating them gives <span
+class="math inline">e^2\approx7.39</span> against <span
+class="math inline">e\approx2.72</span>, so the certain reward gets
+about <span class="math inline">0.73</span> of the probability.
+Weighting realized returns gives <span class="math inline">e^2</span>
+against <span class="math inline">0.9+0.1e^{10}\approx2204</span>, so
+the lottery gets about <span class="math inline">0.997</span>.
+Conditioning on a return of <span class="math inline">10</span> selects
+only lottery actions, and playing them again leaves the winning
+probability at <span class="math inline">0.1</span>. Conditioning can
+select favorable environmental outcomes that a policy cannot cause.
+MPO’s critic-based step exponentiates an estimated expected value; AWR
+with sampled returns can give unusually lucky outcomes
+disproportionately large weights.</p>
+</details>
+</section>
+</section>
+<section id="part-3" class="level2">
+<h2>Part 3</h2>
+<section id="the-opposite-direction" class="level3" data-kind="compute">
+<h3 data-kind="compute">The opposite direction</h3>
+<div class="study-meta">
+<span class="study-kind">compute</span> <a
+href="/notes/how-does-a-policy-improve.html#search-as-regularized-policy-improvement">Search
+as regularized policy improvement ↗</a>
+</div>
+<p>Reverse the KL: maximize <span class="math inline">\sum_a
+q(a)Q(a)-\lambda D_{\mathrm{KL}}(p\|q)</span>. Find the form of the
+optimum. For the robot with <span
+class="math inline">\lambda=0.5</span>, the multiplier that normalizes
+it is <span class="math inline">c\approx2.06994</span>. Compute <span
+class="math inline">q^*</span> and compare it with the exponential
+tilt.</p>
+<details class="answer"><summary>Answer</summary>
+<p>With a multiplier <span class="math inline">c</span> for
+normalization, the derivative is <span class="math inline">Q(a)+\lambda
+p(a)/q(a)-c</span>. Setting it to zero gives <span
+class="math inline">q^*(a)=\lambda p(a)/(c-Q(a))</span> with <span
+class="math inline">c&gt;\max_aQ(a)</span>: a rational expression, not
+an exponential one. For the robot, <span
+class="math inline">q^*=(0.3/2.06994,\;0.15/1.06994,\;0.05/0.06994)\approx(0.1449,\,0.1402,\,0.7149)</span>.
+The tilt gave <span
+class="math inline">(0.0725,\,0.2678,\,0.6597)</span>. Both favor the
+shortcut and keep different amounts of the other actions. Equal penalty
+coefficients do not imply equal divergence budgets, so the comparison is
+illustrative.</p>
+</details>
+</section>
+<section id="puct-follows-a-derivative" class="level3"
+data-kind="derive">
+<h3 data-kind="derive">PUCT follows a derivative</h3>
+<div class="study-meta">
+<span class="study-kind">derive</span> <a
+href="/notes/how-does-a-policy-improve.html#search-as-regularized-policy-improvement">Search
+as regularized policy improvement ↗</a>
+</div>
+<p>Write <span class="math inline">N=\sum_bN(s,b)</span>. Rewrite the
+PUCT score <span class="math inline">Q(s,a)+c_{\mathrm{puct}}\,p(a\mid
+s)\sqrt{N}/(1+N(s,a))</span> in terms of the smoothed visit distribution
+<span class="math inline">\hat\pi(a\mid s)=(1+N(s,a))/(|\mathcal
+A|+N)</span>. What is the search doing to the reversed-KL objective?
+What keeps it from being an exact solve?</p>
+<details class="answer"><summary>Answer</summary>
+<p>Since <span class="math inline">1+N(s,a)=\hat\pi(a\mid s)\,(|\mathcal
+A|+N)</span>, the score is <span
+class="math inline">Q(s,a)+\lambda_N\,p(a\mid s)/\hat\pi(a\mid s)</span>
+with <span class="math inline">\lambda_N=c_{\mathrm{puct}}\sqrt
+N/(|\mathcal A|+N)</span>. The derivative of the reversed-KL objective
+is <span class="math inline">Q(a)+\lambda p(a)/q(a)-c</span>, and <span
+class="math inline">c</span> is common to all actions. With <span
+class="math inline">q=\hat\pi</span> and <span
+class="math inline">\lambda=\lambda_N</span>, PUCT selects the action
+with the largest derivative, and visiting it increases its share of the
+counts. Values and counts evolve during search, so this is not an exact
+solve for one fixed objective. Final training targets can also use
+different visit-count conventions.</p>
+</details>
+</section>
+<section id="dpo-from-the-tilt" class="level3" data-kind="derive">
+<h3 data-kind="derive">DPO from the tilt</h3>
+<div class="study-meta">
+<span class="study-kind">derive</span> <a
+href="/notes/how-does-a-policy-improve.html#from-relative-entropy-to-preference-learning">From
+relative entropy to preference learning ↗</a>
+</div>
+<p>Treat a prompt <span class="math inline">x</span> as a context and a
+whole response <span class="math inline">y</span> as an action. The
+KL-regularized optimum is <span class="math inline">\pi^*(y\mid
+x)=\pi_{\mathrm{ref}}(y\mid x)e^{r(x,y)/\beta}/Z(x)</span>. Under the
+Bradley–Terry model, <span class="math inline">y_+</span> is preferred
+to <span class="math inline">y_-</span> with probability <span
+class="math inline">\sigma(r(x,y_+)-r(x,y_-))</span>. Derive DPO’s
+margin. What preference does it predict at <span
+class="math inline">\pi_\theta=\pi_{\mathrm{ref}}</span>?</p>
+<details class="answer"><summary>Answer</summary>
+<p>Rearranging the optimum gives <span
+class="math inline">r(x,y)=\beta\log\frac{\pi^*(y\mid
+x)}{\pi_{\mathrm{ref}}(y\mid x)}+\beta\log Z(x)</span>. In the
+difference <span class="math inline">r(x,y_+)-r(x,y_-)</span> the term
+<span class="math inline">\beta\log Z(x)</span> cancels. Replacing <span
+class="math inline">\pi^*</span> with the trainable <span
+class="math inline">\pi_\theta</span> gives the margin <span
+class="math inline">m_\theta=\beta\Bigl[\log\frac{\pi_\theta(y_+\mid
+x)}{\pi_{\mathrm{ref}}(y_+\mid x)}-\log\frac{\pi_\theta(y_-\mid
+x)}{\pi_{\mathrm{ref}}(y_-\mid x)}\Bigr]</span>, and the loss is <span
+class="math inline">-\log\sigma(m_\theta)</span> averaged over labeled
+pairs. At <span class="math inline">\pi_\theta=\pi_{\mathrm{ref}}</span>
+the margin is zero and the predicted preference probability is <span
+class="math inline">1/2</span>. The KL-regularized optimum supplies the
+parameterization; the implemented loss fits preferences directly,
+without a separately trained reward model.</p>
+</details>
+</section>
+<section id="four-places-to-look" class="level3" data-kind="case">
+<h3 data-kind="case">Four places to look</h3>
+<div class="study-meta">
+<span class="study-kind">case</span> <a
+href="/notes/how-does-a-policy-improve.html#recent-agents-bring-the-constructions-together">Recent
+agents bring the constructions together ↗</a>
+</div>
+<p>An agent that learns behavior inside a world model fails at the gate.
+Which four things does the essay say we can ask about separately? Give
+the four ways the gate can go wrong.</p>
+<details class="answer"><summary>Answer</summary>
+<p>We can ask whether the simulated experience is faithful, whether the
+values are correct, whether the preference signal is useful, and whether
+the actor represents the resulting distribution. At the gate:</p>
+<ul>
+<li>The model hallucinates an opening. The critic may correctly evaluate
+the hallucinated world.</li>
+<li>The model predicts the closure, and the critic assigns a large
+terminal value to waiting there.</li>
+<li>Both predictions are sound, and the fitting objective puts too
+little weight on the rare closed-gate examples.</li>
+<li>Perception mistakes which junction the robot occupies, so the actor
+acts from the wrong latent state.</li>
+</ul>
+<p>A successful system depends on all the parts, and an observed failure
+need not indict all of them.</p>
+</details>
+</section>
+<section id="a-confident-wrong-critic" class="level3"
+data-kind="compute">
+<h3 data-kind="compute">A confident wrong critic</h3>
+<div class="study-meta">
+<span class="study-kind">compute</span> <a
+href="/notes/how-does-a-policy-improve.html#what-constrains-improvement-when-the-estimates-are-wrong">What
+constrains improvement when the estimates are wrong ↗</a>
+</div>
+<p>The true values stay <span class="math inline">(0,1,2)</span>, and
+the critic mistakenly scores waiting as <span
+class="math inline">5</span>. With <span
+class="math inline">p=(0.6,0.3,0.1)</span> and <span
+class="math inline">\eta=0.5</span>, compute the tilt, the expected
+value the critic believes in and the true expected value, before and
+after. What failed? What does a KL constraint on the policy leave
+unprotected?</p>
+<details class="answer"><summary>Answer</summary>
+<p>The weights are <span
+class="math inline">(0.6e^{10},\,0.3e^{2},\,0.1e^{4})\approx(13216,\,2.2,\,5.5)</span>,
+so <span
+class="math inline">q^*\approx(0.9994,\,0.0002,\,0.0004)</span>. By the
+critic’s scores the expected value rose from <span
+class="math inline">3.5</span> to about <span
+class="math inline">5.0</span>. The true expected value fell from <span
+class="math inline">0.5</span> to about <span
+class="math inline">0.001</span>. The optimization functioned as
+specified. What failed is the premise that its scores measure the
+desired consequences. A KL constraint limits the size of a step relative
+to its reference: it does not calibrate the critic, constrain every
+future state equally, or ensure that the reference is appropriate.
+Repeated small steps can also add up to a large departure.</p>
+</details>
+</section>
+<section id="four-questions" class="level3" data-kind="recall">
+<h3 data-kind="recall">Four questions</h3>
+<div class="study-meta">
+<span class="study-kind">recall</span> <a
+href="/notes/how-does-a-policy-improve.html#a-reusable-way-to-read-the-algorithms">A
+reusable way to read the algorithms ↗</a>
+</div>
+<p>Name the four questions the essay asks of any policy-improvement
+algorithm.</p>
+<details class="answer"><summary>Answer</summary>
+<p>Where do the candidates come from? How are they evaluated? How is an
+improved distribution built from them? How is the improvement
+retained?</p>
+</details>
+</section>
+<section id="exact-then-approximate" class="level3" data-kind="limits">
+<h3 data-kind="limits">Exact, then approximate</h3>
+<div class="study-meta">
+<span class="study-kind">limits</span> <a
+href="/notes/how-does-a-policy-improve.html#a-reusable-way-to-read-the-algorithms">A
+reusable way to read the algorithms ↗</a>
+</div>
+<p>Which result does the essay call exact? It then lists five steps away
+from that result, each needing its own reason. Name them, with a method
+from the essay that takes each step.</p>
+<details class="answer"><summary>Answer</summary>
+<p>The exponential tilt is an exact finite-action optimizer under stated
+assumptions. The steps away from it:</p>
+<ul>
+<li>Replacing values with a neural critic, as in MPO’s E-step.</li>
+<li>Sampling a few candidates, as MPO and POCO do at each state.</li>
+<li>Omitting a state-dependent normalizer, which changes a
+shared-parameter regression objective, as in AWR.</li>
+<li>Reversing a KL, which changes its optimizer, as in the analysis of
+AlphaZero’s search.</li>
+<li>Replacing likelihood with a generative surrogate, which changes what
+can be inferred from an EM argument, as in POCO’s flow-matching
+loss.</li>
+</ul>
+</details>
+</section>
+</section>
+<section id="terms" class="level2">
+<h2>Terms</h2>
+<p>Introduced in this essay:</p>
+<ul>
+<li><a
+href="/notes/how-does-a-policy-improve.html#evaluating-a-policy-and-improving-it">policy-improvement
+argument</a></li>
+<li><a
+href="/notes/how-does-a-policy-improve.html#evaluating-a-policy-and-improving-it">discounted
+occupancy</a></li>
+<li><a
+href="/notes/how-does-a-policy-improve.html#the-different-jobs-of-a-world-model">three
+jobs of a world model</a></li>
+<li><a
+href="/notes/how-does-a-policy-improve.html#the-different-jobs-of-a-world-model">amortization</a></li>
+<li><a
+href="/notes/how-does-a-policy-improve.html#the-different-jobs-of-a-world-model">reparameterization
+trick</a></li>
+<li><a
+href="/notes/how-does-a-policy-improve.html#planning-over-trajectories-and-trees">model-predictive
+control</a></li>
+<li><a
+href="/notes/how-does-a-policy-improve.html#improving-a-distribution-without-throwing-away-the-prior">mass-covering
+and mode-seeking KL</a></li>
+<li><a
+href="/notes/how-does-a-policy-improve.html#improving-a-distribution-without-throwing-away-the-prior">exponential
+tilt</a></li>
+<li><a
+href="/notes/how-does-a-policy-improve.html#improving-a-distribution-without-throwing-away-the-prior">temperature
+as a Lagrange multiplier</a></li>
+<li><a
+href="/notes/how-does-a-policy-improve.html#the-evidence-lower-bound-and-expectation-maximization">control
+as inference</a></li>
+<li><a
+href="/notes/how-does-a-policy-improve.html#the-evidence-lower-bound-and-expectation-maximization">E-step
+and M-step of policy improvement</a></li>
+<li><a
+href="/notes/how-does-a-policy-improve.html#the-evidence-lower-bound-and-expectation-maximization">restricted
+ELBO</a></li>
+<li><a
+href="/notes/how-does-a-policy-improve.html#reps-and-the-consistency-of-state-distributions">flow
+conservation</a></li>
+<li><a
+href="/notes/how-does-a-policy-improve.html#mpo-separates-improvement-from-fitting">improvement
+separated from fitting</a></li>
+<li><a
+href="/notes/how-does-a-policy-improve.html#weighted-regression-and-learning-from-a-fixed-dataset">advantage-weighted
+regression</a></li>
+<li><a
+href="/notes/how-does-a-policy-improve.html#from-return-distributions-to-return-conditioned-policies">aleatoric
+and epistemic uncertainty</a></li>
+<li><a
+href="/notes/how-does-a-policy-improve.html#from-return-distributions-to-return-conditioned-policies">return-conditioned
+policy</a></li>
+<li><a
+href="/notes/how-does-a-policy-improve.html#search-as-regularized-policy-improvement">search
+as regularized policy improvement</a></li>
+<li><a
+href="/notes/how-does-a-policy-improve.html#from-relative-entropy-to-preference-learning">Direct
+Preference Optimization</a></li>
+<li><a
+href="/notes/how-does-a-policy-improve.html#a-reusable-way-to-read-the-algorithms">four
+questions for reading an algorithm</a></li>
+</ul>
+<p>From other essays:</p>
+<ul>
+<li>state value and action value (<a
+href="/notes/how-can-a-reward-train-a-neural-network.html#values-evaluate-a-particular-policy"><em>How
+Can a Reward Train a Neural Network?</em></a>)</li>
+<li>policy iteration (<a
+href="/notes/how-can-a-reward-train-a-neural-network.html#from-evaluating-behavior-to-choosing-better-behavior"><em>How
+Can a Reward Train a Neural Network?</em></a>)</li>
+<li>temporal-difference error (<a
+href="/notes/how-can-a-reward-train-a-neural-network.html#learning-values-from-experience"><em>How
+Can a Reward Train a Neural Network?</em></a>)</li>
+<li>bootstrapping (<a
+href="/notes/how-can-a-reward-train-a-neural-network.html#learning-values-from-experience"><em>How
+Can a Reward Train a Neural Network?</em></a>)</li>
+<li>λ-return and eligibility trace (<a
+href="/notes/how-can-a-reward-train-a-neural-network.html#learning-values-from-experience"><em>How
+Can a Reward Train a Neural Network?</em></a>)</li>
+<li>on-policy and off-policy (<a
+href="/notes/how-can-a-reward-train-a-neural-network.html#learning-values-from-experience"><em>How
+Can a Reward Train a Neural Network?</em></a>)</li>
+<li>REINFORCE (<a
+href="/notes/how-can-a-reward-train-a-neural-network.html#from-one-choice-to-a-complete-journey"><em>How
+Can a Reward Train a Neural Network?</em></a>)</li>
+<li>baseline and advantage (<a
+href="/notes/how-can-a-reward-train-a-neural-network.html#better-than-expected-is-more-informative-than-positive"><em>How
+Can a Reward Train a Neural Network?</em></a>)</li>
+</ul>
+</section>
+</article>
+<section class="study-link"><p><em>From the study questions back to the essay: 
+<a href="/notes/how-does-a-policy-improve.html">how-does-a-policy-improve.html &rarr;</a></em></p></section>
+<script src="/assets/theme-toggle.js"></script>
+</body>
+</html>

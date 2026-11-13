@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <meta name="description" content="Recall questions for the essay “The Demon Is a Learner”.">
+  <meta property="og:title" content="Study notes: The Demon Is a Learner">
+  <meta property="og:description" content="Recall questions for the essay “The Demon Is a Learner”.">
+  <meta property="og:url" content="https://lukstafi.github.io/notes/the-demon-is-a-learner.study.html">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="lukstafi&#x27;s blog">
+  <meta name="twitter:card" content="summary">
+  <title>Study notes: The Demon Is a Learner</title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <link rel="stylesheet" href="/assets/tufte.css">
+  <link rel="stylesheet" href="/assets/pandoc-tufte.css">
+  <link rel="stylesheet" href="/assets/site.css">
+  <script defer=""
+  src="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.js"></script>
+  <script>document.addEventListener("DOMContentLoaded", function () {
+ var mathElements = document.getElementsByClassName("math");
+ var macros = [];
+ for (var i = 0; i < mathElements.length; i++) {
+  var texText = mathElements[i].firstChild;
+  if (mathElements[i].tagName == "SPAN") {
+   katex.render(texText.data, mathElements[i], {
+    displayMode: mathElements[i].classList.contains('display'),
+    throwOnError: false,
+    macros: macros,
+    fleqn: false
+   });
+}}});
+  </script>
+  <link rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.css" />
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+  <script>(function(){var t=localStorage.getItem('theme-preference');if(t)document.documentElement.setAttribute('data-theme',t);})()</script>
+</head>
+<body>
+<nav class="site-nav">
+  <a href="/">Home</a> &middot; <a href="/about.html">About</a> &middot; <a href="https://lukstafi.substack.com">Substack</a>
+</nav>
+<div class="theme-toggle">
+  <button id="theme-btn" aria-label="Toggle dark mode">&#9788;</button>
+</div>
+<article>
+<header>
+<h1 class="title">Study notes: The Demon Is a Learner</h1>
+</header>
+<p>Recall questions for <a
+href="/notes/the-demon-is-a-learner.html"><em>The Demon Is a
+Learner</em></a>. Answer each from memory, then open the answer to
+compare. The link under a question leads to the section it draws on.</p>
+<section id="before-reading" class="level2">
+<h2>Before reading</h2>
+<p>The essay and these questions assume:</p>
+<ul>
+<li><a
+href="/notes/the-standard-of-motion.html#the-first-law-carries-the-geometry"><em>The
+Standard of Motion</em>, “The first law carries the geometry”</a>:
+Heller’s reconstruction of Aristotle’s second law, force proportional to
+velocity.</li>
+<li><a
+href="/notes/the-standard-of-motion.html#one-bracket-three-mechanics"><em>The
+Standard of Motion</em>, “One bracket, three mechanics”</a>: Liouville’s
+theorem: closed Hamiltonian evolution keeps phase-space volume, so it
+loses no information.</li>
+</ul>
+<p>Helpful, not required:</p>
+<ul>
+<li><a
+href="/notes/the-standard-of-motion.html#the-algebra-of-free-motions"><em>The
+Standard of Motion</em>, “The algebra of free motions”</a>: gradient
+flows as the robust dynamics and frictionless motion as the fragile
+exception.</li>
+<li><a
+href="/notes/the-bookmaker-is-a-learner.html#the-bookmaker-is-a-learner"><em>The
+Bookmaker Is a Learner</em>, “The bookmaker is a learner”</a>: the LMSR
+cost function, its liquidity parameter, and mirror descent on
+prices.</li>
+<li><a href="/notes/who-teaches-the-weights.html"><em>Who Teaches the
+Weights?</em></a>: a learner that narrows its behavior, and the Fisher
+information as the divergence a small move causes.</li>
+<li><a href="/notes/how-does-a-policy-improve.html"><em>How Does a
+Policy Improve?</em></a>: the improved policy as a Gibbs tilt of a
+prior.</li>
+</ul>
+</section>
+<section id="questions" class="level2">
+<h2>Questions</h2>
+<section id="aristotles-law-as-a-limit" class="level3"
+data-kind="compute">
+<h3 data-kind="compute">Aristotle’s law as a limit</h3>
+<div class="study-meta">
+<span class="study-kind">compute</span> <a
+href="/notes/the-demon-is-a-learner.html#aristotle-was-right-about-a-regime">Aristotle
+was right about a regime ↗</a>
+</div>
+<p>Newton’s equation for a body pushed against linear drag is <span
+class="math inline">m\ddot x = F - \gamma\dot x</span>. What first-order
+law remains when inertia is small, and which quantity has to be small? A
+body of mass <span class="math inline">2</span> on a spring of stiffness
+<span class="math inline">8</span> moves against drag <span
+class="math inline">\gamma = 10</span>: is it overdamped, and below what
+drag would it oscillate? What is gradient descent in these terms?</p>
+<details class="answer"><summary>Answer</summary>
+<p>The velocity relaxes almost at once to <span
+class="math inline">F/\gamma</span> and then follows it, which leaves
+<span class="math inline">\dot x = F/\gamma</span> (Tikhonov’s theorem).
+The small quantity is <span class="math inline">mk/\gamma^2</span>,
+where <span class="math inline">k</span> measures how steeply the force
+changes with position; <span class="math inline">m/\gamma</span> is a
+time. Here <span class="math inline">mk/\gamma^2 = 16/100 = 0.16</span>,
+below the threshold <span class="math inline">1/4</span>, so the body
+slides to rest without oscillating. It would oscillate below <span
+class="math inline">\gamma = \sqrt{4mk} = 8</span>, and the first-order
+law is accurate only when <span class="math inline">mk/\gamma^2</span>
+is well below <span class="math inline">1/4</span>. Gradient descent is
+this limit with the loss as potential energy, <span
+class="math inline">F = -\nabla L</span>. Heller’s <span
+class="math inline">m</span> in <span class="math inline">F = m\cdot
+v</span> plays the role of the drag coefficient <span
+class="math inline">\gamma</span>.</p>
+</details>
+</section>
+<section id="where-the-loss-is-high-the-ground-is-steep" class="level3"
+data-kind="derive">
+<h3 data-kind="derive">Where the loss is high, the ground is steep</h3>
+<div class="study-meta">
+<span class="study-kind">derive</span> <a
+href="/notes/the-demon-is-a-learner.html#aristotle-was-right-about-a-regime">Aristotle
+was right about a regime ↗</a>
+</div>
+<p>The Polyak–Łojasiewicz condition says <span
+class="math inline">\tfrac12|\nabla L(w)|^2 \ge \mu\,(L(w) - L^*)</span>
+at every point of a region. Derive the rate at which gradient flow
+lowers the loss there. What does the condition forbid, and what does it
+not require? Where can it hold for a neural network?</p>
+<details class="answer"><summary>Answer</summary>
+<p>Along <span class="math inline">\dot w = -\nabla L</span> the loss
+falls at the rate <span class="math inline">|\nabla L|^2</span>, so
+<span class="math inline">\frac{d}{dt}(L - L^*) \le -2\mu\,(L -
+L^*)</span> and the excess shrinks at least as fast as <span
+class="math inline">e^{-2\mu t}</span>. The condition forbids a flat
+spot anywhere but at the minimum value: the region holds no saddles, no
+spurious local minima and no local maxima. It does not need convexity,
+and the minimizers may form a curved valley with a flat floor. A
+network’s loss has other critical points, for example where every weight
+is zero, so the condition can hold only on part of the landscape. Wide
+networks satisfy it in a ball around their initialization.</p>
+</details>
+</section>
+<section id="drag-that-depends-on-position" class="level3"
+data-kind="compute">
+<h3 data-kind="compute">Drag that depends on position</h3>
+<div class="study-meta">
+<span class="study-kind">compute</span> <a
+href="/notes/the-demon-is-a-learner.html#aristotle-was-right-about-a-regime">Aristotle
+was right about a regime ↗</a>
+</div>
+<p>In the limit of small steps, mirror descent on a distribution gives
+<span class="math inline">\dot p_i = -p_i\bigl(\partial_i L - \sum_j
+p_j\,\partial_j L\bigr)</span>. For <span class="math inline">p =
+(0.5,\,0.3,\,0.2)</span> and gradient <span
+class="math inline">(1,\,0,\,-1)</span>, compute <span
+class="math inline">\dot p</span>. What plays the part of the drag, and
+how much more divergence does a given small move cost at probability
+<span class="math inline">0.01</span> than at <span
+class="math inline">0.1</span>? Name the other two geometries in which
+the essay finds the same law.</p>
+<details class="answer"><summary>Answer</summary>
+<p>The average gradient is <span class="math inline">0.5 - 0.2 =
+0.3</span>, so <span class="math inline">\dot p = (-0.35,\ 0.09,\
+0.26)</span>, which sums to zero. A move <span
+class="math inline">\Delta</span> costs <span
+class="math inline">\tfrac12\sum_i\Delta_i^2/p_i</span> of divergence to
+second order, so the Fisher matrix is diagonal with <span
+class="math inline">1/p_i</span> in place <span
+class="math inline">i</span>, and the same move costs ten times as much
+at <span class="math inline">0.01</span> as at <span
+class="math inline">0.1</span>. Dividing the force by that matrix
+multiplies it by <span class="math inline">p_i</span>. Heller’s <span
+class="math inline">m</span> becomes <span
+class="math inline">1/p_i</span>, and a probability near zero barely
+moves. Evolutionary game theory knows the equation as the replicator
+dynamics. The other two geometries are gradient flow on the weights and
+the flow of a density downhill on its free energy, measured by the
+Wasserstein distance.</p>
+</details>
+</section>
+<section id="the-one-line" class="level3" data-kind="argue">
+<h3 data-kind="argue">The one line</h3>
+<div class="study-meta">
+<span class="study-kind">argue</span> <a
+href="/notes/the-demon-is-a-learner.html#a-gas-of-balls">A gas of balls
+↗</a>
+</div>
+<p>Boltzmann’s derivation of the H-theorem is “mechanics until one
+line.” Which line? Give two arguments that the arrow of time enters
+there and not in the collisions.</p>
+<details class="answer"><summary>Answer</summary>
+<p>The line is the assumption that two balls about to collide are
+independent, so that the number of such pairs is the product of the two
+one-ball densities. Mechanics does not supply that number. A collision
+conserves energy and momentum and runs equally well backward. First
+argument: assume instead that balls are independent just after they
+collide, and the same algebra proves that entropy falls. Second,
+Loschmidt’s: reversing every velocity turns an entropy-raising history
+into an entropy-lowering one, so mechanics alone cannot make entropy
+rise. In the reversed gas the assumption fails, because each incoming
+pair is an outgoing pair of the original run, correlated by the
+collisions it has had.</p>
+</details>
+</section>
+<section id="running-the-reversal" class="level3" data-kind="compute">
+<h3 data-kind="compute">Running the reversal</h3>
+<div class="study-meta">
+<span class="study-kind">compute</span> <a
+href="/notes/the-demon-is-a-learner.html#a-gas-of-balls">A gas of balls
+↗</a>
+</div>
+<p>In the simulated gas each collision per disk multiplies a typical
+error by about a hundred. One run reverses the gas from velocities
+rounded to six decimal places. How large is a typical error after two
+and a half collisions per disk? How many more decimal places does each
+further collision of reversal demand? What do the three runs show?</p>
+<details class="answer"><summary>Answer</summary>
+<p><span class="math inline">10^{-6}\times100^{2.5} = 10^{-1}</span>, so
+by then the rounded gas leaves the exact curve and its fall stops. Each
+further collision per disk costs a factor of a hundred: about two more
+decimal places in every position and velocity, a demand that grows
+without limit (<a
+href="/notes/the-demon-is-a-learner.html#what-a-bounded-observer-can-compress">the
+last section</a> draws the consequence for a bounded observer). The
+mechanical gas and the gas whose colliding pairs are drawn at random
+give the same entropy curve, which is the H-theorem at work. The
+mechanical gas, reversed exactly at four collisions per disk, falls back
+to the entropy it began with. The rounded gas does not.</p>
+</details>
+</section>
+<section id="what-forgets" class="level3" data-kind="explain">
+<h3 data-kind="explain">What forgets</h3>
+<div class="study-meta">
+<span class="study-kind">explain</span> <a
+href="/notes/the-demon-is-a-learner.html#a-gas-of-balls">A gas of balls
+↗</a>
+</div>
+<p>The entropy of the joint distribution of all the balls is constant,
+by Liouville’s theorem, and the entropy of the H-theorem rises. Where
+does the risen entropy sit, and what has forgotten it? Why may the
+description discard it in a gas prepared by ordinary means?</p>
+<details class="answer"><summary>Answer</summary>
+<p>The entropy that rises belongs to a description that keeps one ball
+at a time, a coarse graining. If the balls start uncorrelated, every
+unit gained by the one-ball distribution, summed over the balls, is a
+unit stored in correlations among them. Boltzmann’s assumption says the
+description may discard those correlations, because none of them will
+come back as an incoming pair. In a gas prepared by ordinary means that
+is true, since nothing has tuned its correlations to its future. So the
+H-theorem is a theorem about forgetting, and what forgets is the
+description. A description forgets for free, and a physical system that
+shrinks its own possibilities has to send the difference somewhere.</p>
+</details>
+</section>
+<section id="what-has-to-pay" class="level3" data-kind="distinguish">
+<h3 data-kind="distinguish">What has to pay</h3>
+<div class="study-meta">
+<span class="study-kind">distinguish</span> <a
+href="/notes/the-demon-is-a-learner.html#what-forgetting-costs">What
+forgetting costs ↗</a>
+</div>
+<p>For each of these, say whether it must give up heat, and why: a
+gradient flow carrying a cloud of possible weights toward a minimum;
+resetting a bit of unknown value; a computation; a demon’s
+measurement.</p>
+<details class="answer"><summary>Answer</summary>
+<ul>
+<li><em>Gradient flow.</em> It expands volume at the rate <span
+class="math inline">-\operatorname{tr}\nabla^2L</span>, negative near a
+minimum, which a closed Hamiltonian system cannot do. A law that
+contracts volume is the shadow of a system coupled to a medium, and the
+medium takes up the volume, which is entropy.</li>
+<li><em>Resetting a bit.</em> It maps two logical states onto one.
+Hamiltonian dynamics conserves fine-grained entropy, so the entropy
+<span class="math inline">k\ln 2</span> goes to the rest of the machine
+and the environment, as heat of at least <span class="math inline">kT\ln
+2</span> into a bath at temperature <span class="math inline">T</span>.
+This is Landauer’s principle.</li>
+<li><em>A computation.</em> It need not pay. Any computation can be done
+by a logically reversible machine: compute, copy the answer, then run
+backward to clean up. What costs is throwing information away.</li>
+<li><em>A measurement.</em> It can be done reversibly. The demon pays
+when it clears its memory to measure again, at least what it gained,
+which in Szilard’s engine is <span class="math inline">kT\ln 2</span> of
+work for one bit.</li>
+</ul>
+</details>
+</section>
+<section id="erasing-the-digits-of-π" class="level3"
+data-kind="compute">
+<h3 data-kind="compute">Erasing the digits of π</h3>
+<div class="study-meta">
+<span class="study-kind">compute</span> <a
+href="/notes/the-demon-is-a-learner.html#the-entropy-of-one-state">The
+entropy of one state ↗</a>
+</div>
+<p>A demon’s memory holds the first <span class="math inline">n =
+2^{20}</span> binary digits of <span class="math inline">\pi</span> and
+must be reset to blank. Counting in units of <span
+class="math inline">kT\ln 2</span>, what does a demon pay that erases
+the string without understanding it? What does a demon pay that first
+recognizes the digits? Why does the recognition cost nothing?</p>
+<details class="answer"><summary>Answer</summary>
+<p>The first demon pays for <span class="math inline">n =
+1{,}048{,}576</span> bits. The second converts the string into a short
+program that prints it: a fixed routine for <span
+class="math inline">\pi</span>, plus about <span
+class="math inline">\log n = 20</span> bits to say how many digits. It
+then erases the program and pays for about <span
+class="math inline">20</span> bits. The conversion can run reversibly at
+no cost because it forgets nothing: with <span
+class="math inline">x</span> the string and <span
+class="math inline">y</span> the program, <span
+class="math inline">K(x\mid y)</span> is close to zero, since running
+the program gives the string back. The other <span class="math inline">n
+- \log n</span> bits were only a longer way of writing the program. A
+learner that has found the regularity in its data stands where the
+second demon stands.</p>
+</details>
+</section>
+<section id="the-entropy-a-demon-faces" class="level3"
+data-kind="state">
+<h3 data-kind="state">The entropy a demon faces</h3>
+<div class="study-meta">
+<span class="study-kind">state</span> <a
+href="/notes/the-demon-is-a-learner.html#the-entropy-of-one-state">The
+entropy of one state ↗</a>
+</div>
+<p>State Zurek’s physical entropy for a demon holding a record <span
+class="math inline">d</span>. What does a measurement do to its two
+terms? Why can the demon not win by keeping only its lucky runs? Which
+principle of statistics has the same form?</p>
+<details class="answer"><summary>Answer</summary>
+<p><span class="math inline">S = H(\text{state}\mid d) + K(d)</span>:
+the missing information plus the algorithmic information content of the
+record. A measurement shrinks the first term and grows the second, and
+for a system in equilibrium the decrease of ignorance is, on average,
+compensated by the growth of the minimal record. A single run can come
+out ahead. Keeping only the lucky runs needs a record of which runs were
+lucky, and that record costs, on average, at least what the luck gained.
+The sum is a two-part code, the length of a model plus the length of the
+data given the model, which is the minimum description length principle.
+The demon’s thermodynamic account and a learner’s model-selection
+account have the same form.</p>
+</details>
+</section>
+<section id="bath-learner-demon" class="level3" data-kind="distinguish">
+<h3 data-kind="distinguish">Bath, learner, demon</h3>
+<div class="study-meta">
+<span class="study-kind">distinguish</span> <a
+href="/notes/the-demon-is-a-learner.html#the-demon-is-a-learner">The
+demon is a learner ↗</a>
+</div>
+<p>“The arrow of the H-theorem rests on something not knowing
+something.” What does a heat bath not know? What does a diffusion model
+learn that a bath lacks, and what does a demon build beyond that? Which
+two results say what the best demon is and what it must contain?</p>
+<details class="answer"><summary>Answer</summary>
+<p>A bath’s noise is set before the system arrives and knows nothing of
+the distribution it acts on, so a process driven by it, with its law
+held fixed, drifts toward that law’s stationary distribution. Undoing
+the drift takes the time reversal of the diffusion, whose drift depends
+on the density at every moment through the score, the gradient of the
+log density. A diffusion model learns the score from data and with it
+turns noise into samples. A demon goes one step further and builds a
+correlation with the particular state in front of it, the thing
+Boltzmann’s assumption says is absent. Boyd, Crutchfield and Gu show
+that the work-maximizing demon is the maximum-likelihood learner. Boyd,
+Mandal and Crutchfield show that a demon can harvest correlations in its
+input only if its own memory reflects the structure that generated
+them.</p>
+</details>
+</section>
+<section id="an-engine-with-a-memory" class="level3"
+data-kind="compute">
+<h3 data-kind="compute">An engine with a memory</h3>
+<div class="study-meta">
+<span class="study-kind">compute</span> <a
+href="/notes/the-demon-is-a-learner.html#the-demon-is-a-learner">The
+demon is a learner ↗</a>
+</div>
+<p>Still’s engine writes its memory at temperature <span
+class="math inline">T</span> and extracts work at <span
+class="math inline">T&#39; = 3T</span>. The memory holds <span
+class="math inline">5</span> bits, of which <span
+class="math inline">3</span> are relevant to extracting work. Compute
+the efficiency and compare Carnot’s limit. How many irrelevant bits is
+one more relevant bit worth? What does that exchange rate become in
+learning, and which bound do the irrelevant bits loosen?</p>
+<details class="answer"><summary>Answer</summary>
+<p><span class="math inline">\eta = 1 -
+\frac{T}{T&#39;}\frac{I_{\text{mem}}}{I_{\text{rel}}} = 1 -
+\frac13\cdot\frac53 = \frac49</span>, against Carnot’s <span
+class="math inline">1 - \frac13 = \frac23</span>, which the engine
+reaches only if all of its memory is relevant. Every bit written costs
+heat in proportion to <span class="math inline">T</span>, and every
+relevant bit earns work in proportion to <span
+class="math inline">T&#39;</span>. Counted in units of <span
+class="math inline">T</span>, a relevant bit is worth <span
+class="math inline">T&#39;/T - 1 = 2</span> and an irrelevant one costs
+<span class="math inline">1</span>, so one more relevant bit pays off
+even if up to two irrelevant bits come with it. That exchange rate is
+the trade-off of the information bottleneck, which minimizing the bound
+on the engine’s dissipation gives. The irrelevant bits also loosen
+Kawaguchi and colleagues’ bound on the gap between training and test
+loss, roughly <span class="math inline">\sqrt{(I_{\text{mem}} -
+I_{\text{rel}} + 1)/n}</span> for <span class="math inline">n</span>
+examples.</p>
+</details>
+</section>
+<section id="whose-second-law" class="level3" data-kind="explain">
+<h3 data-kind="explain">Whose second law?</h3>
+<div class="study-meta">
+<span class="study-kind">explain</span> <a
+href="/notes/the-demon-is-a-learner.html#what-a-bounded-observer-can-compress">What
+a bounded observer can compress ↗</a>
+</div>
+<p>A state evolves by a computable deterministic law. How much can its
+Kolmogorov complexity grow, and what follows about where entropy comes
+from? If entropy is relative to a coarse graining, is the second law a
+fact about us? Give Shalizi and Moore’s answer, and say what it makes a
+macrostate.</p>
+<details class="answer"><summary>Answer</summary>
+<p><span class="math inline">K(x_t) \le K(x_0) + K(f) + K(t) +
+O(1)</span>, and <span class="math inline">K(t)</span> grows only like
+<span class="math inline">\log t</span> (<a
+href="/notes/the-demon-is-a-learner.html#the-entropy-of-one-state">the
+bound</a>). So entropy grows because observers describe the world
+coarsely, not because the fine-grained state gets more complex. Shalizi
+and Moore’s answer has two halves. The observer supplies the
+observables. The dynamics then decides which refinement of them makes
+states that predict their own future, and those are the macrostates. A
+macrostate is what a predictor needs to keep. Boltzmann’s assumption
+makes the one-ball distribution such a state for a gas prepared by
+ordinary means, while the reversed gas has the same histogram with the
+opposite future. A JEPA searches for such states from data, and needs an
+anti-collapse term to do what the observables do.</p>
+</details>
+</section>
+<section id="what-the-search-charges" class="level3"
+data-kind="compute">
+<h3 data-kind="compute">What the search charges</h3>
+<div class="study-meta">
+<span class="study-kind">compute</span> <a
+href="/notes/the-demon-is-a-learner.html#what-a-bounded-observer-can-compress">What
+a bounded observer can compress ↗</a>
+</div>
+<p>In Levin search a program <span class="math inline">p</span> of
+length <span class="math inline">\ell(p)</span> runs for <span
+class="math inline">2^{i-\ell(p)}</span> steps in phase <span
+class="math inline">i</span>, and phase <span
+class="math inline">i</span> takes at most <span
+class="math inline">2^i</span> steps. A program of <span
+class="math inline">10</span> bits produces a checkable answer within
+<span class="math inline">1{,}000</span> steps. In which phase does it
+finish, and how does the total compare with the bound <span
+class="math inline">4\cdot 2^{\ell(p)}\,t(p)</span>? What does the
+search charge an observer holding a message encrypted under a key of
+<span class="math inline">k</span> bits? What does the thermodynamic
+ledger make of that charge?</p>
+<details class="answer"><summary>Answer</summary>
+<p>The program finishes in the first phase with <span
+class="math inline">2^i \ge 2^{10}\times1000 = 1{,}024{,}000</span>,
+which is phase <span class="math inline">20</span>. The phases up to
+that one take at most <span class="math inline">2^{21}\approx 2.1</span>
+million steps, within the bound of <span
+class="math inline">4.096</span> million. For the ciphertext, the
+shortest fast program that decrypts the message contains the key, so the
+search takes about <span class="math inline">2^k</span> times the time
+of one decryption, the cost of trying every key. The thermodynamic
+ledger does not see it. Decryption can in principle run reversibly, at
+no cost in heat, and it adds no Shannon information while adding plenty
+of usable information, which is defined relative to the predictors an
+observer can afford. Bits price what an observer stores and forgets, and
+time prices what it can do with them.</p>
+</details>
+</section>
+<section id="one-ledger-or-only-a-formula" class="level3"
+data-kind="limits">
+<h3 data-kind="limits">One ledger, or only a formula</h3>
+<div class="study-meta">
+<span class="study-kind">limits</span> <a
+href="/notes/the-demon-is-a-learner.html#the-demon-is-a-learner">The
+demon is a learner ↗</a>
+</div>
+<p>Under what condition do the essay’s results put the demon and the
+learner “on one ledger”? Name five places where it marks a link as an
+analogy, a reading of its own, a further hypothesis, or still
+argued.</p>
+<details class="answer"><summary>Answer</summary>
+<p>The condition is that the learner is a physical system in a bath.
+“Where it is not, they share only a formula.”</p>
+<ul>
+<li>Training in software has no literal engine cycle, since Carnot’s
+argument needs a conserved energy and a loss is not conserved. Reading
+the Boltzmann machine’s two strokes as an engine is the authors’ reading
+and not Still’s, and the analogy stops at the output: the update
+dissipates the free energy instead of delivering it as work.</li>
+<li>Goldt and Seifert’s bound concerns the weights as a physical system,
+not the processors that compute them, which dissipate many orders of
+magnitude more.</li>
+<li>Friston’s variational free energy counts surprise against a model,
+in nats, and nothing in it is paid. That a system’s thermodynamic free
+energy encodes it is a further hypothesis.</li>
+<li>Kawaguchi and colleagues add that compressing is one way to
+generalize, not the only one and not a necessary one.</li>
+<li>Whether Landauer’s principle is independent of the second law is <a
+href="/notes/the-demon-is-a-learner.html#what-forgetting-costs">still
+argued</a>.</li>
+</ul>
+</details>
+</section>
+</section>
+<section id="terms" class="level2">
+<h2>Terms</h2>
+<p>Introduced in this essay:</p>
+<ul>
+<li><a
+href="/notes/the-demon-is-a-learner.html#aristotle-was-right-about-a-regime">overdamped
+limit</a></li>
+<li><a
+href="/notes/the-demon-is-a-learner.html#aristotle-was-right-about-a-regime">Polyak–Łojasiewicz
+condition</a></li>
+<li><a
+href="/notes/the-demon-is-a-learner.html#aristotle-was-right-about-a-regime">three
+geometries of gradient flow</a>: weights under constant drag, densities
+under the Wasserstein distance, and probabilities under the Fisher drag;
+in each, velocity follows force.</li>
+<li><a
+href="/notes/the-demon-is-a-learner.html#a-gas-of-balls">Boltzmann’s
+assumption</a>: two balls about to collide are independent.</li>
+<li><a href="/notes/the-demon-is-a-learner.html#a-gas-of-balls">coarse
+graining</a></li>
+<li><a
+href="/notes/the-demon-is-a-learner.html#what-forgetting-costs">Landauer’s
+principle</a></li>
+<li><a
+href="/notes/the-demon-is-a-learner.html#the-entropy-of-one-state">Kolmogorov
+complexity</a></li>
+<li><a
+href="/notes/the-demon-is-a-learner.html#the-entropy-of-one-state">physical
+entropy</a>: Zurek’s sum of the missing information and the algorithmic
+information content of the record.</li>
+<li><a
+href="/notes/the-demon-is-a-learner.html#the-demon-is-a-learner">score</a></li>
+<li><a
+href="/notes/the-demon-is-a-learner.html#the-demon-is-a-learner">relevant
+and irrelevant memory</a></li>
+<li><a
+href="/notes/the-demon-is-a-learner.html#what-a-bounded-observer-can-compress">macrostate
+as predictor</a>: a state that predicts its own future; what a predictor
+needs to keep.</li>
+<li><a
+href="/notes/the-demon-is-a-learner.html#what-a-bounded-observer-can-compress">Levin
+search</a></li>
+</ul>
+<p>From other essays:</p>
+<ul>
+<li>Aristotle’s first and second law (<a
+href="/notes/the-standard-of-motion.html#the-first-law-carries-the-geometry"><em>The
+Standard of Motion</em></a>)</li>
+<li>Liouville’s theorem (<a
+href="/notes/the-standard-of-motion.html#one-bracket-three-mechanics"><em>The
+Standard of Motion</em></a>)</li>
+<li>structural stability (<a
+href="/notes/the-standard-of-motion.html#the-algebra-of-free-motions"><em>The
+Standard of Motion</em></a>)</li>
+<li>mirror descent (<a
+href="/notes/the-bookmaker-is-a-learner.html#the-bookmaker-is-a-learner"><em>The
+Bookmaker Is a Learner</em></a>)</li>
+<li>liquidity parameter (<a
+href="/notes/the-bookmaker-is-a-learner.html#the-bookmaker-is-a-learner"><em>The
+Bookmaker Is a Learner</em></a>)</li>
+<li>two-part code (<a
+href="/notes/an-ontology-that-pays-for-itself.html#merges-that-pay"><em>An
+Ontology That Pays for Itself</em></a>)</li>
+<li>exponential tilt (<a
+href="/notes/how-does-a-policy-improve.html#improving-a-distribution-without-throwing-away-the-prior"><em>How
+Does a Policy Improve?</em></a>)</li>
+<li>cost-function market and the LMSR (<a
+href="/notes/the-bookmaker-is-a-learner.html#one-bookmaker-four-faces"><em>The
+Bookmaker Is a Learner</em></a>)</li>
+<li>forgetting within a task (<a
+href="/notes/who-teaches-the-weights.html#what-on-policy-training-forgets"><em>Who
+Teaches the Weights?</em></a>)</li>
+<li>usable information (<a
+href="/notes/who-teaches-the-weights.html#the-model-with-privileged-context-as-teacher"><em>Who
+Teaches the Weights?</em></a>)</li>
+<li>JEPA (<a href="/notes/which-world-model.html"><em>Which World
+Model?</em></a>)</li>
+</ul>
+</section>
+</article>
+<section class="study-link"><p><em>From the study questions back to the essay: 
+<a href="/notes/the-demon-is-a-learner.html">the-demon-is-a-learner.html &rarr;</a></em></p></section>
+<script src="/assets/theme-toggle.js"></script>
+</body>
+</html>

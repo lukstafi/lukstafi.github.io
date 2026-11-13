@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <meta property="og:title" content="Study notes: The Demon Is a Learner: The Mathematics">
+  <meta property="og:url" content="https://lukstafi.github.io/notes/the-demon-is-a-learner-mathematics.study.html">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="lukstafi&#x27;s blog">
+  <meta name="twitter:card" content="summary">
+  <title>Study notes: The Demon Is a Learner: The Mathematics</title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <link rel="stylesheet" href="/assets/tufte.css">
+  <link rel="stylesheet" href="/assets/pandoc-tufte.css">
+  <link rel="stylesheet" href="/assets/site.css">
+  <script defer=""
+  src="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.js"></script>
+  <script>document.addEventListener("DOMContentLoaded", function () {
+ var mathElements = document.getElementsByClassName("math");
+ var macros = [];
+ for (var i = 0; i < mathElements.length; i++) {
+  var texText = mathElements[i].firstChild;
+  if (mathElements[i].tagName == "SPAN") {
+   katex.render(texText.data, mathElements[i], {
+    displayMode: mathElements[i].classList.contains('display'),
+    throwOnError: false,
+    macros: macros,
+    fleqn: false
+   });
+}}});
+  </script>
+  <link rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.css" />
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+  <script>(function(){var t=localStorage.getItem('theme-preference');if(t)document.documentElement.setAttribute('data-theme',t);})()</script>
+</head>
+<body>
+<nav class="site-nav">
+  <a href="/">Home</a> &middot; <a href="/about.html">About</a> &middot; <a href="https://lukstafi.substack.com">Substack</a>
+</nav>
+<div class="theme-toggle">
+  <button id="theme-btn" aria-label="Toggle dark mode">&#9788;</button>
+</div>
+<article>
+<header>
+<h1 class="title">Study notes: The Demon Is a Learner: The
+Mathematics</h1>
+</header>
+<p>Recall questions for <a
+href="/notes/the-demon-is-a-learner-mathematics.html"><em>The Demon Is a
+Learner: The Mathematics</em></a>. Answer each from memory, then open
+the answer to compare. The link under a question leads to the section it
+draws on.</p>
+<section id="before-reading" class="level2">
+<h2>Before reading</h2>
+<p>The essay and these questions assume:</p>
+<ul>
+<li><a
+href="/notes/the-standard-of-motion-mathematics.html#one-bracket-three-mechanics"><em>The
+Standard of Motion: The Mathematics</em>, “2. One bracket, three
+mechanics”</a>: the Hamiltonian, the divergence of a flow and
+Liouville’s theorem, from which this page starts.</li>
+</ul>
+<p>Helpful, not required:</p>
+<ul>
+<li><a href="/notes/the-demon-is-a-learner.html"><em>The Demon Is a
+Learner</em></a>: what the derivations are for.</li>
+<li><a href="/notes/the-bookmaker-is-a-learner-mathematics.html"><em>The
+Bookmaker Is a Learner: The Mathematics</em></a>: the LMSR cost function
+and its conjugate, met here as a log-partition function and negative
+entropy.</li>
+<li><a href="/notes/how-does-a-policy-improve.html"><em>How Does a
+Policy Improve?</em></a>: Lagrange multipliers as prices, and the tilt
+of a prior.</li>
+</ul>
+</section>
+<section id="questions" class="level2">
+<h2>Questions</h2>
+<p>These questions cover the spine of the page: given Liouville’s
+theorem, how entropy can change and who pays when it does. As on the
+page, entropies are in nats and Boltzmann’s constant is 1, except where
+a question says otherwise.</p>
+<section id="the-small-parameter" class="level3" data-kind="derive">
+<h3 data-kind="derive">The small parameter</h3>
+<div class="study-meta">
+<span class="study-kind">derive</span> <a
+href="/notes/the-demon-is-a-learner-mathematics.html#the-overdamped-limit">7.
+The overdamped limit ↗</a>
+</div>
+<p>Rescale <span class="math inline">m\ddot x = F(x) - \gamma\dot
+x</span> for a force with stiffness scale <span
+class="math inline">k</span>. What is the small parameter, and why does
+Tikhonov’s theorem apply? For a spring, compute the two decay rates at
+<span class="math inline">\varepsilon = 0.1</span> and at the threshold
+of overdamping, and compare them with the rate of the reduced
+equation.</p>
+<details class="answer"><summary>Answer</summary>
+<p>With time measured in the slow unit <span
+class="math inline">\gamma/k</span>, the equation becomes <span
+class="math inline">\varepsilon X&#39;&#39; + X&#39; = \varphi(X)</span>
+with <span class="math inline">\varepsilon = mk/\gamma^2</span>. As a
+system it is <span class="math inline">X&#39; = U</span>, <span
+class="math inline">\varepsilon U&#39; = \varphi(X) - U</span>. For
+fixed <span class="math inline">X</span> the fast equation has the
+equilibrium <span class="math inline">U = \varphi(X)</span> with
+eigenvalue <span class="math inline">-1/\varepsilon &lt; 0</span>, so it
+attracts. After an initial layer of duration <span
+class="math inline">O(\varepsilon)</span>, solutions follow <span
+class="math inline">X&#39; = \varphi(X)</span>, that is <span
+class="math inline">\dot x = F/\gamma</span>. For the spring the roots
+are <span class="math inline">\lambda_\pm =
+(-1\pm\sqrt{1-4\varepsilon})/2\varepsilon</span>. At <span
+class="math inline">\varepsilon = 0.1</span> they are <span
+class="math inline">-1.127</span> and <span
+class="math inline">-8.873</span>, against the reduced rate <span
+class="math inline">-1</span>. At the threshold <span
+class="math inline">\varepsilon = 1/4</span> both equal <span
+class="math inline">-2</span>, so the first-order law is off by a factor
+of 2 there.</p>
+</details>
+</section>
+<section id="entropy-counts" class="level3" data-kind="compute">
+<h3 data-kind="compute">Entropy counts</h3>
+<div class="study-meta">
+<span class="study-kind">compute</span> <a
+href="/notes/the-demon-is-a-learner-mathematics.html#entropy-counts">8.1
+Entropy counts ↗</a>
+</div>
+<p>Twenty distinguishable balls go into two boxes. Count the microstates
+of the macrostates <span class="math inline">(10, 10)</span> and <span
+class="math inline">(15, 5)</span>, and compare <span
+class="math inline">\ln W</span> with <span
+class="math inline">N\,H(p)</span>. What does the comparison say entropy
+is? Why do typical macrostates dominate?</p>
+<details class="answer"><summary>Answer</summary>
+<p><span class="math inline">W = \binom{20}{10} = 184{,}756</span> and
+<span class="math inline">\binom{20}{5} = 15{,}504</span>, so <span
+class="math inline">\ln W</span> is <span
+class="math inline">12.13</span> and <span
+class="math inline">9.65</span>. <span
+class="math inline">N\,H(p)</span> is <span class="math inline">20\ln 2
+= 13.86</span> and <span class="math inline">20\times0.562 =
+11.25</span>. Stirling’s formula is rough at <span class="math inline">N
+= 20</span>, and the differences agree better: <span
+class="math inline">2.48</span> against <span
+class="math inline">2.62</span>. Boltzmann’s entropy <span
+class="math inline">\ln W</span> is Shannon’s entropy per ball times
+<span class="math inline">N</span>. It is the length of the description
+still lacking once the macrostate is known. A macrostate with <span
+class="math inline">H</span> lower by a fixed <span
+class="math inline">\delta</span> has fewer microstates by a factor of
+<span class="math inline">e^{-N\delta}</span>, and with <span
+class="math inline">N</span> near <span
+class="math inline">10^{23}</span> no fluctuation reaches it.</p>
+</details>
+</section>
+<section id="temperature-and-free-energy" class="level3"
+data-kind="derive">
+<h3 data-kind="derive">Temperature and free energy</h3>
+<div class="study-meta">
+<span class="study-kind">derive</span> <a
+href="/notes/the-demon-is-a-learner-mathematics.html#entropy-temperature-and-free-energy">8.
+Entropy, temperature and free energy ↗</a>
+</div>
+<p>Two bodies share a fixed total energy. Derive what they come to
+share, and say what <span class="math inline">T</span> buys. Then show
+why a system in a bath minimizes <span class="math inline">F = E -
+TS</span> and not <span class="math inline">E</span>. Check <span
+class="math inline">F = -T\ln Z</span> for a system with two states, of
+energies <span class="math inline">0</span> and <span
+class="math inline">1</span>, at <span class="math inline">T =
+1</span>.</p>
+<details class="answer"><summary>Answer</summary>
+<p>The counts of microstates multiply and the entropies add, so the
+likeliest split maximizes <span class="math inline">S_A(E_A) +
+S_B(E_{\text{tot}} - E_A)</span>, which gives <span
+class="math inline">dS_A/dE_A = dS_B/dE_B</span>. That shared quantity
+defines <span class="math inline">1/T = \partial S/\partial E</span>.
+<span class="math inline">T</span> is the energy that buys one nat, and
+heat <span class="math inline">Q</span> raises a bath’s entropy by <span
+class="math inline">Q/T</span>. A system that changes by <span
+class="math inline">\Delta E</span> and <span class="math inline">\Delta
+S</span> with no work done hands the bath heat <span
+class="math inline">-\Delta E</span>, so <span
+class="math inline">\Delta S_{\text{tot}} = \Delta S - \Delta E/T =
+-\Delta F/T</span>. The second law for system and bath together says
+that <span class="math inline">F</span> does not rise. For the two
+states, <span class="math inline">Z = 1 + e^{-1} = 1.368</span> and
+<span class="math inline">p = (0.731,\ 0.269)</span>, so <span
+class="math inline">E = 0.269</span>, <span class="math inline">S =
+0.582</span> and <span class="math inline">E - TS = -0.313 = -\ln
+Z</span>.</p>
+</details>
+</section>
+<section id="the-h-theorem" class="level3" data-kind="derive">
+<h3 data-kind="derive">The H-theorem</h3>
+<div class="study-meta">
+<span class="study-kind">derive</span> <a
+href="/notes/the-demon-is-a-learner-mathematics.html#the-theorem">9.3
+The theorem ↗</a>
+</div>
+<p>Give the idea of the proof that <span class="math inline">H = \int
+f\ln f\,dv</span> does not rise under Boltzmann’s equation. What does
+equality force?</p>
+<details class="answer"><summary>Answer</summary>
+<p>For any function <span class="math inline">\varphi</span> of
+velocity, <span class="math inline">\frac{d}{dt}\int\varphi f\,dv</span>
+is an integral of <span class="math inline">\varphi\,[f&#39;f_*&#39; -
+ff_*]\,B</span> over collisions. Two relabelings keep its value, each
+with unit Jacobian and each leaving <span class="math inline">B</span>
+unchanged. Swapping the balls replaces <span
+class="math inline">\varphi</span> by <span
+class="math inline">\varphi_*</span>. Exchanging a collision with its
+reverse replaces it by <span class="math inline">\varphi&#39;</span> and
+flips the sign of the bracket. Averaging the four forms replaces <span
+class="math inline">\varphi</span> by <span
+class="math inline">\frac14(\varphi + \varphi_* - \varphi&#39; -
+\varphi_*&#39;)</span>. With <span class="math inline">\varphi = \ln f +
+1</span> the integrand is <span
+class="math inline">-\frac14(f&#39;f_*&#39; -
+ff_*)\ln\frac{f&#39;f_*&#39;}{ff_*}\,B \le 0</span>, because <span
+class="math inline">(a-b)\ln(a/b)\ge 0</span>. Equality needs <span
+class="math inline">ff_* = f&#39;f_*&#39;</span> for every collision, so
+<span class="math inline">\ln f</span> adds up to the same total before
+and after, a combination of mass, momentum and energy: the Maxwell
+distribution <span class="math inline">f\propto
+e^{-|v-u|^2/2T}</span>.</p>
+</details>
+</section>
+<section id="the-mirror-theorem" class="level3" data-kind="argue">
+<h3 data-kind="argue">The mirror theorem</h3>
+<div class="study-meta">
+<span class="study-kind">argue</span> <a
+href="/notes/the-demon-is-a-learner-mathematics.html#where-the-arrow-came-from">9.4
+Where the arrow came from ↗</a>
+</div>
+<p>The proof uses three ingredients. Which one is not symmetric in time,
+and what theorem results from replacing it with its mirror image? Where
+does the page then locate the arrow, and why is an uncorrelated state
+“not itself directed”?</p>
+<details class="answer"><summary>Answer</summary>
+<p>The swap and the reverse collision hold in either direction of time.
+The ansatz does not. Assume independence on outgoing pairs instead. Each
+incoming pair continues as the outgoing pair with the same density, so
+the loss term becomes <span class="math inline">f&#39;f_*&#39;</span>
+and the gain term <span class="math inline">ff_*</span>, the right side
+of Boltzmann’s equation changes sign, and <span
+class="math inline">H</span> rises. That theorem is equally rigorous,
+and both assumptions can hold at once only in equilibrium. Mechanics
+does not choose between them, which is what Loschmidt’s reversal,
+Zermelo’s recurrence and Burbury’s Condition A each point out. So the
+arrow lies in the initial conditions: a gas prepared by ordinary means
+has no correlations tuned to its future. Extended backward from an
+uncorrelated state, entropy would rise into the past too. The direction
+comes from placing the special state at the beginning.</p>
+</details>
+</section>
+<section id="the-entropy-that-rises-is-a-marginal" class="level3"
+data-kind="state">
+<h3 data-kind="state">The entropy that rises is a marginal</h3>
+<div class="study-meta">
+<span class="study-kind">state</span> <a
+href="/notes/the-demon-is-a-learner-mathematics.html#the-entropy-that-rises-is-a-marginal">9.5
+The entropy that rises is a marginal ↗</a>
+</div>
+<p>Let <span class="math inline">S_N</span> be the entropy of all <span
+class="math inline">N</span> balls and <span
+class="math inline">S</span> the entropy of one. For a gas that starts
+uncorrelated, state the identity that says where the entropy of the
+H-theorem goes, and derive it. How does the ansatz read in its
+light?</p>
+<details class="answer"><summary>Answer</summary>
+<p>Define the total correlation <span class="math inline">C(t) = N\,S(t)
+- S_N(t) \ge 0</span>, the divergence of the joint distribution from the
+product of its marginals. <span class="math inline">S_N</span> is
+constant by Liouville’s theorem and <span class="math inline">S_N(0) =
+N\,S(0)</span>, so <span class="math inline">N\bigl(S(t) - S(0)\bigr) =
+C(t)</span>. Every nat gained, summed over the balls, is a nat stored in
+correlations among them. Nothing has been lost from the gas. The ansatz
+is then an act of forgetting: it says that each incoming pair carries
+none of the correlation that earlier collisions made. Entropy rises
+because a bounded description keeps <span class="math inline">f</span>
+and discards the rest.</p>
+</details>
+</section>
+<section id="an-h-theorem-for-any-chain" class="level3"
+data-kind="compute">
+<h3 data-kind="compute">An H-theorem for any chain</h3>
+<div class="study-meta">
+<span class="study-kind">compute</span> <a
+href="/notes/the-demon-is-a-learner-mathematics.html#an-h-theorem-for-any-markov-chain">9.7
+An H-theorem for any Markov chain ↗</a>
+</div>
+<p>State the H-theorem for a Markov kernel and the idea of its proof.
+Check it on the two-state chain that leaves state 1 with probability
+<span class="math inline">0.1</span> and state 2 with probability <span
+class="math inline">0.2</span>, started from <span
+class="math inline">\mu = (1, 0)</span>. Where does the arrow enter?</p>
+<details class="answer"><summary>Answer</summary>
+<p>For any two distributions and any kernel, <span
+class="math inline">D(\mu P\,\|\,\pi P) \le D(\mu\,\|\,\pi)</span>. The
+proof is the chain rule: the divergence between the joint laws of a
+state and its successor equals <span
+class="math inline">D(\mu\|\pi)</span>, because both use the same
+kernel, and it also equals <span class="math inline">D(\mu P\|\pi
+P)</span> plus a nonnegative term for the backward conditionals. Here
+the stationary distribution is <span class="math inline">\pi = (2/3,\
+1/3)</span>. <span class="math inline">D(\mu\|\pi) = \ln 1.5 =
+0.405</span>, and after one step <span class="math inline">\mu P =
+(0.9,\ 0.1)</span> with divergence <span
+class="math inline">0.150</span>. The arrow enters with a kernel chosen
+without reference to <span class="math inline">\mu_t</span>: the
+randomness applied at each step knows nothing of the distribution it
+acts on, which is the Stosszahlansatz for a bath. For stochastic
+gradient descent the assumption is that each minibatch is drawn fresh.
+Entropy itself is guaranteed to rise only when <span
+class="math inline">\pi</span> is uniform.</p>
+</details>
+</section>
+<section id="friction-from-a-closed-system" class="level3"
+data-kind="explain">
+<h3 data-kind="explain">Friction from a closed system</h3>
+<div class="study-meta">
+<span class="study-kind">explain</span> <a
+href="/notes/the-demon-is-a-learner-mathematics.html#friction-from-a-hamiltonian-bath">9.8
+Friction from a Hamiltonian bath ↗</a>
+</div>
+<p>A particle is coupled to many harmonic oscillators, and the whole is
+closed and Hamiltonian. What does the particle’s own equation contain
+once the oscillators are solved out? When does the bath’s term become
+noise, and what relation ties it to the friction? What does a finite
+bath do to the arrow?</p>
+<details class="answer"><summary>Answer</summary>
+<p>The exact equation has the force <span
+class="math inline">-V&#39;</span>, a friction with memory <span
+class="math inline">-\int_0^t\Gamma(t-s)\,\dot x(s)\,ds</span>, and a
+term <span class="math inline">\xi(t)</span> that is a fixed function of
+the bath’s initial state. <span class="math inline">\xi</span> becomes
+noise when we stop tracking those initial conditions. With the bath
+started in its Gibbs state, <span
+class="math inline">\langle\xi(t)\,\xi(s)\rangle =
+T\,\Gamma(t-s)</span>: noise and friction have the same kernel because
+they come from the same oscillators. This is the fluctuation–dissipation
+relation, derived and not assumed. In the limit of a continuous bath
+<span class="math inline">\Gamma\to2\gamma\,\delta</span>, and the
+equation is Langevin’s. The arrow came in with a bath that started
+uncorrelated with the particle and has too many frequencies for anything
+to come back. With evenly spaced frequencies a distance <span
+class="math inline">\Delta</span> apart, the cosines realign at <span
+class="math inline">t = 2\pi/\Delta</span> and a particle that had come
+to rest is kicked back up, which is Zermelo’s objection in a bath.</p>
+</details>
+</section>
+<section id="two-routes-to-landauers-bound" class="level3"
+data-kind="derive">
+<h3 data-kind="derive">Two routes to Landauer’s bound</h3>
+<div class="study-meta">
+<span class="study-kind">derive</span> <a
+href="/notes/the-demon-is-a-learner-mathematics.html#what-forgetting-costs">10.
+What forgetting costs ↗</a>
+</div>
+<p>Derive Landauer’s bound twice: from the entropy balance of overdamped
+Langevin dynamics, and from the free energy of a distribution out of
+equilibrium. With Boltzmann’s constant <span
+class="math inline">1.38\times10^{-23}</span> J/K, evaluate the bound
+for one bit at <span class="math inline">300</span> K.</p>
+<details class="answer"><summary>Answer</summary>
+<p><em>Balance.</em> With probability current <span
+class="math inline">J = -\gamma^{-1}(\rho\nabla L + T\nabla\rho)</span>,
+the system’s entropy rate plus the heat rate over <span
+class="math inline">T</span> is <span
+class="math inline">\int\gamma|J|^2/(T\rho) \ge 0</span>. Integrated
+over a process, <span class="math inline">\Delta S_{\text{sys}} + Q/T
+\ge 0</span>: if the system’s entropy falls by <span
+class="math inline">\Delta</span> nats, at least <span
+class="math inline">T\Delta</span> of heat goes to the bath, and one bit
+is <span class="math inline">\ln 2</span> nats.</p>
+<p><em>Free energy.</em> Substituting <span class="math inline">\ln\pi =
+-\beta E - \ln Z</span> gives <span class="math inline">F[\rho] =
+F_{\text{eq}} + T\,D(\rho\|\pi)</span>. An unknown bit is spread evenly
+over two wells, in equilibrium. Resetting it reaches a state
+concentrated in one well, for which <span
+class="math inline">D(\rho\|\pi)</span> is higher by <span
+class="math inline">\ln 2</span>, so it takes work of at least <span
+class="math inline">T\ln 2</span>. The mean energy is unchanged, so the
+work leaves as heat. Run the other way, this is Szilard’s engine.</p>
+<p>In joules, <span
+class="math inline">1.38\times10^{-23}\times300\times\ln 2 =
+2.9\times10^{-21}</span>.</p>
+</details>
+</section>
+<section id="from-stills-cycle-to-the-bottleneck" class="level3"
+data-kind="derive">
+<h3 data-kind="derive">From Still’s cycle to the bottleneck</h3>
+<div class="study-meta">
+<span class="study-kind">derive</span> <a
+href="/notes/the-demon-is-a-learner-mathematics.html#information-as-work">10.3
+Information as work ↗</a>
+</div>
+<p>Still’s engine writes a memory <span class="math inline">M</span> of
+the data <span class="math inline">X</span> at temperature <span
+class="math inline">T</span> and extracts work at <span
+class="math inline">T&#39; &gt; T</span> from a variable <span
+class="math inline">Y</span>. Give the best net work, the efficiency,
+and the condition for producing any work. Show that minimizing the bound
+on the dissipated heat is the information bottleneck, and read off the
+price of an irrelevant nat.</p>
+<details class="answer"><summary>Answer</summary>
+<p>Writing dissipates at least <span
+class="math inline">T\,I_{\text{mem}}</span> and extraction turns at
+most <span class="math inline">T&#39;\,I_{\text{rel}}</span> of heat
+into work, with <span class="math inline">I_{\text{mem}} = I[M,
+X]</span> and <span class="math inline">I_{\text{rel}} = I[M, Y]</span>.
+The best net work is <span class="math inline">T&#39;\,I_{\text{rel}} -
+T\,I_{\text{mem}}</span> on a heat intake of <span
+class="math inline">T&#39;\,I_{\text{rel}}</span>, so <span
+class="math inline">\eta = 1 -
+\frac{T}{T&#39;}\frac{I_{\text{mem}}}{I_{\text{rel}}}</span>: Carnot’s
+limit minus <span
+class="math inline">\frac{T}{T&#39;}\frac{I_{\text{irrel}}}{I_{\text{rel}}}</span>.
+The engine produces work only if <span
+class="math inline">I_{\text{rel}}/I_{\text{mem}} \ge T/T&#39;</span>.
+The net heat dissipated over a cycle is at least <span
+class="math inline">T\,I_{\text{mem}} - T&#39;\,I_{\text{rel}}</span>.
+Minimizing that bound over <span class="math inline">p(m\mid x)</span>
+is <span class="math inline">\min\ I[M, X] - \alpha\,I[M, Y]</span> with
+<span class="math inline">\alpha = T&#39;/T</span>, the information
+bottleneck. Splitting <span class="math inline">I_{\text{mem}} =
+I_{\text{irrel}} + I_{\text{rel}}</span> shows the objective as <span
+class="math inline">I_{\text{irrel}} - (\alpha -
+1)\,I_{\text{rel}}</span>: an irrelevant nat costs 1, and a relevant nat
+earns <span class="math inline">\alpha - 1</span> net of its own
+writing.</p>
+</details>
+</section>
+<section id="algorithmic-bounds" class="level3" data-kind="derive">
+<h3 data-kind="derive">Algorithmic bounds</h3>
+<div class="study-meta">
+<span class="study-kind">derive</span> <a
+href="/notes/the-demon-is-a-learner-mathematics.html#algorithmic-bounds">11.
+Algorithmic bounds ↗</a>
+</div>
+<p>For a computable distribution <span class="math inline">P</span>,
+prove both sides of <span class="math inline">0 \le \sum_x P(x)\,K(x) -
+H(P) \le K(P) + O(1)</span>. Then prove the bound on <span
+class="math inline">K(x_t)</span> for a state evolving by a computable
+map <span class="math inline">f</span>, and say what a bijective <span
+class="math inline">f</span> adds.</p>
+<details class="answer"><summary>Answer</summary>
+<p><em>Lower bound.</em> The shortest programs form a prefix-free code,
+so by Kraft’s inequality their average length is at least <span
+class="math inline">H(P)</span>.</p>
+<p><em>Upper bound.</em> Describe <span class="math inline">x</span> by
+a description of <span class="math inline">P</span> followed by the
+Shannon–Fano codeword for <span class="math inline">x</span> under <span
+class="math inline">P</span>, of length <span
+class="math inline">\lceil-\log_2 P(x)\rceil</span>. Averaging gives
+<span class="math inline">H(P) + K(P) + O(1)</span>.</p>
+<p><em>Dynamics.</em> A program for <span class="math inline">x_t</span>
+can consist of a shortest program for <span
+class="math inline">x_0</span>, self-delimiting descriptions of <span
+class="math inline">f</span> and of <span class="math inline">t</span>,
+and a fixed routine that applies <span class="math inline">f</span>
+<span class="math inline">t</span> times. So <span
+class="math inline">K(x_t) \le K(x_0) + K(f) + K(t) + O(1)</span>, with
+<span class="math inline">K(t) \le \log_2 t + 2\log_2\log_2 t +
+O(1)</span>. If <span class="math inline">f</span> is a computable
+bijection the argument runs backward too, so the complexity can neither
+rise nor fall by more than these terms. At the moment of reversal the
+gas of Figure 2 has the complexity of its initial state, up to these
+terms, although its one-ball statistics have nearly reached the Maxwell
+value.</p>
+</details>
+</section>
+<section id="ten-tools" class="level3" data-kind="recall">
+<h3 data-kind="recall">Ten tools</h3>
+<div class="study-meta">
+<span class="study-kind">recall</span> <a
+href="/notes/the-demon-is-a-learner-mathematics.html#the-tools-side-by-side">12.11
+The tools side by side ↗</a>
+</div>
+<p>Section 12 takes ten tools from statistical mechanics. For each, name
+what it does in learning: the partition function; Gibbs’s variational
+principle; the Legendre transform and the Maxwell relations; Laplace’s
+method; fluctuation and response; detailed balance; the Jarzynski
+equality; thermodynamic length; mean field and the cavity; the time
+reversal of a diffusion.</p>
+<details class="answer"><summary>Answer</summary>
+<ul>
+<li><em>Partition function.</em> Its logarithm gives means and
+covariances by differentiation: softmax, exponential families, Fisher
+information, the two-phase learning rule.</li>
+<li><em>Gibbs’s variational principle.</em> The evidence lower bound is
+the negative of a free energy; also EM, regularized objectives and
+PAC-Bayes.</li>
+<li><em>Legendre transform.</em> Conjugate duality; a penalty and a
+trust region are Legendre partners; a cost-function market is
+path-independent.</li>
+<li><em>Laplace’s method.</em> The Occam factor, BIC, flat minima.</li>
+<li><em>Fluctuation and response.</em> Score-function gradients, and a
+temperature for SGD, <span class="math inline">T_{\text{eff}} =
+\eta\sigma^2/2B</span>.</li>
+<li><em>Detailed balance.</em> MCMC, simulated annealing and SGLD; only
+ratios of <span class="math inline">\pi</span> appear, so <span
+class="math inline">Z</span> cancels.</li>
+<li><em>Jarzynski and Crooks.</em> Annealed importance sampling, with
+the gap of the evidence lower bound as dissipated work.</li>
+<li><em>Thermodynamic length.</em> Schedules for annealing and for the
+noise of diffusion models.</li>
+<li><em>Mean field and the cavity.</em> Variational inference, belief
+propagation, thresholds of capacity.</li>
+<li><em>Time reversal.</em> Diffusion models.</li>
+</ul>
+</details>
+</section>
+<section id="reversing-a-diffusion" class="level3" data-kind="derive">
+<h3 data-kind="derive">Reversing a diffusion</h3>
+<div class="study-meta">
+<span class="study-kind">derive</span> <a
+href="/notes/the-demon-is-a-learner-mathematics.html#reversing-a-diffusion">12.10
+Reversing a diffusion ↗</a>
+</div>
+<p>Give the drift of the time reversal of <span class="math inline">dx =
+-\nabla V\,dt + \sqrt{2T}\,dW</span> and check it. What does the drift
+reduce to at equilibrium? Why can a bath not supply it? How does the
+ledger of a trained score network differ from Szilard’s?</p>
+<details class="answer"><summary>Answer</summary>
+<p>The paths read backward are a diffusion with the same noise and the
+drift <span class="math inline">\nabla V + 2T\,\nabla\ln\rho_t</span>
+(Anderson). To check, the forward Fokker–Planck equation in reverse time
+is <span class="math inline">\partial_s\rho = -\nabla\cdot(\rho\nabla V)
+- T\Delta\rho</span>, and <span class="math inline">-T\Delta\rho =
+-\nabla\cdot(2T\rho\,\nabla\ln\rho) + T\Delta\rho</span>, so the stated
+drift with the same noise gives the same path of densities. With <span
+class="math inline">\pi\propto e^{-V/T}</span> the drift is <span
+class="math inline">-\nabla V + 2T\,\nabla\ln(\rho_t/\pi)</span>. At
+equilibrium the second term vanishes and the reversed film is the same
+process, which is detailed balance. Out of equilibrium the correction
+depends on <span class="math inline">\rho_t</span>, the dependence §9.7
+denies to a bath’s kernel, and the forward process dissipates exactly as
+fast as the reverse needs correcting. A trained network holds the score
+<span class="math inline">\nabla\ln\rho_t</span> as statistical
+knowledge of a population and looks at nothing. A demon gains work from
+what it knows, while a physical run of the reversal would cost at least
+<span class="math inline">T\,D(\rho_{\text{data}}\|\pi)</span> of work,
+the total entropy production of the forward run.</p>
+</details>
+</section>
+<section id="where-a-tool-stops" class="level3" data-kind="limits">
+<h3 data-kind="limits">Where a tool stops</h3>
+<div class="study-meta">
+<span class="study-kind">limits</span> <a
+href="/notes/the-demon-is-a-learner-mathematics.html#a-toolbox-for-learners">12.
+A toolbox for learners ↗</a>
+</div>
+<p>The toolbox marks where a transfer from physics stops. Give the
+caveat attached to each of: temperature as regularization strength; flat
+minima; the temperature of SGD; thermodynamic length for diffusion
+models; the exponential average in Jarzynski’s equality.</p>
+<details class="answer"><summary>Answer</summary>
+<ul>
+<li>The <span class="math inline">T</span> of a regularized objective is
+statistical. It has no bath and pays no joules.</li>
+<li>A rescaling of a rectifier network’s weights makes a minimum as
+sharp as you like without changing the function. The Hessian depends on
+coordinates. Width alone is not the invariant, and width measured
+against a prior is.</li>
+<li><span class="math inline">T_{\text{eff}}</span> is derived for
+isotropic gradient noise. Anisotropic noise means the stationary state
+is not Gibbs.</li>
+<li>The formula assumes a full relaxation at each step, which a
+diffusion model does not have. What carries over to noise schedules is
+the path and its Fisher length.</li>
+<li>Rare paths with low work dominate the average. An accurate estimate
+needs a number of samples of the order of <span
+class="math inline">e^{D}</span>, with <span
+class="math inline">D</span> the dissipation of the reverse process. For
+the evidence lower bound that is <span class="math inline">D(p(z\mid
+x)\|q)</span>, the divergence variational inference does not
+minimize.</li>
+</ul>
+</details>
+</section>
+</section>
+<section id="terms" class="level2">
+<h2>Terms</h2>
+<p>Introduced in this essay:</p>
+<ul>
+<li><a
+href="/notes/the-demon-is-a-learner-mathematics.html#entropy-counts">macrostate
+and microstate</a></li>
+<li><a
+href="/notes/the-demon-is-a-learner-mathematics.html#temperature-is-an-exchange-rate">temperature
+as an exchange rate</a>: the energy that buys one nat of entropy.</li>
+<li><a
+href="/notes/the-demon-is-a-learner-mathematics.html#the-gibbs-state">Gibbs
+state</a></li>
+<li><a
+href="/notes/the-demon-is-a-learner-mathematics.html#free-energy">free
+energy</a></li>
+<li><a
+href="/notes/the-demon-is-a-learner-mathematics.html#counting-collisions">Stosszahlansatz</a></li>
+<li><a
+href="/notes/the-demon-is-a-learner-mathematics.html#the-entropy-that-rises-is-a-marginal">total
+correlation</a></li>
+<li><a
+href="/notes/the-demon-is-a-learner-mathematics.html#an-h-theorem-for-any-markov-chain">H-theorem
+for a Markov chain</a></li>
+<li><a
+href="/notes/the-demon-is-a-learner-mathematics.html#friction-from-a-hamiltonian-bath">fluctuation–dissipation
+relation</a></li>
+<li><a
+href="/notes/the-demon-is-a-learner-mathematics.html#with-thermal-noise">entropy
+production</a></li>
+<li><a
+href="/notes/the-demon-is-a-learner-mathematics.html#with-thermal-noise">log-Sobolev
+inequality</a></li>
+<li><a
+href="/notes/the-demon-is-a-learner-mathematics.html#information-as-work">nonequilibrium
+free energy</a></li>
+<li><a
+href="/notes/the-demon-is-a-learner-mathematics.html#information-as-work">information
+bottleneck</a></li>
+<li><a
+href="/notes/the-demon-is-a-learner-mathematics.html#detailed-balance-lets-you-sample-without-knowing-z">detailed
+balance</a></li>
+<li><a
+href="/notes/the-demon-is-a-learner-mathematics.html#the-jarzynski-equality-is-annealed-importance-sampling">fluctuation
+theorem and Jarzynski equality</a></li>
+<li><a
+href="/notes/the-demon-is-a-learner-mathematics.html#thermodynamic-length-sets-the-schedule">thermodynamic
+length</a></li>
+<li><a
+href="/notes/the-demon-is-a-learner-mathematics.html#mean-field-and-the-cavity">mean
+field and the cavity method</a></li>
+</ul>
+<p>From other essays:</p>
+<ul>
+<li>Liouville’s theorem (<a
+href="/notes/the-standard-of-motion.html#one-bracket-three-mechanics"><em>The
+Standard of Motion</em></a>)</li>
+<li>Hamiltonian vector field (<a
+href="/notes/the-standard-of-motion-mathematics.html#one-bracket-three-mechanics"><em>The
+Standard of Motion: The Mathematics</em></a>)</li>
+<li>liquidity parameter (<a
+href="/notes/the-bookmaker-is-a-learner.html#the-bookmaker-is-a-learner"><em>The
+Bookmaker Is a Learner</em></a>)</li>
+<li>overdamped limit (<a
+href="/notes/the-demon-is-a-learner.html#aristotle-was-right-about-a-regime"><em>The
+Demon Is a Learner</em></a>)</li>
+<li>Polyak–Łojasiewicz condition (<a
+href="/notes/the-demon-is-a-learner.html#aristotle-was-right-about-a-regime"><em>The
+Demon Is a Learner</em></a>)</li>
+<li>Boltzmann’s assumption (<a
+href="/notes/the-demon-is-a-learner.html#a-gas-of-balls"><em>The Demon
+Is a Learner</em></a>)</li>
+<li>coarse graining (<a
+href="/notes/the-demon-is-a-learner.html#a-gas-of-balls"><em>The Demon
+Is a Learner</em></a>)</li>
+<li>Landauer’s principle (<a
+href="/notes/the-demon-is-a-learner.html#what-forgetting-costs"><em>The
+Demon Is a Learner</em></a>)</li>
+<li>Kolmogorov complexity (<a
+href="/notes/the-demon-is-a-learner.html#the-entropy-of-one-state"><em>The
+Demon Is a Learner</em></a>)</li>
+<li>score (<a
+href="/notes/the-demon-is-a-learner.html#the-demon-is-a-learner"><em>The
+Demon Is a Learner</em></a>)</li>
+<li>exponential tilt (<a
+href="/notes/how-does-a-policy-improve.html#improving-a-distribution-without-throwing-away-the-prior"><em>How
+Does a Policy Improve?</em></a>)</li>
+<li>temperature as a Lagrange multiplier (<a
+href="/notes/how-does-a-policy-improve.html#improving-a-distribution-without-throwing-away-the-prior"><em>How
+Does a Policy Improve?</em></a>)</li>
+<li>cost-function market and the LMSR (<a
+href="/notes/the-bookmaker-is-a-learner.html#one-bookmaker-four-faces"><em>The
+Bookmaker Is a Learner</em></a>)</li>
+<li>conjugate representation of a cost function (<a
+href="/notes/the-bookmaker-is-a-learner-mathematics.html#market-scoring-rules-and-cost-functions-are-one-family"><em>The
+Bookmaker Is a Learner: The Mathematics</em></a>)</li>
+</ul>
+</section>
+</article>
+<section class="study-link"><p><em>From the study questions back to the essay: 
+<a href="/notes/the-demon-is-a-learner-mathematics.html">the-demon-is-a-learner-mathematics.html &rarr;</a></em></p></section>
+<script src="/assets/theme-toggle.js"></script>
+</body>
+</html>

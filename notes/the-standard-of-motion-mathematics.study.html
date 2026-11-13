@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <meta property="og:title" content="Study notes: The Standard of Motion: The Mathematics">
+  <meta property="og:url" content="https://lukstafi.github.io/notes/the-standard-of-motion-mathematics.study.html">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="lukstafi&#x27;s blog">
+  <meta name="twitter:card" content="summary">
+  <title>Study notes: The Standard of Motion: The Mathematics</title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <link rel="stylesheet" href="/assets/tufte.css">
+  <link rel="stylesheet" href="/assets/pandoc-tufte.css">
+  <link rel="stylesheet" href="/assets/site.css">
+  <script defer=""
+  src="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.js"></script>
+  <script>document.addEventListener("DOMContentLoaded", function () {
+ var mathElements = document.getElementsByClassName("math");
+ var macros = [];
+ for (var i = 0; i < mathElements.length; i++) {
+  var texText = mathElements[i].firstChild;
+  if (mathElements[i].tagName == "SPAN") {
+   katex.render(texText.data, mathElements[i], {
+    displayMode: mathElements[i].classList.contains('display'),
+    throwOnError: false,
+    macros: macros,
+    fleqn: false
+   });
+}}});
+  </script>
+  <link rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.css" />
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+  <script>(function(){var t=localStorage.getItem('theme-preference');if(t)document.documentElement.setAttribute('data-theme',t);})()</script>
+</head>
+<body>
+<nav class="site-nav">
+  <a href="/">Home</a> &middot; <a href="/about.html">About</a> &middot; <a href="https://lukstafi.substack.com">Substack</a>
+</nav>
+<div class="theme-toggle">
+  <button id="theme-btn" aria-label="Toggle dark mode">&#9788;</button>
+</div>
+<article>
+<header>
+<h1 class="title">Study notes: The Standard of Motion: The
+Mathematics</h1>
+</header>
+<p>Recall questions for <a
+href="/notes/the-standard-of-motion-mathematics.html"><em>The Standard
+of Motion: The Mathematics</em></a>. Answer each from memory, then open
+the answer to compare. The link under a question leads to the section it
+draws on.</p>
+<section id="before-reading" class="level2">
+<h2>Before reading</h2>
+<p>Helpful, not required:</p>
+<ul>
+<li><a href="/notes/the-standard-of-motion.html"><em>The Standard of
+Motion</em></a>: what the structures are for.</li>
+</ul>
+</section>
+<section id="questions" class="level2">
+<h2>Questions</h2>
+<p>These questions cover the spine of the page: the geometry of a first
+law, the bracket, the algebras of free motion and their stability, and
+two results about discrete substrates.</p>
+<section id="parallelizable-or-not" class="level3" data-kind="case">
+<h3 data-kind="case">Parallelizable or not</h3>
+<div class="study-meta">
+<span class="study-kind">case</span> <a
+href="/notes/the-standard-of-motion-mathematics.html#bundles-and-connections-in-brief">0.
+Bundles and connections in brief ↗</a>
+</div>
+<p>Define a principal <span class="math inline">G</span>-bundle and a
+parallelizable manifold. Why does a global section of a principal bundle
+make it a product? Decide for the torus, the sphere <span
+class="math inline">S^2</span> and the three-sphere <span
+class="math inline">S^3</span>.</p>
+<details class="answer"><summary>Answer</summary>
+<p>In a principal <span class="math inline">G</span>-bundle a group
+<span class="math inline">G</span> acts on every fiber, and any two
+points of one fiber differ by exactly one element of <span
+class="math inline">G</span>. A frame bundle is the example. Given a
+global section, every frame is the chosen frame times a unique group
+element, so <span class="math inline">F(X)\cong X\times G</span>. A
+manifold is parallelizable if its frame bundle has a global section:
+<span class="math inline">n</span> vector fields that form a basis at
+every point.</p>
+<ul>
+<li>The torus is. The two directions of the square’s sides survive the
+gluing.</li>
+<li><span class="math inline">S^2</span> is not. The first vector of a
+global frame would be a continuous vector field with no zeros, which the
+hairy ball theorem rules out. By Poincaré–Hopf a compact surface has
+such a field only if its Euler characteristic is zero, and the sphere’s
+is <span class="math inline">2</span>.</li>
+<li><span class="math inline">S^3</span> is. It is the group of unit
+quaternions, and a frame at the identity, multiplied by each group
+element, spreads over the whole space.</li>
+</ul>
+</details>
+</section>
+<section id="the-first-law-as-a-geodesic" class="level3"
+data-kind="state">
+<h3 data-kind="state">The first law as a geodesic</h3>
+<div class="study-meta">
+<span class="study-kind">state</span> <a
+href="/notes/the-standard-of-motion-mathematics.html#bundles-and-connections-in-brief">0.
+Bundles and connections in brief ↗</a>
+</div>
+<p>Write the geodesic equation and say why it is the first law in
+geometric form. What is curvature? When does a connection give
+teleparallelism, and what can free fall not remove?</p>
+<details class="answer"><summary>Answer</summary>
+<p><span class="math inline">\ddot x^\nu+\Gamma^\nu_{\mu\lambda}\,\dot
+x^\mu\dot x^\lambda=0</span>: a geodesic is a curve whose own velocity
+is parallel along it. A connection on space-time thus picks out the
+curves that need no force, so it is Heller’s standard of motion as a
+piece of geometry. Curvature is the rotation of a vector carried around
+a small closed loop, per unit of enclosed area. If the curvature
+vanishes and the space has no holes, transport is independent of the
+path, and one frame carried everywhere is a global parallel frame. That
+is teleparallelism, the sense of “product” in Section 1. A freely
+falling frame can make <span class="math inline">\Gamma=0</span> at one
+point, but the curvature remains, as the tidal convergence of nearby
+free-fall paths.</p>
+</details>
+</section>
+<section id="the-product-two-levels-up" class="level3"
+data-kind="derive">
+<h3 data-kind="derive">The product two levels up</h3>
+<div class="study-meta">
+<span class="study-kind">derive</span> <a
+href="/notes/the-standard-of-motion-mathematics.html#hellers-ladder-in-frame-bundle-terms">1.
+Heller’s ladder in frame-bundle terms ↗</a>
+</div>
+<p>The frame bundle of a curved space-time has no parallel product
+structure. Show that its own frame bundle is nevertheless a product, and
+count the forms for <span class="math inline">n=4</span>. Why does the
+argument cover Newton–Cartan space-time and fail for a general principal
+bundle?</p>
+<details class="answer"><summary>Answer</summary>
+<p>On the bundle of linear frames <span
+class="math inline">P=F(X)</span> the canonical form <span
+class="math inline">\theta</span> expresses the displacement of the base
+point in the frame itself, with values in <span
+class="math inline">\mathbb R^n</span>. The connection form <span
+class="math inline">\omega</span> measures the departure from parallel
+transport, with values in <span
+class="math inline">\mathfrak{gl}(n)</span>. Together they give <span
+class="math inline">n+n^2=\dim P</span> linearly independent one-forms
+at every point, a global coframe; for <span
+class="math inline">n=4</span> that is <span
+class="math inline">4+16=20</span>. A global coframe makes the frame
+bundle of <span class="math inline">P</span> trivial, so <span
+class="math inline">F(F(M))\cong F(M)\times G&#39;</span>. The argument
+uses only the connection, so it holds for Newton–Cartan space-time,
+where free fall follows the geodesics of a curved connection. A general
+principal bundle has no canonical form.</p>
+</details>
+</section>
+<section id="the-bracket-is-the-time-derivative" class="level3"
+data-kind="derive">
+<h3 data-kind="derive">The bracket is the time derivative</h3>
+<div class="study-meta">
+<span class="study-kind">derive</span> <a
+href="/notes/the-standard-of-motion-mathematics.html#one-bracket-three-mechanics">2.
+One bracket, three mechanics ↗</a>
+</div>
+<p>From Hamilton’s equations, show that <span class="math inline">\dot
+f=\{f,H\}</span> for an observable <span
+class="math inline">f(x,p)</span>. Recover Newton’s second law for <span
+class="math inline">H=p^2/2m+V(x)</span>. What changes if <span
+class="math inline">f</span> depends on time explicitly?</p>
+<details class="answer"><summary>Answer</summary>
+<p>By the chain rule <span class="math inline">\dot f=\frac{\partial
+f}{\partial x_i}\dot x_i+\frac{\partial f}{\partial p_i}\dot p_i</span>.
+Substituting <span class="math inline">\dot x_i=\partial H/\partial
+p_i</span> and <span class="math inline">\dot p_i=-\partial H/\partial
+x_i</span> gives <span class="math inline">\{f,H\}</span>. For the
+particle the equations read <span class="math inline">\dot x=p/m</span>
+and <span class="math inline">\dot p=-\nabla V</span>, which together
+are Newton’s second law. A function with <span
+class="math inline">\{f,H\}=0</span> is conserved. With explicit time
+dependence, <span class="math inline">\dot f=\partial f/\partial
+t+\{f,H\}</span>, and <span class="math inline">f</span> is conserved
+when the two terms cancel. <span class="math inline">H</span> itself is
+conserved when it does not depend on time explicitly.</p>
+</details>
+</section>
+<section id="swirl-and-spread" class="level3" data-kind="derive">
+<h3 data-kind="derive">Swirl and spread</h3>
+<div class="study-meta">
+<span class="study-kind">derive</span> <a
+href="/notes/the-standard-of-motion-mathematics.html#one-bracket-three-mechanics">2.
+One bracket, three mechanics ↗</a>
+</div>
+<p>Compute the divergence of the Hamiltonian vector field <span
+class="math inline">X_H=(\partial H/\partial p,\ -\partial H/\partial
+x)</span> and state what follows. Then compute the divergence of the
+damped oscillator <span class="math inline">(\dot x,\dot p)=(p,\
+-x-\varepsilon p)</span>. Which part of that field is responsible?</p>
+<details class="answer"><summary>Answer</summary>
+<p>The divergence is <span
+class="math inline">\frac{\partial^2H}{\partial x\,\partial
+p}-\frac{\partial^2H}{\partial p\,\partial x}=0</span>, because mixed
+partial derivatives agree. The flow therefore preserves phase-space
+volume, which is Liouville’s theorem, and <span class="math inline">\int
+s(\rho_t)\,dx\,dp</span> is constant for any function <span
+class="math inline">s</span>. With <span
+class="math inline">s(\rho)=-\rho\ln\rho</span> that is the
+Gibbs–Shannon entropy. The damped oscillator has divergence <span
+class="math inline">0+(-\varepsilon)=-\varepsilon</span>, so its flow
+contracts volume. The field splits into <span
+class="math inline">(p,-x)</span>, the Hamiltonian field of <span
+class="math inline">H=(x^2+p^2)/2</span>, and <span
+class="math inline">(0,-\varepsilon p)</span>, a gradient slide in the
+momentum direction. All of the divergence comes from the second part:
+Newton’s flow swirls and never compresses, and Aristotle’s spreads or
+compresses and never swirls.</p>
+</details>
+</section>
+<section id="what-a-lie-bracket-records" class="level3"
+data-kind="explain">
+<h3 data-kind="explain">What a Lie bracket records</h3>
+<div class="study-meta">
+<span class="study-kind">explain</span> <a
+href="/notes/the-standard-of-motion-mathematics.html#kinematical-lie-algebras">3.
+Kinematical Lie algebras ↗</a>
+</div>
+<p>What does the Lie bracket of two generators generate? Give the
+example of rotations. What is left over when a boost and a time
+translation are applied in the two orders, and which bracket records
+it?</p>
+<details class="answer"><summary>Answer</summary>
+<p>Apply two small motions, then undo the first, then undo the second.
+The result is not the identity but a motion of second order in the small
+parameters, and the bracket <span class="math inline">[A,B]</span> is
+its generator. For small turns about <span class="math inline">x</span>
+and <span class="math inline">y</span> the leftover is a turn about
+<span class="math inline">z</span>: <span
+class="math inline">[J_x,J_y]=J_z</span>. A Lie algebra is the vector
+space of generators with this bracket, which is bilinear, antisymmetric
+and satisfies the Jacobi identity. Boost a body by <span
+class="math inline">v</span> and then let time run for <span
+class="math inline">t</span>, or do the two in the other order: the
+results differ by a displacement <span class="math inline">vt</span>.
+The leftover is a spatial translation, so the Galilean bracket of a
+boost with the Hamiltonian is a momentum, <span
+class="math inline">\{K_i,H\}=p_i</span>.</p>
+</details>
+</section>
+<section id="the-poincaré-brackets-of-a-free-particle" class="level3"
+data-kind="derive">
+<h3 data-kind="derive">The Poincaré brackets of a free particle</h3>
+<div class="study-meta">
+<span class="study-kind">derive</span> <a
+href="/notes/the-standard-of-motion-mathematics.html#the-free-particle-as-a-realization">3.1
+The free particle as a realization ↗</a>
+</div>
+<p>Take <span class="math inline">H=\sqrt{p^2c^2+m^2c^4}</span> and
+<span class="math inline">K_i=(H/c^2)\,x_i-t\,p_i</span>. Compute <span
+class="math inline">\{K_i,H\}</span> and <span
+class="math inline">\{K_i,p_j\}</span>. Show that <span
+class="math inline">K_i</span> is conserved, and say what it
+records.</p>
+<details class="answer"><summary>Answer</summary>
+<p><span class="math inline">\{x_i,H\}=\partial H/\partial
+p_i=c^2p_i/H</span>, so <span
+class="math inline">\{K_i,H\}=(H/c^2)(c^2p_i/H)=p_i</span>. <span
+class="math inline">H</span> depends on <span
+class="math inline">p</span> only, so <span
+class="math inline">\{K_i,p_j\}=(H/c^2)\{x_i,p_j\}=(H/c^2)\,\delta_{ij}</span>.
+<span class="math inline">K_i</span> depends on time explicitly, and the
+two terms of its rate of change cancel: <span class="math inline">\dot
+K_i=\partial_tK_i+\{K_i,H\}=-p_i+p_i=0</span>. Dividing by the constant
+<span class="math inline">H/c^2</span> gives <span
+class="math inline">x_i-t\,v_i</span>, the position the particle had at
+time <span class="math inline">0</span>. A boost generator records where
+a uniformly moving body started. With <span
+class="math inline">\{K_i,K_j\}=-\varepsilon_{ijk}L_k/c^2</span> these
+are the brackets of the Poincaré algebra.</p>
+</details>
+</section>
+<section id="mass-is-the-obstruction" class="level3"
+data-kind="explain">
+<h3 data-kind="explain">Mass is the obstruction</h3>
+<div class="study-meta">
+<span class="study-kind">explain</span> <a
+href="/notes/the-standard-of-motion-mathematics.html#the-galilean-limit-and-the-mass">3.2
+The Galilean limit and the mass ↗</a>
+</div>
+<p>Take the Galilean limit of <span
+class="math inline">\{K_i,p_j\}</span>. On events, boosts and
+translations commute. Why do their generating functions on a particle’s
+phase space not commute, and why can the constant not be removed? When
+does the central term survive the contraction?</p>
+<details class="answer"><summary>Answer</summary>
+<p>Write <span class="math inline">H=mc^2+E</span>. Then <span
+class="math inline">\{K_i,p_j\}=(m+E/c^2)\,\delta_{ij}\to
+m\,\delta_{ij}</span>, and <span class="math inline">K_i\to
+m\,x_i-t\,p_i</span>. On events a translation by <span
+class="math inline">a</span> and a boost by <span
+class="math inline">v</span> give <span
+class="math inline">x+a+vt</span> in either order, so <span
+class="math inline">[K_i,P_j]=0</span>. On a particle’s states the two
+motions still commute, but the generating functions have a constant
+bracket. A constant generates no motion, and shifting <span
+class="math inline">K_i</span> or <span class="math inline">p_j</span>
+by constants cannot remove it, since constants drop out of every
+bracket. The constant is needed because a boost must change the momentum
+by <span class="math inline">mv</span>, which depends on the body, and
+space-time alone knows no masses. The Galilei algebra with this central
+generator is the Bargmann algebra. Contracting the Poincaré group itself
+gives the Galilei group without the term; it appears when the rest
+energy <span class="math inline">mc^2</span> is separated off before the
+limit.</p>
+</details>
+</section>
+<section id="the-carroll-limit" class="level3" data-kind="compute">
+<h3 data-kind="compute">The Carroll limit</h3>
+<div class="study-meta">
+<span class="study-kind">compute</span> <a
+href="/notes/the-standard-of-motion-mathematics.html#the-family-of-contractions">3.3
+The family of contractions ↗</a>
+</div>
+<p>Rescale the Poincaré boosts to <span
+class="math inline">K&#39;_i=c^2K_i</span>. Compute <span
+class="math inline">\{K&#39;_i,P_j\}</span>, <span
+class="math inline">\{K&#39;_i,H\}</span> and <span
+class="math inline">\{K&#39;_i,K&#39;_j\}</span>, and let <span
+class="math inline">c\to0</span>. How does the result differ from the
+Galilei algebra, and what does a free particle do?</p>
+<details class="answer"><summary>Answer</summary>
+<p><span
+class="math inline">\{K&#39;_i,P_j\}=c^2\cdot\delta_{ij}H/c^2=\delta_{ij}H</span>.
+<span class="math inline">\{K&#39;_i,H\}=c^2P_i\to0</span>. <span
+class="math inline">\{K&#39;_i,K&#39;_j\}=c^4\cdot(-\varepsilon_{ijk}J_k/c^2)=-c^2\varepsilon_{ijk}J_k\to0</span>.
+The Galilei algebra keeps <span class="math inline">\{K_i,H\}=P_i</span>
+and loses <span class="math inline">\{K_i,P_j\}</span>, apart from the
+Bargmann mass term. The Carroll algebra does the reverse. In it a single
+free particle has no motion: its velocity vanishes identically. With all
+three brackets zero the algebra is the static one.</p>
+</details>
+</section>
+<section id="rigidity" class="level3" data-kind="state">
+<h3 data-kind="state">Rigidity</h3>
+<div class="study-meta">
+<span class="study-kind">state</span> <a
+href="/notes/the-standard-of-motion-mathematics.html#stability">4.
+Stability ↗</a>
+</div>
+<p>Define a 2-cocycle and a 2-coboundary of a Lie algebra. When is the
+algebra rigid, and which algebras always are? Why are the homogeneous
+Galilei algebra and the Poincaré algebra not semisimple? What is the one
+deformation of the first?</p>
+<details class="answer"><summary>Answer</summary>
+<p>A first-order correction <span class="math inline">\varphi_1</span>
+to the bracket is a 2-cocycle if it keeps the Jacobi identity to first
+order. It is a 2-coboundary if it comes from relabeling the generators,
+<span class="math inline">A\mapsto A+tf(A)</span>; the algebra it
+produces is the old one in disguise. <span
+class="math inline">H^2(\mathfrak g,\mathfrak g)</span> is the space of
+cocycles modulo coboundaries. If it vanishes, every small deformation is
+a change of basis, and the algebra is rigid. Semisimple algebras, those
+with no abelian ideal other than <span class="math inline">\{0\}</span>,
+are rigid by Whitehead’s second lemma. In the homogeneous Galilei
+algebra the boosts form an abelian ideal, and in the Poincaré algebra
+the translations do. The single nontrivial deformation of the first is
+<span class="math inline">[K_i,K_j]=t\,\varepsilon_{ijk}J_k</span>. At
+<span class="math inline">t=-1/c^2</span> it is the Lorentz algebra
+<span class="math inline">\mathfrak{so}(3,1)</span> and at <span
+class="math inline">t&gt;0</span> it is <span
+class="math inline">\mathfrak{so}(4)</span>; both are semisimple, so
+stability selects semisimplicity and the sign is an empirical input.</p>
+</details>
+</section>
+<section id="two-stabilities-opposite-rankings" class="level3"
+data-kind="case">
+<h3 data-kind="case">Two stabilities, opposite rankings</h3>
+<div class="study-meta">
+<span class="study-kind">case</span> <a
+href="/notes/the-standard-of-motion-mathematics.html#stability">4.
+Stability ↗</a>
+</div>
+<p>Define structural stability of a vector field. Show with the harmonic
+oscillator that a conservative system is not structurally stable. Why
+are gradient flows robust, and what does the KAM theorem save? How do
+the two notions of stability rank Aristotle and Newton?</p>
+<details class="answer"><summary>Answer</summary>
+<p>A vector field is structurally stable if every <span
+class="math inline">C^1</span>-close field is topologically equivalent
+to it: a homeomorphism carries the orbits of one onto the orbits of the
+other, preserving direction. The oscillator <span
+class="math inline">\dot x=p</span>, <span class="math inline">\dot
+p=-x</span> has only closed orbits. The perturbation <span
+class="math inline">\dot p=-x-\varepsilon p</span> makes the origin
+attracting for every <span class="math inline">\varepsilon&gt;0</span>,
+and no homeomorphism carries closed orbits onto orbits that converge to
+a point. The gradient flow of a Morse function has no periodic orbits
+and only hyperbolic equilibria, and an arbitrarily small perturbation
+makes it Morse–Smale, which is structurally stable. The KAM theorem
+saves the invariant tori with Diophantine frequencies of a nearly
+integrable system, but only under Hamiltonian perturbations; a
+dissipative perturbation destroys the family. Among Lie algebras Galilei
+is unstable and Lorentz rigid. Among vector fields the conservative
+dynamics of both is unstable, and the dissipative, first-order dynamics
+of Aristotle is generic.</p>
+</details>
+</section>
+<section id="counting-speeds" class="level3" data-kind="compute">
+<h3 data-kind="compute">Counting speeds</h3>
+<div class="study-meta">
+<span class="study-kind">compute</span> <a
+href="/notes/the-standard-of-motion-mathematics.html#moving-patterns-in-a-cellular-automaton">5.
+Moving patterns in a cellular automaton ↗</a>
+</div>
+<p>A spaceship has speed <span class="math inline">r/q</span> in lowest
+terms, and every phase of it fits in a box of area <span
+class="math inline">A</span> cells. Bound <span
+class="math inline">q</span>. What is the bound for a <span
+class="math inline">5\times5</span> box, and how many cells does a
+denominator of <span class="math inline">10^6</span> need? What does
+this counting fail to capture?</p>
+<details class="answer"><summary>Answer</summary>
+<p>The period is a multiple of <span class="math inline">q</span>, so
+the ship passes through at least <span class="math inline">q</span>
+distinct phases. A box of <span class="math inline">A</span> cells has
+at most <span class="math inline">2^A</span> configurations, so <span
+class="math inline">q\le2^A</span>. A <span
+class="math inline">5\times5</span> box allows <span
+class="math inline">q\le2^{25}\approx3.4\times10^7</span>, and a
+denominator of <span class="math inline">10^6</span> needs at least
+<span class="math inline">\log_2 10^6\approx20</span> cells. Precision
+costs size only logarithmically, so for a pattern of macroscopic size
+counting forbids no speed an observer could resolve. What breaks
+Newton’s first law is a gap: two nearby speeds carried by patterns that
+have nothing in common, so that a small boost turns a body into a
+different kind of thing. A rule passes the gap test if neighboring
+speeds are realized by nearly the same pattern at the scale an observer
+resolves. In Life they are not.</p>
+</details>
+</section>
+<section id="no-invariant-direction" class="level3" data-kind="state">
+<h3 data-kind="state">No invariant direction</h3>
+<div class="study-meta">
+<span class="study-kind">state</span> <a
+href="/notes/the-standard-of-motion-mathematics.html#the-bombellihensonsorkin-theorem">6.
+The Bombelli–Henson–Sorkin theorem ↗</a>
+</div>
+<p>State the Bombelli–Henson–Sorkin theorem, the idea of its proof, and
+its corollary.</p>
+<details class="answer"><summary>Answer</summary>
+<p>Let <span class="math inline">\Omega</span> be the space of Poisson
+sprinklings of Minkowski space <span class="math inline">\mathbb
+M^n</span>, <span class="math inline">n&gt;1</span>, with its
+Lorentz-invariant probability measure, and <span
+class="math inline">\mathcal H</span> the hyperboloid of future-directed
+unit timelike vectors. There is no measurable map <span
+class="math inline">D:\Omega\to\mathcal H</span> with <span
+class="math inline">D(\Lambda\omega)=\Lambda D(\omega)</span> for all
+<span class="math inline">\Lambda</span> in the connected Lorentz group.
+The idea: such a map would push the measure on <span
+class="math inline">\Omega</span> forward to a Lorentz-invariant
+probability measure on <span class="math inline">\mathcal H</span>. None
+exists, because the invariant measure on the hyperboloid has infinite
+total volume. The corollary: no finite-valency graph can be associated
+to a sprinkling consistently with Lorentz invariance. Intuitively a
+sprinkled point has no nearest neighbor, since every Lorentz-invariant
+neighborhood has infinite volume.</p>
+</details>
+</section>
+<section id="what-carries-over-to-a-hypergraph" class="level3"
+data-kind="limits">
+<h3 data-kind="limits">What carries over to a hypergraph</h3>
+<div class="study-meta">
+<span class="study-kind">limits</span> <a
+href="/notes/the-standard-of-motion-mathematics.html#the-bombellihensonsorkin-theorem">6.
+The Bombelli–Henson–Sorkin theorem ↗</a>
+</div>
+<p>The last two sections bear on hypergraph rewriting. What does the
+page say its results do and do not establish there?</p>
+<details class="answer"><summary>Answer</summary>
+<ul>
+<li>Fact 2 and the gap test are stated for a fixed lattice with a
+uniform background, and a hypergraph has neither. The gap test carries
+over, with “nearly the same pattern” read at the observer’s scale (<a
+href="/notes/the-standard-of-motion-mathematics.html#moving-patterns-in-a-cellular-automaton">Section
+5</a>).</li>
+<li>Gorard’s first argument, from invariance under changes of foliation,
+establishes independence of the slicing. It does not establish the
+absence of an equivariantly definable direction in the graph
+itself.</li>
+<li>A causal-invariant rule produces a single graph, on which the
+Lorentz group does not act. The measure-theoretic setting of the theorem
+therefore does not transfer without further construction.</li>
+<li>His second argument grants the corollary for the microscopic graph.
+What it leaves is approximate, emergent Lorentz invariance below
+observational resolution.</li>
+</ul>
+</details>
+</section>
+</section>
+<section id="terms" class="level2">
+<h2>Terms</h2>
+<p>Introduced in this essay:</p>
+<ul>
+<li><a
+href="/notes/the-standard-of-motion-mathematics.html#bundles-and-connections-in-brief">principal
+bundle and parallelizable manifold</a></li>
+<li><a
+href="/notes/the-standard-of-motion-mathematics.html#bundles-and-connections-in-brief">connection,
+geodesic and curvature</a></li>
+<li><a
+href="/notes/the-standard-of-motion-mathematics.html#bundles-and-connections-in-brief">canonical
+form and connection form</a></li>
+<li><a
+href="/notes/the-standard-of-motion-mathematics.html#hellers-ladder-in-frame-bundle-terms">Newton–Cartan
+space-time</a></li>
+<li><a
+href="/notes/the-standard-of-motion-mathematics.html#one-bracket-three-mechanics">generator
+of a flow</a></li>
+<li><a
+href="/notes/the-standard-of-motion-mathematics.html#one-bracket-three-mechanics">Hamiltonian
+vector field</a></li>
+<li><a
+href="/notes/the-standard-of-motion-mathematics.html#kinematical-lie-algebras">Lie
+algebra and Lie bracket</a></li>
+<li><a
+href="/notes/the-standard-of-motion-mathematics.html#the-galilean-limit-and-the-mass">Bargmann
+algebra</a></li>
+<li><a
+href="/notes/the-standard-of-motion-mathematics.html#the-family-of-contractions">Carroll
+algebra</a></li>
+<li><a
+href="/notes/the-standard-of-motion-mathematics.html#stability">rigid
+Lie algebra</a>: one whose every small deformation is a change of basis:
+its second cohomology with coefficients in itself vanishes.</li>
+<li><a
+href="/notes/the-standard-of-motion-mathematics.html#stability">Morse–Smale
+flow</a></li>
+<li><a
+href="/notes/the-standard-of-motion-mathematics.html#moving-patterns-in-a-cellular-automaton">gap
+test</a>: neighboring speeds must be realized by nearly the same
+pattern, at the scale an observer resolves.</li>
+<li><a
+href="/notes/the-standard-of-motion-mathematics.html#the-bombellihensonsorkin-theorem">Bombelli–Henson–Sorkin
+theorem</a></li>
+</ul>
+<p>From other essays:</p>
+<ul>
+<li>standard of motion (<a
+href="/notes/the-standard-of-motion.html#the-first-law-carries-the-geometry"><em>The
+Standard of Motion</em></a>)</li>
+<li>frame bundle and teleparallelism (<a
+href="/notes/the-standard-of-motion.html#the-first-law-carries-the-geometry"><em>The
+Standard of Motion</em></a>)</li>
+<li>Poisson bracket and Hamiltonian (<a
+href="/notes/the-standard-of-motion.html#one-bracket-three-mechanics"><em>The
+Standard of Motion</em></a>)</li>
+<li>Liouville’s theorem (<a
+href="/notes/the-standard-of-motion.html#one-bracket-three-mechanics"><em>The
+Standard of Motion</em></a>)</li>
+<li>kinematical algebra (<a
+href="/notes/the-standard-of-motion.html#the-algebra-of-free-motions"><em>The
+Standard of Motion</em></a>)</li>
+<li>contraction and deformation (<a
+href="/notes/the-standard-of-motion.html#the-algebra-of-free-motions"><em>The
+Standard of Motion</em></a>)</li>
+<li>mass as a central extension (<a
+href="/notes/the-standard-of-motion.html#the-algebra-of-free-motions"><em>The
+Standard of Motion</em></a>)</li>
+<li>stable algebra (<a
+href="/notes/the-standard-of-motion.html#the-algebra-of-free-motions"><em>The
+Standard of Motion</em></a>)</li>
+<li>structural stability (<a
+href="/notes/the-standard-of-motion.html#the-algebra-of-free-motions"><em>The
+Standard of Motion</em></a>)</li>
+<li>Lagrange multiplier as a price: also in <a
+href="/notes/how-does-a-policy-improve.html#improving-a-distribution-without-throwing-away-the-prior"><em>How
+Does a Policy Improve?</em>, “Improving a distribution without throwing
+away the prior”</a>.</li>
+</ul>
+</section>
+</article>
+<section class="study-link"><p><em>From the study questions back to the essay: 
+<a href="/notes/the-standard-of-motion-mathematics.html">the-standard-of-motion-mathematics.html &rarr;</a></em></p></section>
+<script src="/assets/theme-toggle.js"></script>
+</body>
+</html>

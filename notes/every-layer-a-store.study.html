@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <meta name="description" content="Recall questions for the essay “Every Layer a Store”.">
+  <meta property="og:title" content="Study notes: Every Layer a Store">
+  <meta property="og:description" content="Recall questions for the essay “Every Layer a Store”.">
+  <meta property="og:url" content="https://lukstafi.github.io/notes/every-layer-a-store.study.html">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="lukstafi&#x27;s blog">
+  <meta name="twitter:card" content="summary">
+  <title>Study notes: Every Layer a Store</title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <link rel="stylesheet" href="/assets/tufte.css">
+  <link rel="stylesheet" href="/assets/pandoc-tufte.css">
+  <link rel="stylesheet" href="/assets/site.css">
+  <script defer=""
+  src="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.js"></script>
+  <script>document.addEventListener("DOMContentLoaded", function () {
+ var mathElements = document.getElementsByClassName("math");
+ var macros = [];
+ for (var i = 0; i < mathElements.length; i++) {
+  var texText = mathElements[i].firstChild;
+  if (mathElements[i].tagName == "SPAN") {
+   katex.render(texText.data, mathElements[i], {
+    displayMode: mathElements[i].classList.contains('display'),
+    throwOnError: false,
+    macros: macros,
+    fleqn: false
+   });
+}}});
+  </script>
+  <link rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.css" />
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+  <script>(function(){var t=localStorage.getItem('theme-preference');if(t)document.documentElement.setAttribute('data-theme',t);})()</script>
+</head>
+<body>
+<nav class="site-nav">
+  <a href="/">Home</a> &middot; <a href="/about.html">About</a> &middot; <a href="https://lukstafi.substack.com">Substack</a>
+</nav>
+<div class="theme-toggle">
+  <button id="theme-btn" aria-label="Toggle dark mode">&#9788;</button>
+</div>
+<article>
+<header>
+<h1 class="title">Study notes: Every Layer a Store</h1>
+</header>
+<p>Recall questions for <a
+href="/notes/every-layer-a-store.html"><em>Every Layer a Store</em></a>.
+Answer each from memory, then open the answer to compare. The link under
+a question leads to the section it draws on.</p>
+<section id="before-reading" class="level2">
+<h2>Before reading</h2>
+<p>Helpful, not required:</p>
+<ul>
+<li><a
+href="/notes/where-experience-goes.html#a-ladder-of-stores"><em>Where
+Experience Goes</em>, “A ladder of stores”</a>: the ladder of stores,
+and the delta rule overwriting a redefined word.</li>
+</ul>
+</section>
+<section id="questions" class="level2">
+<h2>Questions</h2>
+<section id="the-outer-product-store" class="level3" data-kind="derive">
+<h3 data-kind="derive">The outer-product store</h3>
+<div class="study-meta">
+<span class="study-kind">derive</span> <a
+href="/notes/every-layer-a-store.html#the-outer-product-store">The
+outer-product store ↗</a>
+</div>
+<p>Store pairs of vectors in one matrix, <span
+class="math inline">W=\sum_i v_i k_i^\top</span>, and recall with the
+key <span class="math inline">k_j</span>. Which part of <span
+class="math inline">Wk_j</span> is signal and which is interference?
+With random unit keys in <span class="math inline">d</span> dimensions,
+how many pairs can be stored before the interference matches the
+signal?</p>
+<details class="answer"><summary>Answer</summary>
+<p><span class="math inline">Wk_j=v_j\,(k_j^\top k_j)+\sum_{i\neq
+j}v_i\,(k_i^\top k_j)</span>. With unit-length keys the first term is
+the stored value. The sum is interference: every other value, weighted
+by the overlap of its key with the query. Each overlap is about <span
+class="math inline">\pm d^{-1/2}</span>, and the <span
+class="math inline">M-1</span> terms add up like a random walk, so the
+interference grows as <span class="math inline">(M/d)^{1/2}</span>
+relative to the signal. It matches the signal at about <span
+class="math inline">M=d</span>. The least-squares store recalls exactly
+up to <span class="math inline">d</span> pairs and reaches the same
+ratio at about <span class="math inline">2d</span>.</p>
+</details>
+</section>
+<section id="what-a-nonlinearity-buys" class="level3"
+data-kind="compute">
+<h3 data-kind="compute">What a nonlinearity buys</h3>
+<div class="study-meta">
+<span class="study-kind">compute</span> <a
+href="/notes/every-layer-a-store.html#nonlinearity-suppresses-interference">Nonlinearity
+suppresses interference ↗</a>
+</div>
+<p>A feed-forward network computes <span class="math inline">f(x)=\sum_i
+v_i\,\sigma(k_i^\top x)</span>. What does a ReLU buy over the linear
+store? Squaring after the ReLU gives a capacity of about <span
+class="math inline">2d^2/3</span>: evaluate it at <span
+class="math inline">d=64</span> and say why squaring helps. What does
+the power <span class="math inline">p</span> give?</p>
+<details class="answer"><summary>Answer</summary>
+<p>A ReLU zeroes the negative overlaps, so about half the interfering
+terms vanish: a factor of two. Squaring makes small overlaps very small
+while the stored key’s overlap of 1 stays 1. At <span
+class="math inline">d=64</span> the capacity is <span
+class="math inline">2\times64^2/3\approx2{,}700</span> pairs. Raising
+the overlap to the power <span class="math inline">p</span> gives
+capacity of order <span class="math inline">d^p</span>.</p>
+</details>
+</section>
+<section id="attention-as-a-store" class="level3" data-kind="compute">
+<h3 data-kind="compute">Attention as a store</h3>
+<div class="study-meta">
+<span class="study-kind">compute</span> <a
+href="/notes/every-layer-a-store.html#softmax-attention-uses-every-power">Softmax
+attention uses every power ↗</a>
+</div>
+<p>Why does weighting each value by <span class="math inline">e^{\beta
+s}</span> suppress interference more than any single power of the
+overlap <span class="math inline">s</span>? Wang’s estimate of the
+capacity for random keys is <span
+class="math inline">e^{2\beta(1-\beta/d)}</span>: evaluate it at <span
+class="math inline">d=64</span> with <span
+class="math inline">\beta=d^{1/2}</span>. In what way is attention a
+different kind of store from the feed-forward layer?</p>
+<details class="answer"><summary>Answer</summary>
+<p>The exponential is a sum of all the powers, <span
+class="math inline">e^{\beta s}=\sum_p(\beta s)^p/p!</span>. With <span
+class="math inline">\beta=8</span> the exponent is <span
+class="math inline">2\times8\times(1-1/8)=14</span>, and <span
+class="math inline">e^{14}\approx1.2</span> million pairs. Nothing is
+trained into attention. Its keys and values are computed from the
+context while the model reads, and its <span
+class="math inline">M</span> is the number of positions it sees. The
+feed-forward layer is written by training and holds what the model
+knows; the attention cache is written by reading and holds what the
+model has been told.</p>
+</details>
+</section>
+<section id="one-head-two-criteria" class="level3" data-kind="compute">
+<h3 data-kind="compute">One head, two criteria</h3>
+<div class="study-meta">
+<span class="study-kind">compute</span> <a
+href="/notes/every-layer-a-store.html#what-counts-as-remembering">What
+counts as remembering ↗</a>
+</div>
+<p>Take a store with 128-dimensional keys and values. How many random
+associations does it recall as clean vectors, written as outer products
+and written to the least-squares solution? Under the criterion that the
+right answer wins among the stored values, the outer-product map
+succeeds while <span class="math inline">d^2/(n\ln n)</span> stays above
+8, and the best linear map while it stays above 2. Check that <span
+class="math inline">n\approx350</span> and <span
+class="math inline">n\approx1{,}160</span> sit at those thresholds. Why
+does the second criterion matter?</p>
+<details class="answer"><summary>Answer</summary>
+<p>As clean vectors: about 128 and about 256. With <span
+class="math inline">d^2=16{,}384</span> the thresholds are <span
+class="math inline">n\ln n=2{,}048</span> and <span
+class="math inline">n\ln n=8{,}192</span>, and <span
+class="math inline">350\ln350\approx2{,}050</span>, <span
+class="math inline">1{,}160\ln1{,}160\approx8{,}185</span>. Language
+models do not need clean recall. They need the right answer to win among
+a vocabulary of candidates, and under that criterion a linear store
+holds many more pairs. The counts are asymptotic, and “order <span
+class="math inline">d^2</span>” hides a logarithm that costs about a
+factor of ten.</p>
+</details>
+</section>
+<section id="a-million-tokens-five-ways" class="level3"
+data-kind="compute">
+<h3 data-kind="compute">A million tokens, five ways</h3>
+<div class="study-meta">
+<span class="study-kind">compute</span> <a
+href="/notes/every-layer-a-store.html#memory-along-the-context">3.
+Memory along the context ↗</a>
+</div>
+<p>Name the five ways the seven models keep the past of a context. Then,
+for a 1,000,000-token prompt, count what one layer keeps and what the
+next token reads when the layer (a) is full attention, (b) has a
+128-token window, (c) reads 16 blocks of 128 tokens for each group of
+heads, (d) keeps one entry per 4 tokens and reads the 1,024 an indexer
+selects, (e) keeps one entry per 128 tokens and reads them all, (f) is
+recurrent.</p>
+<details class="answer"><summary>Answer</summary>
+<p>Full history, a rolling window, selected entries, compressed entries,
+a recurrent state.</p>
+<ul>
+<li><ol type="a">
+<li>keeps 1,000,000 entries and reads all of them.</li>
+</ol></li>
+<li><ol start="2" type="a">
+<li>keeps 128 and reads 128 (MiMo’s window layers).</li>
+</ol></li>
+<li><ol start="3" type="a">
+<li>keeps all 1,000,000 and reads <span
+class="math inline">16\times128=2{,}048</span> positions per group of
+heads (MiniMax-M3).</li>
+</ol></li>
+<li><ol start="4" type="a">
+<li>keeps about 250,000 and reads 1,024, plus the 128 most recent tokens
+uncompressed (DeepSeek-V4-Pro’s compressed sparse layers).</li>
+</ol></li>
+<li><ol start="5" type="a">
+<li>keeps about 7,800 and reads them all (the same model’s heavily
+compressed layers).</li>
+</ol></li>
+<li><ol start="6" type="a">
+<li>keeps a matrix per head whose size does not depend on the prompt’s
+length, and reads that (Kimi K3).</li>
+</ol></li>
+</ul>
+</details>
+</section>
+<section id="a-selector-is-a-store" class="level3" data-kind="explain">
+<h3 data-kind="explain">A selector is a store</h3>
+<div class="study-meta">
+<span class="study-kind">explain</span> <a
+href="/notes/every-layer-a-store.html#selection-is-learned-retrieval">Selection
+is learned retrieval ↗</a>
+</div>
+<p>In what sense is a selector a store? Why can it not learn from the
+task loss, and what does it learn from? What new failure does selection
+bring?</p>
+<details class="answer"><summary>Answer</summary>
+<p>A selector is a second, cheaper store placed in front of the first.
+It scores keys, and the main attention reads only the winners. The
+choice is a hard top-<span class="math inline">k</span>, so no gradient
+flows through it, and the indexers learn by imitating the main
+attention’s distribution. The new failure is the miss: an entry the
+indexer did not choose cannot be read, however relevant it was.</p>
+</details>
+</section>
+<section id="per-channel-forgetting" class="level3" data-kind="compute">
+<h3 data-kind="compute">Per-channel forgetting</h3>
+<div class="study-meta">
+<span class="study-kind">compute</span> <a
+href="/notes/every-layer-a-store.html#the-recurrent-state-learns-while-it-reads">The
+recurrent state learns while it reads ↗</a>
+</div>
+<p>A recurrent layer decays its state and then writes <span
+class="math inline">S_t=S_{t-1}+\beta_t\,(v_t-S_{t-1}k_t)\,k_t^\top</span>.
+Let one row of the memory be <span class="math inline">(2,1)</span>, and
+write the value 3 under the key <span class="math inline">(1,0)</span>
+with <span class="math inline">\beta=1/2</span>. Compute the result when
+the whole row first decays by <span class="math inline">1/2</span>
+(Gated DeltaNet), and when the two channels are retained at <span
+class="math inline">(1/2,1)</span> (KDA). What does the delta rule buy
+over purely additive linear attention?</p>
+<details class="answer"><summary>Answer</summary>
+<p>Gated DeltaNet: the row decays to <span
+class="math inline">(1,1/2)</span>, the prediction for the key is 1, the
+error is 2, and the write adds <span
+class="math inline">1/2\times2=1</span> to the first coordinate, giving
+<span class="math inline">(2,1/2)</span>. KDA: the row decays to <span
+class="math inline">(1,1)</span>, the write again adds 1, and the result
+is <span class="math inline">(2,1)</span>. The same association was
+corrected, and the second channel’s content survived. The delta rule
+buys the ability to overwrite, not capacity. Repeated writes approach
+the least-squares store, whose advantage is about a factor of two.</p>
+</details>
+</section>
+<section id="content-in-the-cache-settings-in-the-state" class="level3"
+data-kind="explain">
+<h3 data-kind="explain">Content in the cache, settings in the state</h3>
+<div class="study-meta">
+<span class="study-kind">explain</span> <a
+href="/notes/every-layer-a-store.html#what-the-trained-hybrids-do-with-their-stores">What
+the trained hybrids do with their stores ↗</a>
+</div>
+<p>What do the measurements on trained hybrids say the attention cache
+holds, and what the recurrent state holds? Which experiment shows the
+two can be separated? Why does capacity not explain the division?</p>
+<details class="answer"><summary>Answer</summary>
+<p>The cache is the store that grows with the context, and it holds the
+content: values, names, the facts a later question will need. The
+recurrent state is the store that every token reads, and it holds a few
+settings that condition everything the model writes: which language,
+which voice. When one prompt’s cache was paired with another prompt’s
+state, the answer took its content from the first and its language from
+the second. The dictionaries in these tests held 15 to 30 entries, well
+within what a 128-dimensional state can hold, and recall through the
+state failed even in minimal versions of the tasks. The division is
+learned.</p>
+</details>
+</section>
+<section id="long-context-is-an-interference-problem" class="level3"
+data-kind="explain">
+<h3 data-kind="explain">Long context is an interference problem</h3>
+<div class="study-meta">
+<span class="study-kind">explain</span> <a
+href="/notes/every-layer-a-store.html#long-context-is-an-interference-problem">Long
+context is an interference problem ↗</a>
+</div>
+<p>Why does a longer context make recall harder for softmax attention?
+What remedy works against random competitors, and why does it not settle
+real contexts?</p>
+<details class="answer"><summary>Answer</summary>
+<p>As a context grows, so does the number of keys that compete with the
+right one. Softmax attention suppresses random competitors
+exponentially, but its capacity is finite at a fixed sharpness. The
+remedy is to sharpen the softmax as the context grows, multiplying <span
+class="math inline">\beta</span> by a factor that grows with the
+logarithm of the context length. Real contexts are not random: they
+repeat entities, templates and phrasings, and no sharpening separates
+near-duplicate keys. A model whose architecture accepts a million tokens
+may therefore still fail to use them, which is why the second essay
+treats long context as a training problem.</p>
+</details>
+</section>
+<section id="two-stores-over-depth" class="level3" data-kind="compute">
+<h3 data-kind="compute">Two stores over depth</h3>
+<div class="study-meta">
+<span class="study-kind">compute</span> <a
+href="/notes/every-layer-a-store.html#memory-along-depth">4. Memory
+along depth ↗</a>
+</div>
+<ol type="a">
+<li>Two scalar residual streams hold <span
+class="math inline">(2,4)</span>. A doubly stochastic mix has rows <span
+class="math inline">(3/4,1/4)</span> and <span
+class="math inline">(1/4,3/4)</span>. The block reads the average of the
+streams, computes 6, and sends half to each stream. What are the streams
+afterwards? (b) A layer’s query scores two earlier representations,
+<span class="math inline">(1,0)</span> and <span
+class="math inline">(0,2)</span>, at 0 and <span class="math inline">\ln
+3</span>. What is the layer’s input? Which design is an explicit store
+over depth and which an implicit one, and how long does either
+last?</li>
+</ol>
+<details class="answer"><summary>Answer</summary>
+<ol type="a">
+<li>The mixed residual is <span class="math inline">(2.5,3.5)</span>,
+and its total is still 6. The block reads 3 and adds 3 to each stream:
+<span class="math inline">(5.5,6.5)</span>. The mixing conserved the old
+total, and the block added new content on top. (b) The softmax weights
+are <span class="math inline">1/4</span> and <span
+class="math inline">3/4</span>, and the input is <span
+class="math inline">(1/4,3/2)</span>. AttnRes is the explicit store: a
+growing cache of layer outputs, read by attention. mHC is the implicit
+one: a fixed-size state, written by outer products, whose stream
+differences contract at every layer. A store over depth lives only for
+the duration of one token’s computation.</li>
+</ol>
+</details>
+</section>
+<section id="what-each-store-gives-up" class="level3" data-kind="state">
+<h3 data-kind="state">What each store gives up</h3>
+<div class="study-meta">
+<span class="study-kind">state</span> <a
+href="/notes/every-layer-a-store.html#the-seven-assembled">5. The seven
+assembled ↗</a>
+</div>
+<p>The summary table adds a fifth column to the four questions: how each
+store forgets. When do the stores written in training lose their
+contents? What does each store written while reading give up: the
+window, compressed entries, selected entries, the recurrent state and
+the full cache?</p>
+<details class="answer"><summary>Answer</summary>
+<p>The stores written in training lose contents only when training
+writes over them. The window gives up the old. Compression gives up
+detail: distinctions within a pool. Selection gives up whatever its
+indexer misses. The recurrent state gives up what decays and what is
+overwritten. The full cache gives up nothing, and it pays with a reading
+cost that grows with the context.</p>
+</details>
+</section>
+<section id="five-ideas-behind-seven-releases" class="level3"
+data-kind="recall">
+<h3 data-kind="recall">Five ideas behind seven releases</h3>
+<div class="study-meta">
+<span class="study-kind">recall</span> <a
+href="/notes/every-layer-a-store.html#the-seven-assembled">5. The seven
+assembled ↗</a>
+</div>
+<p>The essay finds about five ideas behind the seven releases. Name
+them. To what one question are most of them answers?</p>
+<details class="answer"><summary>Answer</summary>
+<ul>
+<li>Recurrent layers with a delta-rule write, mixed with attention.</li>
+<li>Learned selection of what to read.</li>
+<li>Learned compression of what is kept.</li>
+<li>A split between reading a prompt and writing an answer.</li>
+<li>Replacements for the plain residual sum.</li>
+</ul>
+<p>Most of them are answers to one question: what a memory should be
+allowed to forget.</p>
+</details>
+</section>
+<section id="depth-and-the-monitor" class="level3"
+data-kind="distinguish">
+<h3 data-kind="distinguish">Depth and the monitor</h3>
+<div class="study-meta">
+<span class="study-kind">distinguish</span> <a
+href="/notes/every-layer-a-store.html#depth-recurrence-and-what-a-monitor-can-see">6.
+Depth, recurrence and what a monitor can see ↗</a>
+</div>
+<p>How does a model’s depth support the case for watching its reasoning?
+A recurrent layer applies one update per token, and the updates are
+affine in the state. In about how many rounds can a million of them be
+combined, and why? Name the three paths from one token to the next.</p>
+<details class="answer"><summary>Answer</summary>
+<p>A Transformer with a fixed number of layers can do only a bounded
+amount of sequential computation for each token it emits. A task that
+needs more has to be done in steps, and the steps appear in the text,
+where a monitor can read them. Two affine updates compose into one,
+<span
+class="math inline">(A_2,b_2)\circ(A_1,b_1)=(A_2A_1,\,A_2b_1+b_2)</span>,
+and composition is associative, so <span class="math inline">L</span>
+updates combine in a balanced tree of about <span
+class="math inline">\log L</span> rounds: <span
+class="math inline">\log_2 10^6\approx20</span>. The three paths:</p>
+<ul>
+<li>Recurrence across positions: a numerical state carries information
+that the emitted text need not express. Ordinary Transformers have this
+path too, through their caches.</li>
+<li>Recurrence through depth: repeated passes through the same layers
+before a token is emitted. None of the seven does this.</li>
+<li>Generated text, which adds steps of computation but need not explain
+them faithfully.</li>
+</ul>
+</details>
+</section>
+<section id="where-the-numbers-stop" class="level3" data-kind="limits">
+<h3 data-kind="limits">Where the numbers stop</h3>
+<div class="study-meta">
+<span class="study-kind">limits</span>
+</div>
+<p>Name the limits the essay sets on (a) its capacity counts, (b) the
+measurements on trained hybrids, (c) what recurrence and probes mean for
+monitoring.</p>
+<details class="answer"><summary>Answer</summary>
+<ol type="a">
+<li><p>The counts are per key dimension, not per parameter, and measured
+per parameter architectures differ less than the counts suggest. They
+also assume random keys. Real keys share structure, which raises
+interference beyond what any count predicts.</p></li>
+<li><p>The models were far smaller than the seven, the answers short,
+and the results for the largest models came from a single run.
+Discarding one store also leaves the model in a state it never met in
+training.</p></li>
+<li><p>Whether the delta-rule layers escape <span
+class="math inline">\mathrm{TC}^0</span> depends on their transition
+matrices, and the released code keeps the write step between 0 and 1, so
+names like “linear attention” or “delta rule” do not settle where these
+models sit. Every catch the probe paper shows was also visible in the
+text, so the probes added detection, not access to hidden reasoning.
+Depth bounds what a model can do between tokens, but it does not certify
+what the model did.</p></li>
+</ol>
+</details>
+</section>
+</section>
+<section id="terms" class="level2">
+<h2>Terms</h2>
+<p>Introduced in this essay:</p>
+<ul>
+<li><a
+href="/notes/every-layer-a-store.html#from-the-2017-transformer-to-todays-layer">mixture
+of experts</a></li>
+<li><a
+href="/notes/every-layer-a-store.html#every-layer-is-a-store">four
+questions of a store</a>: what writes the store, when, how much it holds
+before its entries interfere, and what reading it costs.</li>
+<li><a
+href="/notes/every-layer-a-store.html#the-outer-product-store">outer-product
+store</a></li>
+<li><a
+href="/notes/every-layer-a-store.html#the-outer-product-store">interference
+between stored keys</a></li>
+<li><a
+href="/notes/every-layer-a-store.html#softmax-attention-uses-every-power">stores
+written in training and stores written while reading</a>: the
+feed-forward layer holds what the model knows; the attention cache holds
+what the model has been told.</li>
+<li><a
+href="/notes/every-layer-a-store.html#what-counts-as-remembering">clean
+recall and picking the right answer</a></li>
+<li><a
+href="/notes/every-layer-a-store.html#memory-along-the-context">five
+ways to keep the past of a context</a>: full history, a rolling window,
+selected entries, compressed entries, a recurrent state.</li>
+<li><a
+href="/notes/every-layer-a-store.html#selection-is-learned-retrieval">selector</a>:
+a second, cheaper store in front of the cache; it scores keys and the
+main attention reads only the winners.</li>
+<li><a
+href="/notes/every-layer-a-store.html#the-recurrent-state-learns-while-it-reads">Gated
+DeltaNet and Kimi Delta Attention</a></li>
+<li><a href="/notes/every-layer-a-store.html#memory-along-depth">store
+over depth</a>: a memory written and read by the layers of one token’s
+pass.</li>
+<li><a
+href="/notes/every-layer-a-store.html#several-streams-mixed">Manifold-Constrained
+Hyper-Connections</a></li>
+<li><a
+href="/notes/every-layer-a-store.html#attention-over-depth">Attention
+Residuals</a></li>
+<li><a
+href="/notes/every-layer-a-store.html#depth-recurrence-and-what-a-monitor-can-see">five
+meanings of depth</a></li>
+</ul>
+<p>From other essays:</p>
+<ul>
+<li>delta-rule memory (<a
+href="/notes/where-experience-goes.html#a-ladder-of-stores"><em>Where
+Experience Goes</em></a>)</li>
+</ul>
+</section>
+</article>
+<section class="study-link"><p><em>From the study questions back to the essay: 
+<a href="/notes/every-layer-a-store.html">every-layer-a-store.html &rarr;</a></em></p></section>
+<script src="/assets/theme-toggle.js"></script>
+</body>
+</html>

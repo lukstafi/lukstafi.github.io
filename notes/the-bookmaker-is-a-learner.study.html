@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <meta name="description" content="Recall questions for the essay “The Bookmaker Is a Learner”.">
+  <meta property="og:title" content="Study notes: The Bookmaker Is a Learner">
+  <meta property="og:description" content="Recall questions for the essay “The Bookmaker Is a Learner”.">
+  <meta property="og:url" content="https://lukstafi.github.io/notes/the-bookmaker-is-a-learner.study.html">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="lukstafi&#x27;s blog">
+  <meta name="twitter:card" content="summary">
+  <title>Study notes: The Bookmaker Is a Learner</title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <link rel="stylesheet" href="/assets/tufte.css">
+  <link rel="stylesheet" href="/assets/pandoc-tufte.css">
+  <link rel="stylesheet" href="/assets/site.css">
+  <script defer=""
+  src="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.js"></script>
+  <script>document.addEventListener("DOMContentLoaded", function () {
+ var mathElements = document.getElementsByClassName("math");
+ var macros = [];
+ for (var i = 0; i < mathElements.length; i++) {
+  var texText = mathElements[i].firstChild;
+  if (mathElements[i].tagName == "SPAN") {
+   katex.render(texText.data, mathElements[i], {
+    displayMode: mathElements[i].classList.contains('display'),
+    throwOnError: false,
+    macros: macros,
+    fleqn: false
+   });
+}}});
+  </script>
+  <link rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.css" />
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+  <script>(function(){var t=localStorage.getItem('theme-preference');if(t)document.documentElement.setAttribute('data-theme',t);})()</script>
+</head>
+<body>
+<nav class="site-nav">
+  <a href="/">Home</a> &middot; <a href="/about.html">About</a> &middot; <a href="https://lukstafi.substack.com">Substack</a>
+</nav>
+<div class="theme-toggle">
+  <button id="theme-btn" aria-label="Toggle dark mode">&#9788;</button>
+</div>
+<article>
+<header>
+<h1 class="title">Study notes: The Bookmaker Is a Learner</h1>
+</header>
+<p>Recall questions for <a
+href="/notes/the-bookmaker-is-a-learner.html"><em>The Bookmaker Is a
+Learner</em></a>. Answer each from memory, then open the answer to
+compare. The link under a question leads to the section it draws on.</p>
+<section id="before-reading" class="level2">
+<h2>Before reading</h2>
+<p>Helpful, not required:</p>
+<ul>
+<li><a
+href="/notes/how-does-a-policy-improve.html#improving-a-distribution-without-throwing-away-the-prior"><em>How
+Does a Policy Improve?</em>, “Improving a distribution without throwing
+away the prior”</a>: the exponential tilt and its optimal value <span
+class="math inline">\eta\log Z</span>, which the essay reads as an LMSR
+trade.</li>
+<li><a href="/notes/is-the-monastery-minded.html#simulation"><em>Is the
+Monastery Minded?</em>, “Simulation”</a>: simulation by delegation and
+by artifact, which the last section applies to markets.</li>
+<li><a
+href="/notes/is-the-monastery-minded.html#the-nation-and-residual-integration"><em>Is
+the Monastery Minded?</em>, “The nation and residual integration”</a>:
+the price system as the case that essay left open.</li>
+</ul>
+</section>
+<section id="questions" class="level2">
+<h2>Questions</h2>
+<p>The <a
+href="/notes/the-bookmaker-is-a-learner-mathematics.html">mathematics
+companion</a> has its own study page, with the definitions and proofs.
+These questions follow the essay: what the bookmaker is, where it stops
+being computable, and what the markets of 2026 built instead.</p>
+<section id="three-kinds-of-market" class="level3"
+data-kind="distinguish">
+<h3 data-kind="distinguish">Three kinds of market</h3>
+<div class="study-meta">
+<span class="study-kind">distinguish</span> <a
+href="/notes/the-bookmaker-is-a-learner.html#three-ways-to-settle-a-bet">Three
+ways to settle a bet ↗</a>
+</div>
+<p>Name the three kinds of market in the 2010 notes. Three traders bet
+on pairs among runners A, B and C: A ahead of B, B ahead of C, C ahead
+of A. Each bet pays $1 and costs 70 cents. Why can the three clear
+together although no two of them match, and what does the third kind of
+market give up to avoid the problem?</p>
+<details class="answer"><summary>Answer</summary>
+<p>Orders that execute when they match, as on a stock exchange. A pool
+divided among the winners, the pari-mutuel system. A bookmaker who
+quotes a price, with the payout fixed at the moment of the trade.</p>
+<p>The three bets cannot all win: under every finishing order one or two
+of them do. The house collects $2.10 and pays out at most $2. Finding
+such combinations among thousands of orders is a computational problem,
+and for pair bets a hard one. The bookmaker always takes the other side,
+so traders never need to find each other. The price of that convenience
+is that the bookmaker can lose money, so it needs a pricing rule that
+bounds the loss.</p>
+</details>
+</section>
+<section id="the-worked-example-as-a-relay" class="level3"
+data-kind="compute">
+<h3 data-kind="compute">The worked example as a relay</h3>
+<div class="study-meta">
+<span class="study-kind">compute</span> <a
+href="/notes/the-bookmaker-is-a-learner.html#paying-for-honesty">Paying
+for honesty ↗</a>
+</div>
+<p>Two outcomes, logarithmic rule with <span
+class="math inline">b=100</span>, market at 50%. A trader who believes
+YES has probability 70% moves the forecast to 70%. What are they paid if
+YES occurs, and if NO occurs? What is their expected gain at their own
+belief, and what is that quantity called? What is the most the market
+can cost its operator?</p>
+<details class="answer"><summary>Answer</summary>
+<p>The relay pays the score of the new forecast minus the score of the
+old one. If YES occurs: <span
+class="math inline">100\log(0.7/0.5)\approx33.65</span>. If NO occurs:
+<span class="math inline">100\log(0.3/0.5)\approx-51.08</span>, so they
+pay $51.08. The expected gain is <span
+class="math inline">0.7\cdot33.65-0.3\cdot51.08\approx8.23</span>, which
+is <span class="math inline">b</span> times the Kullback–Leibler
+divergence of their belief from the previous forecast. Moving the market
+to any other number would give a smaller expected gain at a belief of
+70%. The operator pays in effect one forecaster, the last, for improving
+on the first, so its cost is at most <span
+class="math inline">100\log2\approx69.31</span>.</p>
+</details>
+</section>
+<section id="the-same-trade-as-a-purchase" class="level3"
+data-kind="compute">
+<h3 data-kind="compute">The same trade as a purchase</h3>
+<div class="study-meta">
+<span class="study-kind">compute</span> <a
+href="/notes/the-bookmaker-is-a-learner.html#one-bookmaker-four-faces">One
+bookmaker, four faces ↗</a>
+</div>
+<p>In the LMSR cost-function market with <span
+class="math inline">b=100</span> and no shares sold, how many YES shares
+move the price of YES from 50% to 70%, and what do they cost? Check the
+result against the relay’s payments.</p>
+<details class="answer"><summary>Answer</summary>
+<p>The price of YES is <span
+class="math inline">e^{q_Y/b}/(e^{q_Y/b}+e^{q_N/b})</span>, so a price
+of 0.7 needs <span
+class="math inline">q_Y-q_N=100\log(0.7/0.3)\approx84.73</span> shares.
+Their cost is <span
+class="math inline">C(84.73,0)-C(0,0)=100\log\frac{1}{0.3}-100\log2=100\log(0.5/0.3)\approx51.08</span>.
+If YES occurs the shares pay $84.73, a net gain of $33.65. If NO occurs
+the $51.08 is lost. Both figures are the relay’s. The cost is the area
+under the price curve between the old share count and the new one.</p>
+</details>
+</section>
+<section id="four-faces" class="level3" data-kind="recall">
+<h3 data-kind="recall">Four faces</h3>
+<div class="study-meta">
+<span class="study-kind">recall</span> <a
+href="/notes/the-bookmaker-is-a-learner.html#one-bookmaker-four-faces">One
+bookmaker, four faces ↗</a>
+</div>
+<p>Give the four descriptions of the bookmaker. Why are the first two
+one mechanism? Which description appeared after 2010?</p>
+<details class="answer"><summary>Answer</summary>
+<ul>
+<li>Hanson’s relay: each trader replaces the forecast and is paid the
+difference in score.</li>
+<li>Chen and Pennock’s cost function: the bookmaker sells shares, and a
+bundle <span class="math inline">a</span> costs <span
+class="math inline">C(q+a)-C(q)</span>.</li>
+<li>The sequential convex pari-mutuel mechanism: the bookmaker fills
+each order by solving a convex program, and the price is the dual
+variable of the constraint that tracks shares outstanding.</li>
+<li>The constant-function market maker of decentralized exchanges, which
+accepts any trade that keeps a fixed function of its reserves
+constant.</li>
+</ul>
+<p>The first two are tied by convex duality: <span
+class="math inline">C(q)=\sup_p\bigl(p\cdot q-\alpha(p)\bigr)</span>,
+where <span class="math inline">\alpha(p)</span> is the expected score
+of a forecaster who believes <span class="math inline">p</span> and
+announces it. The fourth came after 2010: in 2023 Frongillo,
+Papireddygari and Waggoner showed that every such market maker with a
+concave potential is equivalent to a cost-function prediction
+market.</p>
+</details>
+</section>
+<section id="what-the-liquidity-parameter-trades-off" class="level3"
+data-kind="explain">
+<h3 data-kind="explain">What the liquidity parameter trades off</h3>
+<div class="study-meta">
+<span class="study-kind">explain</span> <a
+href="/notes/the-bookmaker-is-a-learner.html#the-bookmaker-is-a-learner">The
+bookmaker is a learner ↗</a>
+</div>
+<p>In the dictionary between the LMSR and Hedge, what is <span
+class="math inline">b</span>? Compare a deep market with a shallow one.
+When does the bookmaker’s worst case occur? Why does <span
+class="math inline">b</span> drop out of the regret of the learner built
+from the LMSR?</p>
+<details class="answer"><summary>Answer</summary>
+<p><span class="math inline">b</span> is an inverse learning rate, <span
+class="math inline">\eta=1/b</span>. A deep market, with large <span
+class="math inline">b</span>, moves slowly in response to each trade and
+risks a larger subsidy. A shallow one moves quickly and risks little,
+but it pays traders little for being right, and one trade can carry its
+price far from any consensus. The worst case comes when the traders were
+right: the outcome that occurs is the one they bought most, much of it
+while its price was still low. With <span class="math inline">B=b\log
+n</span> and <span class="math inline">\varphi=2/b</span> the regret
+bound <span class="math inline">\sqrt{2B\varphi T}</span> is <span
+class="math inline">2\sqrt{T\log n}</span>. The essay’s reason: a
+learner’s regret cannot depend on the currency in which the market is
+denominated.</p>
+</details>
+</section>
+<section id="hedges-position-not-the-bandits" class="level3"
+data-kind="distinguish">
+<h3 data-kind="distinguish">Hedge’s position, not the bandit’s</h3>
+<div class="study-meta">
+<span class="study-kind">distinguish</span> <a
+href="/notes/the-bookmaker-is-a-learner.html#the-bookmaker-is-a-learner">The
+bookmaker is a learner ↗</a>
+</div>
+<p>How does a bandit differ from Hedge in what it sees, and what second
+job does temperature do in a bandit? Which position is the bookmaker in,
+and where does the exploration happen?</p>
+<details class="answer"><summary>Answer</summary>
+<p>Hedge sees every expert’s gain in every round. A bandit sees only the
+gain of the arm it pulls, so it must sometimes pull the other arms and
+give up gains it expects from the arm it favors. In a bandit, spreading
+the weights hedges and also keeps sampling the arms the learner
+disfavors. A cold learner pulls them so rarely that dividing the
+observed gain by their probability turns its estimates into noise. The
+bookmaker is in Hedge’s position: traders can buy any outcome, so it
+hears about all of them without acting. The exploration happens outside
+the mechanism, in the research traders do before they trade, and the
+subsidy is what makes that research pay. A bandit pays for information
+with its own gains; the bookmaker buys it.</p>
+</details>
+</section>
+<section id="the-same-reweighting-elsewhere" class="level3"
+data-kind="connect">
+<h3 data-kind="connect">The same reweighting elsewhere</h3>
+<div class="study-meta">
+<span class="study-kind">connect</span> <a
+href="/notes/the-bookmaker-is-a-learner.html#the-bookmaker-is-a-learner">The
+bookmaker is a learner ↗</a>
+</div>
+<p>The essay finds the bookmaker’s exponential reweighting again in the
+reinforcement-learning essays. What corresponds to the LMSR cost
+function, to a single trade, and to Hedge’s accumulation of gains? What
+does a market escape that an on-policy learner does not?</p>
+<details class="answer"><summary>Answer</summary>
+<p>The regularized improvement step reweights a reference policy by
+<span class="math inline">e^{Q/\eta}</span>, and its optimal value <span
+class="math inline">\eta\log Z</span> is the LMSR cost function, with
+the reference policy as the starting prices and <span
+class="math inline">\eta</span> as the liquidity. A single such step,
+which maximizes <span class="math inline">\mathbb
+E_q[Q]-\eta\,\mathrm{KL}(q\|p)</span>, is a mirror-descent step, and so
+is an LMSR trade that buys <span class="math inline">Q</span> shares at
+<span class="math inline">b=\eta</span>. Repeated improvement steps tilt
+the original policy by <span class="math inline">kR/\eta</span> after
+<span class="math inline">k</span> steps, which is Hedge’s accumulation
+of gains applied to a policy.</p>
+<p>A multiplicative step barely moves a probability near zero until the
+evidence for it is large. In a bandit or an on-policy learner that
+evidence arrives only through sampling, and an action near zero is
+rarely sampled. A market escapes this, because a trader who believes in
+a cheap outcome profits most by buying it.</p>
+</details>
+</section>
+<section id="matching-is-pricing-at-zero-temperature" class="level3"
+data-kind="derive">
+<h3 data-kind="derive">Matching is pricing at zero temperature</h3>
+<div class="study-meta">
+<span class="study-kind">derive</span> <a
+href="/notes/the-bookmaker-is-a-learner.html#the-combinatorial-wall">The
+combinatorial wall ↗</a>
+</div>
+<p>A house has sold <span class="math inline">q_{kl}</span> shares in
+“runner <span class="math inline">k</span> finishes in position <span
+class="math inline">l</span>”. Write what it owes under a finishing
+order <span class="math inline">\sigma</span>, what matching asks for
+and what LMSR pricing asks for. Show how the first is a limit of the
+second, and say which is easy.</p>
+<details class="answer"><summary>Answer</summary>
+<p>The house owes <span
+class="math inline">Q_\sigma=\sum_kq_{k\sigma(k)}</span>. Matching asks
+for the worst order, <span class="math inline">\max_\sigma
+Q_\sigma</span>, which a maximum-weight matching between runners and
+positions finds in polynomial time. Pricing asks for <span
+class="math inline">C(q)=b\log\sum_\sigma e^{Q_\sigma/b}</span>, which
+is <span class="math inline">b</span> times the logarithm of a permanent
+and is #P-hard. As <span class="math inline">b</span> shrinks toward
+zero the largest term dominates the sum, and <span
+class="math inline">C(q)</span> tends to <span
+class="math inline">\max_\sigma Q_\sigma</span>. At zero temperature the
+bookmaker needs only the worst finishing order. At any positive
+temperature it needs a sum over all of them.</p>
+</details>
+</section>
+<section id="two-ways-past-the-wall" class="level3"
+data-kind="distinguish">
+<h3 data-kind="distinguish">Two ways past the wall</h3>
+<div class="study-meta">
+<span class="study-kind">distinguish</span> <a
+href="/notes/the-bookmaker-is-a-learner.html#the-combinatorial-wall">The
+combinatorial wall ↗</a>
+</div>
+<p>The 2010 notes end with empty headings. One answer from the
+literature changes the bookmaker and another changes the language of
+bets. Describe each. What licenses the first?</p>
+<details class="answer"><summary>Answer</summary>
+<p><em>Changing the bookmaker.</em> Helmbold and Warmuth’s learner over
+permutations keeps an <span class="math inline">n\times n</span> matrix
+of weights, one per runner and position, and rebalances it after each
+round so that rows and columns sum to one. Run as a bookmaker it quotes
+subset-betting prices in polynomial time, and its regret bound becomes a
+bound on its loss. It is not the exact LMSR. The identity licenses the
+substitution: what we need from a bookmaker is a bounded loss and prices
+that move toward the traders’ information, and a learner with bounded
+regret supplies both.</p>
+<p><em>Changing the language.</em> For a single-elimination tournament,
+bets such as “team <span class="math inline">i</span> wins game <span
+class="math inline">k</span>” keep the LMSR distribution representable
+as a Bayesian network whose graph is the bracket. A trade touches only a
+few local tables, so prices stay exact.</p>
+</details>
+</section>
+<section id="what-the-venues-built" class="level3" data-kind="recall">
+<h3 data-kind="recall">What the venues built</h3>
+<div class="study-meta">
+<span class="study-kind">recall</span> <a
+href="/notes/the-bookmaker-is-a-learner.html#what-2026-built-instead">What
+2026 built instead ↗</a>
+</div>
+<p>Which of the three kinds of market do the large venues of 2026 run?
+How are parlays priced, and who keeps a joint distribution over their
+legs? Where is consistency between related markets enforced, and where
+is it left to traders?</p>
+<details class="answer"><summary>Answer</summary>
+<p>Kalshi and Polymarket run limit order books, the first kind, with
+professional firms quoting both sides. The subsidy survives as liquidity
+rewards paid to those firms, a cash budget and not a bound like <span
+class="math inline">b\log n</span>. Parlays are priced by request for
+quote: a trader asks and dealers answer. Almost nobody keeps a joint
+distribution. The venue keeps none, one dealer seems to model the
+correlations between legs, and the others, by Oddpool’s guess, multiply
+single-game prices together. The essay calls this the combinatorial wall
+sidestepped, not climbed. Polymarket builds one consistency rule into
+its tokens: for mutually exclusive answers, a NO share on one converts
+into YES shares on all the others, so the prices sum to one. Everything
+more structured is left to arbitrageurs.</p>
+</details>
+</section>
+<section id="why-the-corporate-markets-closed" class="level3"
+data-kind="recall">
+<h3 data-kind="recall">Why the corporate markets closed</h3>
+<div class="study-meta">
+<span class="study-kind">recall</span> <a
+href="/notes/the-bookmaker-is-a-learner.html#what-2026-built-instead">What
+2026 built instead ↗</a>
+</div>
+<p>Cultivate Labs stopped supporting prediction markets in 2022. Which
+four problems did it cite, what did it keep, and what was not among its
+reasons?</p>
+<details class="answer"><summary>Answer</summary>
+<ul>
+<li>A price depends on the whole sequence of trades, so a crowd forecast
+cannot be recomputed from a chosen subset of forecasters, such as the
+best ones.</li>
+<li>The market currency intimidates people.</li>
+<li>Markets invite manipulation, through duplicate accounts or questions
+written by people who control the outcome.</li>
+<li>In the vendor’s words, “we don’t know what game people are
+playing.”</li>
+</ul>
+<p>It replaced the market with opinion pools rewarded by a proper
+scoring rule. In the essay’s terms, it kept the score and removed the
+relay. Accuracy was not among the reasons: the vendor wrote that market
+prices were “just as accurate” as its other aggregation methods.</p>
+</details>
+</section>
+<section id="what-the-relay-pays-for" class="level3"
+data-kind="explain">
+<h3 data-kind="explain">What the relay pays for</h3>
+<div class="study-meta">
+<span class="study-kind">explain</span> <a
+href="/notes/the-bookmaker-is-a-learner.html#what-a-market-adds-to-a-scoring-rule">What
+a market adds to a scoring rule ↗</a>
+</div>
+<p>What does a market scoring rule pay for that a scoring rule does not?
+On one benchmark a model’s forecasts were better calibrated than the
+market’s prices, and betting on them returned 94 cents per dollar
+staked, against 90 cents for betting blindly at the market’s prices. How
+does the essay read that result? What do markets of language-model
+traders show “from the other side”?</p>
+<details class="answer"><summary>Answer</summary>
+<p>A scoring rule pays each forecaster for their forecast. A market
+scoring rule pays each trader only for the part of their forecast that
+the market did not already have. The better forecasts narrowed the loss
+without turning it into a profit: a market pays only for moving its
+price toward the truth, and only when the move is worth more than the
+cost of trading. A forecaster whose information is mostly in the price
+already has little to sell. From the other side, a simulated market of
+preference-tuned traders with correlated errors was right less often
+than a single agent. A market aggregates diversity of information, and
+AI forecasting has yet to supply the diversity the relay needs.</p>
+</details>
+</section>
+<section id="is-the-market-minded" class="level3" data-kind="case">
+<h3 data-kind="case">Is the market minded?</h3>
+<div class="study-meta">
+<span class="study-kind">case</span> <a
+href="/notes/the-bookmaker-is-a-learner.html#is-the-market-minded">Is
+the market minded? ↗</a>
+</div>
+<p>The essay tests four conditions of <em>Minds by Degrees</em> on
+prediction markets: accuracy-responsive dynamics, unity, vehicles and
+simulation. Give its verdict on each, and say how the tournament
+bookmaker differs from a market of independent contracts and from the
+2026 parlay venues.</p>
+<details class="answer"><summary>Answer</summary>
+<p><em>Accuracy-responsiveness</em> the bookmaker has by design: trades
+are rewarded only when they move the price toward the truth, and the
+revision rule is a no-regret learner. <em>Unity</em> depends on design.
+An LMSR over all the outcomes of a question is a single economy, because
+a purchase in one outcome moves every other price through the
+bookmaker’s own state. Separate binary markets are coupled only when an
+arbitrageur notices a contradiction. <em>Vehicles</em>: the exact
+combinatorial bookmaker’s distribution over all finishing orders is as
+counterfactually rich as a vehicle can be, and it is the one that cannot
+be computed.</p>
+<p><em>Simulation</em> divides the cases. In a market of independent
+contracts every model of the world runs inside some trader and only
+orders enter, which is simulation by delegation and fails the condition.
+The tournament bookmaker propagates a trade through its Bayesian
+network, a transformation of its own that mirrors the tournament:
+simulation by artifact. The 2026 venues are still delegation, since the
+joint structure lives, if anywhere, in one dealer.</p>
+</details>
+</section>
+<section id="how-weak-the-claim-is" class="level3" data-kind="limits">
+<h3 data-kind="limits">How weak the claim is</h3>
+<div class="study-meta">
+<span class="study-kind">limits</span> <a
+href="/notes/the-bookmaker-is-a-learner.html#is-the-market-minded">Is
+the market minded? ↗</a>
+</div>
+<p>The market with the strongest claim to a thin mind is the one the
+notes described and the 2026 venues did not build. Why does the essay
+call even that claim weak? What does it offer as a kind of memory, and
+what does it leave open?</p>
+<details class="answer"><summary>Answer</summary>
+<p>The bookmaker’s accuracy-responsiveness is the learning of a single
+distribution about a single question, and it ends when the question
+resolves. Nothing a market learned carries into the next market, except
+in the wealth of the traders who were right. That wealth is a kind of
+memory: over many questions a market does weight its best forecasters,
+through their accumulated money. For traders who stake a fixed fraction
+of their wealth the reweighting is multiplicative, a second learner at a
+longer timescale with traders as its experts. Whether psychology has
+anything to add to that description beyond economics is left open, as
+the monastery essay left it. The verdict also qualifies that essay,
+which had credited futures prices with running a model of the world
+forward: each correction of a futures price is computed in some trader’s
+head.</p>
+</details>
+</section>
+</section>
+<section id="terms" class="level2">
+<h2>Terms</h2>
+<p>Introduced in this essay:</p>
+<ul>
+<li><a
+href="/notes/the-bookmaker-is-a-learner.html#paying-for-honesty">the
+relay</a>: the essay’s name for Hanson’s market scoring rule: a trader
+is paid the score of their forecast minus the score of the forecast they
+replaced.</li>
+<li><a
+href="/notes/the-bookmaker-is-a-learner.html#the-bookmaker-is-a-learner">liquidity
+parameter</a>: the <span class="math inline">b</span> of the LMSR, which
+bounds the subsidy at <span class="math inline">b\log n</span> and acts
+as an inverse learning rate.</li>
+<li><a
+href="/notes/the-bookmaker-is-a-learner.html#the-bookmaker-is-a-learner">regret
+and no-regret learning</a></li>
+<li><a
+href="/notes/the-bookmaker-is-a-learner.html#the-bookmaker-is-a-learner">bandit
+and exploration</a></li>
+<li><a
+href="/notes/the-bookmaker-is-a-learner.html#the-bookmaker-is-a-learner">mirror
+descent</a></li>
+<li><a
+href="/notes/the-bookmaker-is-a-learner.html#one-bookmaker-four-faces">constant-function
+market maker</a></li>
+<li><a
+href="/notes/the-bookmaker-is-a-learner.html#the-combinatorial-wall">matching
+as pricing at zero temperature</a>: as <span
+class="math inline">b\to0</span> the LMSR cost function tends to the
+house’s worst-case liability, which is what matching computes.</li>
+<li><a
+href="/notes/the-bookmaker-is-a-learner.html#the-combinatorial-wall">marginal
+polytope</a></li>
+<li><a
+href="/notes/the-bookmaker-is-a-learner.html#paying-for-honesty">proper
+scoring rule</a></li>
+<li><a
+href="/notes/the-bookmaker-is-a-learner.html#the-combinatorial-wall">subset
+betting and pair betting</a></li>
+<li><a
+href="/notes/the-bookmaker-is-a-learner.html#paying-for-honesty">market
+scoring rule</a></li>
+<li><a
+href="/notes/the-bookmaker-is-a-learner.html#one-bookmaker-four-faces">cost-function
+market and the LMSR</a></li>
+<li><a
+href="/notes/the-bookmaker-is-a-learner.html#the-bookmaker-is-a-learner">Hedge
+as a bookmaker</a></li>
+<li><a
+href="/notes/the-bookmaker-is-a-learner.html#the-bookmaker-is-a-learner">follow
+the regularized leader</a></li>
+<li><a
+href="/notes/the-bookmaker-is-a-learner.html#the-combinatorial-wall">combinatorial
+wall</a>: over the <span class="math inline">n!</span> finishing orders
+of a race, matching pair bets is NP-hard and exact LMSR pricing is
+#P-hard for both betting languages.</li>
+<li><a
+href="/notes/the-bookmaker-is-a-learner.html#is-the-market-minded">wealth
+of traders as a second learner</a>: across many questions a market
+reweights its traders through their accumulated money, multiplicatively
+for those who stake a fixed fraction of their wealth, as Hedge reweights
+experts.</li>
+</ul>
+<p>From other essays:</p>
+<ul>
+<li>exponential tilt (<a
+href="/notes/how-does-a-policy-improve.html#improving-a-distribution-without-throwing-away-the-prior"><em>How
+Does a Policy Improve?</em></a>)</li>
+<li>five conditions of mentality (<a
+href="/notes/minds-by-degrees-draft-v2.html#a-framework-for-mentality"><em>Minds
+by Degrees: Graded Mentality, Three Subjectivities, and the Place of
+Phenomenal Consciousness</em></a>)</li>
+<li>residual integration (<a
+href="/notes/is-the-monastery-minded.html#the-nation-and-residual-integration"><em>Is
+the Monastery Minded?</em></a>)</li>
+</ul>
+</section>
+</article>
+<section class="study-link"><p><em>From the study questions back to the essay: 
+<a href="/notes/the-bookmaker-is-a-learner.html">the-bookmaker-is-a-learner.html &rarr;</a></em></p></section>
+<script src="/assets/theme-toggle.js"></script>
+</body>
+</html>

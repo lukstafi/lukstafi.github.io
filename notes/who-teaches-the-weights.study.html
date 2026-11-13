@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <meta name="description" content="Recall questions for the essay “Who Teaches the Weights?”.">
+  <meta property="og:title" content="Study notes: Who Teaches the Weights?">
+  <meta property="og:description" content="Recall questions for the essay “Who Teaches the Weights?”.">
+  <meta property="og:url" content="https://lukstafi.github.io/notes/who-teaches-the-weights.study.html">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="lukstafi&#x27;s blog">
+  <meta name="twitter:card" content="summary">
+  <title>Study notes: Who Teaches the Weights?</title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <link rel="stylesheet" href="/assets/tufte.css">
+  <link rel="stylesheet" href="/assets/pandoc-tufte.css">
+  <link rel="stylesheet" href="/assets/site.css">
+  <script defer=""
+  src="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.js"></script>
+  <script>document.addEventListener("DOMContentLoaded", function () {
+ var mathElements = document.getElementsByClassName("math");
+ var macros = [];
+ for (var i = 0; i < mathElements.length; i++) {
+  var texText = mathElements[i].firstChild;
+  if (mathElements[i].tagName == "SPAN") {
+   katex.render(texText.data, mathElements[i], {
+    displayMode: mathElements[i].classList.contains('display'),
+    throwOnError: false,
+    macros: macros,
+    fleqn: false
+   });
+}}});
+  </script>
+  <link rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.css" />
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+  <script>(function(){var t=localStorage.getItem('theme-preference');if(t)document.documentElement.setAttribute('data-theme',t);})()</script>
+</head>
+<body>
+<nav class="site-nav">
+  <a href="/">Home</a> &middot; <a href="/about.html">About</a> &middot; <a href="https://lukstafi.substack.com">Substack</a>
+</nav>
+<div class="theme-toggle">
+  <button id="theme-btn" aria-label="Toggle dark mode">&#9788;</button>
+</div>
+<article>
+<header>
+<h1 class="title">Study notes: Who Teaches the Weights?</h1>
+</header>
+<p>Recall questions for <a
+href="/notes/who-teaches-the-weights.html"><em>Who Teaches the
+Weights?</em></a>. Answer each from memory, then open the answer to
+compare. The link under a question leads to the section it draws on.</p>
+<section id="before-reading" class="level2">
+<h2>Before reading</h2>
+<p>The essay and these questions assume:</p>
+<ul>
+<li><a
+href="/notes/how-can-a-reward-train-a-neural-network.html#actions-change-the-examples-we-learn-from"><em>How
+Can a Reward Train a Neural Network?</em>, “Actions change the examples
+we learn from”</a>: why acting changes the training data.</li>
+<li><a
+href="/notes/how-does-a-policy-improve.html#improving-a-distribution-without-throwing-away-the-prior"><em>How
+Does a Policy Improve?</em>, “Improving a distribution without throwing
+away the prior”</a>: the tilt and the two directions of KL.</li>
+<li><a
+href="/notes/how-does-a-policy-improve.html#mpo-separates-improvement-from-fitting"><em>How
+Does a Policy Improve?</em>, “MPO separates improvement from
+fitting”</a>: improvement and fitting as separate jobs.</li>
+</ul>
+</section>
+<section id="questions" class="level2">
+<h2>Questions</h2>
+<section id="what-the-ablations-isolate" class="level3"
+data-kind="explain">
+<h3 data-kind="explain">What the ablations isolate</h3>
+<div class="study-meta">
+<span class="study-kind">explain</span>
+</div>
+<p><em>Retaining by Doing</em> found that supervised fine-tuning on a
+stronger model’s solutions damaged other skills and GRPO did not. Which
+two further experiments show what was responsible?</p>
+<details class="answer"><summary>Answer</summary>
+<p>Removing GRPO’s penalty toward the original model mostly did not
+bring the forgetting back, so the penalty was not the cause. Supervised
+fine-tuning that regenerated its examples from the current model each
+epoch forgot little or nothing. Where the data comes from mattered more
+than the algorithm.</p>
+</details>
+</section>
+<section id="teacher-and-support" class="level3"
+data-kind="distinguish">
+<h3 data-kind="distinguish">Teacher and support</h3>
+<div class="study-meta">
+<span class="study-kind">distinguish</span> <a
+href="/notes/who-teaches-the-weights.html#where-the-model-trains-and-what-it-imitates">Where
+the model trains, and what it imitates ↗</a>
+</div>
+<p>The stability term is <span class="math inline">\lambda\,\mathbb
+E_{x\sim\mu}D(q(\cdot\mid x)\,\|\,p_\theta(\cdot\mid x))</span>. Say
+what <span class="math inline">q</span> and <span
+class="math inline">\mu</span> are, then give both for Learning without
+Forgetting, Dark Experience Replay, a moving-average teacher, on-policy
+distillation and EWC.</p>
+<details class="answer"><summary>Answer</summary>
+<p>The teacher <span class="math inline">q</span> is what the model is
+pulled toward. The support <span class="math inline">\mu</span> is the
+set of inputs on which it is pulled.</p>
+<ul>
+<li>Learning without Forgetting: the old model, on the new task’s
+inputs.</li>
+<li>Dark Experience Replay: the old model’s stored logits, on stored old
+inputs.</li>
+<li>Moving average: a fresh copy of the student, on current inputs.</li>
+<li>On-policy distillation: any teacher, on whatever the student
+generates.</li>
+<li>EWC: the old model on the old inputs, compressed into one Fisher
+number per weight.</li>
+</ul>
+</details>
+</section>
+<section id="a-moving-average-teacher" class="level3"
+data-kind="compute">
+<h3 data-kind="compute">A moving-average teacher</h3>
+<div class="study-meta">
+<span class="study-kind">compute</span> <a
+href="/notes/who-teaches-the-weights.html#where-the-model-trains-and-what-it-imitates">Where
+the model trains, and what it imitates ↗</a>
+</div>
+<p>A teacher averages the student’s weights with momentum <span
+class="math inline">0.999</span>. What share of it comes from student
+states older than <span class="math inline">1{,}000</span> steps? Older
+than <span class="math inline">5{,}000</span>? What follows?</p>
+<details class="answer"><summary>Answer</summary>
+<p><span class="math inline">0.999^{1000}\approx0.37</span> and <span
+class="math inline">0.999^{5000}\approx0.007</span>. The teacher is the
+only reference and it moves with the student, so many small agreed steps
+can add up to any distance from the base model. The repair is a second
+reference that never moves: a frozen copy of the base model.</p>
+</details>
+</section>
+<section id="the-self-teacher-is-a-tilt" class="level3"
+data-kind="derive">
+<h3 data-kind="derive">The self-teacher is a tilt</h3>
+<div class="study-meta">
+<span class="study-kind">derive</span> <a
+href="/notes/who-teaches-the-weights.html#the-model-with-privileged-context-as-teacher">The
+model with privileged context as teacher ↗</a>
+</div>
+<p>Show that the model with privileged context <span
+class="math inline">c</span> is an exponential tilt of the bare model,
+and say what plays the critic.</p>
+<details class="answer"><summary>Answer</summary>
+<p>Take the reference <span class="math inline">p=\pi(\cdot\mid
+x)</span> and the value <span
+class="math inline">Q_c(y)=\log\frac{\pi(y\mid x,c)}{\pi(y\mid
+x)}</span>. At <span class="math inline">\eta=1</span> the tilt <span
+class="math inline">p\,e^{Q_c}/Z</span> is <span
+class="math inline">\pi(\cdot\mid x,c)</span> with <span
+class="math inline">Z=1</span>. The context is the critic and its scores
+are log-ratios. A response’s log-probability is a sum over tokens, so
+<span class="math inline">Q_c</span> is too: each token carries a dense
+implicit reward.</p>
+</details>
+</section>
+<section id="a-demonstration-as-a-critic" class="level3"
+data-kind="compute">
+<h3 data-kind="compute">A demonstration as a critic</h3>
+<div class="study-meta">
+<span class="study-kind">compute</span> <a
+href="/notes/who-teaches-the-weights.html#the-model-with-privileged-context-as-teacher">The
+model with privileged context as teacher ↗</a>
+</div>
+<p>At some prefix the bare model gives three continuations <span
+class="math inline">(0.6,0.3,0.1)</span> and the model with a
+demonstration gives <span class="math inline">(0.1,0.2,0.7)</span>.
+Compute the implicit values and the half step between student and
+teacher. At what temperature is the half step a tilt?</p>
+<details class="answer"><summary>Answer</summary>
+<p>The log-ratios are <span
+class="math inline">(-1.79,\,-0.41,\,+1.95)</span>. The half step is the
+normalized geometric mean: <span
+class="math inline">(\sqrt{0.06},\sqrt{0.06},\sqrt{0.07})</span>
+normalized, about <span
+class="math inline">(0.325,\,0.325,\,0.351)</span>. The interpolation
+<span class="math inline">p^{1-\lambda}T^{\lambda}</span> equals <span
+class="math inline">p\,e^{\lambda Q_c}</span> up to normalization, so
+<span class="math inline">\lambda=1/2</span> is a tilt at <span
+class="math inline">\eta=2</span>.</p>
+</details>
+</section>
+<section id="why-the-model-with-context-can-teach" class="level3"
+data-kind="explain">
+<h3 data-kind="explain">Why the model with context can teach</h3>
+<div class="study-meta">
+<span class="study-kind">explain</span> <a
+href="/notes/who-teaches-the-weights.html#the-model-with-privileged-context-as-teacher">The
+model with privileged context as teacher ↗</a>
+</div>
+<p>A teacher must know more than the student, and its targets must be
+ones the student can absorb. How does the model with context meet
+both?</p>
+<details class="answer"><summary>Answer</summary>
+<p>It knows more because in-context learning generalizes where
+fine-tuning does not: with a fact in view, the model answers reversals
+and syllogisms that the same fact trained into the weights does not
+support. Its targets are absorbable because they come from the student’s
+own distribution. Nothing is created: the context’s implications were
+latent, and the teacher exposes them in a form a gradient step can
+use.</p>
+</details>
+</section>
+<section id="grounded-and-ungrounded-self-teaching" class="level3"
+data-kind="explain">
+<h3 data-kind="explain">Grounded and ungrounded self-teaching</h3>
+<div class="study-meta">
+<span class="study-kind">explain</span> <a
+href="/notes/who-teaches-the-weights.html#the-model-with-privileged-context-as-teacher">The
+model with privileged context as teacher ↗</a>
+</div>
+<p>When the model writes its own privileged context, why does a wrong
+hint do less damage as the teacher’s context than as a fine-tuning
+target?</p>
+<details class="answer"><summary>Answer</summary>
+<p>The tilt moves the teacher only as far as the model finds the hint
+plausible, so a wrong hint weakens the signal more than it reverses it.
+As a fine-tuning target the wrong answer is trained on directly. The
+agreement filter is a weak grounding: it makes the teacher as reliable
+as what the model already knows, and consistent errors still enter
+training.</p>
+</details>
+</section>
+<section id="dense-targets-reorder-the-correct-answers" class="level3"
+data-kind="derive">
+<h3 data-kind="derive">Dense targets reorder the correct answers</h3>
+<div class="study-meta">
+<span class="study-kind">derive</span> <a
+href="/notes/who-teaches-the-weights.html#where-self-teaching-breaks">Where
+self-teaching breaks ↗</a>
+</div>
+<p>Why does a sequence-level reward leave the student’s preferences
+among correct answers alone, when a token-level self-teacher does
+not?</p>
+<details class="answer"><summary>Answer</summary>
+<p>Tilting by a sequence-level reward gives <span
+class="math inline">q(y)\propto p(y)e^{R(y)/\eta}</span>, so <span
+class="math inline">q(y)/q(y&#39;)=p(y)/p(y&#39;)</span> whenever <span
+class="math inline">R(y)=R(y&#39;)</span>. Only the boundary between
+correct and incorrect moves. The implicit value <span
+class="math inline">Q_c</span> is not constant on the correct answers:
+it ranks them by resemblance to the context’s exemplar, in phrasing,
+format and order of steps. The student is reordered toward one exemplar
+at every prefix, and the next round’s teacher inherits the quirks.</p>
+</details>
+</section>
+<section id="small-differences-become-total" class="level3"
+data-kind="compute">
+<h3 data-kind="compute">Small differences become total</h3>
+<div class="study-meta">
+<span class="study-kind">compute</span> <a
+href="/notes/who-teaches-the-weights.html#what-on-policy-training-forgets">What
+on-policy training forgets ↗</a>
+</div>
+<p>Two strategies differ in scalar reward by <span
+class="math inline">0.1</span>. After ten improvement steps at <span
+class="math inline">\eta=0.1</span>, each using the previous iterate as
+reference, by what factor have the odds moved? What bounds this?</p>
+<details class="answer"><summary>Answer</summary>
+<p>After <span class="math inline">k</span> steps the policy is the
+original tilted by <span class="math inline">kR/\eta</span>, an
+effective temperature of <span class="math inline">\eta/k</span>. The
+odds move by <span
+class="math inline">e^{0.1\times10/0.1}=e^{10}\approx22{,}000</span>. A
+KL penalty toward a fixed reference with coefficient <span
+class="math inline">\beta</span> keeps the effective temperature from
+falling below <span class="math inline">\beta</span>. In practice <span
+class="math inline">\beta</span> is small or the penalty is dropped.</p>
+</details>
+</section>
+<section id="the-max-rewards-specialists" class="level3"
+data-kind="compute">
+<h3 data-kind="compute">The max rewards specialists</h3>
+<div class="study-meta">
+<span class="study-kind">compute</span> <a
+href="/notes/who-teaches-the-weights.html#what-on-policy-training-forgets">What
+on-policy training forgets ↗</a>
+</div>
+<p>Rewards have two components and weightings are <span
+class="math inline">w=(u,1-u)</span> with <span
+class="math inline">u</span> uniform on <span
+class="math inline">[0,1]</span>. A balanced answer scores <span
+class="math inline">(0.6,0.6)</span>; two specialists score <span
+class="math inline">(1,0)</span> and <span
+class="math inline">(0,1)</span>. Compute VPO’s set score for three
+balanced copies and for the two specialists with one balanced answer.
+What would the fixed weighting <span
+class="math inline">(0.5,0.5)</span> prefer?</p>
+<details class="answer"><summary>Answer</summary>
+<p>Three copies score <span class="math inline">0.6</span> under every
+weighting. The mixed set scores <span
+class="math inline">\max(u,\,1-u,\,0.6)</span>: integrating, <span
+class="math inline">0.32</span> from <span
+class="math inline">u\le0.4</span>, <span
+class="math inline">0.12</span> from the middle and <span
+class="math inline">0.32</span> from <span
+class="math inline">u\ge0.6</span>, in total <span
+class="math inline">0.76</span>. Under the fixed weighting the balanced
+answer is worth <span class="math inline">0.6</span> and each specialist
+<span class="math inline">0.5</span>, so scalar training pushes every
+sample toward the balanced answer.</p>
+</details>
+</section>
+<section id="each-half-of-vpo-fails-alone" class="level3"
+data-kind="explain">
+<h3 data-kind="explain">Each half of VPO fails alone</h3>
+<div class="study-meta">
+<span class="study-kind">explain</span> <a
+href="/notes/who-teaches-the-weights.html#what-on-policy-training-forgets">What
+on-policy training forgets ↗</a>
+</div>
+<p>VPO writes several answers in one response and scores the set by a
+max over random weightings. What happened with several answers and a
+scalar reward? With the weighting written into the prompt? Where does
+the diversity come from?</p>
+<details class="answer"><summary>Answer</summary>
+<p>Several answers under a scalar reward had the capacity to differ and
+no reason to: their reward vectors converged. A model given <span
+class="math inline">w</span> in its prompt learned to ignore it and
+collapsed to one behaviour. Under the max, similar answers compete for
+the same weightings and one is wasted. The model cannot turn a weight
+vector into a strategy, and it can read its first answer and write a
+different second one. In-context learning is the explorer here, as it
+was the teacher earlier.</p>
+</details>
+</section>
+<section id="two-kinds-of-forgetting" class="level3"
+data-kind="explain">
+<h3 data-kind="explain">Two kinds of forgetting</h3>
+<div class="study-meta">
+<span class="study-kind">explain</span> <a
+href="/notes/who-teaches-the-weights.html#what-on-policy-training-forgets">What
+on-policy training forgets ↗</a>
+</div>
+<p>Name the two kinds. Why is the second a loss of plasticity even if
+every weight can still change?</p>
+<details class="answer"><summary>Answer</summary>
+<p>Across tasks: learning the new thing damages old skills. Within the
+task: alternatives the model could once produce stop appearing.
+Policy-gradient methods raise the probability only of what the model
+sometimes does, and off-policy methods need data in which a behaviour
+appears. A strategy the model no longer produces cannot be taught to it
+short of an outside demonstration.</p>
+</details>
+</section>
+<section id="result-or-conjecture" class="level3" data-kind="limits">
+<h3 data-kind="limits">Result or conjecture</h3>
+<div class="study-meta">
+<span class="study-kind">limits</span> <a
+href="/notes/who-teaches-the-weights.html#what-on-policy-training-forgets">What
+on-policy training forgets ↗</a>
+</div>
+<p>Which two claims does the essay mark as untested?</p>
+<details class="answer"><summary>Answer</summary>
+<p>That a self-teacher conditioned on a negative example passes the
+failure on (an open question raised by <em>Negation Neglect</em>). That
+diversity along known reward axes helps transfer to a reward not yet
+known (Bahlous-Boldi’s reply to the objection that the future reward
+vector is unavailable).</p>
+</details>
+</section>
+</section>
+<section id="terms" class="level2">
+<h2>Terms</h2>
+<p>Introduced in this essay:</p>
+<ul>
+<li><a
+href="/notes/who-teaches-the-weights.html#where-the-model-trains-and-what-it-imitates">teacher
+and support</a></li>
+<li><a
+href="/notes/who-teaches-the-weights.html#the-model-with-privileged-context-as-teacher">self-distillation
+with privileged context</a></li>
+<li><a
+href="/notes/who-teaches-the-weights.html#the-model-with-privileged-context-as-teacher">implicit
+value of a context</a></li>
+<li><a
+href="/notes/who-teaches-the-weights.html#what-on-policy-training-forgets">forgetting
+within a task</a></li>
+<li><a
+href="/notes/who-teaches-the-weights.html#what-on-policy-training-forgets">Vector
+Policy Optimization</a></li>
+<li><a href="/notes/who-teaches-the-weights.html">two conditions on a
+teacher</a>: it must know more than the student, and its targets must be
+ones the student can absorb.</li>
+<li><a
+href="/notes/who-teaches-the-weights.html#the-model-with-privileged-context-as-teacher">usable
+information</a></li>
+<li><a
+href="/notes/who-teaches-the-weights.html#where-the-model-trains-and-what-it-imitates">moving
+teacher and fixed anchor</a></li>
+</ul>
+<p>From other essays:</p>
+<ul>
+<li>exponential tilt (<a
+href="/notes/how-does-a-policy-improve.html#improving-a-distribution-without-throwing-away-the-prior"><em>How
+Does a Policy Improve?</em></a>)</li>
+<li>mass-covering and mode-seeking KL (<a
+href="/notes/how-does-a-policy-improve.html#improving-a-distribution-without-throwing-away-the-prior"><em>How
+Does a Policy Improve?</em></a>)</li>
+<li>on-policy and off-policy (<a
+href="/notes/how-can-a-reward-train-a-neural-network.html#learning-values-from-experience"><em>How
+Can a Reward Train a Neural Network?</em></a>)</li>
+<li>GRPO (<a
+href="/notes/how-can-a-reward-train-a-neural-network.html#what-values-and-policy-gradients-make-possible"><em>How
+Can a Reward Train a Neural Network?</em></a>)</li>
+</ul>
+</section>
+</article>
+<section class="study-link"><p><em>From the study questions back to the essay: 
+<a href="/notes/who-teaches-the-weights.html">who-teaches-the-weights.html &rarr;</a></em></p></section>
+<script src="/assets/theme-toggle.js"></script>
+</body>
+</html>

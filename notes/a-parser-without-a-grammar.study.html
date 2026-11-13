@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <meta name="description" content="Recall questions for the essay “A Parser Without a Grammar: Where the Transformer Sits Among the Formalisms”.">
+  <meta property="og:title" content="Study notes: A Parser Without a Grammar: Where the Transformer Sits Among the Formalisms">
+  <meta property="og:description" content="Recall questions for the essay “A Parser Without a Grammar: Where the Transformer Sits Among the Formalisms”.">
+  <meta property="og:url" content="https://lukstafi.github.io/notes/a-parser-without-a-grammar.study.html">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="lukstafi&#x27;s blog">
+  <meta name="twitter:card" content="summary">
+  <title>Study notes: A Parser Without a Grammar</title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <link rel="stylesheet" href="/assets/tufte.css">
+  <link rel="stylesheet" href="/assets/pandoc-tufte.css">
+  <link rel="stylesheet" href="/assets/site.css">
+  <script defer=""
+  src="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.js"></script>
+  <script>document.addEventListener("DOMContentLoaded", function () {
+ var mathElements = document.getElementsByClassName("math");
+ var macros = [];
+ for (var i = 0; i < mathElements.length; i++) {
+  var texText = mathElements[i].firstChild;
+  if (mathElements[i].tagName == "SPAN") {
+   katex.render(texText.data, mathElements[i], {
+    displayMode: mathElements[i].classList.contains('display'),
+    throwOnError: false,
+    macros: macros,
+    fleqn: false
+   });
+}}});
+  </script>
+  <link rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.css" />
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+  <script>(function(){var t=localStorage.getItem('theme-preference');if(t)document.documentElement.setAttribute('data-theme',t);})()</script>
+</head>
+<body>
+<nav class="site-nav">
+  <a href="/">Home</a> &middot; <a href="/about.html">About</a> &middot; <a href="https://lukstafi.substack.com">Substack</a>
+</nav>
+<div class="theme-toggle">
+  <button id="theme-btn" aria-label="Toggle dark mode">&#9788;</button>
+</div>
+<article>
+<header>
+<h1 class="title">Study notes: A Parser Without a Grammar</h1>
+</header>
+<p>Recall questions for <a
+href="/notes/a-parser-without-a-grammar.html"><em>A Parser Without a
+Grammar: Where the Transformer Sits Among the Formalisms</em></a>.
+Answer each from memory, then open the answer to compare. The link under
+a question leads to the section it draws on.</p>
+<section id="before-reading" class="level2">
+<h2>Before reading</h2>
+<p>The essay and these questions assume:</p>
+<ul>
+<li><a
+href="/notes/merge_and_selection.html#the-residual-stream-is-a-join-not-a-rewrite"><em>Merge
+and Selection: The Residual Stream as a Constraint Grammar, and the Two
+Readings It Cannot Reconcile</em>, “3. The residual stream is a join,
+not a rewrite”</a>: the residual stream as a monotone merge, and the
+split into target, sources and MLP.</li>
+<li><a
+href="/notes/merge_and_selection.html#why-the-two-analogues-cannot-be-reconciled"><em>Merge
+and Selection: The Residual Stream as a Constraint Grammar, and the Two
+Readings It Cannot Reconcile</em>, “5. Why the two analogues cannot be
+reconciled”</a>: the fracture: the selector is not in the value
+space.</li>
+<li><a
+href="/notes/merge_and_selection.html#tensor-product-representations-and-gradient-symbolic-computation"><em>Merge
+and Selection: The Residual Stream as a Constraint Grammar, and the Two
+Readings It Cannot Reconcile</em>, “2.3 Tensor-product representations
+and Gradient Symbolic Computation”</a>: Harmony, the quantization weight
+q and the temperature T.</li>
+<li><a
+href="/notes/the-given-and-the-found.html#depth-and-breadth-are-two-knobs-not-one"><em>The
+Given and the Found: What Test-Time Reasoning Amortizes, and What It
+Cannot</em>, “4. Depth and Breadth Are Two Knobs, Not One”</a>: depth
+and breadth as separate instruments of test-time computation, and the
+limit cycle.</li>
+<li><a
+href="/notes/the-given-and-the-found.html#the-boundary-amortizing-search-versus-amortizing-discovery"><em>The
+Given and the Found: What Test-Time Reasoning Amortizes, and What It
+Cannot</em>, “7. The Boundary: Amortizing Search Versus Amortizing
+Discovery”</a>: the line between amortizing search under a given
+condition and discovering the condition.</li>
+</ul>
+</section>
+<section id="questions" class="level2">
+<h2>Questions</h2>
+<p>The answers state what the essay argues. Several mappings are the
+essay’s own and are marked so; the last question asks what it says it
+has not shown.</p>
+<section id="the-wrong-question" class="level3" data-kind="explain">
+<h3 data-kind="explain">The wrong question</h3>
+<div class="study-meta">
+<span class="study-kind">explain</span> <a
+href="/notes/a-parser-without-a-grammar.html#the-wrong-question">1. The
+Wrong Question ↗</a>
+</div>
+<p>Which question about Transformers and grammar does the essay retire,
+and what does it ask instead? What does the audiobook study of
+Stanojević and colleagues add to the case?</p>
+<details class="answer"><summary>Answer</summary>
+<p>The retired question is which grammatical formalism the Transformer
+secretly implements. Probing shows that structure is recoverable from
+hidden states, and is silent on what operation produced it. Stanojević
+and colleagues found that structure-building metrics from a CCG parser
+explain brain activity over and above the next-word predictability
+estimated by a Transformer, and that the two effects sit in different
+places. The lesson the essay takes is that structure-building and
+predictability are different functions, so a model can excel at the
+second while the first stays a separate question. In place of the
+retired question, the formalisms are read as a coordinate system. They
+disagree along identifiable axes, each disagreement is a design
+decision, and the architecture comes down somewhere on each. No single
+formalism shares all its coordinates, because each bundles choices the
+architecture pulls apart.</p>
+</details>
+</section>
+<section id="merge-without-move" class="level3" data-kind="distinguish">
+<h3 data-kind="distinguish">Merge without Move</h3>
+<div class="study-meta">
+<span class="study-kind">distinguish</span> <a
+href="/notes/a-parser-without-a-grammar.html#monotonicity-hpsg-and-the-rewrite-grammar-at-the-far-pole">2.1
+Monotonicity: HPSG and the rewrite grammar at the far pole ↗</a>
+</div>
+<p>Transformational grammar anchors the far pole of the monotonicity
+axis. Why would it be wrong to say that Merge puts it there? How does a
+Transformer achieve what movement achieves?</p>
+<details class="answer"><summary>Answer</summary>
+<p>Bare Merge is monotone set-formation: it takes two objects and forms
+the set containing them, adding structure and removing none. It sits
+near the residual stream’s pole. The destructive end is anchored by
+Internal Merge, that is movement, together with deletion and trace: the
+operations that displace and erase. The architecture’s monotonicity is
+“a vote for Merge-without-Move”. Where a transformational grammar would
+move a constituent and leave a gap, the Transformer can only write
+another vector into the stream. Displacement is achieved by addition,
+not relocation.</p>
+</details>
+</section>
+<section id="application-consumes-the-functor" class="level3"
+data-kind="derive">
+<h3 data-kind="derive">Application consumes the functor</h3>
+<div class="study-meta">
+<span class="study-kind">derive</span> <a
+href="/notes/a-parser-without-a-grammar.html#directionality-ccg-and-the-head-the-join-throws-away">2.2
+Directionality: CCG and the head the join throws away ↗</a>
+</div>
+<p>A transitive verb has the category <code>(S\NP)/NP</code>. Combine it
+with its object and then with its subject. What happens to the functor
+at each step? Map functor, argument and slash onto attention, and say
+whose reading this is.</p>
+<details class="answer"><summary>Answer</summary>
+<p>Given an <code>NP</code> to its right the verb yields
+<code>S\NP</code>. Given an <code>NP</code> to its left that yields
+<code>S</code>. At each step the functor is consumed:
+<code>(S\NP)/NP</code> is gone, discharged into the result, which is
+what it means for the slash to cancel. On the attention side, the query
+is a function seeking an argument of a certain type. The key advertises
+the type of argument a position can serve as. Attention is the
+application of one to the other. The slash direction is the directional
+signature that attention has and a symmetric join lacks. The
+TP-Transformer’s authors already read an attending cell as a subject
+querying for an object. The sharpening through CCG, with application’s
+non-monotonicity, is the essay’s own mapping.</p>
+</details>
+</section>
+<section id="why-one-operation-must-bundle" class="level3"
+data-kind="argue">
+<h3 data-kind="argue">Why one operation must bundle</h3>
+<div class="study-meta">
+<span class="study-kind">argue</span> <a
+href="/notes/a-parser-without-a-grammar.html#directionality-ccg-and-the-head-the-join-throws-away">2.2
+Directionality: CCG and the head the join throws away ↗</a>
+</div>
+<p>CCG repairs HPSG’s defect and incurs the opposite one. State both
+defects. Then reconstruct why a discrete operation that builds a
+constituent must bundle the two choices, and why the Transformer need
+not. Which formalism escapes, and at what price?</p>
+<details class="answer"><summary>Answer</summary>
+<p>HPSG’s join is commutative, <span class="math inline">A\sqcup
+B=B\sqcup A</span>. It merges descriptions without governance, so it is
+monotone and headless. CCG’s application is directional and not
+monotone: it wins directionality and loses accumulation. A discrete
+operation that builds a constituent takes its step at one point and
+cannot be two things there. Its single <code>combine</code> is either
+symmetric and monotone or directional and consuming. In the Transformer
+the two are different mechanisms at different sites: the query/key inner
+product is directional, and the residual write is monotone. Each
+formalism therefore matches the architecture on one axis and misses on
+the other. Word Grammar escapes by drawing relations instead of building
+constituents, and pays by having no constituents at all.</p>
+</details>
+</section>
+<section id="one-stream-two-strata" class="level3" data-kind="explain">
+<h3 data-kind="explain">One stream, two strata</h3>
+<div class="study-meta">
+<span class="study-kind">explain</span> <a
+href="/notes/a-parser-without-a-grammar.html#strata-lfg-and-the-conflation-of-position-with-function">2.3
+Strata: LFG and the conflation of position with function ↗</a>
+</div>
+<p>What are LFG’s two structures, and why does it keep them apart? What
+is the Transformer’s coordinate on this axis, what does the essay read
+as evidence, and how does this case run the other way from the CCG
+case?</p>
+<details class="answer"><summary>Answer</summary>
+<p>C-structure is a constituency tree encoding precedence and dominance.
+F-structure is an attribute-value matrix of grammatical functions,
+monotone and unification-based. A correspondence <span
+class="math inline">\phi</span> says which tree nodes project which
+parts of the functional structure. LFG keeps them apart because position
+and function need not line up within one sentence: a fronted <em>which
+book</em> sits high in the tree and bears the object function of an
+embedded verb, and a dropped subject is a function with no tree
+position. The Transformer has one residual stream, so its coordinate is
+collapse. The essay reads the hybrid roles induced by the Tensor Product
+Generation Network, neither purely positional nor purely grammatical, as
+the two strata superimposed on one vector. Here the architecture bundles
+what a formalism keeps separate. It is not uniformly a splitter: “fusing
+where the formalisms split and splitting where they fuse”.</p>
+</details>
+</section>
+<section id="incremental-in-two-senses" class="level3"
+data-kind="distinguish">
+<h3 data-kind="distinguish">Incremental in two senses</h3>
+<div class="study-meta">
+<span class="study-kind">distinguish</span> <a
+href="/notes/a-parser-without-a-grammar.html#time-dynamic-syntax-and-the-grammar-that-is-a-parser">2.4
+Time: Dynamic Syntax and the grammar that is a parser ↗</a>
+</div>
+<p>CCG and Dynamic Syntax are both incremental. What does Dynamic Syntax
+do that CCG does not? What corresponds to it in a causal Transformer,
+and which bundled pair comes apart?</p>
+<details class="answer"><summary>Answer</summary>
+<p>CCG remains a competence grammar with a separate notion of what is
+well-formed. Its incrementality is a property of how its derivations can
+be ordered. Dynamic Syntax has no competence/performance split to be
+incremental within. The grammar is the procedure for building an
+interpretation word by word, strictly left to right, driven by
+requirements that later words discharge, and the state of the parse is
+in general underspecified. A causal Transformer also works left to right
+and cannot attend to the future. Its residual state is a blend of
+partial commitments, sharpened as computation proceeds. It stores no
+declarative grammar apart from the parser: the weights are the
+procedure. The pair that comes apart is “what is well-formed” and “the
+system has a stored characterization of well-formedness”. The
+Transformer has the first without the second.</p>
+</details>
+</section>
+<section id="what-lives-in-the-weights" class="level3"
+data-kind="state">
+<h3 data-kind="state">What lives in the weights</h3>
+<div class="study-meta">
+<span class="study-kind">state</span> <a
+href="/notes/a-parser-without-a-grammar.html#inventory-construction-grammar-and-what-lives-in-the-weights">2.5
+Inventory: Construction Grammar and what lives in the weights ↗</a>
+</div>
+<p>Construction Grammar’s axis sits at a different level from the first
+four. Which level? State the two mappings the essay draws, the bundled
+pair that comes apart, and what the formalism and the mechanism agree
+about.</p>
+<details class="answer"><summary>Answer</summary>
+<p>The first four axes describe what a layer does to a representation as
+it passes through. This one describes what is stored in the parameters.
+For Construction Grammar the basic unit is the construction, a learned
+pairing of form and meaning at every granularity, and there is no
+separate rule component, only a continuum from the idiosyncratic to the
+schematic. The first mapping: the MLP layers, read in the
+interpretability literature as a key-value memory, store pairs of a
+pattern and a vector written in response, and such a pair is
+functionally a construction. The second: feature superposition admits
+every degree of specificity without a sortal boundary, so the
+lexicon-grammar continuum is the feature continuum. The generative
+tradition fuses productive combination with a rule component distinct
+from the listed lexicon; the Transformer has the first without the
+second. Formalism and mechanism agree about epistemology: grammatical
+knowledge is generalization over experienced instances.</p>
+</details>
+</section>
+<section id="closest-in-form" class="level3" data-kind="distinguish">
+<h3 data-kind="distinguish">Closest in form</h3>
+<div class="study-meta">
+<span class="study-kind">distinguish</span> <a
+href="/notes/a-parser-without-a-grammar.html#topology-word-grammar-and-the-grammar-that-is-an-activation-network">2.6
+Topology: Word Grammar and the grammar that is an activation network
+↗</a>
+</div>
+<p>Word Grammar’s primitive object is the closest in form to the
+Transformer’s. What is shared? Name the two independent differences.</p>
+<details class="answer"><summary>Answer</summary>
+<p>Both are activation networks over a weighted directed graph. An
+attention matrix is such a graph over positions, neither has phrase
+nodes, and both grow only by adding. Word Grammar holds that language is
+one network, processed by spreading activation.</p>
+<p><em>What bears the activation.</em> In Word Grammar the abstractions,
+such as the relation <code>subject</code> or the lexeme
+<code>BOOK</code>, are nodes that become active and fire into their
+neighbours. The store of knowledge and the medium of processing are one
+graph. In the Transformer activation rides only particulars, token
+positions. The abstractions live in the weights, an operator applied to
+the activations.</p>
+<p><em>What the substrate is made of.</em> Word Grammar’s nodes are
+individuated and addressable, and each link carries its type. The
+architecture’s are superposed directions, and an attention weight is a
+bare scalar with no label, something like the pre-quantized form of a
+typed dependency.</p>
+</details>
+</section>
+<section id="inheritance-without-a-hierarchy-to-consult" class="level3"
+data-kind="explain">
+<h3 data-kind="explain">Inheritance without a hierarchy to consult</h3>
+<div class="study-meta">
+<span class="study-kind">explain</span> <a
+href="/notes/a-parser-without-a-grammar.html#topology-word-grammar-and-the-grammar-that-is-an-activation-network">2.6
+Topology: Word Grammar and the grammar that is an activation network
+↗</a>
+</div>
+<p>Default inheritance does two jobs. How does each cross into the
+architecture? How does the architecture’s override differ from Hudson’s,
+and what does that have to do with the monotonicity axis?</p>
+<details class="answer"><summary>Answer</summary>
+<p>Subsumption becomes geometry. Park and colleagues define the
+subordinate relation by token-set inclusion and prove that containment
+forces orthogonality: the parent feature’s vector is orthogonal to the
+differences that distinguish its children, so inherited content lies in
+a shared parent direction. Word Grammar consults a hierarchy and copies
+a value down; the architecture arranges directions. Override becomes
+additive cancellation, which the essay reads into negative name-mover
+heads and suppression neurons. Hudson’s inheritance is monotonic: the
+more specific value is simply the one inherited, so the default is never
+laid down and never retracted. The architecture writes the default and a
+cancelling term and forwards the sum, with the suppression clustered in
+the last layers. A strictly additive stream cannot retract. The
+non-monotonicity that exceptions need is bought by writing a vector that
+points the other way.</p>
+</details>
+</section>
+<section id="two-temptations" class="level3" data-kind="object">
+<h3 data-kind="object">Two temptations</h3>
+<div class="study-meta">
+<span class="study-kind">object</span> <a
+href="/notes/a-parser-without-a-grammar.html#the-substrate-three-things-at-once-in-one-medium">3.
+The Substrate: Three Things at Once in One Medium ↗</a>
+</div>
+<p>It is tempting to credit the continuous medium with un-bundling, and
+with holding incompatible structures at once. Why is each credit
+misplaced? What does the essay say is beyond the discrete side?</p>
+<details class="answer"><summary>Answer</summary>
+<p>Un-bundling is a factorization, not a blurring. Directionality lives
+in the query/key inner product and monotonicity in the residual write,
+two mechanisms at two sites, and that has nothing to do with continuity.
+A wholly discrete architecture running selection and accumulation as
+separate steps would un-bundle them too, and Word Grammar already does.
+The blend also has symbolic precedent: Dynamic Syntax holds a node’s
+value open, chart parsers carry packed forests, and disjunctive feature
+structures hold alternatives in one description. What the discrete side
+lacks is the conjunction in one homogeneous medium. The axes are
+factored apart, each is held at a graded value, and the alternatives are
+superposed, all by a single repeated operation. Gradient Symbolic
+Computation is the theory of that medium, not a seventh formalism.</p>
+</details>
+</section>
+<section id="what-blends-and-what-un-bundles" class="level3"
+data-kind="distinguish">
+<h3 data-kind="distinguish">What blends and what un-bundles</h3>
+<div class="study-meta">
+<span class="study-kind">distinguish</span> <a
+href="/notes/a-parser-without-a-grammar.html#the-substrate-three-things-at-once-in-one-medium">3.
+The Substrate: Three Things at Once in One Medium ↗</a>
+</div>
+<p>Is the blend a superposition of structures or of formalisms? Which
+two of the six coordinates are superpositions in the strict sense? What
+does the gradient blend have that Dynamic Syntax’s underspecification
+lacks?</p>
+<details class="answer"><summary>Answer</summary>
+<p>Structures. The blend is a point in a representation space, and
+points can be convexly combined; no vector is half application and half
+unification. Two coordinates are superpositions in the structural sense.
+Word Grammar’s unlabelled gradient link is a binding held at low <span
+class="math inline">q</span>, not yet quantized to a typed dependency.
+LFG’s collapsed strata are c-structure and f-structure superposed in one
+state. The axes coming apart is a different, non-metric fact about
+separate mechanisms: “What blends is parses under a fixed scheme; what
+un-bundles is the machinery.” Dynamic Syntax’s underspecification is a
+partial description over an enumerated set of completions, and the parse
+must end as one of them. The gradient blend answers to no discrete
+alternative and need never resolve.</p>
+</details>
+</section>
+<section id="depth-and-breadth-as-schedules" class="level3"
+data-kind="connect">
+<h3 data-kind="connect">Depth and breadth as schedules</h3>
+<div class="study-meta">
+<span class="study-kind">connect</span> <a
+href="/notes/a-parser-without-a-grammar.html#the-substrate-three-things-at-once-in-one-medium">3.
+The Substrate: Three Things at Once in One Medium ↗</a>
+</div>
+<p><em>The Given and the Found</em> separated depth from breadth as
+instruments of test-time computation. Map each onto a <span
+class="math inline">(q,T)</span> schedule of Gradient Symbolic
+Computation. Where does the limit cycle fall, and which part of the
+claim belongs to which source?</p>
+<details class="answer"><summary>Answer</summary>
+<p>Depth is iteration along a single trajectory, which entrenches
+whatever attractor has the state. It is the optimization regime: <span
+class="math inline">T</span> is driven to zero and the dynamics converge
+on the single maximum-Harmony structure. Breadth is restarts from many
+initializations, which keep several attractors alive. It is the sampling
+regime: <span class="math inline">T</span> is held and the result is a
+distribution over high-Harmony structures. The limit cycle, a trajectory
+that visits the valid readings in turn and commits to none, is the
+sampling regime realized in time instead of across restarts. So depth
+and breadth are one selection-plus-merge dynamics under two schedules,
+not two networks. The empirical separation of the knobs is the companion
+essay’s; the single dynamics is GSC’s.</p>
+</details>
+</section>
+<section id="six-corners-and-an-interior" class="level3"
+data-kind="recall">
+<h3 data-kind="recall">Six corners and an interior</h3>
+<div class="study-meta">
+<span class="study-kind">recall</span> <a
+href="/notes/a-parser-without-a-grammar.html#the-shape-of-the-answer">5.
+The Shape of the Answer ↗</a>
+</div>
+<p>For each of the six axes, name the exemplar formalism and the
+Transformer’s coordinate. What pattern runs across them, and what sense
+does it give the title?</p>
+<details class="answer"><summary>Answer</summary>
+<ul>
+<li>Monotonicity: HPSG, with transformational grammar at the far pole.
+The stream only adds.</li>
+<li>Directionality: CCG. The query/key asymmetry, run as a mechanism
+separate from the monotone merge.</li>
+<li>Strata: LFG. One stream carrying position and function
+together.</li>
+<li>Time: Dynamic Syntax. Grammar as process, with no stored
+grammar.</li>
+<li>Inventory: Construction Grammar. A continuum of stored units, with
+no rule component.</li>
+<li>Topology: Word Grammar. A network and not a tree, without discrete
+typed links or reified abstractions.</li>
+</ul>
+<p>Each formalism stakes out a corner by bundling choices, and the
+architecture’s coordinates cut across every bundle, so it sits in the
+interior. A parser without a grammar is not a parser that lacks
+structure. It has no discrete, stored, declarative grammar object, only
+soft constraints learned into the weights. “The structure is real. What
+is missing is the commitment.”</p>
+</details>
+</section>
+<section id="what-this-does-not-show" class="level3" data-kind="limits">
+<h3 data-kind="limits">What this does not show</h3>
+<div class="study-meta">
+<span class="study-kind">limits</span> <a
+href="/notes/a-parser-without-a-grammar.html#what-this-does-not-show">4.
+What This Does Not Show ↗</a>
+</div>
+<p>Name the four limits the essay sets on its own argument.</p>
+<details class="answer"><summary>Answer</summary>
+<ul>
+<li><em>Recoverability is not computation.</em> Every coordinate is a
+claim about what is represented in the stream, one step removed from
+what operation a layer performs. The hierarchy geometry is a theorem
+about the unembedding, and the inference to “the layers compute by
+inheritance” is one “we have not earned and do not claim”.</li>
+<li><em>Scope.</em> That geometry is demonstrated for lexical-semantic
+taxonomy and only conjectured to extend to grammatical categories.</li>
+<li><em>Mappings of the essay’s own.</em> CCG application as attention,
+Dynamic Syntax as causal decoding and suppression as override are
+offered as readings. A reader may reject any one and keep the thesis,
+which is the pattern of un-bundling.</li>
+<li><em>A debt.</em> The coordinate system cannot locate where the
+correctness condition comes from. Every formalism, and GSC beneath them,
+presupposes a grammar that is given. Construction Grammar and Word
+Grammar name the outcome of learning and not the discovery. This is the
+boundary <em>The Given and the Found</em> drew between amortizing search
+over a given condition and amortizing the discovery of one.</li>
+</ul>
+</details>
+</section>
+</section>
+<section id="terms" class="level2">
+<h2>Terms</h2>
+<p>Introduced in this essay:</p>
+<ul>
+<li><a
+href="/notes/a-parser-without-a-grammar.html#the-wrong-question">formalisms
+as coordinates</a>: each grammatical tradition fixes one axis of design,
+and the architecture’s position on each axis is read off; none is a
+candidate for being the Transformer’s grammar.</li>
+<li><a
+href="/notes/a-parser-without-a-grammar.html#monotonicity-hpsg-and-the-rewrite-grammar-at-the-far-pole">Merge-without-Move</a>:
+combination that only adds, with no operation that relocates or
+deletes.</li>
+<li><a
+href="/notes/a-parser-without-a-grammar.html#directionality-ccg-and-the-head-the-join-throws-away">un-bundling</a>:
+the architecture runs as separate mechanisms the design choices that a
+formalism’s single combinatory operation fuses.</li>
+<li><a
+href="/notes/a-parser-without-a-grammar.html#strata-lfg-and-the-conflation-of-position-with-function">collapse
+of strata</a>: positional and functional information superimposed in one
+residual stream.</li>
+<li><a
+href="/notes/a-parser-without-a-grammar.html#time-dynamic-syntax-and-the-grammar-that-is-a-parser">grammar
+as process</a></li>
+<li><a
+href="/notes/a-parser-without-a-grammar.html#inventory-construction-grammar-and-what-lives-in-the-weights">lexicon-grammar
+continuum as feature continuum</a></li>
+<li><a
+href="/notes/a-parser-without-a-grammar.html#topology-word-grammar-and-the-grammar-that-is-an-activation-network">operator/operand
+split</a>: abstractions live in the weights, which act on the
+activations and carry none; activation rides only token positions.</li>
+<li><a
+href="/notes/a-parser-without-a-grammar.html#topology-word-grammar-and-the-grammar-that-is-an-activation-network">override
+as additive cancellation</a></li>
+<li><a
+href="/notes/a-parser-without-a-grammar.html#the-shape-of-the-answer">parser
+without a grammar</a>: structure without a discrete, stored, declarative
+grammar object.</li>
+</ul>
+<p>From other essays:</p>
+<ul>
+<li>monotone merge (<a
+href="/notes/merge_and_selection.html#the-residual-stream-is-a-join-not-a-rewrite"><em>Merge
+and Selection: The Residual Stream as a Constraint Grammar, and the Two
+Readings It Cannot Reconcile</em></a>)</li>
+<li>query as valence specification (<a
+href="/notes/merge_and_selection.html#two-analogues-the-query-selects-the-stream-merges"><em>Merge
+and Selection: The Residual Stream as a Constraint Grammar, and the Two
+Readings It Cannot Reconcile</em></a>)</li>
+<li>the selector is not in the value space (<a
+href="/notes/merge_and_selection.html#why-the-two-analogues-cannot-be-reconciled"><em>Merge
+and Selection: The Residual Stream as a Constraint Grammar, and the Two
+Readings It Cannot Reconcile</em></a>)</li>
+<li>gradient blend (<a
+href="/notes/merge_and_selection.html#tensor-product-representations-and-gradient-symbolic-computation"><em>Merge
+and Selection: The Residual Stream as a Constraint Grammar, and the Two
+Readings It Cannot Reconcile</em></a>)</li>
+<li>Harmony and scheduled quantization (<a
+href="/notes/merge_and_selection.html#tensor-product-representations-and-gradient-symbolic-computation"><em>Merge
+and Selection: The Residual Stream as a Constraint Grammar, and the Two
+Readings It Cannot Reconcile</em></a>)</li>
+<li>depth and breadth (<a
+href="/notes/the-given-and-the-found.html#depth-and-breadth-are-two-knobs-not-one"><em>The
+Given and the Found: What Test-Time Reasoning Amortizes, and What It
+Cannot</em></a>)</li>
+<li>limit cycle as terminal behavior (<a
+href="/notes/the-given-and-the-found.html#depth-and-breadth-are-two-knobs-not-one"><em>The
+Given and the Found: What Test-Time Reasoning Amortizes, and What It
+Cannot</em></a>)</li>
+<li>correctness condition (<a
+href="/notes/the-given-and-the-found.html#three-things-the-field-conflates"><em>The
+Given and the Found: What Test-Time Reasoning Amortizes, and What It
+Cannot</em></a>)</li>
+<li>amortizing search versus amortizing discovery (<a
+href="/notes/the-given-and-the-found.html#the-boundary-amortizing-search-versus-amortizing-discovery"><em>The
+Given and the Found: What Test-Time Reasoning Amortizes, and What It
+Cannot</em></a>)</li>
+</ul>
+</section>
+</article>
+<section class="study-link"><p><em>From the study questions back to the essay: 
+<a href="/notes/a-parser-without-a-grammar.html">a-parser-without-a-grammar.html &rarr;</a></em></p></section>
+<script src="/assets/theme-toggle.js"></script>
+</body>
+</html>
