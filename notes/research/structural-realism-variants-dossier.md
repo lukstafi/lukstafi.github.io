@@ -873,7 +873,7 @@ Recorded 15 Nov 2026. "Author" marks the author's own words or a close paraphras
 - Reading: bases are then real generative processes, and not reference frames on one process. This matters. Wolfram treats a choice of rule as a frame, which is a description. If a base were a description, its causation would fall on the modal side by the author's own argument, and the regress would not stop. "All bases are real" is the wording that avoids this.
 - Reading: requirement (B) becomes local. An observer spans a region and cannot tell which base in that region underlies it. Physics has to be the same pattern across the bases of the region. It need not be the same across the whole Ruliad. This is the admissibility clause agreed for question 5, applied to physics.
 - Reading: each base can be emulated in another, where it appears as a pattern. So one process is generative in itself and a pattern, with modal structure, relative to another base. On P&A:119's terms these are two concrete occurrences of one abstract organization. Production is absolute in each base; which base something is located in is relative.
-- Reading: at the last step of the criterion there are no interventions on a base, since a base has no counterfactuals. Their place is taken by actual variation across the Ruliad. This commits the essay to plenitude at the base (question 9).
+- Reading, since withdrawn: at the last step of the criterion there are no interventions on a base, since a base has no counterfactuals, and their place is taken by actual variation across the Ruliad, which commits the essay to plenitude. See "Realism about modality" below.
 - Reading: there are two senses of "cause". Production belongs to bases. Difference-making belongs to patterns, and it is what the interventionist account describes. Particle physics is a pattern, so its causation is difference-making too. This bears on question 8.
 
 **Question 5, the criterion.**
@@ -933,6 +933,33 @@ Recorded 15 Nov 2026. "Author" marks the author's own words or a close paraphras
 
 
 **Three readings confirmed.** The author confirmed on 15 Nov, after the outline was written: bases are real generative processes and not reference frames; "description" means a level fixed by a family of interactions; requirement (B) is local to a region. The other items marked "Reading" above remain unconfirmed. The outline for the first essay is [`structural-realism-essay-outline.md`](structural-realism-essay-outline.md).
+
+
+**Why causation and not bare occurrence.**
+
+- The question arose from the author's: "What is the notion of regularity where production would be one?" It is the Humean notion. The totality of occurrences is given; "x produced y" means that x precedes y and that states of x's type are always followed by states of y's type; the rule is the best summary. A regularity generalizes over types, so by the author's argument it cannot sit at a base.
+- The gap: that argument shows a base is not modal. A Humean agrees and says a base is bare occurrences in an arrangement.
+- Author: constructibility is the step that makes a base causal. An occurrence exists as generated, and a totality given all at once is a structure (P&A:121, P&A:153).
+- Author, on the other candidate step (that with no natures and no prior space nothing else is left to relate occurrences): the two "are not far apart because the 'nothing else' cannot exclude 'occurrences that one comes from another' (the rule application structure)." What is left over is the structure of rule applications, which is the constructive one.
+- Proposals that follow, not yet decided (outline §3, §10, open question 1): "generated" read as individuation by generation, which denies Hume's distinct existences and asserts no necessary connections; constructibility as relative to a lower level, with no first generator; free recombination as a seventh exclusion.
+
+
+**No claim about what lies below.**
+
+- Claude proposed that constructibility is relative: each base is constructed from a lower one, with no first generator. Author: "I don't think we need to make this a positive claim. Levels only matter where there are epistemically accessible patterns (in principle, not necessarily in practice), beyond that there's only the Ruliad."
+- Reading, confirmed by the author 15 Nov: a level is on the side of description. A base is not a level; it is the generation that the lowest accessible level in a region answers to. Constructibility concerns generation by rule application within a base, and not a descent through levels. This changes the answer on the last axis of §1.2's table: a fundamental level is neither asserted nor denied.
+- On free recombination, the author asked whether a postulate or an argument was meant. An argument: the principle needs items individuated apart from their relations, and existence by description; the view already denies both. Its reach is modest, since whatever is finitely constructible may be generated somewhere (P&A:155). The outline places it under the exclusion of fundamental modal structure and not as a seventh exclusion. Not yet decided by the author.
+
+
+**The outline's remaining decisions.** Accepted by the author on 15 Nov, all proposed by Claude: "generated" means individuated by what an occurrence comes from, so the essay denies Hume's distinct existences and asserts no necessary connections; the argument against free recombination is included under the exclusion of fundamental modal structure; the resemblance to Lewis at the level of patterns is welcome and stated once. The decisions on the essay's form are in the outline. No questions remain open there.
+
+
+**Realism about modality, and modal realism.**
+
+- Author: "OSR provides a realist reading to modality that we have, we just don't need it to be fundamental." This is to be distinguished from modal realism, the thesis that all possibilities exist. "A counterfactual situation is conceivable by recursively rebuilding lower levels to support it all the way to the Ruliad, but that reconstructed possibility could be diminishingly small in measure, while the situation might be very 'probable' (subjectively probable) but not actual."
+- Reading, with the wording settled by the author: three things are kept apart from what is actual. What would have happened, which the modal structure of the patterns fixes. Possible: a support can be rebuilt down to the Ruliad. Occurring somewhere: with a measure that may be vanishingly small. The author's example is "had the stone not missed it would have broken the window"; "probable" in the quotation above pointed at this modal standing and not at a probability. A counterfactual about a pattern is true in virtue of the pattern's modal structure, and the pattern is real by the criterion of question 5. Probability and measure are left out of the first essay.
+- Withdrawn: Claude's reading, which the author had accepted among the outline's remaining decisions, that counterfactuals about patterns get their truthmakers from occurrences elsewhere under a typing, as in Lewis. Withdrawn with it: the reading that the criterion's last step needs plenitude. Plenitude at the base (question 9) stands as a claim about what exists and is not what makes modal claims true.
+- Accepted by the author (15 Nov; Claude's proposal): at the last step, what the lowest accessible description answers to is repetition within the region. A rule types many actual applications, and its counterfactuals hold by its generality.
 
 ---
 
