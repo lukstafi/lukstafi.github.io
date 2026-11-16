@@ -87,7 +87,7 @@ That winter my father and I wrote the firmware for a device of his, a monitor an
 
 My parents built the devices by hand and sold them for a couple of years. My father applied for a patent, which was refused over prior art registered in India. With his agreement the firmware is now [public](https://github.com/lukstafi/early-work/tree/main/bzu), under both our names.
 
-I had started dancing at twenty-two, first contemporary dance and a year later ballet. About three years after that, which puts it close to the firmware, I went on a dance tour, woefully unprepared. With the money I bought the first computer I had earned myself.
+I had started dancing at twenty-two, first contemporary dance and a year later ballet. About three years after that, which puts it close to the firmware, I went on a dance tour, quite unprepared. With the money I bought the first computer I had earned myself.
 
 At the start of 2007 I took over an Emacs mode for editing pages of a PmWiki wiki, written by Christian Ridderström, and rewrote much of it so that I could write my homepage from Emacs. I released it five times in seven weeks, and the main file grew from about 1,200 lines to about 3,900. I learned some PHP on the way, since PmWiki is written in it.
 
