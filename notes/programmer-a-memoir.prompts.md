@@ -257,3 +257,7 @@ Ah we're lucky, indeed I had a mini-PC and a not in the fleet before these dates
 Should we be pedantic ocaml-metal is a good clue. It's fully written by agents, but with at the time careful crafting of the context by me.
 
 Worth another editorial pass? Let's add an index entry, commit and push. Thank you!
+
+One thing occurred to me: what I miss from the old days is working out code design details in my head, for example when I would join my girlfriend for hikes.
+
+Maybe also "Now, my hard thinking happens interactively and iteratively with agents." […]

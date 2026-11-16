@@ -197,6 +197,8 @@ Until the end of 2024 I wrote and debugged all my code myself. Cursor went onto 
 
 For a few months now, agents have written all of the code on my projects. I hesitate over the word "my", since I am glad to share the ownership with them. They write OCaml, and also Python, shell, whatever suits the job. Those others I do not count as languages I use.
 
+What I miss from before is working out the details of a design in my head, for example on a hike with my girlfriend. Now my hard thinking happens interactively and iteratively, with agents.
+
 Agents were good at OCaml early. At the very beginning of 2025 they were already proficient in it, more than they themselves believed. I think agents and people benefit from the same things: strictness, and a compiler that checks every case is covered.
 
 I am curious about guarantees beyond that level, and not yet convinced. Two languages I follow without writing them are on that road. One is Lean 4, for autoformalization and for what agents can do with a proof assistant. I have followed the use of language models in provers since 2021, when I was attending the reading group I describe in [*How LLMs Could Place Explicit Memories*](how-llms-could-place-explicit-memories.html), and a prover that proposes the next step is what my talk in the mountains was about. The other is Bend, which in its second version checks proofs, with the stated aim of blocking the mistakes of code written by AI. Its author is active, its uses overlap with programming by agents, and its ideas go back to things I studied, such as Girard's linear logic.
