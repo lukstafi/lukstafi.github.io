@@ -10,6 +10,16 @@ Three papers bear on three of our commitments:
 
 They also add a source of apparent polysemanticity that the interpretability debate does not consider.
 
+## Corrections (18 Nov 2026)
+
+Hesse et al. has since been read in full, with Methods and Extended Data; see [mindedness-litcheck-carrier.md](mindedness-litcheck-carrier.md). Where that report conflicts with this note, the report wins. The main corrections:
+
+- "67 ms time constant" is the fitted mean dwell of a memoryless switching model. No rhythm is shown.
+- "Faces reconstructed from either state exceed 80 percent" is from an analysis the authors call circular. Cross-validated, reconstruction is poor in both states and worse in the suppressed one. So F3's "same resolution" and "tracks its driving input moment by moment" are overstated; the second is not shown at all, since the images are static.
+- F1's "apparently recomputed from continuous input" has no support either way.
+- The 1.21 gain asymmetry is confounded with adaptation of the older stimulus, so it cannot yet be read as a footprint of corrections.
+- About 400 cells were simultaneous in the two face patches only. Coordination between inferotemporal and prefrontal states is not reported.
+
 ## Sources
 
 **Hesse, Lanfranchi, McGrory, Shi, Engel, and Tsao, [*Rapid alternation of conscious and suppressed stimulus representations in the primate brain*](https://doi.org/10.64898/2026.10.15.759299)** (bioRxiv, 16 October 2026).
