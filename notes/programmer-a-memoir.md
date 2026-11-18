@@ -32,6 +32,8 @@ There were other programs. I wrote a simulation of a universe with one dimension
 
 I also learned 68000 assembly, and could do nothing useful with it. It was above the ceiling of what I could manage at that age with nobody to ask. So there were two kinds of scarcity, of software and of people who knew more than I did, and the second was the one that stopped me.
 
+High school eased the second a little. From the first day I sat at one desk with a boy who was as much an Amiga fan as I was. He programmed too, but he was more at home in the machine itself, in its operating system and its hardware. The curriculum made us choose between classes in art and in music, and we both chose art. For that class we made a presentation about the demoscene. We may also have worked on a strategy game together, but I do not remember it.
+
 None of the AMOS code survives, and none of the graphics I drew for the games. I am sorry to have lost them.
 
 ## On paper
@@ -43,6 +45,8 @@ LOGO was the first of several languages I knew from reading before I could run t
 Around 1996 or 1997, in what I think was my second year of high school, I moved from the Amiga to a PC running DOS and Windows, and I took up Object Pascal because my cousins used it. One of the first things I wrote was a text-mode windowed interface shared by a few toy programs. I also wrote a short text adventure in DOS batch files. At school, unusually, the lab had Macintoshes with HyperCard, and I wrote some HyperTalk there.
 
 Then I chose a language for the first time. Borland's Pascal had shown me objects, I wanted more of them, and Bjarne Stroustrup writes well. I learned C++ thoroughly. From Stroustrup I also picked up a little of an older object-oriented language, I think Simula, from which C++ took its classes. I never ran it.
+
+In my last year of high school I joined an extra physics class held after lessons. Its teacher, Mieczysław Pluta, was charismatic, and he came closer than anyone at school to being my mentor. His own doctorate, I think, was on analog optical computers. He programmed too: simulations of waves, specifically in optics, and the recognition of fingerprints, which he was working on then. What he taught me, though, was physics, and a way of reasoning in it, such as choosing the coordinates in which a problem becomes simple.
 
 Prolog I knew from reading as well. At the end of high school I designed a language of my own around it, which I called Object Prolog. It was built on hierarchical stores of facts, and its classes held the clauses. I implemented it in C++, because that was the only way I was going to get a Prolog to run. The implementation had two kinds of bug. One was in unification, when it recursed through the same relations. The other was crashes from unsafe use of memory.
 
@@ -58,7 +62,7 @@ Then I learned Emacs, and found two bugs in its built-in calculator. One was in 
 
 Libraries were where I found languages too. I read a book about Lisp, probably John Allen's *Anatomy of LISP*. I used Lisp in Emacs and in the computer algebra system Maxima, and later read the Lisp source of the cognitive architecture ACT-R.
 
-I found ML by way of interactive theorem provers, probably NuPRL, in which ML is the language one writes proof tactics in. Between the two MLs I picked OCaml over Standard ML for its richer type system: it had objects and polymorphic variants. Soon afterwards the department's functional programming course arrived at the same language. The course alternated between Standard ML and OCaml by year, and I had sat in on some of the Standard ML year before taking the OCaml one. Much later, another course had us prove theorems about unification in HOL Light, a prover one drives from the OCaml prompt.
+I found ML by way of interactive theorem provers, probably NuPRL, in which ML is the language one writes proof tactics in. Between the two MLs I picked OCaml over Standard ML for its richer type system: it had objects and polymorphic variants. Soon afterwards Zdzisław Spławski's course on functional programming arrived at the same language. He taught it in Standard ML and in OCaml in alternate years, and I had sat in on some of a Standard ML year before he taught us OCaml. My friend Michał Ryszard Wójcik and I valued his teaching for being methodical, free of nonsense, and grounded in logic. Much later, another course had us prove theorems about unification in HOL Light, a prover one drives from the OCaml prompt.
 
 The objects were half my reason for choosing OCaml, and I have never used them. I still think they are a sound part of the language's design. Polymorphic variants have earned their place in my code.
 
@@ -103,7 +107,7 @@ In February 2008, at an offsite for students and faculty in the mountains, I gav
 
 Speagram was Łukasz Kaiser's project, and it took up the summer of 2006 for me. It was a language whose syntax its users defined as they went, so that a program could read like sentences in a notation of one's own.
 
-Its repository begins in May 2004, in Nemerle, a language for .NET that had come out of our own institute and to which Kaiser had contributed. As I remember it, I argued for OCaml, and he liked MetaOCaml, which I had pointed out to him and in which a program can build and run typed code for a later stage. In the summer of 2005 Speagram moved to OCaml. Michał Ryszard Wójcik worked on it that summer, for Google's Summer of Code, and his parser was a context-free one with unification. Readers of this blog have met him: he is the Michał Wójcik whose dialogue I answered in [*Is the Monastery Minded?*](is-the-monastery-minded.html).
+Its repository begins in May 2004, in Nemerle, a language for .NET that had come out of our own institute and to which Kaiser had contributed. As I remember it, I argued for OCaml, and he liked MetaOCaml, which I had pointed out to him and in which a program can build and run typed code for a later stage. In the summer of 2005 Speagram moved to OCaml. Wójcik worked on it that summer, for Google's Summer of Code, and his parser was a context-free one with unification. Readers of this blog have met him: he is the Michał Wójcik whose dialogue I answered in [*Is the Monastery Minded?*](is-the-monastery-minded.html).
 
 My part came a year later. I wrote a design note, dated 27 July 2006, called "Speagram with Subtyping and Labels", and between August and October I made some sixty commits putting it into the code.
 
@@ -153,7 +157,7 @@ class Gardener extends Farmer {
 static void bar (Farmer a) { Apple y = a.foo (); y.bite (); }
 ```
 
-The second was functional programming in OCaml, in 2012 and 2013, also in English and to as few students, with translations into F#. Those lectures are now the book [*Curious OCaml*](https://lukstafi.github.io/curious-ocaml/new_book.html).
+The second was functional programming in OCaml, the language Spławski had taught me, in 2012 and 2013, also in English and to as few students, with translations into F#. Those lectures are now the book [*Curious OCaml*](https://lukstafi.github.io/curious-ocaml/new_book.html).
 
 The third was [Pascal](https://github.com/lukstafi/Pascal-course). It was the only one in a big lecture hall, and I took it on at short notice, in place of a colleague on leave. I was back in the language my cousins had shown me fifteen years before, as someone who had since lived in OCaml. The first lecture sorts Free Pascal's features into the good, the meh, and the bad and ugly. Under good I put the parameter modes, `const`, `out` and `var`, subrange types, and nested functions with lexical scope. Under meh I put this:
 
@@ -175,7 +179,7 @@ In October 2015 I defended my thesis, on inferring invariants of programs as typ
 
 ## The languages I did not learn
 
-I did not learn Nemerle, although it came from my own institute. I saw no point, being a Linux user and an OCaml programmer. I never learned Scala, though my lectures cite it.
+I did not learn Nemerle, although it came from my own institute. One of its authors, Michał Moskal, shared a room with me for a while, and later left academia for Microsoft Research. He recommended Greg Egan to me, and *Permutation City* in particular. I have argued with Egan since, in [*Redness Is an Experience*](redness_is_an_experience.html). I saw no point in the language, being a Linux user and an OCaml programmer. I never learned Scala, though my lectures cite it.
 
 Swift disappointed me. I had been led to believe it was close to functional programming, and it does not have full pattern matching. Its patterns take apart enumerations and tuples. They cannot take apart a struct by its fields or a list by its shape.
 
@@ -190,6 +194,16 @@ From 2022 I wrote TypeScript for editor extensions, and OCaml for nearly everyth
 That extension shows what I miss. It logs values together with their types, but only where the programmer has written the types down, because a syntax extension in OCaml runs before type inference and cannot see what will be inferred. I would like metaprogramming that knows the types, for building small languages inside the language. It is a wish I have had since 2003, when Xavier Leroy pointed me to MetaOCaml.
 
 For a while I thought I missed modular explicits, which have since arrived. I was overcomplicating my design.
+
+## Habits of thought
+
+Programming changed how I think in three ways, and the habits have outlasted my writing code by hand.
+
+The first is to take a problem apart into variables and the transitions between their states. A program forces a decision about what the state of things is, which variables hold it, and which steps take one state to the next. Conway's Life, which I wrote on the Amiga, is the habit at its plainest: a grid of variables and one rule for the step. The habit set me up for university. Mathematicians are sometimes sorted into those who think in pictures and those who think in symbols and the steps that transform them, and programming had put me in the second camp before I arrived.
+
+The second is to think in ontologies, and I learned it from objects. A class hierarchy is a claim about what kinds of things there are and which kinds fall under which. Object Prolog was an ontology with clauses in it. At Google I worked on knowledge representation, where the ontologies were the product. The `Farmer` and the `Gardener` teach the rule that makes a hierarchy honest: a kind of thing must keep every promise of the kind above it.
+
+The third is systems thinking, which came both from designing programs and from living with computers. A system's behaviour comes from how its parts meet, and often from parts one did not write. OCamlODE worked only once the physics engine and OCaml's garbage collector could keep track of each other's objects. The carriers in the Java course's simulation moved goods along roads under a scheduler, and the traffic was nowhere in the code for any one of them. Large computer systems remain a relative struggle for me. What the habit gave me is an appreciation of the sciences whose subject is a system of this kind: molecular biology, cell biology, ecology.
 
 ## What I write now
 
