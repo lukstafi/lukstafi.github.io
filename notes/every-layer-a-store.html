@@ -287,15 +287,14 @@ recent interview</a>, Curt Tigges of Goodfire described a unit whose
 gate detects a context, cooking, and whose up key detects a topic within
 it, garlic. Let the two features be orthogonal unit vectors <span
 class="math inline">c</span> and <span class="math inline">t</span>, and
-the query <span class="math inline">x=(c+t)/\sqrt2</span>. A unit with
-<span class="math inline">g_i=c</span> and <span
+the query their sum, scaled to unit length. A unit with <span
+class="math inline">g_i=c</span> and <span
 class="math inline">u_i=t</span> weights its value by 0.33. Cooking
 alone zeroes the up overlap, garlic alone zeroes the gate, and either
-way the weight is 0. A tied unit with the key <span
-class="math inline">x</span> itself weights its value by 0.73 for the
-pair, and still by 0.33 for cooking alone. The tied unit matches a
-direction, and half the input gets nearly half the response. The untied
-unit matches a conjunction.</p>
+way the weight is 0. A tied unit whose key is the query itself weights
+its value by 0.73 for the pair, and still by 0.33 for cooking alone. The
+tied unit matches a direction, and half the input gets nearly half the
+response. The untied unit matches a conjunction.</p>
 <p>Whether conjunctions are what the gate buys is not settled. When Noam
 Shazeer <a href="https://arxiv.org/abs/2002.05202">introduced SwiGLU</a>
 in 2020, he compared gated layers with the plain one at equal parameters
@@ -384,7 +383,7 @@ class="math inline">d^{-1/2}</span> that is <span
 class="math inline">d^{-p/2}</span>: its exponent grows with the
 logarithm of the dimension. The exponential makes it <span
 class="math inline">e^{-\beta(1-s)}</span>, about <span
-class="math inline">e^{-\sqrt d}</span> at the usual sharpness <span
+class="math inline">e^{-d^{1/2}}</span> at the usual sharpness <span
 class="math inline">\beta=d^{1/2}</span>: its exponent grows with the
 square root. As long as the sharpness grows with the dimension, the
 exponential acts on the stored key like a power that grows with it, and
