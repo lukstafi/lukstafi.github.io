@@ -148,7 +148,8 @@ projections of the input, one passed through a smooth nonlinearity.</li>
 <li><a href="https://arxiv.org/abs/2104.09864">Rotary position
 embeddings</a> rotate queries and keys so that their dot product depends
 on relative position. Not every model uses them: Kimi K3’s attention
-layers use none, and its recurrent layers carry the sense of order.</li>
+layers use none, and its recurrent layers carry the sense of order
+(Section 3 shows how).</li>
 <li>Two devices shrink what attention keeps per token. <a
 href="https://arxiv.org/abs/2305.13245">Grouped-query attention</a> lets
 several query heads share one key and value head. <a
@@ -251,8 +252,7 @@ so about half the interfering terms vanish. That buys a factor of two.
 Squaring after the ReLU does far more. Small overlaps become very small,
 the stored key’s overlap of 1 stays 1, and the capacity grows to about
 <span class="math inline">2d^2/3</span>: some 2,700 pairs at <span
-class="math inline">d=64</span>. A gated unit with a tied gate behaves
-the same way. Raising the overlap to the power <span
+class="math inline">d=64</span>. Raising the overlap to the power <span
 class="math inline">p</span> gives capacity of order <span
 class="math inline">d^p</span>.</p>
 <p>That feed-forward layers store associations this way is more than an
@@ -269,6 +269,58 @@ feed-forward layers respond to. For 65 to 80 percent of the inputs that
 most activate a key, annotators found a shared pattern: shallow ones,
 such as a common last word, in the lower layers, and semantic ones in
 the upper layers.</p>
+<p>The gated units of current models give each value two keys. A SwiGLU
+layer computes</p>
+<p><span class="math display">
+f(x)=\sum_i v_i\,\operatorname{SiLU}(g_i^\top x)\,(u_i^\top x),\qquad
+\operatorname{SiLU}(s)=\frac{s}{1+e^{-s}},
+</span></p>
+<p>with a gate key <span class="math inline">g_i</span> and an up key
+<span class="math inline">u_i</span> trained separately. Against a
+random query each overlap is about <span
+class="math inline">d^{-1/2}</span>, so their product is of order <span
+class="math inline">1/d</span>, as with squaring. Tie the gate, <span
+class="math inline">g_i=u_i</span>, and the capacity nearly matches the
+squared ReLU’s. Untying it changes what a unit responds to. In <a
+href="https://www.cognitiverevolution.ai/the-neuron-basis-goodfire-s-curt-tigges-on-agentic-interp-monosemanticity-reverse-engineering/">a
+recent interview</a>, Curt Tigges of Goodfire described a unit whose
+gate detects a context, cooking, and whose up key detects a topic within
+it, garlic. Let the two features be orthogonal unit vectors <span
+class="math inline">c</span> and <span class="math inline">t</span>, and
+the query <span class="math inline">x=(c+t)/\sqrt2</span>. A unit with
+<span class="math inline">g_i=c</span> and <span
+class="math inline">u_i=t</span> weights its value by 0.33. Cooking
+alone zeroes the up overlap, garlic alone zeroes the gate, and either
+way the weight is 0. A tied unit with the key <span
+class="math inline">x</span> itself weights its value by 0.73 for the
+pair, and still by 0.33 for cooking alone. The tied unit matches a
+direction, and half the input gets nearly half the response. The untied
+unit matches a conjunction.</p>
+<p>Whether conjunctions are what the gate buys is not settled. When Noam
+Shazeer <a href="https://arxiv.org/abs/2002.05202">introduced SwiGLU</a>
+in 2020, he compared gated layers with the plain one at equal parameters
+and computation. A bilinear layer, the product with no nonlinearity at
+all, already beat the ReLU baseline: a held-out log-perplexity of 1.648
+against 1.677, with SwiGLU at 1.636. Most of the gain came from the
+product. Shazeer did not say why: “We offer no explanation as to why
+these architectures seem to work; we attribute their success, as all
+else, to divine benevolence.” On synthetic biographies, whose attributes
+are drawn at random, <a
+href="https://arxiv.org/abs/2404.05405">Allen-Zhu and Li</a> found that
+the gate added no capacity, and for rarely seen facts it cost some. That
+is what the conjunction reading predicts. A conjunction pays where
+inputs combine parts that recur in other combinations, and independent
+random facts have no such parts.</p>
+<p>The product may also make the layer easier to read. Without the SiLU,
+each unit’s weight is a quadratic form in the input. <a
+href="https://arxiv.org/abs/2410.08417">Pearce and colleagues</a> showed
+that such a bilinear layer can be analysed from its weights alone:
+decomposing them revealed “interpretable low-rank structure” in toy
+tasks, image classifiers and language models. Tigges, who studies the
+neurons of SwiGLU models, finds them easier to interpret than those of
+ReLU or GELU models, “probably because it allows for… a little circuit…
+able to do some logic.” He adds that the people who developed the gate
+“weren’t thinking about interpretability at all.”</p>
 <blockquote>
 <p><strong>Hopfield and the 0.14 N limit.</strong> In 1982 <a
 href="https://doi.org/10.1073/pnas.79.8.2554">John Hopfield</a> stored
@@ -320,17 +372,33 @@ that its update rule is Transformer attention.</p>
 class="math inline">e^{\beta s}=\sum_p(\beta s)^p/p!</span>. Let a store
 weight each value by <span class="math inline">e^{\beta s}</span>, where
 <span class="math inline">s</span> is the overlap of its key with the
-query and <span class="math inline">\beta</span> sets the sharpness. It
-suppresses interference more than any single power does. Normalize the
-weights by their sum, and the store is softmax attention:</p>
+query and <span class="math inline">\beta</span> sets the sharpness. The
+interfering keys keep large weights: with overlaps near 0, their weights
+are near 1, and the low powers of the sum supply them. The stored key’s
+weight is <span class="math inline">e^\beta</span>, and the high powers
+supply it, since the terms of its sum peak near <span
+class="math inline">p=\beta</span>. Recall depends on the ratio of the
+two weights. A power <span class="math inline">p</span> makes the ratio
+<span class="math inline">s^p</span>, and with overlaps of about <span
+class="math inline">d^{-1/2}</span> that is <span
+class="math inline">d^{-p/2}</span>: its exponent grows with the
+logarithm of the dimension. The exponential makes it <span
+class="math inline">e^{-\beta(1-s)}</span>, about <span
+class="math inline">e^{-\sqrt d}</span> at the usual sharpness <span
+class="math inline">\beta=d^{1/2}</span>: its exponent grows with the
+square root. As long as the sharpness grows with the dimension, the
+exponential acts on the stored key like a power that grows with it, and
+it eventually suppresses interference more than any fixed power.
+Normalize the weights by their sum, and the store is softmax
+attention:</p>
 <p><span class="math display">
 f(q)=\sum_i v_i\,\frac{e^{\beta k_i^\top q}}{\sum_j e^{\beta k_j^\top
 q}} .
 </span></p>
 <p>Wang’s estimate for random keys gives a capacity of about <span
 class="math inline">e^{2\beta(1-\beta/d)}</span>. With the usual
-sharpness, <span class="math inline">\beta=d^{1/2}</span>, that is about
-1.2 million pairs at <span class="math inline">d=64</span>.</p>
+sharpness, that is about 1.2 million pairs at <span
+class="math inline">d=64</span>.</p>
 <p>Attention is a different kind of store from the feed-forward layer.
 Nothing is trained into it. Its keys and values are computed from the
 context while the model reads, and its <span
@@ -426,10 +494,16 @@ parameters than from its active ones.</p>
 <p>Not every layer needs to be split. Microsoft’s <a
 href="https://microsoft.ai/pdf/mai-thinking-1.pdf">MAI-Thinking-1</a>,
 whose weights are not released, alternates a feed-forward store split
-among 512 experts with a small store that every token reads. In
-Microsoft’s ablations this layout matched experts in every layer at
-equal computation and trained faster on the hardware, and adding a
-shared expert brought it little or nothing.</p>
+among 512 experts, 8 per token, with a small dense store that every
+token reads. Microsoft compared this layout with experts in every layer.
+Measured against computation, the two came out about even. Measured
+against training time on Microsoft’s hardware, the alternating layout
+reached the same loss in 18 to 27 percent less time. Experts in every
+layer did best with a <em>shared expert</em>, one that every token reads
+besides the routed ones, while adding a shared expert to the alternating
+layout brought little or no benefit. A shared expert is a dense store
+inside a mixture of experts, and the alternating layout already has one
+in every other layer.</p>
 <p>Two of the seven address some stores without a learned router.
 DeepSeek-V4-Pro routes tokens in its first three layers by a hash of the
 token’s identity, so the address is the token itself.
@@ -517,19 +591,20 @@ token.</p>
 <p>Four of the seven choose which entries to read. GLM-5.3 uses DeepSeek
 Sparse Attention: a small “lightning indexer” scores every earlier
 position for each query, and the main attention reads the 2,048 best.
-Its IndexShare lets one indexer serve a group of four consecutive
-layers. DeepSeek-V4-Pro’s compressed sparse attention applies the same
-kind of indexer to compressed entries, and DeepSeek-V4.1-Flash stacks
-two levels of it (Section 5). MiniMax-M3’s <a
+Its IndexShare runs the indexer only in the first layer of each group of
+four, and the other three read the positions it chose. DeepSeek-V4-Pro’s
+compressed sparse attention applies the same kind of indexer to
+compressed entries, and DeepSeek-V4.1-Flash stacks two levels of it
+(Section 5). MiniMax-M3’s <a
 href="https://arxiv.org/abs/2606.13392">sparse attention</a> (MSA)
 selects blocks of 128 positions, separately for each group of heads that
 share keys and values, and always includes the block that contains the
-query.</p>
+current token.</p>
 <p>A selector is a second, cheaper store placed in front of the first.
 It scores keys, and the main attention reads only the winners. Because
 the choice is a hard top-<span class="math inline">k</span>, no gradient
 flows through it, so the indexers learn by imitating the main
-attention’s distribution. The second essay describes how. What they
+attention’s distribution. The following essay describes how. What they
 learn can be inspected. In MiniMax’s analysis of its
 109-billion-parameter research models, the indexer learns to select the
 first block of the sequence, which holds the “attention sink” that many
@@ -539,20 +614,37 @@ relevant it was.</p>
 </section>
 <section id="compression-pools-positions" class="level3">
 <h3>Compression pools positions</h3>
-<p>DeepSeek-V4-Pro’s compression is learned. Each entry of its
-compressed sparse attention pools 8 consecutive tokens. In each of 512
-channels separately, the layer computes softmax weights over the 8
-tokens and takes the weighted average. Adjacent entries overlap by 4
-tokens. One pooled vector serves as both key and value, shared by all
-128 query heads. The heavily compressed layers pool 128 tokens per entry
-without overlap and attend to all of them, so they need no indexer. Each
-query also sees the 128 most recent tokens uncompressed, in the same
-softmax as the compressed entries.</p>
-<p>In storage terms, pooling writes several positions into one entry.
-Within a pool the positions share a key, and attention cannot tell them
-apart. A fact spread across two tokens of the same pool can still be
-read. Two facts in one pool that a later query needs to separate
-cannot.</p>
+<p>DeepSeek-V4-Pro’s compression is learned. Its compressed sparse
+attention writes one entry for every 4 tokens, and each entry draws on
+8: the 4 tokens of its own block and the 4 before them. From its hidden
+state, each token <span class="math inline">j</span> computes two
+vectors of 512 channels: a candidate <span
+class="math inline">c_j</span> and a set of weight logits <span
+class="math inline">z_j</span>. The entry is</p>
+<p><span class="math display">
+\bar c=\sum_{j=1}^{8} s_j\odot c_j,\qquad
+s_{j\ell}=\frac{\exp(z_{j\ell}+b_{j\ell})}{\sum_{j&#39;=1}^{8}\exp(z_{j&#39;\ell}+b_{j&#39;\ell})},
+</span></p>
+<p>where <span class="math inline">\odot</span> multiplies channel by
+channel and <span class="math inline">b</span> is a learned bias for
+each place in the pool. Each channel <span
+class="math inline">\ell</span> of the entry is its own weighted average
+of the 8 tokens, so different channels can draw on different tokens:
+with sharp weights, one channel copies the second token and the next
+copies the seventh. In effect the pooling is a strided convolution over
+the sequence, one channel at a time, whose kernel is recomputed from the
+tokens it covers. The 4 earlier tokens enter through a second pair of
+projections, so a token contributes differently to its own block’s entry
+and to the next one. One pooled vector serves as both key and value,
+shared by all 128 query heads. The heavily compressed layers pool 128
+tokens per entry the same way, without overlap, and attend to all of
+them, so they need no indexer. Each query also sees the 128 most recent
+tokens uncompressed, in the same softmax as the compressed entries.</p>
+<p>In storage terms, the weights decide which token fills which channels
+of an entry, but the entry has a single key, which a query matches as a
+whole. Attention cannot tell the pooled positions apart. A fact spread
+across two tokens of the same pool can still be read. Two facts in one
+pool that a later query needs to separate cannot.</p>
 </section>
 <section id="the-recurrent-state-learns-while-it-reads" class="level3">
 <h3>The recurrent state learns while it reads</h3>
@@ -575,8 +667,13 @@ Qwen3.8’s <a href="https://arxiv.org/abs/2412.06464">Gated DeltaNet</a>
 the decay is one number per head and token. In Kimi K3’s <a
 href="https://arxiv.org/abs/2510.26692">Kimi Delta Attention</a> (KDA)
 it is one number per channel, so a head can keep some directions for a
-long time and let others fade quickly. <em>Where Experience Goes</em>
-works through <a
+long time and let others fade quickly. The LSTM lineage reached a near
+relative. In the mLSTM of <a
+href="https://arxiv.org/abs/2405.04517">xLSTM</a>, from Sepp
+Hochreiter’s group, the LSTM’s memory cell becomes a matrix written by
+outer products, and the gates are computed from the token alone so that
+the layer trains in parallel. Its write is purely additive, without the
+delta rule’s correction. <em>Where Experience Goes</em> works through <a
 href="https://lukstafi.github.io/notes/where-experience-goes.html#a-ladder-of-stores">an
 example of the rule overwriting a redefined word</a>.</p>
 <blockquote>
@@ -602,6 +699,73 @@ factor of two. The decay sets how long contents last. In both models the
 gates are bounded: the write step stays between 0 and 1 and the decay
 between full retention and near-erasure. Section 6 returns to why those
 bounds matter.</p>
+<blockquote>
+<p><strong>Position and forgetting.</strong> <a
+href="https://blog.janestreet.com/using-group-theory-to-explore-positional-encodings-attention/">Alok
+Puranik</a> asked which positional encodings are possible at all.
+Transform a query at position <span class="math inline">t</span> and a
+key at position <span class="math inline">s</span> linearly, so that
+their score is <span class="math inline">q^\top A\,k</span> for some
+matrix <span class="math inline">A</span>. Ask that <span
+class="math inline">A</span> depend only on the distance <span
+class="math inline">\tau=t-s</span>, be the identity at <span
+class="math inline">\tau=0</span>, and vary continuously. Then shifts
+compose, <span
+class="math inline">A(\tau+\sigma)=A(\tau)A(\sigma)</span>, and the
+matrices form a one-parameter group. Every such group is <span
+class="math inline">A(\tau)=\exp(\tau M)</span> for a fixed generator
+<span class="math inline">M</span>, by the same argument that makes time
+evolution the exponential of a Hamiltonian in <a
+href="https://lukstafi.github.io/notes/the-standard-of-motion-mathematics.html#kinematical-lie-algebras">the
+mathematics companion of <em>The Standard of Motion</em></a>. The
+eigenvalues of <span class="math inline">M</span> sort the options. With
+<span class="math inline">M=0</span> nothing is encoded, which is NoPE.
+An imaginary pair rotates a plane of channels at a fixed frequency,
+which is RoPE. A negative real eigenvalue shrinks the score
+exponentially with distance. A complex pair does both, as in RetNet and
+Mamba-3. A positive real eigenvalue grows without bound. Generators that
+cannot be diagonalized add terms polynomial in the distance. The
+simplest, a <span class="math inline">2\times2</span> block with <span
+class="math inline">\exp(\tau M)=I+\tau M</span>, moves a pair of
+channels like a body coasting at constant speed. With fixed extra
+components appended to queries and keys, Puranik shows, it recovers <a
+href="https://arxiv.org/abs/2108.12409">ALiBi</a>, which lowers each
+score in proportion to the distance. He expects the higher powers to be
+of little use. He concludes that “all of the sensible ones are already
+being used in real systems.” He also notes that <span
+class="math inline">t</span> need not count tokens: it can be a learned
+notion of time.</p>
+<p>The negative eigenvalues are the decay of this section. Drop the
+delta rule’s correction and keep the decay. The state after position
+<span class="math inline">t</span> then weights the key written at <span
+class="math inline">s</span> by the product of the decays in between.
+With a constant decay <span class="math inline">\alpha</span> per
+channel, that product is <span
+class="math inline">\alpha^{t-s}=\exp\big((t-s)\ln\alpha\big)</span>: a
+diagonal generator whose entries <span
+class="math inline">\ln\alpha</span> are negative, one per channel.
+Puranik’s form would scale the query by <span
+class="math inline">\alpha^{t}</span> and the key by <span
+class="math inline">\alpha^{-s}</span>, which overflows. The recurrent
+layer applies one factor of <span class="math inline">\alpha</span> per
+token instead, the group law taken one step at a time. KDA computes its
+decay from each token, so the product no longer depends on <span
+class="math inline">t-s</span> alone. It is <span
+class="math inline">\exp(T_t-T_s)</span>, where <span
+class="math inline">T_t</span> sums the logarithms of the decays up to
+<span class="math inline">t</span>, channel by channel. The encoding
+keeps its form and runs on a learned clock, one per channel, which runs
+fast where the decay is strong and stands still where it is near 1. This
+is how Kimi’s report can say that K3 “encodes positional information
+implicitly through the recurrent gating and decay mechanism of KDA”, and
+why its MLA layers can do without RoPE. Gated DeltaNet’s decay, one
+number per head, gives each head a single clock. The bound on the decay
+keeps every <span class="math inline">\ln\alpha</span> at or below zero,
+away from the growing encodings. The correction factor <span
+class="math inline">I-\beta_tk_tk_t^\top</span> is not diagonal, and its
+factors for different tokens do not commute, so the delta rule itself
+falls outside the classification.</p>
+</blockquote>
 </section>
 <section id="what-the-trained-hybrids-do-with-their-stores"
 class="level3">
@@ -663,8 +827,8 @@ keeps recall nearly perfect at every length he tried, up to two million
 entries. Real long contexts are not random: they repeat entities,
 templates and phrasings, and no sharpening separates near-duplicate
 keys. That is one reason a model whose architecture accepts a million
-tokens may still fail to use them, and why the second essay treats long
-context as a training problem.</p>
+tokens may still fail to use them, and why the following essay treats
+long context as a training problem.</p>
 </section>
 </section>
 <section id="memory-along-depth" class="level2">
@@ -673,8 +837,8 @@ context as a training problem.</p>
 Transformer each block reads the residual stream, computes something,
 and adds the result back. The residual stream is therefore a store too:
 within one token’s pass through the network, every block writes into it
-and every later block reads the sum. Two of the seven models replace
-this plain sum.</p>
+and every later block reads the sum. Three of the seven models replace
+this plain sum, in two ways.</p>
 <section id="several-streams-mixed" class="level3">
 <h3>Several streams, mixed</h3>
 <p>DeepSeek’s <a
@@ -690,13 +854,15 @@ X_{l+1}=B_lX_l+C_l\,\mathcal F_l(A_lX_l).
 streams into the block’s input. The column vector <span
 class="math inline">C_l</span> distributes the block’s output back over
 the streams. The matrix <span class="math inline">B_l</span> mixes the
-streams among themselves. All three are computed from the current
-streams, so they differ from token to token. Twenty rounds of
-alternately normalizing its rows and columns push <span
-class="math inline">B_l</span> toward a doubly stochastic matrix: one
-with non-negative entries whose rows and columns each sum to 1. A doubly
-stochastic mix conserves the total over the streams, which keeps the
-signal from growing or vanishing across many layers.</p>
+streams among themselves. All three weigh whole streams and leave the
+channels alone, so every stream at every layer is written in the same
+coordinates, as in a plain residual stream. The three are computed from
+the current streams, so they differ from token to token. Twenty rounds
+of alternately normalizing the rows and columns of <span
+class="math inline">B_l</span> push it toward a doubly stochastic
+matrix: one with non-negative entries whose rows and columns each sum to
+1. A doubly stochastic mix conserves the total over the streams, which
+keeps the signal from growing or vanishing across many layers.</p>
 <blockquote>
 <p><strong>Worked example 4: mixing two streams.</strong> Take two
 scalar streams, <span class="math inline">x=(2,4)</span>, and the doubly
@@ -710,11 +876,11 @@ total; the block added new content on top. In the trained model the rows
 of the mixing matrix sum to 1 exactly and the columns only
 approximately, so the conservation is approximate.</p>
 </blockquote>
-<p>A doubly stochastic mix has a further property. Its average channel
-is an ordinary residual update. The differences between the streams
-contract at every layer, because only a permutation preserves them all,
-as <a href="https://arxiv.org/abs/2610.06653">Li, Sha and Yang</a> show.
-The extra streams are a memory that fades over depth. <a
+<p>A doubly stochastic mix has a further property. The average of the
+streams follows an ordinary residual update. The differences between the
+streams contract at every layer, because only a permutation preserves
+them all, as <a href="https://arxiv.org/abs/2610.06653">Li, Sha and
+Yang</a> show. The extra streams are a memory that fades over depth. <a
 href="https://arxiv.org/abs/2609.05309">Zhao and colleagues</a> measured
 how a trained model uses them. In DeepSeek-V4-Flash, a typical block
 reads about two of the four streams and writes about two. In the later
@@ -744,7 +910,10 @@ h_l=\sum_i\alpha_{i\to l}\,v_i ,
 class="math inline">l</span> compared with the normalized candidates. In
 K3 the candidates are the embedding, the completed sums of earlier
 groups of 12 layers, and the running sum within the current group: up to
-nine sources at the last layer. (The AttnRes paper calls these groups
+nine sources at the last layer. Each sum adds up the outputs of its
+group’s attention and feed-forward blocks without weights, as a plain
+residual stream would. The weighting comes in only when a layer chooses
+among the sums. (The AttnRes paper calls the groups themselves
 blocks.)</p>
 <blockquote>
 <p><strong>Worked example 5: retrieval over depth.</strong> Let two
@@ -885,7 +1054,7 @@ head</td>
 </tbody>
 </table>
 <p>Read down the last column. The stores written in training lose
-contents only when training writes over them, and that is the second
+contents only when training writes over them, and that is the following
 essay’s subject. The stores written while reading differ in what they
 give up. The window gives up the old, compression gives up detail,
 selection gives up whatever its indexer misses, and the recurrent state
@@ -986,8 +1155,16 @@ else.</p>
 mixer is three KDA layers for every gated MLA layer, its MLA layers use
 no positional encoding, and the KDA gates carry the sense of order. Its
 channel mixer, Stable LatentMoE, routes tokens among experts that
-compute in a narrower latent space. Its residual combination is
-AttnRes.</p>
+compute in a narrower latent space. Each of its MoE layers has a
+projection, shared by the layer’s experts, that halves a token’s
+representation from 7,168 channels to 3,584 before it is sent to its 16
+experts. The router still reads the full width. The experts’ combined
+output is normalized and projected back up once, so less travels between
+devices. The shared experts keep the full width. “Stable” refers to
+Kimi’s fixes for the exploding activations and uneven expert loads this
+design produced at 896 experts, which <a
+href="https://lukstafi.github.io/notes/filling-the-stores.html#experts-must-stay-balanced">the
+following essay</a> describes. Its residual combination is AttnRes.</p>
 <p><strong>Qwen3.8</strong> shares K3’s plan for the token mixer: three
 Gated DeltaNet layers for every attention layer. Its attention layers
 multiply each head’s output, channel by channel, by a sigmoid gate. The
@@ -996,8 +1173,8 @@ which also reads images.</p>
 <p><strong>GLM-5.3</strong> shows that a new release need not mean a new
 architecture. Its model card says it shares GLM-5.2’s base model and
 that every gain comes from post-training. The architecture it inherits
-pairs an MLA-style cache with DeepSeek’s sparse attention and shares
-each indexer across a group of four layers.</p>
+pairs an MLA-style cache with DeepSeek’s sparse attention and lets one
+indexer’s choice of positions serve each group of four layers.</p>
 <p><strong>DeepSeek-V4-Pro</strong> combines two levels of compression.
 Its first two layers are heavily compressed, and the remaining 59
 alternate between compressed sparse and heavily compressed attention.
@@ -1132,20 +1309,22 @@ probes give monitoring a second channel.</p>
 <h2>Where the prompt went</h2>
 <p>Return to the million-token prompt. In MiMo, most of it went into the
 10 global layers’ caches, where every later token can reach it, and the
-60 window layers kept only the last 128 tokens. In Kimi K3, the 24 MLA
-layers kept a compressed entry for every token, and the 69 KDA layers
-folded the whole prompt into fixed-size matrices. If the trained hybrids
-measured so far are a guide, those matrices hold the prompt’s settings,
-its language and voice, while the facts stay in the cache. In
-DeepSeek-V4.1-Flash, the encoder read the prompt and wrote it into four
-caches: three compressed ones shared within the encoder, and one
-uncompressed one from which the decoder selects. Engram’s tables were
-consulted along the way. In each model the prompt was divided among
-stores that keep different things for different lengths of time.</p>
+60 window layers kept entries for only the last 128 tokens, though those
+entries were computed from layers that had already read the whole
+prompt. In Kimi K3, the 24 MLA layers kept a compressed entry for every
+token, and the 69 KDA layers folded the whole prompt into fixed-size
+matrices. If the trained hybrids measured so far are a guide, those
+matrices hold the prompt’s settings, its language and voice, while the
+facts stay in the cache. In DeepSeek-V4.1-Flash, the encoder read the
+prompt and wrote it into four caches: three compressed ones shared
+within the encoder, and one uncompressed one from which the decoder
+selects. Engram’s tables were consulted along the way. In each model the
+prompt was divided among stores that keep different things for different
+lengths of time.</p>
 <p>These stores were not designed to hold particular contents; training
 filled them. <a
 href="https://lukstafi.github.io/notes/filling-the-stores.html">The
-second essay</a> takes up how: what pretraining writes and in what
+following essay</a> takes up how: what pretraining writes and in what
 order, how a selector learns what to select, and what post-training
 changes in what was written. The stores also matter beyond engineering.
 Any account of a model’s states, of what persists in it and what it
@@ -1164,40 +1343,48 @@ AI technical report, microsoft.ai/pdf/mai-thinking-1.pdf). Components:
 Vaswani et al., arXiv 1706.03762; Graves, Wayne and Danihelka,
 <em>Neural Turing Machines</em>, arXiv 1410.5401; Zhang and Sennrich,
 arXiv 1910.07467; Shazeer, arXiv 2002.05202; Su et al., arXiv
-2104.09864; Ainslie et al., arXiv 2305.13245; DeepSeek-AI, arXiv
-2405.04434; Shazeer et al., arXiv 1701.06538; Yang, Kautz and
-Hatamizadeh, <em>Gated Delta Networks</em>, arXiv 2412.06464; Kimi Team,
-<em>Kimi Linear</em>, arXiv 2510.26692; Kimi Team, <em>Attention
-Residuals</em>, arXiv 2603.15031; Xie et al., <em>mHC</em>, arXiv
-2512.24880; <em>Conditional Memory via Scalable Lookup</em> (Engram),
-arXiv 2601.07372; Qwen Team, <em>Qwen Technical Report</em>, arXiv
-2309.16609. Memory: Wang, <em>You could have invented transformers from
-memory</em> (blog post, October 2026); Zhong et al., arXiv 2505.19488;
-Kohonen, IEEE Trans. Computers C-21 (1972); Anderson, Math. Biosci. 14
-(1972); Kohonen and Ruohonen, IEEE Trans. Computers C-22 (1973); Widrow
-and Hoff, IRE WESCON (1960); Hopfield, PNAS 79 (1982); Amit, Gutfreund
-and Sompolinsky, PRL 55 (1985); McEliece et al., IEEE Trans. IT 33
-(1987); Gardner, J. Phys. A 21 (1988), via Mézard, J. Phys. A 22 (1989);
-Krotov and Hopfield, arXiv 1606.01164; Demircigil et al., arXiv
-1702.01929; Ramsauer et al., arXiv 2008.02217; Kanerva, <em>Sparse
-Distributed Memory</em> (MIT Press, 1988) and <em>Sparse Distributed
-Memory and Related Models</em> (RIACS TR 92.10, 1992); Bricken and
-Pehlevan, arXiv 2111.05498; Bricken et al., arXiv 2303.11934; Sukhbaatar
-et al., arXiv 1907.01470; Geva et al., arXiv 2012.14913; Schmidhuber,
-Neural Computation 4 (1992); Katharopoulos et al., arXiv 2006.16236;
-Schlag, Irie and Schmidhuber, arXiv 2102.11174; Nichani, Lee and Bietti,
+2104.09864; Puranik, <em>Using group theory to explore the space of
+positional encodings for attention</em> (Jane Street blog, April 2026),
+and his conversation with Grant Sanderson, <em>Positional Encodings and
+Group Theory</em> (Jane Street, August 2026); Press, Smith and Lewis
+(ALiBi), arXiv 2108.12409; Ainslie et al., arXiv 2305.13245;
+DeepSeek-AI, arXiv 2405.04434; Shazeer et al., arXiv 1701.06538; Yang,
+Kautz and Hatamizadeh, <em>Gated Delta Networks</em>, arXiv 2412.06464;
+Kimi Team, <em>Kimi Linear</em>, arXiv 2510.26692; Kimi Team,
+<em>Attention Residuals</em>, arXiv 2603.15031; Xie et al.,
+<em>mHC</em>, arXiv 2512.24880; <em>Conditional Memory via Scalable
+Lookup</em> (Engram), arXiv 2601.07372; Qwen Team, <em>Qwen Technical
+Report</em>, arXiv 2309.16609. Memory: Wang, <em>You could have invented
+transformers from memory</em> (blog post, October 2026); Zhong et al.,
+arXiv 2505.19488; Kohonen, IEEE Trans. Computers C-21 (1972); Anderson,
+Math. Biosci. 14 (1972); Kohonen and Ruohonen, IEEE Trans. Computers
+C-22 (1973); Widrow and Hoff, IRE WESCON (1960); Hopfield, PNAS 79
+(1982); Amit, Gutfreund and Sompolinsky, PRL 55 (1985); McEliece et al.,
+IEEE Trans. IT 33 (1987); Gardner, J. Phys. A 21 (1988), via Mézard, J.
+Phys. A 22 (1989); Krotov and Hopfield, arXiv 1606.01164; Demircigil et
+al., arXiv 1702.01929; Ramsauer et al., arXiv 2008.02217; Kanerva,
+<em>Sparse Distributed Memory</em> (MIT Press, 1988) and <em>Sparse
+Distributed Memory and Related Models</em> (RIACS TR 92.10, 1992);
+Bricken and Pehlevan, arXiv 2111.05498; Bricken et al., arXiv
+2303.11934; Sukhbaatar et al., arXiv 1907.01470; Geva et al., arXiv
+2012.14913; Schmidhuber, Neural Computation 4 (1992); Katharopoulos et
+al., arXiv 2006.16236; Schlag, Irie and Schmidhuber, arXiv 2102.11174;
+Beck et al., <em>xLSTM</em>, arXiv 2405.04517; Nichani, Lee and Bietti,
 arXiv 2412.06538; Barnfield et al., arXiv 2605.05189; Allen-Zhu and Li,
-arXiv 2404.05405. Measurements on trained models: Lee et al., arXiv
-2609.33093; Afendulev et al., arXiv 2609.04434; GateSight, arXiv
-2610.14754; DASC, arXiv 2608.30386; Li, Sha and Yang, arXiv 2610.06653;
-Zhao et al., arXiv 2609.05309; González-Martínez et al., <em>Depth
-Memory</em>, arXiv 2610.18809. Depth and monitoring: Merrill, Petty and
-Sabharwal, <em>The Illusion of State in State-Space Models</em>, arXiv
-2404.08819; <em>Olmo Hybrid</em>, arXiv 2604.03444; <em>Complex
-KDA</em>, arXiv 2609.24797; Eitan, Yehudai and Maron, arXiv 2610.25250;
-Olszowiec et al., arXiv 2610.18127; Bergen et al. (Goodfire), arXiv
-2609.19101. Our research notes for this essay are in the repository
-under <code>notes/research/</code>.</p>
+arXiv 2404.05405; Pearce et al., <em>Bilinear MLPs Enable Weight-Based
+Mechanistic Interpretability</em>, arXiv 2410.08417; Curt Tigges,
+interview on <em>The Cognitive Revolution</em> (10 November 2026).
+Measurements on trained models: Lee et al., arXiv 2609.33093; Afendulev
+et al., arXiv 2609.04434; GateSight, arXiv 2610.14754; DASC, arXiv
+2608.30386; Li, Sha and Yang, arXiv 2610.06653; Zhao et al., arXiv
+2609.05309; González-Martínez et al., <em>Depth Memory</em>, arXiv
+2610.18809. Depth and monitoring: Merrill, Petty and Sabharwal, <em>The
+Illusion of State in State-Space Models</em>, arXiv 2404.08819; <em>Olmo
+Hybrid</em>, arXiv 2604.03444; <em>Complex KDA</em>, arXiv 2609.24797;
+Eitan, Yehudai and Maron, arXiv 2610.25250; Olszowiec et al., arXiv
+2610.18127; Bergen et al. (Goodfire), arXiv 2609.19101. Our research
+notes for this essay are in the repository under
+<code>notes/research/</code>.</p>
 <p><em>This article was co-authored by Łukasz Stafiniak and Claude (Opus
 5.5).</em></p>
 </section>

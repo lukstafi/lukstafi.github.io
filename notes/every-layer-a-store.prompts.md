@@ -67,3 +67,31 @@ Yes, figures (Figures 1–3 as matplotlib SVGs with their scripts in the repo).
 ## Editorial pass
 
 Yes, editorial pass (AGENTS.md style).
+
+## Reading pass
+
+Let's do the post-draft iteration over the essay. Should we cover activation functions, in particular what makes SwiGLU special? https://www.cognitiverevolution.ai/the-neuron-basis-goodfire-s-curt-tigges-on-agentic-interp-monosemanticity-reverse-engineering/ claims SwiGLU is better for interpretability because it does a more sophisticated per-neuron computation.
+
+Should we add a box or section to cover positional encodings, and maybe a box with this blog post derivation? https://blog.janestreet.com/using-group-theory-to-explore-positional-encodings-attention/
+
+We could also add a back pointer to the mathematics companion which introduced Lie groups.
+
+"[The exponential] suppresses interference more than any single power does." What's the more precise intuition to see this? The fact that the square suppressed interference was obvious because of the square of a fraction being an order of magnitude smaller. But in the exponential, we add up all the powers, so we don't drop the differences.
+
+"which shrinks only with the logarithm of $1/s$" -- what's on the other axis of shrinking that makes it logarithmic? $p$ itself?
+
+About the MAI-Thinking-1 paragraph: "adding a shared expert brought it little or nothing" is confusing. Is it the point that the shared layer "trained faster on the hardware" and that's why it was introduced, while it neither helped nor hurt storage?
+
+How does sliding window attention work with the KV cache? For the essay your earlier point about "layers that had already read the whole prompt" is more important.
+
+"Its IndexShare lets one indexer serve a group of four consecutive layers." Is it just weight sharing, or index sharing too? "always includes the block that contains the query" What does "query" mean here?
+
+So DeepSeek-V4-Pro's is compression-by-mixing, and the weights are vectors applied pointwise? This is strange overall, could you try again describing it. Is it like convolution? Make the subsection a bit tighter, I have the impression some facts are repeated with different wording.
+
+Is KDA an LSTM? Add a sentence on the mLSTM relation to §3.
+
+"and generators that cannot be diagonalized add polynomial terms that Puranik could not interpret" this is not quite true, check out this summary of https://www.youtube.com/watch?v=k86eUj4hgdc
+
+Maybe worth clarifying for AttnRes "the completed sums of earlier groups of 12 layers", is it a regular unweighted sum? Does mHC have a recognizable preserved format across layers? Is Stable LatentMoE explained earlier in the essay? Is the projection shared across layers, or per-layer?
+
+We're ready for a final editorial pass, and then let's add an update tag in the index and Substack publication date, and let's schedule it on Substack.
