@@ -62,6 +62,11 @@ a question leads to the section it draws on.</p>
 href="/notes/where-experience-goes.html#a-ladder-of-stores"><em>Where
 Experience Goes</em>, “A ladder of stores”</a>: the ladder of stores,
 and the delta rule overwriting a redefined word.</li>
+<li><a
+href="/notes/the-standard-of-motion-mathematics.html#kinematical-lie-algebras"><em>The
+Standard of Motion: The Mathematics</em>, “3. Kinematical Lie
+algebras”</a>: one-parameter groups and their generators, behind the box
+on positional encodings.</li>
 </ul>
 </section>
 <section id="questions" class="level2">
@@ -118,6 +123,62 @@ the overlap to the power <span class="math inline">p</span> gives
 capacity of order <span class="math inline">d^p</span>.</p>
 </details>
 </section>
+<section id="two-keys-per-value" class="level3" data-kind="compute">
+<h3 data-kind="compute">Two keys per value</h3>
+<div class="study-meta">
+<span class="study-kind">compute</span> <a
+href="/notes/every-layer-a-store.html#nonlinearity-suppresses-interference">Nonlinearity
+suppresses interference ↗</a>
+</div>
+<p>A SwiGLU unit weights its value by <span
+class="math inline">\operatorname{SiLU}(g^\top x)\,(u^\top x)</span>,
+where <span
+class="math inline">\operatorname{SiLU}(s)=s/(1+e^{-s})</span>. Let
+<span class="math inline">c</span> (cooking) and <span
+class="math inline">t</span> (garlic) be orthogonal unit vectors, and
+let the query be their sum, scaled to unit length. With <span
+class="math inline">g=c</span> and <span class="math inline">u=t</span>,
+compute the unit’s weight for the query, for <span
+class="math inline">c</span> alone and for <span
+class="math inline">t</span> alone. Then compute the weights for the
+query and for <span class="math inline">c</span> alone when the unit is
+tied, with the query itself as both gate and up key. What does each unit
+match?</p>
+<details class="answer"><summary>Answer</summary>
+<p>Untied: both overlaps are <span
+class="math inline">2^{-1/2}\approx0.71</span>, <span
+class="math inline">\operatorname{SiLU}(0.71)\approx0.47</span>, and the
+weight is <span class="math inline">0.47\times0.71\approx0.33</span>.
+For <span class="math inline">c</span> alone the up overlap is 0. For
+<span class="math inline">t</span> alone the gate is <span
+class="math inline">\operatorname{SiLU}(0)=0</span>. Either way the
+weight is 0. Tied: the query’s overlap with itself is 1, and <span
+class="math inline">\operatorname{SiLU}(1)\approx0.73</span>. For <span
+class="math inline">c</span> alone the overlap is 0.71, and the weight
+is again about 0.33. The tied unit matches a direction, and half the
+input gets nearly half the response. The untied unit matches a
+conjunction.</p>
+</details>
+</section>
+<section id="what-the-gate-buys" class="level3" data-kind="explain">
+<h3 data-kind="explain">What the gate buys</h3>
+<div class="study-meta">
+<span class="study-kind">explain</span> <a
+href="/notes/every-layer-a-store.html#nonlinearity-suppresses-interference">Nonlinearity
+suppresses interference ↗</a>
+</div>
+<p>Where did Shazeer’s comparison of gated layers locate most of their
+gain? Why is Allen-Zhu and Li’s finding on synthetic biographies, that
+the gate added no capacity, what the conjunction reading predicts?</p>
+<details class="answer"><summary>Answer</summary>
+<p>A bilinear layer, the product of the two projections with no
+nonlinearity at all, already beat the ReLU baseline, and SwiGLU added a
+little more: most of the gain came from the product. A conjunction pays
+where inputs combine parts that recur in other combinations. The
+attributes of synthetic biographies are drawn at random, and independent
+random facts have no such parts.</p>
+</details>
+</section>
 <section id="attention-as-a-store" class="level3" data-kind="compute">
 <h3 data-kind="compute">Attention as a store</h3>
 <div class="study-meta">
@@ -125,17 +186,35 @@ capacity of order <span class="math inline">d^p</span>.</p>
 href="/notes/every-layer-a-store.html#softmax-attention-uses-every-power">Softmax
 attention uses every power ↗</a>
 </div>
-<p>Why does weighting each value by <span class="math inline">e^{\beta
-s}</span> suppress interference more than any single power of the
-overlap <span class="math inline">s</span>? Wang’s estimate of the
-capacity for random keys is <span
+<p>The exponential <span class="math inline">e^{\beta s}</span> is a sum
+of all the powers of the overlap <span class="math inline">s</span>, the
+low ones included. Why does weighting each value by it still suppress
+interference more than any fixed power? Compare the exponent of the
+interference-to-signal ratio for the power 2 and for the exponential
+with <span class="math inline">\beta=d^{1/2}</span>, at <span
+class="math inline">d=64</span> and at <span
+class="math inline">d=4{,}096</span>. Wang’s estimate of the capacity
+for random keys is <span
 class="math inline">e^{2\beta(1-\beta/d)}</span>: evaluate it at <span
-class="math inline">d=64</span> with <span
-class="math inline">\beta=d^{1/2}</span>. In what way is attention a
-different kind of store from the feed-forward layer?</p>
+class="math inline">d=64</span>. In what way is attention a different
+kind of store from the feed-forward layer?</p>
 <details class="answer"><summary>Answer</summary>
-<p>The exponential is a sum of all the powers, <span
-class="math inline">e^{\beta s}=\sum_p(\beta s)^p/p!</span>. With <span
+<p>The interfering keys keep weights near 1, which the low powers
+supply. The stored key’s weight is <span
+class="math inline">e^\beta</span>, which the powers near <span
+class="math inline">p=\beta</span> supply. Recall depends on the ratio
+of the two. A power <span class="math inline">p</span> makes it <span
+class="math inline">s^p\approx d^{-p/2}</span>, an exponent of <span
+class="math inline">(p/2)\ln d</span>. The exponential makes it about
+<span class="math inline">e^{-\beta}=e^{-d^{1/2}}</span>, an exponent of
+<span class="math inline">d^{1/2}</span>. For <span
+class="math inline">p=2</span> the exponents are <span
+class="math inline">\ln64\approx4.2</span> against 8 at <span
+class="math inline">d=64</span>, and <span
+class="math inline">\ln4096\approx8.3</span> against 64 at <span
+class="math inline">d=4{,}096</span>. The square root outgrows any fixed
+multiple of the logarithm, so the exponential eventually wins, as long
+as the sharpness grows with the dimension. With <span
 class="math inline">\beta=8</span> the exponent is <span
 class="math inline">2\times8\times(1-1/8)=14</span>, and <span
 class="math inline">e^{14}\approx1.2</span> million pairs. Nothing is
@@ -175,6 +254,27 @@ a vocabulary of candidates, and under that criterion a linear store
 holds many more pairs. The counts are asymptotic, and “order <span
 class="math inline">d^2</span>” hides a logarithm that costs about a
 factor of ten.</p>
+</details>
+</section>
+<section id="a-shared-expert-beside-a-dense-layer" class="level3"
+data-kind="explain">
+<h3 data-kind="explain">A shared expert beside a dense layer</h3>
+<div class="study-meta">
+<span class="study-kind">explain</span> <a
+href="/notes/every-layer-a-store.html#experts-and-lookup-tables">Experts
+and lookup tables ↗</a>
+</div>
+<p>MAI-Thinking-1 alternates layers of 512 experts with small dense
+layers. Why does a shared expert help a model with experts in every
+layer, but add little to the alternating layout? What did the
+alternating layout gain, and measured against what?</p>
+<details class="answer"><summary>Answer</summary>
+<p>A shared expert is one that every token reads besides the routed
+ones: a dense store inside a mixture of experts. The alternating layout
+already has a dense store in every other layer, so a shared expert would
+duplicate it. Measured against computation, the two layouts came out
+about even. The alternating layout’s advantage was training time on
+Microsoft’s hardware.</p>
 </details>
 </section>
 <section id="a-million-tokens-five-ways" class="level3"
@@ -231,14 +331,50 @@ is learned retrieval ↗</a>
 </div>
 <p>In what sense is a selector a store? Why can it not learn from the
 task loss, and what does it learn from? What new failure does selection
-bring?</p>
+bring? What does GLM’s IndexShare share across a group of four
+layers?</p>
 <details class="answer"><summary>Answer</summary>
 <p>A selector is a second, cheaper store placed in front of the first.
 It scores keys, and the main attention reads only the winners. The
 choice is a hard top-<span class="math inline">k</span>, so no gradient
 flows through it, and the indexers learn by imitating the main
 attention’s distribution. The new failure is the miss: an entry the
-indexer did not choose cannot be read, however relevant it was.</p>
+indexer did not choose cannot be read, however relevant it was.
+IndexShare runs the indexer only in the first layer of each group of
+four, and the other three read the positions it chose: the selection is
+shared, not the indexer’s weights.</p>
+</details>
+</section>
+<section id="pooling-channel-by-channel" class="level3"
+data-kind="compute">
+<h3 data-kind="compute">Pooling channel by channel</h3>
+<div class="study-meta">
+<span class="study-kind">compute</span> <a
+href="/notes/every-layer-a-store.html#compression-pools-positions">Compression
+pools positions ↗</a>
+</div>
+<p>DeepSeek-V4-Pro pools tokens with a softmax over the pool, taken
+separately in every channel. Pool two tokens with candidates <span
+class="math inline">c_1=(1,0)</span> and <span
+class="math inline">c_2=(0,1)</span> and weight logits <span
+class="math inline">z_1=(2,0)</span> and <span
+class="math inline">z_2=(0,2)</span>, with no positional bias. What is
+the entry? Could one weight per token, shared by all channels, produce
+it? What can the entry not do, however its channels are filled?</p>
+<details class="answer"><summary>Answer</summary>
+<p>In the first channel the weights are <span
+class="math inline">e^2/(e^2+1)\approx0.88</span> for the first token
+and 0.12 for the second, so the channel is about 0.88. In the second
+channel the weights are reversed, and the channel is again about 0.88.
+The entry is <span class="math inline">(0.88,0.88)</span>: each channel
+draws mostly on a different token. One weight <span
+class="math inline">w</span> per token would give <span
+class="math inline">(w,1-w)</span>, whose coordinates sum to 1, so it
+cannot. In effect the pooling is a strided convolution, one channel at a
+time, whose kernel is recomputed from the tokens it covers. The entry
+still has a single key, which a query matches as a whole. Attention
+cannot tell the pooled positions apart, so two facts in one pool that a
+later query needs to separate cannot be read.</p>
 </details>
 </section>
 <section id="per-channel-forgetting" class="level3" data-kind="compute">
@@ -268,6 +404,78 @@ is <span class="math inline">(2,1)</span>. The same association was
 corrected, and the second channel’s content survived. The delta rule
 buys the ability to overwrite, not capacity. Repeated writes approach
 the least-squares store, whose advantage is about a factor of two.</p>
+</details>
+</section>
+<section id="position-and-forgetting" class="level3" data-kind="derive">
+<h3 data-kind="derive">Position and forgetting</h3>
+<div class="study-meta">
+<span class="study-kind">derive</span> <a
+href="/notes/every-layer-a-store.html#the-recurrent-state-learns-while-it-reads">The
+recurrent state learns while it reads ↗</a>
+</div>
+<p>Let a positional encoding transform queries and keys linearly, so
+that the score is <span class="math inline">q^\top A\,k</span>, where
+<span class="math inline">A</span> depends only on the distance <span
+class="math inline">\tau</span>, is the identity at <span
+class="math inline">\tau=0</span> and varies continuously. Show that
+<span class="math inline">A(\tau)=\exp(\tau M)</span>, and say what the
+eigenvalues of <span class="math inline">M</span> give. Then take a
+recurrent layer with a constant decay <span
+class="math inline">\alpha</span> per channel and drop the delta rule’s
+correction: what generator does it implement? What changes when the
+decay is computed from each token, as in KDA? Why does the delta rule’s
+correction fall outside the classification?</p>
+<details class="answer"><summary>Answer</summary>
+<p>Shifts compose, <span
+class="math inline">A(\tau+\sigma)=A(\tau)A(\sigma)</span> with <span
+class="math inline">A(0)=I</span>, so the matrices form a continuous
+one-parameter group, and every such group is <span
+class="math inline">\exp(\tau M)</span> for a fixed generator <span
+class="math inline">M</span>. It is the argument that makes time
+evolution the exponential of a Hamiltonian.</p>
+<ul>
+<li><span class="math inline">M=0</span> encodes nothing: NoPE.</li>
+<li>An imaginary pair rotates a plane of channels at a fixed frequency:
+RoPE.</li>
+<li>A negative real eigenvalue shrinks the score exponentially with
+distance, and a complex pair does both, as in RetNet and Mamba-3.</li>
+<li>A positive real eigenvalue grows without bound.</li>
+<li>A block that cannot be diagonalized adds polynomial terms, and the
+linear one recovers ALiBi.</li>
+</ul>
+<p>With a constant decay, the key written at <span
+class="math inline">s</span> is weighted by <span
+class="math inline">\alpha^{t-s}=\exp\big((t-s)\ln\alpha\big)</span>: a
+diagonal generator whose entries <span
+class="math inline">\ln\alpha</span> are negative, one per channel. With
+a decay computed from each token, the weight is <span
+class="math inline">\exp(T_t-T_s)</span>, where <span
+class="math inline">T_t</span> sums the logarithms of the decays up to
+<span class="math inline">t</span>. The encoding keeps its form and runs
+on a learned clock, one per channel. That is how KDA carries position
+for K3’s MLA layers, which use no positional encoding. The correction
+factor <span class="math inline">I-\beta_tk_tk_t^\top</span> is not
+diagonal, and its factors for different tokens do not commute, so their
+product is not the exponential of a summed generator.</p>
+</details>
+</section>
+<section id="kda-and-the-mlstm" class="level3" data-kind="distinguish">
+<h3 data-kind="distinguish">KDA and the mLSTM</h3>
+<div class="study-meta">
+<span class="study-kind">distinguish</span> <a
+href="/notes/every-layer-a-store.html#the-recurrent-state-learns-while-it-reads">The
+recurrent state learns while it reads ↗</a>
+</div>
+<p>What do KDA and xLSTM’s mLSTM share, and how do their writes differ?
+What does computing the gates from the token alone buy?</p>
+<details class="answer"><summary>Answer</summary>
+<p>Both keep a matrix written by outer products, with gates computed
+from the token alone. Because the gates do not read the state, the
+update is affine in the state, and a long run of updates can be combined
+in a balanced tree, which lets the layer train in parallel. The mLSTM’s
+write is purely additive. KDA first reads what the memory predicts for
+the key and writes only the correction, and its decay is one number per
+channel.</p>
 </details>
 </section>
 <section id="content-in-the-cache-settings-in-the-state" class="level3"
@@ -314,7 +522,7 @@ class="math inline">\beta</span> by a factor that grows with the
 logarithm of the context length. Real contexts are not random: they
 repeat entities, templates and phrasings, and no sharpening separates
 near-duplicate keys. A model whose architecture accepts a million tokens
-may therefore still fail to use them, which is why the second essay
+may therefore still fail to use them, which is why the following essay
 treats long context as a training problem.</p>
 </details>
 </section>
@@ -352,6 +560,28 @@ one: a fixed-size state, written by outer products, whose stream
 differences contract at every layer. A store over depth lives only for
 the duration of one token’s computation.</li>
 </ol>
+</details>
+</section>
+<section id="sums-and-coordinates-over-depth" class="level3"
+data-kind="distinguish">
+<h3 data-kind="distinguish">Sums and coordinates over depth</h3>
+<div class="study-meta">
+<span class="study-kind">distinguish</span> <a
+href="/notes/every-layer-a-store.html#memory-along-depth">4. Memory
+along depth ↗</a>
+</div>
+<p>Does mHC’s mixing change the coordinates in which the streams are
+written? Within an AttnRes group, how are the outputs of the layers
+combined, and where does weighting enter?</p>
+<details class="answer"><summary>Answer</summary>
+<p>mHC’s three coefficients weigh whole streams and leave the channels
+alone, so every stream at every layer is written in the same
+coordinates, as in a plain residual stream. What changes is which stream
+holds what, and the differences between the streams contract at every
+layer. In AttnRes each group’s sum adds up the outputs of its attention
+and feed-forward blocks without weights, as a plain residual stream
+would. Weighting enters only when a layer’s learned query chooses among
+the embedding, the completed sums and the running sum.</p>
 </details>
 </section>
 <section id="what-each-store-gives-up" class="level3" data-kind="state">
@@ -397,6 +627,25 @@ them. To what one question are most of them answers?</p>
 allowed to forget.</p>
 </details>
 </section>
+<section id="kimi-k3s-latent-experts" class="level3" data-kind="state">
+<h3 data-kind="state">Kimi K3’s latent experts</h3>
+<div class="study-meta">
+<span class="study-kind">state</span> <a
+href="/notes/every-layer-a-store.html#the-seven-assembled">5. The seven
+assembled ↗</a>
+</div>
+<p>Where do the latent projections of Kimi K3’s Stable LatentMoE sit?
+What do the router and the shared experts read?</p>
+<details class="answer"><summary>Answer</summary>
+<p>Each MoE layer has one projection, shared by the layer’s experts,
+that halves a token’s representation from 7,168 to 3,584 channels before
+it is sent to its 16 experts. A second projection lifts the experts’
+combined, normalized output back to full width, once per token. The
+router reads the full width, and so do the shared experts. “Stable”
+refers to Kimi’s fixes for the exploding activations and uneven expert
+loads this design produced at 896 experts.</p>
+</details>
+</section>
 <section id="depth-and-the-monitor" class="level3"
 data-kind="distinguish">
 <h3 data-kind="distinguish">Depth and the monitor</h3>
@@ -429,6 +678,24 @@ before a token is emitted. None of the seven does this.</li>
 <li>Generated text, which adds steps of computation but need not explain
 them faithfully.</li>
 </ul>
+</details>
+</section>
+<section id="what-a-window-keeps" class="level3" data-kind="explain">
+<h3 data-kind="explain">What a window keeps</h3>
+<div class="study-meta">
+<span class="study-kind">explain</span> <a
+href="/notes/every-layer-a-store.html#where-the-prompt-went">Where the
+prompt went ↗</a>
+</div>
+<p>MiMo’s window layers keep entries for only the last 128 tokens. How
+can they still carry information from token 5,000 when the model reaches
+token 900,000?</p>
+<details class="answer"><summary>Answer</summary>
+<p>A window layer’s entries are computed from the representations of
+recent tokens, and those representations come from layers that had
+already read the whole prompt. MiMo’s first layer is global, and global
+layers recur through the stack. The window forgets old positions, not
+necessarily old content.</p>
 </details>
 </section>
 <section id="where-the-numbers-stop" class="level3" data-kind="limits">
@@ -476,6 +743,10 @@ before its entries interfere, and what reading it costs.</li>
 href="/notes/every-layer-a-store.html#the-outer-product-store">outer-product
 store</a></li>
 <li><a
+href="/notes/every-layer-a-store.html#nonlinearity-suppresses-interference">SwiGLU</a>:
+a gated feed-forward unit that weights its value by the product of a
+gate overlap and an up overlap; untied, it matches a conjunction.</li>
+<li><a
 href="/notes/every-layer-a-store.html#the-outer-product-store">interference
 between stored keys</a></li>
 <li><a
@@ -487,6 +758,10 @@ what the model has been told.</li>
 href="/notes/every-layer-a-store.html#what-counts-as-remembering">clean
 recall and picking the right answer</a></li>
 <li><a
+href="/notes/every-layer-a-store.html#experts-and-lookup-tables">shared
+expert</a>: an expert that every token reads besides the routed ones: a
+dense store inside a mixture of experts.</li>
+<li><a
 href="/notes/every-layer-a-store.html#memory-along-the-context">five
 ways to keep the past of a context</a>: full history, a rolling window,
 selected entries, compressed entries, a recurrent state.</li>
@@ -495,8 +770,24 @@ href="/notes/every-layer-a-store.html#selection-is-learned-retrieval">selector</
 a second, cheaper store in front of the cache; it scores keys and the
 main attention reads only the winners.</li>
 <li><a
+href="/notes/every-layer-a-store.html#compression-pools-positions">compressed
+sparse attention</a>: one entry per 4 tokens, each channel a
+softmax-weighted average of 8 tokens, read through an indexer.</li>
+<li><a
 href="/notes/every-layer-a-store.html#the-recurrent-state-learns-while-it-reads">Gated
 DeltaNet and Kimi Delta Attention</a></li>
+<li><a
+href="/notes/every-layer-a-store.html#the-recurrent-state-learns-while-it-reads">mLSTM</a></li>
+<li><a
+href="/notes/every-layer-a-store.html#the-recurrent-state-learns-while-it-reads">one-parameter
+group</a>: a positional encoding that depends only on distance is the
+exponential of a fixed generator, whose eigenvalues give NoPE, RoPE,
+decay and their combinations.</li>
+<li><a
+href="/notes/every-layer-a-store.html#the-recurrent-state-learns-while-it-reads">learned
+clock</a>: a decay computed from each token, read as a positional
+encoding whose time is the running sum of the decays’ logarithms, one
+per channel.</li>
 <li><a href="/notes/every-layer-a-store.html#memory-along-depth">store
 over depth</a>: a memory written and read by the layers of one token’s
 pass.</li>
@@ -506,6 +797,8 @@ Hyper-Connections</a></li>
 <li><a
 href="/notes/every-layer-a-store.html#attention-over-depth">Attention
 Residuals</a></li>
+<li><a href="/notes/every-layer-a-store.html#the-seven-assembled">Stable
+LatentMoE</a></li>
 <li><a
 href="/notes/every-layer-a-store.html#depth-recurrence-and-what-a-monitor-can-see">five
 meanings of depth</a></li>
