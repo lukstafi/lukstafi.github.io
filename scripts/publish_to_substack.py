@@ -65,13 +65,107 @@ def latex_to_unicode(latex: str) -> str:
     return result.stdout.strip()
 
 
+_OPERATORS = ("argmax|argmin|log|ln|exp|min|max|sup|inf|lim|det|arg|sinh|cosh|tanh|"
+              "sin|cos|tan|gcd|deg|dim|ker|Pr")
+
+
 def polish_unicode_math(text: str) -> str:
-    """Unwrap script glyphs whose typography already indicates their position.
+    """Tidy texmath's plain-text math: script grouping and operator spacing.
 
     This operates on texmath's output, not on TeX source. Keep grouping on
     compound scripts such as V^(π₁), where removing it would change meaning.
     """
-    return re.sub(r"\^\(([′″‴⁗*]+)\)", lambda match: match[1], text)
+    text = re.sub(r"\^\(([′″‴⁗*]+)\)", lambda match: match[1], text)
+    # A one-character script needs no parentheses: ∑_(y) -> ∑_y, w_(k) -> w_k.
+    # Keep a space before a following letter or digit, so ∑_y min stays apart.
+    text = re.sub(r"([_^])\(([^()\s])\)(?=([A-Za-z0-9\u0370-\u03ff(]?))",
+                  lambda m: m[1] + m[2] + (" " if m[3] and m[3] != "(" else ""), text)
+    # texmath glues an operator to what precedes it (q(x)min, alog b) and
+    # spaces it from its argument (min (p)); typeset the other way round.
+    text = re.sub(rf"(?:(?<=[)\]0-9])|(?<=[^A-Za-z][A-Za-z])|(?<=^[A-Za-z]))({_OPERATORS})(?![A-Za-z])",
+                  r" \1", text)
+    text = re.sub(r"\b([A-Za-z]{2,})[ \u2006]\(", r"\1(", text)
+    # A grouped script runs into what follows it (^(T − 1)r_k); space it off.
+    text = re.sub(r"([_^]\([^()]*\))(?=[A-Za-z0-9\u0370-\u03ff])", r"\1 ", text)
+    return text
+
+
+def _group(text: str, start: int) -> tuple[str, int]:
+    """The TeX argument at text[start:]: a braced group, a command, or one character."""
+    i = start
+    while i < len(text) and text[i] == " ":
+        i += 1
+    if i >= len(text):
+        return "", i
+    if text[i] == "{":
+        depth = 0
+        for j in range(i, len(text)):
+            depth += {"{": 1, "}": -1}.get(text[j], 0)
+            if depth == 0:
+                return text[i + 1:j], j + 1
+        return text[i + 1:], len(text)
+    if text[i] == "\\":
+        m = re.match(r"\\(?:[A-Za-z]+|.)", text[i:])
+        return m[0], i + len(m[0])
+    return text[i], i + 1
+
+
+def _atomic(tex: str) -> bool:
+    """Whether a rendered fraction or root part needs no parentheses."""
+    tex = tex.strip()
+    return bool(re.fullmatch(r"[A-Za-z]|[0-9.]+|\\[A-Za-z]+|d[A-Za-z]|[A-Za-z]\([^()]*\)", tex))
+
+
+_MATRIX = {"pmatrix": ("(", ")"), "bmatrix": ("[", "]"), "vmatrix": ("|", "|"),
+           "Bmatrix": ("\\{", "\\}"), "matrix": ("", "")}
+
+
+def unicode_ready_latex(latex: str) -> str:
+    """Rewrite TeX that texmath cannot write as plain text into TeX it can.
+
+    Used only for inline math that would otherwise fall back to a block
+    equation: matrices become (a  b; c  d), fractions a/b, roots √x, and
+    dotted variables take combining dots. The source essay keeps its TeX.
+    """
+    def matrix(m):
+        left, right = _MATRIX[m[1]]
+        rows = [r for r in re.split(r"\\\\", m[2]) if r.strip()]
+        return left + r";\ ".join(r"\ \ ".join(c.strip() for c in row.split("&"))
+                                   for row in rows) + right
+    latex = re.sub(r"\\begin\{(p|b|v|B|)matrix\}(.*?)\\end\{\1matrix\}",
+                   lambda m: matrix((None, m[1] + "matrix", m[2])), latex, flags=re.S)
+    latex = re.sub(r"\{\\(rm|it|bf)\s+([^{}]*)\}",
+                   lambda m: {"rm": r"\mathrm{", "it": r"\mathit{", "bf": r"\mathbf{"}[m[1]] + m[2] + "}",
+                   latex)
+    latex = re.sub(r"\\[td]frac(?![A-Za-z])", r"\\frac", latex)
+    latex = re.sub(r"\\(?:[Bb]igg?[lr]?|left|right)(?![A-Za-z])\s*", "", latex)
+    latex = re.sub(r"\\(sum|prod|coprod|bigcup|bigcap|bigoplus|bigotimes)(?=\s*[_^])",
+                   r"\\\1\\nolimits", latex)
+    out, i = [], 0
+    while i < len(latex):
+        m = re.match(r"\\(frac|sqrt|dot|ddot)(?![A-Za-z])", latex[i:])
+        if not m:
+            out.append(latex[i])
+            i += 1
+            continue
+        i += len(m[0])
+        if m[1] == "frac":
+            num, i = _group(latex, i)
+            den, i = _group(latex, i)
+            num, den = unicode_ready_latex(num), unicode_ready_latex(den)
+            out.append("{" + (num if _atomic(num) else f"({num})") + "/" +
+                       (den if _atomic(den) else f"({den})") + "}")
+            if re.match(r"\s*[A-Za-z0-9\\]", latex[i:]):
+                out.append(r"\ ")  # 1/2 mv², not 1/2mv²
+        elif m[1] == "sqrt":
+            arg, i = _group(latex, i)
+            arg = unicode_ready_latex(arg)
+            out.append("{√" + (arg if _atomic(arg) else f"({arg})") + "}")
+        else:
+            arg, i = _group(latex, i)
+            arg = unicode_ready_latex(arg)
+            out.append("{" + arg + "}" + ("\u0307" if m[1] == "dot" else "\u0308"))
+    return "".join(out)
 
 
 def _expression(latex: str) -> str:
@@ -129,6 +223,10 @@ def substackify(body: dict, inline_mode: str = "unicode",
                         node.get("unicode", None))
                 if text is None:
                     text = latex_to_unicode(latex)
+                if inline_mode == "unicode" and "\\" in text:
+                    ready = unicode_ready_latex(latex)
+                    if ready != latex:
+                        text = latex_to_unicode(ready)
                 if inline_mode == "unicode" and "\\" in text:
                     print(f"warning: using a block equation for unsupported Unicode math: {latex}",
                           file=sys.stderr)

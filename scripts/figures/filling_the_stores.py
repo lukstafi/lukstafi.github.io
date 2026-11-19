@@ -7,6 +7,7 @@ Run from the repository root:
 Figure 1 is hand-placed from the disclosures in Table 1 of the essay and the
 reports notes/research/training-primary-*-2026-11-06.md. Positions within a
 stage carry order only: a stage's width says nothing about its token budget.
+Table 2 is read from the essay and drawn for Substack, which has no tables.
 """
 
 import pathlib
@@ -136,6 +137,51 @@ def figure_timeline():
     return fig
 
 
+def table2_rows():
+    """Read Table 2 from the essay, so the image cannot drift from the text."""
+    lines = (ROOT / "notes/filling-the-stores.md").read_text().splitlines()
+    start = next(i for i, line in enumerate(lines) if line.startswith("| Tensors |"))
+    rows = []
+    for line in lines[start:]:
+        if not line.startswith("|"):
+            break
+        cells = [c.strip().replace("\\*", "*") for c in line.strip("|").split("|")]
+        if not set(cells[0]) <= {"-", " "}:
+            rows.append(cells)
+    return rows
+
+
+def figure_table2():
+    """Table 2 as an image, for Substack, which has no tables. The site keeps the HTML table."""
+    rows = table2_rows()
+    header, body = rows[0], rows[1:]
+    row_h, top = 0.32, 0.5
+    height = top + row_h * len(body) + 0.15
+    fig, ax = plt.subplots(figsize=(8.6, height))
+    ax.set_xlim(0, 8.6)
+    ax.set_ylim(height, 0)
+    ax.axis("off")
+    fig.subplots_adjust(0, 0, 1, 1)
+    first_w = 2.3
+    col_w = (8.6 - first_w - 0.1) / (len(header) - 1)
+    centers = [first_w + col_w * (i + 0.5) for i in range(len(header) - 1)]
+    ax.text(0.12, top / 2 + 0.04, header[0], ha="left", va="center", color=INK, fontsize=9.5, weight="bold")
+    for x, name in zip(centers, header[1:]):
+        ax.text(x, top / 2 + 0.04, name, ha="center", va="center", color=INK, fontsize=9.5, weight="bold")
+    ax.plot([0.05, 8.55], [top, top], color=SLATE, lw=0.9)
+    for r, cells in enumerate(body):
+        y = top + row_h * r
+        if r % 2 == 0:
+            ax.add_patch(Rectangle((0.05, y), 8.5, row_h, facecolor=LIGHT, edgecolor="none"))
+        ax.text(0.12, y + row_h / 2, cells[0], ha="left", va="center", color=INK, fontsize=9.3)
+        for x, cell in zip(centers, cells[1:]):
+            muted = cell in {"—", "unchanged"}
+            ax.text(x, y + row_h / 2, cell, ha="center", va="center", fontsize=9.3,
+                    color=SLATE if muted else INK, style="italic" if cell == "unchanged" else "normal")
+    ax.plot([0.05, 8.55], [top + row_h * len(body)] * 2, color=SLATE, lw=0.9)
+    return fig
+
+
 def main():
     OUT.mkdir(exist_ok=True)
     for name, build in {"filling-the-stores-timeline": figure_timeline}.items():
@@ -143,6 +189,12 @@ def main():
         fig.savefig(OUT / f"{name}.svg", metadata={"Date": None})
         plt.close(fig)
         print("wrote", OUT / f"{name}.svg")
+    # Substack-only, so its text is drawn as paths: the rasterizer needs no fonts.
+    with plt.rc_context({"svg.fonttype": "path"}):
+        fig = figure_table2()
+        fig.savefig(OUT / "filling-the-stores-table2.svg", metadata={"Date": None})
+        plt.close(fig)
+    print("wrote", OUT / "filling-the-stores-table2.svg")
 
 
 if __name__ == "__main__":

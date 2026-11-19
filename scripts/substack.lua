@@ -387,6 +387,17 @@ blocks_to_nodes = function(blocks)
       nodes[#nodes + 1] = node
     elseif t == "HorizontalRule" then
       nodes[#nodes + 1] = { type = "horizontal_rule" }
+    elseif t == "Div" and blk.classes:includes("substack-image") then
+      -- A web-native block (say, a wide table) that Substack shows as an image.
+      -- The image takes the caption of the first captioned table or figure inside.
+      local caption = ""
+      for _, inner in ipairs(blk.content) do
+        if (inner.t == "Table" or inner.t == "Figure") and caption == "" then
+          caption = stringify(inner.caption)
+        end
+      end
+      nodes[#nodes + 1] = { type = "export_image", src = blk.attributes.src,
+                           alt = caption, caption = caption }
     elseif t == "Div" then
       for _, n in ipairs(blocks_to_nodes(blk.content)) do
         nodes[#nodes + 1] = n
