@@ -171,10 +171,10 @@ other documents in the batch. The other documents act as negatives. No
 separate contrastive loss is needed. The ordinary objective teaches the
 model to tell its own document’s keys from strangers’. With this
 procedure, 3B and 7B models handled passkey retrieval at 256K.</p>
-<p>The group was also working, as I remember it, on retrieval-augmented
-training that used the batch contrastively; Focused Transformer, whose
-authors include Wu and which thanks Rabe and Szegedy, later published a
-method of that kind.</p>
+<p>The group was also working on retrieval-augmented training that used
+the batch contrastively. Crossbatch training is a method of that kind,
+and Focused Transformer’s authors include Wu and thank Rabe and
+Szegedy.</p>
 <p><a href="https://arxiv.org/abs/2305.16300">Landmark Attention</a>, by
 Amirkeivan Mohtashami and Martin Jaggi, moved retrieval into attention
 itself. A landmark token represents each block of the context, and the
@@ -206,22 +206,41 @@ training at all. ClusterKV, RetrievalAttention, RetroInfer and IceCache
 organize the cache by content, through clusters, graphs or trees, at
 inference time. Reformer and the Routing Transformer had tried content
 addressing at short context years before.</p>
-<p>Then labs built selection into the models. NSA, MoBA and DeepSeek
-Sparse Attention train it natively, and <a
+<p>Then labs built selection into the models, in three designs of 2025
+that train it natively. DeepSeek’s <a
+href="https://arxiv.org/abs/2502.11089">Native Sparse Attention</a>
+(NSA) runs three branches side by side and mixes them by a learned gate.
+One attends to compressed blocks of the context, one to the original
+tokens of the blocks the compressed branch scored highest, and one to a
+window of recent tokens. Moonshot’s <a
+href="https://arxiv.org/abs/2502.13189">Mixture of Block Attention</a>
+(MoBA) routes each query to blocks of the context, as a mixture of
+experts routes each token to experts. The query scores every earlier
+block by the mean of its keys, reads the best few, and always reads its
+own block. The router has no parameters of its own.</p>
+<p>DeepSeek Sparse Attention selects single positions with a small
+learned indexer, and <a
 href="https://lukstafi.github.io/notes/every-layer-a-store.html"><em>Every
-Layer a Store</em></a> describes how the 2026 models use it. “A selector
-is a second, cheaper store placed in front of the first.” <a
+Layer a Store</em></a> describes how the 2026 models use it. In that
+essay’s words, “A selector is a second, cheaper store placed in front of
+the first.” <a
 href="https://lukstafi.github.io/notes/filling-the-stores.html"><em>Filling
 the Stores</em></a> records the newest case. Kimi K3.1 Pro’s
 post-training added indexers to a model released without them.</p>
 <p>So the store is no longer beside the context, and the question has
-moved. Nobody is asking what to keep, because everything is kept. The
-question is what to read. The cost of answering it became the
-bottleneck. In the sparse attention of GLM-5.3-Flash, as the Latent
-Sparse Attention paper measures it, “at 10M tokens, 98% of the prefill
-time of a sparse attention layer is spent on indexing”. The indexer
-still scores every key, so sparse attention had made reading cheap and
-left finding expensive.</p>
+moved. Within the window, nothing is thrown away. The question is what
+to read. The cost of answering it became the bottleneck. In the sparse
+attention of GLM-5.3-Flash, as the Latent Sparse Attention paper
+measures it, “at 10M tokens, 98% of the prefill time of a sparse
+attention layer is spent on indexing”. The indexer still scores every
+key, so sparse attention had made reading cheap and left finding
+expensive. <a href="https://arxiv.org/abs/2611.03200">CISA</a> adds
+selection to models trained with full attention, NVIDIA’s Nemotron 3
+among them. It scores fixed-size chunks of the cache by compact
+summaries of their keys, and its own measurements show the same cost. At
+a million tokens its core attention decodes 13.0 times faster than dense
+attention, and 3.0 times faster once chunk scoring and selection are
+counted.</p>
 </section>
 <section id="ten-million-tokens" class="level2">
 <h2>4. Ten million tokens</h2>
@@ -238,7 +257,15 @@ than keys, takes the best buckets, and attends to a fixed number of
 long-range keys, plus a few sink keys and a recent window. Flat search
 scores every bucket. Tree search descends a hierarchy of them, so a
 query scores <span class="math inline">O(\log T)</span> centroids and
-prefill becomes subquadratic.</p>
+prefill becomes subquadratic. A robot searched its memory the same way
+two decades earlier. <a
+href="https://www.lucs.lu.se/fileadmin/user_upload/project/lucs/LUCS-pub/LUCS-094/Huang.pdf">SAIL</a>,
+short for Self-organizing, Autonomous, Incremental Learner, was a
+developmental robot in Juyang Weng’s lab at Michigan State University.
+It kept its experience in a tree of prototypes, Incremental Hierarchical
+Discriminant Regression, which found the best match “in a fast
+logarithmic time” and added a prototype whenever an input differed
+enough from it.</p>
 <p>The distilled variant, D-LSA, retrofits a released model. On
 Qwen-3.8-27B at ten million tokens it scores 63.9 on RULER against 59.9
 for full attention, and 29.1 against 19.8 on PaperTrail, a new
@@ -252,7 +279,8 @@ about 8 points at 2 to 5 million tokens, and by 6 to 7 points on
 PaperTrail. Tree search, the part that makes the method subquadratic,
 loses accuracy faster than flat search past a million tokens (55.8
 against 66.8 on RULER at ten million, on GLM). LSA makes finding cheap,
-and on one of two models it is as accurate as dense attention.</p>
+and on one of two models it is at least as accurate as full
+attention.</p>
 <p>Nor is ten million the record. LSA’s own table lists HSA-UltraLong at
 16 million, and Memory Sparse Attention, discussed in Section 6, reports
 100 million.</p>
@@ -282,6 +310,8 @@ showed in Isabelle, the use of a fact met only in context. Because the
 facts are fabricated, recall cannot come from the weights.</p>
 </blockquote>
 <p>The two ends of the line compare as follows.</p>
+<div class="substack-image" src="images/place-memories-mt-lsa-table.svg"
+alt="Memorizing Transformers and Latent Sparse Attention compared">
 <table>
 <colgroup>
 <col style="width: 33%" />
@@ -328,6 +358,7 @@ facts are fabricated, recall cannot come from the weights.</p>
 </tr>
 </tbody>
 </table>
+</div>
 <p>In both designs the weights learn nothing at test time. Both separate
 a store from an index over it, and the separation has survived every
 change around it. LSA’s authors state what it leaves undone: “LSA
@@ -356,10 +387,13 @@ never has to know what any key means, only where the teacher would
 look.</p>
 <p>The training-free variant makes the same point from the other side.
 Retrieval needs little teaching once the model has learned its keys.
-Compare what it takes to teach content: <em>Where Experience Goes</em>
-showed fine-tuning fed hundreds of times its source text in generated
-inferences. Telling a model where to look is cheap. Teaching a model
-what it read is expensive.</p>
+CISA is a second case. Its summaries come from keys the model already
+computes, so it changes none of the model’s weights, and it stays within
+about two RULER points of full attention at a million tokens. Compare
+what it takes to teach content. In <em>Where Experience Goes</em>,
+teaching a model a corpus by fine-tuning took generated text hundreds of
+times the corpus’s length. Telling a model where to look is cheap.
+Teaching a model what it read is expensive.</p>
 </section>
 <section id="memory-moves-back-out" class="level2">
 <h2>6. Memory moves back out</h2>
@@ -367,19 +401,26 @@ what it read is expensive.</p>
 again.</p>
 <p>Memorilla, by Adibvafa Fallahpour and colleagues at Stanford,
 Toronto, Penn and MIT, with Jure Leskovec, “separates persistent
-knowledge storage from the context required for each query”. A frozen
-embedding model encodes each chunk of a document collection once into a
-matrix on disk. For each query, a trained module of 194 million
-parameters conditions sixteen learned slots on the question and lets
-them cross-attend to every stored embedding. The authors call this “a
-continuous, query-conditioned read over all stored documents rather than
-a discrete top-<em>k</em> selection”. The slots are projected into the
-model’s input embedding space and placed ahead of the prompt. “No LLM
-layer or attention mechanism is changed.” The abstract uses this essay’s
-verb: the module “learns to retrieve and place query-specific
-information”.</p>
+knowledge storage from the context required for each query”. Its store
+holds an embedding of each chunk of a document collection, one or two
+hundred tokens long, computed once by a frozen embedding model and
+independent of any language model that will use it. A reader of 194
+million parameters is trained for each language model. Its inputs are
+the whole store and the prompt, embedded by the same frozen model. Its
+output is sixteen vectors in the language model’s token embedding space,
+which the model receives ahead of the prompt as if they were sixteen
+extra tokens. The authors call the reading “a continuous,
+query-conditioned read over all stored documents rather than a discrete
+top-<em>k</em> selection”. “No LLM layer or attention mechanism is
+changed.” No document text reaches the model either: RAG uses embeddings
+to find passages, and Memorilla reads the embeddings themselves. The
+abstract uses this essay’s verb: the module “learns to retrieve and
+place query-specific information”.</p>
 <p>Set beside LSA, it makes the opposite trade at almost every
 point.</p>
+<div class="substack-image"
+src="images/place-memories-lsa-memorilla-table.svg"
+alt="Latent Sparse Attention and Memorilla compared">
 <table>
 <colgroup>
 <col style="width: 33%" />
@@ -426,12 +467,13 @@ point.</p>
 </tr>
 </tbody>
 </table>
+</div>
 <p>So 2026 does not end with memory settled inside the context. In the
 terms of <a
 href="https://lukstafi.github.io/notes/where-experience-goes.html"><em>Where
 Experience Goes</em></a>, Memorilla is a new form of the ladder’s third
 rung, harness memory, held in latent vectors instead of text. LSA
-strengthens the first rung and Memorilla the third. <a
+strengthens the first rung, the context, and Memorilla the third. <a
 href="https://arxiv.org/abs/2603.23516">Memory Sparse Attention</a> from
 Evermind and Shanda, not to be confused with MiniMax’s method of the
 same initials, sits between them: a one-time offline pass over a corpus
@@ -448,23 +490,102 @@ itself trained?</p>
 from 78.73 to 51.75 percent as the claims compose one to four facts,
 while Memorilla stays in the 80s. (Part of that gap is evidence RAG
 never retrieves, but full context, which reads every chunk, also trails,
-80.43 to 84.33.) On NarrativeQA it beats RAG on “why” and “how”
+80.43 to 84.33.) On NarrativeQA Memorilla beats RAG on “why” and “how”
 questions, by 4.91 and 7.02 ROUGE-L points, and loses on “who” and
 “which” by 3.45 and 2.93, though the authors note that question type
 also varies with answer length and entity frequency. A compressed read
 keeps structure and loses names. The Isabelle lemma would not survive
-it.</p>
-<p>The limit shows in what both methods miss. On PersonalizationV4,
-whose questions each require combining at least two persona facts, many
-of the shared failures “require linking facts that each appear somewhere
-in the user’s history, which suggests that the remaining errors come
-from combining information rather than from failing to find it”. Theory
-points the same way for hard selection: <a
+it. Some models make the same trade inside the cache. DeepSeek-V4’s
+heavily compressed attention layers pool every 128 tokens into one entry
+and keep no entry for the tokens themselves, apart from a window of
+recent ones.</p>
+<p>V4 pools every block alike. A store can also write unevenly, keeping
+more where the text matters more. In <a
+href="https://arxiv.org/abs/2403.09636">Dynamic Memory Compression</a>,
+by Piotr Nawrot and colleagues, each attention head decides at every
+token whether to add a new entry or merge the token into its last one,
+and the trained heads compress the higher layers more. <a
+href="https://arxiv.org/abs/2407.09450">EM-LLM</a>, by Zafeirios Fountas
+and colleagues, keeps every token but groups the tokens into events, cut
+where the model’s surprise peaks. Eviction writes unevenly after the
+fact. Methods such as <a href="https://arxiv.org/abs/2306.14048">H2O</a>
+and <a href="https://arxiv.org/abs/2404.14469">SnapKV</a> write every
+token and later drop those that attention has passed over. Each of these
+schemes brings back the question of what to keep, and with it the need
+for a teacher. A read has a teacher at hand, since an indexer can
+imitate the attention it serves. A write is judged later, when its entry
+is read or not. DMC trains its choice through the language-model loss,
+which reaches a write only through reads within the training sequence.
+EM-LLM uses surprise, which needs no training. Eviction bets that the
+attention a token has received predicts the attention it will
+receive.</p>
+<p>The limit shows in what Memorilla and RAG both miss. On
+PersonalizationV4, whose questions each require combining at least two
+persona facts, many of the shared failures “require linking facts that
+each appear somewhere in the user’s history, which suggests that the
+remaining errors come from combining information rather than from
+failing to find it”. Theory points the same way for a single round of
+hard selection.</p>
+<blockquote>
+<p><strong>Two hops need two reads.</strong> <a
 href="https://arxiv.org/abs/2610.25250">Eitan, Yehudai and Maron</a>
-prove that top-<span class="math inline">\kappa</span> access needs
-capacity growing as <span class="math inline">\sqrt{n}</span> to compute
-even a composition of two functions, which a retrieval block with
-several hops avoids.</p>
+study a block built around one full-attention layer. The later layers
+may read its cache, but only a few entries: those the attention layer
+weighted most from the current position. The other layers may be
+recurrent, and the result holds however many there are. The task is
+composition. The input lists a function <span
+class="math inline">f_1</span> as a table of its values <span
+class="math inline">f_1(1),\dots,f_1(n)</span>, then a second function
+<span class="math inline">f_2</span> the same way, then a query <span
+class="math inline">x</span>, and the answer is <span
+class="math inline">f_1(f_2(x))</span>. A read from the query can fetch
+<span class="math inline">f_2(x)</span>, but the entry holding the
+answer can be found only after that read: “the query x alone lacks the
+information needed to identify the full retrieval chain”. When every
+read is chosen before any returns, the answer’s position must receive
+enough about <span class="math inline">f_1</span> to cover every value
+<span class="math inline">f_2(x)</span> might take. The authors prove
+that this costs capacity of order <span class="math inline">\sqrt
+n</span>, where capacity multiplies the width of each position’s vector,
+its bits of precision, and the number of entries read and layers
+computed after attention. A model of fixed width cannot pay a price that
+grows with <span class="math inline">n</span>. The proof turns such a
+block into a protocol among three players and applies a known lower
+bound for pointer jumping.</p>
+<p>The remedy follows links the attention layer has already laid down.
+In the authors’ construction, the entry of <span
+class="math inline">f_2</span>’s table at <span
+class="math inline">x</span> attends most to the entry of <span
+class="math inline">f_1</span>’s table at <span
+class="math inline">f_2(x)</span>, which comes earlier in the input.
+Multi-hop retrieval reads, from each entry reached, the entries that
+entry attended to most. In the terms of <a
+href="https://lukstafi.github.io/notes/algebraic-mind-meets-neural-world.html"><em>The
+Algebraic Mind Meets the Neural World</em></a>, each link turns a filler
+into a role: the value stored at one entry becomes the query that finds
+the next. With <span class="math inline">m</span> such hops a block of
+fixed size computes a composition of <span class="math inline">m</span>
+functions, and a composition of <span class="math inline">m+1</span>
+functions again needs size growing with <span
+class="math inline">n</span>.</p>
+<p>A second route widens a read instead of adding one. Attention over
+triples of positions, the 2-simplicial attention of <a
+href="https://lukstafi.github.io/notes/dispersed-minds-simulated-selves.html#from-pairs-to-triples-the-2-simplicial-transformer"><em>Dispersed
+Minds, Simulated Selves</em></a>, scores a query against two entries at
+once, and <a href="https://arxiv.org/abs/2501.19215">Kozachinskiy and
+colleagues</a> show that a cheaper variant built from pairwise scores
+composes functions in one layer, where one layer of standard attention
+of modest size cannot. In those terms, multi-hop retrieval is the
+cheapest case: it scores only the chain from the query to the first
+entry and from that entry to the second.</p>
+<p>The bound concerns one block, whose reads are fixed once chosen. In a
+deep model a later layer can choose again, from a state that already
+holds <span class="math inline">f_2(x)</span>, and a reasoning model can
+take one hop per step. In our reading, the bound says where hops must
+come from, not that sparse models cannot compose. Memorilla and RAG each
+read once, from the prompt. A recursive language model takes as many
+hops as it writes calls.</p>
+</blockquote>
 <p>The reader is trained once and used for everyone. “Train and test
 users are disjoint on both, so one module serves every user and
 enrolling a new one requires only embedding their chats.” So its
@@ -521,6 +642,24 @@ The authors see the remedy: the union of Memorilla and RAG, an oracle
 upper bound, exceeds either alone on every benchmark, and they propose
 hybrids that combine “the global structure that memory captures with the
 exact entities that retrieval recovers”.</p>
+<p>The exact end of that hybrid already exists, with the model itself as
+the retriever. In <a href="https://arxiv.org/abs/2512.24601">Recursive
+Language Models</a>, by Alex Zhang, Tim Kraska and Omar Khattab, the
+prompt never enters the context. It is stored as a variable in a Python
+environment, and the model sees only “constant-size metadata” about it,
+such as its length and a short prefix. The model reads the prompt by
+writing code: it slices and searches the text, and calls itself on the
+pieces. GPT-5 run this way handles BrowseComp-Plus at six to eleven
+million tokens, against a window of 272,000, and beats compaction and
+retrieval baselines by over 29 percent. On OOLONG-Pairs, whose answers
+each require combining pairs of chunks, F1 rises from 0.1 for GPT-5
+alone to 58.0. The store is plain text, so nothing blurs, and no weight
+update can stale it. The combining that defeated Memorilla and RAG on
+PersonalizationV4 moves into the model’s own reasoning. The authors list
+the price: “RLMs without asynchronous LM calls are slow”, and “models
+without sufficient coding capabilities struggle as RLMs”. Nothing is
+placed. Each read is a program the model writes, and what it gains from
+the reading ends with the call.</p>
 </section>
 </section>
 <section id="two-ways-out-of-the-context-store" class="level2">
@@ -561,8 +700,8 @@ left out.</p>
 </blockquote>
 <p>The concrete payoff follows. At ten million tokens, much of what an
 agent now keeps in harness memory fits in its context, where it composes
-better. LSA moves explicit memory from rung 3 of the ladder to rung 1.
-It also postpones compaction, whose cost <a
+better. LSA lets an agent move explicit memory from rung 3 of the ladder
+to rung 1. It also postpones compaction, whose cost <a
 href="https://lukstafi.github.io/notes/what-breadth-reaches.html"><em>What
 Breadth Reaches</em></a> showed through Dwarkesh Patel’s case, where the
 summary kept what was decided but not why. A small study by <a
@@ -620,10 +759,17 @@ thoughts”.</p>
 <p>Reasoning models then made the scratchpad the main place where
 retrieved material gets used, by the routes <em>Filling the Stores</em>
 describes. Retrieval of the note’s kind became one tool call among many.
-The field split what the note had joined: an insert the model learns to
-predict, kept because what follows it goes better. Training on the
-inserts that proved useful would rejoin the halves, and
+The field split what the note had joined: inserts the model learns to
+predict, and inserts kept because what follows them goes better.
+Training on the inserts that proved useful would rejoin the halves, and
 self-distillation on reasoning traces does part of that already.</p>
+<p>The note’s rule was a reward: an insert earned its place by what
+followed it. Rewards still train what the model writes, as they trained
+Quiet-STaR’s rationales and train reasoning now. Where the model chooses
+what to read, the 2026 systems use a teacher instead. <em>Filling the
+Stores</em> gives the reason: one loss per query is too weak a signal to
+grade a choice of about a thousand entries among a quarter of a million,
+so indexers learn by imitating dense attention.</p>
 </section>
 </section>
 <section id="where-the-brain-places-memories" class="level2">
@@ -691,11 +837,12 @@ a content address to that positional store, since its buckets group keys
 by similarity wherever they sit in the sequence. A language model now
 holds both kinds of placement within its context, where the brain
 divides them between prefrontal cortex and hippocampus. Memorilla’s
-shape is closer to the brain’s: a large separate store read through a
-few slots, though its slots are learned and conditioned on the query,
+shape is closer to the brain’s: a large separate store read through
+sixteen vectors, though they are learned and conditioned on the prompt,
 not ordinal. Its capacity result is suggestive. Going from 16 tokens to
 128 moves four of eight benchmarks by less than a point, and two of them
-drop.</p>
+drop. In our reading, one reason may lie upstream: each chunk is already
+stored as a single vector.</p>
 <p>The third placement is what the brain has and these systems lack. The
 hippocampal index drives replay, and replay writes structure into
 prefrontal connections, building what no single stored episode contains.
@@ -764,11 +911,13 @@ It is not a sample with a probability under one policy and another. It
 is a vector computed by a function that no longer exists. Memorizing
 Transformers calls this a distributional shift, but it is closer to a
 change of coordinates, and reweighting does not change coordinates. An
-index adds a second layer. D-LSA’s projections were distilled from a
-frozen teacher, so a weight update stales the index space as well as the
-keys (our inference, since no paper we found addresses it). The
-training-free variant could be refit cheaply, which may turn out to be
-its main advantage.</p>
+index adds a second thing to go stale. D-LSA’s projections were
+distilled from a frozen teacher, so a weight update stales the index
+space as well as the keys (our inference, since no paper we found
+addresses it). The two fail differently. A stale index changes only
+which keys are read, so it costs recall, and what it does read is still
+exact. A stale key changes what is read. The training-free variant could
+be refit cheaply, which may turn out to be its main advantage.</p>
 </section>
 <section id="five-remedies" class="level3">
 <h3>Five remedies</h3>
@@ -811,7 +960,8 @@ the model altogether: “Freezing both backbones keeps the store portable
 and the decoder untouched, at the cost of an encoder never optimized for
 compression.” A decoder update leaves such a store valid. In off-policy
 terms, the log is kept in a language no policy update changes. Text is
-the limiting case, and it costs a re-read. By our inference, the
+the limiting case, and it costs a re-read. Recursive language models, in
+Section 6, show the re-read need not be whole. By our inference, the
 staleness moves to the reader, which is trained for one decoder, and
 Memorilla pairs encoders and decoders of one family, so the claim is
 still untested.</p>
@@ -828,8 +978,10 @@ coordinates.</p>
 <p>In 2022 a model looked up a lemma’s definition from earlier in the
 same proof. In 2026 a model finds a fabricated fact in ten million
 tokens of papers it has never seen. Both forget when the document ends.
-A store outside the model no longer forgets, but it blurs the fact. In
-all three cases, the model comes away from what it read unchanged.</p>
+A store outside the model no longer forgets, but it blurs the fact. A
+model that reads its context as text, through programs it writes, keeps
+the fact exact for the length of a call. In every case, the model comes
+away from what it read unchanged.</p>
 <p>That was the point of the note. It did not ask for a bigger memory.
 It asked for a model that learns from what it retrieves. The line from
 Memorizing Transformers has made the reading vast and cheap, and <a
@@ -847,26 +999,41 @@ Attention</em>, arXiv 2305.16300; Bertsch, Alon, Neubig and Gormley,
 <em>Unlimiformer</em>, arXiv 2305.01625; Shi, Min, Lomeli et al.,
 <em>In-Context Pretraining</em>, arXiv 2310.10638; Staniszewski et al.,
 <em>Structured Packing in LLM Training Improves Long Context
-Utilization</em>, arXiv 2312.17296. Sparse attention: Kubicek, Caciolai,
-Peng, Sumant, Hoover, Greenlee, Battleday, Urban, Hoefler and
-Whittington, <em>Latent Sparse Attention</em>, arXiv 2610.42147 (v2) and
-<a
+Utilization</em>, arXiv 2312.17296. Sparse attention: Yuan et al.,
+<em>Native Sparse Attention</em>, arXiv 2502.11089 (ACL 2025); Lu et
+al., <em>MoBA</em>, arXiv 2502.13189; Dabbah et al., <em>CISA</em>,
+arXiv 2611.03200; Huang and Weng, “Novelty and Reinforcement Learning in
+the Value System of Developmental Robots”, Epigenetic Robotics 2002
+(Lund University Cognitive Studies 94); Weng and Hwang, <em>Incremental
+Hierarchical Discriminant Regression</em>, IEEE Transactions on Neural
+Networks 18 (2007), 397–415; Kubicek, Caciolai, Peng, Sumant, Hoover,
+Greenlee, Battleday, Urban, Hoefler and Whittington, <em>Latent Sparse
+Attention</em>, arXiv 2610.42147 (v2) and <a
 href="https://github.com/Prefrontal-AI/latent-sparse-attention">code</a>;
 Chen et al., <em>Memory Sparse Attention</em>, arXiv 2603.23516; Eitan,
-Yehudai and Maron, arXiv 2610.25250. External memory: Fallahpour,
+Yehudai and Maron, arXiv 2610.25250; Peng, Narayanan and Papadimitriou,
+<em>On Limitations of the Transformer Architecture</em>, arXiv
+2402.08164 (COLM 2024); Kozachinskiy et al., <em>Strassen Attention,
+Split VC Dimension and Compositionality in Transformers</em>, arXiv
+2501.19215 (NeurIPS 2025). Uneven writing: Nawrot, Łańcucki, Chochowski,
+Tarjan and Ponti, <em>Dynamic Memory Compression</em>, arXiv 2403.09636
+(ICML 2024); Fountas et al., <em>EM-LLM</em>, arXiv 2407.09450 (ICLR
+2025); Zhang et al., <em>H2O</em>, arXiv 2306.14048; Li et al.,
+<em>SnapKV</em>, arXiv 2404.14469. External memory: Fallahpour,
 Idehpour, Kothapalli, Mounier, Wu, Pardis and Leskovec,
 <em>Memorilla</em>, arXiv 2610.21375 (v3) and <a
-href="https://github.com/snap-stanford/memorilla">code</a>. Reasoning:
-Zelikman et al., <em>Quiet-STaR</em>, arXiv 2403.09629; Soares, “Visible
-Thoughts Project and Bounty Announcement”, LessWrong, 30 November 2021.
-Neuroscience: Teyler and DiScenna, <em>Behavioral Neuroscience</em> 100
-(1986), 147–154, and Teyler and Rudy, <em>Hippocampus</em> 17 (2007),
-1158–1169; Whittington, Warren and Behrens, arXiv 2112.04035;
-Whittington, Dorrell, Behrens, Ganguli and El-Gaby, <em>Neuron</em> 113
-(2025), 321–333; El-Gaby, Jensen et al., PsyArXiv j75zw (2026); Spens
-and Burgess, <em>Nature Communications</em> 17 (2026), 7971. Staleness:
-He et al., <em>MoCo</em>, arXiv 1911.05722; Kapturowski et al.,
-<em>R2D2</em> (ICLR 2019); Cao, Mu, Fang and Chen,
+href="https://github.com/snap-stanford/memorilla">code</a>; Zhang,
+Kraska and Khattab, <em>Recursive Language Models</em>, arXiv 2512.24601
+(v3). Reasoning: Zelikman et al., <em>Quiet-STaR</em>, arXiv 2403.09629;
+Soares, “Visible Thoughts Project and Bounty Announcement”, LessWrong,
+30 November 2021. Neuroscience: Teyler and DiScenna, <em>Behavioral
+Neuroscience</em> 100 (1986), 147–154, and Teyler and Rudy,
+<em>Hippocampus</em> 17 (2007), 1158–1169; Whittington, Warren and
+Behrens, arXiv 2112.04035; Whittington, Dorrell, Behrens, Ganguli and
+El-Gaby, <em>Neuron</em> 113 (2025), 321–333; El-Gaby, Jensen et al.,
+PsyArXiv j75zw (2026); Spens and Burgess, <em>Nature Communications</em>
+17 (2026), 7971. Staleness: He et al., <em>MoCo</em>, arXiv 1911.05722;
+Kapturowski et al., <em>R2D2</em> (ICLR 2019); Cao, Mu, Fang and Chen,
 <em>CacheReforge</em>, arXiv 2609.30884; Loos and Eberle, arXiv
 2610.41480; Wang et al., <em>LongMem</em>, arXiv 2306.07174; Shen et
 al., arXiv 2003.11942. Checks are in

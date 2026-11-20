@@ -6,16 +6,19 @@ Run from the repository root:
 
 Figure 1 plots the largest memory or context each paper tested, as stated in
 notes/research/retrieval-attention-lineage-essay-outline.md. Figure 2 is a
-hand-placed table of the essay's three placements.
+hand-placed table of the essay's three placements. The two comparison tables
+are also drawn as images, for Substack, which has no tables; the site keeps the
+HTML tables, and the images read the essay so they cannot drift from it.
 """
 
 import pathlib
+import textwrap
 
 import matplotlib
 
 matplotlib.use("svg")
 import matplotlib.pyplot as plt  # noqa: E402
-from matplotlib.patches import FancyBboxPatch  # noqa: E402
+from matplotlib.patches import FancyBboxPatch, Rectangle  # noqa: E402
 
 ROOT = pathlib.Path(__file__).resolve().parents[2]
 OUT = ROOT / "notes/images"
@@ -131,6 +134,65 @@ def placements():
     return fig
 
 
+TABLES = {
+    "place-memories-mt-lsa-table": "| | Memorizing Transformers",
+    "place-memories-lsa-memorilla-table": "| | Latent Sparse Attention | Memorilla",
+}
+
+
+def smart(text):
+    """Typographic quotes, as pandoc gives the site."""
+    text = text.replace("'", "\u2019")
+    while '"' in text:
+        text = text.replace('"', "\u201c", 1).replace('"', "\u201d", 1)
+    return text
+
+
+def table_rows(header_start):
+    """Read one of the essay's pipe tables, found by the start of its header line."""
+    lines = (ROOT / "notes/how-llms-could-place-explicit-memories.md").read_text().splitlines()
+    start = next(i for i, line in enumerate(lines) if line.startswith(header_start))
+    rows = []
+    for line in lines[start:]:
+        if not line.startswith("|"):
+            break
+        cells = [smart(c.strip()) for c in line.strip().strip("|").split("|")]
+        if not all(set(c) <= {"-", " "} for c in cells):
+            rows.append(cells)
+    return rows
+
+
+def figure_table(rows):
+    """A two-column comparison table, label column first, cells wrapped to fit."""
+    width, first_w, pad, line_h = 8.6, 1.9, 0.1, 0.19
+    col_w = (width - first_w - 0.1) / (len(rows[0]) - 1)
+    chars = int(col_w / 0.085)
+    wrapped = [[textwrap.wrap(c, chars) or [""] for c in r] for r in rows]
+    heights = [max(len(c) for c in r) * line_h + 2 * pad for r in wrapped]
+    total = sum(heights) + 0.1
+    fig, ax = plt.subplots(figsize=(width, total))
+    ax.set_xlim(0, width)
+    ax.set_ylim(total, 0)
+    ax.axis("off")
+    fig.subplots_adjust(0, 0, 1, 1)
+    xs = [0.12] + [first_w + col_w * i + 0.08 for i in range(len(rows[0]) - 1)]
+    y = 0.05
+    for r, (cells, h) in enumerate(zip(wrapped, heights)):
+        header = r == 0
+        if not header and r % 2 == 1:
+            ax.add_patch(Rectangle((0.05, y), width - 0.1, h, facecolor=LIGHT, edgecolor="none"))
+        for x, cell in zip(xs, cells):
+            # One text per line on a shared baseline, so short cells line up with tall ones.
+            for k, text in enumerate(cell):
+                ax.text(x, y + pad + line_h * (k + 0.75), text, ha="left", va="baseline",
+                        color=INK, fontsize=9.3, weight="bold" if header else "normal")
+        y += h
+        if header:
+            ax.plot([0.05, width - 0.05], [y, y], color=SLATE, lw=0.9)
+    ax.plot([0.05, width - 0.05], [y, y], color=SLATE, lw=0.9)
+    return fig
+
+
 def main():
     OUT.mkdir(parents=True, exist_ok=True)
     for name, make in (("place-memories-timeline", timeline),
@@ -138,6 +200,13 @@ def main():
         fig = make()
         fig.savefig(OUT / f"{name}.svg", bbox_inches="tight")
         print("wrote", OUT / f"{name}.svg")
+    # Substack-only, so their text is drawn as paths: the rasterizer needs no fonts.
+    with plt.rc_context({"svg.fonttype": "path"}):
+        for name, header_start in TABLES.items():
+            fig = figure_table(table_rows(header_start))
+            fig.savefig(OUT / f"{name}.svg", metadata={"Date": None})
+            plt.close(fig)
+            print("wrote", OUT / f"{name}.svg")
 
 
 if __name__ == "__main__":
