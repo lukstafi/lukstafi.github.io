@@ -75,6 +75,10 @@ which stores are written in training.</li>
 <ul>
 <li><a href="/notes/how-does-a-policy-improve.html"><em>How Does a
 Policy Improve?</em></a>: the GRPO family.</li>
+<li><a
+href="/notes/how-can-a-reward-train-a-neural-network.html#from-one-choice-to-a-complete-journey"><em>How
+Can a Reward Train a Neural Network?</em>, “From one choice to a
+complete journey”</a>: REINFORCE.</li>
 <li><a href="/notes/who-teaches-the-weights.html"><em>Who Teaches the
 Weights?</em></a>: self-distillation, and why a student absorbs only
 what lies close to it.</li>
@@ -84,6 +88,30 @@ Goes</em></a>: the continual-learning consequences of forgetting.</li>
 </section>
 <section id="questions" class="level2">
 <h2>Questions</h2>
+<section id="sft-as-distillation" class="level3"
+data-kind="distinguish">
+<h3 data-kind="distinguish">SFT as distillation</h3>
+<div class="study-meta">
+<span class="study-kind">distinguish</span> <a
+href="/notes/filling-the-stores.html#the-stages-kept-apart">1. The
+stages, kept apart ↗</a>
+</div>
+<p>In what sense is most SFT now a form of distillation? Name the two
+ways in which it differs from distillation that matches a teacher’s
+whole distribution on the student’s own text. Which recipe in the essay
+goes furthest the other way?</p>
+<details class="answer"><summary>Answer</summary>
+<p>Most demonstrations now come from other models, so SFT trains a
+student on a teacher’s outputs. It learns from sampled tokens only, one
+per position, not from the teacher’s distribution over all tokens. And
+it learns on the teacher’s trajectories, not the student’s, so a student
+that strays reaches states it never trained on. On-policy distillation
+lets the student generate and has the teacher score each token. K3
+scores only the sampled token, with a clipped log-ratio. V4 finds such
+token-level estimates too noisy and distils over the full
+vocabulary.</p>
+</details>
+</section>
 <section id="the-plateau-before-the-facts" class="level3"
 data-kind="explain">
 <h3 data-kind="explain">The plateau before the facts</h3>
@@ -107,9 +135,8 @@ patterns of a later checkpoint fed in and only the feed-forward weights
 learning, the plateau disappeared. The experiment ran at 44 million
 parameters on data with one task in it, the order in the weights is not
 “attention first”, and in a larger model on natural text the heads
-specialized for answers are still turning over at the end of training.
-The result is offered as a mechanism, not as a measurement of the
-seven.</p>
+specialized for answers are still turning over at the end of
+training.</p>
 </details>
 </section>
 <section id="one-gradient-two-normalizations" class="level3"
@@ -140,6 +167,81 @@ class="math inline">u_1v_1^\top+u_2v_2^\top=\begin{pmatrix}0&amp;1\\1&amp;0\end{
 The weak direction now counts as much as the strong one. Both updates
 throw away the gradient’s overall scale. Adam keeps the signs of the
 entries, Muon the singular vectors.</p>
+</details>
+</section>
+<section id="adams-first-step-and-the-w-in-adamw" class="level3"
+data-kind="explain">
+<h3 data-kind="explain">Adam’s first step, and the W in AdamW</h3>
+<div class="study-meta">
+<span class="study-kind">explain</span> <a
+href="/notes/filling-the-stores.html#normalizing-a-matrix">Normalizing a
+matrix ↗</a>
+</div>
+<p>Adam keeps two running averages for every parameter. Which, and how
+does it step? Why is its first step the sign of the gradient? Why is
+weight decay under Adam not the same as a penalty on the squared
+weights, and what does AdamW do instead?</p>
+<details class="answer"><summary>Answer</summary>
+<p>An average of the gradient and one of its square. Adam steps by the
+first divided by the square root of the second, so an entry with
+consistently large gradients and one with consistently small ones move
+at about the same rate. At the first step both averages hold a single
+gradient, once corrected for starting at zero, so the step is the
+gradient divided by its own magnitude: its sign. Weight decay shrinks
+every weight a little at each step. Under plain gradient descent that is
+the same as adding the squared weights to the loss, but Adam divides the
+penalty’s gradient along with the rest. AdamW applies the decay to the
+weights directly, outside the normalization.</p>
+</details>
+</section>
+<section id="two-norms-two-steepest-descents" class="level3"
+data-kind="distinguish">
+<h3 data-kind="distinguish">Two norms, two steepest descents</h3>
+<div class="study-meta">
+<span class="study-kind">distinguish</span> <a
+href="/notes/filling-the-stores.html#normalizing-a-matrix">Normalizing a
+matrix ↗</a>
+</div>
+<p>Bernstein and Newhouse asked what Adam and Shampoo do when their
+running statistics hold only the current step. What does each become,
+and under which norm? How does Muon relate to them? Which parameters did
+Muon’s author leave to AdamW, and what two changes let Moonshot scale
+Muon up?</p>
+<details class="answer"><summary>Answer</summary>
+<p>Each divides the gradient by its own size and becomes steepest
+descent under a different norm. Measured by its largest entry, the step
+is the sign of the gradient, as at Adam’s first step. Measured by its
+largest singular value, it is <span class="math inline">UV^\top</span>,
+Shampoo’s orthogonalized gradient. Muon keeps one running average, the
+momentum, and divides it by its own size at every step. Jordan meant
+Muon only for hidden weight matrices: scalars and vectors go to AdamW,
+and he found that the input embeddings and the output head need AdamW
+too, the split DeepSeek-V4 keeps. Liu and colleagues added AdamW’s
+decoupled weight decay and matched the size of each matrix’s update to
+Adam’s, and found Muon about twice as compute-efficient.</p>
+</details>
+</section>
+<section id="a-third-normalization" class="level3"
+data-kind="distinguish">
+<h3 data-kind="distinguish">A third normalization</h3>
+<div class="study-meta">
+<span class="study-kind">distinguish</span> <a
+href="/notes/filling-the-stores.html#normalizing-a-matrix">Normalizing a
+matrix ↗</a>
+</div>
+<p>DeepSeek-V4.1 updates its embedding tables and output head with
+neither Adam nor Muon. Why not Adam? What does it do to the momentum,
+and where does the result sit between the other two normalizations? How
+does the same alternation differ in mHC?</p>
+<details class="answer"><summary>Answer</summary>
+<p>Adam’s state for 196 billion table entries costs too much memory.
+V4.1 keeps only a momentum, and divides each row of it by the row’s
+length, then each column by the column’s, eleven times over. The
+resulting update has rows of about equal length, and columns too: a
+normalization between Adam’s, entry by entry, and Muon’s, of the whole
+matrix. The alternation is the Sinkhorn iteration. mHC applies it to
+sums instead of lengths, which makes a positive matrix doubly
+stochastic.</p>
 </details>
 </section>
 <section id="what-a-selector-can-see" class="level3"
@@ -185,6 +287,32 @@ distribution before it controls anything.</p></li>
 </ol>
 </details>
 </section>
+<section id="taught-not-rewarded" class="level3" data-kind="explain">
+<h3 data-kind="explain">Taught, not rewarded</h3>
+<div class="study-meta">
+<span class="study-kind">explain</span> <a
+href="/notes/filling-the-stores.html#selectors-cannot-learn-through-top-k">Selectors
+cannot learn through top-<span class="math inline">k</span> ↗</a>
+</div>
+<p>How could REINFORCE train a selector, and why would its estimate be
+far noisier than for an early hard-attention model? Why does the KL to
+the main attention need no sampling? Which problem of reinforcement
+learning remains, and how does a dense warm-up meet it?</p>
+<details class="answer"><summary>Answer</summary>
+<p>Treat the indexer’s softmax as a policy over sets of entries, sample
+a set, and raise its log-probability in proportion to how much lower the
+loss came out than a baseline. The estimate is unbiased and needs no
+gradient through the choice, and hard attention that picked one image
+location per word was trained this way. For a selector, one number per
+query, the loss, would have to grade a choice of 1,024 entries among
+about 250,000, in DeepSeek-V4-Pro at a million tokens. The KL needs no
+sampling because the teacher gives the probability of every entry, the
+reason V4 gives for distilling over the full vocabulary. Exploration
+remains: a KL taken only over the selected set teaches nothing about an
+entry the selector never picks. The dense warm-up shows the student the
+whole distribution before it acts, as SFT comes before RL.</p>
+</details>
+</section>
 <section id="when-selection-can-be-added" class="level3"
 data-kind="case">
 <h3 data-kind="case">When selection can be added</h3>
@@ -214,9 +342,12 @@ start and once with selection added late. The native model led on every
 retrieval, mathematics, image and video row, and the converted one on
 five rows of the general and code groups. That sparse pretraining beat
 full attention itself is unexplained, and the table gives no error bars.
-Designs that select with the attention’s own keys, or retrofit a dense
-model with no gradient updates, drop the student: only a separate
-selector needs a teacher to select well.</p>
+Two designs drop the student. They make selection cheap by scoring the
+attention’s own keys in groups, not by scoring every key with a smaller
+model: N-LSA clusters the keys and learns from the next-token loss
+alone, and CISA scores chunks of the cache by summaries of their keys,
+with no gradient updates at all. Only a separate selector needs a
+teacher to select well.</p>
 </details>
 </section>
 <section id="projecting-a-mixer" class="level3" data-kind="compute">
@@ -251,6 +382,65 @@ through all twenty iterations. Top-<span class="math inline">k</span> is
 a choice, so a separate selector needs a teacher.</p>
 </details>
 </section>
+<section id="counting-the-load" class="level3" data-kind="explain">
+<h3 data-kind="explain">Counting the load</h3>
+<div class="study-meta">
+<span class="study-kind">explain</span> <a
+href="/notes/filling-the-stores.html#experts-must-stay-balanced">Experts
+must stay balanced ↗</a>
+</div>
+<p>Why do expert loads drift apart unless something stops them, and what
+do unequal loads cost? A balancing loss multiplies two quantities for
+each expert: which, and why both? What did DeepSeek-V3 use instead? Over
+what must loads be counted, and why?</p>
+<details class="answer"><summary>Answer</summary>
+<p>The imbalance is self-reinforcing: the favored experts are trained
+more rapidly and are then selected even more. An expert that is rarely
+chosen is a store that learns almost nothing, and since experts sit on
+different chips, the busiest one sets the pace of every step, or the
+tokens past its capacity are dropped. The balancing loss multiplies each
+expert’s share of the tokens it actually received, a count with no
+gradient, by the average score the router gave it, which has one. So the
+loss lowers each expert’s score in proportion to how many tokens it
+took. DeepSeek-V3 replaced the loss with a bias for each expert, added
+to the scores when experts are chosen and moved by a fixed step after
+each batch. Loads must be counted over the global batch, all the
+sequences that feed one optimizer step across every device. Counted
+within the few sequences on one device, a balancing loss spreads even a
+sequence of code over all the experts, and the experts cannot
+specialize.</p>
+</details>
+</section>
+<section id="four-projections-in-series" class="level3"
+data-kind="explain">
+<h3 data-kind="explain">Four projections in series</h3>
+<div class="study-meta">
+<span class="study-kind">explain</span> <a
+href="/notes/filling-the-stores.html#experts-must-stay-balanced">Experts
+must stay balanced ↗</a>
+</div>
+<p>Name the four projections a token passes through in Kimi K3’s routed
+path. Why do they add no depth to what an expert computes, yet make its
+activations explode? Which two changes cut the problem? What does
+Quantile Balancing change about the routing bias, and with what rule
+about timing?</p>
+<details class="answer"><summary>Answer</summary>
+<p>The layer’s shared down-projection from 7,168 dimensions to 3,584,
+the gate and up projections of each expert’s SwiGLU unit, the expert’s
+down-projection, and the shared up-projection back to 7,168. With no
+nonlinearity between the first two, the extra matrices add no depth, but
+they multiply the scale: the output grows with the product of all their
+norms, and the down-projection counts twice, since a SwiGLU unit
+multiplies two maps of the same input. K3 puts an RMSNorm between the
+experts’ summed output and the up-projection, which cuts the chain in
+two, and replaces SwiGLU with SiTU, whose two factors are capped by
+<span class="math inline">\tanh</span>. Quantile Balancing replaces a
+fixed-step bias update with an exact one, set so that the target number
+of tokens would have cleared the bias in the last batch. The update
+waits a step, “for causality”: no token’s route depends on the other
+tokens of its batch.</p>
+</details>
+</section>
 <section id="a-router-put-back" class="level3" data-kind="case">
 <h3 data-kind="case">A router put back</h3>
 <div class="study-meta">
@@ -269,11 +459,11 @@ restored the router’s parameters to their pre-RL values and kept every
 other weight from step 20. Load balance recovered, and benchmark scores
 did not move. The expert stores had kept what they learned under a
 router that was put back. MiMo froze the router for RL. MAI keeps it
-free, with a balancing coefficient of <span
-class="math inline">10^{-2}</span> during self-distillation and <span
-class="math inline">10^{-5}</span> during RL. A large coefficient during
-RL harms the climb, while the balance that self-distillation installs
-carries over.</p>
+free, with its balancing loss weighted by <span
+class="math inline">10^{-2}</span> during self-distillation and by <span
+class="math inline">10^{-5}</span> during RL. Heavy weighting during RL
+harms the rise in score, while the balance that self-distillation
+installs carries over.</p>
 </details>
 </section>
 <section id="long-context-comes-late" class="level3"
@@ -301,6 +491,92 @@ capability”, and Moonshot synthesizes documents that can be solved only
 by attending across the full million tokens. What comes fast can leave
 fast. MAI’s self-distillation could erase long-context behaviour unless
 mid-training data was mixed back in.</p>
+</details>
+</section>
+<section id="quantizing-the-experts" class="level3" data-kind="explain">
+<h3 data-kind="explain">Quantizing the experts</h3>
+<div class="study-meta">
+<span class="study-kind">explain</span> <a
+href="/notes/filling-the-stores.html#precision-enters-by-post-training">Precision
+enters by post-training ↗</a>
+</div>
+<p>What values can an MXFP4 weight take, and what do the 32 weights of a
+block share? Why do the labs quantize the experts and not the rest? What
+did quantizing after training cost in Allen-Zhu and Li’s experiments,
+and how does training through the rounding work?</p>
+<details class="answer"><summary>Answer</summary>
+<p>Zero, or one of 0.5, 1, 1.5, 2, 3, 4 and 6, with a sign: 16 codes in
+4 bits. Each block of 32 weights shares a scale, a power of two that
+stretches the grid to the block’s largest weight. The experts hold most
+of the parameters, and so most of the memory a served model needs, and
+at 4 bits they take a quarter of it. K3 keeps attention, the shared
+experts and the router in higher precision. Quantizing trained models to
+4 bits lost more than half their capacity. Training through the rounding
+keeps a full-precision master copy of each weight. The forward pass runs
+on the rounded copy, the gradient passes through the rounding as if it
+were not there, and the update goes to the master copy, where steps too
+small to move a weight to the next code still add up.</p>
+</details>
+</section>
+<section id="two-engines-one-computation" class="level3"
+data-kind="explain">
+<h3 data-kind="explain">Two engines, one computation</h3>
+<div class="study-meta">
+<span class="study-kind">explain</span> <a
+href="/notes/filling-the-stores.html#precision-enters-by-post-training">Precision
+enters by post-training ↗</a>
+</div>
+<p>Why does RL give a sharper reason than capacity to fix the precision
+early? How do K3 and V4 meet it? MAI uses 16-bit arithmetic in both its
+inference engine and its learner. Why is that not enough, and which two
+choices does its learner replay?</p>
+<details class="answer"><summary>Answer</summary>
+<p>The rollouts come from an inference engine and the updates from a
+learner, and every discrepancy between them compounds in the importance
+ratios. K3 keeps experts at 4 bits in both, and V4 samples rollouts on
+native 4-bit weights. MAI’s two engines run different kernels, so their
+numbers still differ. Its learner replays the experts each token went
+to, and the top-<span class="math inline">p</span> mask, the set of
+tokens the sampler kept. A small numerical difference then cannot send a
+token to other experts, and the learner scores each token against the
+same set it was sampled from.</p>
+</details>
+</section>
+<section id="exact-speculation" class="level3" data-kind="derive">
+<h3 data-kind="derive">Exact speculation</h3>
+<div class="study-meta">
+<span class="study-kind">derive</span> <a
+href="/notes/filling-the-stores.html#drafters-model-the-policy">Drafters
+model the policy ↗</a>
+</div>
+<p>A drafter proposes a token <span class="math inline">x</span> with
+probability <span class="math inline">q(x)</span>, and the main model
+gives it <span class="math inline">p(x)</span>. The token is kept with
+probability <span class="math inline">\min(1,p(x)/q(x))</span>, and at a
+rejection a replacement is drawn from <span
+class="math inline">\max(0,p-q)</span>, rescaled. Show that the text
+comes out distributed as <span class="math inline">p</span>. What is the
+chance that a guess holds, and what does the acceptance rate therefore
+measure? Why does a drafter that lags the policy in RL cost only
+speed?</p>
+<details class="answer"><summary>Answer</summary>
+<p>A token <span class="math inline">x</span> comes out as an accepted
+guess with probability <span
+class="math inline">q(x)\min(1,p(x)/q(x))=\min(p(x),q(x))</span>. A
+rejection happens with probability <span
+class="math inline">1-\sum_y\min(p(y),q(y))</span>. Since <span
+class="math inline">p=\min(p,q)+\max(0,p-q)</span> for every token,
+<span class="math inline">\max(0,p-q)</span> sums to exactly that
+amount, so the replacement yields <span class="math inline">x</span>
+with probability <span class="math inline">\max(0,p(x)-q(x))</span>. The
+two add up to <span class="math inline">p(x)</span>, and token by token
+the whole text follows. The chance that a guess holds is <span
+class="math inline">\sum_x\min(p(x),q(x))</span>, one minus the total
+variation distance between the two distributions. So the acceptance rate
+measures how far the drafter is from the main model, whichever of them
+is right. Because the output is exact, a drafter trained on an earlier
+policy only lowers the acceptance rate, while a stale rollout biases the
+update.</p>
 </details>
 </section>
 <section id="how-rl-goes-wrong" class="level3" data-kind="explain">
@@ -519,6 +795,17 @@ kind of answer a template wants and not which answer.</li>
 <li><a
 href="/notes/filling-the-stores.html#normalizing-a-matrix">Muon</a></li>
 <li><a
+href="/notes/filling-the-stores.html#normalizing-a-matrix">AdamW</a>:
+Adam with its weight decay applied to the weights directly, outside the
+normalization, where under Adam it differs from a penalty on the squared
+weights.</li>
+<li><a
+href="/notes/filling-the-stores.html#normalizing-a-matrix">steepest
+descent under a norm</a>: what Adam and Shampoo become when their
+running statistics hold only the current step: the sign of the gradient
+under the largest-entry norm, its orthogonalized form under the
+largest-singular-value norm.</li>
+<li><a
 href="/notes/filling-the-stores.html#selectors-cannot-learn-through-top-k">distilling
 a selector from the attention it replaces</a></li>
 <li><a
@@ -526,10 +813,37 @@ href="/notes/filling-the-stores.html#selectors-cannot-learn-through-top-k">dense
 warm-up</a></li>
 <li><a
 href="/notes/filling-the-stores.html#residual-mixers-must-stay-stable">Sinkhorn
-iteration</a></li>
+iteration</a>: alternately rescaling a matrix’s rows and columns until
+both meet a target: sums of one, giving a doubly stochastic matrix
+(mHC’s mixer, the bookmaker’s prices over permutations), or equal
+lengths (V4.1’s optimizer update).</li>
+<li><a
+href="/notes/filling-the-stores.html#experts-must-stay-balanced">balancing
+loss</a>: a loss that multiplies each expert’s share of the tokens, a
+count with no gradient, by the average score the router gave it, so that
+the gradient lowers the scores of overloaded experts.</li>
+<li><a
+href="/notes/filling-the-stores.html#experts-must-stay-balanced">global
+batch</a>: all the sequences that feed one optimizer step across every
+device, as against the few sequences of one device’s micro-batch.</li>
+<li><a
+href="/notes/filling-the-stores.html#experts-must-stay-balanced">Quantile
+Balancing</a>: Kimi K3’s exact update of each expert’s routing bias, set
+from the previous batch so that the target number of tokens would clear
+it.</li>
 <li><a
 href="/notes/filling-the-stores.html#long-context-comes-late-and-it-comes-cheaply">context
 extension</a></li>
+<li><a
+href="/notes/filling-the-stores.html#precision-enters-by-post-training">expert
+quantization</a>: storing the experts’ weights in 4 bits, trained
+through a full-precision master copy that the rounded copy is read
+from.</li>
+<li><a
+href="/notes/filling-the-stores.html#drafters-model-the-policy">speculative
+decoding</a>: a drafter proposes tokens and the main model keeps each
+with probability min(1, p/q), which leaves the text distributed exactly
+as the main model’s.</li>
 <li><a
 href="/notes/filling-the-stores.html#what-rl-optimizes-and-how-it-goes-wrong">stale
 rollout</a></li>
@@ -543,6 +857,9 @@ distillation of specialists</a></li>
 href="/notes/filling-the-stores.html#self-distillation-at-production-scale">self-distillation
 on a run’s own rollouts</a>: SFT on rollouts collected from an RL run,
 started from a mid-trained checkpoint, after which RL resumes.</li>
+<li><a
+href="/notes/filling-the-stores.html#self-distillation-at-production-scale">climb</a>:
+MAI’s name for a whole RL run, after its rising scores.</li>
 <li><a
 href="/notes/filling-the-stores.html#open-process-open-weights">open
 process and open weights</a></li>
@@ -570,6 +887,18 @@ Can a Reward Train a Neural Network?</em></a>)</li>
 <li>GRPO (<a
 href="/notes/how-can-a-reward-train-a-neural-network.html#what-values-and-policy-gradients-make-possible"><em>How
 Can a Reward Train a Neural Network?</em></a>)</li>
+<li>REINFORCE (<a
+href="/notes/how-can-a-reward-train-a-neural-network.html#from-one-choice-to-a-complete-journey"><em>How
+Can a Reward Train a Neural Network?</em></a>)</li>
+<li>SwiGLU (<a
+href="/notes/every-layer-a-store.html#nonlinearity-suppresses-interference"><em>Every
+Layer a Store</em></a>)</li>
+<li>shared expert (<a
+href="/notes/every-layer-a-store.html#experts-and-lookup-tables"><em>Every
+Layer a Store</em></a>)</li>
+<li>Stable LatentMoE (<a
+href="/notes/every-layer-a-store.html#the-seven-assembled"><em>Every
+Layer a Store</em></a>)</li>
 </ul>
 </section>
 </article>
