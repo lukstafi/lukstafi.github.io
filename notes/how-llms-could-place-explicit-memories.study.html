@@ -93,6 +93,16 @@ self-distillation as consolidation.</li>
 <li><a href="/notes/what-breadth-reaches.html"><em>What Breadth Reaches:
 Epistemic Agency Across Timescales</em></a>: the species of integration
 across sessions.</li>
+<li><a
+href="/notes/algebraic-mind-meets-neural-world.html#attention-as-approximate-tpr-unbinding"><em>The
+Algebraic Mind Meets the Neural World: Symbols, Rules, and Tensors
+Before the Age of LLMs</em>, “Attention as Approximate TPR
+Unbinding”</a>: attention as role and filler.</li>
+<li><a
+href="/notes/dispersed-minds-simulated-selves.html#from-pairs-to-triples-the-2-simplicial-transformer"><em>Dispersed
+Minds, Simulated Selves: What LLM Interpretability Reveals About
+Artificial Cognition</em>, “From Pairs to Triples: The 2-Simplicial
+Transformer”</a>: attention over triples of positions.</li>
 </ul>
 </section>
 <section id="questions" class="level2">
@@ -154,12 +164,15 @@ The memory is the cache ↗</a>
 <p>Over two years the memory became the cache. How did the question
 about memory change, and what became the bottleneck?</p>
 <details class="answer"><summary>Answer</summary>
-<p>The store is no longer beside the context. Nobody is asking what to
-keep, because everything is kept. The question is what to read, and the
-cost of answering it became the bottleneck. The indexer still scores
-every key, so at ten million tokens nearly all of a sparse attention
-layer’s prefill time goes to indexing. Sparse attention had made reading
-cheap and left finding expensive.</p>
+<p>The store is no longer beside the context. Within the window, nothing
+is thrown away, so the question is what to read, and the cost of
+answering it became the bottleneck. The indexer still scores every key,
+so at ten million tokens nearly all of a sparse attention layer’s
+prefill time goes to indexing. Sparse attention had made reading cheap
+and left finding expensive. CISA, a retrofit that scores chunks of the
+cache, measures the same cost: at a million tokens its core attention
+decodes 13.0 times faster than dense attention, and 3.0 times faster
+once scoring and selection are counted.</p>
 </details>
 </section>
 <section id="an-index-in-place-of-a-scan" class="level3"
@@ -207,9 +220,10 @@ looked at every key. Its target is a ranking of clusters, which
 64-dimensional projections can represent. The student never has to know
 what any key means, only where the teacher would look. Telling a model
 where to look is cheap: a short distillation with nothing else in the
-model moving, or no training at all. Teaching a model what it read is
-expensive: fine-tuning had to be fed hundreds of times its source text
-in generated inferences.</p>
+model moving, or no training at all, as in CISA, whose chunk summaries
+come from keys the model already computes. Teaching a model what it read
+is expensive: fine-tuning on a corpus took generated text hundreds of
+times the corpus’s length.</p>
 </details>
 </section>
 <section id="two-opposite-trades" class="level3"
@@ -241,6 +255,123 @@ fine-grained factual details”.</li>
 <p>LSA strengthens the first rung, the context. Memorilla is a new form
 of the third rung, harness memory, held in latent vectors instead of
 text.</p>
+</details>
+</section>
+<section id="three-native-designs" class="level3" data-kind="recall">
+<h3 data-kind="recall">Three native designs</h3>
+<div class="study-meta">
+<span class="study-kind">recall</span> <a
+href="/notes/how-llms-could-place-explicit-memories.html#the-memory-is-the-cache">3.
+The memory is the cache ↗</a>
+</div>
+<p>Three designs of 2025 train selection into the model. How does each
+choose what a query reads?</p>
+<details class="answer"><summary>Answer</summary>
+<ul>
+<li>Native Sparse Attention runs three branches and mixes them by a
+learned gate: attention to compressed blocks of the context, to the
+original tokens of the blocks the compressed branch scored highest, and
+to a window of recent tokens.</li>
+<li>Mixture of Block Attention routes each query to blocks, as a mixture
+of experts routes tokens to experts. The query scores every earlier
+block by the mean of its keys, reads the best few, and always reads its
+own block. The router has no parameters of its own.</li>
+<li>DeepSeek Sparse Attention selects single positions with a small
+learned indexer.</li>
+</ul>
+</details>
+</section>
+<section id="memorillas-reader" class="level3" data-kind="explain">
+<h3 data-kind="explain">Memorilla’s reader</h3>
+<div class="study-meta">
+<span class="study-kind">explain</span> <a
+href="/notes/how-llms-could-place-explicit-memories.html#memory-moves-back-out">6.
+Memory moves back out ↗</a>
+</div>
+<p>What does Memorilla store, what goes into its reader and what comes
+out? Why is it not retrieval-augmented generation, though both use
+embeddings?</p>
+<details class="answer"><summary>Answer</summary>
+<p>The store holds an embedding of each chunk of a document collection,
+one or two hundred tokens long, computed once by a frozen embedding
+model and independent of any language model. A reader of 194 million
+parameters is trained for each language model. Its inputs are the whole
+store and the prompt, embedded by the same frozen model. Its output is
+sixteen vectors in the language model’s token embedding space, received
+ahead of the prompt as if they were sixteen extra tokens. No document
+text reaches the model: RAG uses embeddings to find passages and hands
+the model their text, while Memorilla reads the embeddings themselves. A
+compressed read of this kind keeps structure and loses names.</p>
+</details>
+</section>
+<section id="writing-unevenly" class="level3" data-kind="explain">
+<h3 data-kind="explain">Writing unevenly</h3>
+<div class="study-meta">
+<span class="study-kind">explain</span> <a
+href="/notes/how-llms-could-place-explicit-memories.html#retrieval-even-if-intelligent">Retrieval,
+even if intelligent ↗</a>
+</div>
+<p>DeepSeek-V4’s heavily compressed layers pool every 128 tokens alike.
+Name three ways a store can write unevenly instead. What question does
+uneven writing bring back, and why is a write harder to teach than a
+read?</p>
+<details class="answer"><summary>Answer</summary>
+<ul>
+<li>Dynamic Memory Compression lets each attention head decide at every
+token whether to add an entry or merge the token into its last one.</li>
+<li>EM-LLM keeps every token but groups the tokens into events, cut
+where the model’s surprise peaks.</li>
+<li>Eviction, as in H2O and SnapKV, writes every token and later drops
+those that attention has passed over.</li>
+</ul>
+<p>Each brings back the question of what to keep, and with it the need
+for a teacher. A read has one at hand, since an indexer can imitate the
+attention it serves. A write is judged later, when its entry is read or
+not. DMC trains its choice through the language-model loss, which
+reaches a write only through reads within the training sequence. EM-LLM
+uses surprise, which needs no training. Eviction bets that past
+attention predicts future attention.</p>
+</details>
+</section>
+<section id="two-hops-need-two-reads" class="level3"
+data-kind="explain">
+<h3 data-kind="explain">Two hops need two reads</h3>
+<div class="study-meta">
+<span class="study-kind">explain</span> <a
+href="/notes/how-llms-could-place-explicit-memories.html#retrieval-even-if-intelligent">Retrieval,
+even if intelligent ↗</a>
+</div>
+<p>The input lists two functions as tables, then a query <span
+class="math inline">x</span>, and the answer is <span
+class="math inline">f_1(f_2(x))</span>. Why can a block whose reads are
+all chosen from the query not find the answer cheaply? How does
+multi-hop retrieval get around this, and what is the second route? What
+does the bound not say?</p>
+<details class="answer"><summary>Answer</summary>
+<p>A read from the query can fetch <span
+class="math inline">f_2(x)</span>, but the entry holding the answer can
+be found only after that read. When every read is chosen before any
+returns, the answer’s position must receive enough about <span
+class="math inline">f_1</span> to cover every value <span
+class="math inline">f_2(x)</span> might take, which costs capacity of
+order <span class="math inline">\sqrt n</span>, more than a model of
+fixed width can pay. Multi-hop retrieval follows links the attention
+layer has already laid down: the entry of <span
+class="math inline">f_2</span>’s table at <span
+class="math inline">x</span> attends most to the entry of <span
+class="math inline">f_1</span>’s table at <span
+class="math inline">f_2(x)</span>, so each hop turns a filler into a
+role. With <span class="math inline">m</span> hops a fixed block
+composes <span class="math inline">m</span> functions, and <span
+class="math inline">m+1</span> again costs size growing with <span
+class="math inline">n</span>. The second route widens a read instead:
+attention over triples of positions scores a query against two entries
+at once, and a cheaper variant built from pairwise scores composes
+functions in one layer. Multi-hop retrieval is the cheapest case,
+scoring only the chain. The bound concerns one block whose reads are
+fixed. A later layer can choose again, and a reasoning model can take
+one hop per step, so the bound says where hops must come from, not that
+sparse models cannot compose.</p>
 </details>
 </section>
 <section id="full-context-is-not-an-upper-bound" class="level3"
@@ -289,6 +420,28 @@ means nothing reaches its weights. What the experiment shows is
 narrower: a trained reader helps a small model use a context it already
 has. It does not overturn the claim that in-context learning is the best
 learner on the ladder.</p>
+</details>
+</section>
+<section id="reading-by-program" class="level3" data-kind="distinguish">
+<h3 data-kind="distinguish">Reading by program</h3>
+<div class="study-meta">
+<span class="study-kind">distinguish</span> <a
+href="/notes/how-llms-could-place-explicit-memories.html#what-continual-learning-means-here">What
+“continual learning” means here ↗</a>
+</div>
+<p>How does a recursive language model hold and read a long prompt? What
+does it keep that Memorilla loses, where does the combining happen, and
+what does it cost?</p>
+<details class="answer"><summary>Answer</summary>
+<p>The prompt is stored as a variable in a Python environment, and the
+model sees only constant-size metadata about it. It reads by writing
+code that slices and searches the text, and calls itself on the pieces.
+The store is plain text, so nothing blurs and no weight update can stale
+it. The combining that defeated Memorilla and RAG moves into the model’s
+own reasoning, and the model takes as many hops as it writes calls. The
+price: without asynchronous calls it is slow, and models weak at coding
+struggle. Nothing is placed, and what the model gains from a read ends
+with the call.</p>
 </details>
 </section>
 <section id="the-break-even" class="level3" data-kind="compute">
@@ -341,6 +494,26 @@ The deflationary answer is right about explicit memories, and the
 substantive one about what consolidation builds beyond them.</p>
 </details>
 </section>
+<section id="rewarded-and-taught" class="level3"
+data-kind="distinguish">
+<h3 data-kind="distinguish">Rewarded and taught</h3>
+<div class="study-meta">
+<span class="study-kind">distinguish</span> <a
+href="/notes/how-llms-could-place-explicit-memories.html#visible-reasoning">Visible
+reasoning ↗</a>
+</div>
+<p>The 2021 note kept an insert because what followed it went better.
+Where does training of that kind survive, and where do the 2026 systems
+use a teacher instead? Why?</p>
+<details class="answer"><summary>Answer</summary>
+<p>Rewards still train what the model writes, as they trained
+Quiet-STaR’s rationales and train reasoning now. Where the model chooses
+what to read, the 2026 systems use a teacher: indexers learn by
+imitating dense attention. One loss per query is too weak a signal to
+grade a choice of about a thousand entries among a quarter of a
+million.</p>
+</details>
+</section>
 <section id="where-the-brain-places-memories" class="level3"
 data-kind="state">
 <h3 data-kind="state">Where the brain places memories</h3>
@@ -384,8 +557,8 @@ off-policy problem without a ratio ↗</a>
 </div>
 <p>Suppose a deployed model consolidates into its weights while it keeps
 a large indexed context. In what sense is its cache an off-policy
-problem? Why does the usual off-policy correction not apply? What second
-layer does an index add?</p>
+problem? Why does the usual off-policy correction not apply? What does
+an index add, and how do its failures differ from the keys’?</p>
 <details class="answer"><summary>Answer</summary>
 <p>A context cache is experience recorded by an older checkpoint and
 read by the current one. For tokens, a language model’s importance
@@ -393,10 +566,12 @@ ratios are exact, so a stale rollout can be reweighted. A stale key has
 no ratio. It is not a sample with a probability under one policy and
 another. It is a vector computed by a function that no longer exists.
 The shift is closer to a change of coordinates, and reweighting does not
-change coordinates. An index adds a second layer: D-LSA’s projections
-were distilled from a frozen teacher, so a weight update stales the
-index space as well as the keys. That last step is the essay’s
-inference.</p>
+change coordinates. An index adds a second thing to go stale: D-LSA’s
+projections were distilled from a frozen teacher, so a weight update
+stales the index space as well as the keys. That step is the essay’s
+inference. The two fail differently. A stale index changes only which
+keys are read, so it costs recall, and what it does read is still exact.
+A stale key changes what is read.</p>
 </details>
 </section>
 <section id="five-remedies" class="level3" data-kind="recall">
@@ -422,7 +597,9 @@ alone is generally insufficient.</li>
 valid.</li>
 <li>Keep keys the model did not compute: a frozen encoder outside the
 model writes the store, at the cost of an encoder never optimized for
-compression. The staleness then moves to the reader.</li>
+compression. The staleness then moves to the reader. Text is the
+limiting case, and it costs a re-read, which recursive language models
+show need not be whole.</li>
 </ul>
 <p>The only key that cannot go stale is one the model did not compute. A
 cache in the model’s own key space is exact and fragile. A store outside
@@ -445,10 +622,13 @@ to the note is a convergence, not an influence.</li>
 <li>The brain comparison is the authors’. LSA makes no brain claim, and
 reading “learning through dynamics” as in-context learning is the
 essay’s step.</li>
-<li>Three inferences are flagged: that a soft read over every document
-must grow with the store, that a weight update stales the index space,
-and that with an outside store the staleness moves to the reader. The
-last is “still untested”.</li>
+<li>Several inferences are flagged: that a soft read over every document
+must grow with the store, that Memorilla’s capacity result may trace to
+storing each chunk as one vector, that a weight update stales the index
+space, and that with an outside store the staleness moves to the reader,
+which is “still untested”. The reading of the composition bound as
+saying where hops must come from, not that sparse models cannot compose,
+is the essay’s too.</li>
 <li>The break-even’s units are invented.</li>
 </ul>
 <p>The third placement is open. The essay knows of no deployed frontier
@@ -473,10 +653,30 @@ keys</a>: keys read by newer weights than the ones that wrote them.</li>
 href="/notes/how-llms-could-place-explicit-memories.html#teaching-the-memory-to-ignore-distractors">distraction
 issue</a></li>
 <li><a
+href="/notes/how-llms-could-place-explicit-memories.html#the-memory-is-the-cache">native
+sparse attention designs</a>: NSA, MoBA and DeepSeek Sparse Attention:
+selection trained into the model.</li>
+<li><a
 href="/notes/how-llms-could-place-explicit-memories.html#ten-million-tokens">Latent
 Sparse Attention</a></li>
 <li><a
 href="/notes/how-llms-could-place-explicit-memories.html#memory-moves-back-out">Memorilla</a></li>
+<li><a
+href="/notes/how-llms-could-place-explicit-memories.html#memory-moves-back-out">soft
+tokens</a>: vectors in a model’s token embedding space, read as if they
+were extra tokens.</li>
+<li><a
+href="/notes/how-llms-could-place-explicit-memories.html#retrieval-even-if-intelligent">uneven
+writing</a>: a store that keeps more where the text matters more: by
+merging, by events, or by eviction.</li>
+<li><a
+href="/notes/how-llms-could-place-explicit-memories.html#retrieval-even-if-intelligent">multi-hop
+retrieval</a>: reads that follow, from each entry reached, the entries
+that entry attended to most.</li>
+<li><a
+href="/notes/how-llms-could-place-explicit-memories.html#what-continual-learning-means-here">recursive
+language model</a>: a model that keeps its prompt as a variable and
+reads it by programs it writes.</li>
 <li><a
 href="/notes/how-llms-could-place-explicit-memories.html#consolidation">break-even
 for consolidation</a></li>
@@ -524,6 +724,17 @@ About What You Do Not Do</em></a>)</li>
 <li>two conditions on a teacher (<a
 href="/notes/who-teaches-the-weights.html"><em>Who Teaches the
 Weights?</em></a>)</li>
+<li>REINFORCE (<a
+href="/notes/how-can-a-reward-train-a-neural-network.html#from-one-choice-to-a-complete-journey"><em>How
+Can a Reward Train a Neural Network?</em></a>)</li>
+<li>tensor product representation (<a
+href="/notes/algebraic-mind-meets-neural-world.html#technical-sidebar-smolenskys-tensor-product-representations"><em>The
+Algebraic Mind Meets the Neural World: Symbols, Rules, and Tensors
+Before the Age of LLMs</em></a>)</li>
+<li>2-simplicial attention (<a
+href="/notes/dispersed-minds-simulated-selves.html#from-pairs-to-triples-the-2-simplicial-transformer"><em>Dispersed
+Minds, Simulated Selves: What LLM Interpretability Reveals About
+Artificial Cognition</em></a>)</li>
 </ul>
 </section>
 </article>
