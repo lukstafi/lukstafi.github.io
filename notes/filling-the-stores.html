@@ -114,7 +114,9 @@ percent code. MiMo adds agent trajectories.</li>
 <li><strong>Supervised fine-tuning (SFT)</strong> imitates
 demonstrations. A loss mask decides which tokens teach: GLM-5 keeps
 erroneous segments in a trajectory as context and masks them out of the
-loss.</li>
+loss. Most demonstrations now come from other models, which makes SFT a
+form of distillation, from sampled tokens only and on the teacher’s
+trajectories rather than the student’s.</li>
 <li><strong>Reinforcement learning (RL)</strong> samples answers from
 the model, scores them with a verifier or a judge, and raises the
 probability of those that scored better than their group. The sampled
@@ -282,8 +284,8 @@ and the two then reinforce each other. And at 7 billion parameters on
 natural text, <a href="https://arxiv.org/abs/2506.03434">Hakimi and
 colleagues</a> find the heads specialized for answers still turning over
 at the end of training, with an overlap of 0.2 between the last two
-checkpoints, while the model as a whole settles on its general heads. We
-offer the result as a mechanism, not as a measurement of the seven.</p>
+checkpoints, while the model as a whole settles on its general
+heads.</p>
 <p>How much a store takes in depends on how often it sees each thing. In
 <a href="https://arxiv.org/abs/2404.05405">Allen-Zhu and Li’s</a>
 synthetic facts, models up to half a billion parameters reach about 2
@@ -357,6 +359,24 @@ W_t=W_{t-1}-\eta\,\operatorname{ortho}(M_t),\qquad
 different things: Adam the signs of the entries, Muon the singular
 vectors.</p>
 <blockquote>
+<p><strong>Adam and AdamW.</strong> <a
+href="https://arxiv.org/abs/1412.6980">Diederik Kingma and Jimmy Ba</a>
+published Adam in 2014. It keeps two running averages for every
+parameter, one of the gradient and one of its square, and steps by the
+first divided by the square root of the second. An entry with
+consistently large gradients and one with consistently small ones then
+move at about the same rate. At the first step both averages hold a
+single gradient, once corrected for starting at zero, so the step is the
+gradient divided by its own magnitude: its sign. Weight decay shrinks
+every weight a little at each step, so that weights the loss does not
+support fade. Under plain gradient descent this is the same as adding
+the squared weights to the loss. <a
+href="https://arxiv.org/abs/1711.05101">Ilya Loshchilov and Frank
+Hutter</a> pointed out in 2017 that under Adam it is not, because Adam
+divides the penalty’s gradient along with the rest. Their AdamW applies
+the decay to the weights directly, outside the normalization.</p>
+</blockquote>
+<blockquote>
 <p><strong>Worked example 7: one gradient, two normalizations.</strong>
 Let the gradient of a <span class="math inline">2\times2</span> weight
 matrix be <span
@@ -379,14 +399,48 @@ converging.</p>
 DeepSeek-V4, AdamW keeps the embeddings, the output head, the norms and
 mHC’s mixing gates, and Muon takes the rest. DeepSeek-V4.1 gives its
 embedding tables and output head a third treatment, because Adam’s state
-for 196 billion table entries costs too much memory. It balances a
-momentum update by Sinkhorn iterations, the alternating rescaling of
-rows and columns that mHC uses. <a
+for 196 billion table entries costs too much memory. It keeps only a
+momentum, and divides each row of it by the row’s length, then each
+column by the column’s, eleven times over. The resulting update has rows
+of about equal length, and columns too: a normalization between Adam’s,
+entry by entry, and Muon’s, of the whole matrix. The alternation is the
+Sinkhorn iteration, which Section 3 meets again in mHC, where it
+balances sums instead of lengths. <a
 href="https://arxiv.org/abs/2602.15763">GLM-5</a> and Kimi K3
 orthogonalize attention projections head by head, so that heads with
 large gradients do not set the update for the rest. Table 1’s names for
 this are Muon Split and Per-Head Muon, and V4.1 reports that
 orthogonalizing by head beats plain Muon.</p>
+<blockquote>
+<p><strong>Where Muon came from.</strong> <a
+href="https://kellerjordan.github.io/posts/muon/">Keller Jordan</a>
+introduced Muon in the autumn of 2024 on a public benchmark, the NanoGPT
+speedrun. Switching to it in October cut training time by 35 percent. He
+observed that the updates of momentum SGD and of Adam for a
+Transformer’s weight matrices are nearly low-rank. He speculated that
+orthogonalizing them boosts “rare directions” that are small but still
+matter for learning. <a href="https://arxiv.org/abs/2409.20325">Jeremy
+Bernstein and Laker Newhouse</a> had shown what Adam and the older
+Shampoo do once their running statistics hold only the current step.
+Each divides the gradient by its own size, and each becomes steepest
+descent under a different norm. For Adam the step is measured by its
+largest entry, and the result is the sign of the gradient, as at Adam’s
+first step. For Shampoo it is measured by its largest singular value,
+and the result is <span class="math inline">UV^\top</span>. Muon keeps
+one running average, the momentum, and divides it by its own size at
+every step. Jordan meant it only for hidden weight matrices. Scalars and
+vectors go to AdamW, and he found that the input embeddings and the
+output head need AdamW too, which is the split DeepSeek-V4 keeps.
+Moonshot scaled Muon up in 2025. <a
+href="https://arxiv.org/abs/2502.16982">Liu and colleagues</a> added
+AdamW’s decoupled weight decay and matched the size of each matrix’s
+update to Adam’s. In scaling-law experiments they found it about twice
+as compute-efficient as AdamW. <a
+href="https://arxiv.org/abs/2507.20534">Kimi K2</a> added QK-clip, which
+rescales the query and key weights of a head whose attention scores grow
+too large, and pretrained on 15.5 trillion tokens with “zero loss
+spike.”</p>
+</blockquote>
 <p>MiMo adds an order. It pretrained with AdamW, saw “diminishing
 optimization efficiency” as RL batches grew, and switched to <a
 href="https://arxiv.org/abs/2605.10797">Muown</a>, a Muon variant with
@@ -420,17 +474,19 @@ class="math inline">P</span> to the indexer’s softmax <span
 class="math inline">P^{\rm idx}</span>:</p>
 <p><span class="math display">
 \mathcal L=\mathcal L_{\rm LM}+\lambda\sum_{\rm layers}D_{\rm
-KL}\big(\operatorname{stopgrad}(P)\,\big\|\,P^{\rm idx}\big),
-\qquad \text{with the indexer&#39;s input also behind a stop-gradient.}
-</span></p>
-<p>The two stop-gradients protect the backbone. Without them, the KL can
-fall because the main attention moves toward the indexer: “the backbone
-can lower the KL loss by simplifying the Main Branch attention
-distribution, rather than by improving the Index Branch.” In MSA’s pilot
-at 10.5 billion parameters, removing the stop-gradient at larger KL
-weights made the language-model loss diverge within a few hundred steps,
-and at stable weights short-context benchmarks slowly regressed. The
-student would be teaching the teacher.</p>
+KL}\big(\operatorname{stopgrad}(P)\,\big\|\,P^{\rm
+idx}(\operatorname{stopgrad}(h))\big),
+</span> where <span class="math inline">h</span> is the hidden state the
+indexer reads.</p>
+<p>The two stop-gradients protect the backbone, one on the target and
+one on the indexer’s input. Without them, the KL can fall because the
+main attention moves toward the indexer: “the backbone can lower the KL
+loss by simplifying the Main Branch attention distribution, rather than
+by improving the Index Branch.” In MSA’s pilot at 10.5 billion
+parameters, removing the stop-gradient at larger KL weights made the
+language-model loss diverge within a few hundred steps, and at stable
+weights short-context benchmarks slowly regressed. The student would be
+teaching the teacher.</p>
 <blockquote>
 <p><strong>Worked example 8: what a selector can see.</strong> One query
 reads four entries, and the selector keeps two. Two heads of the main
@@ -465,14 +521,44 @@ GLM-4.7-Flash, an indexer trained on a frozen base lowered the score on
 RULER, a benchmark of retrieval from long contexts, from 79.21 to 71.35
 at 128K tokens. A further 150 billion tokens of joint training brought
 it back to 78.86.</p>
+<blockquote>
+<p><strong>Taught, not rewarded.</strong> A selector’s problem is an old
+one: how to train a discrete choice. Reinforcement learning has a
+general answer in Ronald Williams’s REINFORCE, which <a
+href="how-can-a-reward-train-a-neural-network.html#from-one-choice-to-a-complete-journey"><em>How
+Can a Reward Train a Neural Network?</em></a> derives. Treat the
+indexer’s softmax as a policy over sets of entries and sample a set.
+Then raise that set’s log-probability in proportion to how much lower
+the loss came out than a baseline. The estimate is unbiased and needs no
+gradient through the choice. Hard attention was trained this way. In
+2014 <a href="https://arxiv.org/abs/1406.6247">Mnih and colleagues</a>
+let a network choose where in an image to look. In 2015 <a
+href="https://arxiv.org/abs/1502.03044">Xu and colleagues</a> trained an
+image captioner whose attention picked one location for each word, with
+a moving-average baseline and an entropy bonus to tame the variance. The
+field kept the other model in that paper, soft attention, trained by
+plain backpropagation. For a selector the estimate would be far noisier.
+In DeepSeek-V4-Pro at a million tokens, one number per query, the loss,
+would have to grade a choice of 1,024 entries among about 250,000. The
+KL to the main attention needs no sampling, because the teacher gives
+the probability of every entry. That is the reason V4 gives in Section 4
+for distilling over the full vocabulary. Exploration is the problem that
+remains. After warm-up, <a
+href="https://arxiv.org/abs/2512.02556">DeepSeek-V3.2</a> takes the KL
+only over the selected set, and Worked example 8 showed that such a KL
+teaches nothing about an entry the selector never picks. The dense
+warm-up shows the student the whole distribution before it acts, as
+supervised fine-tuning comes before RL.</p>
+</blockquote>
 <p><strong>When to add selection.</strong> Positions from the first
 token to the released checkpoint have all been tried.
 DeepSeek-V4.1-Flash trains sparse attention from the first token at 64K,
 “without any dense attention warmup stages”, and does not disclose the
 indexer’s loss. V4-Flash runs a trillion dense tokens first. GLM-5.2
-trains its shared indexers from mid-training at 128K. GLM-5 adds
-selection at the end of mid-training with 20 billion tokens, 0.07
-percent of its base budget.</p>
+trains its shared indexers, each choosing positions for a group of four
+layers, from mid-training at 128K. GLM-5 adds selection at the end of
+mid-training with 20 billion tokens, 0.07 percent of its base
+budget.</p>
 <p>Selection can also come after release. <a
 href="https://arxiv.org/abs/2610.42147">Latent Sparse Attention</a>
 distills an indexer onto a released, frozen checkpoint in 352 million
@@ -482,13 +568,16 @@ million tokens. A second retrofit, <a
 href="https://arxiv.org/abs/2610.42112">ZHA</a>, does the same in a
 billion tokens, so fitting a selector by KL onto a frozen model has
 become a cheap, repeatable recipe. Two designs drop the student
-altogether. One, N-LSA, a sibling of Latent Sparse Attention, selects
-with the attention’s own keys, with no teacher, at half a billion
+altogether. They make selection cheap in another way: instead of scoring
+every key with a smaller model, they score the attention’s own keys in
+groups. One, N-LSA, a sibling of Latent Sparse Attention, clusters the
+keys and learns from the next-token loss alone, at half a billion
 parameters. The other, <a
-href="https://arxiv.org/abs/2611.03200">CISA</a>, retrofits a dense
-model with no gradient updates at all and reports staying within about
-two RULER points at a million tokens. Only a separate selector needs a
-teacher to select well.</p>
+href="https://arxiv.org/abs/2611.03200">CISA</a>, scores fixed-size
+chunks of the cache by compact summaries of their keys. It retrofits a
+dense model with no gradient updates at all and reports staying within
+about two RULER points at a million tokens. Only a separate selector
+needs a teacher to select well.</p>
 <p>Only one experiment at this scale holds everything else fixed. MSA
 ran its 109-billion-parameter model on the same 3 trillion tokens twice,
 once sparse from the start and once with selection added at 2.6
@@ -538,7 +627,7 @@ class="math inline">\begin{pmatrix}.600&amp;.400\\.333&amp;.667\end{pmatrix}</sp
 the second <span
 class="math inline">\begin{pmatrix}.632&amp;.368\\.364&amp;.636\end{pmatrix}</span>,
 and by the third the columns sum to within 0.0004 of 1. Apply both
-matrices to the streams <span class="math inline">(2,4)</span> of worked
+matrices to the streams <span class="math inline">(2,4)</span> of Worked
 example 4. The raw one gives <span class="math inline">(10,6)</span>, a
 total of 16, and its top eigenvalue of 3.41 would multiply the signal by
 about 200,000 over ten layers. The projected limit, with <span
@@ -556,27 +645,66 @@ under Muon at a million tokens.</p>
 <section id="experts-must-stay-balanced" class="level3">
 <h3>Experts must stay balanced</h3>
 <p>A router sends each token to a few of hundreds of expert stores, and
-it can fail in two ways. Experts can receive unequal loads, and
-activations in the routed path can explode. Kimi K3 hits both: with 896
-experts, 16 per token, its routed path is a chain of “nearly four
-consecutive matrix multiplications”. Its SiTU activation replaces
-SwiGLU’s two unbounded factors with <span
-class="math inline">\tanh</span>-capped ones, which bound every output
-coordinate by 100. Its Quantile Balancing replaces the usual gradual
-update of each expert’s routing bias with an exact one. It sets the bias
-so that the target number of tokens would have cleared it in the last
-batch. The bias steers dispatch and stays out of the mixture weights, so
-the router’s gradient is untouched. And “a batch is never routed with a
-bias derived from itself”.</p>
+it can fail in two ways. The first is unequal loads. <a
+href="https://arxiv.org/abs/1701.06538">Shazeer and colleagues</a> saw
+it in the first large mixture of experts: the router “tends to converge
+to a state where it always produces large weights for the same few
+experts. This imbalance is self-reinforcing, as the favored experts are
+trained more rapidly and thus are selected even more.” An expert that is
+rarely chosen is a store that learns almost nothing. Experts also sit on
+different chips, so the busiest one sets the pace of every step, or in
+some systems the tokens past its capacity are dropped.</p>
+<p>Two remedies are standard. A balancing loss, as in the <a
+href="https://arxiv.org/abs/2101.03961">Switch Transformer</a>,
+multiplies each expert’s share of the tokens it actually received by the
+average score the router gave it. The count has no gradient and the
+score does, so the loss lowers each expert’s score in proportion to how
+many tokens it took. <a
+href="https://arxiv.org/abs/2412.19437">DeepSeek-V3</a> replaced the
+loss with a bias for each expert. The bias is added to the router’s
+scores when experts are chosen, and after each batch it moves up or down
+by a fixed step, depending on whether the expert was under- or
+overloaded. MAI reports that how loads are counted matters far more than
+which balancing loss is used: they must be counted over the global
+batch, all the sequences that feed one optimizer step across every
+device. Counted within the few sequences on one device, a balancing loss
+spreads even a sequence of code over all the experts, and the experts
+cannot specialize, as <a href="https://arxiv.org/abs/2501.11873">Qiu and
+colleagues</a> found.</p>
+<p>Kimi K3, with 896 experts and 16 per token, hit both failures. With
+one step size for every expert, the bias update either adapts slowly or
+makes loads oscillate. K3’s Quantile Balancing replaces the step with an
+exact update. It sets each expert’s bias so that the target number of
+tokens would have cleared it in the last batch. The bias steers dispatch
+and stays out of the mixture weights, so the router’s gradient is
+untouched. The update waits a step, “for causality”: “a batch is never
+routed with a bias derived from itself”, so no token’s route depends on
+the other tokens of its batch.</p>
+<p>The second failure is activations that explode. K3’s routed path
+passes a token through four projections in series: the layer’s shared
+down-projection from 7,168 dimensions to 3,584, the gate and up
+projections of each expert’s SwiGLU unit, its down-projection, and the
+shared up-projection back to 7,168. With no nonlinearity between the
+first two, the extra matrices add no depth to what an expert can
+compute, but they multiply its scale. The output grows with the product
+of all their norms, and the down-projection counts twice, since a SwiGLU
+unit multiplies two maps of the same input. The report calls the chain
+“ill-conditioned”, and at 2.8 trillion parameters its internal
+activations exploded. Large values also risk “overflow … in
+low-precision arithmetic”. K3 puts an RMSNorm between the experts’
+summed output and the up-projection, which cuts the chain in two, and
+replaces SwiGLU with SiTU, whose two factors are capped by <span
+class="math inline">\tanh</span>, so that every output coordinate stays
+below 100. These two fixes and Quantile Balancing are the “Stable” in
+K3’s Stable LatentMoE.</p>
 <p><a href="https://arxiv.org/abs/2606.19348">DeepSeek-V4</a> found its
-loss spikes “consistently tied to outliers in the MoE layers”, with
-routing seeming to feed them. Its remedies are clamps on SwiGLU and
-Anticipatory Routing, which recomputes routing with slightly older
-weights when a spike occurs. The report concedes that “their underlying
-principles remain insufficiently understood.” MAI saw the same
-correlation, and reports that how expert frequencies are aggregated
-matters far more than which balancing loss is used: they must be counted
-over the global batch.</p>
+loss spikes “consistently tied to outliers in the MoE layers”, and “the
+routing mechanism itself appears to exacerbate the emergence of these
+outliers”. Its remedies are clamps on SwiGLU and Anticipatory Routing.
+Only while a spike lasts, it chooses experts with a snapshot of the
+network from a few steps earlier, while the gradient step uses the
+current weights. The report concedes that “their underlying principles
+remain insufficiently understood.”</p>
 <p>RL is where routing goes wrong fastest, because its data are narrow.
 MiMo measured it at one decoder layer, on two runs that differed only in
 whether the router trained. With a trainable router, the coefficient of
@@ -587,12 +715,12 @@ clean intervention. MiMo restored the router’s parameters to their
 pre-RL values and kept every other weight from step 20. Load balance
 recovered, and benchmark scores did not move. The expert stores had kept
 what they learned under a router that was put back. MiMo froze the
-router for RL. MAI keeps it free, with a balancing coefficient of <span
-class="math inline">10^{-2}</span> during self-distillation, the SFT on
-a run’s own rollouts that Section 4 describes, and <span
-class="math inline">10^{-5}</span> during RL. A large coefficient during
-RL harms the rise in score, which MAI calls the climb, while the balance
-that self-distillation installs carries over.</p>
+router for RL. MAI keeps it free, with its balancing loss weighted by
+<span class="math inline">10^{-2}</span> during self-distillation, the
+SFT on a run’s own rollouts that Section 4 describes, and by <span
+class="math inline">10^{-5}</span> during RL. Heavy weighting during RL
+harms the rise in score, while the balance that self-distillation
+installs carries over.</p>
 </section>
 <section id="long-context-comes-late-and-it-comes-cheaply"
 class="level3">
@@ -632,16 +760,31 @@ under self-distillation may be the same problem in the weights.</p>
 </section>
 <section id="precision-enters-by-post-training" class="level3">
 <h3>Precision enters by post-training</h3>
+<p>To quantize a weight is to store it in fewer bits, rounded to the
+nearest of a few allowed values. At 4 bits a weight has 16 codes.
+GLM-5’s INT4 spaces them evenly. MXFP4, which MiMo, K3 and V4 use, makes
+each code a tiny floating-point number: zero, or one of 0.5, 1, 1.5, 2,
+3, 4 and 6, with a sign. Each block of 32 weights shares a scale, a
+power of two that stretches this grid to the block’s largest weight. The
+labs quantize the experts because the experts hold most of the
+parameters, and so most of the memory that a served model needs. At 4
+bits rather than 16 they take a quarter of it. K3 keeps the rest in
+higher precision, including attention, the shared experts and the
+router.</p>
 <p><a href="https://arxiv.org/abs/2404.05405">Allen-Zhu and Li</a>
 quantized trained models to 4 bits and lost more than half their
 capacity. Their conclusion was that quantization may have to happen
-during training. <a href="https://arxiv.org/abs/2609.32902">Later
-work</a> at small scale confirms that methods applied afterwards recover
-nothing below 4 bits, and finds that training at those precisions has
-its own failure, which a learning-rate schedule can prevent. Figure 1
-shows most of the labs writing in low precision. MiMo starts expert
-quantization in mid-training, K3 and GLM-5 at SFT, and V4 during
-post-training, where V4.1 also adds its cache.</p>
+during training. Training that way keeps a full-precision master copy of
+each weight. The forward pass runs on the rounded copy, and the gradient
+passes through the rounding as if it were not there. The update goes to
+the master copy, where steps too small to move a weight to the next code
+still add up. <a href="https://arxiv.org/abs/2609.32902">Later work</a>
+at small scale confirms that methods applied afterwards recover nothing
+below 4 bits, and finds that training at those precisions has its own
+failure, which a learning-rate schedule can prevent. Figure 1 shows most
+of the labs writing in low precision. MiMo starts expert quantization in
+mid-training, K3 and GLM-5 at SFT, and V4 during post-training, where
+V4.1 also stores its attention cache in 4 bits.</p>
 <p>RL gives a sharper reason than capacity. The rollouts come from an
 inference engine and the updates from a learner, and every discrepancy
 between them compounds in the importance ratios, which correct an update
@@ -650,10 +793,13 @@ in both, “eliminating the train–inference mismatch”, and V4 samples
 rollouts on native 4-bit weights. MiMo carries 32-bit master weights and
 its optimizer’s row state across the boundary from SFT to RL, to
 stabilize 4-bit training. MAI solves the same problem the other way,
-with 16-bit arithmetic on both sides of RL, then replays routing and
-top-<span class="math inline">p</span> masks, the sets of tokens the
-sampler kept, so that a rounding error cannot flip a discrete
-choice.</p>
+with 16-bit arithmetic in both the inference engine and the learner.
+Their kernels still differ, so the learner replays two of the engine’s
+discrete choices: the experts each token went to, and the top-<span
+class="math inline">p</span> mask, the set of tokens the sampler kept. A
+small numerical difference then cannot send a token to other experts,
+and the learner scores each token against the same set it was sampled
+from.</p>
 </section>
 <section id="drafters-model-the-policy" class="level3">
 <h3>Drafters model the policy</h3>
@@ -665,8 +811,56 @@ frozen backbone, then alongside post-training, with no gradient into the
 backbone. MiMo trains its drafter on the SFT policy, then fine-tunes it
 on early RL logs. GLM-5.2 fixed a mismatch in which the drafter’s second
 step read a cache that training had never shown it, and on GLM-5.1’s
-backbone the acceptance length rose from 4.56 to 5.10 tokens before
-further changes took it to 5.47.</p>
+backbone the acceptance length, the number of tokens accepted per check
+by the main model, rose from 4.56 to 5.10 before further changes took it
+to 5.47.</p>
+<blockquote>
+<p><strong>Guessing another model’s words.</strong> Generating text is
+serial: each token needs a full pass of the model, and each pass reads
+every weight from memory. Around the turn of 2023, <a
+href="https://arxiv.org/abs/2211.17192">Leviathan, Kalman and Matias</a>
+and, independently, <a href="https://arxiv.org/abs/2302.01318">Chen and
+colleagues</a> at DeepMind made it partly parallel, as speculative
+decoding and speculative sampling. A small drafter proposes a few
+tokens. The main model scores all of them in one pass, which costs about
+as much as producing one token, since its weights are read once either
+way. Each proposed token is accepted with probability <span
+class="math inline">\min(1,p/q)</span>, where <span
+class="math inline">p</span> is the main model’s probability for it and
+<span class="math inline">q</span> the drafter’s. At the first
+rejection, a replacement is drawn from the part of <span
+class="math inline">p</span> that exceeds <span
+class="math inline">q</span>, and the rest of the draft is dropped. This
+is rejection sampling, and the proof is short. A token <span
+class="math inline">x</span> comes out either as an accepted guess, with
+probability <span
+class="math inline">q(x)\min(1,p(x)/q(x))=\min(p(x),q(x))</span>, or as
+the replacement. A rejection happens with probability <span
+class="math inline">1-\sum_y\min(p(y),q(y))</span>, and the replacement
+is drawn from <span class="math inline">\max(0,p-q)</span> rescaled by
+exactly that amount, so it yields <span class="math inline">x</span>
+with probability <span class="math inline">\max(0,p(x)-q(x))</span>. The
+two add up to <span class="math inline">p(x)</span>. The text that comes
+out is therefore distributed exactly as if the main model had written it
+alone, “within hardware numerics”, as Chen and colleagues put it. So a
+drafter cannot change what the model says, only how fast it says it. A
+poor drafter wastes passes, but it never puts words in the model’s
+mouth.</p>
+<p>That makes a drafter an unusual kind of model. It models no world and
+no task, only another model’s habits, and the better ones read that
+model’s inner states. <a
+href="https://arxiv.org/abs/2401.15077">EAGLE</a> predicts the main
+model’s next features rather than its next token, and K3’s drafter fuses
+the outputs of three of its target’s blocks. The chance that a guess
+holds is one minus the total variation distance between the two models’
+next-token distributions, so the acceptance rate measures how far the
+drafter is from the main model, whichever of them is right.
+DeepSeek-V3’s one extra predicted token was accepted 85 to 90 percent of
+the time. The exactness also matters for RL. MiMo samples its rollouts
+with a drafter trained on an earlier policy. A drafter that lags the
+policy only lowers the acceptance rate, while a stale rollout biases the
+update.</p>
+</blockquote>
 </section>
 <section id="starting-as-something-simpler" class="level3">
 <h3>Starting as something simpler</h3>
@@ -692,11 +886,13 @@ these edits with large gains at a small share of the tokens.</p>
 <h3>What RL optimizes, and how it goes wrong</h3>
 <p>Most of the disclosed recipes descend from <a
 href="https://arxiv.org/abs/2402.03300">GRPO</a>, though GLM-5.2 has
-moved to a critic-based form. For each prompt the model samples a group
-of <span class="math inline">G</span> answers, and each answer’s
-advantage is its reward relative to the group. Every token of an answer
-gets that answer’s advantage, and an importance ratio corrects for the
-policy having moved since sampling:</p>
+moved to PPO with a critic, a learned estimate of the expected reward,
+so that each rollout can be judged on its own instead of against its
+group. For each prompt the model samples a group of <span
+class="math inline">G</span> answers, and each answer’s advantage is its
+reward relative to the group. Every token of an answer gets that
+answer’s advantage, and an importance ratio corrects for the policy
+having moved since sampling:</p>
 <p><span class="math display">
 A_i=\frac{R_i-\operatorname{mean}(R_{1:G})}{\operatorname{std}(R_{1:G})},\qquad
 r_{i,t}=\frac{\pi_\theta(y_{i,t}\mid\cdot)}{\pi_{\rm
@@ -710,11 +906,12 @@ Does a Policy Improve?</em></a> treats this family. At scale, what fills
 the reports is stability. MAI runs 128 rollouts per prompt, <span
 class="math inline">\epsilon=0.6</span>, an integral controller that
 widens the upper clip when entropy falls below a target of 0.3, and a
-hard outer clip, because the branches GRPO leaves unclipped “sometimes
-led to catastrophic gradient-norm spikes”. It also has to hold the
-rollouts to the top-<span class="math inline">p</span> nucleus they were
-sampled from, the set of likeliest tokens, or the mismatch causes
-divergence “within a few training steps”.</p>
+hard outer clip, because the branches GRPO leaves unclipped, where a
+token with a negative advantage has become much likelier, “sometimes led
+to catastrophic gradient-norm spikes”. It also has to hold the rollouts
+to the top-<span class="math inline">p</span> nucleus they were sampled
+from, the set of likeliest tokens, by the mask replay of Section 3, or
+the mismatch causes divergence “within a few training steps”.</p>
 <p><strong>Stale rollouts.</strong> Sampling and learning run at once,
 so a rollout may come from weights the learner has since left behind.
 The long rollouts on the hardest problems are the stalest. MAI takes
@@ -816,7 +1013,8 @@ data or reasoning slowly degrades.</p>
 <section id="self-distillation-at-production-scale" class="level3">
 <h3>Self-distillation at production scale</h3>
 <p>MAI’s RL starts from a model that has never seen reasoning traces,
-prompted in raw text. Its climbs are long, so it periodically collects
+prompted in raw text. Its RL runs, which it calls climbs for their
+rising scores, last many thousands of steps, so it periodically collects
 rollouts, runs SFT on them starting from a mid-trained checkpoint, and
 resumes RL from the result. <a
 href="https://lukstafi.github.io/notes/who-teaches-the-weights.html"><em>Who
@@ -874,17 +1072,18 @@ stable, though fine-tuning on people it already knew did no such harm.
 New keys do the damage. Which stores take it is unsettled. At 1.5
 billion parameters, <a href="https://arxiv.org/abs/2604.15574">Kaplan
 and colleagues</a> froze parts of the model during SFT on new facts:
-attention alone learned almost none of them (0.010) and left the
-held-out old facts at 0.931, while feed-forward layers alone learned
-them (0.941) and took those facts down to 0.782. <a
-href="https://arxiv.org/abs/2610.08718">Palit and colleagues</a>, on a
-small Transformer, attribute nearly equal shares of a forgetting shift
-to attention’s value and output weights (47 percent) and to the
-feed-forward layers (46). And some forgetting is not erasure. In OLMo-2
-1B, at the trough, <a href="https://arxiv.org/abs/2610.08718">removing
-the top singular direction of each weight update</a> took recall of old
-facts from 0.28 to 0.77. By step 400 it held 0.70 against 0.38, at a
-cost in new-fact recall of 0.90 to 0.40. <a
+attention alone, its value and output projections included, learned
+almost none of them (0.010) and left the held-out old facts at 0.931,
+while feed-forward layers alone learned them (0.941) and took those
+facts down to 0.782. <a href="https://arxiv.org/abs/2610.08718">Palit
+and colleagues</a>, on a small Transformer, attribute nearly equal
+shares of a forgetting shift to attention’s value and output weights (47
+percent) and to the feed-forward layers (46). And some forgetting is not
+erasure. In OLMo-2 1B, at the trough, <a
+href="https://arxiv.org/abs/2610.08718">removing the top singular
+direction of each weight update</a> took recall of old facts from 0.28
+to 0.77. By step 400 it held 0.70 against 0.38, at a cost in new-fact
+recall of 0.90 to 0.40. <a
 href="https://lukstafi.github.io/notes/where-experience-goes.html"><em>Where
 Experience Goes</em></a> draws the continual-learning consequences.</p>
 <p>How far a store moves does not say how much it matters. In <a
@@ -921,14 +1120,14 @@ score that will not exist until the model has gone through RL.</p>
 synthesized examples of the model correcting itself from those cases,
 and put them into mid-training. The final mid-training thus contains
 failures from before it.</p>
-<p>Moonshot traced a capability backward in the same way. It watched
-vulnerability research improve “steadily as post-training scaled”, and
-found the source in two places: “cyber-related content was embedded
-within the general mid-training corpus”, and such tasks sat in the RL
-environments. For K3.1 Pro’s open weights it removed the data from both
-stages. A checkpoint without the removal solves 90.5 percent of one
-cyber benchmark, and the released one 81.0. A behaviour noticed in
-post-training had one of its roots in the stage before.</p>
+<p>Moonshot also went back a stage, to take data out rather than put it
+in. It watched vulnerability research improve “steadily as post-training
+scaled”, and traced the capability to two sources: “cyber-related
+content was embedded within the general mid-training corpus”, and such
+tasks sat in the RL environments. For K3.1 Pro’s open weights it removed
+the data from both stages. A checkpoint without the removal solves 90.5
+percent of one cyber benchmark, and the released one 81.0. A behaviour
+noticed in post-training had one of its roots in the stage before.</p>
 <p><a href="https://arxiv.org/abs/2608.30320">Qwen’s Next report</a>
 describes a different model from the first essay’s checkpoint, and it
 contains the sharpest warning in these sources. To save memory traffic,
@@ -1003,6 +1202,7 @@ K3.1 Pro; and MiMo’s RL checkpoint against its distilled successor.
 Table 2 gives the median relative change <span
 class="math inline">\lVert B-A\rVert/\lVert A\rVert</span> for each kind
 of tensor.</p>
+<div class="substack-image" src="images/filling-the-stores-table2.svg">
 <table>
 <caption>Table 2. Median relative change between released checkpoints,
 on sampled tensors. Cells marked * are stored wholly or partly in 8
@@ -1093,6 +1293,7 @@ decoded.</caption>
 </tr>
 </tbody>
 </table>
+</div>
 <p>In the interior layers, attention and shared experts moved near 10
 percent in the three pairs that span post-training. Each layer’s input
 and output norms moved least, though K3’s residual-stream norms moved
@@ -1156,13 +1357,25 @@ Pro (model card, configuration and blog post); Kimi K2, arXiv
 2507.20534; Qwen3.8-2.4T-A95B (model card) and the Qwen3.8-Next report,
 arXiv 2608.30320; GLM-5, arXiv 2602.15763, and the GLM-5.2 and GLM-5.3
 cards and posts; DeepSeek-V4, arXiv 2606.19348; DeepSeek-V4.1-Flash,
-arXiv 2609.19969; DeepSeek-V3.2, arXiv 2512.02556; MiniMax-M3 (model
-card) and the MSA paper, arXiv 2606.13392; MAI-Thinking-1 (Microsoft AI
-technical report, microsoft.ai/pdf/mai-thinking-1.pdf). Components:
-Jordan et al., <em>Muon</em> (blog post, 2024); Liu et al., arXiv
+arXiv 2609.19969; DeepSeek-V3, arXiv 2412.19437; DeepSeek-V3.2, arXiv
+2512.02556; MiniMax-M3 (model card) and the MSA paper, arXiv 2606.13392;
+MAI-Thinking-1 (Microsoft AI technical report,
+microsoft.ai/pdf/mai-thinking-1.pdf). Components: Kingma and Ba,
+<em>Adam</em>, arXiv 1412.6980; Loshchilov and Hutter, <em>Decoupled
+Weight Decay Regularization</em>, arXiv 1711.05101; Jordan et al.,
+<em>Muon</em> (blog post, 2024); Bernstein and Newhouse, <em>Old
+Optimizer, New Norm</em>, arXiv 2409.20325; Liu et al., arXiv
 2502.16982; Lion et al., <em>Muown</em>, arXiv 2605.10797; Qu et al.,
-arXiv 2605.10468; Xie et al., <em>mHC</em>, arXiv 2512.24880; Kimi Team,
-<em>Attention Residuals</em>, arXiv 2603.15031; Kubicek et al.,
+arXiv 2605.10468; Shazeer et al., <em>Outrageously Large Neural
+Networks</em>, arXiv 1701.06538; Fedus, Zoph and Shazeer, <em>Switch
+Transformers</em>, arXiv 2101.03961; Qiu et al., <em>Demons in the
+Detail</em>, arXiv 2501.11873; Xie et al., <em>mHC</em>, arXiv
+2512.24880; Kimi Team, <em>Attention Residuals</em>, arXiv 2603.15031;
+Leviathan, Kalman and Matias, <em>Speculative Decoding</em>, arXiv
+2211.17192; Chen et al., <em>Speculative Sampling</em>, arXiv
+2302.01318; Li et al., <em>EAGLE</em>, arXiv 2401.15077; Mnih et al.,
+<em>Recurrent Models of Visual Attention</em>, arXiv 1406.6247; Xu et
+al., <em>Show, Attend and Tell</em>, arXiv 1502.03044; Kubicek et al.,
 <em>Latent Sparse Attention</em>, arXiv 2610.42147; <em>ZHA</em>, arXiv
 2610.42112; <em>CISA</em>, arXiv 2611.03200. Post-training: Shao et al.,
 <em>GRPO</em>, arXiv 2402.03300; Ma et al., <em>MOPD</em>, arXiv
