@@ -289,6 +289,11 @@ build_html \
   "$collab_dir/thesis-review-5.html" \
   "The parameter an induction jump has to remember"
 
+build_html \
+  "$collab_dir/thesis-review-6.md" \
+  "$collab_dir/thesis-review-6.html" \
+  "How far can a recursive call move the cap?"
+
 reviews_dir="$collab_dir/reviews"
 if [[ -d "$reviews_dir" ]]; then
   for md_file in "$reviews_dir"/*.md; do

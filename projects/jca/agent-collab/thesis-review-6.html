@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <meta name="dcterms.date" content="2026-11-22">
+  <meta property="og:title" content="How far can a recursive call move the cap?">
+  <meta property="og:url" content="https://lukstafi.github.io/projects/jca/agent-collab/thesis-review-6.html">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="lukstafi&#x27;s blog">
+  <meta name="twitter:card" content="summary">
+  <title>How far can a recursive call move the cap?</title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <style type="text/css">
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="/assets/tufte.css">
+  <link rel="stylesheet" href="/assets/pandoc-tufte.css">
+  <link rel="stylesheet" href="/assets/site.css">
+  <script defer=""
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+  type="text/javascript"></script>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+  <script>(function(){var t=localStorage.getItem('theme-preference');if(t)document.documentElement.setAttribute('data-theme',t);})()</script>
+</head>
+<body>
+<nav class="site-nav">
+  <a href="/">Home</a> &middot; <a href="/study/">Study Guide</a> &middot; <a href="/about.html">About</a> &middot; <a href="https://lukstafi.substack.com">Substack</a>
+</nav>
+<div class="theme-toggle">
+  <button id="theme-btn" aria-label="Toggle dark mode">&#9788;</button>
+</div>
+<article>
+<header>
+<h1 class="title">How far can a recursive call move the cap?</h1>
+<p class="byline">2026-11-22</p>
+</header>
+<nav id="TOC">
+<ul>
+<li><a href="#boundary" id="toc-boundary">The sharp
+precondition</a></li>
+<li><a href="#run" id="toc-run">What the induction jump sees</a></li>
+<li><a href="#split" id="toc-split">The same cap in two
+constructors</a></li>
+</ul>
+</nav>
+<p>Change one argument of the recursive call from <span
+class="math inline">\(m\)</span> to <span
+class="math inline">\(m+d\)</span>. A child at <span
+class="math inline">\(m+d\)</span> promises a result at most <span
+class="math inline">\(\max(m+d+19,0)\)</span>. Its parent, still at
+<span class="math inline">\(m\)</span>, can use any result up to <span
+class="math inline">\(\max(m+20,0)\)</span>. A shift of one spends the
+entire unit of slack. A shift of two already fails at <span
+class="math inline">\(m=-20\)</span> on a tree with two successors. The
+repaired InvarGenT infers <span class="math inline">\(d\le1\)</span>
+with <span class="math inline">\(m\)</span> unrestricted. <a
+href="thesis-review-6.py">Executable comparison</a> · <a
+href="thesis-review-6.lean">Lean proofs</a></p>
+<section id="boundary" class="level2">
+<h2>The sharp precondition</h2>
+<p>Write <span class="math inline">\(C_c(m)=\max(m+c,0)\)</span> and
+<span class="math inline">\(R_c(m,r)=(0\le r\le C_c(m))\)</span>. The
+external function takes a parent argument <span
+class="math inline">\(m\)</span> and a child result <span
+class="math inline">\(r\)</span> satisfying <span
+class="math inline">\(R_L(m,r)\)</span>. It returns a payload <span
+class="math inline">\(u\)</span> satisfying <span
+class="math inline">\(R_c(m,u)\)</span> and <span
+class="math inline">\(u\le r+1\)</span>. The unindexed input <span
+class="math inline">\(t\)</span> can have any finite depth.</p>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode ocaml"><code class="sourceCode ocaml"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">let</span> <span class="kw">rec</span> climb d m = efunction</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  | Z -&gt; <span class="dv">0</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  | S t -&gt; <span class="kw">let</span> r = climb d (m + d) t <span class="kw">in</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>           <span class="kw">let</span> B u = step m r <span class="kw">in</span> u</span></code></pre></div>
+<p>Fix <span class="math inline">\(d\)</span>. Let <span
+class="math inline">\(P(m)\)</span> admit the starting argument and let
+<span class="math inline">\(Q(m,r)\)</span> describe a returned payload.
+Table 4.4 must solve these obligations after instantiating the recursive
+predicate at its actual argument.</p>
+<p><span class="math display">\[
+\begin{aligned}
+P(m)&amp;\Rightarrow P(m+d),\\
+P(m)&amp;\Rightarrow Q(m,0),\\
+P(m)\land Q(m+d,r)&amp;\Rightarrow R_L(m,r),\\
+P(m)\land Q(m+d,r)\land R_L(m,r)\land R_c(m,u)\land u\le r+1
+&amp;\Rightarrow Q(m,u).
+\end{aligned}
+\]</span></p>
+<p><strong>Theorem.</strong> Suppose <span class="math inline">\(c\le
+L\)</span>. For any initial <span class="math inline">\(m\)</span>,
+there exist predicates <span class="math inline">\(P,Q\)</span>
+satisfying all four obligations with <span
+class="math inline">\(P(m)\)</span> if and only if <span
+class="math inline">\(d\le L-c\)</span>. The quantification includes
+arbitrary predicates, even ones outside the InvarGenT language.</p>
+<p><strong>Sufficiency.</strong> Take <span
+class="math inline">\(P\)</span> to admit every integer and <span
+class="math inline">\(Q=R_c\)</span>. Zero belongs to every band. The
+supplier explicitly bounds the next result. At the call, <span
+class="math inline">\(m+d+c\le m+L\)</span> implies <span
+class="math inline">\(C_c(m+d)\le C_L(m)\)</span>.</p>
+<p><strong>Necessity.</strong> Suppose <span
+class="math inline">\(c+d&gt;L\)</span> and some <span
+class="math inline">\(m\)</span> is admitted. Since <span
+class="math inline">\(c\le L\)</span>, the integer shift is positive.
+Every recursive argument <span class="math inline">\(m+jd\)</span> is
+admitted. Choose one, <span class="math inline">\(z\)</span>, large
+enough that <span class="math inline">\(z+L\ge0\)</span>. The child at
+<span class="math inline">\(z+d\)</span> can produce <span
+class="math inline">\(z+L+1\)</span>, one more than the parent can
+accept.</p>
+<p>To see why every valid <span class="math inline">\(Q\)</span> must
+permit that result, take any admitted <span
+class="math inline">\(x\)</span>. For each natural <span
+class="math inline">\(n\le C_c(x)\)</span>, induction on <span
+class="math inline">\(n\)</span> forces <span
+class="math inline">\(Q(x,n)\)</span>. The base returns zero. For <span
+class="math inline">\(n+1\)</span>, the child at <span
+class="math inline">\(x+d\)</span> may return <span
+class="math inline">\(n\)</span> because the cap increases with <span
+class="math inline">\(x\)</span>. The call obligation licenses the step
+and its constructor permits <span class="math inline">\(n+1\)</span>. At
+<span class="math inline">\(x=z+d\)</span>, this argument supplies
+exactly the forbidden value. A smaller witness suffices to refute the
+scheme that admits every <span class="math inline">\(m\)</span>. At
+<span class="math inline">\(m=-L\)</span> the outer limit is zero, and a
+child one level down may return one. <a
+href="thesis-review-6.lean">Proofs of both necessity statements</a></p>
+</section>
+<section id="run" class="level2">
+<h2>What the induction jump sees</h2>
+<p>There are two coordinates worth following in the implementation. At
+the definition, the constructor states an upper bound using its formal
+parameter <span class="math inline">\(m\)</span>. At a recursive use,
+the existential package instantiates that slot with <span
+class="math inline">\(m+d\)</span>. The base case <span
+class="math inline">\(u=0\)</span> also proves <span
+class="math inline">\(u\le C_c(m)\)</span>. The numeric generalizer now
+takes candidate extrema from the supplier formulas and retains a
+candidate only if every feasible projected supplier case proves it. This
+gives the existing parameter-capture code a reason to put <span
+class="math inline">\(m\)</span> in the package.</p>
+<p>At the caller, <span class="math inline">\(r\le\max(m+d+c,0)\)</span>
+says that <span class="math inline">\(r\le0\)</span> or <span
+class="math inline">\(r\le m+d+c\)</span>. The first alternative already
+meets the caller limit. For the second, <span class="math inline">\(d\le
+L-c\)</span> suffices. The numeric abducer now tries this comparison
+between the two remaining arms and sends the candidate through the usual
+scope, consistency and validation checks. The same rule works when one
+arm is already stronger by a constant. With supplier floor <span
+class="math inline">\(1\)</span> and caller floor <span
+class="math inline">\(2\)</span>, the solver also infers <span
+class="math inline">\(d\le1\)</span> for offsets <span
+class="math inline">\(19,20\)</span>.</p>
+<p>In the zero-based trace for <span
+class="math inline">\(c=19,L=20\)</span>, the supplier on pass 2
+introduces the cap and captures <span class="math inline">\(m\)</span>.
+Before the jump it also proves a succession of temporary bounds on
+depth, ending with <span class="math inline">\(r\le6\)</span> on entry
+to pass 8. The jump drops that temporary bound, keeps the cap and
+finishes on pass 9 with an empty caller demand. The emitted scheme
+includes <span class="math inline">\(d\le r+1\)</span>, which already
+follows from <span class="math inline">\(d\le1\)</span> and <span
+class="math inline">\(0\le r\)</span>. The old solver at revision
+<code>4560a1f</code> exhausted its default iteration budget on the
+start-at-zero program even when the child stayed at <span
+class="math inline">\(m\)</span>. <a
+href="thesis-review-5.html#runs">Earlier trace and capture
+obstruction</a></p>
+<table style="width:100%;">
+<colgroup>
+<col style="width: 22%" />
+<col style="width: 22%" />
+<col style="width: 16%" />
+<col style="width: 16%" />
+<col style="width: 22%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: right;">Supplier offset <span
+class="math inline">\(c\)</span></th>
+<th style="text-align: right;">Caller offset <span
+class="math inline">\(L\)</span></th>
+<th>Sole inferred input condition</th>
+<th>Accepted and executed shifts</th>
+<th style="text-align: right;">Rejected shift</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: right;">19</td>
+<td style="text-align: right;">20</td>
+<td><span class="math inline">\(d\le1\)</span></td>
+<td>0, 1</td>
+<td style="text-align: right;">2</td>
+</tr>
+<tr>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">5</td>
+<td><span class="math inline">\(d\le2\)</span></td>
+<td>1, 2</td>
+<td style="text-align: right;">3</td>
+</tr>
+<tr>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td><span class="math inline">\(d\le0\)</span></td>
+<td>−1, 0</td>
+<td style="text-align: right;">1</td>
+</tr>
+<tr>
+<td style="text-align: right;">−2</td>
+<td style="text-align: right;">−1</td>
+<td><span class="math inline">\(d\le1\)</span></td>
+<td>0, 1</td>
+<td style="text-align: right;">2</td>
+</tr>
+</tbody>
+</table>
+<p>The driver invokes inference on a fresh program for every table
+entry. Each program calls the polymorphic definition at <span
+class="math inline">\(m=-L\)</span> with input <code>S (S Z)</code>. It
+runs the emitted OCaml for each accepted call, including a runtime
+assertion for the external function’s input contract. The four rejected
+calls fail during numeric abduction. <a href="thesis-review-6.py">Run
+the comparison</a></p>
+</section>
+<section id="split" class="level2">
+<h2>The same cap in two constructors</h2>
+<p>Give the supplier two ways to return. Constructor <code>Zero</code>
+supplies <span class="math inline">\(u=0\)</span>. Constructor
+<code>B</code> supplies <span class="math inline">\(0\le u\le
+r+1\)</span> and <span class="math inline">\(u\le m+c\)</span>. For
+every legal input <span class="math inline">\(r\ge0\)</span>, their
+union is <em>exactly</em> the old supplier relation. If <span
+class="math inline">\(m+c&lt;0\)</span>, only zero is possible.
+Otherwise the second constructor covers the whole interval. The same
+two-atom result predicate therefore solves the numeric obligations. The
+inner existential match can package its result with that same bound. <a
+href="split_capped_climb.gadt">Runnable split-constructor program</a> ·
+<a href="thesis-review-6.lean">Equivalence of the two
+presentations</a></p>
+<p>In this program the exact max bound occurs in neither supplier. Even
+with <span class="math inline">\(d=0\)</span>, the repaired solver
+reports “Answers do not converge” at the default limit. Raising the
+limit to 40 gives the following observations on every pass from 9
+through 40.</p>
+<table>
+<thead>
+<tr>
+<th>Component</th>
+<th>Value after alignment</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Captured parameters, old and new</td>
+<td>Empty tuple</td>
+</tr>
+<tr>
+<td>Projected suppliers</td>
+<td>Zero, or <span class="math inline">\(0\le u\le m+19\)</span> with
+<span class="math inline">\(0\le m+19\)</span></td>
+</tr>
+<tr>
+<td>Generalized and widened result</td>
+<td><span class="math inline">\(0\le u\)</span></td>
+</tr>
+<tr>
+<td>Added by the caller</td>
+<td><span class="math inline">\(u\le\max(m+20,0)\)</span></td>
+</tr>
+</tbody>
+</table>
+<p>This is a counterexample to completeness of the revised executable
+with its default budget. The trace records a repeated update through a
+finite cutoff. The earlier common-atom jump has a separate recurrence
+proving indefinite repetition with a constant-size solution. In the
+split case, a prospective repair has to <em>form</em> the missing
+maximum from alternative linear bounds or transport the caller’s demand
+back to the definition and validate the captured parameter there.
+Retaining an extremum that already occurs in a supplier cannot discover
+it here. <a href="thesis-review-3.html#update">Original Table 4.4
+counterexample</a></p>
+<p><strong>Reproduction.</strong> The solver runs above use InvarGenT
+revision <code>6d2c213</code>. The driver takes the path to its
+executable and optionally <code>--ocaml</code> followed by the
+interpreter path. Keep the split-constructor source beside the driver to
+reproduce the failures at budgets 11 and 40. Lean 4.19.0 with
+<code>Std</code> checks the proof. The OCaml 5.3.0 compatibility build
+passed 266 OUnit cases with 10 marked TODO. All 126 previously generated
+signatures matched byte for byte. The new shifted-cap fixture also
+passed in the OCaml 5.5.1 compatibility build.</p>
+</section>
+</article>
+<script src="/assets/theme-toggle.js"></script>
+</body>
+</html>
