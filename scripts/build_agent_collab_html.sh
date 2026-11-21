@@ -294,6 +294,11 @@ build_html \
   "$collab_dir/thesis-review-6.html" \
   "How far can a recursive call move the cap?"
 
+build_html \
+  "$collab_dir/thesis-review-7.md" \
+  "$collab_dir/thesis-review-7.html" \
+  "Recovering a cap from two constructors"
+
 reviews_dir="$collab_dir/reviews"
 if [[ -d "$reviews_dir" ]]; then
   for md_file in "$reviews_dir"/*.md; do

@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <meta name="dcterms.date" content="2026-11-22">
+  <meta property="og:title" content="Recovering a cap from two constructors">
+  <meta property="og:url" content="https://lukstafi.github.io/projects/jca/agent-collab/thesis-review-7.html">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="lukstafi&#x27;s blog">
+  <meta name="twitter:card" content="summary">
+  <title>Recovering a cap from two constructors</title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <link rel="stylesheet" href="/assets/tufte.css">
+  <link rel="stylesheet" href="/assets/pandoc-tufte.css">
+  <link rel="stylesheet" href="/assets/site.css">
+  <script defer=""
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+  type="text/javascript"></script>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+  <script>(function(){var t=localStorage.getItem('theme-preference');if(t)document.documentElement.setAttribute('data-theme',t);})()</script>
+</head>
+<body>
+<nav class="site-nav">
+  <a href="/">Home</a> &middot; <a href="/study/">Study Guide</a> &middot; <a href="/about.html">About</a> &middot; <a href="https://lukstafi.substack.com">Substack</a>
+</nav>
+<div class="theme-toggle">
+  <button id="theme-btn" aria-label="Toggle dark mode">&#9788;</button>
+</div>
+<article>
+<header>
+<h1 class="title">Recovering a cap from two constructors</h1>
+<p class="byline">2026-11-22</p>
+</header>
+<nav id="TOC">
+<ul>
+<li><a href="#coverage" id="toc-coverage">Where a constructor can
+violate a bound</a></li>
+<li><a href="#feedback" id="toc-feedback">A bound can become redundant
+during abduction</a></li>
+<li><a href="#pruning" id="toc-pruning">When simplification is allowed
+to forget a constraint</a></li>
+</ul>
+</nav>
+<p>One constructor returns zero. The other returns a nonnegative <span
+class="math inline">\(u\le m+19\)</span>. Together they guarantee <span
+class="math inline">\(u\le\max(0,m+19)\)</span>. InvarGenT used to lose
+<span class="math inline">\(m\)</span> on this program, even though it
+inferred the cap when a single constructor stated the same bound. The
+solver now recovers <span class="math inline">\(m\)</span> from the two
+branches and instantiates it at the recursive call. With a caller limit
+<span class="math inline">\(\max(0,m+20)\)</span>, the symbolic child
+call at <span class="math inline">\(m+d\)</span> gets the exact
+precondition <span class="math inline">\(d\le1\)</span>. <a
+href="split_capped_climb.gadt">Original split program</a> · <a
+href="thesis-review-6.html#boundary">Proof of the shift
+threshold</a></p>
+<section id="coverage" class="level2">
+<h2>Where a constructor can violate a bound</h2>
+<p>Suppose the last postcondition contained an arm <span
+class="math inline">\(r\le k\)</span>. At the next pass, try <span
+class="math inline">\(u\le k\)</span> on the <em>definition’s</em>
+result coordinate <span class="math inline">\(u\)</span>. Pair it with
+an affine supplier bound <span class="math inline">\(u\le
+f(m)+s\)</span>. Which offsets <span class="math inline">\(s\)</span>
+can the suppliers justify?</p>
+<p><strong>Residual test.</strong> For supplier regions <span
+class="math inline">\(P_i\)</span>, the candidate is valid exactly
+when</p>
+<p><span class="math display">\[
+\forall i,m,u.\quad P_i(m,u)\land u&gt;k\ \Longrightarrow\ u-f(m)\le s.
+\]</span></p>
+<p>Every result at or below <span class="math inline">\(k\)</span>
+already satisfies the constant arm. Every result strictly above <span
+class="math inline">\(k\)</span> needs the affine arm. With <span
+class="math inline">\(k=0\)</span>, replacing the strict test by <span
+class="math inline">\(u\ge0\)</span> would reject the desired cap. The
+zero constructor at <span class="math inline">\(m=-20\)</span> would
+then have to prove <span class="math inline">\(0\le-1\)</span>. This
+test also commutes with projecting away private variables whenever the
+constant arm uses only public coordinates. <a
+href="thesis-review-7.lean">Lean proofs</a></p>
+<p>A single supplier region can need both arms. On the line <span
+class="math inline">\(u=m\)</span>, every point satisfies <span
+class="math inline">\(u\le0\lor u\le2m\)</span>. Positive <span
+class="math inline">\(m\)</span> needs the second arm and negative <span
+class="math inline">\(m\)</span> needs the first. Testing whether each
+whole region entails one arm would miss this valid formula. InvarGenT
+checks the disjunction on each projected region by searching for a point
+where both arms fail.</p>
+<p>The implementation transfers the sign and constant of a one-variable
+arm from the previous answer. It takes the result variable and the
+affine expression from the definition’s supplier faces. Every variable
+must be in scope, and every feasible supplier region must prove the
+resulting atom. A third supplier that may return <span
+class="math inline">\(u=1\)</span> for arbitrary <span
+class="math inline">\(m\)</span> defeats the candidate at <span
+class="math inline">\(m=-20\)</span>. A regression exercises this case
+with different variable names at the use and the definition. The search
+retains the existing limit on the number of extrema.</p>
+</section>
+<section id="feedback" class="level2">
+<h2>A bound can become redundant during abduction</h2>
+<p>In the direct call at <span class="math inline">\(m+1\)</span>, the
+child promises <span
+class="math inline">\(r\le\max(0,m&#39;+19)\)</span>. One branch of
+numeric abduction established <span
+class="math inline">\(m&#39;=m+1\)</span>. Another branch had already
+requested <span class="math inline">\(r\le\max(m+20,0)\)</span> from the
+caller. Once the equation was available, the child promise proved the
+whole request. The old solver still sent the request back to the
+postcondition. Simply reversing the printed order of the two max
+arguments could change whether inference finished.</p>
+<p>The repaired solver checks the completed positive numeric answer
+before splitting it among predicates. It tries deleting a provisional
+non-equational atom, keeping the equations that connect the actual call
+arguments. It commits a deletion only if the remaining answer proves
+every original numeric implication. The implementation applies this pass
+to answers containing a disjunctive inequality, with no negative
+branches or discarded numeric answers. Separate checks still govern
+those cases. A failed deletion stays failed when further assumptions are
+removed, so each eligible atom needs only one attempt. This gives
+deletion minimality among those atoms, conditional on a valid starting
+answer. <a href="thesis-review-7.lean">Deletion lemma</a></p>
+<p>For offsets <span
+class="math inline">\((19,20),(3,5),(0,0),(-2,-1)\)</span> the split
+supplier inferred <span class="math inline">\(d\le L-c\)</span>.
+Reflecting every numeric index gives a minimum and the reversed
+precondition <span class="math inline">\(d\ge c-L\)</span>. For each of
+the eight configurations, the driver tests the boundary, one shift
+inside, and one outside. The solver accepted and executed all 16 safe
+calls and rejected all eight unsafe calls. <a
+href="thesis-review-7-calls.py">Executable matrix</a></p>
+</section>
+<section id="pruning" class="level2">
+<h2>When simplification is allowed to forget a constraint</h2>
+<p>Under <span class="math inline">\(n=\max(x,y)\)</span>, asking for
+<span class="math inline">\(n+1\le\max(x,y)\)</span> is impossible. The
+old pruning routine could erase that requirement, leaving an empty
+conjunction. It used the wrong sign on the face where one extremum arm
+is zero. A second route to the same error let an inequality derived from
+a disjunction serve as a premise for its own deletion. Some legal
+numeric formulas, including extrema whose two normalized arms share no
+variable, could also trigger an assertion.</p>
+<p>There are two distinct logical obligations. If <span
+class="math inline">\(F\)</span> simplifies to <span
+class="math inline">\(R\)</span> under guard <span
+class="math inline">\(G\)</span>, then <span
+class="math inline">\(G\models F\leftrightarrow R\)</span>. If <span
+class="math inline">\(R\)</span> is an <em>initial supplier
+generalization</em>, <span class="math inline">\(G\models F\Rightarrow
+R\)</span> suffices. For example, a supplier summary forcing <span
+class="math inline">\(x=y=0\)</span> can safely generalize to <span
+class="math inline">\(y=\max(0,x)\)</span>. Ordinary simplification must
+preserve the restriction to zero. Subsequent widening still has its own
+supplier and caller checks.</p>
+<p>InvarGenT now checks the appropriate implication or implications on
+changes involving extrema. If the proposed simplification fails the
+check, it keeps the input formula. In a fixed sample of 4,000
+rational-arithmetic judgments, the previous implementation changed the
+truth of 853 guarded formulas and raised exceptions on a further 354.
+Revision <code>3ba298f</code> had zero discrepancies and zero exceptions
+on the same inputs. The oracle asks Z3 whether any valuation satisfies
+the guard and distinguishes the input from the output. <a
+href="thesis-review-7-pruning.ml">OCaml driver</a> · <a
+href="thesis-review-7.py">Z3 comparison</a></p>
+<p>The capture and abduction changes are in InvarGenT
+<code>f5e4fcc</code>, followed by the pruning repair in
+<code>3ba298f</code>. Lean 4.19.0 checks the accompanying lemmas. The
+OCaml 5.3.0 compatibility build passed 270 OUnit cases with 10 marked
+TODO. All 127 previously generated signatures matched byte for byte. The
+split fixture also passed in the OCaml 5.5.1 compatibility build. To
+reproduce the oracle comparison, compile the OCaml driver as
+<code>src/Audit.ml</code> in the solver build and pass its binary to the
+Python comparison with <code>z3-solver</code> installed.</p>
+</section>
+</article>
+<script src="/assets/theme-toggle.js"></script>
+</body>
+</html>
