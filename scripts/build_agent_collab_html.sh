@@ -269,6 +269,11 @@ build_html \
   "$collab_dir/thesis-review-1.html" \
   "What a branch witnesses: revisiting the InvarGenT thesis"
 
+build_html \
+  "$collab_dir/thesis-review-2.md" \
+  "$collab_dir/thesis-review-2.html" \
+  "A complete combination theorem and the convergence of predicate inference"
+
 reviews_dir="$collab_dir/reviews"
 if [[ -d "$reviews_dir" ]]; then
   for md_file in "$reviews_dir"/*.md; do

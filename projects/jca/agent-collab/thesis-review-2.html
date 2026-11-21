@@ -1,0 +1,884 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <meta name="dcterms.date" content="2026-11-21">
+  <meta property="og:title" content="A complete combination theorem and the convergence of predicate inference">
+  <meta property="og:url" content="https://lukstafi.github.io/projects/jca/agent-collab/thesis-review-2.html">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="lukstafi&#x27;s blog">
+  <meta name="twitter:card" content="summary">
+  <title>A complete combination theorem and the convergence of predicate
+inference</title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <style type="text/css">
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="/assets/tufte.css">
+  <link rel="stylesheet" href="/assets/pandoc-tufte.css">
+  <link rel="stylesheet" href="/assets/site.css">
+  <script defer=""
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+  type="text/javascript"></script>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+  <script>(function(){var t=localStorage.getItem('theme-preference');if(t)document.documentElement.setAttribute('data-theme',t);})()</script>
+</head>
+<body>
+<nav class="site-nav">
+  <a href="/">Home</a> &middot; <a href="/study/">Study Guide</a> &middot; <a href="/about.html">About</a> &middot; <a href="https://lukstafi.substack.com">Substack</a>
+</nav>
+<div class="theme-toggle">
+  <button id="theme-btn" aria-label="Toggle dark mode">&#9788;</button>
+</div>
+<article>
+<header>
+<h1 class="title">A complete combination theorem and the convergence of
+predicate inference</h1>
+<p class="byline">2026-11-21</p>
+</header>
+<nav id="TOC">
+<ul>
+<li><a href="#combination" id="toc-combination">1. A replacement for
+Theorem 4.5</a>
+<ul>
+<li><a href="#why-fixing-dead-branches-is-insufficient"
+id="toc-why-fixing-dead-branches-is-insufficient">Why fixing dead
+branches is insufficient</a></li>
+<li><a href="#the-theorem-and-the-interface"
+id="toc-the-theorem-and-the-interface">The theorem and the
+interface</a></li>
+<li><a href="#ordinary-branch-witnesses-and-entailment"
+id="toc-ordinary-branch-witnesses-and-entailment">Ordinary branch
+witnesses and entailment</a></li>
+<li><a href="#prefix-witnesses-at-the-right-move"
+id="toc-prefix-witnesses-at-the-right-move">Prefix witnesses at the
+right move</a></li>
+<li><a href="#escape-the-component-calls-and-coverage"
+id="toc-escape-the-component-calls-and-coverage">Escape, the component
+calls, and coverage</a></li>
+</ul></li>
+<li><a href="#convergence" id="toc-convergence">2. When does the
+predicate iteration converge?</a>
+<ul>
+<li><a
+href="#a-two-inequality-solution-with-infinitely-many-strict-refinements"
+id="toc-a-two-inequality-solution-with-infinitely-many-strict-refinements">A
+two-inequality solution with infinitely many strict refinements</a></li>
+<li><a href="#a-positive-convergence-theorem-for-free-term-predicates"
+id="toc-a-positive-convergence-theorem-for-free-term-predicates">A
+positive convergence theorem for free-term predicates</a></li>
+<li><a href="#what-a-polynomial-bound-buys-without-monotone-iteration"
+id="toc-what-a-polynomial-bound-buys-without-monotone-iteration">What a
+polynomial bound buys without monotone iteration</a></li>
+</ul></li>
+<li><a href="#implementation" id="toc-implementation">3. What would an
+InvarGenT implementation certify?</a></li>
+</ul>
+</nav>
+<p>A complete abducer for each sort does not make Table 4.1 complete,
+even if every branch has a witness. The missing information is a type
+equation whose <em>only purpose</em> is to connect the premises to a
+numeric conclusion. A corrected combination algorithm can synthesize
+such equations and still send every logical query to a single-sort
+solver. For the predicate iteration there is a different answer. A
+solution bounds the number of strict refinements along a covered chain
+of free-term predicates. Two linear inequalities already give an
+arithmetic solution for which exact one-step refinement continues
+forever. <a href="../lukstafi-phd-thesis.pdf#page=59">Thesis, §§4.2 and
+4.5</a> · <a href="thesis-review-1.html">First thesis review</a></p>
+<section id="combination" class="level2">
+<h2>1. A replacement for Theorem 4.5</h2>
+<section id="why-fixing-dead-branches-is-insufficient" class="level3">
+<h3>Why fixing dead branches is insufficient</h3>
+<p>Take <span class="math inline">\(\exists u_{\mathrm{type}}\,\exists
+n_{\mathrm{num}}\)</span> and two implications <span
+class="math display">\[
+u=\mathrm{Num}(0)\Rightarrow n=0,\qquad
+u=\mathrm{Num}(1)\Rightarrow n=1 .
+\]</span> Assume <span class="math inline">\(0\ne 1\)</span>. The answer
+<span class="math inline">\(u=\mathrm{Num}(n)\)</span> is valid and
+activates both branches. It explains their conclusions by constructor
+injectivity.</p>
+<p>The type-only problem in Table 4.1 has two satisfiable premises and
+two empty conclusions. A correct, Definition 4.4-complete component may
+return just <span class="math inline">\(\top\)</span>, which covers
+every type-only answer. The table then obtains no index equation from
+either premise, since <span
+class="math inline">\(u=\mathrm{Num}(r_i)\)</span> binds only a type
+variable. The arithmetic solver receives <span
+class="math inline">\(\top\Rightarrow n=0\)</span> and <span
+class="math inline">\(\top\Rightarrow n=1\)</span>. Any one valuation
+witnessing strict consistency would have to satisfy both conclusions.
+There is no such answer. This example has no dead code, designated
+variables, or quantifier alternation. A final soundness filter cannot
+recover the missing candidate. <a
+href="../lukstafi-phd-thesis.pdf#page=59">Definitions 4.1 and 4.4</a> ·
+<a href="../lukstafi-phd-thesis.pdf#page=62">Table 4.1</a> · <a
+href="thesis-review-2.lean">Lean counterexample</a></p>
+</section>
+<section id="the-theorem-and-the-interface" class="level3">
+<h3>The theorem and the interface</h3>
+<p><strong>Theorem 4.5R (strict JCA).</strong> Take the thesis model of
+finite free constructor types with leaves in inhabited side sorts. Side
+functions and predicates are single-sorted. Type atoms are equations.
+Work with finitely many sorts per problem and candidate. Assume the
+finite syntax and legal witness terms are effectively enumerable, scope
+comparisons are effective, and each side sort has a correct and complete
+JCAQP enumerator in the sense of Definition 4.4. The algorithm below
+enumerates a correct and complete sequence of mixed answers for
+arbitrary finite prefixes, conjunctions, and designated sets. Indeed,
+every admissible written presentation is emitted up to renaming and
+reordering of conjuncts by the exhaustive version. The domains may be
+infinite or uncountable. The enumeration concerns terms expressible in
+the language, including its chosen encoding of literals. The procedure
+may run forever on a problem with no answers. <a
+href="../lukstafi-phd-thesis.pdf#page=89">Model in Appendix
+A.1.1</a></p>
+<p>Write the raw answer as <span class="math inline">\(\exists
+B.\,(H\land\bigwedge_s L_s)\)</span>, where <span
+class="math inline">\(H\)</span> contains its type equations, including
+the side expressions at their leaves. Fix the fresh names <span
+class="math inline">\(B\)</span>, the designated names <span
+class="math inline">\(K\)</span> tested for escape, and <strong>one
+simultaneous tuple of witness terms</strong> <span
+class="math inline">\(\sigma\)</span> for the names substituted in
+validity. Definition 4.1 substitutes the new and specified parameter
+names. Prior parameters or a restriction on the variables a witness may
+read can be recorded here too. Type-check each term and check its
+permitted reads. For validity use the actual prefix and the actual
+simultaneous substitution. Close any remaining free inputs according to
+the chosen convention. For the original weak escape rule, an open atom
+tested by <span class="math inline">\(\mathcal M\models Q.c\)</span> has
+its remaining free variables universally closed. Ordinary relevance and
+branch consistency always see the unsubstituted answer. In particular, a
+variable that appears inside a replacement keeps its original meaning
+under simultaneous substitution. <a
+href="../lukstafi-phd-thesis.tm">Thesis source, §4.2.1</a> · <a
+href="round-19-designated-parameters.html#two-parameter-conventions">Parameter
+conventions</a></p>
+<p>The outer enumeration guesses <span
+class="math inline">\(B,H,\sigma\)</span> by increasing finite encoding
+length, up to consistent renaming. It retains the <em>written</em> <span
+class="math inline">\(H\)</span> for escape and for the eventual output.
+For fixed <span class="math inline">\(B,H,\sigma\)</span>, each sort
+enumerates its part <span class="math inline">\(L_s\)</span>
+independently, sharing only the fixed names. The rest of the proof
+specifies exactly what those independent searches must certify.</p>
+</section>
+<section id="ordinary-branch-witnesses-and-entailment" class="level3">
+<h3>Ordinary branch witnesses and entailment</h3>
+<p>For branch <span class="math inline">\(i\)</span>, solve <span
+class="math inline">\(H\land D_i^{\rm type}\)</span> together by
+finite-tree unification. Decompose equal constructors and collect
+equalities when two side arguments meet. Treat side expressions as
+opaque values at this step. A structural clash or occurs-check failure
+rejects this choice of <span class="math inline">\(H\)</span> under
+strict consistency. Otherwise the result is an acyclic substitution for
+type variables, with arbitrary residual type holes, and some side
+equalities. Let <span class="math inline">\(G_{is}\)</span> consist of
+these equalities of sort <span class="math inline">\(s\)</span> and the
+original side premises of that sort.</p>
+<p>Apply the same substitution to both sides of each type conclusion.
+Cancel identical holes, descend through matching constructors, and put
+every comparison of two side arguments into a list <span
+class="math inline">\(J_{is}\)</span>. Add the original side
+conclusions. A clash of constructor heads, two distinct residual holes,
+or a residual hole opposite a constructor makes relevance impossible for
+a live branch. Indeed, fix a feasible side valuation. The residual holes
+can still take arbitrary ground types. Different holes can be assigned
+different values, and a hole can receive a different root from the
+constructor it faces. This last argument also handles a hole compared
+with a term containing that hole.</p>
+<p>The exact obligations on <span class="math inline">\(L_s\)</span> are
+<span class="math display">\[
+\operatorname{sat}_s(G_{is}\land L_s),\qquad
+\mathcal M_s\models(G_{is}\land L_s)\Rightarrow J_{is}
+\quad\text{for every }i.
+\]</span> For sufficiency, combine the local consistency rows
+<strong>for the same branch</strong>, then ground the residual type
+holes and evaluate the solved substitution. That constructs one mixed
+row. For relevance, constructor injectivity and the local entailments
+give every original conclusion on every such row. For necessity, project
+a mixed consistency row. Any local counterexample to entailment could be
+combined with the feasible rows of the other sorts and extended through
+the solved substitution. It would falsify a mixed conclusion. The
+witnesses for two different branches may differ. This is where strict
+consistency licenses the reverse implication.</p>
+</section>
+<section id="prefix-witnesses-at-the-right-move" class="level3">
+<h3>Prefix witnesses at the right move</h3>
+<p>It remains to decide a positive mixed game <span
+class="math inline">\(\Pi.(E\land\bigwedge_s P_s)\)</span>. For answer
+validity, <span class="math inline">\(E=H\sigma\)</span> and <span
+class="math inline">\(P_s=L_s\sigma\)</span>. The same construction
+tests a raw atom for the weak escape rule. Solve <span
+class="math inline">\(E\)</span> as above and write <span
+class="math inline">\(p_x\)</span> for the fully expanded pattern of
+<strong>every</strong> type coordinate <span
+class="math inline">\(x\)</span> in <span
+class="math inline">\(\Pi\)</span>, including unconstrained coordinates.
+Each pattern consists of constructors, residual type holes, and maximal
+side expressions. Retain the side equalities from solving <span
+class="math inline">\(E\)</span>.</p>
+<ol type="1">
+<li>Scan the prefix from left to right. For a universal type coordinate
+<span class="math inline">\(u\)</span>, require that <span
+class="math inline">\(p_u\)</span> be a bare residual hole occurring in
+no preceding type coordinate pattern. Otherwise reject.</li>
+<li>For each existential type move <span
+class="math inline">\(x\)</span> and every occurrence of a side
+expression <span class="math inline">\(e:s\)</span> at an address of
+<span class="math inline">\(p_x\)</span>, introduce a new existential
+side move <span class="math inline">\(c_{x,e}\)</span> <strong>at the
+position of <span class="math inline">\(x\)</span></strong> and require
+<span class="math inline">\(c_{x,e}=e\)</span> in the final matrix. Use
+a distinct name per occurrence, including across different moves. Two
+equal occurrences will agree whenever the final equalities require
+it.</li>
+<li>Erase the type moves. For each <span
+class="math inline">\(s\)</span>, retain the original side moves of sort
+<span class="math inline">\(s\)</span> and the new moves of that sort in
+their inherited order. Call the resulting prefix <span
+class="math inline">\(\Pi_s\)</span>. Its matrix consists of <span
+class="math inline">\(P_s\)</span>, the side equalities from solving
+<span class="math inline">\(E\)</span>, and the leaf equalities just
+added. With <span class="math inline">\(V_s\)</span> denoting the last
+two groups, the test is <span class="math inline">\(\mathcal
+M_s\models\Pi_s.(P_s\land V_s)\)</span> for each <span
+class="math inline">\(s\)</span>.</li>
+</ol>
+<p><strong>Compatibility lemma.</strong> The mixed game is true exactly
+when the structural test and all the side games succeed.</p>
+<p><em>From the mixed game to the components.</em> A universal type with
+a fixed constructor head can choose a different root. If an earlier type
+contains the universal’s bare hole at an address, its earlier value
+fixes the subtree there. The universal can choose a different value.
+These facts prove step 1. Now run a winning mixed strategy. At an
+existential type move the strategy has already chosen a whole tree.
+Every winning continuation has the prescribed pattern there, hence each
+exposed side address already contains a definite value. Play that value
+for its new existential move. This produces the leaf equalities on every
+play. To extract the strategy for one sort, fix the universal moves of
+all other sorts, including the type sort, to arbitrary inhabitants and
+simulate the original strategy. All choices on this simulation respect
+the retained order.</p>
+<p><em>From the components to the mixed game.</em> Interleave the
+winning side strategies, each reading its own history. Associate the
+bare hole of each universal type with the actual value played there.
+Give every other residual type hole one fixed ground type. At an
+existential type coordinate build <span
+class="math inline">\(p_x\)</span> using those values for holes and the
+newly chosen <span class="math inline">\(c_{x,e}\)</span> at side
+addresses. Step 1 guarantees that every universal type needed in this
+construction has already been played. At the end each frozen value
+equals the final evaluation of its side expression. The completed tuple
+therefore has the solved patterns and satisfies all induced equalities,
+hence <span class="math inline">\(E\)</span> and all <span
+class="math inline">\(P_s\)</span>. This constructs the compatible mixed
+strategy. No strategy has been assumed to be a syntactic witness term:
+the required finite terms were already fixed in <span
+class="math inline">\(\sigma\)</span>. <a
+href="thesis-review-1.html#when-can-a-solved-variable-be-replaced">One-constructor
+freezing lemma</a> · <a href="thesis-review-2.lean">Lean proof of
+independent prefix interleaving</a></p>
+<p>The argument uses two possible type roots, as supplied by the
+thesis’s arrow constructor and a ground type with another root. There is
+also a degenerate case. In an inhabited finite-tree algebra with just
+one productive constructor, that constructor has no recursive type
+argument: otherwise no finite tree could bottom out. Its type carrier is
+exactly the product of its side argument carriers, including the empty
+product for a single constant. Expand every type move into that tuple
+<strong>at its original position</strong> and decompose equality
+componentwise. Apply this after fixing the explicit witnesses and retain
+the original spelling for escape. This also covers a type carrier with
+only one element.</p>
+<p>For example, in <span class="math inline">\(\exists x_{\rm
+type}\,\forall h_{\rm num}\,\exists v_{\rm num}.\ x=\mathrm{Num}(v)\land
+v=h\)</span>, the side game begins <span class="math inline">\(\exists
+c\,\forall h\,\exists v\)</span>. It requires <span
+class="math inline">\(c=v=h\)</span> and fails. Moving <span
+class="math inline">\(x\)</span> to the right of <span
+class="math inline">\(h\)</span> changes the result. Projections that
+retain only the final side equations miss precisely this difference.</p>
+</section>
+<section id="escape-the-component-calls-and-coverage" class="level3">
+<h3>Escape, the component calls, and coverage</h3>
+<p>Test each <em>original</em> answer atom <span
+class="math inline">\(c\)</span> separately. Under the weak rule, if the
+syntactic order test fails on an atom mentioning a designated name, the
+remaining way to admit that atom is <span class="math inline">\(\mathcal
+M\models Q.c\)</span>. Use the positive-game compiler on this
+unsubstituted atom. Under the strong rule on designated heads, apply its
+syntactic check directly. If the declared answer language requires a
+substitution presentation, verify that format too. Solving equations,
+exposing leaves, or substituting <span
+class="math inline">\(\sigma\)</span> must never change the input to the
+escape check. This allows e.g. an arbitrary conjunction in the weak
+version even if its most general unifier has different variable
+occurrences.</p>
+<p>For fixed <span class="math inline">\(H,B,\sigma\)</span>, the
+structural checks on type atoms and their escape tests are shared by all
+choices of <span class="math inline">\(L_s\)</span>. Each side
+enumerates the <span class="math inline">\(L_s\)</span> passing its
+ordinary branch tests, its prefix test, and the escape tests for its own
+written atoms. All are positive tests on the side solver. Two elementary
+uses of a Definition 4.4 component suffice:</p>
+<ul>
+<li>To recognize truth of a closed <span
+class="math inline">\(\pi.F\)</span> with a conjunctive matrix, run the
+abducer with no designated parameters on <span
+class="math inline">\(\pi:(\top\Rightarrow F)\)</span>, waiting for any
+output. If <span class="math inline">\(\pi.F\)</span> holds, <span
+class="math inline">\(F\)</span> is itself an answer: a winning strategy
+has at least one play in inhabited sorts. Conversely, validity of an
+emitted answer and its relevance imply <span
+class="math inline">\(\pi.F\)</span>. This is Proposition 4.2 in the
+parameter-free case.</li>
+<li>To recognize <span
+class="math inline">\(\operatorname{sat}(G)\land(G\models J)\)</span>,
+run the component on <span
+class="math inline">\(\forall\operatorname{FV}(G,J):(G\Rightarrow
+J)\)</span> with no designated names. If the tests hold, <span
+class="math inline">\(\top\)</span> qualifies. Conversely, each public
+row has an extension satisfying any emitted answer, by its all-universal
+validity (instantiate the fresh witness terms). Relevance gives <span
+class="math inline">\(G\models J\)</span> and consistency supplies a row
+for <span class="math inline">\(G\)</span>. Use <span
+class="math inline">\(G=G_{is}\land L_s\)</span> here.</li>
+</ul>
+<p>Dovetail the finite obligations, all candidate strings, and the
+finite-sort Cartesian product of the successful streams. An unsuccessful
+candidate or an empty stream never blocks another. The algorithm needs
+no global validity oracle and no test that an enumerator has
+finished.</p>
+<p><strong>Proof of Theorem 4.5R.</strong> Every emitted combination
+passes ordinary consistency and relevance by the branch lemma, prefix
+validity for the <em>same</em> witness tuple by compatibility, and the
+escape tests on its actual syntax. Conversely take <strong>any</strong>
+Definition 4.1 answer and one of its legal witness tuples. Rename the
+fresh names, take its written type equations for <span
+class="math inline">\(H\)</span>, and take its written side atoms for
+each <span class="math inline">\(L_s\)</span>. The reverse directions of
+the two lemmas imply all its obligations. Each positive component test
+eventually emits a witness, even if the component returns only a
+covering answer. Fair scheduling therefore emits the original atoms up
+to renaming and order. The inverse renaming of fresh variables is the
+instantiating tuple required by Definition 4.4. It works simultaneously
+across all factors because their shared names were fixed at the outer
+enumeration. This establishes coverage, including for designated
+parameters and presentations with redundant equations.</p>
+<p><strong>Corollary (plug-ins that synthesize
+generalizations).</strong> An optimized side plug-in need only cover the
+feasible <span class="math inline">\(L_s\)</span> at a <em>fixed
+interface</em>. Give the input interface names, including the names
+shared with <span class="math inline">\(H\)</span> and <span
+class="math inline">\(\sigma\)</span>, rigid status for the coverage
+comparison. Permit an output <span
+class="math inline">\(L&#39;_s\)</span> to introduce private fresh names
+<span class="math inline">\(Z_s\)</span>, disjoint across sorts. It must
+pass the same local checks with legal validity witnesses extending the
+fixed <span class="math inline">\(\sigma\)</span> on its original
+domain. For each admissible <span class="math inline">\(L_s\)</span>,
+require a local output and terms <span
+class="math inline">\(\theta_s\)</span> for <span
+class="math inline">\(Z_s\)</span> such that <span
+class="math display">\[
+\mathcal M_s\models L_s\Rightarrow L&#39;_s[Z_s:=\theta_s]
+\]</span> with every original interface name fixed. These terms may use
+the original side coordinates and parameters. Then the product of these
+smaller output streams is sound and Definition 4.4-complete. For
+soundness, unite the disjoint private validity-witness tuples and apply
+the prefix lemma. For coverage, alpha-rename the shared fresh names
+once, then unite the <span class="math inline">\(\theta_s\)</span>;
+their domains are disjoint and substitution fixes <span
+class="math inline">\(H\)</span>. Conjoining the local implications
+gives the required <em>term-instantiated</em> implication for the whole
+mixed answer. The tuple <span class="math inline">\(\sigma\)</span>
+establishes a prefix game for an answer. The tuple <span
+class="math inline">\(\theta\)</span> compares a target with an emitted
+answer on ordinary rows. The exhaustive component above realizes the
+stronger interface contract with <span
+class="math inline">\(Z_s\)</span> empty. A faster component can replace
+it once it proves this contract. Ordinary component completeness that
+allows each side to reinstantiate a shared name independently gives no
+such gluing proof.</p>
+<p>For example, a side generator treating <span
+class="math inline">\(z\)</span> as private could cover <span
+class="math inline">\(\top\)</span> with <span
+class="math inline">\(z=0\)</span> using the constant witness <span
+class="math inline">\(0\)</span>. If the shared type equation is <span
+class="math inline">\(u=\mathrm{Num}(z)\)</span>, that substitution also
+changes the type pattern. A target row with <span
+class="math inline">\(u=\mathrm{Num}(1)\)</span> has no extension to the
+new answer. Even one side sort needs the rigid-interface clause.</p>
+<p>The algorithm changes the generator in an essential way. It explores
+type connections that a maximally general answer to the pure type
+subproblem can discard. The example at the start rules out a
+completeness theorem for the old generator under its published plug-in
+contract. In an implementation the existing generator can keep priority,
+provided an exhaustive stream gets fair time if completeness is
+claimed.</p>
+</section>
+</section>
+<section id="convergence" class="level2">
+<h2>2. When does the predicate iteration converge?</h2>
+<p>Undecidability leaves room for a procedure that finds every existing
+solution and runs forever on some negative instances. It also leaves
+room for a decision on a class with a known bound on certificates. What
+it excludes is a terminating, correct and complete decision for all
+Milner–Mycroft programs. In particular, if certificates are finitely
+encoded and decidably checkable, there cannot be a computable input-size
+bound on the shortest certificate of every positive instance of that
+undecidable problem. Enumerating all strings up to the bound would
+decide it. <a
+href="https://suif.stanford.edu/~brm/reading/p253-henglein.pdf">Henglein,
+<em>Type Inference with Polymorphic Recursion</em></a></p>
+<section
+id="a-two-inequality-solution-with-infinitely-many-strict-refinements"
+class="level3">
+<h3>A two-inequality solution with infinitely many strict
+refinements</h3>
+<p>Consider this ordinary recursive program, in the syntax accepted by
+InvarGenT.</p>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode ocaml"><code class="sourceCode ocaml"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">let</span> <span class="kw">rec</span> drift x d =</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  <span class="kw">assert</span> num x &lt;= <span class="dv">0</span>;</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  drift (x + d) d</span></code></pre></div>
+<p>The invariant obligations on the numeric inputs are <span
+class="math inline">\(I(x,d)\Rightarrow x\le0\)</span> and <span
+class="math inline">\(I(x,d)\Rightarrow I(x+d,d)\)</span>. Both branches
+are live, for instance at <span class="math inline">\((0,0)\)</span>.
+Starting with the first safety check, put <span
+class="math inline">\(P_0(x,d)=(x\le0)\)</span> and take the exact
+weakest one-step precondition <span class="math display">\[
+P_{k+1}(x,d)=(x\le0)\land P_k(x+d,d).
+\]</span> Induction gives <span
+class="math inline">\(P_k=\bigwedge_{j=0}^k(x+jd\le0)\)</span>. At <span
+class="math inline">\((-k,1)\)</span>, <span
+class="math inline">\(P_k\)</span> holds and <span
+class="math inline">\(P_{k+1}\)</span> fails. Every step is strict. The
+intersection is exactly <span class="math inline">\(x\le0\land
+d\le0\)</span>, over integers, rationals, or reals. A positive <span
+class="math inline">\(d\)</span> eventually crosses zero, and a
+nonpositive <span class="math inline">\(d\)</span> preserves the first
+inequality. This is the greatest inductive precondition. Its size is
+constant. <a href="thesis-review-2.lean">Lean proof over
+integers</a></p>
+<p>A run of the checkout inferred <span class="math inline">\(\forall
+k,n,a\,[k\le0\land n\le0].\ \mathrm{Num}(k)\to\mathrm{Num}(n)\to
+a\)</span> directly. The postulated divergence is a theorem about the
+<em>weakest one-step</em> policy; this actual inference succeeded. Thus
+a polynomial bound even on the full target invariant cannot supply a
+finite bound for that policy. Conversely, divergence of the weakest
+choice says nothing against a solver that guesses an inductive
+strengthening and verifies it.</p>
+<p>The calculation gives an exact acceleration for a family. Suppose a
+transition is <span class="math inline">\(x&#39;=x+d,\
+d&#39;=d\)</span>, with a conjunction of affine guards <span
+class="math inline">\(Mx\le b\)</span> and constant <span
+class="math inline">\(M,b\)</span>. The greatest invariant maintaining
+those guards is <span class="math display">\[
+Mx\le b\quad\land\quad Md\le0 .
+\]</span> Indeed <span class="math inline">\(M(x+jd)=Mx+jMd\)</span> for
+every natural <span class="math inline">\(j\)</span>. Each positive
+component of <span class="math inline">\(Md\)</span> eventually violates
+its guard. Each nonpositive component preserves it. This derives a
+candidate in one step and gives the two entailments a checker can replay
+on the original transition.</p>
+</section>
+<section id="a-positive-convergence-theorem-for-free-term-predicates"
+class="level3">
+<h3>A positive convergence theorem for free-term predicates</h3>
+<p>Represent each predicate by the ground instances of a tuple pattern
+on its fixed public coordinates. Include any free environment parameters
+among these coordinates. Local existential variables are holes.
+Satisfiable conjunctions of finite-tree equations admit exactly this
+representation after unification and projection. Compare interpretations
+extensionally, up to renaming of holes. The following theorem concerns
+positive instances along a chain that continues to cover a particular
+solution.</p>
+<p><strong>Finite-height theorem.</strong> Suppose a sequence of
+interpretations strengthens each component by inclusion, and predicate
+<span class="math inline">\(i\)</span> retains a fixed ground instance
+<span class="math inline">\(g_i\)</span> throughout. A strict change
+means that some component loses at least one ground tuple. There can be
+at most <span class="math inline">\(\sum_i |g_i|\)</span> strict
+changes, counting nodes in unfolded trees. More sharply, if every
+component continues to cover a nonempty solution pattern <span
+class="math inline">\(P_i^*\)</span>, the bound is <span
+class="math display">\[
+\sum_i\bigl(\rho(P_i^*)-\rho(P_i^0)\bigr),\qquad
+\rho(P)=\#\text{node occurrences in the tuple}-\#\text{distinct holes}.
+\]</span> Thus a polynomial bound on the <strong>expanded</strong>
+solution patterns gives a polynomial bound on strict changes,
+irrespective of the number of incomparable interpretations the search
+could try.</p>
+<p><em>Proof.</em> In a nontrivial free ground algebra, inclusion
+between two single tuple patterns is one-sided matching. A fixed-head
+mismatch can be separated by a choice of root. A mismatch at a repeated
+hole can be separated by a ground assignment distinguishing the two
+target subterms. Matching makes the smaller pattern a substitution
+instance of the larger. Build that substitution by expanding a hole into
+a constructor with distinct fresh argument holes, then identifying holes
+as required. Expanding a hole occurring <span
+class="math inline">\(m\ge1\)</span> times with an <span
+class="math inline">\(a\)</span>-ary constructor increases node count by
+<span class="math inline">\(ma\)</span> and changes distinct-hole count
+by <span class="math inline">\(a-1\)</span>. The rank increases by <span
+class="math inline">\(ma-a+1\ge1\)</span>, including at <span
+class="math inline">\(a=0\)</span>. Identifying two distinct holes also
+increases rank by one. Renaming leaves rank unchanged. Hence strict
+inclusion increases rank. A ground instance has rank exactly its
+unfolded size. Summing across predicates proves the bounds. A
+one-element carrier has no strict nonempty refinements. <a
+href="round-42-maximal.html#enumerate-all-maximal-extensions-of-one-answer">One-sided
+matching and coverage</a> · <a href="thesis-review-2.lean">Rank
+arithmetic</a></p>
+<p>The encoding matters in the question about polynomial size. The
+equations <span class="math inline">\(t_0=a,\
+t_{i+1}=f(t_i,t_i)\)</span> present the tree <span
+class="math inline">\(t_n\)</span> with <span
+class="math inline">\(O(n)\)</span> bindings. Its unfolded tree has
+<span class="math inline">\(2^{n+1}-1\)</span> nodes. Starting from a
+single hole, expose one constructor or constant of this tree per step,
+always using fresh holes for children. This gives <span
+class="math inline">\(2^{n+1}-1\)</span> strict refinements covering the
+same compact target. It is an example of the possible height; a solver
+can jump straight to the target. A polynomial bound on the encoded
+equations still gives a finite bound through unfolding. It does not give
+a polynomial height by this argument. An empty target needs separate
+treatment: all patterns <span class="math inline">\(f^k(z)\)</span>
+cover the empty relation and form an infinite strict chain.</p>
+<p><strong>Connection with Theorems 4.15–4.16.</strong> In the unary
+case the proof of 4.16 uses the update <span
+class="math inline">\(F_\chi^{k+1}=F_\chi^k\land A^\chi\)</span>. On a
+branch of that iteration where the public projected relations are nested
+and continue to contain a solution row for each predicate, the height
+theorem gives finite semantic stabilization in the pure free-term
+domain. This is a statement about the stated branch. It does not bound a
+search for that branch, repeated presentations of one relation, or the
+duration of a component abduction call. Table 4.4 also has transient
+phases, residual obligations, and a separate test for binary
+postconditions. <a href="../lukstafi-phd-thesis.pdf#page=71">Table 4.4
+and Theorems 4.15–4.16</a></p>
+<p>The Appendix A.4 proof of the covering chain invokes Axiom A.18. That
+axiom requires a conjunction interpolant on the shared free variables.
+In the plain free-equation language, take <span
+class="math inline">\(x=f(z)\Rightarrow x\ne a\)</span>. A conjunction
+on <span class="math inline">\(x\)</span> alone true of every <span
+class="math inline">\(f(z)\)</span> consists of identities. Substituting
+<span class="math inline">\(f(z)\)</span> for <span
+class="math inline">\(x\)</span> with <span
+class="math inline">\(z\)</span> fresh identifies no two distinct terms
+in <span class="math inline">\(x\)</span>. Such a conjunction also holds
+at <span class="math inline">\(a\)</span>. An existential interpolant
+<span class="math inline">\(\exists z.\,x=f(z)\)</span> would work in a
+larger interpolant language. This is a reason to give a convergence
+theorem whose proof of target preservation is independent of that axiom.
+<a href="../lukstafi-phd-thesis.pdf#page=111">Axiom A.18 and Lemma
+A.19</a></p>
+<p><strong>A semantic iteration with a finite successful path.</strong>
+Fix the generated branch system before instantiating predicates, a
+reachability policy, and a fixed public interface for each predicate. At
+state <span class="math inline">\(S\)</span>, a successor <span
+class="math inline">\((J,A)\)</span> consists of a componentwise
+strengthening <span class="math inline">\(J\subseteq S\)</span> and a
+residual with its validity witnesses. Check relevance with <span
+class="math inline">\(J\)</span> in every premise and <span
+class="math inline">\(S\)</span> in every conclusion. Check the required
+guard witnesses using <span class="math inline">\(J\)</span> and <span
+class="math inline">\(A\)</span>, and check residual validity under the
+original prefix. A negative head is <span
+class="math inline">\(\bot\)</span>. These tests use exactly the source
+branches being claimed by the result. Predicate-local existential
+variables are independently fresh at each occurrence.</p>
+<p>If <span class="math inline">\((I,A^*)\)</span> is a solution covered
+by <span class="math inline">\(S\)</span>, <span
+class="math inline">\((I,A^*)\)</span> is a legal successor.
+Substituting <span class="math inline">\(I\)</span> in the premises
+gives the actual solution guards. Replacing the conclusions’ positive
+<span class="math inline">\(I\)</span> occurrences by supersets
+preserves entailment. Guard consistency and residual validity are
+precisely the target’s own obligations. Consequently the semantic rule
+always offers a target-preserving successor. If a successful step has
+<span class="math inline">\(J=S\)</span> extensionally, the verified
+residual and <span class="math inline">\(S\)</span> already satisfy the
+original problem. At a strict step the rank increases. On any continued
+target-preserving choice with nonempty free-term components, there is
+therefore a successful stationary step within the height bound plus one,
+counting the final check. The existence assertion also follows by
+choosing the target and then reusing it. The rank bound controls
+<em>every</em> strict choice still covering that target. An effective
+search can dovetail candidate successors and paths instead of assuming
+the desired choices are known.</p>
+<p>This rule supports both unary and binary predicates when their
+interpretations are finite-tree tuple patterns and the stated
+positive/negative occurrence condition holds. It is a replacement
+transition with explicit obligations. Extending the theorem to the
+binary updates, existential type packaging, and <code>Split</code>
+choices of Table 4.4 would require proving those particular transitions
+preserve a target.</p>
+</section>
+<section id="what-a-polynomial-bound-buys-without-monotone-iteration"
+class="level3">
+<h3>What a polynomial bound buys without monotone iteration</h3>
+<p>Fix a finite bit encoding and a known bound <span
+class="math inline">\(b=p(|\Phi|)\)</span>. Count the whole proposed
+solution: all predicate bodies, their binding interfaces and fresh
+names, the residual, and any syntactic witnesses whose existence cannot
+otherwise be decided. Encode variable indices, coefficients and DAG
+references in bits. There are at most <span
+class="math inline">\(2^{b+1}-1\)</span> strings. For a decidable
+verifier, enumerate and check them, or run this search alongside the
+ordinary solver. This terminates and decides whether a solution of the
+specified size exists, for unary and binary predicates alike. A negative
+result excludes bounded certificates. On the promise that a positive
+input has such a certificate, it decides the original question. The
+bound gives neither polynomial verification time nor polynomial overall
+search time.</p>
+<p>Here is a verifier for the branch language used above, with free
+finite types and decidable first-order side theories such as rational
+linear arithmetic. Substitute each proposed existential-conjunctive
+predicate body into each original occurrence, renaming its bound
+variables apart. Residual prefix validity with fixed syntactic witnesses
+is the positive mixed game from §1. Guard liveness reduces to
+existential satisfiability by joint unification. For relevance the
+additional case is a clause <span class="math display">\[
+\forall v.\ L(v)\Rightarrow\exists w.\,R(v,w)
+\]</span> with conjunctive <span class="math inline">\(L,R\)</span>.
+Local witnesses of a predicate in a premise can be universally
+quantified here, since they are fresh for the conclusion. Solve the type
+equations of <span class="math inline">\(L\)</span> first. If its side
+guards have no joint valuation the clause holds vacuously. Otherwise
+apply its type substitution to <span class="math inline">\(R\)</span>.
+The antecedent now ranges over independent arbitrary residual type holes
+and side inputs subject only to the feasible side guards <span
+class="math inline">\(G_s\)</span>. Put those residual holes in a
+universal block and the new conclusion variables in a trailing
+existential block. Use the structural test of §1 on the conclusion. Its
+failures can be exposed at any feasible side input. With all universal
+inputs before the new existentials, the remaining tests in each sort
+have the form <span class="math inline">\(\forall
+v_s.\,G_s(v_s)\Rightarrow\exists w_s.\,R_s(v_s,w_s)\)</span>, including
+any frozen side leaves among the existential variables. These
+independent tests combine on feasible guards by the same projection and
+extension argument as in §1. An explicitly false conclusion is checked
+by infeasibility of the antecedent. Thus the bounded search uses a
+decidable verifier in the advertised setting. For a general plug-in
+supplying only the positive semidecisions of Theorem 4.5R, exhaustion of
+bounded strings is insufficient to certify rejection.</p>
+<p>If the bound covers only the written answer, there is a further
+distinction. In the pure free-term fragment with unrestricted reads for
+the thesis’s substituted fresh names, put those names in a trailing
+existential block for the validity check. A winning solved pattern
+yields explicit finite term witnesses by copying its bare universal
+coordinates and grounding remaining holes. Here bounded written bodies
+and residual suffice without a separate term-size promise. In a side
+theory, <span class="math inline">\(\forall h\,\exists w.\ (w\ge h\land
+w\ge-h)\)</span> is true over the rationals, yet no affine term in <span
+class="math inline">\(h\)</span> witnesses it for all <span
+class="math inline">\(h\)</span>. Hence a semantic trailing quantifier
+cannot in general replace the syntax of the admissible witness. For a
+fixed bound on bodies alone one can still dovetail the syntactic
+witnesses and find a bounded-body positive answer when one exists. A
+terminating negative decision needs a witness bound or a decision
+procedure for their synthesis. <a
+href="round-19-designated-parameters.html#two-parameter-conventions">Original
+witness conventions</a></p>
+</section>
+</section>
+<section id="implementation" class="level2">
+<h2>3. What would an InvarGenT implementation certify?</h2>
+<p>The practical question is <strong>which facts the checker may assume
+when it accepts an inferred type</strong>. The abducer can guess a
+stronger invariant, including the one for <code>drift</code>. Its
+acceptance should have a justification that survives changing the search
+order or hitting an iteration limit. Four cases clarify what is already
+there and where the theory changes the implementation.</p>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr>
+<th>Operation</th>
+<th>What the checkout does</th>
+<th>What would certify the result</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Pass type information to arithmetic</td>
+<td><code>combine_sbs</code> unifies the premise and candidate before
+computing the conclusion residual. This exposes equalities such as <span
+class="math inline">\(n=m\)</span> from <span
+class="math inline">\(u=\mathrm{Num}(n)=\mathrm{Num}(m)\)</span>.</td>
+<td>Keep that operation for ordinary branch entailment. For a quantified
+validity check also record when indices become fixed. <span
+class="math inline">\(\exists x\,\forall h.\,x=\mathrm{Num}(h)\)</span>
+must fail. <a
+href="https://github.com/lukstafi/invargent/blob/772b9b45b31ac11ef2a0d8e88b391db21d55eaa5/src/Abduction.ml#L827-L849">Call
+site</a></td>
+</tr>
+<tr>
+<td>Accept an inferred recursive scheme</td>
+<td>The loop checks atom membership in successive formulas, flags for
+outstanding work, and an iteration limit. Its ordinary result on
+<code>drift</code> is the exact invariant above.</td>
+<td>Reinsert the candidate into the original obligations. For
+<code>drift</code> that means proving <span
+class="math inline">\(I(x,d)\Rightarrow x\le0\)</span> and <span
+class="math inline">\(I(x,d)\Rightarrow I(x+d,d)\)</span>. Both are
+elementary arithmetic. This can certify a guess before a prescribed
+number of rounds. A timeout remains evidence about the search. <a
+href="https://github.com/lukstafi/invargent/blob/772b9b45b31ac11ef2a0d8e88b391db21d55eaa5/src/Invariants.ml#L1800-L1848">Loop
+test</a> · <a
+href="https://github.com/lukstafi/invargent/blob/772b9b45b31ac11ef2a0d8e88b391db21d55eaa5/src/Terms.ml#L574-L576">Atom
+membership</a></td>
+</tr>
+<tr>
+<td>Check dead code after simplification</td>
+<td>Min/max expansion can split one source guard into several normalized
+premises. The dead-code flags approximate which contradictions to
+report.</td>
+<td>Keep a source-case identity. Relevance must hold on every
+alternative. A positive source case remains feasible if at least one
+alternative has a witness under the answer. This makes the chosen
+source-level reachability policy checkable. <a
+href="thesis-review-1.html#which-branches-need-a-witness">Normalization
+lemma</a> · <a
+href="https://github.com/lukstafi/invargent/blob/772b9b45b31ac11ef2a0d8e88b391db21d55eaa5/src/Defs.mli#L8-L19">Flag
+definitions</a></td>
+</tr>
+<tr>
+<td>Accept a negative assertion</td>
+<td>In the final <code>assert false</code> pass, the same
+<code>try … with Contradiction _ -&gt; ()</code> surrounds both the
+satisfiability test and the deliberate rejection when it succeeds. That
+handler swallows both outcomes. Earlier iterations have a separate check
+that raises <code>NoAnswer</code>.</td>
+<td>Instantiate the final predicates and residual in the scope of the
+original guard. Accept the negative obligation only if their conjunction
+is unsatisfiable. Distinguish a solver contradiction from a
+reachable-branch diagnostic. The observed control flow establishes a gap
+in this final pass; it does not establish acceptance of an erroneous
+program by the entire solver. <a
+href="https://github.com/lukstafi/invargent/blob/772b9b45b31ac11ef2a0d8e88b391db21d55eaa5/src/Invariants.ml#L1874-L1888">Final
+pass</a> · <a
+href="https://github.com/lukstafi/invargent/blob/772b9b45b31ac11ef2a0d8e88b391db21d55eaa5/src/Invariants.ml#L1479-L1506">Earlier
+check</a></td>
+</tr>
+</tbody>
+</table>
+<p>For a regression test of the final negative check, use guard <span
+class="math inline">\(n=0\)</span>. A residual <span
+class="math inline">\(n=1\)</span> rules the branch out. A residual
+<span class="math inline">\(n=0\)</span> leaves it reachable. The
+distinction requires checking the final residual together with the guard
+and handling the two satisfiability outcomes separately.</p>
+<p>Constructor invariants are a distinct language-design choice. To make
+the short <code>append</code> infer its unrestricted signature, the
+checker needs permission to assume <span class="math inline">\(0\le
+n\)</span> for a <em>value</em> of <span
+class="math inline">\(\mathrm{List}(a,n)\)</span>. The constructor
+checks justify it by induction on values. The assertion does not hold of
+every syntactic type index. A conservative route for closed datatypes is
+to validate a proposed summary against each constructor and make it
+available at the value binding. An external producer of that datatype
+would need to respect the same specification. This is the remaining
+change to the typing rules, as opposed to validating solutions for the
+existing rules. <a
+href="thesis-review-1.html#what-a-variable-pattern-knows-about-list-length">Indexed
+append and its derivation</a></p>
+<p><strong>Checks and scope.</strong> The <a
+href="thesis-review-2.py">reference compiler</a> compares 3,500 mixed
+prefix games, 3,500 strict branch judgments and 3,500 implications with
+existential head variables with independent direct semantics over a
+complete finite free datatype with two side sorts. It includes the
+lost-index example, reordered prefixes, and an explicit designated
+substitution. It implements the equational kernel; the theorem treats
+arbitrary pure side atoms through the component queries. The <a
+href="thesis-review-2.lean">Lean companion</a> checks the live-branch
+counterexample, prefix interleaving, rank arithmetic, and strict descent
+and the exact limit of <code>drift</code> over integers. The
+unification, constructor reconstruction and coverage proofs are given
+above. The source runs used InvarGenT revision <code>772b9b45</code>
+with <code>-inform -no_ml -no_sig -no_verif</code> in the OCaml 5.5
+compatibility build described in the first review. These are research
+results and a reference implementation. The production solver would
+still need to implement the revised search or independently replay the
+checks to claim these guarantees.</p>
+</section>
+</article>
+<script src="/assets/theme-toggle.js"></script>
+</body>
+</html>
