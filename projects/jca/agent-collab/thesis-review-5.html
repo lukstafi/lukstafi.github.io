@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <meta name="dcterms.date" content="2026-11-22">
+  <meta property="og:title" content="The parameter an induction jump has to remember">
+  <meta property="og:url" content="https://lukstafi.github.io/projects/jca/agent-collab/thesis-review-5.html">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="lukstafi&#x27;s blog">
+  <meta name="twitter:card" content="summary">
+  <title>The parameter an induction jump has to remember</title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <style type="text/css">
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="/assets/tufte.css">
+  <link rel="stylesheet" href="/assets/pandoc-tufte.css">
+  <link rel="stylesheet" href="/assets/site.css">
+  <script defer=""
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+  type="text/javascript"></script>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+  <script>(function(){var t=localStorage.getItem('theme-preference');if(t)document.documentElement.setAttribute('data-theme',t);})()</script>
+</head>
+<body>
+<nav class="site-nav">
+  <a href="/">Home</a> &middot; <a href="/study/">Study Guide</a> &middot; <a href="/about.html">About</a> &middot; <a href="https://lukstafi.substack.com">Substack</a>
+</nav>
+<div class="theme-toggle">
+  <button id="theme-btn" aria-label="Toggle dark mode">&#9788;</button>
+</div>
+<article>
+<header>
+<h1 class="title">The parameter an induction jump has to remember</h1>
+<p class="byline">2026-11-22</p>
+</header>
+<nav id="TOC">
+<ul>
+<li><a href="#capture" id="toc-capture">A two-atom solution that
+requires one captured parameter</a></li>
+<li><a href="#runs" id="toc-runs">What happens at the jump</a>
+<ul>
+<li><a href="#repair" id="toc-repair">Checking a caller obligation
+before accepting a package</a></li>
+</ul></li>
+<li><a href="#templates" id="toc-templates">A convergence theorem with a
+fixed vocabulary</a></li>
+</ul>
+</nav>
+<p>Start at zero. Take one numeric step for each successor of an
+unindexed natural number. The function closes over an integer <span
+class="math inline">\(m\)</span>. Its first step can return <span
+class="math inline">\(1\)</span> when <span
+class="math inline">\(m=0\)</span>. When <span
+class="math inline">\(m=-21\)</span>, every result must equal <span
+class="math inline">\(0\)</span>. InvarGenT sees both cases, but its
+supplier summary forgets <span class="math inline">\(m\)</span>. The
+caller puts <span class="math inline">\(m\)</span> back in an inequality
+on every pass. The tuple of captured parameters stays empty. <a
+href="zero_capped_climb.gadt">Runnable program</a> · <a
+href="thesis-review-5.lean">Lean proofs</a></p>
+<section id="capture" class="level2">
+<h2>A two-atom solution that requires one captured parameter</h2>
+<p>Write <span class="math inline">\(r\)</span> for the recursive result
+and <span class="math inline">\(u\)</span> for the next result. The
+external function requires the caller contract <span
+class="math inline">\(D\)</span> and its result constructor guarantees
+<span class="math inline">\(E\)</span>.</p>
+<p><span class="math display">\[
+D(m,r)\equiv 0\le r\ \land\ r\le\max(m+20,0),\qquad
+E(m,r,u)\equiv 0\le u\ \land\ u\le r+1\ \land\ u\le\max(m+19,0).
+\]</span></p>
+<p>For a function admitting every <span
+class="math inline">\(m\)</span>, the obligations for its result
+predicate <span class="math inline">\(R\)</span> are</p>
+<p><span class="math display">\[
+R(m,0),\qquad R(m,r)\Rightarrow D(m,r),\qquad
+R(m,r)\land D(m,r)\land E(m,r,u)\Rightarrow R(m,u).
+\]</span></p>
+<p><strong>Taking <span class="math inline">\(R=D\)</span> solves all
+three obligations.</strong> The base satisfies both inequalities. The
+step case follows from <span
+class="math inline">\(\max(m+19,0)\le\max(m+20,0)\)</span>. The
+resulting type is <span class="math inline">\(\forall
+m.\,\mathrm{Num}(m)\to\mathrm{Nat}\to\exists
+r\,[D(m,r)].\,\mathrm{Num}(r)\)</span>.</p>
+<p><strong>No relation on <span class="math inline">\(r\)</span> alone
+can solve them.</strong> At <span class="math inline">\(m=0\)</span>,
+the base puts <span class="math inline">\(0\)</span> in the relation.
+The step from <span class="math inline">\(0\)</span> can produce <span
+class="math inline">\(1\)</span>, so the relation must contain <span
+class="math inline">\(1\)</span>. At <span
+class="math inline">\(m=-21\)</span>, the caller contract would then
+require <span class="math inline">\(1\le 0\)</span>. This rules out
+every parameter-free interpretation, of any size, for the unrestricted
+input scheme. Capturing <span class="math inline">\(m\)</span> is
+sufficient. <a href="thesis-review-5.lean">Machine-checked necessity and
+sufficiency</a></p>
+<p>Here “binary” refers to the two <em>type</em> arguments of the thesis
+predicate <span
+class="math inline">\(\chi_K(\delta,\delta&#39;)\)</span>. The first
+describes the hidden payload type <span
+class="math inline">\(\mathrm{Num}(r)\)</span>. The second describes the
+tuple of types or indices the package remembers from its context. Both
+<span class="math inline">\(\delta&#39;=()\)</span> and <span
+class="math inline">\(\delta&#39;=(m)\)</span> are legal presentations.
+Only the second can express this contract at independent calls. <a
+href="../lukstafi-phd-thesis.pdf#page=71">Table 4.4 and its stopping
+condition</a></p>
+</section>
+<section id="runs" class="level2">
+<h2>What happens at the jump</h2>
+<p>The original linear capped-climb already refutes convergence from a
+bound on solution size. Under the common-atom jump, pass 8 stores the
+valid band <span class="math inline">\(m\le r\le m+20\)</span>. On every
+later pass the suppliers return the stronger upper bound <span
+class="math inline">\(r\le m+19\)</span>. The jump drops the differing
+upper atom and the caller restores it. Table 4.4 requires the new caller
+contribution to be empty. The recurrence proves that this run never
+passes the stopping test, even when every stored predicate fits a
+constant bound. The first repair kept old linear inequalities that
+follow from the new summary. <a href="thesis-review-3.html#update">Proof
+and original solver trace</a></p>
+<p>I used two max-bound variants to separate a failure of the numeric
+checks from a failure of parameter capture. The first starts at <span
+class="math inline">\(m\)</span> and uses <span
+class="math inline">\(m\le r\)</span> as its lower bound. The second
+starts at <span class="math inline">\(0\)</span> and uses <span
+class="math inline">\(0\le r\)</span>. They use the same upper bounds
+and step.</p>
+<table>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr>
+<th>Program and solver</th>
+<th>Result with the default jump on pass 8</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Start at <span class="math inline">\(m\)</span>, revision
+<code>8987d49</code></td>
+<td>Accepts just <span class="math inline">\(m\le r\)</span>. The
+upper-bound obligation remains in the residual.</td>
+</tr>
+<tr>
+<td>Start at <span class="math inline">\(m\)</span>, revision
+<code>4560a1f</code></td>
+<td>Stores the requested max upper bound on pass 8 and accepts on pass
+9. The tuple contains <span class="math inline">\(m\)</span>.</td>
+</tr>
+<tr>
+<td>Start at <span class="math inline">\(0\)</span>, revision
+<code>4560a1f</code></td>
+<td>Restores the max upper bound on every pass from 8 to 40 with the
+limit set to 40. The tuple stays empty. The default run stops with an
+error on pass 11.</td>
+</tr>
+</tbody>
+</table>
+<p>For the last row the supplier summary on pass 9 is <span
+class="math inline">\(0\le r\)</span>. The individual supplier branches
+still prove <span class="math inline">\(D\)</span>. The previous tuple
+and the newly inferred tuple both omit <span
+class="math inline">\(m\)</span>, so the numeric jump has no shared
+public slot for it. Equations (4.4–4.6) reintroduce the upper bound,
+while (4.7) asks for no additional precondition. The printed predicates,
+supplier cases and caller demand agree on passes 9 through 40 modulo
+whitespace. Delaying the jump to pass 24 or 80 also failed with a limit
+of 85. The arity proof explains why any run that keeps this empty
+interface must fail to find the unrestricted scheme. The finite traces
+by themselves do not establish a theorem about every scheduling or
+abduction choice.</p>
+<p>To reproduce the last row with InvarGenT revision
+<code>4560a1f</code>, run</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">invargent</span> <span class="at">-inform</span> <span class="at">-no_ml</span> <span class="at">-no_sig</span> <span class="at">-iterations_timeout</span> 40 zero_capped_climb.gadt</span></code></pre></div>
+<section id="repair" class="level3">
+<h3>Checking a caller obligation before accepting a package</h3>
+<p>On the first variant, revision <code>8987d49</code> had correctly
+generated <span class="math inline">\(r\le\max(m+20,0)\)</span> as an
+obligation of the recursive use. Its scoped numeric checks detected
+restrictions on universal indices in equations and linear inequalities.
+A surviving min/max disjunction bypassed those checks. The split could
+put the obligation in a residual involving a local copy of the recursive
+result. The exported relation <span class="math inline">\(m\le
+r\)</span> then admitted the counterexample <span
+class="math inline">\((m,r)=(0,21)\)</span>.</p>
+<p>There is an executable control. Raise the supplier cap from 19 to 21,
+leave the consumer limit at 20, and make the external body check its
+declared upper bound on entry. Apply <code>climb 0</code> to 22
+successors. Revision <code>8987d49</code> accepted the program, and its
+generated OCaml compiled. The twenty-second step called the external
+function with <span class="math inline">\(r=21\)</span> and failed its
+assertion. Revision <code>4560a1f</code> reports nonconvergence on this
+input. The operational witness establishes the violation independently
+of the timeout diagnostic.</p>
+<p>The repaired numeric checks apply the existing quantifier-order test
+to surviving extremum atoms after substitution. If the checked linear
+facts entail the atom, the requirement is discharged. Otherwise a
+restriction at a predicate-owned universal goes back to the splitter,
+and a forbidden restriction raises a quantifier violation. Parallel
+affine arms with a constant difference can first be reduced to the
+dominating arm. For example, <span
+class="math inline">\(r\le\max(m+20,m)\)</span> reduces to <span
+class="math inline">\(r\le m+20\)</span>. This is a repair of scope
+handling for these obligations. General validity under arbitrary
+alternating prefixes would require a separate argument. <a
+href="thesis-review-4.html">Earlier counterexamples for numeric
+implication</a></p>
+<p>At the jump, the solver first tests the new summary against an old
+numeric atom. If the summary is too weak, it can test the atom against
+every projected numeric supplier branch that contributed to the
+generalization. Replay uses variables on the aligned public interface of
+both predicates. It requires a supplied family of branches and retains
+an atom only if all feasible branches entail it. Omitting a variable
+from a branch leaves that variable unconstrained in its implication
+test. For the start-at-<span class="math inline">\(m\)</span> example
+the base proves the upper bound, and each recursive case proves either
+<span class="math inline">\(r\le m+19\)</span> or <span
+class="math inline">\(r\le 0\)</span>. Their union proves <span
+class="math inline">\(r\le\max(m+20,0)\)</span> even when the computed
+summary has lost it. The stopping test then sees an empty caller
+contribution. <a
+href="https://github.com/lukstafi/invargent/commit/4560a1fa455ceecfc3155ccd557690352b0885a3">InvarGenT
+change and end-to-end fixture</a></p>
+</section>
+</section>
+<section id="templates" class="level2">
+<h2>A convergence theorem with a fixed vocabulary</h2>
+<p>Fix the captured interfaces and the unary preconditions. For each
+postcondition, supply a finite set of candidate atoms over its public
+arguments. Let <span class="math inline">\(N\)</span> count the atoms
+across all predicates, counting an atom separately at each predicate. A
+state <span class="math inline">\(X\)</span> selects some of these
+atoms, interpreted conjunctively. Assume that recursive result
+predicates occur positively in the suppliers, and that making result
+predicates stronger preserves caller safety. These hypotheses allow
+mutual recursion. They exclude a changing parameter interface.</p>
+<p>Start with every candidate atom. For each pass retain <span
+class="math inline">\(a\in X\)</span> exactly when all its defining
+branches, instantiated with <span class="math inline">\(X\)</span> at
+recursive uses, entail <span class="math inline">\(a\)</span> at the
+supplied result. Include every base branch. Use the same state for all
+tests in a pass. Assume decidable, exact branch tests and keep atom
+identities fixed across passes. This is the elimination rule of Houdini
+applied to the binary postconditions of Table 4.4. The implemented jump
+rechecks existing atoms but obtains its starting formulas and interfaces
+from inference. <a
+href="https://doi.org/10.1007/3-540-45251-6_29">Flanagan and Leino,
+<em>Houdini, an Annotation Assistant for ESC/Java</em></a></p>
+<p><strong>Theorem.</strong> Within <span
+class="math inline">\(N+1\)</span> passes, including a final
+verification pass, elimination finds the strongest conjunction in the
+pool closed under all suppliers. It satisfies every caller obligation if
+and only if some conjunction in the pool is closed and satisfies those
+obligations.</p>
+<p>To prove it, take any closed candidate <span
+class="math inline">\(I\)</span>. Initially <span
+class="math inline">\(I\subseteq X\)</span> as sets of atoms. Every
+recursive row admitted by <span class="math inline">\(X\)</span> is then
+admitted by <span class="math inline">\(I\)</span>. Positivity means
+each supplier row obtained under <span class="math inline">\(X\)</span>
+is also obtained under <span class="math inline">\(I\)</span>. Every
+atom of <span class="math inline">\(I\)</span> therefore survives the
+pass. Induction keeps <span class="math inline">\(I\subseteq X\)</span>
+throughout. Each changing pass deletes at least one atom. At
+stabilization every surviving atom holds on every supplier row, and all
+closed candidates are subsets of the surviving set. If any closed
+candidate makes the callers safe, the stronger surviving conjunction
+does too. Conversely a safe final conjunction is itself such a
+candidate. On a successful run the caller never needs to add an atom,
+since even the intermediate conjunction after each deletion still
+entails the successful candidate. <a href="thesis-review-5.lean">Lean
+proof of stabilization, preservation and caller safety</a></p>
+<p>This gives a bounded-size corollary for conjunctive postconditions on
+a known interface. For a bit bound <span
+class="math inline">\(b\)</span>, put every well-formed,
+predicate-tagged atom encodable in at most <span
+class="math inline">\(b\)</span> bits in the pool. A solution of total
+encoded size at most <span class="math inline">\(b\)</span> contributes
+all of its atoms. With the stated checks and monotonicity, the search
+succeeds on that promise. There are <span
+class="math inline">\(2^{b+1}-1\)</span> binary strings of lengths zero
+through <span class="math inline">\(b\)</span>. The number of passes can
+therefore be exponential even when <span
+class="math inline">\(b\)</span> is polynomial in the input size. The
+strongest returned conjunction can exceed <span
+class="math inline">\(b\)</span>. Deciding whether an answer itself fits
+<span class="math inline">\(b\)</span> uses the bounded certificate
+search described in the previous review. <a
+href="thesis-review-2.html#convergence">Bounded verification</a></p>
+<p>The implementation still has to discover that <span
+class="math inline">\(m\)</span> belongs in the package. The
+start-at-zero program gives a test for any proposed capture rule. The
+rule has to identify the parameter at the definition and instantiate it
+with the corresponding argument at each recursive use. Carrying an
+incidental local variable with the same printed name would miss the
+distinction as soon as a recursive call changes <span
+class="math inline">\(m\)</span>.</p>
+<p><strong>Checks.</strong> The Lean companion runs with Lean 4.19.0 and
+<code>Std</code>. In the OCaml 5.3.0 compatibility build, 263 OUnit
+cases passed and 10 remained marked TODO. All 125 signatures from the
+preceding run were byte-identical. The new end-to-end fixture also
+passed on OCaml 5.5.1. The rational numeric implication checker agreed
+with Z3 on the same 50,000 deterministic judgments as the previous
+review. Those comparisons exercise numeric implication; the
+whole-program runs exercise splitting, widening and parameter capture.
+<a href="thesis-review-4.py">Numeric comparison driver</a></p>
+</section>
+</article>
+<script src="/assets/theme-toggle.js"></script>
+</body>
+</html>

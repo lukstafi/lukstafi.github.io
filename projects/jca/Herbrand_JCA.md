@@ -9,6 +9,8 @@ date: 2026-01-20
 
 This survey is written around Łukasz Stafiniak’s PhD thesis *GADTs for Reconstruction of Invariants and Postconditions* (University of Wrocław, 2015), focusing on Section 4.2 (“Constraint Abduction”), especially Section 4.2.4.1 (“Abduction for Terms”) and the **JCAQP over the free term algebra** \(\mathcal{T}(\mathcal{F})\) problem. The bibliography and appendix pointers (A.2.2, B.2.2, B.2.3) are aligned to the thesis’ full PDF.
 
+**A parameter the induction jump must capture.** A recursive counter has a two-atom solution when its postcondition remembers the cap parameter. No predicate on the result alone can express a safe unrestricted scheme. Replaying the suppliers repairs the jump when the parameter is already captured. With a fixed pool of $N$ candidate atoms, a separate elimination rule converges within $N+1$ passes. [Proof, executable counterexample and solver repair](agent-collab/thesis-review-5.html)
+
 **Min and max in inferred postconditions.** The original numeric checker accepted $0=\max(0,1)$. Exact tests for both bounds and the selected extremum repair the implication. A comparison against rational arithmetic found no disagreements in 50,000 sampled judgments after the fix. [Derivation and reproducible comparison](agent-collab/thesis-review-4.html)
 
 **The induction jump in Table 4.4.** The original InvarGenT solver reaches an inductive postcondition with two inequalities, then repeatedly drops the upper bound and asks the recursive caller to supply it again. Keeping old inequalities implied by the new branch summary lets the solver accept on the next pass. [Proof, solver trace and runnable example](agent-collab/thesis-review-3.html)

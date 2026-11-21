@@ -284,6 +284,11 @@ build_html \
   "$collab_dir/thesis-review-4.html" \
   "What it takes to prove a min or max postcondition"
 
+build_html \
+  "$collab_dir/thesis-review-5.md" \
+  "$collab_dir/thesis-review-5.html" \
+  "The parameter an induction jump has to remember"
+
 reviews_dir="$collab_dir/reviews"
 if [[ -d "$reviews_dir" ]]; then
   for md_file in "$reviews_dir"/*.md; do
