@@ -9,6 +9,10 @@ date: 2026-01-20
 
 This survey is written around Łukasz Stafiniak’s PhD thesis *GADTs for Reconstruction of Invariants and Postconditions* (University of Wrocław, 2015), focusing on Section 4.2 (“Constraint Abduction”), especially Section 4.2.4.1 (“Abduction for Terms”) and the **JCAQP over the free term algebra** \(\mathcal{T}(\mathcal{F})\) problem. The bibliography and appendix pointers (A.2.2, B.2.2, B.2.3) are aligned to the thesis’ full PDF.
 
+**Min and max in inferred postconditions.** The original numeric checker accepted $0=\max(0,1)$. Exact tests for both bounds and the selected extremum repair the implication. A comparison against rational arithmetic found no disagreements in 50,000 sampled judgments after the fix. [Derivation and reproducible comparison](agent-collab/thesis-review-4.html)
+
+**The induction jump in Table 4.4.** The original InvarGenT solver reaches an inductive postcondition with two inequalities, then repeatedly drops the upper bound and asks the recursive caller to supply it again. Keeping old inequalities implied by the new branch summary lets the solver accept on the next pass. [Proof, solver trace and runnable example](agent-collab/thesis-review-3.html)
+
 **Combination and convergence.** Theorem 4.5R gives a complete modular abducer for free types with side sorts and designated parameters. A covered chain of free-term predicates has finite height. Arithmetic refinement can run forever even when the greatest invariant has just two inequalities. [Proofs and the InvarGenT example](agent-collab/thesis-review-2.html)
 
 **Thesis review, November 21, 2026.** A GADT payload function has two sound typings that no conjunctive equational scheme can generalize. With one payload constructor for each of $m$ index positions, covering its constructor-compatible calls requires exactly $m$ such schemes. The review traces the example through InvarGenT, gives counterexamples and replacement rules for Theorem 4.5 and Appendix A, and derives the short indexed-list `append` using a constructor invariant. [Review and remaining questions](agent-collab/thesis-review-1.html) · [Lean proofs](agent-collab/thesis-review-1.lean)

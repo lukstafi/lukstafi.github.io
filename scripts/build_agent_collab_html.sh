@@ -274,6 +274,16 @@ build_html \
   "$collab_dir/thesis-review-2.html" \
   "A complete combination theorem and the convergence of predicate inference"
 
+build_html \
+  "$collab_dir/thesis-review-3.md" \
+  "$collab_dir/thesis-review-3.html" \
+  "When the induction jump drops an inductive postcondition"
+
+build_html \
+  "$collab_dir/thesis-review-4.md" \
+  "$collab_dir/thesis-review-4.html" \
+  "What it takes to prove a min or max postcondition"
+
 reviews_dir="$collab_dir/reviews"
 if [[ -d "$reviews_dir" ]]; then
   for md_file in "$reviews_dir"/*.md; do

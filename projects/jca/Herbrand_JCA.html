@@ -227,6 +227,20 @@ over the free term algebra</strong> <span
 class="math inline">\(\mathcal{T}(\mathcal{F})\)</span> problem. The
 bibliography and appendix pointers (A.2.2, B.2.2, B.2.3) are aligned to
 the thesis’ full PDF.</p>
+<p><strong>Min and max in inferred postconditions.</strong> The original
+numeric checker accepted <span
+class="math inline">\(0=\max(0,1)\)</span>. Exact tests for both bounds
+and the selected extremum repair the implication. A comparison against
+rational arithmetic found no disagreements in 50,000 sampled judgments
+after the fix. <a href="agent-collab/thesis-review-4.html">Derivation
+and reproducible comparison</a></p>
+<p><strong>The induction jump in Table 4.4.</strong> The original
+InvarGenT solver reaches an inductive postcondition with two
+inequalities, then repeatedly drops the upper bound and asks the
+recursive caller to supply it again. Keeping old inequalities implied by
+the new branch summary lets the solver accept on the next pass. <a
+href="agent-collab/thesis-review-3.html">Proof, solver trace and
+runnable example</a></p>
 <p><strong>Combination and convergence.</strong> Theorem 4.5R gives a
 complete modular abducer for free types with side sorts and designated
 parameters. A covered chain of free-term predicates has finite height.
