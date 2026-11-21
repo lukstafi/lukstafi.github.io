@@ -163,8 +163,10 @@ check, it keeps the input formula. In a fixed sample of 4,000
 rational-arithmetic judgments, the previous implementation changed the
 truth of 853 guarded formulas and raised exceptions on a further 354.
 Revision <code>3ba298f</code> had zero discrepancies and zero exceptions
-on the same inputs. The oracle asks Z3 whether any valuation satisfies
-the guard and distinguishes the input from the output. <a
+on the same inputs. Extending the sample to 12,000 judgments at revision
+<code>6642c67</code> also gave zero discrepancies and zero exceptions.
+The oracle asks Z3 whether any valuation satisfies the guard and
+distinguishes the input from the output. <a
 href="thesis-review-7-pruning.ml">OCaml driver</a> · <a
 href="thesis-review-7.py">Z3 comparison</a></p>
 <p>The capture and abduction changes are in InvarGenT
@@ -176,6 +178,10 @@ split fixture also passed in the OCaml 5.5.1 compatibility build. To
 reproduce the oracle comparison, compile the OCaml driver as
 <code>src/Audit.ml</code> in the solver build and pass its binary to the
 Python comparison with <code>z3-solver</code> installed.</p>
+<p>Letting the floor move at each call gives an exact maximal domain and
+a new bounded-size convergence counterexample. <a
+href="thesis-review-8.html">When both ends of a recursive result
+interval move</a></p>
 </section>
 </article>
 <script src="/assets/theme-toggle.js"></script>

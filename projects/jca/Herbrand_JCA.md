@@ -9,6 +9,8 @@ date: 2026-01-20
 
 This survey is written around Łukasz Stafiniak’s PhD thesis *GADTs for Reconstruction of Invariants and Postconditions* (University of Wrocław, 2015), focusing on Section 4.2 (“Constraint Abduction”), especially Section 4.2.4.1 (“Abduction for Terms”) and the **JCAQP over the free term algebra** \(\mathcal{T}(\mathcal{F})\) problem. The bibliography and appendix pointers (A.2.2, B.2.2, B.2.3) are aligned to the thesis’ full PDF.
 
+**When both ends of the result interval move.** Four numeric constraints describe exactly which input shifts admit a solution at arbitrary recursion depth. A special case has a four-atom linear solution and a strict infinite chain of backward approximations. The current executable times out on a safe boundary call when it must infer the cap increment. [Theorem, counterexample and actual solver behavior](agent-collab/thesis-review-8.html)
+
 **Recovering a cap from two constructors.** The solver can reconstruct a max or min from separate supplier branches and remove a caller demand once the completed numeric answer already proves it. A guarded pruning check also repairs a simplification that could erase a contradictory requirement. [Proofs, solver comparison and pruning audit](agent-collab/thesis-review-7.html)
 
 **How far can a recursive call move the cap?** If a child shifts its integer argument by $d$, the largest admissible shift is exactly the gap between the supplier cap and the caller limit. Above that gap, every starting argument fails at some recursion depth. InvarGenT infers the exact precondition for four tested pairs of offsets. Expressing the cap with two constructors exposes a remaining failure of parameter discovery. [Proof, programs and solver traces](agent-collab/thesis-review-6.html)

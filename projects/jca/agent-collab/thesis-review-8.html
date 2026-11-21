@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <meta name="dcterms.date" content="2026-11-22">
+  <meta property="og:title" content="When both ends of a recursive result interval move">
+  <meta property="og:url" content="https://lukstafi.github.io/projects/jca/agent-collab/thesis-review-8.html">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="lukstafi&#x27;s blog">
+  <meta name="twitter:card" content="summary">
+  <title>When both ends of a recursive result interval move</title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <link rel="stylesheet" href="/assets/tufte.css">
+  <link rel="stylesheet" href="/assets/pandoc-tufte.css">
+  <link rel="stylesheet" href="/assets/site.css">
+  <script defer=""
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+  type="text/javascript"></script>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+  <script>(function(){var t=localStorage.getItem('theme-preference');if(t)document.documentElement.setAttribute('data-theme',t);})()</script>
+</head>
+<body>
+<nav class="site-nav">
+  <a href="/">Home</a> &middot; <a href="/study/">Study Guide</a> &middot; <a href="/about.html">About</a> &middot; <a href="https://lukstafi.substack.com">Substack</a>
+</nav>
+<div class="theme-toggle">
+  <button id="theme-btn" aria-label="Toggle dark mode">&#9788;</button>
+</div>
+<article>
+<header>
+<h1 class="title">When both ends of a recursive result interval
+move</h1>
+<p class="byline">2026-11-22</p>
+</header>
+<nav id="TOC">
+<ul>
+<li><a href="#domain" id="toc-domain">The maximal input domain</a></li>
+<li><a href="#iteration" id="toc-iteration">A finite solution and
+infinitely many backward steps</a></li>
+<li><a href="#solver" id="toc-solver">The executable feedback
+loop</a></li>
+</ul>
+</nav>
+<p>InvarGenT can infer the right precondition for a recursive call that
+adds one to both its numeric arguments. Replace the second one by an
+argument <span class="math inline">\(d\)</span> and call the function at
+<span class="math inline">\(d=1\)</span>. The program still has a
+solution consisting of two input constraints and two result
+inequalities. The solver reaches its iteration limit. The difference is
+whether inference has to discover the equation <span
+class="math inline">\(d=1\)</span>. <a
+href="unit_floor_shift.gadt">Small failing program</a> · <a
+href="thesis-review-8.lean">Machine-checked solution</a></p>
+<section id="domain" class="level2">
+<h2>The maximal input domain</h2>
+<p>Let <span class="math inline">\(p\)</span> be the floor and <span
+class="math inline">\(m\)</span> the cap parameter. The base returns
+<span class="math inline">\(p\)</span>. The recursive case calls the
+child at <span class="math inline">\((p+e,m+d)\)</span> and passes its
+result <span class="math inline">\(r\)</span> to the step at <span
+class="math inline">\((p,m)\)</span>. The step requires <span
+class="math inline">\(p\le r\le\max(m+L,p)\)</span>. Its constructors
+may return <span class="math inline">\(p\)</span>, or any <span
+class="math inline">\(u\)</span> with <span class="math inline">\(p\le
+u\le r+1\)</span> and <span class="math inline">\(u\le m+c\)</span>.
+These guarantees describe exactly <span class="math inline">\(p\le
+u\le\max(m+c,p)\)</span> together with <span class="math inline">\(u\le
+r+1\)</span> on a legal call.</p>
+<p>Write <span class="math inline">\(x=m-p\)</span>. If a child returns
+a value <span class="math inline">\(t\)</span> above its own floor, the
+parent receives <span class="math inline">\(e+t\)</span> above its
+floor. The child’s gap is <span class="math inline">\(x+d-e\)</span>.
+This change of coordinates keeps both <span
+class="math inline">\(p\)</span> and <span
+class="math inline">\(x\)</span> available to the unknown
+predicates.</p>
+<p><strong>Theorem.</strong> Suppose <span class="math inline">\(c\le
+L\)</span> and all indices are integers. An initial <span
+class="math inline">\((p,m)\)</span> belongs to some valid input
+predicate for the unindexed natural-number recursion if and only if all
+four constraints hold.</p>
+<p><span class="math display">\[
+0\le e,\qquad d\le L-c,\qquad
+e\le\max(0,d),\qquad e\le\max(0,m-p+L).
+\]</span></p>
+<p>This conjunction is expressible in InvarGenT. Necessity quantifies
+over arbitrary input and result predicates. The same two-atom result
+band <span class="math inline">\(p\le r\le\max(m+c,p)\)</span> witnesses
+sufficiency throughout the domain. <a href="thesis-review-8.lean">Lean
+theorem and inductive scheme</a></p>
+<p><strong>Why the floor matters.</strong> A child may return its base
+value. Its parent must therefore admit <span
+class="math inline">\(e\)</span> above the floor, which gives <span
+class="math inline">\(0\le e\le\max(0,x+L)\)</span>. If <span
+class="math inline">\(e&gt;0\)</span>, every admitted gap satisfies
+<span class="math inline">\(x+L\ge e\)</span>. Were <span
+class="math inline">\(d&lt;e\)</span>, each recursive call would reduce
+the gap by at least one. An arbitrarily deep input would eventually
+violate that lower bound. Thus <span
+class="math inline">\(e&gt;0\)</span> forces <span
+class="math inline">\(d\ge e\)</span>. When <span
+class="math inline">\(e=0\)</span>, the floor may stay in place while
+the cap decreases without limit.</p>
+<p><strong>Why the cap offset is sharp.</strong> Suppose <span
+class="math inline">\(d&gt;L-c\)</span>. Then <span
+class="math inline">\(d&gt;0\)</span>. On an admitted orbit the gap is
+nondecreasing, since <span class="math inline">\(e&gt;0\)</span> forces
+<span class="math inline">\(d\ge e\)</span> and <span
+class="math inline">\(e=0\)</span> leaves <span
+class="math inline">\(d&gt;0\)</span>. At any admitted gap <span
+class="math inline">\(x\)</span>, the abstract constructors can produce
+every integer from zero through <span
+class="math inline">\(\max(x+c,0)\)</span> above the floor, at possibly
+different recursion depths. Induction on the desired value gives this
+fact. A child can produce its predecessor, and the step may then return
+one more. Choose a parent gap <span class="math inline">\(y\)</span>
+with <span class="math inline">\(y+L\ge e\)</span>. Such a gap is
+already present for <span class="math inline">\(e&gt;0\)</span> and is
+eventually reached for <span class="math inline">\(e=0\)</span>. The
+child can supply <span class="math inline">\(y+L-e+1\)</span>, so the
+parent receives one more than its limit. This proves <span
+class="math inline">\(d\le L-c\)</span>.</p>
+</section>
+<section id="iteration" class="level2">
+<h2>A finite solution and infinitely many backward steps</h2>
+<p>Take <span class="math inline">\(c=19\)</span>, <span
+class="math inline">\(L=20\)</span> and <span
+class="math inline">\(e=1\)</span>. The exact input condition reduces to
+<span class="math inline">\(d=1\)</span> and <span
+class="math inline">\(p\le m+19\)</span>. On that domain the exact cap
+simplifies too. A sufficient result predicate is <span
+class="math inline">\(p\le r\le m+19\)</span>. The proposed input and
+result predicates use only linear atoms. <a
+href="thesis-review-8.lean">Four-atom solution</a></p>
+<p>Consider exact backward propagation of the necessary base-call test.
+Let <span class="math inline">\(P_0(d,x)\)</span> admit every input.
+Each further pass checks one more recursive call.</p>
+<p><span class="math display">\[
+P_{n+1}(d,x)\iff 1\le x+20\ \land\ P_n(d,x+d-1).
+\]</span></p>
+<p>Every inclusion <span class="math inline">\(P_{n+1}\subseteq
+P_n\)</span> is strict. Set <span class="math inline">\(d=0\)</span> and
+<span class="math inline">\(x=n-20\)</span>. The first <span
+class="math inline">\(n\)</span> checks pass. At the next call the gap
+has fallen to <span class="math inline">\(-20\)</span>, and the parent
+cannot accept its child’s base value. For <span
+class="math inline">\(d=1\)</span>, all depths pass exactly when <span
+class="math inline">\(x\ge-19\)</span>. Already on <span
+class="math inline">\(d\in\{0,1\}\)</span>, the intersection is the
+two-atom input condition above. Thus exact unrolling can take infinitely
+many strict refinement steps even with a constant-size, nonempty answer
+and a fixed two-value range for the shift. <a
+href="thesis-review-8.lean">Strict-chain and limit proofs</a></p>
+<p>This recurrence isolates the backward input obligations. Table 4.4
+also generalizes supplier branches, widens result predicates and splits
+abductive answers. Its actual run on the same program reaches a
+different obstruction.</p>
+</section>
+<section id="solver" class="level2">
+<h2>The executable feedback loop</h2>
+<p>With both shifts written as the literal one, the child promises an
+upper bound <span class="math inline">\(\max(p+1,m+20)\)</span>. The
+caller allows <span class="math inline">\(\max(p,m+20)\)</span>. The
+child alternative <span class="math inline">\(m+20\)</span> fits
+directly. Its other alternative <span class="math inline">\(p+1\)</span>
+can use that <em>same</em> caller arm exactly when <span
+class="math inline">\(p\le m+19\)</span>. An induction step that tries
+to pair off alternatives would instead ask for <span
+class="math inline">\(p+1\le p\)</span>. InvarGenT now tries both
+destinations for the remaining alternative. It infers <span
+class="math inline">\(p\le m+19\)</span> and returns the linear result
+band on the specialized program.</p>
+<table>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr>
+<th>Program on revision <code>6642c67</code></th>
+<th>Observed result</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Both increments fixed at one</td>
+<td>Infers the exact input condition and the linear result band. The
+boundary call <span class="math inline">\(p=3,m=-16\)</span> executes
+successfully.</td>
+</tr>
+<tr>
+<td>Floor increment one, cap increment <span
+class="math inline">\(d\)</span>, closed call at <span
+class="math inline">\(d=1,p=3,m=-16\)</span></td>
+<td>Reports “Answers do not converge” at budgets 11 and 40.</td>
+</tr>
+<tr>
+<td>Both increments symbolic, definition alone</td>
+<td>Infers <span class="math inline">\(e=0\)</span> and <span
+class="math inline">\(d\le1\)</span>, which covers the whole
+stationary-floor case.</td>
+</tr>
+<tr>
+<td>Same definition applied to one stationary and one admissible rising
+floor</td>
+<td>Rejects during numeric abduction. The four-constraint input scheme
+admits both calls.</td>
+</tr>
+</tbody>
+</table>
+<p>For the second row, the instrumented run already has both <span
+class="math inline">\(p\)</span> and <span
+class="math inline">\(m\)</span> in the package. On every pass from 9
+through 40, widening produces <span class="math inline">\(p\le r\le
+m+19\)</span> and the caller asks again for <span
+class="math inline">\(r\le\max(m+20,p)\)</span>. The supplier abduction
+contribution is empty. This is a bounded-size counterexample for the
+default executable. The observed 40 passes establish the repeated demand
+over that interval. The infinite strict-chain proof concerns the
+backward recurrence above. <a href="unit_floor_shift.gadt">One symbolic
+increment</a> · <a href="moving_floor_symbolic.gadt">Two symbolic
+increments</a></p>
+<p>The newly exposed input equation has two sources. Backward closure
+forces <span class="math inline">\(d\ge1\)</span> so that the gap does
+not shrink. The caller cap forces <span
+class="math inline">\(d\le1\)</span>. Recovering both in the symbolic
+program is the remaining inference problem. The symbolically changing
+floor generalizes it further to a precondition containing two max
+bounds.</p>
+<p>Lean 4.19.0 checks the theorems using <code>Std</code>. The final
+OCaml 5.3.0 compatibility suite passed 271 cases with 10 marked TODO.
+The two new split-constructor and moving-floor fixtures also passed on
+OCaml 5.5.1.</p>
+</section>
+</article>
+<script src="/assets/theme-toggle.js"></script>
+</body>
+</html>

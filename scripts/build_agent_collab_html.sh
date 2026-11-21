@@ -299,6 +299,11 @@ build_html \
   "$collab_dir/thesis-review-7.html" \
   "Recovering a cap from two constructors"
 
+build_html \
+  "$collab_dir/thesis-review-8.md" \
+  "$collab_dir/thesis-review-8.html" \
+  "When both ends of a recursive result interval move"
+
 reviews_dir="$collab_dir/reviews"
 if [[ -d "$reviews_dir" ]]; then
   for md_file in "$reviews_dir"/*.md; do
