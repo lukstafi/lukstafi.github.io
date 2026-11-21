@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <meta name="dcterms.date" content="2026-11-21">
+  <meta property="og:title" content="JCA Round 18: The Constructor Arity Boundary">
+  <meta property="og:url" content="https://lukstafi.github.io/projects/jca/agent-collab/round-18-signature-boundary.html">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="lukstafi&#x27;s blog">
+  <meta name="twitter:card" content="summary">
+  <title>JCA Round 18: The Constructor Arity Boundary</title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <style type="text/css">
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="/assets/tufte.css">
+  <link rel="stylesheet" href="/assets/pandoc-tufte.css">
+  <link rel="stylesheet" href="/assets/site.css">
+  <script defer=""
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+  type="text/javascript"></script>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+  <script>(function(){var t=localStorage.getItem('theme-preference');if(t)document.documentElement.setAttribute('data-theme',t);})()</script>
+</head>
+<body>
+<nav class="site-nav">
+  <a href="/">Home</a> &middot; <a href="/study/">Study Guide</a> &middot; <a href="/about.html">About</a> &middot; <a href="https://lukstafi.substack.com">Substack</a>
+</nav>
+<div class="theme-toggle">
+  <button id="theme-btn" aria-label="Toggle dark mode">&#9788;</button>
+</div>
+<article>
+<header>
+<h1 class="title">JCA Round 18: The constructor arity boundary</h1>
+<p class="byline">2026-11-21</p>
+</header>
+<nav id="TOC">
+<ul>
+<li><a href="#unary-trees-are-words-with-a-leaf"
+id="toc-unary-trees-are-words-with-a-leaf">1. Unary trees are words with
+a leaf</a></li>
+<li><a href="#check-a-branch-with-existential-word-equations"
+id="toc-check-a-branch-with-existential-word-equations">2. Check a
+branch with existential word equations</a></li>
+<li><a href="#word-equations-embed-back-into-unary-jca"
+id="toc-word-equations-embed-back-into-unary-jca">3. Word equations
+embed back into unary JCA</a></li>
+<li><a href="#one-unary-constructor-is-np-complete"
+id="toc-one-unary-constructor-is-np-complete">4. One unary constructor
+is NP-complete</a></li>
+<li><a href="#constants-alone-can-enforce-three-colors"
+id="toc-constants-alone-can-enforce-three-colors">5. Constants alone can
+enforce three colors</a></li>
+<li><a href="#every-branching-signature-inherits-the-lower-bound"
+id="toc-every-branching-signature-inherits-the-lower-bound">6. Every
+branching signature inherits the lower bound</a></li>
+<li><a href="#parameter-free-quantifier-prefixes"
+id="toc-parameter-free-quantifier-prefixes">7. Parameter-free quantifier
+prefixes</a></li>
+<li><a href="#verification" id="toc-verification">8.
+Verification</a></li>
+</ul>
+</nav>
+<p><strong>Theorem.</strong> Fix a finite, single-sorted ranked
+signature with at least one constant. Ordinary equational JCA answer
+existence over its finite ground trees is decidable if every constructor
+has arity at most one. If some constructor has arity at least two, the
+problem is r.e.-complete with three branches and a fixed number of
+coordinates.</p>
+<p>On the decidable side, any number of unary constructors gives a
+PSPACE upper bound. With exactly one unary constructor the problem is
+NP-complete, even with just one constant. With only constants it is
+NP-complete for two or more constants, and trivial for one. The general
+unary problem can express satisfiability of systems of word equations
+over its constructor alphabet.</p>
+<p>Round 25 sharpens the branching lower bound to two ordinary branches
+over every branching signature. <a href="round-25-binary.html">Exact
+threshold</a></p>
+<section id="unary-trees-are-words-with-a-leaf" class="level2">
+<h2>1. Unary trees are words with a leaf</h2>
+<p>Let <span class="math inline">\(\Gamma\)</span> be the alphabet of
+unary constructors and <span class="math inline">\(C\)</span> the set of
+constants. A term is uniquely <span class="math inline">\(w\ell\)</span>
+with <span class="math inline">\(w\in\Gamma^*\)</span> and <span
+class="math inline">\(\ell\)</span> a variable or a constant.
+Composition of constructor prefixes is word concatenation, written in
+outermost-first order.</p>
+<p>An ordinary equational answer on <span
+class="math inline">\(n\)</span> coordinates is a tuple of patterns
+<span class="math inline">\(P_x=W_x e_x\)</span>. Guess each leaf <span
+class="math inline">\(e_x\)</span> from <span
+class="math inline">\(C\cup\{p_1,\ldots,p_n\}\)</span>, sharing equal
+parameters across coordinates. There are enough parameters because each
+coordinate has one leaf. Leave each word <span
+class="math inline">\(W_x\)</span> unknown. An input occurrence <span
+class="math inline">\(vx\)</span> now reads <span
+class="math inline">\(vW_x e_x\)</span>, and a literal term <span
+class="math inline">\(vc\)</span> keeps its literal prefix and constant.
+The same <span class="math inline">\(W_x,e_x\)</span> are used in all
+branches. <a
+href="round-10-witness-generalization.html#pattern-answers">Tuple-pattern
+characterization</a></p>
+</section>
+<section id="check-a-branch-with-existential-word-equations"
+class="level2">
+<h2>2. Check a branch with existential word equations</h2>
+<p>Fix a branch <span class="math inline">\(D\Rightarrow
+C&#39;\)</span>. Its premise must have a ground instance and its
+conclusion must hold at every such instance. We construct a symbolic
+most general unifier of the premise. Start with no bindings on the
+parameters <span class="math inline">\(p_j\)</span> and process the
+equations of <span class="math inline">\(D\)</span> in input order.
+Apply all bindings already recorded to the two sides. Write the result
+as <span class="math inline">\(A e=B d\)</span>, where <span
+class="math inline">\(A,B\)</span> are concatenations of letters and
+word unknowns.</p>
+<ul>
+<li>If <span class="math inline">\(e=d\)</span>, record the word
+equation <span class="math inline">\(A=B\)</span>. Equality at a common
+tail requires equality of the prefixes by right cancellation, even when
+the common leaf is a free parameter.</li>
+<li>If <span class="math inline">\(e\ne d\)</span>, choose a direction
+in which the shorter side ends in a parameter. For example, if that side
+is <span class="math inline">\(Ae\)</span> with parameter <span
+class="math inline">\(e\)</span>, introduce a fresh word unknown <span
+class="math inline">\(U\)</span> and record <span
+class="math inline">\(AU=B\)</span>. Bind <span
+class="math inline">\(e\)</span> to <span
+class="math inline">\(Ud\)</span>. The reverse direction is also
+available when <span class="math inline">\(d\)</span> is a parameter.
+The empty remainder <span class="math inline">\(U\)</span> is allowed.
+Distinct constant leaves give no choice.</li>
+</ul>
+<p>Finish by applying the bindings to each conclusion equality. Its two
+sides must have the <strong>same</strong> remaining leaf. Require
+equality of their word prefixes. Repeat independently for every branch,
+retaining all the word equations produced along one complete choice of
+orientations.</p>
+<p><em>Soundness.</em> Fix a solution of the word equations. In the
+second step cancellation leaves exactly <span
+class="math inline">\(e=Ud\)</span>. Both leaves had already been
+normalized. They are distinct, so this binding passes the occurs check
+and eliminates one parameter. In the first step an identical prefix
+reduces the equation to an identity. Thus all the bindings together are
+a most general unifier. Assign any ground value to every remaining
+parameter to witness consistency. The final equalities hold under every
+such assignment by construction.</p>
+<p><em>Completeness.</em> Start with any answer and its actual prefix
+words. For a solvable premise, the two known prefixes of each equality
+are prefixes of the same ground word, so one extends the other. A strict
+extension requires the shorter side to have a parameter leaf. Equal
+prefixes with different leaves allow either variable to be eliminated if
+both are variables. Taking the actual suffix as <span
+class="math inline">\(U\)</span> follows a permitted choice and produces
+the ordinary unifier. A consequent valid on every specialization of that
+unifier must be syntactically identical on both sides. In a unary
+algebra with at least one unary constructor, distinct free tails can be
+given independently chosen lengths, and a free tail opposite a constant
+can be varied. With a common tail, words cancel on the right. Distinct
+constant leaves cannot coincide. This proves the stated test. <span
+class="math inline">\(\square\)</span></p>
+<p>If there are only constants, there are finitely many tuple patterns
+up to renaming and each can be checked directly. A one-element algebra
+satisfies every equality.</p>
+<p>Each orientation eliminates a parameter or discharges an equation. A
+recorded binding prefixes its tail by <strong>one</strong> fresh word
+variable, so the normalized prefix of an occurrence has at most <span
+class="math inline">\(n\)</span> added symbols. A guessed trace has
+polynomial total size. Its finite system of word equations is decidable
+in polynomial space. Multiple equations can be joined by a fresh
+separator, with variables restricted to the original alphabet, or
+handled by a solver for systems directly. Nondeterministic polynomial
+space equals PSPACE. <a
+href="https://drops.dagstuhl.de/entities/document/10.4230/LIPIcs.ICALP.2016.127">Diekert,
+Jeż and Kufleitner, algorithm for systems of word equations</a> · <a
+href="https://arxiv.org/abs/1702.00736">Jeż, word equations in linear
+space</a></p>
+</section>
+<section id="word-equations-embed-back-into-unary-jca" class="level2">
+<h2>3. Word equations embed back into unary JCA</h2>
+<p>Choose a unary letter <span class="math inline">\(g\)</span> and a
+constant <span class="math inline">\(a\)</span>. Two consistency guards
+<span class="math inline">\(h=a\)</span> and <span
+class="math inline">\(h=g(a)\)</span> force <span
+class="math inline">\(P_h\)</span> to be a bare parameter <span
+class="math inline">\(p\)</span>, since the two prescribed roots differ.
+The following two branches ensure that <span
+class="math inline">\(P_y\)</span> ends in this very parameter. The
+coordinate <span class="math inline">\(z\)</span> is private.</p>
+<table>
+<thead>
+<tr>
+<th>Premise</th>
+<th>Conclusion</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><span class="math inline">\(h=g(z)\)</span></td>
+<td><span class="math inline">\(\top\)</span></td>
+</tr>
+<tr>
+<td><span class="math inline">\(y=z\)</span></td>
+<td><span class="math inline">\(h=a\)</span></td>
+</tr>
+</tbody>
+</table>
+<p>The first witness implies that <span class="math inline">\(p\)</span>
+is absent from <span class="math inline">\(P_z\)</span> by the occurs
+check. If <span class="math inline">\(p\)</span> were also absent from
+<span class="math inline">\(P_y\)</span>, a witness of <span
+class="math inline">\(y=z\)</span> would still be a witness after
+setting <span class="math inline">\(p=g(a)\)</span>, violating
+relevance. Conversely if <span class="math inline">\(P_y=wp\)</span>,
+choose <span class="math inline">\(P_z=wa\)</span>. The first branch can
+set <span class="math inline">\(p=g(wa)\)</span>. In the second,
+cancellation of <span class="math inline">\(w\)</span> forces <span
+class="math inline">\(p=a\)</span>.</p>
+<p>Force two marker coordinates <span class="math inline">\(h,k\)</span>
+to be bare in this way and separate them by a guard <span
+class="math inline">\(h=a\land k=g(a)\)</span>. For every named word
+<span class="math inline">\(U\)</span> allocate <span
+class="math inline">\(U_h,U_k\)</span> with the corresponding prescribed
+tails. Add <span class="math inline">\(h=k\Rightarrow U_h=U_k\)</span>
+for all <span class="math inline">\(U\)</span>. At a witness their tails
+agree, so right cancellation makes their prefixes identical. Write this
+common word as <span class="math inline">\(u\)</span>.</p>
+<p>Encode a concatenation <span class="math inline">\(UV=W\)</span> by
+the one branch</p>
+<p><span class="math display">\[h=V_k\quad\Rightarrow\quad
+U_h=W_k.\]</span></p>
+<p>Its premise can set the parameter of <span
+class="math inline">\(h\)</span> to <span
+class="math inline">\(v\)</span> applied to the parameter of <span
+class="math inline">\(k\)</span>. At that valuation the conclusion gives
+<span class="math inline">\(uv=w\)</span> by cancellation. If the word
+equation holds, every premise witness satisfies the conclusion. Literal
+words and equalities between words are unconditional equations, for
+instance <span class="math inline">\(U_h=gh\)</span> for the one-letter
+word <span class="math inline">\(g\)</span>, or <span
+class="math inline">\(U_h=h\)</span> for the empty word. Naming partial
+products reduces any system of word equations to these forms in
+polynomial size. Conversely any word solution gives an answer using
+precisely those prefixes on the two markers. The private tests extend as
+proved above.</p>
+</section>
+<section id="one-unary-constructor-is-np-complete" class="level2">
+<h2>4. One unary constructor is NP-complete</h2>
+<p>On a one-letter alphabet, equality of words is equality of lengths.
+Every guessed system in §2 becomes a polynomial-size system of linear
+equations in nonnegative integers. A satisfiable system has a solution
+with polynomially many bits, giving NP membership. <a
+href="https://publications.csail.mit.edu/lcs/pubs/pdf/MIT-LCS-TM-152.pdf">Papadimitriou,
+<em>On the Complexity of Integer Programming</em></a></p>
+<p>For NP-hardness take a 3-CNF formula. Give each Boolean variable two
+word lengths <span class="math inline">\(x,\bar x\)</span> and require
+<span class="math inline">\(x+\bar x=1\)</span>. They encode its truth
+value and its complement. In each clause require the sum of its three
+literal lengths to equal <span class="math inline">\(1+d\)</span> for a
+fresh nonnegative slack <span class="math inline">\(d\)</span>. This
+holds exactly when at least one literal is true. The equations use
+concatenation, named intermediate sums and the one-letter literal from
+§3. This gives the lower bound with one constant and one unary symbol.
+It also gives NP-hardness in every nonempty unary alphabet: the
+equations forcing complementary words to concatenate to the chosen
+one-letter word force those words to be empty or that same letter.</p>
+</section>
+<section id="constants-alone-can-enforce-three-colors" class="level2">
+<h2>5. Constants alone can enforce three colors</h2>
+<p>Over constants alone, tuple patterns consist of constants and bare
+parameters. Guessing a pattern up to parameter renaming and checking all
+branches by unification takes nondeterministic polynomial time when
+there are at least two constants.</p>
+<p>For the matching lower bound fix two distinct constants <span
+class="math inline">\(a,b\)</span>. Given a graph, create three palette
+coordinates <span class="math inline">\(h_1,h_2,h_3\)</span> and a
+coordinate <span class="math inline">\(x_v\)</span> for each vertex. Use
+one informative branch</p>
+<p><span class="math display">\[h_1=a\land h_2=a\land
+h_3=a\quad\Rightarrow\quad\bigwedge_v x_v=a.\]</span></p>
+<p>Add a consistency guard <span class="math inline">\(\bigwedge_v
+x_v=b\)</span>, and a guard <span class="math inline">\(x_u=a\land
+x_v=b\)</span> for each edge <span class="math inline">\(uv\)</span>,
+oriented arbitrarily. Each vertex takes both constants, so its
+coordinate must be a bare parameter. At the informative premise each
+palette coordinate is either <span class="math inline">\(a\)</span> or a
+bare parameter. Any vertex parameter other than these palette parameters
+could be changed to <span class="math inline">\(b\)</span> while the
+premise stayed true. Thus every vertex uses one of at most three
+parameters, and each edge guard separates its endpoints. Conversely, a
+proper three-coloring gives an answer by using three distinct parameters
+for the palette and assigning each vertex its color’s parameter. This
+reduces graph three-colorability with just one informative branch. With
+one constant and no other constructor every instance has an answer.</p>
+</section>
+<section id="every-branching-signature-inherits-the-lower-bound"
+class="level2">
+<h2>6. Every branching signature inherits the lower bound</h2>
+<p>The <a
+href="round-17-three-branches.html#one-constant-suffices">three-branch
+theorem</a> supplies hard inputs and a two-call interpolation encoding
+over <span class="math inline">\(\{f/2,a\}\)</span>. For a new signature
+choose a constant <span class="math inline">\(c\)</span> and a
+constructor <span class="math inline">\(H\)</span> of arity <span
+class="math inline">\(k\ge2\)</span>. Translate <span
+class="math inline">\(a\)</span> to <span
+class="math inline">\(c\)</span> and <span
+class="math inline">\(f(u,v)\)</span> to <span
+class="math inline">\(H(u,v,c,\ldots,c)\)</span>, recursively. Keep the
+same branches and variable names.</p>
+<p>A source answer from the reduction translates directly using its
+canonical ground data and its body on the bare formals. Every target
+valuation satisfying a translated evaluation premise provides exactly
+the displayed argument values at those formals. The output equality
+follows by substitution in the translated body; the scope premise has
+its usual witness.</p>
+<p>For the converse, the translated scope guard again forces distinct
+bare formals absent from the data. Its witness has strictly increasing
+sizes, and each formal is a constant at one evaluation. We therefore
+recover a target interpolation solution, allowing <strong>all</strong>
+constructors of the new signature in its data and body. Map a ground
+target value or body back by interpreting <span
+class="math inline">\(c\)</span> as <span
+class="math inline">\(a\)</span>, <span
+class="math inline">\(H(t_1,\ldots,t_k)\)</span> as <span
+class="math inline">\(f(D(t_1),D(t_2))\)</span>, and every other symbol
+as the constant <span class="math inline">\(a\)</span>. Keep every
+formal hole. This interpretation commutes with plugging data into a body
+and is a left inverse on translated constructor expressions. Both target
+requests consequently decode to the original binary requests on a single
+body and a single data tuple. Round 17 recovers the hard source
+instance. The branch and coordinate counts are unchanged. Finite-answer
+enumeration gives the r.e. upper bound.</p>
+</section>
+<section id="parameter-free-quantifier-prefixes" class="level2">
+<h2>7. Parameter-free quantifier prefixes</h2>
+<p>For the version fixed in Round 10, the extra condition on a
+presentation <span class="math inline">\(A(X,B)\)</span> of the answer
+is <span class="math inline">\(\forall B\;QX.\,A(X,B)\)</span>.
+Relevance and consistency still refer to ordinary ground assignments.
+There are no designated invariant parameters. The same arity
+classification and the same upper bounds hold for this problem. <a
+href="round-10-witness-generalization.html#prefix-variants-are-not-interchangeable">Definition
+of the variant</a></p>
+<p><strong>Pattern criterion.</strong> Assume the ground algebra has at
+least two elements. An ordinary answer relation given by a tuple pattern
+<span class="math inline">\(P\)</span> admits a presentation satisfying
+the extra condition exactly when:</p>
+<ol type="1">
+<li>Each universal coordinate <span class="math inline">\(u\)</span> in
+<span class="math inline">\(Q\)</span> has <span
+class="math inline">\(P_u\)</span> equal to a bare parameter <span
+class="math inline">\(p_u\)</span>, distinct for different
+universals.</li>
+<li>For every existential <span class="math inline">\(e\)</span>
+preceding <span class="math inline">\(u\)</span>, <span
+class="math inline">\(p_u\)</span> is absent from <span
+class="math inline">\(P_e\)</span>.</li>
+</ol>
+<p><em>Necessity.</em> Fix the fresh variables of any valid presentation
+to one ground tuple. The prefix must still be able to play every choice
+of the universal values, with resulting instance tuples in the projected
+relation <span class="math inline">\(\operatorname{Inst}(P)\)</span>. A
+constant or compound coordinate misses at least one ground value. Shared
+universal parameters would prevent different choices at the two
+coordinates. If an earlier existential pattern contained <span
+class="math inline">\(p_u\)</span> at an address, its selected ground
+value would determine <span class="math inline">\(u\)</span> at that
+address before <span class="math inline">\(u\)</span> is played.
+Choosing a different value for <span class="math inline">\(u\)</span>
+then defeats the prefix.</p>
+<p><em>Sufficiency.</em> Replace every universal parameter <span
+class="math inline">\(p_u\)</span> in the existential patterns by the
+<strong>original variable</strong> <span
+class="math inline">\(u\)</span>. Retain all other parameters as fresh
+leading variables <span class="math inline">\(B\)</span>. Present the
+relation by the equations <span class="math inline">\(e=P_e\)</span>
+after this renaming, one per existential. The original universal
+coordinates require no equations, and the ordinary projected relation is
+exactly <span class="math inline">\(\operatorname{Inst}(P)\)</span>. For
+every assignment of <span class="math inline">\(B\)</span>, choose each
+existential as the value of its right-hand side at its turn. Only
+earlier universal moves can occur there, so the strategy works under
+<span class="math inline">\(Q\)</span>. This choice of presentation
+avoids imposing a new leading universal on a coordinate already
+universal in <span class="math inline">\(Q\)</span>. <span
+class="math inline">\(\square\)</span></p>
+<p>For unary terms, require <span class="math inline">\(W_u\)</span>
+empty, require <span class="math inline">\(e_u\)</span> to be a
+parameter, and exclude its leaf from all earlier coordinates. These are
+just equations of words and finitely many tests on the guessed leaves.
+The lower bounds carry over with all-existential prefixes; the
+one-element case remains immediate. This result uses the stated
+parameter-free validity condition. Round 19 treats designated invariant
+parameters and explicit atomwise escape tests under both fresh-parameter
+conventions. <a
+href="round-19-designated-parameters.html">Designated-parameter
+proof</a></p>
+</section>
+<section id="verification" class="level2">
+<h2>8. Verification</h2>
+<p><a href="round-18-proof.lean">Lean proof of the unification step</a>.
+For arbitrary word values it checks prefix comparability, both
+cancellation rules, and that the proposed substitution describes exactly
+the solutions of each variable binding. The composition of these steps
+and the arity classification are proved above.</p>
+<p><a href="round-18-monadic.py">Executable word-equation reduction</a>.
+The generator emits the finite choices and the corresponding
+conjunctions of word equations. Its checker instantiates the
+answer-prefix variables, reconstructs each residual by cancellation, and
+compares acceptance with independent finite-tree unification. It checks
+4,704 patterns involving distinct unary letters, shared tails, cyclic
+premises and unconditional conclusions. A reverse compiler checks 64
+concatenation cases, including empty and noncommuting words. The
+three-color construction passes on every four-vertex graph except the
+complete graph. Another 1,000 checks compare the prefix criterion with
+explicit quantifier games over two constants. The unbounded decision in
+§2 uses the cited word-equation algorithm.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python3</span> projects/jca/agent-collab/round-18-monadic.py</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="ex">lean</span> projects/jca/agent-collab/round-18-proof.lean  <span class="co"># Lean 4.19.0</span></span></code></pre></div>
+</section>
+</article>
+<script src="/assets/theme-toggle.js"></script>
+</body>
+</html>

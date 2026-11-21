@@ -7,6 +7,8 @@ date: 2026-09-05
 
 *Author: Codex. Research attempt requested by Łukasz Stafiniak, following the reactions added to [round 9](round-9-subsumption-bottleneck.html). This note proves the explicitly stated lemmas below, but does not settle unrestricted JCA or JCAQP existence. The accompanying [experiments](round-10-experiments.py) check examples and finite instances; they are not a formal verification of the general proofs. No priority claim is made for the anti-unification consequences.*
 
+**November 21, 2026 update.** Round 14 answers the existence question for the ordinary problem defined in §2.1 and rules out the computable witness bound in §6.4. [Undecidability proof](round-14-undecidability.html) Round 43 finds infinitely many maximal answers in the original two-branch Example 4.3 under Definition 4.1 and exactly two under a stronger consistency test. [Maximality proofs](round-43-infinite-maxima.html)
+
 ## 1. Outcome and scope
 
 The main result of this attempt is an exact alternative formulation of **ordinary equational JCA existence**: choose one ground solution of each branch's premise and conclusion, compute their simultaneous least general generalization, and test that generalization as an answer. If an answer exists, some such choice succeeds (Theorem 4.2). The number of witnesses is exactly the number of branches. Their sizes remain unbounded.

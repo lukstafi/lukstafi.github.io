@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <meta name="dcterms.date" content="2026-11-21">
+  <meta property="og:title" content="JCA Round 31: One Branch with Designated Variables and Leading Fresh Parameters">
+  <meta property="og:url" content="https://lukstafi.github.io/projects/jca/agent-collab/round-31-leading.html">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="lukstafi&#x27;s blog">
+  <meta name="twitter:card" content="summary">
+  <title>JCA Round 31: One Branch with Designated Variables and Leading
+Fresh Parameters</title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <link rel="stylesheet" href="/assets/tufte.css">
+  <link rel="stylesheet" href="/assets/pandoc-tufte.css">
+  <link rel="stylesheet" href="/assets/site.css">
+  <script defer=""
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+  type="text/javascript"></script>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+  <script>(function(){var t=localStorage.getItem('theme-preference');if(t)document.documentElement.setAttribute('data-theme',t);})()</script>
+</head>
+<body>
+<nav class="site-nav">
+  <a href="/">Home</a> &middot; <a href="/study/">Study Guide</a> &middot; <a href="/about.html">About</a> &middot; <a href="https://lukstafi.substack.com">Substack</a>
+</nav>
+<div class="theme-toggle">
+  <button id="theme-btn" aria-label="Toggle dark mode">&#9788;</button>
+</div>
+<article>
+<header>
+<h1 class="title">JCA Round 31: One branch with designated variables and
+leading fresh parameters</h1>
+<p class="byline">2026-11-21</p>
+</header>
+<nav id="TOC">
+<ul>
+<li><a href="#which-inputs-can-a-substitution-witness-observe"
+id="toc-which-inputs-can-a-substitution-witness-observe">Which inputs
+can a substitution witness observe?</a></li>
+<li><a href="#solved-presentations-have-polynomial-certificates"
+id="toc-solved-presentations-have-polynomial-certificates">Solved
+presentations have polynomial certificates</a></li>
+<li><a
+href="#arbitrary-weak-presentations-can-be-shortened-before-verification"
+id="toc-arbitrary-weak-presentations-can-be-shortened-before-verification">Arbitrary
+weak presentations can be shortened before verification</a></li>
+<li><a href="#checks-and-boundary-of-the-result"
+id="toc-checks-and-boundary-of-the-result">Checks and boundary of the
+result</a></li>
+</ul>
+</nav>
+<p><strong>Theorem.</strong> One equational implication under the
+leading-fresh convention is decidable with designated variables and
+unrestricted substitution witnesses. This includes the weak atomwise
+escape test. If answers must be idempotent substitutions, the problem is
+NP-complete over every nontrivial fixed finite single-sorted signature
+with a constant, including with the strong test and with both tests
+together. For arbitrary conjunctive presentations with the weak test the
+proof below gives an NEXP upper bound. A second compression using
+comparable substitutions sharpens this to NP-completeness. <a
+href="round-37-comparable.html">Polynomial certificates for weak
+presentations</a> Ground-only witnesses and witnesses restricted to
+earlier moves are covered as well.</p>
+<p>The read permissions needed for the result are specified below. The
+scope relation used in the <em>escape test</em> can be supplied
+separately, including either comparison on prefix positions in the
+thesis materials. Two branches are already r.e.-complete on branching
+signatures with the designated set empty. <a
+href="round-19-designated-parameters.html#two-parameter-conventions">The
+two validity conventions and escape tests</a> · <a
+href="round-25-binary.html">Two-branch proof</a></p>
+<section id="which-inputs-can-a-substitution-witness-observe"
+class="level2">
+<h2>Which inputs can a substitution witness observe?</h2>
+<p>Use <span class="math inline">\(X\)</span> for the original public
+coordinates, <span class="math inline">\(T\)</span> for the ones
+simultaneously substituted in validity, <span
+class="math inline">\(K\)</span> for the designated names in the escape
+test, and <span class="math inline">\(B\)</span> for fresh answer names.
+Keep ordinary relevance and consistency on the original public
+coordinates. Leading validity asks for terms <span
+class="math inline">\(t_j\)</span> such that <span
+class="math inline">\(\forall B\,Q.\,A[T:=t]\)</span> holds. Each term
+has a specified set of names it may use. The universal moves of <span
+class="math inline">\(Q\)</span> outside <span
+class="math inline">\(T\)</span> are the <strong>retained
+inputs</strong> <span class="math inline">\(H\)</span>.</p>
+<p>First eliminate fresh names in a one-branch existence proof. Choose
+their ground values from a joint witness of <span
+class="math inline">\(A\land D\)</span> and specialize them in the
+answer and the validity witnesses. Leading validity held at every such
+choice. Relevance survives restriction, and the chosen row still
+supplies consistency. Public occurrence sets of surviving atoms are
+unchanged. An individually valid atom remains individually valid after
+specialization. For an idempotent substitution, first delete any
+definition whose left side is fresh: its left name occurs nowhere else,
+so dropping it preserves the ordinary public projection and weakens the
+validity obligation. Specialize fresh names in any remaining witness
+terms as well. All surviving definitions now have public left sides and
+still form an idempotent substitution.</p>
+<p>For <span class="math inline">\(j\in T\)</span>, let <span
+class="math inline">\(J_j\subseteq H\)</span> be the retained universal
+names directly permitted in <span class="math inline">\(t_j\)</span>.
+Assume that whenever an existential move <span
+class="math inline">\(e\)</span> is permitted in <span
+class="math inline">\(t_j\)</span>, every retained universal preceding
+<span class="math inline">\(e\)</span> is in <span
+class="math inline">\(J_j\)</span>. This condition holds for
+unrestricted witnesses, for any set of universal names alone, and for
+permissions consisting of a prefix of the moves. It allows the witness
+term to mention other substituted names, whose values there are their
+original game moves. For a retained existential <span
+class="math inline">\(x\)</span>, let <span
+class="math inline">\(J_x\)</span> be precisely its preceding retained
+inputs.</p>
+<p><strong>Validity criterion.</strong> Unify a satisfiable fresh-free
+<span class="math inline">\(A\)</span>, writing <span
+class="math inline">\(P_x(U)\)</span> for its idempotent normal forms in
+its unbound public coordinates <span class="math inline">\(U\)</span>.
+Then validity holds precisely when</p>
+<ul>
+<li><span class="math inline">\(P_h=u_h\)</span> for distinct bare names
+<span class="math inline">\(u_h\in U\)</span>, for all <span
+class="math inline">\(h\in H\)</span>;</li>
+<li>for every <span class="math inline">\(x\in X\setminus H\)</span>,
+the only names <span class="math inline">\(u_h\)</span> occurring in
+<span class="math inline">\(P_x\)</span> have <span
+class="math inline">\(h\in J_x\)</span>.</li>
+</ul>
+<p>For necessity, fix the successful witness terms. The remaining
+validity matrix is a conjunction of equations. Its prefix game has a
+term strategy for each existential move in earlier universal names, by
+the tuple-pattern criterion. Specialize original universal moves in
+<span class="math inline">\(T\)</span> to constants. This gives a tuple
+of ordinary <span class="math inline">\(A\)</span>-values over distinct
+rigid letters for <span class="math inline">\(H\)</span>, with each
+retained universal equal to its own letter. A retained existential value
+contains only preceding letters. A substituted value contains only
+letters in <span class="math inline">\(J_j\)</span>: an existential it
+reads could receive only preceding letters, all directly permitted by
+the assumption. The ordinary tuple is an instance of <span
+class="math inline">\(P(U)\)</span>; the only way a coordinate can
+instantiate to a single rigid letter is for it to be a bare parameter.
+Its letter survives at every coordinate containing that parameter. <a
+href="round-18-signature-boundary.html#parameter-free-quantifier-prefixes">Prefix
+pattern criterion</a></p>
+<p>Conversely substitute the public input <span
+class="math inline">\(h\)</span> for each <span
+class="math inline">\(u_h\)</span> and one ground constant for all other
+residuals. The resulting <span class="math inline">\(P_x\)</span> are
+permissible plays for retained existentials and permissible witness
+terms for substituted coordinates. The original moves in <span
+class="math inline">\(T\)</span> can be ignored. The resulting ordinary
+tuple satisfies <span class="math inline">\(A\)</span> identically. The
+singleton algebra admits the empty answer.</p>
+</section>
+<section id="solved-presentations-have-polynomial-certificates"
+class="level2">
+<h2>Solved presentations have polynomial certificates</h2>
+<p>Guess the unbound public set <span class="math inline">\(U\)</span>
+of an idempotent answer. Its atoms are <span
+class="math inline">\(x=P_x(U)\)</span> for <span
+class="math inline">\(x\notin U\)</span>, and <span
+class="math inline">\(P_u=u\)</span>. Guess the distinct universal
+representatives <span class="math inline">\(u_h\)</span> and the exact
+set of leaves used by each body. The validity criterion checks which
+<span class="math inline">\(u_h\)</span> can occur. The occurrence sets
+also decide the syntactic escape tests. For the weak exemption one needs
+individual validity of <span class="math inline">\(x=t\)</span>, with
+<span class="math inline">\(x\)</span> absent from <span
+class="math inline">\(t\)</span>. If <span
+class="math inline">\(x\)</span> is existential, this holds when every
+universal in <span class="math inline">\(t\)</span> precedes <span
+class="math inline">\(x\)</span>. If <span
+class="math inline">\(x\)</span> is universal, <span
+class="math inline">\(t\)</span> must be a bare later existential. The
+latter follows by varying <span class="math inline">\(x\)</span> with
+earlier moves fixed and using the different available root choices. A
+bare later existential can copy <span
+class="math inline">\(x\)</span>.</p>
+<p>For the ordinary branch the names <span
+class="math inline">\(U\)</span> are independent input variables and
+every defined coordinate is a body in its declared leaves. A forced
+alias <span class="math inline">\(P_h=u_h\)</span> is inserted directly
+in <span class="math inline">\(D,C\)</span>; this also deals with
+identities of unbound public coordinates. For individual validity,
+retain any required bare-copy shape directly. The remaining task is the
+one-branch strategy problem with prescribed input sets and prescribed
+occurrence of each selected input.</p>
+<p>The <a href="round-29-small-dags.html">polynomial DAG argument</a>
+works with these requirements. Scope there is used only through the
+allowed leaves of each body. In its first compression, record one path
+to an occurrence of every selected input in each body alongside the
+unification paths. The root and endpoint values are distinguished,
+adding at most <span class="math inline">\(|X|^2\)</span> paths. Each
+still visits at most linearly many distinguished values. Depth stays
+polynomial. In the second compression explicitly retain one such
+occurrence in each shallow body fragment. Reconstructing the other
+fragments uses subsets of their original leaves. Exact supports
+therefore survive, and the size bound remains polynomial. Individual
+validity of a permissible existential-left equation survives retaining
+its support, and a universal-left exemption uses the fixed bare copy.
+The resulting ordinary graph presents an idempotent solution passing all
+tests. Checking it requires only polynomial DAG operations. Taking <span
+class="math inline">\(K=T=\varnothing\)</span> gives the NP lower bound.
+<a href="round-30-monadic.html">One-branch lower bound</a></p>
+</section>
+<section
+id="arbitrary-weak-presentations-can-be-shortened-before-verification"
+class="level2">
+<h2>Arbitrary weak presentations can be shortened before
+verification</h2>
+<p>An unrestricted conjunction can express a chain of dependencies
+through public names. Solving the whole conjunction syntactically may
+put previously separated names together and change the escape test. The
+following construction keeps an admissible presentation.</p>
+<p>At a joint witness, decompose each original answer equality through
+common constructor heads, discard identities, and orient each remaining
+primitive as <span class="math inline">\(x=t\)</span>. Select a
+subfamily incrementally: whenever the currently selected equations fail
+to entail some original primitive, add that primitive. Its addition
+binds at least one further residual name in a consistent unification, so
+at most <span class="math inline">\(|X|\)</span> primitives suffice. The
+resulting conjunction is equivalent to the answer.</p>
+<p>For each selected primitive record the public variable set of its
+parent atom. If the parent passed the weak test by its variable set,
+that set can be restored on a branching signature by packing the
+primitive with identical copies of the recorded names on the two sides
+of an equality. Equality in a free term algebra makes this padding
+logically inert. If the parent passed by individual validity, it entails
+the primitive, so that primitive is individually valid as well. On
+monadic signatures a nonidentity primitive already has its parent’s
+variable set because cancellation removes only unary prefixes. No
+padding is needed there.</p>
+<p>Now fix the ground joint witness <span
+class="math inline">\(W\)</span> on all public names. Use the <a
+href="round-28-compression.html">witness compression</a> with two
+consecutive groups of equations. Unify the selected answer primitives
+<strong>first</strong>, and then continue with the actual premise <span
+class="math inline">\(D\)</span>. Every pivot is taken at the same
+witness <span class="math inline">\(W\)</span>; there are at most <span
+class="math inline">\(|X|\)</span> in total. Distinguish the values of
+all public names and all subterms of <span
+class="math inline">\(D,C\)</span>, keeping the explicitly written
+constructor roots of <span class="math inline">\(D,C\)</span>. Each
+unknown primitive right side has distinguished root value <span
+class="math inline">\(W_x\)</span>. Record one path for each input
+occurrence that needs to survive, as above.</p>
+<p>Let <span class="math inline">\(\pi\)</span> be the resulting
+transformation. Replace every primitive <span
+class="math inline">\(x=t\)</span> by <span
+class="math inline">\(x=\pi(t)\)</span>. The first group of recorded
+pivots gives <strong>an mgu of the shortened answer alone</strong>.
+Indeed each transformed pivot is forced by replay of the previous pivots
+in this group. Conversely those bindings make all its equations
+identities by the substitution identity for <span
+class="math inline">\(\pi\)</span>. Each binds its same left-hand name
+to a term containing neither that name nor a previously eliminated name.
+Therefore the original unbound names are still free, and the normal form
+of each coordinate is <span class="math inline">\(\pi(P_x)\)</span>.
+Every bare retained alias is unchanged and no new input name appears.
+The validity criterion survives.</p>
+<p>The remaining pivots certify relevance of the shortened answer in the
+presence of <span class="math inline">\(D\)</span>, exactly as in Round
+28. The transformed witness supplies consistency. The individually valid
+exemptions for primitives survive the support restriction or bare copy
+as above. Restore the padding on the other primitives to recover the
+original atomwise permissions. There are polynomially many retained
+paths and distinguished values, so the resulting answer has polynomial
+depth and at most singly exponential expanded size on a fixed signature.
+Enumerating such answers is finite. Nondeterministically guessing one
+and verifying it gives the stated NEXP bound.</p>
+</section>
+<section id="checks-and-boundary-of-the-result" class="level2">
+<h2>Checks and boundary of the result</h2>
+<p>The <a href="round-31-leading.py">executable checks</a> compare the
+validity criterion to direct quantification over legal witness terms and
+all game plays in the two-constant algebra. They also replay a binary
+answer unifier before a premise binding, and check preservation of an
+input occurrence unnecessary for ordinary relevance. The shared-DAG and
+witness compressors have an option to preserve supports. <a
+href="round-28-projection.lean">Substitution lemma for the
+compressor</a></p>
+<p>The read-permission condition has content. With <span
+class="math inline">\(\forall h\,\exists e\,\forall k\)</span>,
+substitute for <span class="math inline">\(k\)</span> and take <span
+class="math inline">\(A=(e=h\land k=h)\)</span>. If the only allowed
+name in the witness for <span class="math inline">\(k\)</span> is <span
+class="math inline">\(e\)</span>, the witness <span
+class="math inline">\(k:=e\)</span> works: <span
+class="math inline">\(e\)</span> carries the value of <span
+class="math inline">\(h\)</span>. Ground witnesses fail. A check that
+looked only at directly permitted universal names would therefore be
+unsound for such permissions. For arbitrary individual read permissions,
+checking a supplied answer is NP-complete. One nonempty premise already
+gives r.e.-complete existence under the extracted strong rule, even when
+only one read by one witness is forbidden. <a
+href="round-32-carriers.html">Supplied answers</a> · <a
+href="round-34-one-read.html">One forbidden read</a></p>
+</section>
+</article>
+<script src="/assets/theme-toggle.js"></script>
+</body>
+</html>

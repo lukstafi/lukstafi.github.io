@@ -1,0 +1,26 @@
+---
+title: "JCA Round 41: Checking a monadic answer with a bounded number of exceptional reads"
+date: 2026-11-21
+---
+
+**Theorem.** For a supplied answer over finite monadic terms, leading validity is decidable in polynomial time for any fixed number $s$ of substitution witnesses with non-prefix-closed read permissions. Permissions for every other witness can differ arbitrarily subject to the closure condition of Round 31. For unbounded $s$ this problem is NP-complete even over two constants. In particular, with just one missing read from the otherwise complete permissions, checking a supplied answer is polynomial on monadic signatures and NP-complete on branching signatures. The result concerns checking a given conjunction. Searching for the conjunction adds a separate synthesis problem. [Closure condition](round-31-leading.html) · [Binary and constant-only lower bounds](round-32-carriers.html)
+
+## Reduce each value to a word and its last symbol
+
+Unify the supplied answer and reject an inconsistent system. In the mgu each public coordinate is a finite word of unary constructors followed by one constant or residual name. Call these forms $P_x$. The singleton algebra is immediate. Give each retained universal $h$ a distinct rigid letter $b_h$. Its $P_h$ must be a distinct bare residual $u_h$, forced to have value $b_h$. Specialize original moves of substituted universals to a base constant. Winning strategies at that specialization suffice, since the old values of these dummy moves can be ignored. Leading fresh parameters, if present, are initial universal moves.
+
+For the original game value $G_y$ read by a witness there are three cases. A nonsubstituted $y$ uses $P_y$. A substituted original universal has the base constant. A substituted original existential has a new independent residual, whose value may end only in an earlier rigid letter or an original constant. This distinction is required by simultaneous substitution. [Generic tuple criterion](round-32-carriers.html#checking-a-supplied-answer-by-generation-of-terms)
+
+For each residual keep the set of rigid letters it is allowed to use. A retained existential with form $v u$ restricts $u$ to its preceding retained universals. A prefix-closed substitution witness with form $v u$ restricts $u$ to its directly permitted retained universals. Intersect the restrictions on shared residuals. For a new original-existential residual use the earlier-letter restriction just described. Reject a forced $u_h=b_h$ if any of its restrictions excludes $h$. Every residual is still permitted an original ground value, except those already forced to a letter.
+
+## Propagate the required suffixes
+
+Maintain partial assignments of residuals to words ending in a rigid letter. Initially the only assignments are $u_h=b_h$. Leave other residuals unset. Take an unprocessed exceptional request $x$ whose ordinary value is now determined to be a word $w b_h$.
+
+If the witness may directly read $h$, it can construct this word. Otherwise guess an allowed name $y$ and a suffix of $w b_h$ as the required value of $G_y$. A monadic construction yielding a rigid-ending word consists of a unary prefix on exactly one generator. Thus these are all its possibilities. A generator form $v u$ can realize the chosen suffix precisely if its initial word $v$ matches and the remaining suffix is a permitted value for $u$. Record this value if $u$ was unset, or test equality with its existing assignment. A generator ending in an original constant cannot supply the rigid letter.
+
+Mark the request processed and repeat, including requests whose targets have only just become rigid-ending. When there is no such request left, set every remaining residual to the base constant. The remaining exceptional targets are ground over the original signature and are available as literals. Processed targets keep their assigned suffixes. The ordinary equations hold because the whole tuple instantiates the mgu; the recorded restrictions let each retained existential and each closed witness construct its value. Conversely, follow any successful generic play. Each time a request becomes rigid-ending the play determines one of the allowed generator/suffix choices, consistent with every value already fixed. This proves both directions.
+
+Let $L$ be the maximum length of an mgu coordinate word, and $m$ the number of names. Unary words in an acyclic term DAG have polynomial length in the explicitly supplied conjunction, since a path cannot revisit a node. A newly assigned suffix has length at most the previous maximum plus $L$, so no guessed suffix exceeds $(s+1)L$ unary symbols. There are at most $s$ branching steps, each with at most $m((s+1)L+1)$ choices. Polynomial work per step gives deterministic polynomial time for every fixed $s$. With $s$ part of the input the same choices give a direct NP verifier.
+
+With only one exceptional witness this search needs one scan of its allowed carriers and of the suffixes of its target word. The full propagation matters when several requests share a residual or can read the same original substituted existential. The [executable procedure](round-41-monadic-reads.py) checks those cases, compares 320 generated instances with the independent general-signature checker, and compares 160 of them with exhaustive games on the two-constant algebra.

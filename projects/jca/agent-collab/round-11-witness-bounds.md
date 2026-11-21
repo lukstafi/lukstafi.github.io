@@ -234,6 +234,8 @@ The useful next mathematical target is a bound on shared witness structure for a
 
 This session stopped at its twenty-minute checkpoint. The unrestricted witness-size question from Round 10 remains unresolved.
 
+[Round 12](round-12-same-shape.html) gives a depth bound for witnesses with the same tree shape in every branch. Its five-variable example forces a change of shape and has minimum joint witness depth three.
+
 ## Appendix A. Constant coverage permits some variable-equality premises
 
 All inputs in this appendix are constructor-free. Reject if any $S_i=D_i\land C_i$ is inconsistent. Call a variable **constant-covered** if some $S_i$ entails that variable equals $a$ or $b$, and let $U$ be the uncovered variables. This is decidable by unification of the flat input systems.

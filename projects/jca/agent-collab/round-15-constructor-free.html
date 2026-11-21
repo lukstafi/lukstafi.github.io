@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <meta name="dcterms.date" content="2026-11-21">
+  <meta property="og:title" content="JCA Round 15: Constructor-Free Input Is Undecidable">
+  <meta property="og:url" content="https://lukstafi.github.io/projects/jca/agent-collab/round-15-constructor-free.html">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="lukstafi&#x27;s blog">
+  <meta name="twitter:card" content="summary">
+  <title>JCA Round 15: Constructor-Free Input Is Undecidable</title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <style type="text/css">
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="/assets/tufte.css">
+  <link rel="stylesheet" href="/assets/pandoc-tufte.css">
+  <link rel="stylesheet" href="/assets/site.css">
+  <script defer=""
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+  type="text/javascript"></script>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+  <script>(function(){var t=localStorage.getItem('theme-preference');if(t)document.documentElement.setAttribute('data-theme',t);})()</script>
+</head>
+<body>
+<nav class="site-nav">
+  <a href="/">Home</a> &middot; <a href="/study/">Study Guide</a> &middot; <a href="/about.html">About</a> &middot; <a href="https://lukstafi.substack.com">Substack</a>
+</nav>
+<div class="theme-toggle">
+  <button id="theme-btn" aria-label="Toggle dark mode">&#9788;</button>
+</div>
+<article>
+<header>
+<h1 class="title">JCA Round 15: Constructor-free input is
+undecidable</h1>
+<p class="byline">2026-11-21</p>
+</header>
+<nav id="TOC">
+<ul>
+<li><a href="#flat-branches-can-test-occurrence"
+id="toc-flat-branches-can-test-occurrence">1. Flat branches can test
+occurrence</a></li>
+<li><a href="#identities-between-unknown-tree-operations"
+id="toc-identities-between-unknown-tree-operations">2. Identities
+between unknown tree operations</a></li>
+<li><a href="#force-natural-numbers-without-prescribing-a-constructor"
+id="toc-force-natural-numbers-without-prescribing-a-constructor">3.
+Force natural numbers without prescribing a constructor</a></li>
+<li><a href="#multiplication-and-the-depth-weights"
+id="toc-multiplication-and-the-depth-weights">4. Multiplication and the
+depth weights</a></li>
+<li><a href="#decision-consequence-and-verification"
+id="toc-decision-consequence-and-verification">5. Decision consequence
+and verification</a></li>
+</ul>
+</nav>
+<p><em>Research note by Codex.</em></p>
+<p><strong>Theorem.</strong> Ordinary equational JCA over the finite
+trees of <span class="math inline">\(\{f/2,a,b\}\)</span> is recursively
+enumerable complete even when <strong>every input equation has only
+variables or constants on its two sides</strong>. The synthesized answer
+may use <span class="math inline">\(f\)</span>. Every branch has the
+form <span class="math inline">\(u=v\Rightarrow s=t\)</span>, where
+<span class="math inline">\(u,v\)</span> are variables and <span
+class="math inline">\(s,t\)</span> are variables or constants. Each
+constant need occur only once, in a conclusion fixing an auxiliary
+coordinate. The number of branches and coordinates grows with the
+instance.</p>
+<p><strong>Round 16 update.</strong> A fixed number of branches suffices
+if their conclusions may contain a growing conjunction of flat
+equalities. <a href="round-16-fixed-flat.html">Fixed-branch
+proof</a></p>
+<p>The proof uses flat comparisons to enforce that a parameter is absent
+from another answer coordinate. This lets flat JCA express identities
+between unknown tree operations. A multiplication identity then works
+for <em>any</em> proposed pairing operation that uses both arguments,
+even one that duplicates them or places them at different depths. This
+last point is necessary because the input cannot name the
+constructor.</p>
+<section id="flat-branches-can-test-occurrence" class="level2">
+<h2>1. Flat branches can test occurrence</h2>
+<p>Write <span class="math inline">\(P_v\)</span> for the answer term at
+coordinate <span class="math inline">\(v\)</span>. A branch needs a
+ground witness of its premise, and its conclusion must hold for every
+such witness. We use the tuple-pattern characterization of ordinary
+equational answers. Two guards <span
+class="math inline">\(h=a\Rightarrow\top\)</span> and <span
+class="math inline">\(h=b\Rightarrow\top\)</span> force <span
+class="math inline">\(P_h\)</span> to be a bare parameter <span
+class="math inline">\(q\)</span>. A guard <span
+class="math inline">\(h_i=a\land h_j=b\Rightarrow\top\)</span> separates
+two such parameters. <a
+href="round-10-witness-generalization.html#pattern-answers">Round 10,
+Lemma 4.1</a></p>
+<p><strong>Absence lemma.</strong> Given this <span
+class="math inline">\(h\)</span> and any coordinate <span
+class="math inline">\(x\)</span>, the following four branches have a
+simultaneous extension of the given pattern exactly when <span
+class="math inline">\(q\)</span> is absent from <span
+class="math inline">\(P_x\)</span>. The coordinates <span
+class="math inline">\(u,v,p,r\)</span> are private to this occurrence of
+the gadget.</p>
+<table>
+<thead>
+<tr>
+<th>Premise</th>
+<th>Conclusion</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><span class="math inline">\(u=v\)</span></td>
+<td><span class="math inline">\(p=a\land r=b\)</span></td>
+</tr>
+<tr>
+<td><span class="math inline">\(p=b\land r=a\)</span></td>
+<td><span class="math inline">\(\top\)</span></td>
+</tr>
+<tr>
+<td><span class="math inline">\(p=u\)</span></td>
+<td><span class="math inline">\(\top\)</span></td>
+</tr>
+<tr>
+<td><span class="math inline">\(p=x\land h=v\)</span></td>
+<td><span class="math inline">\(\top\)</span></td>
+</tr>
+</tbody>
+</table>
+<p><em>Proof.</em> The first two branches force <span
+class="math inline">\(P_p,P_r\)</span> to be distinct bare parameters. A
+consistent equation with a leaf on one side cannot force two independent
+parameter-to-constant bindings. Indeed it is either a constant
+comparison or the assignment of one variable to a term that omits it.
+All other variables stay free. Thus <span
+class="math inline">\(P_u,P_v\)</span> are both compound. The third
+branch makes <span class="math inline">\(P_p\)</span> absent from <span
+class="math inline">\(P_u\)</span> by the occurs check. Its binding in
+the first branch therefore requires an occurrence in <span
+class="math inline">\(P_v\)</span>. In the final witness, the value of
+<span class="math inline">\(x\)</span> occurs strictly inside the value
+of <span class="math inline">\(h\)</span>. An occurrence of <span
+class="math inline">\(q\)</span> in <span
+class="math inline">\(P_x\)</span> would make the latter value a subtree
+of the former.</p>
+<p>Conversely choose fresh parameters <span
+class="math inline">\(s,t\)</span> and set <span
+class="math inline">\((P_u,P_v,P_p,P_r)=(f(a,b),f(s,t),s,t)\)</span>.
+The comparison forces <span class="math inline">\(s=a,t=b\)</span>. For
+the last branch choose <span class="math inline">\(s\)</span> equal to
+the value of <span class="math inline">\(P_x\)</span> and assign <span
+class="math inline">\(q=f(s,t)\)</span>. Absence makes the choice of
+<span class="math inline">\(P_x\)</span> independent of <span
+class="math inline">\(q\)</span>. The other two guards plainly have
+witnesses. <span class="math inline">\(\square\)</span></p>
+<p><strong>Presence lemma.</strong> To require <span
+class="math inline">\(q\)</span> to occur in <span
+class="math inline">\(P_y\)</span>, introduce a private <span
+class="math inline">\(z\)</span>, enforce absence from <span
+class="math inline">\(P_z\)</span>, and add <span
+class="math inline">\(y=z\Rightarrow h=a\)</span>. If <span
+class="math inline">\(q\)</span> were absent from both sides of the
+comparison, any consistency witness could be changed to set <span
+class="math inline">\(q=b\)</span>. Conversely, when <span
+class="math inline">\(q\)</span> occurs in <span
+class="math inline">\(P_y\)</span>, choose <span
+class="math inline">\(P_z=P_y[q:=a]\)</span>. Equality at any such
+occurrence forces <span class="math inline">\(q=a\)</span>, and
+assigning <span class="math inline">\(q=a\)</span> supplies a witness.
+<span class="math inline">\(\square\)</span></p>
+<p>These gadgets constrain the original parameter itself. Private
+auxiliary coordinates may share parameters arbitrarily in a proposed
+answer. The reverse arguments above also apply to such answers.</p>
+</section>
+<section id="identities-between-unknown-tree-operations" class="level2">
+<h2>2. Identities between unknown tree operations</h2>
+<p>Consider a finite set of universally quantified identities.
+Expressions use first-order variables and unknown operation symbols of
+specified arities. A solution assigns each operation a finite tree over
+<span class="math inline">\(f,a,b\)</span> and its formal arguments, so
+that the identities hold syntactically after expansion. We may require
+an operation to use a particular argument. The following compilation has
+constructor-free input and polynomial size.</p>
+<ol type="1">
+<li>Allocate coordinates <span
+class="math inline">\(g_1,\ldots,g_d\)</span> for the universal
+variables and <span class="math inline">\(h_1,\ldots,h_k\)</span> for
+the formals, where <span class="math inline">\(k\)</span> is the largest
+arity. Force all these coordinates to be distinct bare parameters using
+§1. Give each operation <span class="math inline">\(U\)</span> a body
+coordinate <span class="math inline">\(y_U\)</span>. Keep every <span
+class="math inline">\(g_i\)</span> and every unused trailing <span
+class="math inline">\(h_j\)</span> parameter out of that body by the
+absence gadget. A required argument gets the presence gadget for its
+<span class="math inline">\(h_j\)</span> and <span
+class="math inline">\(y_U\)</span>.</li>
+<li>Process each application <span
+class="math inline">\(e=U(e_1,\ldots,e_l)\)</span> after its children.
+Write <span class="math inline">\(v_{e_j}\)</span> for a computed child
+value, using <span class="math inline">\(g_i\)</span> for a universal
+variable. Start with <span class="math inline">\(b_0=y_U\)</span>.
+Introduce fresh <span class="math inline">\(b_1,\ldots,b_l\)</span> and,
+for each <span class="math inline">\(j\)</span>, require the <span
+class="math inline">\(h_j\)</span> parameter absent from <span
+class="math inline">\(P_{b_j}\)</span>. Add the single-comparison branch
+<span class="math inline">\(h_j=v_{e_j}\Rightarrow b_{j-1}=b_j\)</span>.
+Use <span class="math inline">\(b_l\)</span> as <span
+class="math inline">\(v_e\)</span> and keep all formal parameters out of
+this final value. For a nullary operation the final value is its
+body.</li>
+<li>Give each final equality of represented expressions its own branch
+with empty premise. A two-equation conclusion in the absence gadget can
+likewise be split into two branches sharing the same premise.</li>
+</ol>
+<p><em>Correctness.</em> Given term operations, use them as the bodies
+on the <span class="math inline">\(h\)</span> parameters. Each
+intermediate <span class="math inline">\(b_j\)</span> is the body with
+its first <span class="math inline">\(j\)</span> arguments replaced by
+their expanded expressions on the <span class="math inline">\(g\)</span>
+parameters. These expressions use no <span
+class="math inline">\(h\)</span> parameter. All the required absences
+thus hold. The gadgets extend the pattern using fresh private variables,
+and each comparison can specialize its one formal freely.</p>
+<p>Conversely ground nuisance parameters to <span
+class="math inline">\(a\)</span> and keep the designated <span
+class="math inline">\(g,h\)</span> parameters free. Fix any ground
+valuation of them at stage <span class="math inline">\(j\)</span>. Reset
+just <span class="math inline">\(h_j\)</span> to the value of <span
+class="math inline">\(v_{e_j}\)</span>. The child and <span
+class="math inline">\(b_j\)</span> are independent of this change.
+Relevance says that <span class="math inline">\(b_j\)</span> equals
+<span class="math inline">\(b_{j-1}\)</span> evaluated with this
+substitution. Composing the stages therefore evaluates the original body
+on the entire child tuple. Its independence from the <span
+class="math inline">\(g\)</span> parameters makes the same operation
+work for every valuation of the globals. Induction over expressions
+recovers all identities. Equality under every ground substitution
+implies syntactic equality here. Distinct variables can be tested using
+distinct ground codes of one common depth greater than both terms’
+depths. A variable opposite a compound containing such a code then has
+strictly smaller depth. <span class="math inline">\(\square\)</span></p>
+<p><strong>One comparison can select a joint witness.</strong> For any
+nonempty pure consistency guard <span
+class="math inline">\(D\Rightarrow\top\)</span>, introduce a fresh pair
+<span class="math inline">\(u,v\)</span>. Replace the guard by <span
+class="math inline">\(u=v\Rightarrow e\)</span> for each equation <span
+class="math inline">\(e\)</span> of <span
+class="math inline">\(D\)</span>, always using that same pair. Every
+answer to the replacement admits a witness for <span
+class="math inline">\(u=v\)</span>. Each conclusion holds in that very
+witness, so it satisfies all of <span
+class="math inline">\(D\)</span>.</p>
+<p>For the other direction take an answer pattern and one of its
+witnesses <span class="math inline">\(\eta\)</span> for <span
+class="math inline">\(D\)</span>. List the parameters <span
+class="math inline">\(q_1,\ldots,q_t\)</span> in the expanded equations
+<span class="math inline">\(D[P]\)</span>. For <span
+class="math inline">\(P_u\)</span> pack this list into a tree using
+<span class="math inline">\(f\)</span> with terminator <span
+class="math inline">\(a\)</span>. Use the same tree with leaves <span
+class="math inline">\(\eta(q_j)\)</span> for <span
+class="math inline">\(P_v\)</span>. Equality is consistent and fixes all
+those parameters to their selected values. This construction also works
+for a guard with one equation or no parameters. Each pure guard gets its
+own pair. A tautological test <span class="math inline">\(z=z\)</span>
+supplies the empty premise of a final equality. The resulting input uses
+only single variable comparisons as premises. All packing takes place in
+the synthesized answer. <span class="math inline">\(\square\)</span></p>
+</section>
+<section id="force-natural-numbers-without-prescribing-a-constructor"
+class="level2">
+<h2>3. Force natural numbers without prescribing a constructor</h2>
+<p>Require a binary unknown <span class="math inline">\(L\)</span> to
+use both its head and its tail argument. For distinct formal letters
+<span class="math inline">\(v,w\)</span> put</p>
+<p><span class="math display">\[S_{v,w}(x)=L(v,L(w,x)).\]</span></p>
+<p>For each arithmetic variable introduce a ternary unknown <span
+class="math inline">\(N\)</span> and require the identity</p>
+<p><span
+class="math display">\[N(v,w,S_{v,w}(x))=S_{v,w}(N(v,w,x)).\]</span></p>
+<p><strong>Numeral lemma.</strong> Every solution has <span
+class="math inline">\(N(v,w,x)=S_{v,w}^{\,n}(x)\)</span> for one <span
+class="math inline">\(n\ge0\)</span>.</p>
+<p><em>Proof.</em> Fix <span class="math inline">\(v,w\)</span> as
+distinct new letters and consider finite terms containing the hole <span
+class="math inline">\(x\)</span>, with composition by substitution for
+all occurrences of <span class="math inline">\(x\)</span>. This monoid
+is free on the terms that admit no nontrivial factorization. Here is a
+proof. In <span class="math inline">\(A(B)=C(D)\)</span>, if <span
+class="math inline">\(|B|\ge |D|\)</span>, each occurrence of <span
+class="math inline">\(x\)</span> inside a copy of <span
+class="math inline">\(B\)</span> lies inside a copy of <span
+class="math inline">\(D\)</span> contained in it. The two subtrees
+intersect at that leaf and their sizes order them by containment. Every
+occurrence of the term <span class="math inline">\(D\)</span> contains
+<span class="math inline">\(x\)</span>. Distinct copies of <span
+class="math inline">\(D\)</span> cannot nest properly and every such
+occurrence in the common product coincides with a designated copy, by
+following any of its <span class="math inline">\(x\)</span> leaves.
+Replacing all copies of <span class="math inline">\(D\)</span> in <span
+class="math inline">\(B\)</span> by <span
+class="math inline">\(x\)</span> gives <span
+class="math inline">\(B=E(D)\)</span>. If the two right factors are
+irreducible, the larger must therefore equal the smaller. Right
+cancellation follows by contracting their copies in the whole term.
+Factoring into irreducibles terminates because nonidentity factors are
+strictly smaller than their composition. This proves existence and
+uniqueness of the factor word.</p>
+<p>The factor word of <span class="math inline">\(L(v,x)\)</span>
+contains the letter <span class="math inline">\(v\)</span> in at least
+one factor and contains no <span class="math inline">\(w\)</span>. The
+factor word of <span class="math inline">\(L(w,x)\)</span> has the
+converse property. Their concatenation cannot be a proper power. After
+deleting unmarked factors, all <span
+class="math inline">\(v\)</span>-bearing factors precede all <span
+class="math inline">\(w\)</span>-bearing factors, and both occur.
+Repeating any word containing both would reverse that order somewhere.
+Thus <span class="math inline">\(S_{v,w}\)</span> is primitive.
+Commuting nonempty words are powers of a common word, by successively
+canceling the shorter prefix in their commutation equation. The identity
+context is the zeroth power. A proposed <span
+class="math inline">\(N\)</span> omitting <span
+class="math inline">\(x\)</span> cannot commute with <span
+class="math inline">\(S\)</span>, since applying the latter strictly
+increases its size. The claimed exponent follows. <span
+class="math inline">\(\square\)</span></p>
+<p>The identity with the two <em>formal</em> letters fixes the whole
+ternary term, so its numeral behavior persists under every substitution
+for those letters. Encode <span class="math inline">\(p=1\)</span> by
+<span class="math inline">\(N_p(v,w,x)=S_{v,w}(x)\)</span>. Encode <span
+class="math inline">\(p=m+n\)</span> by <span
+class="math inline">\(N_p(v,w,x)=N_m(v,w,N_n(v,w,x))\)</span>. Distinct
+iterates have distinct sizes.</p>
+</section>
+<section id="multiplication-and-the-depth-weights" class="level2">
+<h2>4. Multiplication and the depth weights</h2>
+<p>Take distinct universal letters <span
+class="math inline">\(v,w,i,j,x,y,r\)</span>. Abbreviate <span
+class="math inline">\(S_A=S_{v,w}\)</span> and <span
+class="math inline">\(S_B=S_{i,j}\)</span>. Call the numerals for <span
+class="math inline">\(m,n,p\)</span> on the corresponding tag pair, for
+example <span class="math inline">\(N_p^A(x)=N_p(v,w,x)\)</span>. For
+one constraint <span class="math inline">\(mn=p\)</span>, introduce a
+fresh operation <span class="math inline">\(G(r,x,y,v,w,i,j)\)</span>.
+Leave the four color arguments unchanged at both calls and abbreviate
+those calls by <span class="math inline">\(G(r,x,y)\)</span>. Require
+the single identity</p>
+<p><span class="math display">\[
+G\big(L(L(N_p^A(x),N_m^B(y)),r),x,y\big)
+=
+L\big(L(x,y),G(r,N_n^A(x),S_B(y))\big).
+\tag{1}
+\]</span></p>
+<p>This is the shifted-list multiplication construction of Spies and
+Forster, with <span class="math inline">\(L\)</span> in place of the
+list and pair constructors and separate colors for the two counters.
+Their proof fixes a rigid binary constructor. The depth calculation
+below proves the converse for a freely chosen <span
+class="math inline">\(L\)</span>. <a
+href="https://people.mpi-sws.org/~spies/assets/papers/SpiesForster_2019_UndecidabilityHOU.pdf">Spies
+and Forster, §5, Lemmas 5.10–5.18</a></p>
+<p><em>Forward.</em> If <span class="math inline">\(p=mn\)</span>, put
+<span class="math inline">\(H_t=L(S_A^{tn}(x),S_B^t(y))\)</span> and
+choose <span
+class="math inline">\(G=L(H_0,L(H_1,\ldots,L(H_{m-1},r)\ldots))\)</span>.
+Use <span class="math inline">\(G=r\)</span> when <span
+class="math inline">\(m=0\)</span>. On the left (1) appends <span
+class="math inline">\(H_m\)</span> at the tail. On the right it prepends
+<span class="math inline">\(H_0\)</span> and increments every existing
+index by one. This is a syntactic identity for any <span
+class="math inline">\(L\)</span>.</p>
+<p><em>Backward.</em> For a term <span class="math inline">\(T\)</span>
+and formal letter <span class="math inline">\(u\)</span> write <span
+class="math inline">\([T]_u(z)=\sum z^{|p|}\)</span> over the addresses
+<span class="math inline">\(p\)</span> of occurrences of <span
+class="math inline">\(u\)</span>. Substitution multiplies the weights
+along an address and adds the contributions from different holes. Write
+<span class="math inline">\(h,q\)</span> for the head and tail
+polynomials of <span class="math inline">\(L\)</span>. Both are nonzero,
+and <span class="math inline">\(q\)</span> has zero constant coefficient
+because the root of <span class="math inline">\(L\)</span> is compound.
+Consequently there is a positive real <span
+class="math inline">\(\lambda\)</span> with <span
+class="math inline">\(q(\lambda)=1\)</span> and <span
+class="math inline">\(h(\lambda)&gt;0\)</span>. The tail weight of
+either successor is <span class="math inline">\(s=q^2\)</span>. The
+weight of its outer color is <span class="math inline">\(h\)</span>. Its
+<span class="math inline">\(k\)</span>th iterate has tail weight <span
+class="math inline">\(s^k\)</span> and outer-color weight <span
+class="math inline">\(hJ_k\)</span>, where <span
+class="math inline">\(J_k=1+s+\cdots+s^{k-1}\)</span> and <span
+class="math inline">\(J_0=0\)</span>.</p>
+<p>Let <span class="math inline">\(R\)</span> be the tail polynomial of
+<span class="math inline">\(G\)</span>. For the first counter let <span
+class="math inline">\(A\)</span> be the <span
+class="math inline">\(x\)</span> polynomial and <span
+class="math inline">\(V\)</span> the <span
+class="math inline">\(v\)</span> polynomial of <span
+class="math inline">\(G\)</span>. For the second use its <span
+class="math inline">\(y\)</span> and <span
+class="math inline">\(i\)</span> polynomials instead. The following
+notation covers both.</p>
+<table>
+<colgroup>
+<col style="width: 21%" />
+<col style="width: 28%" />
+<col style="width: 28%" />
+<col style="width: 21%" />
+</colgroup>
+<thead>
+<tr>
+<th>Counter</th>
+<th style="text-align: right;">Endpoint exponent <span
+class="math inline">\(e\)</span></th>
+<th style="text-align: right;">Increment exponent <span
+class="math inline">\(d\)</span></th>
+<th>Head coefficient <span class="math inline">\(K\)</span> in <span
+class="math inline">\(L(L(x,y),r)\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>First</td>
+<td style="text-align: right;"><span
+class="math inline">\(p\)</span></td>
+<td style="text-align: right;"><span
+class="math inline">\(n\)</span></td>
+<td><span class="math inline">\(h^2\)</span></td>
+</tr>
+<tr>
+<td>Second</td>
+<td style="text-align: right;"><span
+class="math inline">\(m\)</span></td>
+<td style="text-align: right;"><span
+class="math inline">\(1\)</span></td>
+<td><span class="math inline">\(hq\)</span></td>
+</tr>
+</tbody>
+</table>
+<p>Reading the base letter and the outer color, respectively, on both
+sides of (1) gives the polynomial identities</p>
+<p><span class="math display">\[
+KR s^e+A=K+qA s^d,\qquad
+KRhJ_e+V=qV+qAhJ_d. \tag{2}
+\]</span></p>
+<p>At <span class="math inline">\(\lambda\)</span>, the first identity
+gives <span class="math inline">\(R(\lambda)=1\)</span>. The second
+gives <span class="math inline">\(K(\lambda)e=A(\lambda)d\)</span>. We
+also need the <em>relative</em> weights of the two base letters in the
+arbitrary body <span class="math inline">\(G\)</span>. Multiply the
+first identity by <span class="math inline">\(h\)</span> and subtract
+the second multiplied by <span class="math inline">\(s-1\)</span>. Using
+<span class="math inline">\((s-1)J_k=s^k-1\)</span> gives</p>
+<p><span class="math display">\[Kh(R-1)=(q-1)\big(hA-(s-1)V\big).
+\tag{3}\]</span></p>
+<p>Use (3) for both counters, cross-multiply by the other <span
+class="math inline">\(K\)</span>, and cancel the nonzero polynomial
+<span class="math inline">\(q-1\)</span> <strong>before</strong>
+evaluating at <span class="math inline">\(\lambda\)</span>. Since <span
+class="math inline">\(s(\lambda)=1\)</span>, the result is <span
+class="math inline">\(A_1(\lambda)/K_1(\lambda)=A_2(\lambda)/K_2(\lambda)\)</span>.
+The second ratio is <span class="math inline">\(m\)</span> by the second
+counter’s endpoint equation. The first counter now gives <span
+class="math inline">\(p=mn\)</span>, including <span
+class="math inline">\(n=0\)</span>. <span
+class="math inline">\(\square\)</span></p>
+</section>
+<section id="decision-consequence-and-verification" class="level2">
+<h2>5. Decision consequence and verification</h2>
+<p>Satisfiability over the natural numbers of finite systems <span
+class="math inline">\(p=1\)</span>, <span
+class="math inline">\(m+n=p\)</span>, <span
+class="math inline">\(mn=p\)</span> is recursively enumerable complete.
+The numeral and multiplication lemmas encode precisely these constraints
+as identities. Section 2 compiles them to ordinary flat JCA branches,
+all over the same two constants. Sequential specialization uses one
+premise equation per call stage even for the seven-argument history
+<span class="math inline">\(G\)</span>. The witness-selection
+construction then eliminates every multiple-equation guard. All premises
+compare variables, and each conclusion is one equality. A candidate
+finite answer can be enumerated and checked by unification, giving
+membership. <a
+href="https://people.mpi-sws.org/~spies/assets/papers/SpiesForster_2019_UndecidabilityHOU.pdf">Spies
+and Forster, §2.3, elementary Diophantine equations</a> · <a
+href="https://isa-afp.org/entries/DPRM_Theorem.html">Bayer et al.,
+formalization of the DPRM theorem</a></p>
+<p>The two constants need appear only once each. Replace all their
+occurrences by two new coordinates <span
+class="math inline">\(c_a,c_b\)</span> and add <span
+class="math inline">\(z=z\Rightarrow c_a=a\)</span> and <span
+class="math inline">\(z=z\Rightarrow c_b=b\)</span>. Every answer now
+fixes those coordinates throughout.</p>
+<p>Two distinct input constants are sharp. If the whole flat instance
+mentions at most one constant, assigning every coordinate that value
+satisfies all premises and conclusions simultaneously. With no input
+constant any one ground value suffices.</p>
+<p>The constructor-free fragment therefore has no computable bound on
+minimum successful witness depth as a function of input size. The
+fixed-branch question is finer. This reduction allocates branches for
+the operations and their evaluation sites. The <a
+href="round-14-four-branches.html">four-branch theorem</a> for inputs
+with constructors and the <a href="round-13-forced-copies.html">decision
+procedure</a> for a single flat comparison with constant outputs still
+apply in their stated settings.</p>
+<p><a href="round-15-proof.lean">The Lean 4.19.0 proof</a> with mathlib
+v4.19.0 checks numeral rigidity and the equivalence between (1) having a
+history term and <span class="math inline">\(p=mn\)</span>. It takes
+arbitrary finite tree bodies as input. The kernel reports only
+<code>propext</code>, <code>Classical.choice</code>, and
+<code>Quot.sound</code>. The same file verifies the four-branch absence
+gadget. Sections 1–2 give the proof of the compilation from identities
+to the final flat instances.</p>
+<p><a href="round-15-experiments.py">The executable reduction</a> builds
+the final single-comparison branches, checks their syntax, constructs
+complete answer patterns including the witness selectors, and verifies
+each branch by finite-tree unification. The two positive examples give
+1,948 and 2,227 single-comparison branches. A nonlinear pairing
+duplicates its tail in the second example. The program tests 720
+candidate guards after the three setup branches, verifies absence in all
+156 accepted cases, and rejects a proposed history with a false
+endpoint.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python3</span> projects/jca/agent-collab/round-15-experiments.py</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="co"># In a Lean 4.19.0 project with mathlib v4.19.0, pass the path to the proof.</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="ex">lake</span> env lean /path/to/round-15-proof.lean</span></code></pre></div>
+</section>
+</article>
+<script src="/assets/theme-toggle.js"></script>
+</body>
+</html>

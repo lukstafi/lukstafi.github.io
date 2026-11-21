@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <meta name="dcterms.date" content="2026-11-21">
+  <meta property="og:title" content="JCA Round 29: One Quantified Branch Has Polynomial-Size Certificates">
+  <meta property="og:url" content="https://lukstafi.github.io/projects/jca/agent-collab/round-29-small-dags.html">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="lukstafi&#x27;s blog">
+  <meta name="twitter:card" content="summary">
+  <title>JCA Round 29: One Quantified Branch Has Polynomial-Size
+Certificates</title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <link rel="stylesheet" href="/assets/tufte.css">
+  <link rel="stylesheet" href="/assets/pandoc-tufte.css">
+  <link rel="stylesheet" href="/assets/site.css">
+  <script defer=""
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+  type="text/javascript"></script>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+  <script>(function(){var t=localStorage.getItem('theme-preference');if(t)document.documentElement.setAttribute('data-theme',t);})()</script>
+</head>
+<body>
+<nav class="site-nav">
+  <a href="/">Home</a> &middot; <a href="/study/">Study Guide</a> &middot; <a href="/about.html">About</a> &middot; <a href="https://lukstafi.substack.com">Substack</a>
+</nav>
+<div class="theme-toggle">
+  <button id="theme-btn" aria-label="Toggle dark mode">&#9788;</button>
+</div>
+<article>
+<header>
+<h1 class="title">JCA Round 29: One quantified branch has
+polynomial-size certificates</h1>
+<p class="byline">2026-11-21</p>
+</header>
+<nav id="TOC">
+<ul>
+<li><a href="#the-inspected-fragments-have-polynomial-size"
+id="toc-the-inspected-fragments-have-polynomial-size">The inspected
+fragments have polynomial size</a></li>
+<li><a href="#terms-after-applying-the-input-bindings"
+id="toc-terms-after-applying-the-input-bindings">Terms after applying
+the input bindings</a></li>
+<li><a href="#why-the-recovered-strategies-work"
+id="toc-why-the-recovered-strategies-work">Why the recovered strategies
+work</a></li>
+</ul>
+</nav>
+<p><strong>Theorem.</strong> One parameter-free equational JCA
+implication under an arbitrary quantifier prefix is in NP for every
+fixed finite single-sorted signature with a constant. Data and output
+bodies have a successful representation by a polynomial-size directed
+acyclic term graph whenever an answer exists. Over a branching signature
+the problem is NP-complete, even with all inputs before all outputs. <a
+href="round-27-joint-pins.html#np-hardness-with-the-fixed-premise-yz">Three-block
+lower bound</a></p>
+<p>Round 28 bounds the depth of a successful strategy, but a shallow
+tree can still have exponentially many differently marked copies of the
+same subtree. To control their representation, retain the parts of each
+body actually inspected in a derivation of the input bindings. On the
+rest of each body we need only preserve its value after applying those
+bindings and the set of input names it may read.</p>
+<section id="the-inspected-fragments-have-polynomial-size"
+class="level2">
+<h2>The inspected fragments have polynomial size</h2>
+<p>Start with the strategy and common witness of <a
+href="round-28-compression.html">Round 28</a>. Put <span
+class="math inline">\(P=D[d,B]\)</span> and <span
+class="math inline">\(Q=C[d,B]\)</span>. The ground values of every side
+and every public coordinate have depth <span
+class="math inline">\(L=O(n^2)\)</span>. Regard <span
+class="math inline">\(P,Q\)</span> as the original syntax with pointers
+to the data terms and output bodies at their occurrences.</p>
+<p>Run unification on <span class="math inline">\(P\)</span> by the
+first-disagreement procedure. Keep each binding <span
+class="math inline">\(h_i=t_i\)</span> as a pointer to the <strong>raw
+subterm</strong> on the other side of the disagreement. When following a
+path, dereference a previously bound input by jumping to its saved
+right-hand side. This represents the same substitutions as eager
+replacement. The directed graph of the saved definitions is acyclic.
+Adding an edge back to the current input would have failed the occurs
+check after dereferencing, or both sides would have been the same
+unbound variable.</p>
+<p>Record the two traversals of the disagreement path for each binding.
+Inspect only the path that proves the binding, even if the search for it
+looked elsewhere. At each constructor record its head and the chosen
+child. Also record every dereferenced input name and the roots at the
+two endpoints. These records justify the equality <span
+class="math inline">\(h_i=t_i\)</span> using the selected premise
+equation, decomposition of equal constructors, and previously justified
+bindings.</p>
+<p>The substituted equation has the same ground value as at the witness.
+Each child step therefore consumes one level of a tree of depth at most
+<span class="math inline">\(L\)</span>. Between child steps there are at
+most <span class="math inline">\(|H|\)</span> jumps between definitions,
+by acyclicity. Pointers from formula coordinates to a data term or body
+add at most one jump per raw visit. The entire record has polynomially
+many visits over at most <span class="math inline">\(|H|\)</span>
+pivots. Every recorded location inside an original body or datum has an
+address of length at most <span class="math inline">\(L\)</span>.</p>
+<p>In each datum and output body retain the recorded nodes and their
+ancestors. Give each unexplored child subtree a separate placeholder;
+use the same partial body at every occurrence of its public coordinate.
+A completely unexplored body gets one placeholder. The resulting finite
+fragments have polynomial total size because the signature has bounded
+arity. Record for each placeholder <span
+class="math inline">\(p\)</span> the set <span
+class="math inline">\(A_p\)</span> of inputs actually occurring in its
+omitted subtree. In a datum this set is empty. Restoring a term over any
+subset of <span class="math inline">\(A_p\)</span> preserves the scope
+of the original strategy.</p>
+</section>
+<section id="terms-after-applying-the-input-bindings" class="level2">
+<h2>Terms after applying the input bindings</h2>
+<p>Treat each unbound input as a distinct new rigid constant. Let <span
+class="math inline">\(T_h\)</span> be the fully dereferenced term of
+input <span class="math inline">\(h\)</span> in this enlarged ground
+algebra. For an unbound input it is its own rigid constant. Let <span
+class="math inline">\(U_p\)</span> be the fully dereferenced value of
+the omitted body at placeholder <span class="math inline">\(p\)</span>.
+These terms may initially be huge. They satisfy three finite
+descriptions.</p>
+<ol type="1">
+<li>Reading the inspected fragments with <span
+class="math inline">\(h\)</span> valued as <span
+class="math inline">\(T_h\)</span> and <span
+class="math inline">\(p\)</span> as <span
+class="math inline">\(U_p\)</span> makes all equations of <span
+class="math inline">\(D,C\)</span> identities. This follows from the
+successful original strategy and the most general unifier of its
+premise.</li>
+<li>Each binding expression <span class="math inline">\(t_i\)</span>,
+read the same way, has value <span
+class="math inline">\(T_{h_i}\)</span>. Its pointer is into the original
+formula or an inspected fragment.</li>
+<li>Each <span class="math inline">\(U_p\)</span> is built using
+original constructors and the values <span
+class="math inline">\(T_h\)</span> for <span class="math inline">\(h\in
+A_p\)</span>. The omitted open body is just such a construction.</li>
+</ol>
+<p>We can satisfy these descriptions with polynomial-size ground DAGs.
+In the given solution, mark the values at explicit constructor nodes of
+the fragments and the original formulas, together with every new rigid
+constant. The expressions in item 2 use subexpressions of these same
+fragments and formulas. There are polynomially many marked values.
+Transform a ground term value by keeping its root and transforming its
+children if it is marked, and replacing it by a fixed original constant
+otherwise.</p>
+<p>This transformation commutes with evaluation of all the displayed
+expressions, by induction through their explicit constructors. Items 1
+and 2 survive, and the rigid constants keep their distinct identities.
+Item 3 survives as well. In a construction of <span
+class="math inline">\(U_p\)</span>, a generator transforms to the
+corresponding transformed <span class="math inline">\(T_h\)</span>. An
+unmarked constructor value transforms to the available base constant. At
+a marked constructor value, apply the constructor to its transformed
+children. Sharing one node per marked value, plus the base, bounds the
+whole collection of transformed terms by a polynomial.</p>
+<p>For each <span class="math inline">\(p\)</span>, recover a small open
+body building its new <span class="math inline">\(U_p\)</span>. At a
+value equal to an allowed generator, use that generator’s input name.
+Otherwise recursively construct it from its children. Item 3 guarantees
+that a rigid leaf is reached only when some generator covers it.
+Memoizing per value for this placeholder produces at most one body node
+per node of the polynomial DAG. There are polynomially many
+placeholders. Inserting all these bodies in the inspected fragments
+gives candidate data and strategies of polynomial total DAG size.</p>
+</section>
+<section id="why-the-recovered-strategies-work" class="level2">
+<h2>Why the recovered strategies work</h2>
+<p>The unbound-input constants can be assigned arbitrary ground trees
+from the original signature. Assign each input <span
+class="math inline">\(h\)</span> the corresponding ground instance of
+its transformed <span class="math inline">\(T_h\)</span>. The recovered
+bodies realize the transformed <span class="math inline">\(U_p\)</span>,
+so item 1 supplies a consistency witness.</p>
+<p>Conversely, take <strong>any</strong> active input assignment for the
+recovered strategy. Replay the recorded traversals: every inspected
+constructor and input name remains at its recorded position. A jump uses
+a previously established equality between an input and the saved
+right-hand side. Decomposing the current active premise equality along
+the recorded children therefore proves the next binding with its
+recovered right-hand side. This forces all saved bindings. Their
+dependency graph remains acyclic because every new placeholder body uses
+a subset of its original input names.</p>
+<p>On fixing the values of the unbound inputs, the recovered definitions
+determine all other inputs uniquely in dependency order. Item 2 and the
+recovered generator bodies show that the corresponding ground instances
+of the transformed <span class="math inline">\(T_h\)</span> give exactly
+these values. Item 1 now gives every conclusion equality at this active
+assignment. This proves relevance.</p>
+<p>To verify an NP certificate, guess the acyclic term graph of the
+strategy, check scopes, unify the instantiated premise with the
+finite-tree occurs check, and test whether its most general unifier
+equalizes each conclusion. All operations are polynomial on shared
+graphs. The proof bounds the certificate even on instances where
+expanding the shared bodies would destroy that bound.</p>
+<p>The <a href="round-29-small-dags.py">executable construction</a>
+traces raw subterm pointers, extracts the partial bodies, compresses the
+values over rigid letters, reconstructs the omitted terms from
+accessible generators, and checks the result using an independent
+unifier. It exercises all 404 examples of the preceding round. In a
+separate example with a 1,024-leaf output, the strategy shrinks from 347
+distinct nodes to 32; the resulting premise still forces both input
+values and the entire output tree. These checks validate instances of
+the transformation. The polynomial bound is the counting argument
+above.</p>
+<p><a href="round-29-generators.lean">Lean</a> checks that ground-value
+compression preserves the explicitly marked expressions and that it
+preserves generation by each permitted set of inputs, for arbitrary
+constructor arities. The lower bound extends to every nontrivial monadic
+signature as well. <a href="round-30-monadic.html">Exact one-branch
+complexity</a></p>
+</section>
+</article>
+<script src="/assets/theme-toggle.js"></script>
+</body>
+</html>

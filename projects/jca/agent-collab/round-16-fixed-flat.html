@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <meta name="dcterms.date" content="2026-11-21">
+  <meta property="og:title" content="JCA Round 16: A Fixed Number of Constructor-Free Branches">
+  <meta property="og:url" content="https://lukstafi.github.io/projects/jca/agent-collab/round-16-fixed-flat.html">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="lukstafi&#x27;s blog">
+  <meta name="twitter:card" content="summary">
+  <title>JCA Round 16: A Fixed Number of Constructor-Free
+Branches</title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <style type="text/css">
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="/assets/tufte.css">
+  <link rel="stylesheet" href="/assets/pandoc-tufte.css">
+  <link rel="stylesheet" href="/assets/site.css">
+  <script defer=""
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+  type="text/javascript"></script>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+  <script>(function(){var t=localStorage.getItem('theme-preference');if(t)document.documentElement.setAttribute('data-theme',t);})()</script>
+</head>
+<body>
+<nav class="site-nav">
+  <a href="/">Home</a> &middot; <a href="/study/">Study Guide</a> &middot; <a href="/about.html">About</a> &middot; <a href="https://lukstafi.substack.com">Substack</a>
+</nav>
+<div class="theme-toggle">
+  <button id="theme-btn" aria-label="Toggle dark mode">&#9788;</button>
+</div>
+<article>
+<header>
+<h1 class="title">JCA Round 16: A fixed number of constructor-free
+branches</h1>
+<p class="byline">2026-11-21</p>
+</header>
+<nav id="TOC">
+<ul>
+<li><a href="#four-branches-exclude-a-parameter-from-many-terms"
+id="toc-four-branches-exclude-a-parameter-from-many-terms">1. Four
+branches exclude a parameter from many terms</a></li>
+<li><a href="#two-comparisons-specify-an-iterate"
+id="toc-two-comparisons-specify-an-iterate">2. Two comparisons specify
+an iterate</a></li>
+<li><a href="#a-fixed-arithmetic-system-can-read-the-chain"
+id="toc-a-fixed-arithmetic-system-can-read-the-chain">3. A fixed
+arithmetic system can read the chain</a></li>
+<li><a href="#verification" id="toc-verification">4.
+Verification</a></li>
+</ul>
+</nav>
+<p><strong>Theorem.</strong> For some fixed integer <span
+class="math inline">\(M\)</span>, ordinary equational JCA answer
+existence over the finite trees of <span
+class="math inline">\(\{f/2,a,b\}\)</span> is recursively enumerable
+complete on instances with at most <span
+class="math inline">\(M\)</span> branches of the form</p>
+<p><span class="math display">\[u=v\quad\Rightarrow\quad \bigwedge_j
+s_j=t_j.\]</span></p>
+<p>Every premise compares two variables. Every conclusion compares
+variables, except for a single occurrence each of <span
+class="math inline">\(a\)</span> and <span
+class="math inline">\(b\)</span> fixing two coordinates. The input
+contains no occurrence of <span class="math inline">\(f\)</span>. The
+number of coordinates and the width of the conclusions can grow.</p>
+<p>The <a href="round-15-constructor-free.html">single-equation
+reduction</a> spends branches as the arithmetic system grows. Here the
+arithmetic system is fixed. The varying input is one natural number
+<span class="math inline">\(n\)</span>. Two comparisons read its value
+from a chain of <span class="math inline">\(n\)</span> equalities, and
+at most eight further branches keep the two ends of each link
+independent.</p>
+<section id="four-branches-exclude-a-parameter-from-many-terms"
+class="level2">
+<h2>1. Four branches exclude a parameter from many terms</h2>
+<p>Write <span class="math inline">\(P_x\)</span> for the finite answer
+tree at coordinate <span class="math inline">\(x\)</span>. A branch
+requires a ground witness for its premise and requires its conclusion at
+every such witness. Suppose <span class="math inline">\(P_h\)</span> is
+a bare parameter <span class="math inline">\(q\)</span>. For given
+coordinates <span class="math inline">\(x_1,\ldots,x_k\)</span>,
+introduce fresh coordinates <span
+class="math inline">\(u,v,r,p_1,\ldots,p_k\)</span>. Use the following
+branches for <span class="math inline">\(k\ge1\)</span>.</p>
+<table>
+<thead>
+<tr>
+<th>Premise</th>
+<th>Conclusion</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><span class="math inline">\(u=v\)</span></td>
+<td><span class="math inline">\(r=b\ \land\ \bigwedge_j
+p_j=a\)</span></td>
+</tr>
+<tr>
+<td><span class="math inline">\(r=a\ \land\ \bigwedge_j
+p_j=b\)</span></td>
+<td><span class="math inline">\(\top\)</span></td>
+</tr>
+<tr>
+<td><span class="math inline">\(\bigwedge_j p_j=u\)</span></td>
+<td><span class="math inline">\(\top\)</span></td>
+</tr>
+<tr>
+<td><span class="math inline">\(h=v\ \land\ \bigwedge_j
+p_j=x_j\)</span></td>
+<td><span class="math inline">\(\top\)</span></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Lemma.</strong> These branches admit an extension of the
+given pattern if and only if <span class="math inline">\(q\)</span>
+occurs in none of the <span class="math inline">\(P_{x_j}\)</span>.</p>
+<p><em>From an answer.</em> Fix <span class="math inline">\(j\)</span>.
+The first branch supplies all its conclusions under the same premise.
+The three remaining branches each supply a joint witness, which also
+satisfies the equations for this <span class="math inline">\(j\)</span>.
+Thus <span class="math inline">\(u,v,p_j,r\)</span> meet all four
+conditions of the single-coordinate absence lemma for <span
+class="math inline">\(x_j\)</span>. Apply that lemma to every <span
+class="math inline">\(j\)</span>. The proof allows parameters to be
+shared between any of the new coordinates. <a
+href="round-15-constructor-free.html#flat-branches-can-test-occurrence">Single-coordinate
+lemma</a></p>
+<p><em>To an answer.</em> Take a binary tree shape <span
+class="math inline">\(K\)</span> with <span
+class="math inline">\(k+1\)</span> slots, each appearing once. Choose
+fresh distinct parameters <span
+class="math inline">\(s_1,\ldots,s_k,t\)</span>. Set</p>
+<p><span class="math display">\[P_u=K(a,\ldots,a,b),\qquad
+P_v=K(s_1,\ldots,s_k,t),\qquad P_{p_j}=s_j,\quad P_r=t.\]</span></p>
+<p>The comparison fixes the displayed leaves. The second branch reverses
+their two values. For the third assign every <span
+class="math inline">\(s_j\)</span> the ground tree <span
+class="math inline">\(P_u\)</span>. For the fourth, first choose
+arbitrary ground values of the <span
+class="math inline">\(P_{x_j}\)</span> and assign them to the
+corresponding <span class="math inline">\(s_j\)</span>. Choose <span
+class="math inline">\(t=a\)</span> and set <span
+class="math inline">\(q=K(s_1,\ldots,s_k,t)\)</span> at these values.
+Absence of <span class="math inline">\(q\)</span> and freshness of the
+<span class="math inline">\(s_j,t\)</span> preserve every chosen value.
+<span class="math inline">\(\square\)</span></p>
+<p>Each pure guard <span class="math inline">\(D\Rightarrow\top\)</span>
+can be written as <strong>one</strong> branch <span
+class="math inline">\(u&#39;=v&#39;\Rightarrow D\)</span> with fresh
+variables. Any witness of <span
+class="math inline">\(u&#39;=v&#39;\)</span> satisfies all of <span
+class="math inline">\(D\)</span>. Conversely, given one witness of <span
+class="math inline">\(D\)</span>, pack the parameters occurring in <span
+class="math inline">\(D[P]\)</span> into <span
+class="math inline">\(P_{u&#39;}\)</span> and their selected ground
+values into <span class="math inline">\(P_{v&#39;}\)</span> with the
+same tree shape. Equality selects exactly those values on those
+parameters. Replace the displayed constants in the four branches by the
+two coordinates already fixed to <span
+class="math inline">\(a,b\)</span> in the arithmetic instance. These
+changes preserve the branch count. <a
+href="round-15-constructor-free.html#identities-between-unknown-tree-operations">Witness
+selection</a></p>
+</section>
+<section id="two-comparisons-specify-an-iterate" class="level2">
+<h2>2. Two comparisons specify an iterate</h2>
+<p>The fixed part of the instance supplies two distinct bare parameters
+at coordinates <span class="math inline">\(p,q\)</span>. It also
+supplies coordinates <span
+class="math inline">\(A_p,A_q,Z_p,Z_q\)</span>. For a fixed
+interpretation of the other parameters, their respective values at <span
+class="math inline">\(p=x,q=y\)</span> are <span
+class="math inline">\(S(x),S(y),S^d(x),S^d(y)\)</span>. Here <span
+class="math inline">\(S\)</span> is an unknown unary operation on ground
+trees such that <span class="math inline">\(S(z)\)</span> is strictly
+larger than <span class="math inline">\(z\)</span>, and <span
+class="math inline">\(d\)</span> is one natural number chosen by the
+solution. Section 3 constructs this fixed part and specifies the
+grounding used to read it.</p>
+<p>For <span class="math inline">\(n&gt;0\)</span> take <span
+class="math inline">\(T_0=p\)</span> and fresh <span
+class="math inline">\(T_1,\ldots,T_{n-1}\)</span>. Use the existing
+<span class="math inline">\(Z_p\)</span> for <span
+class="math inline">\(T_n\)</span> when <span
+class="math inline">\(n\)</span> is even and <span
+class="math inline">\(Z_q\)</span> when <span
+class="math inline">\(n\)</span> is odd. Apply §1 once to keep the
+parameter of <span class="math inline">\(q\)</span> out of all even
+interior stages and once to keep that of <span
+class="math inline">\(p\)</span> out of all odd interior stages. Skip an
+empty group. Add these two branches, omitting an empty conclusion.</p>
+<table>
+<thead>
+<tr>
+<th>Premise</th>
+<th>Conclusion</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><span class="math inline">\(p=A_q\)</span></td>
+<td><span class="math inline">\(\bigwedge_{i&lt;n,\ i\
+\mathrm{even}}T_i=T_{i+1}\)</span></td>
+</tr>
+<tr>
+<td><span class="math inline">\(q=A_p\)</span></td>
+<td><span class="math inline">\(\bigwedge_{i&lt;n,\ i\
+\mathrm{odd}}T_i=T_{i+1}\)</span></td>
+</tr>
+</tbody>
+</table>
+<p>For <span class="math inline">\(n=0\)</span> use the single branch
+<span class="math inline">\(p=p\Rightarrow p=Z_p\)</span>.</p>
+<p><strong>Lemma.</strong> The extension forces <span
+class="math inline">\(d=n\)</span>. A canonical arithmetic answer with
+<span class="math inline">\(d=n\)</span> extends across the new
+branches.</p>
+<p><em>From an answer.</em> Fix all parameters other than those of <span
+class="math inline">\(p,q\)</span> as in §3. An even stage now has a
+unary value <span class="math inline">\(F_i(x)\)</span> in <span
+class="math inline">\(p\)</span>, an odd stage a unary value <span
+class="math inline">\(F_i(y)\)</span> in <span
+class="math inline">\(q\)</span>. The start and endpoint have the
+required independence by their definitions. For an even <span
+class="math inline">\(i\)</span>, choose <span
+class="math inline">\(q=z\)</span> and <span
+class="math inline">\(p=S(z)\)</span> for an arbitrary ground tree <span
+class="math inline">\(z\)</span>. This satisfies the first premise.
+Relevance gives <span
+class="math inline">\(F_{i+1}(z)=F_i(S(z))\)</span>. For an odd <span
+class="math inline">\(i\)</span>, choose <span
+class="math inline">\(p=z\)</span> and <span
+class="math inline">\(q=S(z)\)</span>. The second premise gives the same
+identity. Since <span class="math inline">\(F_0(z)=z\)</span>, induction
+gives <span class="math inline">\(F_n(z)=S^n(z)\)</span>. The endpoint
+already gives <span class="math inline">\(F_n(z)=S^d(z)\)</span>.
+Successive iterates on any one ground tree have strictly increasing
+sizes, so <span class="math inline">\(d=n\)</span>. The case <span
+class="math inline">\(n=0\)</span> follows directly from the
+unconditional equality.</p>
+<p><em>To an answer.</em> At every interior even stage take the tree
+expression <span class="math inline">\(S^i(p)\)</span> and at every
+interior odd stage take <span class="math inline">\(S^i(q)\)</span>,
+retaining the color arguments used by <span
+class="math inline">\(S\)</span>. These expressions have the required
+absences. Every valuation that satisfies an audit premise makes each of
+its consecutive pairs equal. Either premise admits a witness by choosing
+the two marker values in the order used above. The endpoint already has
+its prescribed value. <span class="math inline">\(\square\)</span></p>
+</section>
+<section id="a-fixed-arithmetic-system-can-read-the-chain"
+class="level2">
+<h2>3. A fixed arithmetic system can read the chain</h2>
+<p>Choose an r.e.-complete set <span
+class="math inline">\(H\subseteq\mathbb N\)</span>. By the DPRM theorem
+one fixed polynomial over natural-number unknowns represents membership
+in <span class="math inline">\(H\)</span>. Separate its positive and
+negative coefficients and name its intermediate values. This gives a
+fixed finite system <span class="math inline">\(\Delta\)</span> of
+constraints <span class="math inline">\(t=1\)</span>, <span
+class="math inline">\(s+t=u\)</span>, <span
+class="math inline">\(st=u\)</span> with a distinguished unknown <span
+class="math inline">\(d\)</span>, such that <span
+class="math inline">\(n\in H\)</span> exactly when <span
+class="math inline">\(\Delta\)</span> has a solution with <span
+class="math inline">\(d=n\)</span>. Zero can be defined by <span
+class="math inline">\(z+z=z\)</span> and equality by <span
+class="math inline">\(s+z=t\)</span>. <a
+href="https://isa-afp.org/entries/DPRM_Theorem.html">Bayer et al.,
+formalization of DPRM</a></p>
+<p>Use the identity construction from Round 15 for <span
+class="math inline">\(\Delta\)</span>. It gives a binary term operation
+<span class="math inline">\(L\)</span> using both its arguments, a
+successor <span class="math inline">\(S_{v,w}(x)=L(v,L(w,x))\)</span>,
+and a ternary numeral <span class="math inline">\(N_d\)</span> equal as
+a term operation to <span
+class="math inline">\(S_{v,w}^{\,d}(x)\)</span>. Add two fresh universal
+letters <span class="math inline">\(p,q\)</span>. For each <span
+class="math inline">\(e\)</span> in</p>
+<p><span class="math display">\[S_{v,w}(p),\ S_{v,w}(q),\ N_d(v,w,p),\
+N_d(v,w,q)\]</span></p>
+<p>include the identity <span class="math inline">\(e=e\)</span> so the
+compiler allocates its expression coordinate. These four coordinates are
+<span class="math inline">\(A_p,A_q,Z_p,Z_q\)</span>. Write <span
+class="math inline">\(B_\Delta\)</span> for the number of branches of
+this fixed compilation, including the two constant anchors. <a
+href="round-15-constructor-free.html">Numeral, multiplication and
+expression compilation</a></p>
+<p>In the reverse direction the compilation first grounds all nuisance
+parameters, retaining its distinct bare formals and universal letters.
+It recovers fixed term operations solving the identities. Fix the
+formals and all universal letters other than <span
+class="math inline">\(p,q\)</span> to <span
+class="math inline">\(a\)</span>. The four expression coordinates still
+evaluate as their expanded expressions for <strong>every</strong> choice
+of <span class="math inline">\(p,q\)</span>. In particular <span
+class="math inline">\(S=S_{a,a}\)</span> is one fixed operation. As the
+tree body of <span class="math inline">\(L\)</span> uses both arguments,
+its root is compound and its tail argument occurs at positive depth.
+This gives the strict growth needed in §2 even after the two colors
+become equal. For the forward direction use <span
+class="math inline">\(L=f\)</span> and the canonical bodies for any
+arithmetic solution.</p>
+<p>The mapping <span class="math inline">\(n\mapsto J_n\)</span> thus
+reduces membership in <span class="math inline">\(H\)</span> to flat JCA
+answer existence. It uses at most <span
+class="math inline">\(M=B_\Delta+10\)</span> branches. The added number
+of equation occurrences and coordinates is linear in the unary input
+<span class="math inline">\(n\)</span>. Enumerating finite patterns and
+checking each branch by unification gives the r.e. upper bound. This
+proof gives a bound relative to a choice of universal arithmetic system.
+It does not identify the least possible <span
+class="math inline">\(M\)</span>.</p>
+<p>With both the branch count and the conclusion width fixed in the
+stated syntax, there are only finitely many instances up to renaming and
+deletion of unused variables. Indeed the total number of variable
+positions is bounded. The unbounded conclusion width in this theorem is
+therefore essential. Round 15 instead allows an unbounded number of
+branches with <strong>one</strong> conclusion equality apiece. With
+constructors in the input, three branches suffice over the same
+signature. <a href="round-17-three-branches.html">Three-branch
+theorem</a></p>
+</section>
+<section id="verification" class="level2">
+<h2>4. Verification</h2>
+<p><a href="round-16-proof.lean">Lean proof</a> · <a
+href="round-16-experiments.py">Executable compiler and checks</a></p>
+<p>The Lean kernel checks the four-branch equivalence for any finite
+number of coordinates and the induction recovering the iterate from the
+two audit comparisons. The latter theorem quantifies over arbitrary
+stage functions of both marker values subject to the displayed
+independence condition. The fixed arithmetic compiler and its use of
+DPRM are justified by §3 and Round 15. To reproduce the kernel check,
+run these commands from a Lean 4.19.0 project with mathlib v4.19.0,
+setting <code>src</code> to this note’s directory.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="va">out</span><span class="op">=</span><span class="va">$(</span><span class="fu">mktemp</span> <span class="at">-d</span><span class="va">)</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="ex">lake</span> env lean <span class="at">--root</span><span class="op">=</span><span class="st">&quot;</span><span class="va">$src</span><span class="st">&quot;</span> <span class="at">-o</span> <span class="st">&quot;</span><span class="va">$out</span><span class="st">/round-15-proof.olean&quot;</span> <span class="st">&quot;</span><span class="va">$src</span><span class="st">/round-15-proof.lean&quot;</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="va">LEAN_PATH</span><span class="op">=</span><span class="st">&quot;</span><span class="va">$out${LEAN_PATH</span><span class="op">:+</span>:<span class="va">$LEAN_PATH}</span><span class="st">&quot;</span> <span class="ex">lake</span> env lean <span class="st">&quot;</span><span class="va">$src</span><span class="st">/round-16-proof.lean&quot;</span></span></code></pre></div>
+<p>The Python check builds the complete flat input and canonical answer
+using the fixed example <span class="math inline">\(1\cdot d=d\)</span>
+and its coordinate for one. Its arithmetic part takes 2,402 branches. At
+length nine the chain adds ten. It checks lengths zero through nine, a
+pairing duplicating its first argument, and incorrect endpoints above
+and below the intended length when defined. The example exercises the
+construction on a known arithmetic relation. Hardness comes from
+choosing the single system for <span class="math inline">\(H\)</span> in
+§3.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python3</span> projects/jca/agent-collab/round-16-experiments.py</span></code></pre></div>
+</section>
+</article>
+<script src="/assets/theme-toggle.js"></script>
+</body>
+</html>

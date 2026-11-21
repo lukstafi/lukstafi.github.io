@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <meta name="dcterms.date" content="2026-11-21">
+  <meta property="og:title" content="JCA Round 32: What a Designated Witness Can Read Through Another Move">
+  <meta property="og:url" content="https://lukstafi.github.io/projects/jca/agent-collab/round-32-carriers.html">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="lukstafi&#x27;s blog">
+  <meta name="twitter:card" content="summary">
+  <title>JCA Round 32: What a Designated Witness Can Read Through
+Another Move</title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <link rel="stylesheet" href="/assets/tufte.css">
+  <link rel="stylesheet" href="/assets/pandoc-tufte.css">
+  <link rel="stylesheet" href="/assets/site.css">
+  <script defer=""
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+  type="text/javascript"></script>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+  <script>(function(){var t=localStorage.getItem('theme-preference');if(t)document.documentElement.setAttribute('data-theme',t);})()</script>
+</head>
+<body>
+<nav class="site-nav">
+  <a href="/">Home</a> &middot; <a href="/study/">Study Guide</a> &middot; <a href="/about.html">About</a> &middot; <a href="https://lukstafi.substack.com">Substack</a>
+</nav>
+<div class="theme-toggle">
+  <button id="theme-btn" aria-label="Toggle dark mode">&#9788;</button>
+</div>
+<article>
+<header>
+<h1 class="title">JCA Round 32: What a designated witness can read
+through another move</h1>
+<p class="byline">2026-11-21</p>
+</header>
+<nav id="TOC">
+<ul>
+<li><a href="#checking-a-supplied-answer-by-generation-of-terms"
+id="toc-checking-a-supplied-answer-by-generation-of-terms">Checking a
+supplied answer by generation of terms</a></li>
+<li><a href="#np-hardness-of-the-read-permissions"
+id="toc-np-hardness-of-the-read-permissions">NP-hardness of the read
+permissions</a>
+<ul>
+<li><a href="#one-forbidden-read-on-a-binary-signature"
+id="toc-one-forbidden-read-on-a-binary-signature">One forbidden read on
+a binary signature</a></li>
+</ul></li>
+<li><a href="#an-empty-premise-with-arbitrary-atomwise-permissions"
+id="toc-an-empty-premise-with-arbitrary-atomwise-permissions">An empty
+premise with arbitrary atomwise permissions</a></li>
+<li><a
+href="#a-polynomial-bound-for-solved-presentations-with-empty-premise"
+id="toc-a-polynomial-bound-for-solved-presentations-with-empty-premise">A
+polynomial bound for solved presentations with empty premise</a></li>
+</ul>
+</nav>
+<p><strong>Theorem.</strong> With arbitrary specified read permissions,
+leading validity of a <em>supplied</em> equational answer is NP-complete
+on every nontrivial finite-signature term algebra. Even two public
+universal inputs and a matrix of variable equalities suffice for
+hardness. For synthesis with an empty premise, arbitrary carrier
+permissions give a decidable one-branch problem. The upper bound is NP
+for idempotent substitution answers, including the atomwise escape
+tests. Round 37 extends the polynomial certificate to arbitrary weak
+presentations with an empty premise. <a
+href="round-37-comparable.html">Two-stage compression</a></p>
+<p>Here a carrier is an original game move whose <em>value</em> a
+substitution term is allowed to use. Round 31 handles unrestricted
+witnesses, along with the usual prefix-closed permissions, even for a
+nonempty premise. This round allows a witness to read an existential
+carrier while omitting the universal names that the carrier can see. <a
+href="round-31-leading.html">General-premise theorem</a></p>
+<section id="checking-a-supplied-answer-by-generation-of-terms"
+class="level2">
+<h2>Checking a supplied answer by generation of terms</h2>
+<p>Give each universally chosen game move <span
+class="math inline">\(h\)</span> its own new rigid letter <span
+class="math inline">\(r_h\)</span>, including leading fresh parameters.
+For an existential move <span class="math inline">\(e\)</span>, its game
+value <span class="math inline">\(G_e\)</span> is any term built from
+original constructors and earlier rigid letters. Set <span
+class="math inline">\(G_h=r_h\)</span>. A nonsubstituted name has
+ordinary value <span class="math inline">\(V_x=G_x\)</span>. For <span
+class="math inline">\(x\)</span> substituted in validity, its ordinary
+value <span class="math inline">\(V_x\)</span> must be built from
+original constructors and the <em>whole</em> game values <span
+class="math inline">\(G_z\)</span> of its permitted names <span
+class="math inline">\(z\)</span>. Require the supplied answer equations
+<span class="math inline">\(A(V)\)</span> to hold in this enlarged
+ground algebra. In particular a substituted name used by another witness
+supplies its original game value, exactly as required by simultaneous
+substitution.</p>
+<p>These requirements are equivalent to validity. Given witness terms,
+the remaining quantified conjunction of equations admits existential
+term strategies whenever its prefix game is true. Evaluating them over
+independent letters gives the <span class="math inline">\(G\)</span>’s
+and then the <span class="math inline">\(V\)</span>’s. Conversely a term
+construction for each <span class="math inline">\(V_x\)</span> supplies
+its witness, and the constructions of the <span
+class="math inline">\(G_e\)</span>’s supply its plays. Replacing the
+independent letters by any ground inputs proves validity. The singleton
+original algebra is immediate. <a
+href="round-18-signature-boundary.html#parameter-free-quantifier-prefixes">Term
+criterion for a quantified conjunction</a></p>
+<p>The resulting constraints are equations and tests that a value
+belongs to the algebra generated by a list of values using the original
+constructors. They have polynomial-size ground DAG solutions whenever
+satisfiable. In a solution mark all values at explicit constructor nodes
+in the equations, and all rigid letters. Keep the root and recurse at
+each marked value; send every other value to an original base constant.
+Evaluation of each explicit expression commutes with this
+transformation. A construction from a set of generators is preserved: a
+generator still maps to its image, an omitted constructor maps to the
+available base, and retained constructors can rebuild their children.
+The transformed terms share a node for each marked value plus the base.
+Check generation bottom up on this graph. <a
+href="round-29-generators.lean">Lean proof of both preservation
+statements</a></p>
+<p>The <a href="round-32-carriers.py">decision procedure</a> guesses for
+every residual value either the base or a pointer to an explicit
+constructor node or rigid letter. Finite-tree unification checks the
+pointers, and the generator tests decide each resulting assignment.
+Conversely the compression just described supplies such pointers for
+every successful solution. It suffices to count syntax nodes as a DAG;
+writing out the expanded values can take much longer.</p>
+</section>
+<section id="np-hardness-of-the-read-permissions" class="level2">
+<h2>NP-hardness of the read permissions</h2>
+<p>Take a 3-CNF formula. Use universal moves <span
+class="math inline">\(h_0,h_1\)</span>, and for each Boolean variable
+<span class="math inline">\(p\)</span> two existential carriers <span
+class="math inline">\(e_p^+,e_p^-\)</span> after both universals.
+Introduce two substituted coordinates per variable, with answer
+equations requiring one to equal <span
+class="math inline">\(h_0\)</span> and the other <span
+class="math inline">\(h_1\)</span>. Each of those two witnesses can read
+only <span class="math inline">\(e_p^+,e_p^-\)</span>. For each clause
+introduce a substituted coordinate required to equal <span
+class="math inline">\(h_1\)</span>. Its witness can read only the
+carriers named by its literals. Quantify the substituted coordinates
+existentially after the carriers. <a
+href="https://www2.seas.gwu.edu/~simhaweb/champalg/tsp/papers/KarpOriginal.pdf">Karp,
+satisfiability with at most three literals per clause</a></p>
+<p>A satisfying assignment makes each literal carrier copy the universal
+for its Boolean value. For the clause witness choose one true literal’s
+carrier. Conversely an original constructor term producing a bare rigid
+letter must read a generator equal to that letter. The two carriers of
+each variable must therefore take opposite letters, and every clause
+must see the true letter. This recovers an assignment. This argument
+uses independent <em>formal</em> letters for the two universals, and
+works even in an algebra with just two ground constants.</p>
+<p>The reduction is also a synthesis lower bound for <span
+class="math inline">\(\top\Rightarrow C\)</span> under the weak check or
+the original reflexive strong order. Its displayed <span
+class="math inline">\(C\)</span> is already an idempotent substitution,
+its left coordinates are later existentials, and each atom is
+individually prefix-valid. Any answer implies <span
+class="math inline">\(C\)</span> on every ordinary row, so its validity
+witnesses give validity of <span class="math inline">\(C\)</span> itself
+after fixing fresh names. Conversely a valid <span
+class="math inline">\(C\)</span> is the answer. The same equivalence
+holds for any supplied conclusion that is itself an admissible
+presentation.</p>
+<p>For the <em>extracted</em> strong order, place the substituted
+request coordinates in an initial existential block before the two
+universals instead. Each request atom then has its sole universal
+strictly later than its designated head, so both extracted escape tests
+pass. The request’s original game move is unused. The carrier choices
+and Boolean argument are identical.</p>
+<section id="one-forbidden-read-on-a-binary-signature" class="level3">
+<h3>One forbidden read on a binary signature</h3>
+<p>On <span class="math inline">\(\{f/2,a\}\)</span>, supplied-answer
+validity and empty-premise synthesis are NP-hard even with a
+<strong>single substituted coordinate <span
+class="math inline">\(K\)</span></strong>, a <strong>single universal
+<span class="math inline">\(r\)</span></strong>, and all reads permitted
+except <span class="math inline">\(K\)</span> reading <span
+class="math inline">\(r\)</span>. Use the prefix <span
+class="math inline">\(\exists t_1\cdots t_n,K\,\forall r\,\exists
+(E_{j,l})\)</span>. The <span class="math inline">\(t_i\)</span> choose
+ground values before <span class="math inline">\(r\)</span>. Use two
+distinct ground truth values <span class="math inline">\(a,b\)</span>
+(for example <span class="math inline">\(b=f(a,a)\)</span>) and distinct
+ground clause identifiers <span class="math inline">\(q_j\)</span>. The
+target cell of clause <span class="math inline">\(j\)</span> is</p>
+<p><span class="math display">\[ T_j=f(r,f(q_j,f(a,b))). \]</span></p>
+<p>Require <span class="math inline">\(K\)</span> to equal the ordinary
+binary list of all <span class="math inline">\(T_j\)</span>, with cells
+<span class="math inline">\(f(T_j,\mathrm{tail})\)</span> and terminator
+<span class="math inline">\(a\)</span>. For each occurrence of a
+positive literal <span class="math inline">\(i\)</span> in clause <span
+class="math inline">\(j\)</span>, define its carrier to be <span
+class="math inline">\(E_{j,l}=f(r,f(q_j,f(t_i,b)))\)</span>. For a
+negative occurrence use <span
+class="math inline">\(E_{j,l}=f(r,f(q_j,f(a,t_i)))\)</span>. The answer
+is an idempotent substitution. <span class="math inline">\(K\)</span>
+has its sole universal later than its left side. All carrier definitions
+are individually prefix-valid. Hence it passes both extracted escape
+tests.</p>
+<p>A satisfying assignment plays <span
+class="math inline">\(t_i=a\)</span> for true and <span
+class="math inline">\(t_i=b\)</span> for false. In each clause choose a
+true literal and use its carrier as the corresponding list cell’s
+payload in the witness for <span class="math inline">\(K\)</span>.
+Conversely play the universal as a rigid letter. All accessible game
+values except the carriers are ground over the original signature. Each
+carrier has that bare letter as its left child. A nonempty list node has
+a compound left child containing the letter, so no generator can supply
+a whole such node. The witness must construct the list spine. At a
+target cell it cannot separately construct the bare letter, so it must
+use a whole carrier. Its clause identifier must agree, and matching its
+last pair requires <span class="math inline">\(t_i=a\)</span> for a
+positive literal or <span class="math inline">\(t_i=b\)</span> for a
+negative one. Assign the corresponding truth values, extending
+arbitrarily on variables with other ground values. Every clause has a
+true literal. The same argument applies to <span
+class="math inline">\(\top\Rightarrow C\)</span> where <span
+class="math inline">\(C\)</span> is this supplied answer: any valid
+answer entails <span class="math inline">\(C\)</span>, and when <span
+class="math inline">\(C\)</span> is valid it is itself admissible. With
+unrestricted reads, checking supplied-answer validity is polynomial by
+the unifier criterion of Round 31. <a
+href="round-34-one-read.html">Single missing read with a nonempty
+premise</a></p>
+<p>On monadic signatures a fixed number of witnesses with non-closed
+permissions admits polynomial-time supplied-answer verification, even if
+each such witness has many possible carriers. <a
+href="round-41-monadic-reads.html">Suffix algorithm</a></p>
+</section>
+</section>
+<section id="an-empty-premise-with-arbitrary-atomwise-permissions"
+class="level2">
+<h2>An empty premise with arbitrary atomwise permissions</h2>
+<p>For an arbitrary successful answer to <span
+class="math inline">\(\top\Rightarrow C\)</span>, eliminate fresh names
+as in Round 31. Use the generic validity tuple <span
+class="math inline">\(V\)</span> above as the common witness, in the
+term algebra extended by the rigid letters. It satisfies all ordinary
+answer equations. The unifier of those equations makes <span
+class="math inline">\(C\)</span> identically true because ordinary
+relevance holds in the nontrivial original algebra.</p>
+<p>Select at most <span class="math inline">\(|X|\)</span> primitives
+<span class="math inline">\(x=t\)</span> with parent-atom scope records
+as in Round 31. Apply the witness-path compression to the unification of
+these primitives. Distinguish the values of the ordinary coordinates
+<span class="math inline">\(V_x\)</span>, original game moves <span
+class="math inline">\(G_x\)</span>, the rigid letters, and all subterms
+of <span class="math inline">\(C\)</span> at <span
+class="math inline">\(V\)</span>. Fix the roots of explicit constructors
+of <span class="math inline">\(C\)</span> and the rigid letters. Retain
+the pivot paths and one path per required input occurrence. The
+compressed primitives still imply <span class="math inline">\(C\)</span>
+by replay. They have a validity tuple consisting of the compressed <span
+class="math inline">\(V_x\)</span>. Indeed apply the same transformation
+to each original witness <em>body</em> over game names, using the
+assignment of the <span class="math inline">\(G_x\)</span>. Its root and
+every game-name value are distinguished. Projection commutes with
+evaluating this body and introduces no new names. The compressed <span
+class="math inline">\(G_e\)</span>’s still contain only earlier letters,
+and the compressed <span class="math inline">\(G_h\)</span>’s remain
+their letters. No rigid symbol is written into an ordinary answer or a
+witness body: a raw term attaining a bare rigid letter at its witness
+must itself be a variable. Instantiating the letters back to original
+ground trees also gives ordinary consistency. <a
+href="round-28-compression.html">Substitution identity and path
+replay</a></p>
+<p>Support retention and padding preserve the original escape checks.
+There are polynomially many distinguished values and recorded paths,
+giving polynomial depth and a singly exponential expanded answer.
+Guessing that answer and using the supplied-answer validity test puts
+this case in NEXP.</p>
+</section>
+<section
+id="a-polynomial-bound-for-solved-presentations-with-empty-premise"
+class="level2">
+<h2>A polynomial bound for solved presentations with empty premise</h2>
+<p>Unify <span class="math inline">\(C\)</span> over the public
+coordinates and write its normal forms <span
+class="math inline">\(L_x(Z)\)</span>. Reject an inconsistent <span
+class="math inline">\(C\)</span>. Guess the unbound public names <span
+class="math inline">\(U\)</span> of a proposed idempotent answer. All
+its coordinate patterns have the form <span
+class="math inline">\(P_x=L_x[N_z(U)/z]\)</span>, because they must
+unify <span class="math inline">\(C\)</span>. For <span
+class="math inline">\(u\in U\)</span>, <span
+class="math inline">\(L_u\)</span> must be a residual name <span
+class="math inline">\(z_u\)</span> with <span
+class="math inline">\(N_{z_u}=u\)</span>; the <span
+class="math inline">\(z_u\)</span>’s are distinct. Guess the exact
+support of each unknown term <span class="math inline">\(N_z\)</span> in
+<span class="math inline">\(U\)</span>. This determines every public
+occurrence set in the presentation <span
+class="math inline">\(x=P_x\)</span> for <span
+class="math inline">\(x\notin U\)</span>. If escape uses an
+individual-validity exemption requiring a bare later existential,
+enforce that bare copy in the corresponding <span
+class="math inline">\(N_z\)</span>; a constructor-rooted <span
+class="math inline">\(L_x\)</span> cannot supply it. The other
+exemptions and the strong test are determined by the occurrence sets. <a
+href="round-31-leading.html#solved-presentations-have-polynomial-certificates">Individual
+validity test</a></p>
+<p>Introduce <span class="math inline">\(M_z=N_z(V_U)\)</span> in the
+enlarged ground algebra and put <span
+class="math inline">\(V_x=L_x(M)\)</span>. For a prescribed bare <span
+class="math inline">\(N_z=u\)</span>, set <span
+class="math inline">\(M_z=V_u\)</span> and use that stipulated body. For
+every other <span class="math inline">\(z\)</span>, require that <span
+class="math inline">\(M_z\)</span> be generated from the named <span
+class="math inline">\(V_u\)</span>’s with precisely the guessed support.
+Add the game-value and witness-generation constraints of the first
+section. These conditions are sufficient: take any realizing <span
+class="math inline">\(N_z\)</span>’s and validity witnesses, and build
+the stated solved presentation. The formal identity <span
+class="math inline">\(P_u=u\)</span> holds, <span
+class="math inline">\(C(P)\)</span> is an identity, and the
+reconstructed atoms meet the scope tests. Necessity follows by
+evaluating a successful presentation at its generic validity tuple.</p>
+<p><strong>Exact supports still admit polynomial certificates.</strong>
+In a solution distinguish the values of all syntax nodes in the
+equations and generator tests, including all generator names’ values,
+the target values and the rigid letters. For each required occurrence in
+each construction, record one path from its target to that named
+generator. There are polynomially many paths. Apply the
+distinguished-value compression with these paths and all explicitly
+required constructor roots. At a free root pack the selected children,
+at a fixed root retain the original constructor. Evaluating a compressed
+construction gives its compressed target by the substitution identity,
+and the designated occurrences of its generators survive. This also
+works when two different generator names have identical values. The
+compressed ground values share a polynomial-size DAG and the retained
+occurrences have polynomial depth. In each compressed body keep one path
+for every required generator and fill the remaining pieces by ordinary
+generation using only the allowed names, memoizing per target node. This
+yields polynomial-size DAGs for exact-support constructions as well.
+Equations, prefix scopes and all tests can now be verified in NP.</p>
+<p>The executable compares the supplied-answer checker with direct
+finite games and tests the SAT reduction. The synthesis upper bounds in
+the last two sections are written proofs. They use the empty premise to
+make the generic validity row available for the ordinary argument. A
+nonempty premise can exclude that row. With the extracted strong rule, a
+single nonempty premise can check an independent evaluation and yield
+r.e.-complete existence. <a href="round-33-carrier-reduction.html">One
+branch and one carrier</a></p>
+</section>
+</article>
+<script src="/assets/theme-toggle.js"></script>
+</body>
+</html>

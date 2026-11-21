@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <meta name="dcterms.date" content="2026-11-21">
+  <meta property="og:title" content="JCA Round 28: Every Successful One-Branch Strategy Has a Bounded Witness">
+  <meta property="og:url" content="https://lukstafi.github.io/projects/jca/agent-collab/round-28-compression.html">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="lukstafi&#x27;s blog">
+  <meta name="twitter:card" content="summary">
+  <title>JCA Round 28: Every Successful One-Branch Strategy Has a
+Bounded Witness</title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <link rel="stylesheet" href="/assets/tufte.css">
+  <link rel="stylesheet" href="/assets/pandoc-tufte.css">
+  <link rel="stylesheet" href="/assets/site.css">
+  <script defer=""
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+  type="text/javascript"></script>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+  <script>(function(){var t=localStorage.getItem('theme-preference');if(t)document.documentElement.setAttribute('data-theme',t);})()</script>
+</head>
+<body>
+<nav class="site-nav">
+  <a href="/">Home</a> &middot; <a href="/study/">Study Guide</a> &middot; <a href="/about.html">About</a> &middot; <a href="https://lukstafi.substack.com">Substack</a>
+</nav>
+<div class="theme-toggle">
+  <button id="theme-btn" aria-label="Toggle dark mode">&#9788;</button>
+</div>
+<article>
+<header>
+<h1 class="title">JCA Round 28: Every successful one-branch strategy has
+a bounded witness</h1>
+<p class="byline">2026-11-21</p>
+</header>
+<nav id="TOC">
+<ul>
+<li><a href="#what-one-unification-run-needs-to-remember"
+id="toc-what-one-unification-run-needs-to-remember">What one unification
+run needs to remember</a></li>
+<li><a href="#keep-selected-paths-in-the-witness"
+id="toc-keep-selected-paths-in-the-witness">Keep selected paths in the
+witness</a></li>
+<li><a href="#why-the-shortened-premise-still-forces-the-conclusion"
+id="toc-why-the-shortened-premise-still-forces-the-conclusion">Why the
+shortened premise still forces the conclusion</a></li>
+<li><a href="#bounds-and-decision-procedure"
+id="toc-bounds-and-decision-procedure">Bounds and decision
+procedure</a></li>
+</ul>
+</nav>
+<p><strong>Theorem.</strong> One equational implication over finite
+ground trees is decidable under an arbitrary parameter-free quantifier
+prefix, including when outputs occur in its premise. For a fixed finite
+single-sorted signature with a constant, every successful instance of
+size <span class="math inline">\(n\)</span> has a term strategy and an
+active witness of depth <span class="math inline">\(O(n^2)\)</span>. The
+ground values of its entire public tuple at that witness share a DAG of
+size <span class="math inline">\(O(n^2)\)</span>.</p>
+<p>Take the initial existential data <span
+class="math inline">\(X\)</span>, universal inputs <span
+class="math inline">\(H\)</span>, and existential outputs <span
+class="math inline">\(Y\)</span> in prefix order. A strategy fixes
+ground data <span class="math inline">\(d\)</span> and a term <span
+class="math inline">\(B_y\)</span> in earlier inputs for each output.
+Its instantiated premise <span class="math inline">\(P=D[d,B]\)</span>
+must have a ground solution, and every such solution must satisfy <span
+class="math inline">\(Q=C[d,B]\)</span>. Every successful equational
+answer yields such a strategy by fixing its extra parameters at one
+joint witness. Scope is preserved throughout the proof below because the
+transformation never introduces an input name into a term. <a
+href="round-20-one-branch.html#one-witness-determines-the-strategy-form">Strategy
+characterization</a></p>
+<section id="what-one-unification-run-needs-to-remember" class="level2">
+<h2>What one unification run needs to remember</h2>
+<p>Start with any successful strategy and choose a ground input
+assignment <span class="math inline">\(\eta\)</span> satisfying <span
+class="math inline">\(P\)</span>. Evaluate the public coordinates and
+all syntactic subterms of the <strong>original</strong> <span
+class="math inline">\(D,C\)</span> at this row. Let <span
+class="math inline">\(S\)</span> be the set of distinct resulting ground
+values. Include unused public coordinates. The number <span
+class="math inline">\(s=|S|\)</span> is at most the number of coordinate
+declarations and syntax nodes, independent of the size of the strategy.
+Call <span class="math inline">\(v\in S\)</span> <em>fixed at the
+root</em> if it is the value of an explicit constructor application in
+<span class="math inline">\(D\)</span> or <span
+class="math inline">\(C\)</span>, including a literal constant. Each of
+its immediate children belongs to <span
+class="math inline">\(S\)</span>.</p>
+<p>Unify <span class="math inline">\(P\)</span> as follows. While some
+current equality is not a syntactic identity, follow identical
+constructor heads to a first disagreement in that equality. The two
+terms have the same value at <span class="math inline">\(\eta\)</span>,
+so the disagreement is an unbound input <span
+class="math inline">\(h\)</span> against a distinct term <span
+class="math inline">\(u\)</span>. The variable <span
+class="math inline">\(h\)</span> cannot occur in <span
+class="math inline">\(u\)</span>, by finite-tree size. Record the path
+from this equation’s root to the disagreement and apply the substitution
+<span class="math inline">\(h\mapsto u\)</span> to every current
+equation. Previous substitutions preserve <span
+class="math inline">\(\eta\)</span>. Each step removes one input and
+there are at most <span class="math inline">\(|H|\)</span> steps.</p>
+<p>The composite substitution is a most general unifier. It turns every
+conclusion equality into an identity. Otherwise two distinct remaining
+terms could be separated by a ground assignment to the remaining inputs,
+contradicting relevance. Distinct terms over a nonsingleton free ground
+algebra admit such a separating assignment. The singleton algebra is
+immediate.</p>
+</section>
+<section id="keep-selected-paths-in-the-witness" class="level2">
+<h2>Keep selected paths in the witness</h2>
+<p>Each recorded path runs in the common ground value of one premise
+equation, from a member of <span class="math inline">\(S\)</span> to the
+value of the input <span class="math inline">\(h\)</span>, another
+member of <span class="math inline">\(S\)</span>. Along this path mark
+every occurrence of a value in <span class="math inline">\(S\)</span>.
+For consecutive marks at <span class="math inline">\(v\)</span> and
+<span class="math inline">\(w\)</span>, retain the relative path from
+<span class="math inline">\(v\)</span> to <span
+class="math inline">\(w\)</span>. Collect these relative paths by the
+<strong>value</strong> <span class="math inline">\(v\)</span>, across
+all pivots and all occurrences. At a fixed root use all its immediate
+children. At any other <span class="math inline">\(v\)</span>, the
+collected paths are incomparable because each ends at the first
+subsequent value in <span class="math inline">\(S\)</span>. A single
+pivot cannot visit <span class="math inline">\(v\)</span> twice since
+size decreases, so at most <span class="math inline">\(|H|\)</span>
+paths are collected there.</p>
+<p>Define a transformation <span class="math inline">\(\pi(t)\)</span>
+for each term over <span class="math inline">\(H\)</span> whose value
+<span class="math inline">\(v=t\eta\)</span> lies in <span
+class="math inline">\(S\)</span>.</p>
+<ol type="1">
+<li>If <span class="math inline">\(t\)</span> is an input variable, keep
+it.</li>
+<li>Otherwise, at a fixed root keep the constructor and transform its
+children.</li>
+<li>At any other root, inspect the open subtrees <span
+class="math inline">\(t|_p\)</span> at the retained paths for <span
+class="math inline">\(v\)</span>. Pack their transformed values in a
+fixed constructor context, using each exactly once in a fixed order.
+With no paths use a fixed constant.</li>
+</ol>
+<p>The lookups in step 3 exist. The root under inspection is a
+constructor, and an input variable strictly inside a retained path would
+have its value in <span class="math inline">\(S\)</span> before the
+first marked descendant. Recursion descends strictly in ground-value
+size. A binary constructor gives an ordinary list context, and a larger
+arity works with padding. In a monadic algebra incomparable paths number
+at most one and a unary application suffices for that path. In an
+algebra of constants they number zero.</p>
+<p><strong>Substitution identity.</strong> If a substitution <span
+class="math inline">\(\rho\)</span> respects the witness, meaning <span
+class="math inline">\(\rho(h)\eta=\eta(h)\)</span> for every input, set
+<span class="math inline">\(\widehat\rho(h)=\pi(\rho(h))\)</span>.
+Then</p>
+<p><span
+class="math display">\[\pi(t\rho)=\pi(t)\widehat\rho.\]</span></p>
+<p>For a variable this is the definition. At every other root the two
+calls select the same positions because their witness values coincide.
+Along any selected path all strict prefixes in <span
+class="math inline">\(t\)</span> are constructors. Thus taking that
+subtree commutes with substitution, and induction on the smaller ground
+values gives the identity.</p>
+<p>Set <span class="math inline">\(d&#39;=\pi(d)\)</span>, <span
+class="math inline">\(B&#39;_y=\pi(B_y)\)</span>, and <span
+class="math inline">\(\eta&#39;(h)=\pi(\eta(h))\)</span> componentwise.
+Induction on the original syntax shows that the new instantiated premise
+and conclusion are exactly <span
+class="math inline">\(\pi(P),\pi(Q)\)</span> applied to their respective
+equation sides. This is why all explicit constructor occurrences in the
+original problem were fixed at the root. The substitution identity
+applied to <span class="math inline">\(\eta\)</span> shows that <span
+class="math inline">\(\eta&#39;\)</span> still satisfies the new
+premise.</p>
+</section>
+<section id="why-the-shortened-premise-still-forces-the-conclusion"
+class="level2">
+<h2>Why the shortened premise still forces the conclusion</h2>
+<p>Take any assignment satisfying the new premise. Suppose it satisfies
+the transformed bindings from the first <span
+class="math inline">\(j-1\)</span> pivots. Applying those substitutions
+to its equations preserves their truth. By the substitution identity,
+the current transformed equations are the images of the original
+equations just before pivot <span class="math inline">\(j\)</span>.</p>
+<p>On the recorded path for that pivot, both original sides had
+constructor roots at every strict prefix. Between consecutive marks, the
+transformed sides have the same packing context or the same fixed
+constructor. Equality of those roots forces equality of the chosen child
+at its retained address. Following the marks to the end therefore forces
+<span class="math inline">\(h=\pi(u)\)</span>. This proves the <span
+class="math inline">\(j\)</span>-th binding. It also covers an empty
+path, when the binding is the entire equation.</p>
+<p>Induction forces every transformed binding at every active input. The
+original conclusions became identities after all the original bindings.
+Their images are identities after all the transformed bindings, again by
+the substitution identity. The new strategy therefore satisfies the
+conclusion at every active input.</p>
+</section>
+<section id="bounds-and-decision-procedure" class="level2">
+<h2>Bounds and decision procedure</h2>
+<p>For a ground value <span class="math inline">\(v\in S\)</span>, its
+transformed tree uses a context of <span
+class="math inline">\(O(|H|+1)\)</span> nodes pointing only to
+transformed proper subvalues in <span class="math inline">\(S\)</span>.
+Sharing once per <span class="math inline">\(v\)</span> gives a DAG of
+<span class="math inline">\(O(s(|H|+1))\)</span> nodes for the
+transformed witness. Along any branch, the open transformation visits at
+most <span class="math inline">\(s\)</span> distinguished values and
+inserts <span class="math inline">\(O(|H|+1)\)</span> constructor levels
+per visit. In a signature of maximum arity <span
+class="math inline">\(q\)</span>, one explicit depth bound for the list
+construction is <span class="math inline">\(s\max(1,|H|)\)</span>: a
+padded list of <span class="math inline">\(b\)</span> entries has depth
+at most <span class="math inline">\(b\)</span> above its children, and a
+fixed root contributes one. A variable or constant has depth zero.</p>
+<p>Hence finite enumeration of strategy terms of that depth, respecting
+scope, followed by ordinary unification and equalization decides
+existence. The expanded trees have at most <span
+class="math inline">\((c(n+1))^{s+1}\)</span> nodes for a
+signature-dependent constant <span class="math inline">\(c\)</span>,
+since each visit makes at most <span
+class="math inline">\(\max(q,|H|)\)</span> recursive calls. This gives a
+nondeterministic exponential-time bound directly. Over monadic
+signatures the terms already have polynomial size. The bound here
+concerns one joint witness of a single branch. A second branch may
+require a different witness and different paths through the very same
+output body. <a href="round-25-binary.html">Two-branch lower
+bound</a></p>
+<p>The <a href="round-28-decision.py">general decision procedure</a>
+enumerates ground values for the residuals of the joint unifier up to
+the proved depth bound. For each resulting public row it generates the
+output bodies by replacing subtrees by in-scope inputs of the same
+value, then checks the original implication. Its answers agree with
+exhaustive strategy search on all 1,296 single-premise-atom,
+single-conclusion-atom instances in a two-constant test algebra with two
+interleaved inputs and two outputs. The exhaustive procedure is intended
+for small instances.</p>
+<p>The <a href="round-28-compression.py">executable compression</a>
+records actual pivots, collects paths by ground value, rebuilds the
+strategy, and independently unifies the shortened premise to verify
+relevance. Its examples cover two different retained paths in distinct
+copies of the same value, a disagreement exposed by a previous binding,
+and unary and constant-only signatures. It also verifies 400 generated
+strategies with interleaved quantifiers and initial data.</p>
+<p><a href="round-28-projection.lean">Lean</a> checks the substitution
+identity for binary terms and arbitrary finite selection plans whose
+retained paths exist and whose holes use the designated plan of their
+witness value. Round 29 uses the depth bound to obtain a polynomial-size
+certificate. <a href="round-29-small-dags.html">Shared strategy
+theorem</a></p>
+</section>
+</article>
+<script src="/assets/theme-toggle.js"></script>
+</body>
+</html>

@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <meta name="dcterms.date" content="2026-11-21">
+  <meta property="og:title" content="JCA Round 13: What Forces the Next Copy?">
+  <meta property="og:url" content="https://lukstafi.github.io/projects/jca/agent-collab/round-13-forced-copies.html">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="lukstafi&#x27;s blog">
+  <meta name="twitter:card" content="summary">
+  <title>JCA Round 13: What Forces the Next Copy?</title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <style type="text/css">
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="/assets/tufte.css">
+  <link rel="stylesheet" href="/assets/pandoc-tufte.css">
+  <link rel="stylesheet" href="/assets/site.css">
+  <script defer=""
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+  type="text/javascript"></script>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+  <script>(function(){var t=localStorage.getItem('theme-preference');if(t)document.documentElement.setAttribute('data-theme',t);})()</script>
+</head>
+<body>
+<nav class="site-nav">
+  <a href="/">Home</a> &middot; <a href="/study/">Study Guide</a> &middot; <a href="/about.html">About</a> &middot; <a href="https://lukstafi.substack.com">Substack</a>
+</nav>
+<div class="theme-toggle">
+  <button id="theme-btn" aria-label="Toggle dark mode">&#9788;</button>
+</div>
+<article>
+<header>
+<h1 class="title">JCA Round 13: What Forces the Next Copy?</h1>
+<p class="byline">2026-11-21</p>
+</header>
+<nav id="TOC">
+<ul>
+<li><a href="#one-comparison-that-forces-two-copies"
+id="toc-one-comparison-that-forces-two-copies">1. One comparison that
+forces two copies</a></li>
+<li><a href="#a-chain-with-fixed-answer-depth-and-exact-witness-depth"
+id="toc-a-chain-with-fixed-answer-depth-and-exact-witness-depth">2. A
+chain with fixed answer depth and exact witness depth</a>
+<ul>
+<li><a href="#what-happens-when-the-comparisons-form-a-cycle"
+id="toc-what-happens-when-the-comparisons-form-a-cycle">What happens
+when the comparisons form a cycle?</a></li>
+</ul></li>
+<li><a href="#a-decision-procedure-for-one-informative-comparison"
+id="toc-a-decision-procedure-for-one-informative-comparison">3. A
+decision procedure for one informative comparison</a>
+<ul>
+<li><a href="#the-flat-case" id="toc-the-flat-case">The flat
+case</a></li>
+<li><a href="#the-compound-case" id="toc-the-compound-case">The compound
+case</a></li>
+<li><a href="#why-one-guard-needs-only-four-leaf-positions"
+id="toc-why-one-guard-needs-only-four-leaf-positions">Why one guard
+needs only four leaf positions</a></li>
+</ul></li>
+<li><a href="#checks-and-the-remaining-question"
+id="toc-checks-and-the-remaining-question">4. Checks and the remaining
+question</a></li>
+</ul>
+</nav>
+<p><em>Research note by Codex.</em></p>
+<p>A single equality can make one branch copy an entire tree. A second
+equality can make it copy the result. For each <span
+class="math inline">\(k\ge1\)</span> there is an instance with <span
+class="math inline">\(k\)</span> comparisons and one consistency guard
+in which the guard witness has minimum depth exactly <span
+class="math inline">\(2k+2\)</span>. Each stage requires two copies of
+the previous tree, giving exponential expanded size. All the input
+equations are between variables and constants or between two variables.
+An answer pattern of depth two works for every <span
+class="math inline">\(k\)</span>.</p>
+<p>With just one informative comparison, the same mechanism admits a
+decision procedure. If the comparison must force designated outputs to
+constants and all other branches are consistency guards, ordinary answer
+existence is decidable in polynomial time. With one guard, four is the
+sharp uniform witness-depth bound, independent of the number of
+variables.</p>
+<section id="one-comparison-that-forces-two-copies" class="level2">
+<h2>1. One comparison that forces two copies</h2>
+<p>Work over finite trees built from <span
+class="math inline">\(f/2,a,b\)</span>. An answer is a tuple pattern
+<span class="math inline">\(P\)</span> over fresh parameters. For a
+branch <span class="math inline">\(D\Rightarrow C\)</span>, some ground
+instance of <span class="math inline">\(P\)</span> must satisfy <span
+class="math inline">\(D\)</span>, and every such instance must satisfy
+<span class="math inline">\(C\)</span>. A <strong>guard</strong> is a
+branch with conclusion <span class="math inline">\(\top\)</span>. Choose
+a ground tuple satisfying the premise and conclusion of each branch.
+This witness family is successful if its simultaneous least general
+generalization is an answer. Each answer supplies such a family by
+choosing any one of its premise witnesses per branch. Depth counts edges
+on the longest root-to-leaf path. <a
+href="round-10-witness-generalization.html#exact-witness-theorem">Round
+10, §4</a></p>
+<p>Add one output to the five-variable example from <a
+href="round-12-same-shape.html">Round 12</a>. The comparison and guard
+are</p>
+<p><span class="math display">\[
+\begin{aligned}
+x=y &amp;\quad\Rightarrow\quad u=a\land v=b\land z=a\land w=b,\\
+u=b\land v=a\land z=x\land w=x &amp;\quad\Rightarrow\quad \top .
+\end{aligned}
+\]</span></p>
+<p>Write <span
+class="math inline">\(T(i,j,k,l)=f(f(i,j),f(k,l))\)</span> as an
+abbreviation in the original signature. An answer on <span
+class="math inline">\((x,y,u,v,z,w)\)</span> is</p>
+<p><span class="math display">\[P=(T(a,b,a,b),\ T(p,q,r,s),\
+p,q,r,s).\]</span></p>
+<p>The first premise binds <span
+class="math inline">\((p,q,r,s)\)</span> to <span
+class="math inline">\((a,b,a,b)\)</span>. In the guard, <span
+class="math inline">\(p=b,q=a\)</span> and <span
+class="math inline">\(r=s=P_x\)</span>. The two copies of <span
+class="math inline">\(P_x\)</span> occur two levels down in <span
+class="math inline">\(y\)</span>, giving depth four.</p>
+<p><strong>Lemma 1.</strong> Every guard witness of every answer has
+<span class="math inline">\(y\)</span> of depth at least four. The
+minimum answer-pattern depth is two.</p>
+<p><em>Where the copies must go.</em> The required values of <span
+class="math inline">\(u,v\)</span> switch in opposite directions, so
+their coordinates are distinct parameters <span
+class="math inline">\(p,q\)</span>. Comparing a leaf with a leaf can
+force at most one independent constant binding. Comparing a leaf with a
+compound term can only bind a parameter to that term. To force both
+<span class="math inline">\(p=a\)</span> and <span
+class="math inline">\(q=b\)</span>, <span
+class="math inline">\(P_x,P_y\)</span> must therefore both have
+constructor roots. Each of <span class="math inline">\(z,w\)</span>
+takes a constant value in the first branch and the compound value of
+<span class="math inline">\(x\)</span> in the guard. Their coordinates
+are two more parameters <span class="math inline">\(r,s\)</span>,
+distinct from each other because <span class="math inline">\(a\ne
+b\)</span> and distinct from <span class="math inline">\(p,q\)</span> by
+the guard values.</p>
+<p>The comparison must mention <span class="math inline">\(r,s\)</span>
+to bind them. Neither can occur in <span
+class="math inline">\(P_x\)</span>, since the guard would equate a
+finite tree with its proper subtree. Both occur in <span
+class="math inline">\(P_y\)</span>. Also, two patterns of depth at most
+one would supply at most two leaf equations, whereas forcing four
+distinct parameters to constants needs at least four class mergers. This
+proves the answer-depth lower bound.</p>
+<p><em>Why three levels fail in the guard.</em> Let <span
+class="math inline">\(X,Y\)</span> be the guard values of <span
+class="math inline">\(x,y\)</span>. Suppose <span
+class="math inline">\(Y\)</span> has depth at most three. Each of <span
+class="math inline">\(r,s\)</span> places <span
+class="math inline">\(X\)</span> below the root of <span
+class="math inline">\(Y\)</span>. If <span
+class="math inline">\(X\)</span> has depth at least two, the two
+parameters must occupy the two immediate child positions in <span
+class="math inline">\(P_y\)</span>. Then <span
+class="math inline">\(P_x=P_y\)</span> simply assigns the children of
+<span class="math inline">\(P_x\)</span> to <span
+class="math inline">\(r,s\)</span>, in one order or the other. Neither
+parameter occurs in <span class="math inline">\(P_x\)</span>, so <span
+class="math inline">\(p,q\)</span> stay free.</p>
+<p>It remains to consider <span class="math inline">\(X\)</span> of
+depth one. Write <span class="math inline">\(P_x=f(L,M)\)</span> with
+<span class="math inline">\(L,M\)</span> leaves and <span
+class="math inline">\(P_y=f(U,V)\)</span>. If either <span
+class="math inline">\(U\)</span> or <span
+class="math inline">\(V\)</span> is a leaf, solve its leaf equation
+first. The other equation still has a leaf on one side and cannot supply
+the remaining three constant bindings. If <span
+class="math inline">\(U,V\)</span> are both compound, <span
+class="math inline">\(L,M\)</span> must be parameters. When they are
+distinct, <span class="math inline">\(L=U,M=V\)</span> merely define
+them in terms of the other parameters. Consistency excludes a cyclic
+definition, so the other parameters can be grounded freely. When <span
+class="math inline">\(L=M\)</span>, the constraint on the other
+parameters is exactly <span class="math inline">\(U=V\)</span>. The
+common parameter cannot occur in either term.</p>
+<p>In this last case <span class="math inline">\(r,s\)</span> must occur
+as immediate children of <span class="math inline">\(U\)</span> or <span
+class="math inline">\(V\)</span>, since each is compound in the guard
+and <span class="math inline">\(Y\)</span> has depth at most three.
+Under <span class="math inline">\(U=V\)</span> their required values are
+different constants. They must occupy different child positions (left
+and right), and each opposing child must be a leaf to admit the required
+constant. Thus <span class="math inline">\(U=V\)</span> supplies only
+two leaf equations. This again cannot force the four bindings. The
+construction attains both lower bounds. <span
+class="math inline">\(\square\)</span></p>
+</section>
+<section id="a-chain-with-fixed-answer-depth-and-exact-witness-depth"
+class="level2">
+<h2>2. A chain with fixed answer depth and exact witness depth</h2>
+<p>Take variables <span class="math inline">\(t_0,\ldots,t_k\)</span>,
+two outputs <span class="math inline">\(u,v\)</span>, and pairs <span
+class="math inline">\(z_j,w_j\)</span> for <span
+class="math inline">\(1\le j\le k\)</span>. The <span
+class="math inline">\(j\)</span>th branch has premise <span
+class="math inline">\(t_{j-1}=t_j\)</span> and conclusion <span
+class="math inline">\(z_j=a\land w_j=b\)</span>. The first branch also
+concludes <span class="math inline">\(u=a\land v=b\)</span>. A single
+guard ties each pair to its predecessor.</p>
+<p><span class="math display">\[ u=b\land v=a\land
+   \bigwedge_{j=1}^k(z_j=t_{j-1}\land w_j=t_{j-1})
+   \quad\Rightarrow\quad\top .\]</span></p>
+<p><strong>Theorem 2.</strong> The minimum answer-pattern depth is two.
+The minimum possible depth at <span class="math inline">\(t_k\)</span>
+in the guard is <span class="math inline">\(2k+2\)</span>, also the
+minimum maximum-coordinate depth of a successful family. Every guard
+witness has at least <span class="math inline">\(4\cdot2^k-1\)</span>
+nodes at <span class="math inline">\(t_k\)</span>. A family attaining
+the depth bound uses <span class="math inline">\(12\cdot2^k-5\)</span>
+nodes there and only two distinct witness rows overall.</p>
+<p><em>Lower bounds.</em> The first comparison and the corresponding
+part of the guard give Lemma 1, since that comparison has no other
+premise. Thus the guard value of <span
+class="math inline">\(t_1\)</span> has depth at least four. Suppose
+<span class="math inline">\(P_{t_{j-1}}\)</span> has a constructor root.
+The two outputs <span class="math inline">\(z_j,w_j\)</span> must be
+distinct parameters because their values in comparison <span
+class="math inline">\(j\)</span> are <span
+class="math inline">\(a,b\)</span>, and both take the compound value of
+<span class="math inline">\(t_{j-1}\)</span> in the guard. They must
+occur in <span class="math inline">\(P_{t_j}\)</span> and must be absent
+from <span class="math inline">\(P_{t_{j-1}}\)</span>, by the same
+finite-tree argument as before. This also proves that <span
+class="math inline">\(P_{t_j}\)</span> is compound and contains
+parameters.</p>
+<p>For <span class="math inline">\(j\ge2\)</span>, at least one of these
+occurrences lies at depth two or more. Otherwise <span
+class="math inline">\(P_{t_j}\)</span> would be just <span
+class="math inline">\(f(r,s)\)</span>, up to swapping the two output
+parameters. Unifying with <span
+class="math inline">\(P_{t_{j-1}}\)</span> could then force both outputs
+to constants only if the two children of <span
+class="math inline">\(P_{t_{j-1}}\)</span> were already those literal
+constants. But <span class="math inline">\(P_{t_{j-1}}\)</span> contains
+the preceding output parameters. The guard value of <span
+class="math inline">\(t_j\)</span> therefore gains at least two levels
+over that of <span class="math inline">\(t_{j-1}\)</span>. Starting at
+four proves the depth bound. For tree size, the two distinct parameter
+leaves give disjoint copies. Writing <span
+class="math inline">\(N_j\)</span> for guard tree size at <span
+class="math inline">\(t_j\)</span>, we have <span
+class="math inline">\(N_0\ge3\)</span> and <span
+class="math inline">\(N_j\ge1+2N_{j-1}\)</span>.</p>
+<p><em>Construction.</em> Put <span
+class="math inline">\(P_u=p,P_v=q\)</span>, and use fresh <span
+class="math inline">\(P_{z_j}=r_j,P_{w_j}=s_j\)</span>. Take</p>
+<p><span class="math display">\[
+P_{t_0}=T(p,q,a,b),\qquad
+P_{t_j}=\begin{cases}
+T(a,b,r_j,s_j)&amp; j\text{ odd},\\
+T(r_j,s_j,a,b)&amp; j\text{ even}.
+\end{cases}
+\]</span></p>
+<p>Each comparison places the two current parameters opposite <span
+class="math inline">\(a,b\)</span>. The first also places <span
+class="math inline">\(p,q\)</span> opposite <span
+class="math inline">\(a,b\)</span>. A single assignment <span
+class="math inline">\(p=a,q=b,r_j=a,s_j=b\)</span> witnesses every
+comparison. For the guard, take <span
+class="math inline">\(p=b,q=a\)</span> and successively assign <span
+class="math inline">\(r_j,s_j\)</span> the already computed value of
+<span class="math inline">\(t_{j-1}\)</span>. The guard depths are <span
+class="math inline">\(2,4,\ldots,2k+2\)</span>. Here <span
+class="math inline">\(N_0=7\)</span> and <span
+class="math inline">\(N_j=5+2N_{j-1}\)</span>, giving the stated size.
+The constructed rows have successful hull, so the lower bounds for
+answers and their guard instances apply to all successful families as
+well. <span class="math inline">\(\square\)</span></p>
+<p>For example, in the guard the first two steps give <span
+class="math inline">\(t_1=T(a,b,t_0,t_0)\)</span> and <span
+class="math inline">\(t_2=T(t_1,t_1,a,b)\)</span>. Each branch by itself
+admits a depth-zero solution. The whole family uses <span
+class="math inline">\(O(k)\)</span> equation occurrences. With shared
+subtrees the two constructed rows occupy only <span
+class="math inline">\(O(k)\)</span> distinct nodes, since each stage
+adds at most three constructor nodes. For <span
+class="math inline">\(k=8\)</span>, the final tree has depth 18 and
+3,067 expanded nodes.</p>
+<p>To isolate the effect of separate premises, merge the <span
+class="math inline">\(k\)</span> active branches into one by conjoining
+their premises and conjoining their conclusions. Every equation in the
+construction is still present. Now give <span
+class="math inline">\(t_0,\ldots,t_{k-1}\)</span> the single pattern
+<span class="math inline">\(P_x\)</span> of Lemma 1 and <span
+class="math inline">\(t_k\)</span> its <span
+class="math inline">\(P_y\)</span>. Give every <span
+class="math inline">\(z_j\)</span> the same <span
+class="math inline">\(r\)</span> and every <span
+class="math inline">\(w_j\)</span> the same <span
+class="math inline">\(s\)</span>. The conjoined premise reduces to <span
+class="math inline">\(P_x=P_y\)</span>, and witness depth four suffices
+for every <span class="math inline">\(k\)</span>. In the original
+instance, comparison <span class="math inline">\(j\)</span> must force
+its outputs even when the other comparisons fail.</p>
+<p>There is a general reason the depth grows at most linearly here.
+Given an ordinary answer pattern on <span
+class="math inline">\(n\)</span> coordinates of depth <span
+class="math inline">\(d\)</span> and a constructor-free premise, its
+substituted equations contain at most <span
+class="math inline">\(n(2^d-1)\)</span> distinct constructor nodes,
+counting nodes in the whole pattern. Finite-tree unification merges
+nodes of this term graph. After grounding residual variables to <span
+class="math inline">\(a\)</span>, a root-to-leaf path visits each
+surviving constructor class at most once. This bounds the depth of a
+chosen premise witness, and choosing such a witness in each branch gives
+a successful family. The chain shows that even at <span
+class="math inline">\(d=2\)</span> a bound must allow linear growth with
+the number of coordinates.</p>
+<section id="what-happens-when-the-comparisons-form-a-cycle"
+class="level3">
+<h3>What happens when the comparisons form a cycle?</h3>
+<p>The same construction can prescribe a directed graph of copies. Give
+each vertex <span class="math inline">\(i\)</span> a port <span
+class="math inline">\(t_i\)</span>. For each directed edge <span
+class="math inline">\(e=(i,j)\)</span> introduce separate outputs <span
+class="math inline">\(z_e,w_e\)</span> and the branch</p>
+<p><span class="math display">\[t_i=t_j\quad\Rightarrow\quad u=a\land
+v=b\land z_e=a\land w_e=b.\]</span></p>
+<p>Use one guard setting <span class="math inline">\(u=b,v=a\)</span>
+and <span class="math inline">\(z_e=w_e=t_i\)</span> for each edge <span
+class="math inline">\(e=(i,j)\)</span>.</p>
+<p><strong>Proposition.</strong> This instance has an answer exactly
+when the directed graph is acyclic.</p>
+<p><em>Proof.</em> A loop would require <span
+class="math inline">\(u=a\)</span> unconditionally, contradicting the
+guard. For any other edge the argument of Lemma 1 makes both ports
+compound. The parameters for <span
+class="math inline">\(z_e,w_e\)</span> must occur in <span
+class="math inline">\(P_{t_j}\)</span> and must be absent from <span
+class="math inline">\(P_{t_i}\)</span>. Thus every edge makes the guard
+value at its source a proper subtree of the value at its target.
+Following a cycle would put a finite tree strictly inside itself.</p>
+<p>Conversely, suppose the graph is acyclic and has at least one edge.
+Give every vertex the same balanced tree shape, with four leaf positions
+per edge. In the block for <span class="math inline">\(e=(i,j)\)</span>
+put <span class="math inline">\((p,q,a,b)\)</span> at its source, <span
+class="math inline">\((a,b,r_e,s_e)\)</span> at its target, and <span
+class="math inline">\((a,b,a,b)\)</span> at every other vertex. Set
+<span
+class="math inline">\(P_u=p,P_v=q,P_{z_e}=r_e,P_{w_e}=s_e\)</span>.
+Comparing the endpoints forces all four required bindings in the edge’s
+own block. One assignment witnesses all comparisons by setting <span
+class="math inline">\(p=a,q=b,r_e=a,s_e=b\)</span> throughout. For the
+guard, set <span class="math inline">\(p=b,q=a\)</span> and visit
+vertices in topological order. The parameters in a vertex tree come only
+from <span class="math inline">\(p,q\)</span> and its incoming edges,
+whose sources already have values. Evaluate the vertex, then assign its
+value to both parameters of each outgoing edge. This supplies the guard
+witness. With no edges the guard alone is satisfiable. <span
+class="math inline">\(\square\)</span></p>
+</section>
+</section>
+<section id="a-decision-procedure-for-one-informative-comparison"
+class="level2">
+<h2>3. A decision procedure for one informative comparison</h2>
+<p>The input has distinct variables <span
+class="math inline">\(x,y\)</span>, designated outputs <span
+class="math inline">\(z\)</span> with prescribed values <span
+class="math inline">\(c_z\in\{a,b\}\)</span>, one active branch</p>
+<p><span class="math display">\[ x=y\quad\Rightarrow\quad\bigwedge_z
+z=c_z,\]</span></p>
+<p>and any number of guards <span
+class="math inline">\(G_i\Rightarrow\top\)</span>. Each <span
+class="math inline">\(G_i\)</span> is a conjunction of equations between
+variables or constants. Other variables may occur in guards. Project
+each guard separately to the ports <span
+class="math inline">\(x,y\)</span>, the outputs and the constants by
+taking equality classes. Reject any guard identifying <span
+class="math inline">\(a\)</span> and <span
+class="math inline">\(b\)</span>. A solution of a projected guard
+extends to its omitted variables by assigning the appropriate class
+values. Independent fresh parameters for those coordinates therefore
+extend a core answer to the original instance.</p>
+<p><strong>Theorem 3.</strong> Ordinary existence for this fragment is
+decidable in polynomial time. With <span
+class="math inline">\(n\)</span> outputs put <span
+class="math inline">\(d=\lceil\log_2\max(2,n)\rceil\)</span>. A solvable
+instance has an answer pattern of depth at most <span
+class="math inline">\(d\)</span> and successful witnesses of depth at
+most <span class="math inline">\(2d\)</span>. With just one guard there
+are also uniform bounds of two and four, respectively. Lemma 1 attains
+both.</p>
+<section id="the-flat-case" class="level3">
+<h3>The flat case</h3>
+<p>Every output coordinate admits its prescribed constant in the active
+branch, so each is a parameter or that literal constant. First try
+setting all outputs to their prescribed values and leaving the ports
+independent. This answers the instance exactly when every guard remains
+consistent with those fixed outputs.</p>
+<p>If both ports are leaves and some output is a parameter, the equation
+between the ports must bind it to a constant <span
+class="math inline">\(c\)</span>. The two port terms must therefore be
+<span class="math inline">\(c,p\)</span> in some order. Every varying
+output is the same <span class="math inline">\(p\)</span>, with target
+<span class="math inline">\(c\)</span>. If exactly one port were
+compound, the comparison would bind a parameter to a compound term and
+could fix no output to a constant. All outputs would already be
+constants, which the first test covers. This exhausts solutions with at
+most one compound port.</p>
+<p>Try the four choices of <span class="math inline">\(c\)</span> and
+port order. Let <span class="math inline">\(e\)</span> be the other
+constant. The state <span class="math inline">\(p=c\)</span> fixes both
+ports to <span class="math inline">\(c\)</span> and all outputs to their
+targets. Collect the guards that fail in this state. For <span
+class="math inline">\(p\ne c\)</span>, a satisfying guard assignment can
+always be taken with <span class="math inline">\(p=e\)</span>: a flat
+equality only compares <span class="math inline">\(p\)</span> to itself
+or to <span class="math inline">\(c,e\)</span>. Hence every collected
+guard must hold in the <strong>same second state</strong>. Conjoin these
+projected guards, fix the ports to <span
+class="math inline">\(c,e\)</span> in the chosen order, and fix the
+target-<span class="math inline">\(e\)</span> outputs to <span
+class="math inline">\(e\)</span>. If unification succeeds, ground the
+remaining free classes to <span class="math inline">\(c\)</span>. Use
+<span class="math inline">\(p\)</span> for each target-<span
+class="math inline">\(c\)</span> output that is <span
+class="math inline">\(e\)</span> in this state and its literal target
+for every other output. The two states witness all guards. The
+same-state necessity proves that exhaustion of these four trials
+excludes all flat answers.</p>
+</section>
+<section id="the-compound-case" class="level3">
+<h3>The compound case</h3>
+<p>In a projected guard, call an output attached to a port when it
+belongs to that port’s equality class. Under the hypothesis that both
+ports are compound, check four conditions:</p>
+<ol type="1">
+<li>No guard equates a port to a constant.</li>
+<li>No single guard attaches outputs to both ports.</li>
+<li>No output is attached to <span class="math inline">\(x\)</span> in
+one guard and to <span class="math inline">\(y\)</span> in another.</li>
+<li>Whenever a guard identifies the ports, it is compatible with all
+prescribed output values.</li>
+</ol>
+<p>For necessity, an attached output is a parameter because its guard
+value is compound and its active value is constant. To be forced by the
+comparison it must occur in at least one port. Attachment to <span
+class="math inline">\(x\)</span> forbids occurrence in <span
+class="math inline">\(P_x\)</span> by the occurs check, hence forces
+occurrence in <span class="math inline">\(P_y\)</span>. Attachment to
+<span class="math inline">\(y\)</span> forces the reverse. This proves
+condition 3. If both attachments occurred in the same guard, the value
+of each port would properly contain the other, proving condition 2.
+Conditions 1 and 4 follow from the constructor roots and active
+relevance.</p>
+<p>For sufficiency, give each output <span
+class="math inline">\(z\)</span> a fresh parameter <span
+class="math inline">\(p_z\)</span>. Use two identical balanced tree
+shapes at the ports with one leaf position per output, padding to two
+leaves if necessary. At each position place <span
+class="math inline">\(p_z\)</span> on one side and <span
+class="math inline">\(c_z\)</span> on the other. Place <span
+class="math inline">\(p_z\)</span> on the <span
+class="math inline">\(y\)</span> side if <span
+class="math inline">\(z\)</span> is ever attached to <span
+class="math inline">\(x\)</span>, and on the <span
+class="math inline">\(x\)</span> side otherwise. The active comparison
+fixes every output. In a guard identifying the ports, use the active
+assignment. In a guard attaching outputs to <span
+class="math inline">\(x\)</span>, first ground all classes except the
+<span class="math inline">\(x\)</span> class, respecting the guard’s
+constant tests and leaving the unattached port to be evaluated. The tree
+for <span class="math inline">\(x\)</span> uses no parameter of the
+<span class="math inline">\(x\)</span> class. Evaluate it and assign its
+value to all attached outputs. Now evaluate <span
+class="math inline">\(y\)</span>. The same construction works with the
+sides exchanged. Without attachments the output classes can simply be
+grounded first. These witnesses have at most one extra tree inserted
+below a parameter leaf, giving depth at most <span
+class="math inline">\(2d\)</span>.</p>
+<p>All tests use equality classes, intersections of finite sets and a
+constant number of joint unifications of flat equations. The
+construction has polynomial size. A failed flat test and a failed
+compound test together certify ordinary nonexistence for this
+syntax.</p>
+</section>
+<section id="why-one-guard-needs-only-four-leaf-positions"
+class="level3">
+<h3>Why one guard needs only four leaf positions</h3>
+<p>In a passing compound case there is at most one copied port. Make it
+the ground side of the comparison (choose either side if neither is
+copied). Each unattached guard class can take a constant, respecting its
+pins. The guard value of each output is now described by <span
+class="math inline">\(a\)</span>, <span
+class="math inline">\(b\)</span>, or a marker for the copied port. Group
+outputs by their pair of active and guard values. Equal constant pairs
+can be fixed literally. Only four potential groups need a parameter:</p>
+<p><span class="math display">\[
+(a,b),\quad(b,a),\quad(a,\mathrm{copy}),\quad(b,\mathrm{copy}).
+\]</span></p>
+<p>Put the active constants at the corresponding leaves of the ground
+port and the group parameters at the matching leaves of the other port.
+Padding to two leaves is enough when there are fewer than two groups.
+The copied port has depth at most two. Substituting it into the opposite
+port gives depth at most four. A guard identifying the ports and
+compatible with the targets is already covered by the flat case. This
+completes the proof. <span class="math inline">\(\square\)</span></p>
+</section>
+</section>
+<section id="checks-and-the-remaining-question" class="level2">
+<h2>4. Checks and the remaining question</h2>
+<p>Run the <a href="round-13-experiments.py">companion experiment</a>
+from the repository root.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python3</span> projects/jca/agent-collab/round-13-experiments.py</span></code></pre></div>
+<p>The six-variable example has <span
+class="math inline">\(1{,}446^3=3{,}023{,}464{,}536\)</span> possible
+witness pairs through depth three, specified by the common main port and
+the two guard ports. The program filters them by the necessary
+occurrences of the four disagreement columns. It computes the hull of
+each of the 10,146 survivors and checks the active entailment directly.
+All fail. For the chain it verifies successful hulls, the depth and size
+formulas, and sharing for <span
+class="math inline">\(k=1,\ldots,8\)</span>. It checks the graph
+construction on all 25 labelled acyclic directed graphs on three
+vertices. For two outputs with opposite targets it compares the decision
+procedure with independent enumeration of depth-one patterns on all
+11,476 unordered pairs of consistent guard partitions. The searches
+agree in all cases, with 5,034 positive.</p>
+<p>In the chain, comparison <span class="math inline">\(j\)</span>
+forces the copies at stage <span class="math inline">\(j\)</span>. The
+number of distinct witness rows stays at two even as the required depth
+grows. The construction uses an increasing number of informative
+premises. The next question is whether <strong>two informative
+branches</strong> can force successive copies by reusing the same
+premise. The one-comparison decision procedure and the chain leave that
+case open.</p>
+<p><strong>Round 14 update.</strong> With constructors in the input, two
+informative evaluations and two consistency guards suffice for
+undecidability. With unrestricted branch count, even fully
+constructor-free input is undecidable. The case of two total branches
+remains open here. <a href="round-14-four-branches.html">Four-branch
+proof</a> · <a href="round-15-constructor-free.html">Constructor-free
+proof</a></p>
+</section>
+</article>
+<script src="/assets/theme-toggle.js"></script>
+</body>
+</html>

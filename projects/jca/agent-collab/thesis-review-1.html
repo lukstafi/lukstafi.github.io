@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <meta name="dcterms.date" content="2026-11-21">
+  <meta property="og:title" content="What a branch witnesses: revisiting the InvarGenT thesis">
+  <meta property="og:url" content="https://lukstafi.github.io/projects/jca/agent-collab/thesis-review-1.html">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="lukstafi&#x27;s blog">
+  <meta name="twitter:card" content="summary">
+  <title>What a branch witnesses: revisiting the InvarGenT
+thesis</title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <style type="text/css">
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="/assets/tufte.css">
+  <link rel="stylesheet" href="/assets/pandoc-tufte.css">
+  <link rel="stylesheet" href="/assets/site.css">
+  <script defer=""
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+  type="text/javascript"></script>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+  <script>(function(){var t=localStorage.getItem('theme-preference');if(t)document.documentElement.setAttribute('data-theme',t);})()</script>
+</head>
+<body>
+<nav class="site-nav">
+  <a href="/">Home</a> &middot; <a href="/study/">Study Guide</a> &middot; <a href="/about.html">About</a> &middot; <a href="https://lukstafi.substack.com">Substack</a>
+</nav>
+<div class="theme-toggle">
+  <button id="theme-btn" aria-label="Toggle dark mode">&#9788;</button>
+</div>
+<article>
+<header>
+<h1 class="title">What a branch witnesses: revisiting the InvarGenT
+thesis</h1>
+<p class="byline">2026-11-21</p>
+</header>
+<nav id="TOC">
+<ul>
+<li><a href="#which-branches-need-a-witness"
+id="toc-which-branches-need-a-witness">Which branches need a
+witness?</a></li>
+<li><a href="#when-can-a-solved-variable-be-replaced"
+id="toc-when-can-a-solved-variable-be-replaced">When can a solved
+variable be replaced?</a></li>
+<li><a href="#when-can-type-information-be-projected-away"
+id="toc-when-can-type-information-be-projected-away">When can type
+information be projected away?</a></li>
+<li><a href="#a-program-with-no-principal-conjunctive-type"
+id="toc-a-program-with-no-principal-conjunctive-type">A program with no
+principal conjunctive type</a></li>
+<li><a href="#how-many-inferred-types-would-a-beam-need"
+id="toc-how-many-inferred-types-would-a-beam-need">How many inferred
+types would a beam need?</a></li>
+<li><a href="#what-a-variable-pattern-knows-about-list-length"
+id="toc-what-a-variable-pattern-knows-about-list-length">What a variable
+pattern knows about list length</a></li>
+<li><a href="#an-exact-target-for-linear-arithmetic-generalization"
+id="toc-an-exact-target-for-linear-arithmetic-generalization">An exact
+target for linear arithmetic generalization</a></li>
+<li><a href="#status-of-the-remaining-questions"
+id="toc-status-of-the-remaining-questions">Status of the remaining
+questions</a></li>
+</ul>
+</nav>
+<p>The 2015 thesis asks a solver to infer types from what each branch of
+a program must do. Three operations in that argument deserve closer
+inspection. Normalizing a guard can turn one source case into several
+implications. Substituting into a solved equation can move a dependency
+across a quantifier. Projecting a type equation can erase the only
+connection between two indices. Each operation has a small
+counterexample and a useful replacement rule. <a
+href="../lukstafi-phd-thesis.pdf">Thesis, Chapters 3–5 and Appendix
+A</a> · <a href="thesis-review-1.lean">Lean proofs</a></p>
+<section id="which-branches-need-a-witness" class="level2">
+<h2>Which branches need a witness?</h2>
+<p>Definition 3.5 fixes an interpretation of the unknown predicates.
+Write <span class="math inline">\(\operatorname{sat}(D)\)</span> for
+existential closure in that interpretation. The default rule asks for
+<span
+class="math inline">\(\operatorname{sat}(D_i)\Rightarrow\operatorname{sat}(D_i\land
+A)\)</span> on each normalized branch, where <span
+class="math inline">\(A\)</span> is the residual answer. Its “without
+dead code” variant requires <span
+class="math inline">\(\operatorname{sat}(D_i\land A)\)</span> on each
+branch with conclusion different from <span
+class="math inline">\(\bot\)</span>. Definition 4.1, for joint
+constraint abduction, requires <span
+class="math inline">\(\operatorname{sat}(D_i\land A)\)</span> on
+<strong>every</strong> branch. <a
+href="../lukstafi-phd-thesis.pdf#page=50">Definition 3.5, p. 50</a> · <a
+href="../lukstafi-phd-thesis.pdf#page=59">Definition 4.1, p. 59</a></p>
+<p><strong>Counterexample to Theorem 4.5 as stated.</strong> Take two
+distinct nullary type constructors <span
+class="math inline">\(K_0,K_1\)</span>, an empty prefix, and the
+branches <span class="math display">\[
+(K_0=K_1\Rightarrow\top),\qquad(\top\Rightarrow\top).
+\]</span> The first premise has no witness for any <span
+class="math inline">\(A\)</span>. Table 4.1 deletes that branch in its
+first satisfiability test and recurses on the second. The remaining
+problem admits <span class="math inline">\(\top\)</span>. The same
+computation must therefore serve two problems, one with no answer and
+one on which completeness requires an output. This contradicts the
+conjunction of correctness and completeness in Definition 4.4,
+independently of which complete component solvers are supplied. For
+strict JCA the local fix is to return the empty sequence on an
+impossible premise, including a premise shown impossible by a side sort.
+<a href="../lukstafi-phd-thesis.pdf#page=60">Definitions 4.1 and 4.4</a>
+· <a href="../lukstafi-phd-thesis.pdf#page=61">Theorem 4.5 and Table
+4.1</a></p>
+<p>The negative branch exposes a second difference. Consider <span
+class="math inline">\(\exists x.\,(x=0\Rightarrow\bot)\)</span> in
+arithmetic. The residual <span class="math inline">\(A=(x=1)\)</span> is
+prefix-valid and makes the assertion unreachable. The default condition
+of Definition 3.5 still demands a witness of <span
+class="math inline">\(x=0\land x=1\)</span> because <span
+class="math inline">\(x=0\)</span> was feasible on its own. The “without
+dead code” condition exempts this negative branch. Thus switching
+between the two printed policies can admit an answer as well as exclude
+one. InvarGenT translates <code>assert false</code> into
+<code>CFalse</code> and partitions these branches before solving. It
+also enriches a negative guard <span class="math inline">\(N\)</span>
+with conclusions of positive implications whose premises occur in <span
+class="math inline">\(N\)</span>. This step preserves exclusion.
+Whenever <span class="math inline">\(N\Rightarrow D\)</span> and <span
+class="math inline">\(A\land D\Rightarrow C\)</span>, the formulas <span
+class="math inline">\(A\land N\)</span> and <span
+class="math inline">\(A\land N\land C\)</span> are equivalent. <a
+href="https://github.com/lukstafi/invargent/blob/772b9b45b31ac11ef2a0d8e88b391db21d55eaa5/src/Infer.ml#L534">Assert-false
+translation</a> · <a
+href="https://github.com/lukstafi/invargent/blob/772b9b45b31ac11ef2a0d8e88b391db21d55eaa5/src/Invariants.ml#L923-L945">Negative
+branch preparation</a></p>
+<p><strong>Proposed definition for program inference.</strong> Keep
+source case identities through Proposition 3.4. Give each positive case
+<span class="math inline">\(b\)</span> a guard <span
+class="math inline">\(G_b\)</span> on its public variables. The
+permissive policy preserves a witness for each initially feasible <span
+class="math inline">\(G_b\)</span>. The strict policy requires a witness
+for every positive <span class="math inline">\(G_b\)</span>. Each
+negative assertion with guard <span class="math inline">\(N\)</span>
+requires <span class="math inline">\(\neg\operatorname{sat}(N\land
+A)\)</span>. Both policies still require relevance for every generated
+implication and validity under the original prefix. These guards express
+reachability in the constraint model. Treating them as a criterion for
+operational reachability would additionally require a correspondence
+with evaluation and pattern order.</p>
+<p><strong>Normalization lemma.</strong> Suppose the normalizer proves,
+at each public valuation <span class="math inline">\(r\)</span>, <span
+class="math display">\[
+G_b(r)\ \longleftrightarrow\ \bigvee_j\exists \ell_j.\,G_{bj}(r,\ell_j).
+\]</span> Here <span class="math inline">\(\ell_j\)</span> are private
+to alternative <span class="math inline">\(j\)</span> and fresh for the
+answer. Keep all coordinates visible to <span
+class="math inline">\(A\)</span> in <span
+class="math inline">\(r\)</span>, including any answer parameters during
+this comparison. Then <span class="math display">\[
+\exists r.\,G_b(r)\land A(r)
+\quad\longleftrightarrow\quad
+\bigvee_j\exists r,\ell_j.\,G_{bj}(r,\ell_j)\land A(r).
+\]</span> A witness on the left selects an alternative and its local
+witnesses. A witness on the right projects to one for the source case.
+Relevance with a common public conclusion still distributes over
+<strong>every</strong> alternative. For example, splitting <span
+class="math inline">\(\top\)</span> over the rationals into <span
+class="math inline">\(x\le0\)</span> and <span
+class="math inline">\(0\le x\)</span> and taking <span
+class="math inline">\(A=(x=-1)\)</span> preserves the source witness.
+Requiring witnesses for both generated clauses rejects it. This is an
+additional obligation on the normalizer beside the logical equivalence
+proved in Proposition 3.4. <a
+href="../lukstafi-phd-thesis.pdf#page=50">Proposition 3.4</a> · <a
+href="thesis-review-1.lean">Formal witness lemma</a></p>
+<p>The implementation exposes the difference to users. With
+<code>Pos</code> carrying <span class="math inline">\(0\le n\)</span>,
+the case <code>Pos i when i &lt;= -1</code> has no witness. On the
+program in the upstream tests, both the default settings and
+<code>-allow_dead_code</code> inferred <span
+class="math inline">\(\forall
+n.\,\mathrm{Positive}(n)\to\mathrm{Num}(n)\)</span>. With
+<code>-force_no_dead_code</code> inference failed on the numeric
+inequality. The flag documentation specifically mentions alternatives
+produced by expanding min/max. Retaining the case identity would give
+those alternatives the witness condition above. <a
+href="https://github.com/lukstafi/invargent/blob/772b9b45b31ac11ef2a0d8e88b391db21d55eaa5/src/Defs.mli#L8-L19">Flag
+definitions</a> · <a
+href="https://github.com/lukstafi/invargent/blob/772b9b45b31ac11ef2a0d8e88b391db21d55eaa5/src/InvariantsTest.ml#L299-L329">Upstream
+test program</a></p>
+</section>
+<section id="when-can-a-solved-variable-be-replaced" class="level2">
+<h2>When can a solved variable be replaced?</h2>
+<p><strong>Counterexample to Proposition A.11.</strong> Work in the
+finite-tree algebra with a constant <span
+class="math inline">\(a\)</span> and an injective unary constructor
+<span class="math inline">\(f\)</span>. The equation <span
+class="math inline">\(x=f(v)\)</span> is in solved form. Under <span
+class="math inline">\(Q=\exists x\,\forall h\,\exists v\)</span> it is
+valid. Take <span class="math inline">\(x=f(a)\)</span> and <span
+class="math inline">\(v=a\)</span>. Replace <span
+class="math inline">\(v\)</span> by <span
+class="math inline">\(h\)</span>. The only variable in the replacement
+strictly precedes <span class="math inline">\(v\)</span>, as the
+proposition requires. Now <span class="math inline">\(x=f(h)\)</span>
+must hold for both <span class="math inline">\(h=a\)</span> and <span
+class="math inline">\(h=f(a)\)</span> with the same <span
+class="math inline">\(x\)</span>. The two values of <span
+class="math inline">\(f(h)\)</span> differ by injectivity. Even a
+replacement consisting of one variable, without a cycle, invalidates the
+claim. The proof of Theorem 4.5 appeals to this property to combine
+choices of witnesses. <a
+href="../lukstafi-phd-thesis.pdf#page=106">Proposition A.11</a> · <a
+href="../lukstafi-phd-thesis.pdf#page=107">Proof of Theorem 4.5, steps
+(23)–(24)</a></p>
+<p>For pure free terms there is an exact test. Apply the replacement,
+recompute an idempotent most general unifier with the occurs check, and
+read off the pattern <span class="math inline">\(P_z\)</span> for
+<strong>each coordinate in the prefix</strong>. An unbound coordinate
+has itself as its pattern. Over a ground algebra with at least two
+elements, the prefix is valid precisely if unification succeeds and
+every universal coordinate is a bare residual variable absent from every
+preceding coordinate pattern. A fixed root misses a ground value. An
+earlier occurrence of that residual fixes the universal’s value at a
+particular address before the universal is played. Conversely,
+instantiate each such residual by its universal input and ground the
+other residuals arbitrarily. Each existential pattern is now a legal
+move depending only on earlier inputs. The comparison at <span
+class="math inline">\(x\)</span>, the head of the affected equation,
+detects A.11’s counterexample. This criterion concerns closed prefix
+validity of a supplied equality conjunction. <a
+href="round-18-signature-boundary.html#parameter-free-quantifier-prefixes">Prefix
+criterion and proof</a></p>
+<p><strong>Freezing the indices of an early constructor.</strong> There
+is also a constructive replacement for a mixed-sort case. Let <span
+class="math inline">\(K\)</span> be a fixed constructor context with a
+hole at each of a tuple of distinct addresses. Every hole occurs, so
+<span class="math inline">\(K\)</span> is injective on the tuple of hole
+values. Let <span class="math inline">\(Q&#39;\)</span> be any suffix
+over inhabited sorts. Let <span class="math inline">\(x\)</span> and
+<span class="math inline">\(\bar c\)</span> be fresh for <span
+class="math inline">\(Q&#39;,\bar e,\Phi\)</span>. Then, pointwise in
+the earlier variables, <span class="math display">\[
+\exists x.\ Q&#39;.\bigl(x=K(\bar e)\land\Phi\bigr)
+\quad\longleftrightarrow\quad
+\exists\bar c.\ Q&#39;.\bigl(\bar c=\bar e\land\Phi\bigr).
+\]</span> For the forward direction fix the winning <span
+class="math inline">\(x\)</span>. One play of the suffix gives <span
+class="math inline">\(x=K(\bar c)\)</span> for some <span
+class="math inline">\(\bar c\)</span>. On <strong>every</strong> winning
+play injectivity now forces <span class="math inline">\(\bar e=\bar
+c\)</span>. The same continuation wins with that early choice.
+Conversely, choose <span class="math inline">\(x=K(\bar c)\)</span> and
+keep the continuation. The proof needs only monotonicity of the suffix
+and existence of a play for every winning strategy. These are the two
+hypotheses of the Lean theorem <code>freezeIndices</code>. <a
+href="thesis-review-1.lean">Formal proof</a></p>
+<p>For example, <span class="math inline">\(\exists x_{\rm
+type}\,\forall h_{\rm num}\,\exists v_{\rm num}.\,x=\mathrm{Num}(v)\land
+v=h\)</span> becomes <span class="math inline">\(\exists c\,\forall
+h\,\exists v.\,c=v\land v=h\)</span>, which fails in a numeric sort with
+two values. Each original conjunct is separately prefix-valid. The
+combined criterion exports both an equality <strong>and the place at
+which its value must be chosen</strong>. This supplies one case of the
+witness compatibility argument needed in Theorem 4.5.</p>
+</section>
+<section id="when-can-type-information-be-projected-away"
+class="level2">
+<h2>When can type information be projected away?</h2>
+<p><strong>Counterexample to Lemma A.12(1).</strong> Put <span
+class="math inline">\(D=(u=\mathrm{Num}(n))\)</span>, <span
+class="math inline">\(\Psi=(u=\mathrm{Num}(m))\)</span>, and <span
+class="math inline">\(C=(n=m)\)</span>. The antecedent <span
+class="math inline">\(D\land\Psi\)</span> is satisfiable and entails
+<span class="math inline">\(C\)</span> by injectivity. Solving <span
+class="math inline">\(D\)</span> alone gives one type binding and no
+numeric restriction on <span class="math inline">\(n\)</span>. The
+claimed implication with only the numeric part of <span
+class="math inline">\(D\)</span> and the original <span
+class="math inline">\(\Psi\)</span> fails at <span
+class="math inline">\(u=\mathrm{Num}(1),\,m=1,\,n=0\)</span>. The
+quantification over arbitrary <span class="math inline">\(\Psi\)</span>
+is where information disappears. <a
+href="../lukstafi-phd-thesis.pdf#page=106">Lemma A.12</a></p>
+<p><strong>Joint projection lemma.</strong> Let <span
+class="math inline">\(E\)</span> be a conjunction of type equations over
+freely generated finite types carrying side-sort values. Let <span
+class="math inline">\(P\)</span> be any condition on side variables.
+Assume type inhabitants exist, side expressions contain only side
+variables, and equality is the only observation the type equations make
+on side values. Unify all of <span class="math inline">\(E\)</span>
+together. Decompose matching type constructors, apply type-variable
+bindings throughout, reject a constructor clash or a type-variable
+occurs check, and emit a side equality whenever matching arguments have
+side sort. Call the conjunction of emitted equalities <span
+class="math inline">\(R_E\)</span>, with <span
+class="math inline">\(R_E=\bot\)</span> on structural failure. If fresh
+names stand for side expressions, expand their definitions in <span
+class="math inline">\(R_E\)</span>. Then <span class="math display">\[
+\exists\bar u_{\rm type}.\,(E\land P)\quad\longleftrightarrow\quad
+R_E\land P
+\]</span> at each fixed side valuation, where <span
+class="math inline">\(\bar u_{\rm type}\)</span> contains every type
+variable of <span class="math inline">\(E\)</span>.</p>
+<p>Every unification step preserves the type solutions at that
+valuation, with matching constructors requiring equality of their
+arguments. In the successful solved form, ground all unbound type
+variables and evaluate the acyclic type bindings. This constructs an
+extension for every side valuation satisfying <span
+class="math inline">\(R_E\)</span>. Consequently a side conclusion <span
+class="math inline">\(C\)</span> follows from <span
+class="math inline">\(E\land P\)</span> exactly when it follows from
+<span class="math inline">\(R_E\land P\)</span>. A context sharing type
+variables must contribute its equations to <span
+class="math inline">\(E\)</span> before projection, or those coordinates
+must be retained on the interface. Moving this existential projection
+past an arbitrary prefix would require a dependency argument such as the
+freezing lemma.</p>
+<p>InvarGenT takes the joint route. <code>Abduction.ml</code> combines
+the premise’s type substitution with the candidate’s substitution,
+computes the residual of the conclusion, and passes the numeric
+constraints on. I ran its <code>combine_sbs</code> on the two
+substitutions above. Each alone emitted zero numeric constraints.
+Together they emitted <code>m = n</code>. This gives an
+implementation-backed replacement for the entailment step in A.12(1).
+Completeness of synthesis in Theorem 4.5 requires more, including
+admissible presentations of the answers and compatible prefix witnesses.
+<a
+href="https://github.com/lukstafi/invargent/blob/772b9b45b31ac11ef2a0d8e88b391db21d55eaa5/src/Abduction.ml#L827-L849">Abduction
+call site</a> · <a
+href="https://github.com/lukstafi/invargent/blob/772b9b45b31ac11ef2a0d8e88b391db21d55eaa5/src/Terms.ml#L1467-L1546">Type
+unification</a> · <a
+href="https://github.com/lukstafi/invargent/blob/772b9b45b31ac11ef2a0d8e88b391db21d55eaa5/src/Terms.ml#L1631-L1634">Combining
+substitutions</a></p>
+</section>
+<section id="a-program-with-no-principal-conjunctive-type"
+class="level2">
+<h2>A program with no principal conjunctive type</h2>
+<p>Local GADT assumptions can destroy principality, as illustrated in
+the OutsideIn(X) paper. Here one can see exactly which ground typings
+force the failure in InvarGenT’s conjunctive answer language. The
+following is a complete program. Its indices record which payload type
+each constructor carries. <a
+href="https://simon.peytonjones.org/outsideinx/">Vytiniotis et al.,
+<em>OutsideIn(X)</em></a></p>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode ocaml"><code class="sourceCode ocaml"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>datatype A</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>datacons A : A</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>datatype B</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>datacons B : B</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>datatype Tag : <span class="kw">type</span> * <span class="kw">type</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>datacons Left : ∀b. b ⟶ Tag(A,b)</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>datacons Right : ∀a. a ⟶ Tag(a,A)</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="kw">let</span> payload = <span class="kw">function</span> Left y -&gt; y | Right x -&gt; x</span></code></pre></div>
+<p>Write <span class="math inline">\((h,k,y)\)</span> for the two
+argument indices and the result type of <span
+class="math inline">\(\mathrm{Tag}(h,k)\to y\)</span>. The left branch
+requires <span class="math inline">\(h=A\Rightarrow y=k\)</span>. The
+right branch requires <span class="math inline">\(k=A\Rightarrow
+y=h\)</span>. Both are ordinary instances of constructor-pattern
+refinement. Two sound schemes are <span class="math display">\[
+\forall t.\,\mathrm{Tag}(A,t)\to t,\qquad
+\forall t.\,\mathrm{Tag}(t,A)\to t.
+\]</span> In the first scheme the right constructor forces <span
+class="math inline">\(t=A\)</span>, so returning its payload has the
+required type. The second scheme follows by symmetry. Both constructors
+have a witness at <span class="math inline">\((A,A,A)\)</span>.
+InvarGenT inferred a third sound scheme, <span
+class="math inline">\(\forall t.\,\mathrm{Tag}(t,t)\to t\)</span>.
+Adding <code>let left_payload = payload (Left B)</code> to the program
+produced a type mismatch between <span class="math inline">\(A\)</span>
+and <span class="math inline">\(B\)</span>. On that input the function
+reduces to the value <code>B</code>. <a
+href="../lukstafi-phd-thesis.pdf#page=47">Type inference for patterns,
+Table 3.6</a></p>
+<p><strong>Theorem.</strong> No scheme whose ground type triples are
+described by an existential conjunction of free type equations is both
+sound for <code>payload</code> and at least as general as the first two
+schemes. Generality here means inclusion of ground instances. Failure
+under this order also excludes a principal scheme under any
+instantiation order implying such inclusion.</p>
+<p><em>Proof.</em> The two schemes together require the three ground
+triples <span class="math display">\[
+(A,A,A),\qquad(A,B,B),\qquad(B,A,B).
+\]</span> Solving any satisfiable conjunction and projecting its most
+general unifier to <span class="math inline">\(h,k,y\)</span> gives a
+single tuple pattern. Every coordinate takes both <span
+class="math inline">\(A\)</span> and <span
+class="math inline">\(B\)</span> in the displayed triples, so all three
+coordinates must be bare holes. The result hole differs from the first
+input hole on the second row and from the second input hole on the
+third. Assign the input holes <span class="math inline">\(A\)</span> and
+the result hole <span class="math inline">\(B\)</span>. This produces
+<span class="math inline">\((A,A,B)\)</span>, although
+<code>Left A</code> has type <span
+class="math inline">\(\mathrm{Tag}(A,A)\)</span> and returns <span
+class="math inline">\(A\)</span>. The contradiction applies with any
+number of auxiliary type variables or other free type constructors. <a
+href="thesis-review-1.lean">Formal three-row argument</a></p>
+<p>The two refinements agree at their intersection. A semantic result
+function exists, for example <span class="math inline">\(y=k\)</span>
+when <span class="math inline">\(h=A\)</span> and <span
+class="math inline">\(y=h\)</span> otherwise. On the union of
+constructor-compatible input indices its graph is exactly <span
+class="math display">\[
+(h=A\land y=k)\ \lor\ (k=A\land y=h).
+\]</span> This is an ordinary disjunction of two type-equation
+conjunctions. The example gives a source-level reason to distinguish
+validity of the generated implications, existence of an expressible
+answer on a proposed domain, and existence of a principal type. Theorems
+3.1–3.2 concern the correspondence with typing derivations. Proposition
+4.14 gives the implication from a solution to semantic validity. The
+example supplies an obstruction to principality even for a nonrecursive
+function with one match. <a
+href="../lukstafi-phd-thesis.pdf#page=46">Theorems 3.1–3.2</a> · <a
+href="../lukstafi-phd-thesis.pdf#page=70">Proposition 4.14</a></p>
+</section>
+<section id="how-many-inferred-types-would-a-beam-need" class="level2">
+<h2>How many inferred types would a beam need?</h2>
+<p>Chapter 6 proposes keeping several candidate types and discarding
+inferior candidates. The payload example gives a lower bound on how many
+final types would cover all useful applications. For each <span
+class="math inline">\(m\ge2\)</span>, declare a datatype <span
+class="math inline">\(T_m\)</span> with <span
+class="math inline">\(m\)</span> type indices and one constructor per
+position: <span class="math display">\[
+K_i:\forall t.\ t\to T_m(A,\ldots,A,t,A,\ldots,A).
+\]</span> The function with cases <code>K_i x -&gt; x</code> returns the
+sole field. Each constructor gives a sound scheme on its axis with
+result <span class="math inline">\(t\)</span>. At the all-<span
+class="math inline">\(A\)</span> input all constructors agree on result
+<span class="math inline">\(A\)</span>. <a
+href="../lukstafi-phd-thesis.pdf#page=83">Beam search in §6.2</a></p>
+<p><strong>Theorem.</strong> Exactly <span
+class="math inline">\(m\)</span> sound conjunctive equational schemes
+are needed to cover every ground typing on this function’s
+constructor-compatible input indices. The lower bound holds even if the
+schemes may divide the ground instances of each constructor among
+themselves.</p>
+<p><em>Proof.</em> Mark the <span class="math inline">\(m\)</span>
+concrete calls <code>payload (K_i B)</code>. Each has result <span
+class="math inline">\(B\)</span>, with <span
+class="math inline">\(B\)</span> at input position <span
+class="math inline">\(i\)</span> and <span
+class="math inline">\(A\)</span> everywhere else. Suppose one tuple
+pattern contains the marked calls for distinct <span
+class="math inline">\(i,j\)</span>. Its <span
+class="math inline">\(i\)</span>th input pattern takes both <span
+class="math inline">\(B\)</span> and <span
+class="math inline">\(A\)</span>, so it is a bare hole <span
+class="math inline">\(p\)</span>. Start with the valuation for call
+<span class="math inline">\(i\)</span> and change only <span
+class="math inline">\(p\)</span> from <span
+class="math inline">\(B\)</span> to <span
+class="math inline">\(A\)</span>. The other input coordinates, all equal
+to the nullary constructor <span class="math inline">\(A\)</span> on
+this row, are ground constants or holes different from <span
+class="math inline">\(p\)</span>. The output, equal to the nullary <span
+class="math inline">\(B\)</span> on both rows, is also ground or a
+different hole, since <span class="math inline">\(p=A\)</span> on row
+<span class="math inline">\(j\)</span>. The modified row thus assigns
+output <span class="math inline">\(B\)</span> to all-<span
+class="math inline">\(A\)</span> inputs, contradicting soundness. Each
+sound scheme covers at most one marked call. The <span
+class="math inline">\(m\)</span> constructor schemes give the matching
+upper bound. In fact the lower bound uses only ordinary ground calls on
+explicitly constructed values. <a href="thesis-review-1.lean">Lean proof
+for an arbitrary index set</a></p>
+<p>I ran the three-constructor program with constructors
+<code>First</code>, <code>Second</code> and <code>Third</code>.
+InvarGenT inferred <span class="math inline">\(\forall
+a,b.\,T_3(a,b,b)\to a\)</span> (the source datatype was named
+<code>Tag</code>). It typed <code>payload (First B)</code> at <span
+class="math inline">\(B\)</span> and rejected the <code>Second B</code>
+and <code>Third B</code> calls. Each of those calls also computes <span
+class="math inline">\(B\)</span>. A fixed beam can still find a sound
+answer. If its purpose is to preserve all these calls for downstream
+use, a fixed bound on the number of final conjunctive schemes cannot
+suffice across this family. A disjunction indexed by the constructors
+describes the <span class="math inline">\(m\)</span> alternatives
+directly.</p>
+</section>
+<section id="what-a-variable-pattern-knows-about-list-length"
+class="level2">
+<h2>What a variable pattern knows about list length</h2>
+<p>Section 5.2.2 suggests attaching an invariant common to all
+constructors to a pattern variable once its datatype is known. A run of
+the two versions of <code>append</code> on p. 77 gives a precise target.
+I used <code>LNil : List(a,0)</code> and
+<code>LCons : ∀n,a [0 ≤ n]. a * List(a,n) ⟶ List(a,n+1)</code>. The
+thesis describes the short version as failing to typecheck. In the
+tested checkout it succeeded with a precondition.</p>
+<table>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr>
+<th>Second argument pattern</th>
+<th>Inferred type (quantifiers omitted)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Variable, as in the short definition</td>
+<td><span class="math inline">\([1\le k+n\ \land\ 1\le n].\
+\mathrm{List}(a,k)\to\mathrm{List}(a,n)\to\mathrm{List}(a,n+k)\)</span></td>
+</tr>
+<tr>
+<td>Both constructors, as in the expanded definition</td>
+<td><span
+class="math inline">\(\mathrm{List}(a,k)\to\mathrm{List}(a,n)\to\mathrm{List}(a,n+k)\)</span></td>
+</tr>
+</tbody>
+</table>
+<p>The first type excludes <code>append LNil LNil</code>. Both values
+exist and the computation returns <code>LNil</code>. Merely replacing a
+rejected program by an accepted one would miss this difference. <a
+href="../lukstafi-phd-thesis.pdf#page=77">Section 5.2.2 and both
+programs</a></p>
+<p><strong>Constructor invariant rule.</strong> For each inductive
+datatype <span class="math inline">\(D\)</span>, propose a predicate
+<span class="math inline">\(I_D\)</span> on its parameters. For each
+constructor <span class="math inline">\(K\)</span> of <span
+class="math inline">\(D\)</span>, let <span
+class="math inline">\(G_K\)</span> be its index guard, <span
+class="math inline">\(r_K\)</span> its result parameters, and <span
+class="math inline">\(D_j(u_j)\)</span> its immediate inductive data
+fields. Check the universally closed obligation <span
+class="math display">\[
+G_K\land\bigwedge_j I_{D_j}(u_j)\ \Rightarrow\ I_D(r_K).
+\]</span> Every finite constructor value of type <span
+class="math inline">\(D(r)\)</span> then satisfies <span
+class="math inline">\(I_D(r)\)</span>. Induct on the size of the value.
+Its typing gives the guard and result indices for the outer constructor.
+Each listed field is a strictly smaller value, so the constructor
+obligation applies. The same proof allows mutually recursive
+declarations. For an abstract or external producer of values, the
+invariant must form part of the producer’s specification.</p>
+<p>For lists choose <span class="math inline">\(I(n)=(0\le n)\)</span>.
+The checks are <span class="math inline">\(0\le0\)</span> and <span
+class="math inline">\(0\le j\Rightarrow0\le j+1\)</span>. The latter
+already follows from the recursive field, even if the declaration omits
+its guard. In the short <code>append</code>, the variable holding the
+second argument supplies <span class="math inline">\(0\le n\)</span>.
+Matching the first list against <code>LCons</code> supplies <span
+class="math inline">\(0\le j\)</span> for its tail. The induction
+hypothesis returns a list of length <span
+class="math inline">\(n+j\)</span>, and <span class="math inline">\(0\le
+n+j\)</span> discharges the guard on the result constructor. The
+companion checks this append with integer indices and exactly one
+recursive match. <a href="thesis-review-1.lean">Lean derivation</a></p>
+<p>A typing rule can expose <span class="math inline">\(I_D(r)\)</span>
+in the assumptions for the body that binds an actual value of type <span
+class="math inline">\(D(r)\)</span>, including a variable pattern. The
+type expression <span class="math inline">\(\mathrm{List}(a,-1)\)</span>
+still exists in the freely generated type domain. Making <span
+class="math inline">\(0\le n\)</span> an axiom about <em>type
+expressions</em> would invalidate that model. A full extension of MMG
+would need rules for value bindings, a revised constraint-generation
+correspondence, and a soundness argument covering the external-value
+boundary. The constructor induction establishes the premise for that
+extension. <a href="../lukstafi-phd-thesis.pdf#page=47">Table 3.6</a> ·
+<a href="../lukstafi-phd-thesis.pdf#page=56">Type soundness and the
+translation to HMG(X)</a> · <a
+href="https://gallium.inria.fr/~fpottier/publis/simonet-pottier-hmg-toplas.pdf">Simonet
+and Pottier’s HMG(X)</a></p>
+</section>
+<section id="an-exact-target-for-linear-arithmetic-generalization"
+class="level2">
+<h2>An exact target for linear arithmetic generalization</h2>
+<p>Fix the public variables. Suppose both the branches and candidate
+generalizations in Definition 4.8 use only rational affine equalities
+and weak inequalities. Branch-local variables are existential. The most
+specific common consequence is the <strong>closed convex hull of the
+projected branches</strong>, over the reals, or its rational points over
+the rationals. This gives §4.3.2 a reference algorithm even for implicit
+equalities, lower-dimensional faces and unbounded branches. The
+construction is the classical extended formulation for disjunctive
+programming. <a href="../lukstafi-phd-thesis.pdf#page=66">Definition 4.8
+and §4.3.2</a> · <a
+href="https://epubs.siam.org/doi/10.1137/0606047">Balas</a> · <a
+href="https://bipop.inrialpes.fr/publis/CoLe2005MATHPROG.pdf">Cornuéjols
+and Lemaréchal, Lemma 6.4</a></p>
+<p>Project each branch onto the public variables by linear elimination.
+Remove empty branches, returning <span
+class="math inline">\(\bot\)</span> if none survive. Write the remaining
+nonempty polyhedra as <span class="math inline">\(P_i=\{x:A_ix\le
+b_i\}\)</span>. Use the following conjunction with existential <span
+class="math inline">\(\lambda_i,z_i\)</span>: <span
+class="math display">\[
+\lambda_i\ge0,\qquad \sum_i\lambda_i=1,\qquad x=\sum_i z_i,\qquad
+A_i z_i\le\lambda_i b_i\quad\text{for every }i.
+\]</span> Its projection is a closed polyhedron containing all ordinary
+convex combinations. Conversely, choose <span
+class="math inline">\(q_i\in P_i\)</span> and positive weights <span
+class="math inline">\(w_i\)</span> summing to one. Given any feasible
+extended point, replace <span
+class="math inline">\((\lambda_i,z_i)\)</span> by <span
+class="math inline">\((1-\epsilon)(\lambda_i,z_i)+\epsilon
+w_i(1,q_i)\)</span> for <span
+class="math inline">\(0&lt;\epsilon&lt;1\)</span>. All new weights are
+positive, so dividing gives points of <span
+class="math inline">\(P_i\)</span> and their convex combination tends to
+<span class="math inline">\(x\)</span>. This proves equality with the
+closure. A conjunction of weak affine inequalities defines a closed
+convex set, as does its existential projection by linear elimination.
+Every admissible common consequence therefore contains this hull.
+Rational elimination gives rational coefficients and witnesses on
+rational data.</p>
+<p>Take the origin and the ray <span
+class="math inline">\(\{(1,t):t\ge0\}\)</span>. Their convex hull misses
+<span class="math inline">\((0,1)\)</span>, although <span
+class="math inline">\((1/j,1)\)</span> is a convex combination for each
+positive integer <span class="math inline">\(j\)</span>. All their
+common weak affine inequalities hold at <span
+class="math inline">\((0,1)\)</span>. The best expressible answer is
+<span class="math inline">\(0\le x\le1,\ y\ge0\)</span>. InvarGenT also
+searches for min/max constraints. Completeness of its face-selection
+heuristic and generalization in that richer language require separate
+proofs. <a
+href="https://github.com/lukstafi/invargent/blob/772b9b45b31ac11ef2a0d8e88b391db21d55eaa5/src/NumS.ml#L3386-L3444">Numerical
+disjunction elimination</a></p>
+</section>
+<section id="status-of-the-remaining-questions" class="level2">
+<h2>Status of the remaining questions</h2>
+<table>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr>
+<th>Question</th>
+<th>Status in this project</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Does general finite-term JCA have a decision algorithm?</td>
+<td>The project’s reduction proves r.e.-completeness for ordinary JCA
+already with two branches, one binary constructor and one constant. The
+corresponding prefix problem includes these instances. This is a
+manuscript result. <a href="round-25-binary.html">Proof and signature
+assumptions</a></td>
+</tr>
+<tr>
+<td>Is there a most general answer or an automatic route from maximal
+answers to a decision procedure?</td>
+<td>Example 4.3 already has infinitely many incomparable maxima. A
+supplied ground example does allow maximization above that example. The
+<code>payload</code> theorem above now shows failure of principality on
+generated constraints in the stated scheme language. <a
+href="round-43-infinite-maxima.html">Example 4.3</a> · <a
+href="round-42-maximal.html">Maximization from a seed</a></td>
+</tr>
+<tr>
+<td>Can generated constraints realize the abstract two-branch reduction
+without polymorphic recursion?</td>
+<td>Open here. Milner–Mycroft typability with polymorphic recursion is
+already undecidable. The payload family realizes crossing guards without
+recursion, but transferring the JCA reduction would require realizing
+its data, prefix order and witness conditions in generated constraints.
+<a
+href="https://suif.stanford.edu/~brm/reading/p253-henglein.pdf">Henglein</a>
+· <a href="../lukstafi-phd-thesis.pdf#page=84">Thesis §6.3</a></td>
+</tr>
+<tr>
+<td>Does multi-sort synthesis enumerate all admissible answers?</td>
+<td>Table 4.1 and strict Definition 4.1 conflict. The joint projection
+theorem handles ordinary side entailment. Freezing handles a class of
+mixed prefix dependencies. A repaired Theorem 4.5 still needs a proof of
+witness compatibility and coverage for arbitrary candidate answers and
+designated parameters.</td>
+</tr>
+<tr>
+<td>Does the predicate iteration reach a solution?</td>
+<td>Theorem 4.15 gives a correctness implication at its stated fixed
+point. Theorem 4.16 gives a chain covering a supplied solution at every
+iteration, under complete atomized abduction and unary predicate
+variables. A chain need never stabilize. Finite convergence and an
+analogous coverage theorem with binary postcondition predicates remain
+unresolved here. <a href="../lukstafi-phd-thesis.pdf#page=72">Theorems
+4.15–4.16</a></td>
+</tr>
+<tr>
+<td>How much can the implementation exploit soundly?</td>
+<td>We can validate source-guard coverage, joint numeric projection, and
+per-constructor invariants against explicit proof obligations. Whether
+adding them preserves the full constraint-generation and erasure
+theorems, and how to infer sufficient datatype invariants automatically,
+remain separate questions.</td>
+</tr>
+</tbody>
+</table>
+<p>One convention-specific question also survives the earlier fragment
+analysis. With leading fresh parameters, a single forbidden read and the
+reflexive weak escape comparison, the one-branch hardness proof uses
+additional substituted parameters outside the designated set. The
+equal-set result uses the comparison in the Markdown extraction. Those
+proofs leave the equal-set, reflexive version unsettled here. <a
+href="round-40-reflexive.html">Scope distinction in the proof</a> · <a
+href="round-39-weak-conjunctions.html">Equal-set construction for the
+extracted comparison</a></p>
+<p><strong>Checks.</strong> The companion file runs with
+<code>lean thesis-review-1.lean</code> in Lean 4.19.0. It checks both
+appendix counterexamples, the witness-distribution and index-freezing
+lemmas, the three-row obstruction for <code>payload</code>, the
+arbitrary-arity beam obstruction, and the indexed-list derivation. The
+general unification, projection and polyhedral arguments above are
+mathematical proofs. I ran InvarGenT at commit <code>772b9b45</code>
+with <code>-inform -no_ml -no_sig -no_verif</code>. The OCaml 5.5.1
+build used a temporary copy with compatibility edits for
+<code>Pervasives</code>, legacy standard-library names and the reserved
+identifier <code>nonrec</code>. The reported types and diagnostics come
+from the solver. <a href="thesis-review-1.lean">Lean companion</a> · <a
+href="https://github.com/lukstafi/invargent/tree/772b9b45b31ac11ef2a0d8e88b391db21d55eaa5">Implementation
+revision</a></p>
+</section>
+</article>
+<script src="/assets/theme-toggle.js"></script>
+</body>
+</html>

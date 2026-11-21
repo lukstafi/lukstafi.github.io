@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <meta name="dcterms.date" content="2026-11-21">
+  <meta property="og:title" content="JCA Round 43: The Maximal Answers in Thesis Example 4.3">
+  <meta property="og:url" content="https://lukstafi.github.io/projects/jca/agent-collab/round-43-infinite-maxima.html">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="lukstafi&#x27;s blog">
+  <meta name="twitter:card" content="summary">
+  <title>JCA Round 43: The Maximal Answers in Thesis Example 4.3</title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <link rel="stylesheet" href="/assets/tufte.css">
+  <link rel="stylesheet" href="/assets/pandoc-tufte.css">
+  <link rel="stylesheet" href="/assets/site.css">
+  <script defer=""
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+  type="text/javascript"></script>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+  <script>(function(){var t=localStorage.getItem('theme-preference');if(t)document.documentElement.setAttribute('data-theme',t);})()</script>
+</head>
+<body>
+<nav class="site-nav">
+  <a href="/">Home</a> &middot; <a href="/study/">Study Guide</a> &middot; <a href="/about.html">About</a> &middot; <a href="https://lukstafi.substack.com">Substack</a>
+</nav>
+<div class="theme-toggle">
+  <button id="theme-btn" aria-label="Toggle dark mode">&#9788;</button>
+</div>
+<article>
+<header>
+<h1 class="title">JCA Round 43: The maximal answers in thesis Example
+4.3</h1>
+<p class="byline">2026-11-21</p>
+</header>
+<nav id="TOC">
+<ul>
+<li><a href="#a-maximal-answer-at-every-depth"
+id="toc-a-maximal-answer-at-every-depth">A maximal answer at every
+depth</a></li>
+<li><a href="#if-each-branch-must-work-for-every-fresh-tuple"
+id="toc-if-each-branch-must-work-for-every-fresh-tuple">If each branch
+must work for every fresh tuple</a></li>
+</ul>
+</nav>
+<p><strong>Theorem.</strong> Under Definition 4.1, the two-branch
+problem in Example 4.3 has <strong>infinitely many incomparable
+maximally general answers</strong>. The displayed answer <span
+class="math inline">\(\exists\gamma.\ y=f(z,\gamma)\)</span> is one
+maximal answer. The single-branch problem in the same example already
+has infinitely many, even over one binary constructor and one constant.
+Maher and Huang established the general phenomenon for Herbrand
+abduction. Here the infinite family applies to the particular
+implications for which the thesis states a most general answer and a
+two-element list, respectively. <a
+href="../thesis_section_4_2.md">Thesis §4.2.1, Example 4.3</a> · <a
+href="../lukstafi-phd-thesis.tm">Original TeXmacs source</a> · <a
+href="https://www.researchgate.net/publication/220896539_On_Computing_Constraint_Abduction_Answers">Maher
+and Huang, <em>On Computing Constraint Abduction Answers</em></a></p>
+<p>The public variables <span class="math inline">\(x,y,z\)</span> are
+existential. The branches are <span
+class="math inline">\(y=f(c,x)\Rightarrow z=c\)</span> for <span
+class="math inline">\(c=a,b\)</span>, where <span
+class="math inline">\(a\ne b\)</span>. Definition 4.1 requires some
+ground solution of <span class="math inline">\(A\land D_c\)</span> for
+each branch. Prefix validity also holds for every arbitrary choice of
+fresh parameters in the answers below. The example demonstrates a
+stronger property of its displayed answer: <em>each branch</em> can be
+activated for <em>every</em> choice of the fresh parameters. Imposing
+that stronger condition changes the two-branch answer set.</p>
+<section id="a-maximal-answer-at-every-depth" class="level2">
+<h2>A maximal answer at every depth</h2>
+<p>Write <span class="math inline">\(C_0(t)=t\)</span> and <span
+class="math inline">\(C_m(\vec u,t)=f(u_1,f(u_2,\ldots
+f(u_m,t)\ldots))\)</span>. For each <span class="math inline">\(m\ge
+0\)</span>, use the public tuple</p>
+<p><span class="math display">\[
+x=C_m(\vec u,f(q,q)),\qquad
+y=f(p,C_m(\vec v,f(s,p))),\qquad z=s .
+\]</span></p>
+<p>All parameter names are distinct except at the indicated repetitions.
+Each list of padding names is private to its own chain. When <span
+class="math inline">\(y=f(c,x)\)</span>, its first argument gives <span
+class="math inline">\(p=c\)</span>. Comparing <span
+class="math inline">\(x\)</span> with the second argument of <span
+class="math inline">\(y\)</span> gives <span
+class="math inline">\(f(q,q)=f(s,p)\)</span> after descending <span
+class="math inline">\(m\)</span> right children. Hence <span
+class="math inline">\(z=s=q=p=c\)</span>. Each branch activates by
+choosing <span class="math inline">\(s=q=p=c\)</span> and equal
+corresponding pads. For every choice of the fresh parameters the
+displayed equations also supply the three existential public values
+required by validity.</p>
+<p>A more general tuple pattern can erase constructor subtrees and split
+occurrences of repeated parameters. This follows by matching it to the
+displayed tuple. Every constructor-rooted subterm occurs exactly once
+across that tuple. Thus a variable replacing any such subtree must be
+private. Each repeated parameter <span
+class="math inline">\(p,q,s\)</span> has just two occurrences. Every
+strict generalization consequently contains an elementary relaxation
+obtained by erasing one constructor subtree or splitting one such pair.
+<a
+href="round-42-maximal.html#enumerate-all-maximal-extensions-of-one-answer">Pattern
+ordering and existential generality</a></p>
+<p>Every elementary relaxation admits a row with <span
+class="math inline">\(y=f(a,x)\)</span> and <span
+class="math inline">\(z=b\)</span>.</p>
+<ul>
+<li>Erase the root of <span class="math inline">\(y\)</span>. Set <span
+class="math inline">\(z=b\)</span> and assign the new variable <span
+class="math inline">\(f(a,x)\)</span>.</li>
+<li>Erase a constructor on the rightward chain of <span
+class="math inline">\(x\)</span>, including its terminal fork. Put <span
+class="math inline">\(s=b,p=a\)</span>. Match the pads above the cut and
+fill the erased subtree with the corresponding subtree of the second
+argument of <span class="math inline">\(y\)</span>. Both occurrences of
+<span class="math inline">\(q\)</span> were below the cut.</li>
+<li>Erase a constructor on the rightward chain of the second argument of
+<span class="math inline">\(y\)</span>, including its terminal fork. Put
+the public <span class="math inline">\(z=b\)</span> and the first
+argument of <span class="math inline">\(y\)</span> equal to <span
+class="math inline">\(a\)</span>. Fill the cut from <span
+class="math inline">\(x\)</span> and match the pads above it.</li>
+<li>Split the two occurrences of <span class="math inline">\(q\)</span>.
+Give its two leaves the values <span class="math inline">\(b,a\)</span>
+and put <span class="math inline">\(s=b,p=a\)</span>. Split <span
+class="math inline">\(s\)</span> instead and the compared forks may both
+be <span class="math inline">\(f(a,a)\)</span> while the public <span
+class="math inline">\(z=b\)</span>. Split <span
+class="math inline">\(p\)</span> instead and both forks may be <span
+class="math inline">\(f(b,b)\)</span> while the first argument of <span
+class="math inline">\(y\)</span> is <span
+class="math inline">\(a\)</span>.</li>
+</ul>
+<p>The first branch therefore rules out every strict generalization.
+Patterns at distinct depths have different numbers of constructor
+occurrences and cannot be variants. They are pairwise incomparable since
+they are all maximal. The proof uses only the first branch for
+maximality. For the single-branch instance over <span
+class="math inline">\(\{f/2,a\}\)</span>, use the ground tree <span
+class="math inline">\(b=f(a,a)\)</span> in every counterexample.</p>
+</section>
+<section id="if-each-branch-must-work-for-every-fresh-tuple"
+class="level2">
+<h2>If each branch must work for every fresh tuple</h2>
+<p>For the two-branch example strengthen consistency to <span
+class="math inline">\(\forall B\,\exists x,y,z.\ A\land
+y=f(c,x)\)</span> for each <span class="math inline">\(c\)</span>. Under
+this alternative the complete set of maximal answers has <strong>exactly
+two</strong> members,</p>
+<p><span class="math display">\[
+\exists\gamma.\ y=f(z,\gamma)
+\qquad\text{and}\qquad y=f(x,z).
+\]</span></p>
+<p>To prove completeness, unify any successful presentation on <span
+class="math inline">\(x,y,z,B\)</span>. Every fresh coordinate is a
+distinct bare residual, since every fresh tuple occurs. Each unbound
+residual has a coordinate that names it. The <span
+class="math inline">\(z\)</span> coordinate must be bare to take the
+distinct values <span class="math inline">\(a,b\)</span>. It cannot name
+a fresh coordinate because a branch must also activate when that fresh
+coordinate differs from <span class="math inline">\(c\)</span>.</p>
+<p>If <span class="math inline">\(y\)</span> were bare, it could not
+occur in <span class="math inline">\(x\)</span>: an active row would
+make a finite tree contain itself strictly. It cannot be <span
+class="math inline">\(z\)</span>, which at an active row is a constant.
+It cannot name a fresh coordinate, which can be given a value with root
+different from <span class="math inline">\(f\)</span>. Thus <span
+class="math inline">\(y\)</span> could be assigned <span
+class="math inline">\(f(a,x)\)</span> independently of <span
+class="math inline">\(x,z\)</span>, admitting a row with <span
+class="math inline">\(z=b\)</span>. It follows that <span
+class="math inline">\(y=f(t,u)\)</span>. The first argument <span
+class="math inline">\(t\)</span> must be bare to take both constants,
+and cannot name a fresh coordinate by uniform activation. Its only
+possible unbound public representatives are <span
+class="math inline">\(x,z\)</span>. If <span
+class="math inline">\(t\)</span> is the residual of <span
+class="math inline">\(z\)</span>, the answer lies below the first
+displayed maximum. Otherwise <span class="math inline">\(x=t\)</span> is
+bare and independent of <span class="math inline">\(z\)</span>. In that
+case activation requires <span class="math inline">\(u=x=c\)</span> on
+the branch, so <span class="math inline">\(u\)</span> too must be bare
+and cannot name a fresh coordinate. The choice <span
+class="math inline">\(u=x\)</span> leaves <span
+class="math inline">\(z\)</span> free on the active branch and violates
+relevance. The only remaining possibility is <span
+class="math inline">\(u=z\)</span>, giving the second displayed maximum.
+Both candidates are uniformly activatable and neither matches the
+other.</p>
+<p>For <strong>one</strong> branch, even this strengthened convention
+still permits infinitely many maxima. Set <span
+class="math inline">\(F(t)=f(a,t)\)</span>. For each <span
+class="math inline">\(m\)</span> take the fresh-free answer <span
+class="math inline">\(x=F^m(a)\)</span>, <span
+class="math inline">\(y=f(a,F^m(z))\)</span>. Its active rows have <span
+class="math inline">\(F^m(z)=F^m(a)\)</span>, hence <span
+class="math inline">\(z=a\)</span>. For <span
+class="math inline">\(m&lt;n\)</span>, apart-renaming parameters and
+taking the least general generalization of the two public patterns
+gives</p>
+<p><span class="math display">\[
+x=F^m(u),\qquad y=f(a,F^m(v)),\qquad z=w
+\]</span></p>
+<p>with three independent residuals. Indeed the three disagreement pairs
+are <span class="math inline">\((a,F^{n-m}(a))\)</span>, <span
+class="math inline">\((s,F^{n-m}(t))\)</span>, and <span
+class="math inline">\((s,t)\)</span>. They are distinct. Set <span
+class="math inline">\(u=v=a,w=f(a,a)\)</span> to obtain a row falsifying
+the branch. Every common generalization of these seeds contains that
+row. Each seed has only finitely many generalizations, so each extends
+to a maximal admissible answer, and no two seeds can share one. The
+proof needs no second ground constant symbol.</p>
+<p>The <a href="round-43-infinite-maxima.py">executable checks</a>
+verify both original branches at depths 0 through 12, generate concrete
+false rows for all 468 elementary relaxations across the two choices of
+<span class="math inline">\(b\)</span>, and test the stronger
+consistency convention and the least general generalizations of its
+single-branch seeds.</p>
+</section>
+</article>
+<script src="/assets/theme-toggle.js"></script>
+</body>
+</html>

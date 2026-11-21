@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <meta name="dcterms.date" content="2026-11-21">
+  <meta property="og:title" content="JCA Round 45: Tiling an Exponential Square Inside a Common Ground Row">
+  <meta property="og:url" content="https://lukstafi.github.io/projects/jca/agent-collab/round-45-tiling.html">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="lukstafi&#x27;s blog">
+  <meta name="twitter:card" content="summary">
+  <title>JCA Round 45: Tiling an Exponential Square Inside a Common
+Ground Row</title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <link rel="stylesheet" href="/assets/tufte.css">
+  <link rel="stylesheet" href="/assets/pandoc-tufte.css">
+  <link rel="stylesheet" href="/assets/site.css">
+  <script defer=""
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+  type="text/javascript"></script>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+  <script>(function(){var t=localStorage.getItem('theme-preference');if(t)document.documentElement.setAttribute('data-theme',t);})()</script>
+</head>
+<body>
+<nav class="site-nav">
+  <a href="/">Home</a> &middot; <a href="/study/">Study Guide</a> &middot; <a href="/about.html">About</a> &middot; <a href="https://lukstafi.substack.com">Substack</a>
+</nav>
+<div class="theme-toggle">
+  <button id="theme-btn" aria-label="Toggle dark mode">&#9788;</button>
+</div>
+<article>
+<header>
+<h1 class="title">JCA Round 45: Tiling an exponential square inside a
+common ground row</h1>
+<p class="byline">2026-11-21</p>
+</header>
+<nav id="TOC">
+<ul>
+<li><a href="#read-a-perfect-tree-as-an-array"
+id="toc-read-a-perfect-tree-as-an-array">Read a perfect tree as an
+array</a></li>
+<li><a href="#move-the-last-address-bit-to-the-front"
+id="toc-move-the-last-address-bit-to-the-front">Move the last address
+bit to the front</a></li>
+<li><a
+href="#compare-every-neighboring-pair-with-polynomially-many-equations"
+id="toc-compare-every-neighboring-pair-with-polynomially-many-equations">Compare
+every neighboring pair with polynomially many equations</a></li>
+<li><a href="#all-five-premises-have-a-single-explicit-witness"
+id="toc-all-five-premises-have-a-single-explicit-witness">All five
+premises have a single explicit witness</a></li>
+</ul>
+</nav>
+<p><strong>Theorem.</strong> On finite binary trees, quantified
+equational JCA with one required fully specified ground row is
+NEXP-complete when the row is supplied as an acyclic term graph. Writing
+the entire row out as trees gives NP-completeness. The lower bound has
+two quantifier blocks <span class="math inline">\(\forall H\,\exists
+Y\)</span>, no designated parameters, and five implications with jointly
+satisfiable, input-only premises. Round 46 reduces the five to two. All
+the public values of the required row point into the same linear-size
+chain of perfectly balanced trees. <a
+href="round-42-maximal.html">Explicit-tree bound</a> · <a
+href="round-46-two-observations.html">Two implications</a></p>
+<p>For the upper bound, unfold the input row and apply the NP
+verification with an explicit tree example. Unfolding a bounded-arity
+DAG costs at most singly exponential time. This upper bound also covers
+the designated-variable presentations and arbitrary read permissions of
+Round 42. The following lower bound also proves NEXP-hardness when only
+<em>existence</em> of a common active row is required. <a
+href="round-44-common-witness.html">Common-witness upper bound</a></p>
+<section id="read-a-perfect-tree-as-an-array" class="level2">
+<h2>Read a perfect tree as an array</h2>
+<p>Use the NEXP-hard problem of tiling a torus of side <span
+class="math inline">\(2^n\)</span> with a specified word along the
+beginning of row zero. There is a fixed finite tile set <span
+class="math inline">\(T\)</span> and fixed horizontal and vertical
+compatibility relations for which this is hard, with <span
+class="math inline">\(n\)</span> one more than the length of the input
+word. <a
+href="https://www.cs.cmu.edu/afs/cs/project/jair/pub/volume12/tobies00a-html/node4.html">Tobies,
+§3, Corollary 3.3</a></p>
+<p>An array of depth <span class="math inline">\(d\)</span> and alphabet
+<span class="math inline">\(A\)</span> is a perfect binary term with
+<span class="math inline">\(2^d\)</span> leaves that are universal input
+names <span class="math inline">\(h_{A,t}\)</span> for <span
+class="math inline">\(t\in A\)</span>. An existential output gives the
+term. Each alphabet has its own distinct inputs. We enforce the stated
+type and depth even though the prefix lets every output read every
+input.</p>
+<p>Use two shape branches. In copy <span
+class="math inline">\(k\)</span> of the test, the premise identifies
+every <span class="math inline">\(h_{A,t}\)</span> with a probe <span
+class="math inline">\(r_{A,k,0}\)</span> and defines <span
+class="math inline">\(r_{A,k,i+1}=f(r_{A,k,i},r_{A,k,i})\)</span> up to
+the maximum requested depth. The conclusion equates each output of type
+<span class="math inline">\((A,d)\)</span> to <span
+class="math inline">\(r_{A,k,d}\)</span>. The two copies have disjoint
+registers, all universally quantified. On a generic assignment
+satisfying either premise, probes for distinct alphabets are
+independent. A term using a register of that very test might shortcut a
+whole subtree. In the other test the same register is an independent
+letter absent from the prescribed tree. Hence no output can use a
+register of either copy. A literal leaf or a leaf of another alphabet
+would likewise contradict the required equality. The only possible terms
+are exactly the prescribed arrays. This is a test of ordinary relevance,
+so the probes may be treated as rigid letters by separation in a
+nontrivial free algebra.</p>
+<p>For the converse from an arbitrary answer to terms, specialize its
+nuisance parameters at a common active row. The existential outputs are
+then terms in the universal inputs. In fact every answer with this
+prefix admits such a specialization even before imposing a common-row
+requirement here: the only premises refer to universal moves, and the
+constraints on those moves have the simultaneous assignment given below.
+<a
+href="round-44-common-witness.html#use-all-the-unification-traces-at-the-same-row">Strategy
+specialization</a></p>
+</section>
+<section id="move-the-last-address-bit-to-the-front" class="level2">
+<h2>Move the last address bit to the front</h2>
+<p>Initially the board has depth <span
+class="math inline">\(d=2n\)</span>. The address bits are the <span
+class="math inline">\(n\)</span> bits of <span
+class="math inline">\(x\)</span>, least significant first, followed by
+the <span class="math inline">\(n\)</span> bits of <span
+class="math inline">\(y\)</span> in that order. Write <span
+class="math inline">\(T_j\)</span> for its layout after <span
+class="math inline">\(j\)</span> last-to-front rotations, using a fresh
+alphabet of tile names at each stage. For a rotation introduce a
+depth-<span class="math inline">\(d-1\)</span> array <span
+class="math inline">\(P_j\)</span> over <em>all pairs</em> <span
+class="math inline">\((l,r)\)</span> of tiles, and two depth-<span
+class="math inline">\(d-1\)</span> arrays <span
+class="math inline">\(L_j,R_j\)</span> over the next tile alphabet.</p>
+<p>Three further implications perform leaf substitutions. Each premise
+gives a simultaneous assignment of the distinct pair-letter inputs,
+leaving all tile-letter inputs independent.</p>
+<table>
+<thead>
+<tr>
+<th>Mode</th>
+<th>Image of a pair letter <span
+class="math inline">\((l,r)\)</span></th>
+<th>Required equality</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Expand</td>
+<td><span class="math inline">\(f(h_{j,l},h_{j,r})\)</span></td>
+<td><span class="math inline">\(P_j=T_j\)</span></td>
+</tr>
+<tr>
+<td>First</td>
+<td><span class="math inline">\(h_{j+1,l}\)</span></td>
+<td><span class="math inline">\(P_j=L_j\)</span></td>
+</tr>
+<tr>
+<td>Second</td>
+<td><span class="math inline">\(h_{j+1,r}\)</span></td>
+<td><span class="math inline">\(P_j=R_j\)</span></td>
+</tr>
+</tbody>
+</table>
+<p>Also impose <span class="math inline">\(T_{j+1}=f(L_j,R_j)\)</span>
+in the expansion conclusion. Its tile letters are unaffected by that
+premise, so the equality holds as an open term. Expansion forces the
+pair at each of the <span class="math inline">\(2^{d-1}\)</span>
+addresses to be exactly the two former sibling tiles. The two
+projections then send the former last bit to the front of the address
+and preserve the order of the others. After <span
+class="math inline">\(n\)</span> rotations, <span
+class="math inline">\(y\)</span> is first, least significant bit first,
+followed by <span class="math inline">\(x\)</span>. All stages share the
+same three implications because their pair alphabets are disjoint.</p>
+</section>
+<section
+id="compare-every-neighboring-pair-with-polynomially-many-equations"
+class="level2">
+<h2>Compare every neighboring pair with polynomially many equations</h2>
+<p>In the <span class="math inline">\(x\)</span>-first board, addresses
+with <span class="math inline">\(j\)</span> low one-bits followed by a
+zero have prefix <span class="math inline">\(1^j0\)</span>. Their
+horizontal successors have prefix <span
+class="math inline">\(0^j1\)</span> with the <em>same</em> remaining
+bits. There is one such class for <span class="math inline">\(0\le
+j&lt;n\)</span>, and the wraparound class compares <span
+class="math inline">\(1^n\)</span> with <span
+class="math inline">\(0^n\)</span>. For each class introduce a
+depth-<span class="math inline">\(d-|p|\)</span> array over the alphabet
+of <strong>legal horizontal pairs</strong>, where <span
+class="math inline">\(p\)</span> is the source prefix. Its first and
+second projections must equal the two board subtrees at the indicated
+prefixes. Use the first and second branches already defined, with the
+edge letters mapped to their respective tile letters. Apply the same
+construction to the <span class="math inline">\(y\)</span>-first board
+for vertical neighbors.</p>
+<p>A subtree at a written path needs only polynomially many output
+names. Along the trie of requested paths introduce both children and
+require <span class="math inline">\(U=f(U_0,U_1)\)</span> in the
+expansion conclusion. These equations involve only tile arrays. Pin
+every prescribed tile of the initial word at its leaf in the same
+conclusion. There are <span class="math inline">\(O(n)\)</span>
+rotations and neighboring classes, and polynomially many named paths and
+register equations. The compiler writes ordinary equations as trees. It
+never expands the board into the input.</p>
+<p>A tiling supplies all these term strategies by arranging its tiles,
+sibling pairs and neighboring pairs in the indicated orders. Conversely,
+the typed initial board assigns a tile to every position. Pair expansion
+forces every rotation, the legal pair arrays check every torus edge, and
+the leaf equations give the initial word. This recovers a tiling from
+any successful answer.</p>
+</section>
+<section id="all-five-premises-have-a-single-explicit-witness"
+class="level2">
+<h2>All five premises have a single explicit witness</h2>
+<p>Let <span class="math inline">\(g_0=a\)</span> and <span
+class="math inline">\(g_{i+1}=f(g_i,g_i)\)</span>. Give every tile
+letter of stage <span class="math inline">\(j\)</span> the ground value
+<span class="math inline">\(g_j\)</span>, every pair letter for rotation
+<span class="math inline">\(j\)</span> the value <span
+class="math inline">\(g_{j+1}\)</span>, and every edge letter the same
+value as a tile at its checked stage. Call its subscript the rank of the
+alphabet. Set shape register <span class="math inline">\(i\)</span> for
+an alphabet of rank <span class="math inline">\(r\)</span> to <span
+class="math inline">\(g_{r+i}\)</span>. Every expansion and both
+projections agree at this assignment. Give each output of type <span
+class="math inline">\((A,d&#39;)\)</span> the value <span
+class="math inline">\(g_{\mathrm{rank}(A)+d&#39;}\)</span>. These are
+the values of every honest strategy there, independent of the tiling. In
+particular the full <strong>public</strong> row is known before solving
+the source instance. Its deepest term is <span
+class="math inline">\(g_{3n}\)</span> and every coordinate reuses the
+same chain of <span class="math inline">\(O(n)\)</span> nodes.</p>
+<p>The <a href="round-45-tiling.py">compiler</a> generates the five
+ordinary implications, this ground row, and candidate term strategies
+for concrete grids. It checks them by finite-tree unification against
+direct horizontal, vertical, wraparound, and initial-word checks on 52
+grids. Returning one test’s own depth register is explicitly rejected by
+the other test.</p>
+</section>
+</article>
+<script src="/assets/theme-toggle.js"></script>
+</body>
+</html>

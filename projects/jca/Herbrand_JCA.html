@@ -227,6 +227,129 @@ over the free term algebra</strong> <span
 class="math inline">\(\mathcal{T}(\mathcal{F})\)</span> problem. The
 bibliography and appendix pointers (A.2.2, B.2.2, B.2.3) are aligned to
 the thesis’ full PDF.</p>
+<p><strong>Thesis review, November 21, 2026.</strong> A GADT payload
+function has two sound typings that no conjunctive equational scheme can
+generalize. With one payload constructor for each of <span
+class="math inline">\(m\)</span> index positions, covering its
+constructor-compatible calls requires exactly <span
+class="math inline">\(m\)</span> such schemes. The review traces the
+example through InvarGenT, gives counterexamples and replacement rules
+for Theorem 4.5 and Appendix A, and derives the short indexed-list
+<code>append</code> using a constructor invariant. <a
+href="agent-collab/thesis-review-1.html">Review and remaining
+questions</a> · <a href="agent-collab/thesis-review-1.lean">Lean
+proofs</a></p>
+<p><strong>November 21, 2026 research update.</strong> Ordinary
+equational JCA on finite ground trees is r.e.-complete with <strong>two
+branches over one binary constructor and one constant</strong>. Each
+implication may use just one premise equality and one conclusion
+equality. One branch is decidable by first-order unification. The
+two-branch result extends to every finite single-sorted signature with a
+branching constructor and a constant. With only unary constructors and
+constants, any finite number of branches is decidable. Only one
+conclusion needs to be nontrivial. The other branch can have a fixed
+premise and conclusion <span class="math inline">\(\top\)</span>,
+contributing just a consistency witness. The fixed-signature reduction
+starts from simultaneous rigid <span
+class="math inline">\(E\)</span>-unification with ground hypotheses. <a
+href="agent-collab/round-25-binary.html">Exact branch threshold and
+binary encoding</a> · <a
+href="agent-collab/round-35-required-example.html#an-ordinary-implication-with-a-fixed-partial-example">One
+nontrivial conclusion</a> · <a
+href="agent-collab/round-18-signature-boundary.html">Monadic decision
+procedure</a></p>
+<p>With a quantifier prefix and no designated variables, <strong>one
+implication is NP-complete over every nontrivial finite-signature term
+algebra</strong>, even when all universal inputs precede all existential
+outputs. This covers premises that test outputs. One active witness and
+the paths inspected during unification suffice to build a
+polynomial-size shared strategy. On a branching signature, restricting
+the premise to data and universal inputs gives P-completeness for three
+quantifier blocks, and NP-completeness for arbitrary interleaving. A
+single universal input with arbitrary output tests is also P-complete
+there. <a href="agent-collab/round-30-monadic.html">One-branch proof and
+signature classification</a> · <a
+href="agent-collab/round-29-small-dags.html">Polynomial certificate</a>
+· <a href="agent-collab/round-20-one-branch.html">Input-only
+premises</a> · <a href="agent-collab/round-21-one-input.html">One
+universal input</a></p>
+<p>Designated witnesses sharpen the one-branch boundary. Under trailing
+validity, one branch is NP-complete. Under leading validity with
+unrestricted witnesses, one branch is NP-complete both for idempotent
+substitution answers and for arbitrary conjunctive answers under the
+weak escape test. With the escape comparison printed in the extraction,
+<strong>removing one permitted read by one witness makes one-branch
+existence r.e.-complete</strong> on every branching signature. This
+holds for arbitrary conjunctions under the weak rule and for idempotent
+substitutions under the strong rule. For a supplied answer with that one
+missing read, validity is polynomial on monadic signatures and
+NP-complete on branching ones. The witness must copy a later existential
+move to reproduce a tree containing the hidden input. This forces a
+second evaluation of the same rewrite proof. <a
+href="agent-collab/round-30-monadic.html#designated-coordinates-under-the-trailing-witness-convention">Trailing
+witnesses</a> · <a
+href="agent-collab/round-31-leading.html">Unrestricted leading
+witnesses</a> · <a
+href="agent-collab/round-37-comparable.html">Arbitrary weak
+presentations</a> · <a
+href="agent-collab/round-39-weak-conjunctions.html">Weak-conjunction
+lower bound</a> · <a
+href="agent-collab/round-34-one-read.html">Strong-rule lower bound</a> ·
+<a href="agent-collab/round-40-reflexive.html">Reflexive escape order
+with prior parameters</a> · <a
+href="agent-collab/round-41-monadic-reads.html">Checking monadic
+answers</a></p>
+<p>The two-branch lower bound already holds for a fixed pair of
+implications with a single ground subtree supplied as input. That
+subtree can occur in a premise or in a conclusion. The number of public
+variables is fixed in both versions. With two constants,
+constructor-free input is also undecidable for a fixed branch count if
+the conclusions may grow in width. The two parameter conventions with
+designated invariants have the same arity boundary. <a
+href="agent-collab/round-26-fixed-template.html">Fixed pair of
+implications</a> · <a
+href="agent-collab/round-16-fixed-flat.html">Constructor-free input</a>
+· <a href="agent-collab/round-19-designated-parameters.html">Designated
+parameters</a></p>
+<p>A related variant requires the answer to contain a completion of each
+supplied example. One implication and any number of examples with
+independent blanks are NP-complete. With a quantifier prefix, allowing
+one blank to occur twice in a single fixed example already gives
+r.e.-completeness over the binary signature. A fully specified example
+written as trees gives a polynomial certificate even for arbitrarily
+many implications and arbitrary witness reads under leading validity.
+Supplying the same kind of row as a shared DAG gives NEXP-completeness
+on branching signatures. <a
+href="agent-collab/round-35-required-example.html">Required examples</a>
+· <a href="agent-collab/round-36-linear-examples.html">Independent and
+repeated blanks</a> · <a href="agent-collab/round-42-maximal.html">Full
+example with designated witnesses</a> · <a
+href="agent-collab/round-45-tiling.html">DAG-encoded example</a></p>
+<p>Requiring one ground assignment to activate all branches makes the
+parameter-free prefix problem NEXP-complete on branching signatures.
+Hardness already holds for two compatible, input-only premises with all
+universal inputs before all outputs. In that prefix a chain of input
+premises ordered by containment is decidable in polynomial time,
+regardless of its length. The two-branch lower bound holds even when the
+first-order sentence has existential witnesses at every input. <a
+href="agent-collab/round-44-common-witness.html">Common-witness
+bound</a> · <a
+href="agent-collab/round-46-two-observations.html">Two-branch tiling
+reduction</a> · <a href="agent-collab/round-47-nested.html">Nested
+premises</a></p>
+<p>Every supplied successful answer has finitely many maximally general
+extensions, and all of them can be computed. Different seeds may lead to
+different maxima. In thesis Example 4.3 the two displayed branches
+together admit infinitely many maximal answers under Definition 4.1.
+Requiring every branch to activate for every fresh tuple leaves exactly
+two. Even under that stronger interpretation the single-branch example
+has infinitely many. <a
+href="agent-collab/round-42-maximal.html#enumerate-all-maximal-extensions-of-one-answer">Maximizing
+a seed</a> · <a href="agent-collab/round-43-infinite-maxima.html">Proof
+for Example 4.3</a></p>
+<p>The sections below record the January investigation. The November
+results above settle its general fixed-model decidability question and
+supply the SREU reduction sought in §4.3.</p>
 </section>
 <section id="abstract" class="level2">
 <h2>Abstract</h2>

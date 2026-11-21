@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <meta name="dcterms.date" content="2026-11-21">
+  <meta property="og:title" content="JCA Round 30: One Quantified Implication Is NP-Complete on Every Nontrivial Signature">
+  <meta property="og:url" content="https://lukstafi.github.io/projects/jca/agent-collab/round-30-monadic.html">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="lukstafi&#x27;s blog">
+  <meta name="twitter:card" content="summary">
+  <title>JCA Round 30: One Quantified Implication Is NP-Complete on
+Every Nontrivial Signature</title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <link rel="stylesheet" href="/assets/tufte.css">
+  <link rel="stylesheet" href="/assets/pandoc-tufte.css">
+  <link rel="stylesheet" href="/assets/site.css">
+  <script defer=""
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+  type="text/javascript"></script>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+  <script>(function(){var t=localStorage.getItem('theme-preference');if(t)document.documentElement.setAttribute('data-theme',t);})()</script>
+</head>
+<body>
+<nav class="site-nav">
+  <a href="/">Home</a> &middot; <a href="/study/">Study Guide</a> &middot; <a href="/about.html">About</a> &middot; <a href="https://lukstafi.substack.com">Substack</a>
+</nav>
+<div class="theme-toggle">
+  <button id="theme-btn" aria-label="Toggle dark mode">&#9788;</button>
+</div>
+<article>
+<header>
+<h1 class="title">JCA Round 30: One quantified implication is
+NP-complete on every nontrivial signature</h1>
+<p class="byline">2026-11-21</p>
+</header>
+<nav id="TOC">
+<ul>
+<li><a href="#each-premise-equality-can-bind-at-most-one-input"
+id="toc-each-premise-equality-can-bind-at-most-one-input">Each premise
+equality can bind at most one input</a></li>
+<li><a
+href="#designated-coordinates-under-the-trailing-witness-convention"
+id="toc-designated-coordinates-under-the-trailing-witness-convention">Designated
+coordinates under the trailing-witness convention</a></li>
+</ul>
+</nav>
+<p><strong>Theorem.</strong> For every fixed finite single-sorted
+signature whose algebra of finite ground trees contains at least two
+elements, existence for one parameter-free quantified equational
+implication is NP-complete. Hardness already holds with all inputs
+before all outputs and no initial data. The one-element algebra always
+admits an answer.</p>
+<p>The polynomial-certificate theorem supplies the upper bound. On a
+branching signature the coloring reduction works with the vertex
+coordinates as additional outputs. It remains to cover all monadic
+signatures, including an algebra consisting of just two constants. On
+these signatures the following hard inputs mention <strong>only
+variables and equality</strong>, with no constructor occurrences at all.
+<a href="round-29-small-dags.html">Polynomial certificate</a> · <a
+href="round-27-joint-pins.html#np-hardness-with-the-fixed-premise-yz">Branching
+lower bound</a></p>
+<section id="each-premise-equality-can-bind-at-most-one-input"
+class="level2">
+<h2>Each premise equality can bind at most one input</h2>
+<p>Start with 3-PARTITION, with <span class="math inline">\(3m\)</span>
+positive integer weights <span class="math inline">\(w_i\)</span>
+summing to <span class="math inline">\(mB\)</span> and <span
+class="math inline">\(B/4&lt;w_i&lt;B/2\)</span>. The question is
+whether the weights can be assigned to <span
+class="math inline">\(m\)</span> bins of total weight <span
+class="math inline">\(B\)</span> each. The problem is NP-hard even with
+unary weights, so a construction of size <span
+class="math inline">\(O(mB)\)</span> is polynomial. <a
+href="https://perso.limos.fr/~palafour/PAPERS/PDF/Garey-Johnson79.pdf">Garey
+and Johnson, strong NP-completeness of 3-PARTITION</a></p>
+<p>For bin <span class="math inline">\(j\)</span> introduce <span
+class="math inline">\(B+1\)</span> distinct universal inputs <span
+class="math inline">\(h_{j,0},\ldots,h_{j,B}\)</span>. For item <span
+class="math inline">\(i\)</span> introduce <span
+class="math inline">\(w_i+1\)</span> distinct existential outputs <span
+class="math inline">\(y_{i,0},\ldots,y_{i,w_i}\)</span>. After all
+inputs and then all outputs, write one implication</p>
+<p><span class="math display">\[
+\bigwedge_i\ \bigwedge_{t=1}^{w_i} y_{i,0}=y_{i,t}
+\quad\Longrightarrow\quad
+\bigwedge_j\ \bigwedge_{s=1}^{B} h_{j,0}=h_{j,s}.
+\]</span></p>
+<p>Given a partition, use the anchor input <span
+class="math inline">\(h_{j,0}\)</span> as <span
+class="math inline">\(y_{i,0}\)</span> for each item assigned to bin
+<span class="math inline">\(j\)</span>. Use the other <span
+class="math inline">\(w_i\)</span> outputs to read <span
+class="math inline">\(w_i\)</span> different nonanchor inputs of the
+bin, allocating each of those inputs once. Each output body is a bare
+input. The premise now requires exactly the bin equalities in the
+conclusion and has a witness.</p>
+<p>Conversely, instantiate the premise with any successful term
+strategy. A monadic term is a word of unary constructors applied to one
+input or to a constant. When unifying two such terms, stripping their
+common constructor prefix leaves an identity or at most one variable
+binding, as long as the equality is consistent. Substitution preserves
+the monadic form. Thus unifying <span class="math inline">\(mB\)</span>
+premise equalities binds at most <span class="math inline">\(mB\)</span>
+of the <span class="math inline">\(m(B+1)\)</span> input names. At least
+<span class="math inline">\(m\)</span> input names remain unbound.</p>
+<p>Under this most general unifier all inputs in each bin have identical
+normal forms, because every active assignment satisfies the conclusion
+and distinct open terms in the nontrivial algebra can be separated. No
+two unbound names can therefore occur as coordinates in the same bin. It
+follows that there are exactly <span class="math inline">\(m\)</span>
+unbound names, one in each bin. Every input’s normal form is its bin’s
+bare unbound name.</p>
+<p>Within an item, the normalized output bodies must all agree. Either
+they are all an identical ground term, or they are one common unary word
+applied to the free name of one bin. In the latter case each original
+body is that same word on some input in that bin. Its premise equalities
+consequently connect only input names in this bin. A ground item
+contributes no bindings and is impossible: every one of the <span
+class="math inline">\(mB\)</span> equalities must contribute a binding
+to reach the required total.</p>
+<p>Assign each item to its resulting bin. Connecting a bin’s <span
+class="math inline">\(B+1\)</span> distinct input names requires at
+least <span class="math inline">\(B\)</span> equalities there. Each
+assigned item supplies <span class="math inline">\(w_i\)</span>, and the
+sum over all bins is exactly <span class="math inline">\(mB\)</span>.
+Thus each bin receives total weight <span
+class="math inline">\(B\)</span>. The source bounds imply that each
+receives three items. This recovers a 3-partition.</p>
+<p>The <a href="round-30-monadic.py">executable check</a> constructs
+actual input/output implications and verifies strategies with bare input
+bodies and with unary words added to an entire item. On small balanced
+instances it compares the bin criterion against exhaustive output
+strategies over two constants, and on a negative instance also exhausts
+depth-one unary bodies.</p>
+</section>
+<section
+id="designated-coordinates-under-the-trailing-witness-convention"
+class="level2">
+<h2>Designated coordinates under the trailing-witness convention</h2>
+<p>The same one-branch classification applies to the thesis-source
+trailing convention with <span class="math inline">\(K\subseteq
+T\)</span> and its atomwise escape checks. Round 19 proves that a public
+pattern admits a valid presentation precisely when its projection away
+from <span class="math inline">\(T\)</span> passes the retained prefix
+game. Thus remove the substituted public coordinates from their original
+prefix positions and append them as final existential outputs. Keep
+their original occurrences in <span class="math inline">\(D,C\)</span>.
+The resulting parameter-free prefix game tests exactly that projection.
+Its successful strategy gives a public pattern that Round 19 presents by
+one equation per coordinate using fresh leaves, satisfying the escape
+checks. The empty designated set gives the lower bound. For leading
+fresh parameters, the classification depends on the witness read
+permissions. <a href="round-31-leading.html">Unrestricted witnesses</a>
+· <a href="round-34-one-read.html">One forbidden read</a>. <a
+href="round-19-designated-parameters.html#trailing-witnesses-admit-a-direct-pattern-presentation">Presentation
+equivalence</a></p>
+</section>
+</article>
+<script src="/assets/theme-toggle.js"></script>
+</body>
+</html>

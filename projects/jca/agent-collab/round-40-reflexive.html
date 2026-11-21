@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <meta name="dcterms.date" content="2026-11-21">
+  <meta property="og:title" content="JCA Round 40: The Reflexive Escape Order with Prior Substituted Parameters">
+  <meta property="og:url" content="https://lukstafi.github.io/projects/jca/agent-collab/round-40-reflexive.html">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="lukstafi&#x27;s blog">
+  <meta name="twitter:card" content="summary">
+  <title>JCA Round 40: The Reflexive Escape Order with Prior Substituted
+Parameters</title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <link rel="stylesheet" href="/assets/tufte.css">
+  <link rel="stylesheet" href="/assets/pandoc-tufte.css">
+  <link rel="stylesheet" href="/assets/site.css">
+  <script defer=""
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+  type="text/javascript"></script>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+  <script>(function(){var t=localStorage.getItem('theme-preference');if(t)document.documentElement.setAttribute('data-theme',t);})()</script>
+</head>
+<body>
+<nav class="site-nav">
+  <a href="/">Home</a> &middot; <a href="/study/">Study Guide</a> &middot; <a href="/about.html">About</a> &middot; <a href="https://lukstafi.substack.com">Substack</a>
+</nav>
+<div class="theme-toggle">
+  <button id="theme-btn" aria-label="Toggle dark mode">&#9788;</button>
+</div>
+<article>
+<header>
+<h1 class="title">JCA Round 40: The reflexive escape order with prior
+substituted parameters</h1>
+<p class="byline">2026-11-21</p>
+</header>
+<nav id="TOC">
+<ul>
+<li><a href="#reordering-the-game"
+id="toc-reordering-the-game">Reordering the game</a></li>
+<li><a href="#isolating-the-observation"
+id="toc-isolating-the-observation">Isolating the observation</a></li>
+<li><a href="#the-separator-cannot-supply-the-hidden-tag"
+id="toc-the-separator-cannot-supply-the-hidden-tag">The separator cannot
+supply the hidden tag</a></li>
+</ul>
+</nav>
+<p><strong>Theorem.</strong> Use leading-fresh validity with the
+reflexive weak comparison <span class="math inline">\(u\le_Q k\)</span>.
+Distinguish the designated invariants tested for escape from additional
+public parameters substituted in validity. One-branch existence for
+arbitrary conjunctions is r.e.-complete on branching signatures with one
+designated invariant <span class="math inline">\(K\)</span> and all
+reads except <span class="math inline">\(K\)</span> reading <span
+class="math inline">\(r\)</span>. With unrestricted reads it is
+NP-complete. The prefix, additional parameters and forbidden pair are
+fixed. The construction also works when both reflexive escape tests are
+imposed on solved answers. This concerns the leading convention. The
+original source’s trailing validity has a separate one-branch NP
+theorem. <a
+href="round-19-designated-parameters.html#two-parameter-conventions">Two
+parameter roles and conventions</a> · <a
+href="round-37-comparable.html">Unrestricted-read theorem</a></p>
+<section id="reordering-the-game" class="level2">
+<h2>Reordering the game</h2>
+<p>Use <span class="math inline">\(X,n,r,E,K,G,J,M\)</span> and the
+guarded implication from Round 39. The ports <span
+class="math inline">\(n\)</span> are now <strong>prior substituted
+parameters</strong>. Only <span class="math inline">\(K\)</span> is
+designated for escape. Add one public move <span
+class="math inline">\(H\)</span>, use the prefix</p>
+<p><span class="math display">\[ \exists G\quad \forall r,K\quad \exists
+H\quad \forall X,n\quad \exists E, \]</span></p>
+<p>and add <span class="math inline">\(H=f(r,r)\)</span> to the ordinary
+conclusion. The premise is still just <span
+class="math inline">\(G=J(X,L(d))\)</span>. The block containing the
+ports and data must come strictly after the designated variable. The
+intermediate existential creates that separation, and the added equality
+specifies what the intermediate move can carry. <a
+href="round-39-weak-conjunctions.html">Guard and branch</a></p>
+<p>For a source solution use the same equations as in Round 39, together
+with the new definition of <span class="math inline">\(H\)</span>. The
+ordinary role of <span class="math inline">\(G=J(X_0,n)\)</span> is
+unchanged. In validity the ports have been simultaneously replaced by
+<span class="math inline">\(R\)</span>, so the initial <span
+class="math inline">\(G\)</span> move can choose <span
+class="math inline">\(J(X_0,R)\)</span>. Its original atom mentions no
+designated invariant. The only atom mentioning <span
+class="math inline">\(K\)</span> is <span
+class="math inline">\(K=M_r([R,z_0])\)</span> with the result inlined.
+Its universals <span class="math inline">\(K,r\)</span> are in the same
+block, so both satisfy the reflexive comparison to <span
+class="math inline">\(K\)</span>. The original move for <span
+class="math inline">\(K\)</span> is a dummy universal after
+substitution. Choosing its witness <span
+class="math inline">\(E\)</span> and making the final move play the
+common list verifies validity.</p>
+</section>
+<section id="isolating-the-observation" class="level2">
+<h2>Isolating the observation</h2>
+<p>In any successful answer, specialize fresh names at a joint witness
+and take the public mgu tuple. The retained universals <span
+class="math inline">\(r,X\)</span> have distinct bare representatives.
+The initial <span class="math inline">\(G\)</span> cannot use the
+representative <span class="math inline">\(u\)</span> of <span
+class="math inline">\(r\)</span>. Thus varying <span
+class="math inline">\(u\)</span> at an ordinary active witness preserves
+the premise. As in Round 39 all the ports stay fixed at <span
+class="math inline">\(L(d_0)\)</span> by relevance and the two packed
+observations vary with the tag. Their forms have constructor root.</p>
+<p>The normal form of <span class="math inline">\(H\)</span> is
+<strong>exactly <span class="math inline">\(f(u,u)\)</span></strong>.
+Its varying row requires a fork for every <span
+class="math inline">\(u\)</span>, ruling out every bare residual and the
+atom. After the other residuals are fixed each child must be the bare
+formal <span class="math inline">\(u\)</span>. No constructor and no
+different residual can have that value throughout the variation. The
+equality therefore holds on the whole tuple pattern. In particular <span
+class="math inline">\(H\)</span> consumes no residual parameter. It
+cannot contain <span class="math inline">\(K\)</span> on the varying
+row, where its children are just the tag letter.</p>
+<p>Decomposition again yields a raw primitive <span
+class="math inline">\(K=t\)</span>. Neither the ground coordinates, the
+bare tag nor <span class="math inline">\(H\)</span> can contain this
+packed <span class="math inline">\(K\)</span>. The other packed tree
+<span class="math inline">\(E\)</span> excludes it by the packed-subtree
+lemma. At the varying row the right side <span
+class="math inline">\(t\)</span> cannot be a bare coordinate: <span
+class="math inline">\(X,n,G\)</span> are fixed, <span
+class="math inline">\(r\)</span> is the bare letter, <span
+class="math inline">\(H=f(r,r)\)</span> has the wrong second child, and
+<span class="math inline">\(E\)</span> has different port payloads. So
+<span class="math inline">\(t\)</span> has constructor root. <a
+href="round-39-packing.lean">Packed-subtree lemma</a></p>
+<p>If <span class="math inline">\(t\)</span> mentions <span
+class="math inline">\(X\)</span> or a port, its parent contains a
+universal <strong>later</strong> than the sole designated name <span
+class="math inline">\(K\)</span>. The reflexive weak escape test
+requires this parent to be individually prefix-valid. It entails <span
+class="math inline">\(K=t\)</span>, which is individually false because
+the original universal <span class="math inline">\(K\)</span> may be
+chosen as <span class="math inline">\(a\)</span> and the right side is
+compound. This rules out every late data and port name, including in
+presentations with padding. The guard is also excluded from <span
+class="math inline">\(t\)</span> by the strict subtree bound at <span
+class="math inline">\(r=a\)</span>. The primitive can therefore use only
+<span class="math inline">\(r\)</span> and <span
+class="math inline">\(H\)</span>. Substituting the already established
+<span class="math inline">\(f(u,u)\)</span> for <span
+class="math inline">\(H\)</span> shows that <span
+class="math inline">\(P_K\)</span> is a unary term in <span
+class="math inline">\(u\)</span> that equals the prescribed right list
+at all tags.</p>
+</section>
+<section id="the-separator-cannot-supply-the-hidden-tag" class="level2">
+<h2>The separator cannot supply the hidden tag</h2>
+<p>In a generic validity play specialize <span
+class="math inline">\(X=X_0\)</span>, the original dummy universals
+(including <span class="math inline">\(K\)</span>) to <span
+class="math inline">\(a\)</span>, and leave <span
+class="math inline">\(r\)</span> as a rigid letter <span
+class="math inline">\(b\)</span>. The witness for <span
+class="math inline">\(K\)</span> can read every public name except <span
+class="math inline">\(r\)</span>. Its only potentially nonground
+generators are <span class="math inline">\(E\)</span> and <span
+class="math inline">\(H=f(b,b)\)</span>, both compound. It cannot
+construct the required bare first child <span
+class="math inline">\(b\)</span>. It must therefore use a whole
+generator as its result. <span class="math inline">\(H\)</span> has
+second child <span class="math inline">\(b\)</span> while the required
+observation has a compound second child. Only <span
+class="math inline">\(E\)</span> remains.</p>
+<p>Grounding the tag now gives the two payload evaluations from Round
+39. There is one additional public name <span
+class="math inline">\(H\)</span> but it is already defined by a compound
+pattern. The number of available proof residuals is still at most the
+number of ports. The guard’s proper-subtree bound removes its name if it
+was unbound. The bare distinct probes exhaust the remaining inputs and
+the final payload solves the source with common data. The same
+constructor padding and projection transfer the proof to any fixed
+branching signature.</p>
+<p>The distinction between the two parameter sets is necessary for this
+scope argument. If the late ports were themselves designated, a parent
+could be padded with a late designated name, permitting the otherwise
+obstructing late universal. The extracted comparison admits a proof with
+the two sets identical. <a
+href="round-39-weak-conjunctions.html">Equal-set result for the
+extracted comparison</a> · <a href="round-40-reflexive.py">Executable
+checks</a></p>
+</section>
+</article>
+<script src="/assets/theme-toggle.js"></script>
+</body>
+</html>

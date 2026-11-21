@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <meta name="dcterms.date" content="2026-11-21">
+  <meta property="og:title" content="JCA Round 42: Deciding and Maximizing Answers Above a Supplied Example">
+  <meta property="og:url" content="https://lukstafi.github.io/projects/jca/agent-collab/round-42-maximal.html">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="lukstafi&#x27;s blog">
+  <meta name="twitter:card" content="summary">
+  <title>JCA Round 42: Deciding and Maximizing Answers Above a Supplied
+Example</title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <link rel="stylesheet" href="/assets/tufte.css">
+  <link rel="stylesheet" href="/assets/pandoc-tufte.css">
+  <link rel="stylesheet" href="/assets/site.css">
+  <script defer=""
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+  type="text/javascript"></script>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+  <script>(function(){var t=localStorage.getItem('theme-preference');if(t)document.documentElement.setAttribute('data-theme',t);})()</script>
+</head>
+<body>
+<nav class="site-nav">
+  <a href="/">Home</a> &middot; <a href="/study/">Study Guide</a> &middot; <a href="/about.html">About</a> &middot; <a href="https://lukstafi.substack.com">Substack</a>
+</nav>
+<div class="theme-toggle">
+  <button id="theme-btn" aria-label="Toggle dark mode">&#9788;</button>
+</div>
+<article>
+<header>
+<h1 class="title">JCA Round 42: Deciding and maximizing answers above a
+supplied example</h1>
+<p class="byline">2026-11-21</p>
+</header>
+<nav id="TOC">
+<ul>
+<li><a href="#bound-the-fresh-names-as-well-as-the-public-pattern"
+id="toc-bound-the-fresh-names-as-well-as-the-public-pattern">Bound the
+fresh names as well as the public pattern</a></li>
+<li><a href="#bound-the-presenting-equations"
+id="toc-bound-the-presenting-equations">Bound the presenting
+equations</a></li>
+<li><a href="#enumerate-all-maximal-extensions-of-one-answer"
+id="toc-enumerate-all-maximal-extensions-of-one-answer">Enumerate all
+maximal extensions of one answer</a></li>
+</ul>
+</nav>
+<p><strong>Theorem.</strong> Require a conjunctive answer to contain one
+specified ground tuple <span class="math inline">\(g\)</span> on
+<em>all</em> public coordinates. With leading validity, arbitrary
+specified witness reads and any finite number of branches, existence is
+NP-complete on every fixed nontrivial finite single-sorted signature
+with a constant. This holds for arbitrary presentations with the weak
+escape test, or idempotent substitution presentations with the weak
+test, the strong test, or both. The input gives <span
+class="math inline">\(g\)</span> as explicit trees. A DAG-encoded
+complete row gives NEXP-completeness on branching signatures. <a
+href="round-45-tiling.html">Succinct-row construction</a> Additional
+ordinary implications and partial existential examples are allowed.
+Fresh reads follow the usual uniform permission or an explicitly
+supplied permission list. <a
+href="round-35-required-example.html#a-complete-ground-example-gives-a-polynomial-certificate">Full-example
+theorem without designated names</a> · <a
+href="round-31-leading.html">Leading game and escape conventions</a></p>
+<p>A second consequence concerns a question one can ask even when
+unrestricted existence is undecidable. Given one successful seed answer,
+one can compute <strong>all maximally general answers above that
+seed</strong>, up to equivalence on the public variables. The list is
+finite. There can still be infinitely many maximal answers to the same
+input. <a href="round-43-infinite-maxima.html">An example from the
+thesis</a></p>
+<section id="bound-the-fresh-names-as-well-as-the-public-pattern"
+class="level2">
+<h2>Bound the fresh names as well as the public pattern</h2>
+<p>Unify a successful answer <span class="math inline">\(A(X,B)\)</span>
+and write its joint tuple of most-general terms as <span
+class="math inline">\((P_X,P_B)\)</span>. Its public ground rows are
+precisely the instances of <span class="math inline">\(P_X\)</span>.
+Since it covers <span class="math inline">\(g\)</span>, obtain <span
+class="math inline">\(P_X\)</span> by replacing some subtrees of <span
+class="math inline">\(g\)</span> by parameters and identifying only
+parameters whose replaced subtrees are equal. It has at most <span
+class="math inline">\(|g|\)</span> nodes in total. Write <span
+class="math inline">\(U\)</span> for its residual parameters.</p>
+<p>Leading validity quantifies all fresh names <span
+class="math inline">\(B\)</span> universally. For every ground tuple for
+<span class="math inline">\(B\)</span> the validity strategy gives a
+solution of <span class="math inline">\(A\)</span> at some ordinary
+public values, including the values of substituted witnesses. Hence
+<span class="math inline">\(P_B\)</span> consists of pairwise distinct
+bare parameters. A constructor-rooted coordinate misses at least one
+ground root in a nontrivial free algebra, and a shared bare parameter
+misses an unequal pair. At most <span class="math inline">\(|U|\)</span>
+of these fresh coordinates name residuals visible in <span
+class="math inline">\(P_X\)</span>.</p>
+<p>Specialize each other fresh coordinate to an original base constant
+<span class="math inline">\(a\)</span> in the answer and in its validity
+witnesses. Its residual was independent of the entire public tuple and
+of the other fresh coordinates. Consequently the specialized answer has
+exactly the same public projection. All branches keep their consistency
+witnesses and their relevance. Specialization preserves leading validity
+and individual atom validity. It preserves the set of <em>public</em>
+names in a raw atom, which determines the syntactic escape check. For
+solved presentations, first discard any definition with a fresh left
+side. In an idempotent presentation that head occurs nowhere else, so
+dropping its definition preserves the public projection. The resulting
+conjunction inherits validity and the tests on retained atoms.
+Specializing fresh names on its right sides now preserves solved
+form.</p>
+<p>Thus the remaining joint tuple consists of bounded public trees and
+at most <span class="math inline">\(|U|\)</span> distinct fresh names
+labeling some of their bare parameters. Keeping the actual remaining
+names also preserves their read permissions.</p>
+</section>
+<section id="bound-the-presenting-equations" class="level2">
+<h2>Bound the presenting equations</h2>
+<p>Decompose the atoms of the specialized conjunction at matching
+constructors and drop identities. A remaining primitive has the form
+<span class="math inline">\(x=t\)</span> and satisfies the open identity
+<span class="math inline">\(P_x=t(P)\)</span>. Every variable leaf in
+<span class="math inline">\(t\)</span> expands to at least one node, so
+<span class="math inline">\(|t|\leq |P_x|\)</span>. Retain a primitive
+only if earlier retained primitives do not entail it. All are jointly
+consistent. Every new primitive then binds at least one of the remaining
+unification variables. At most <span
+class="math inline">\(|X|+|B|\)</span> primitives suffice to present
+exactly the same joint relation.</p>
+<p>For the weak test, a primitive of an individually prefix-valid parent
+is individually prefix-valid. If the parent passed the occurrence check,
+on a branching signature pad both sides with identical copies of its
+public names until the variable set is restored. A constructor of arity
+greater than two can fill its spare children with <span
+class="math inline">\(a\)</span>. On a monadic signature cancelling
+equal leading symbols already preserves the free names of a nonidentity
+atom. In an idempotent presentation each right side is a term over
+unbound names and satisfies the same size bound directly. Retain these
+definitions with their original orientations.</p>
+<p>Guess this polynomial-size presentation and the correspondence from
+visible fresh names to residuals. Unification, one-sided matching, and
+the public branch checks take polynomial time on shared terms.
+Individual validity and scope are effective on the stated atoms. The
+arbitrary-read leading game has an NP certificate. Together these checks
+give the upper bound. The all-<span class="math inline">\(a\)</span>
+ground example in the 3-PARTITION construction gives hardness with no
+designated variables and only one implication. <a
+href="round-32-carriers.html#checking-a-supplied-answer-by-generation-of-terms">Supplied-answer
+game</a> · <a
+href="round-35-required-example.html#a-complete-ground-example-gives-a-polynomial-certificate">Ground-example
+lower bound</a></p>
+<p>The same proof decides whether a <strong>specified public tuple
+pattern</strong> <span class="math inline">\(P\)</span>, written as
+trees, has an admissible presentation. Guess which of its visible
+residuals have fresh names, guess bounded atoms and check that their
+unifier projects to <span class="math inline">\(P\)</span> by matching
+in both directions. This test is itself NP-complete even on the binary
+signature with one missing read under the extracted weak rule. For
+hardness take the solved conjunction <span
+class="math inline">\(C\)</span> from the one-missing-read SAT
+construction and supply its projected mgu. Its expanded size is
+polynomial because its bodies are lists and cells with no chains of
+defined heads. If <span class="math inline">\(C\)</span> passes the game
+it is an admissible presentation. Conversely any valid presentation of
+that same projection implies <span class="math inline">\(C\)</span> on
+every public row. Fixing its fresh inputs to <span
+class="math inline">\(a\)</span> gives validity of <span
+class="math inline">\(C\)</span> with the same allowed reads. <a
+href="round-32-carriers.html#one-forbidden-read-on-a-binary-signature">SAT
+construction</a></p>
+</section>
+<section id="enumerate-all-maximal-extensions-of-one-answer"
+class="level2">
+<h2>Enumerate all maximal extensions of one answer</h2>
+<p>Let <span class="math inline">\(P_0\)</span> be the public projection
+of the supplied successful seed. Ground its residuals to <span
+class="math inline">\(a\)</span>, giving one row <span
+class="math inline">\(g\)</span>. Every generalization of <span
+class="math inline">\(P_0\)</span> contains <span
+class="math inline">\(g\)</span>. Enumerate the finite list of its
+prunings, including possible identifications of leaves. Keep patterns
+<span class="math inline">\(P\)</span> that match <span
+class="math inline">\(P_0\)</span>, pass every ordinary branch, and have
+an admissible presentation. Discard any remaining pattern strictly
+included in another. This gives exactly the maximal answers above the
+seed. Every further generalization of a listed answer would still cover
+<span class="math inline">\(P_0\)</span> and would itself have
+appeared.</p>
+<p>Here matching to <span class="math inline">\(P_0\)</span> treats its
+parameters as rigid names. If matching fails at a constructor, its fixed
+root can be contradicted by a ground instance of <span
+class="math inline">\(P_0\)</span>. If it fails at two occurrences of a
+parameter, the two distinct target subterms can be separated by a ground
+assignment. Thus one-sided matching is exactly inclusion of public
+ground rows. It also gives the term witnesses in the thesis definition
+of generality. Apply the matcher to the general answer’s
+fresh-coordinate terms in its mgu, grounding any invisible residual.
+Express the target residuals as their unbound coordinate names in the
+seed’s mgu. On every solution of the seed these terms witness the
+general answer. Conversely such witnesses immediately imply public
+inclusion. <a href="../thesis_section_4_2.md">Thesis §4.2.1, generality
+immediately before Example 4.3</a></p>
+<p>Enumerating successful answers and running this terminating
+maximization on each yields a complete enumerator emitting only maximal
+answers. Equivalence up to renaming can be used to suppress duplicates.
+There is no resulting test for exhaustion of the enumeration or for
+absence of any seed. With an explicit projected seed promised
+admissible, <em>nonmaximality</em> has a polynomial certificate: guess a
+strictly larger admissible pattern covering the all-<span
+class="math inline">\(a\)</span> instance of the seed, then use the
+checks above. The explicit-tree input measure matters for this
+bound.</p>
+<p>The <a href="round-42-maximal.py">reference search</a> enumerates the
+maximal extensions of the seed <span class="math inline">\(x=z=s,\
+y=f(s,s)\)</span> in thesis Example 4.3. There are exactly three: <span
+class="math inline">\(y=f(z,\gamma)\)</span>, <span
+class="math inline">\(y=f(x,z)\)</span>, and <span
+class="math inline">\(x=z\land y=f(\gamma,\gamma)\)</span>. It also
+checks a public pattern that requires a visible fresh parameter and one
+whose admissibility changes with its witness’s read permission.</p>
+</section>
+</article>
+<script src="/assets/theme-toggle.js"></script>
+</body>
+</html>

@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <meta name="dcterms.date" content="2026-11-21">
+  <meta property="og:title" content="JCA Round 22: Testing an Output against a Ground Tree">
+  <meta property="og:url" content="https://lukstafi.github.io/projects/jca/agent-collab/round-22-ground-tests.html">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="lukstafi&#x27;s blog">
+  <meta name="twitter:card" content="summary">
+  <title>JCA Round 22: Testing an Output against a Ground Tree</title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <style type="text/css">
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="/assets/tufte.css">
+  <link rel="stylesheet" href="/assets/pandoc-tufte.css">
+  <link rel="stylesheet" href="/assets/site.css">
+  <script defer=""
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+  type="text/javascript"></script>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+  <script>(function(){var t=localStorage.getItem('theme-preference');if(t)document.documentElement.setAttribute('data-theme',t);})()</script>
+</head>
+<body>
+<nav class="site-nav">
+  <a href="/">Home</a> &middot; <a href="/study/">Study Guide</a> &middot; <a href="/about.html">About</a> &middot; <a href="https://lukstafi.substack.com">Substack</a>
+</nav>
+<div class="theme-toggle">
+  <button id="theme-btn" aria-label="Toggle dark mode">&#9788;</button>
+</div>
+<article>
+<header>
+<h1 class="title">JCA Round 22: Testing an output against a ground
+tree</h1>
+<p class="byline">2026-11-21</p>
+</header>
+<nav id="TOC">
+<ul>
+<li><a href="#a-certificate-for-ground-tested-outputs"
+id="toc-a-certificate-for-ground-tested-outputs">A certificate for
+ground-tested outputs</a></li>
+<li><a href="#when-the-initial-data-determine-the-test"
+id="toc-when-the-initial-data-determine-the-test">When the initial data
+determine the test</a></li>
+<li><a href="#one-literal-can-carry-a-graph-coloring"
+id="toc-one-literal-can-carry-a-graph-coloring">One literal can carry a
+graph coloring</a></li>
+<li><a href="#verification-and-limits"
+id="toc-verification-and-limits">Verification and limits</a></li>
+</ul>
+</nav>
+<p>With one branch and prefix <span class="math inline">\(\exists
+X\,\forall H\,\exists Y\)</span>, input-only premises give a P-complete
+problem over branching signatures. Allow the premise to be just
+<strong>one equation <span class="math inline">\(y=G\)</span></strong>,
+where <span class="math inline">\(G\)</span> is a ground tree supplied
+with the instance. Answer existence is then
+<strong>NP-complete</strong>, already with one binary constructor and
+one constant. The result also holds with no initial data if additional
+existential outputs are available. The ground tree in the one-test
+reduction grows with the instance. If both its size and the number of
+tests are bounded in advance, the three-block problem stays in P. <a
+href="round-20-one-branch.html#when-two-unifications-suffice">Input-only
+classification</a></p>
+<section id="a-certificate-for-ground-tested-outputs" class="level2">
+<h2>A certificate for ground-tested outputs</h2>
+<p>Use one arbitrary equational implication with initial existential
+data, universal inputs and interleaved existential outputs, under the
+parameter-free prefix convention of Round 20. An output is
+<strong>asymmetric</strong> if its occurrences on the two sides of some
+premise atom have different tree positions. Suppose the most general
+unifier of the premise assigns <strong>every asymmetric output</strong>
+<span class="math inline">\(y\)</span> a ground tree <span
+class="math inline">\(G_y\)</span>. This includes explicit ground tests,
+and allows other premise equations to imply those tests. A symmetric
+output can be replaced by any constant on both sides of each premise
+equation without changing its truth, since each replaced occurrence
+faces the identical output. <a
+href="round-21-one-input.html#deciding-if-one-input-can-be-isolated">Occurrence
+test and one-branch strategy form</a></p>
+<p><strong>Theorem.</strong> This fragment is in NP, including when the
+inferred ground trees are given by shared directed acyclic graphs.</p>
+<p>Take a term strategy and one joint witness of its premise. The body
+for a pinned output <span class="math inline">\(y\)</span> must evaluate
+to <span class="math inline">\(G_y\)</span> there. It is therefore <span
+class="math inline">\(G_y\)</span> with some disjoint subtrees replaced
+by earlier public input names. Conversely such a body evaluates to <span
+class="math inline">\(G_y\)</span> exactly when every inserted input has
+the ground value of the subtree it replaced. If an input name occurs
+several times in one body, consistency forces the replaced subtrees to
+be identical. Retain only one occurrence of that name and put the ground
+subtrees back at its other occurrences. This preserves the equality test
+<span class="math inline">\(y=G_y\)</span> at every input. On its active
+set it preserves the value of <span class="math inline">\(y\)</span> in
+every other premise and conclusion equation. Formally, conjoin the
+entailed tests <span class="math inline">\(y=G_y\)</span> to <span
+class="math inline">\(D\)</span> before performing the replacement. This
+proves that one retained occurrence per input per body suffices.</p>
+<p>For each pinned <span class="math inline">\(y\)</span>, guess a set
+of its earlier input names and one position in <span
+class="math inline">\(G_y\)</span> for each selected name. Check that
+these positions are pairwise incomparable by the prefix order within
+that body. For choice <span class="math inline">\((h,p)\)</span>,
+conjoin <span class="math inline">\(h=G_y|_p\)</span> to the premise.
+Replace pinned outputs everywhere by their ground values, erase
+symmetric outputs from the premise, and remove the pinned output moves
+from the prefix. What remains is an input-only instance of Round 20. Its
+solutions extend by the guessed bodies, and the preceding reduction
+preserves a successful term strategy whenever one exists.</p>
+<p>There are at most <span class="math inline">\(|H||Y|\)</span> guessed
+paths, each at most the depth of a unifier DAG. Following each path and
+checking disjointness takes polynomial time. The input-only decision
+then has a polynomially checkable certificate. With all inputs before
+all outputs, this last test is deterministic polynomial time. If the
+total <em>expanded</em> size of the ground tests is bounded by a fixed
+<span class="math inline">\(k\)</span>, there are at most <span
+class="math inline">\((|H|+1)^k\)</span> choices of markings. This gives
+the stated polynomial bound for a fixed test size.</p>
+</section>
+<section id="when-the-initial-data-determine-the-test" class="level2">
+<h2>When the initial data determine the test</h2>
+<p>The same NP upper bound holds on branching signatures when every
+asymmetric output is determined by the <strong>chosen initial
+data</strong> on the premise. This permits unbounded test trees. To
+recognize the condition, write <span class="math inline">\(Z\)</span>
+for the residuals in <span class="math inline">\(\mu(X)\)</span> and
+check that each asymmetric <span class="math inline">\(\mu(y)\)</span>
+has residuals only in <span class="math inline">\(Z\)</span>. For fixed
+realizable data, each member of <span class="math inline">\(Z\)</span>
+has a fixed value at a subtree of the data. The premise therefore pins
+<span class="math inline">\(y\)</span> to the ground instance of <span
+class="math inline">\(G_y(Z)=\mu(y)\)</span>. Conversely a residual
+outside <span class="math inline">\(Z\)</span> can be varied with the
+data held fixed.</p>
+<p>Introduce <span class="math inline">\(Z\)</span> as fresh initial
+data and require <span class="math inline">\(X=\mu(X)(Z)\)</span> in the
+input-only premise. As above, guess which earlier names <span
+class="math inline">\(h\)</span> occur in the body for each pinned <span
+class="math inline">\(y\)</span>. For each name used anywhere introduce
+a ground data coordinate <span class="math inline">\(v_h\)</span> and
+include the test <span class="math inline">\(h=v_h\)</span> in the new
+premise. Substitute <span class="math inline">\(G_y(Z)\)</span> for the
+pinned outputs in <span class="math inline">\(D,C\)</span> and erase
+symmetric outputs from <span class="math inline">\(D\)</span>. The
+additional constraint on the <strong>chosen data</strong> is that the
+selected values <span class="math inline">\(v_h\)</span> for each one
+body have occurrences at pairwise incomparable positions in <span
+class="math inline">\(G_y(Z)\)</span>. If the constraint holds, replace
+those occurrences by the input names to recover the body. Duplicate uses
+can be dropped for the same reason as with literal pins. These existence
+constraints on data must be imposed outside the implication.</p>
+<p>For example, take <span class="math inline">\(\exists d\,\forall
+h,k\,\exists y\)</span> and the sole premise <span
+class="math inline">\(y=d\)</span>. The conclusion <span
+class="math inline">\(h=f(a,a)\land k=a\)</span> admits <span
+class="math inline">\(d=f(f(a,a),a)\)</span> and <span
+class="math inline">\(y=f(h,k)\)</span>. If the conclusion instead
+requires <span class="math inline">\(d=f(a,a),\ h=d,\ k=a\)</span>, it
+is impossible. The required occurrence for <span
+class="math inline">\(h\)</span> would occupy the root of <span
+class="math inline">\(d\)</span>, leaving no disjoint occurrence for
+<span class="math inline">\(k\)</span>. Each required value individually
+is a subtree.</p>
+<p>The disjoint occurrences have an existential description using
+ordinary equations and the non-strict subtree predicate <span
+class="math inline">\(s\sqsubseteq t\)</span>. For one value require
+just <span class="math inline">\(v_h\sqsubseteq G_y(Z)\)</span>. For
+several, guess the tree formed by their lowest common ancestors. At each
+branching point guess an ordinary constructor, name its children by
+fresh variables, and place the roots of its different groups in distinct
+children using <span class="math inline">\(\sqsubseteq\)</span>. Require
+the top branching point to be a subtree of <span
+class="math inline">\(G_y(Z)\)</span>. A group of size one ends at its
+selected value. There are at most as many branching points as values
+minus one. This description enforces distinct <em>positions</em> even
+when two selected values happen to be equal.</p>
+<p>Use this description together with the input-only NP computation.
+Round 20’s guesses yield ordinary equations and the requirement that the
+remaining data variables have pure ground values. Apply its final
+unifier and reject any violation of purity. All newly added subtree
+constraints now mention only ordinary terms over the remaining pure
+variables. The finite-subterm replacement in Round 20 changes only
+output residuals outside the data, so it preserves these constraints. A
+satisfying ground assignment of the final existential equations and
+subtree tests completes the certificate.</p>
+<p>For completeness, this last positive theory has polynomial-size
+ground DAG witnesses on every branching signature. In any solution take
+the distinct values of all syntactic nodes of the final constraints.
+Build replacements in increasing subtree order. For a value represented
+by a constructor node, retain its constructor on the replacements of its
+children. For a value represented only by variables, use a binary
+constructor (padded if necessary) to pack the replacements of all its
+observed strict subvalues as proper subtrees, or use a constant when
+there are none. Inductively each observed subtree relation survives. At
+a constructor, any strict subvalue lies in some child, whose value is
+also observed. Equal values have one replacement. With <span
+class="math inline">\(N\)</span> observed values the new DAG has <span
+class="math inline">\(O(N^2)\)</span> nodes, and both equality and
+subtree reachability can be checked there in polynomial time.
+Venkataraman gives the NP result for the full existential language of
+binary trees with subtree. <a
+href="https://doi.org/10.1145/23005.24037">Venkataraman,
+<em>Decidability of the Purely Existential Fragment of the Theory of
+Term Algebras</em></a></p>
+</section>
+<section id="one-literal-can-carry-a-graph-coloring" class="level2">
+<h2>One literal can carry a graph coloring</h2>
+<p>Use three distinct ground colors <span
+class="math inline">\(c_1,c_2,c_3\)</span> and a ground marker <span
+class="math inline">\(K\)</span> taller than every <span
+class="math inline">\(f(c_i,c_j)\)</span>. Encode an ordered pair by</p>
+<p><span class="math display">\[E(s,t)=f(K,f(s,t)).\]</span></p>
+<p>Use ordinary <span class="math inline">\(f\)</span>-lists ending at
+<span class="math inline">\(a\)</span>. Let <span
+class="math inline">\(P\)</span> be the fixed six-entry list of <span
+class="math inline">\(E(c_i,c_j)\)</span> for <span
+class="math inline">\(i\ne j\)</span>. For a graph with <span
+class="math inline">\(m\)</span> edges, let the one tested literal <span
+class="math inline">\(G\)</span> be the list of <span
+class="math inline">\(m\)</span> copies of <span
+class="math inline">\(P\)</span>. Its only subtrees of the form <span
+class="math inline">\(E(s,t)\)</span> encode distinct colors. Indeed the
+marker cannot contain itself properly, the colors are shorter, and the
+left child of each list cell is an encoded entry or a palette, each
+larger than <span class="math inline">\(K\)</span>.</p>
+<p>Choose initial data <span class="math inline">\(x_v\)</span> for
+vertices. Use one universal input <span
+class="math inline">\(h_e\)</span> per edge, all before the single
+existential output <span class="math inline">\(y\)</span>. For the edge
+<span class="math inline">\(e=vw\)</span> add one conclusion equation.
+The entire branch is</p>
+<p><span class="math display">\[y=G\quad\Rightarrow\quad
+\bigwedge_{e=vw} h_e=E(x_v,x_w).\]</span></p>
+<p>Given a coloring, fix the data to its colors. In the palette block
+for edge <span class="math inline">\(e\)</span>, replace the
+corresponding encoded pair by <span class="math inline">\(h_e\)</span>.
+Use this modified list for the body of <span
+class="math inline">\(y\)</span>. Equality to <span
+class="math inline">\(G\)</span> pins each <span
+class="math inline">\(h_e\)</span> to the intended ordered pair. These
+pins are jointly satisfiable and imply every conclusion.</p>
+<p>Conversely, take a successful term strategy and a joint witness.
+Every <span class="math inline">\(h_e\)</span> must occur in the body
+for <span class="math inline">\(y\)</span>. Otherwise changing just that
+input to <span class="math inline">\(a\)</span> retains the premise and
+violates its conclusion, whose right side has root <span
+class="math inline">\(f\)</span>. At the witness, the value of every
+used input is a subtree of <span class="math inline">\(G\)</span>. The
+conclusion identifies that value with <span
+class="math inline">\(E(x_v,x_w)\)</span>. Inspection of the palette
+forces both endpoint values to be colors, and the two colors to differ.
+The witness colors every non-isolated vertex. Give isolated vertices any
+color. The construction takes linear size in the graph for this fixed
+palette. For any higher-arity branching constructor, pad its extra
+arguments with <span class="math inline">\(a\)</span>. <a
+href="https://doi.org/10.1016/0304-3975%2876%2990059-1">Garey, Johnson
+and Stockmeyer, graph 3-colorability</a></p>
+<p>The same proof works when the <span
+class="math inline">\(x_v\)</span> are existential outputs after the
+universal inputs. If <span class="math inline">\(h_e\)</span> is absent
+from the tested body, setting it to <span
+class="math inline">\(a\)</span> violates the required constructor root
+whatever the other output strategies do. One joint witness again gives a
+coloring. With several tested outputs one can instead use <strong>the
+same fixed literal <span class="math inline">\(P\)</span> for every
+graph</strong>, one equation <span class="math inline">\(y_e=P\)</span>
+per edge. Both versions grow the total size of the tests.</p>
+</section>
+<section id="verification-and-limits" class="level2">
+<h2>Verification and limits</h2>
+<p>The <a href="round-22-ground-tests.py">reference implementation</a>
+covers the literal and implied-ground cases. It recognizes implied
+ground tests, enumerates incomparable occurrence positions, and
+reconstructs checked term strategies for the original equations. It
+compares all 72 single-pin, single-conclusion instances in the
+two-constant algebra with two inputs and two outputs against exhaustive
+strategies. The separate coloring check reads the allowed pairs from the
+actual palette tree, recovers a strategy for each colorable four-vertex
+graph, and checks its active-input unifier. The adjacent notes cover one
+universal with arbitrary output tests and the two-branch undecidability
+result. <a href="round-21-one-input.html">One universal</a> · <a
+href="round-19-designated-parameters.html#the-prefix-replaces-the-scope-branch">Two
+branches</a></p>
+<p>The data-determined extension above is a reduction on paper. If an
+output can vary on the premise even after the initial data are fixed,
+its inferred pattern can depend on active inputs. Replacing repeated
+input occurrences by ground subtrees then need not preserve the active
+inputs. The later general proof bounds the strategy by compressing a
+single witness and its unification paths. <a
+href="round-29-small-dags.html">Arbitrary output-dependent
+premises</a></p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python3</span> projects/jca/agent-collab/round-22-ground-tests.py</span></code></pre></div>
+</section>
+</article>
+<script src="/assets/theme-toggle.js"></script>
+</body>
+</html>

@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <meta name="dcterms.date" content="2026-11-21">
+  <meta property="og:title" content="JCA Round 37: Polynomial Certificates for Arbitrary Weak Presentations">
+  <meta property="og:url" content="https://lukstafi.github.io/projects/jca/agent-collab/round-37-comparable.html">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="lukstafi&#x27;s blog">
+  <meta name="twitter:card" content="summary">
+  <title>JCA Round 37: Polynomial Certificates for Arbitrary Weak
+Presentations</title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <link rel="stylesheet" href="/assets/tufte.css">
+  <link rel="stylesheet" href="/assets/pandoc-tufte.css">
+  <link rel="stylesheet" href="/assets/site.css">
+  <script defer=""
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+  type="text/javascript"></script>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+  <script>(function(){var t=localStorage.getItem('theme-preference');if(t)document.documentElement.setAttribute('data-theme',t);})()</script>
+</head>
+<body>
+<nav class="site-nav">
+  <a href="/">Home</a> &middot; <a href="/study/">Study Guide</a> &middot; <a href="/about.html">About</a> &middot; <a href="https://lukstafi.substack.com">Substack</a>
+</nav>
+<div class="theme-toggle">
+  <button id="theme-btn" aria-label="Toggle dark mode">&#9788;</button>
+</div>
+<article>
+<header>
+<h1 class="title">JCA Round 37: Polynomial certificates for arbitrary
+weak presentations</h1>
+<p class="byline">2026-11-21</p>
+</header>
+<nav id="TOC">
+<ul>
+<li><a href="#compressing-comparable-values"
+id="toc-compressing-comparable-values">Compressing comparable
+values</a></li>
+<li><a href="#a-general-premise-with-prefix-closed-permissions"
+id="toc-a-general-premise-with-prefix-closed-permissions">A general
+premise with prefix-closed permissions</a></li>
+<li><a href="#an-empty-premise-with-arbitrary-carrier-permissions"
+id="toc-an-empty-premise-with-arbitrary-carrier-permissions">An empty
+premise with arbitrary carrier permissions</a></li>
+</ul>
+</nav>
+<p><strong>Theorem.</strong> Under leading-fresh validity, one
+equational implication is <strong>NP-complete for arbitrary conjunctive
+answers with the weak escape test</strong> when designated witnesses may
+use all public names. This holds over every fixed finite single-sorted
+signature whose ground algebra has at least two elements. It also holds
+for the prefix-closed witness permissions of Round 31, including
+ground-only permissions. The comparison used in the atomwise escape test
+can be fixed independently as in that round.</p>
+<p><strong>Second theorem.</strong> With a tautological premise, one
+branch with <em>arbitrary</em> specified read permissions has polynomial
+certificates even for arbitrary weak presentations. Together with the
+3-SAT reductions of Round 32 this gives NP-completeness for the weak
+problem and the solved strong problem. On the binary signature even one
+forbidden read suffices for this lower bound. With a general premise, a
+single forbidden read already gives r.e.-completeness for the extracted
+strong rule on solved presentations. <a
+href="round-31-leading.html">Earlier bounds and validity criterion</a> ·
+<a href="round-32-carriers.html">Empty-premise lower bound</a> · <a
+href="round-34-one-read.html">Single forbidden read</a></p>
+<p>Both proofs must preserve a collection of terms at two stages. One
+stage has independent parameter letters; the next replaces those letters
+by trees. The substitution relating the two stages lets us compress them
+together. Two independent evaluations of an unknown body need not have
+this property.</p>
+<section id="compressing-comparable-values" class="level2">
+<h2>Compressing comparable values</h2>
+<p>Take finitely many values at a first stage, which are trees over the
+original constructors and letters <span
+class="math inline">\(U\)</span>. At a second stage each such value
+<span class="math inline">\(v\)</span> becomes <span
+class="math inline">\(w_v=v[\sigma]\)</span>, a tree over original
+constructors and a new set of rigid letters. The first stage has
+explicit equations and requirements that a named value be generated from
+specified other values using original constructors. The second stage may
+have more named values, equations, and generation tests of the same
+kind. Distinguished second-stage letters must remain distinct. All
+expressions, named values, generator lists, and the two letter sets have
+polynomial <em>description</em> size; the initial assignments can be
+much larger.</p>
+<p>Mark the first-stage value at every named root, every subexpression
+of its explicit equations, and every letter in <span
+class="math inline">\(U\)</span>. A value attained at an explicit
+constructor is fixed at its root. All children of a fixed constructor
+are marked. For a marked constructor value <span
+class="math inline">\(v\)</span> define its <strong>frontier</strong>
+<span class="math inline">\(F_v\)</span> by descending below its root,
+stopping on each path at the first marked descendant. Count distinct
+values, so each frontier has at most as many members as there are marks.
+The part between the root and this frontier builds <span
+class="math inline">\(v\)</span> from <span
+class="math inline">\(F_v\)</span> using only original constructors;
+every rigid letter is marked.</p>
+<p>At the second stage fix the roots of every explicit constructor in
+its equations, every <span class="math inline">\(w_v\)</span> for a
+fixed first-stage constructor <span class="math inline">\(v\)</span>,
+and every second-stage rigid letter. Apply the Round 29 collapse <span
+class="math inline">\(\rho\)</span>: retain those roots recursively and
+replace other values by the original base constant. There are
+polynomially many nodes after sharing. Second-stage equations and
+generation tests survive. In particular <span
+class="math inline">\(\rho(w_v)\)</span> is generated from <span
+class="math inline">\(\{\rho(w_b):b\in F_v\}\)</span>, since the old
+first-stage construction remains a construction after applying <span
+class="math inline">\(\sigma\)</span>. <a
+href="round-29-small-dags.html#terms-after-applying-the-input-bindings">Ground-value
+compression and generation</a></p>
+<p>Reconstruct a new first-stage value <span
+class="math inline">\(\widehat v\)</span> for each mark, in order of
+increasing original size.</p>
+<ul>
+<li>Keep a letter <span class="math inline">\(h\)</span> as <span
+class="math inline">\(h\)</span> and put <span
+class="math inline">\(\widehat\sigma(h)=\rho(\sigma(h))\)</span>.</li>
+<li>At a fixed constructor keep the constructor with the reconstructed
+children.</li>
+<li>At any other constructor choose a small open term building <span
+class="math inline">\(\rho(w_v)\)</span> from the named values <span
+class="math inline">\(\rho(w_b)\)</span> for <span
+class="math inline">\(b\in F_v\)</span>. Replace its generator leaves by
+the corresponding <span class="math inline">\(\widehat b\)</span>. The
+open term needs at most one node per second-stage DAG node, by bottom-up
+generation with memoization.</li>
+</ul>
+<p>Then <span class="math inline">\(\widehat
+v[\widehat\sigma]=\rho(w_v)\)</span> at every mark. All explicit
+first-stage equations survive. Every letter in <span
+class="math inline">\(\widehat v\)</span> already occurred in <span
+class="math inline">\(v\)</span>. Sharing the results at frontier
+references bounds the whole first-stage DAG by the product of the
+polynomial mark and node counts.</p>
+<p><strong>First-stage generation also survives.</strong> Suppose <span
+class="math inline">\(v\)</span> could be built from a list <span
+class="math inline">\(G\)</span> of named first-stage values. If <span
+class="math inline">\(v\)</span> itself is in <span
+class="math inline">\(G\)</span>, its new version is that same named
+generator. Otherwise a successful construction must build the root.
+Every frontier member below it is also generated by <span
+class="math inline">\(G\)</span>: no construction can stop at a
+generator strictly between <span class="math inline">\(v\)</span> and
+that first mark, because each generator is marked. Induction on size now
+gives generation of each reconstructed frontier member from the new
+<span class="math inline">\(G\)</span>. Composing their constructions
+gives generation of <span class="math inline">\(\widehat v\)</span>.
+This works for many different generator lists at once, including when
+two generators acquire the same <em>second</em>-stage value. <a
+href="round-37-frontier.lean">Lean proof of frontier
+preservation</a></p>
+</section>
+<section id="a-general-premise-with-prefix-closed-permissions"
+class="level2">
+<h2>A general premise with prefix-closed permissions</h2>
+<p>Start with Round 31’s fresh-free admissible primitive presentation.
+There are at most as many primitives <span
+class="math inline">\(x=t_i\)</span> as public coordinates, with parent
+scope sets available for padding. Its two-stage path compression already
+gives a successful presentation and joint witness of polynomial depth.
+Keep one occurrence path per required free name, so padding eligibility
+and individual-validity exemptions can still be checked. <a
+href="round-31-leading.html#arbitrary-weak-presentations-can-be-shortened-before-verification">Shallow
+primitive presentations</a></p>
+<p>Apply the pointer tracing of Round 29 to the ordinary system
+consisting of all primitives followed by the premise <span
+class="math inline">\(D\)</span>. Treat each primitive’s right side as
+one unknown body over the public coordinates. This is an ordinary
+implication whose instantiated premise is <span
+class="math inline">\(A\land D\)</span> and whose conclusion is <span
+class="math inline">\(C\)</span>. There are at most <span
+class="math inline">\(|X|\)</span> bindings. The shallow witness bounds
+the length of each pointer traversal. Retain the two paths for each
+binding, their ancestors and the required occurrence paths. This leaves
+polynomial-size fragments in the primitive bodies with one placeholder
+per unexplored child. Record the original set of public names used
+inside each placeholder. <a
+href="round-29-small-dags.html#the-inspected-fragments-have-polynomial-size">Pointer
+trace and forced bindings</a></p>
+<p>Use the following two stages.</p>
+<ol type="1">
+<li>At the first stage give each public name its normal form under an
+mgu of <span class="math inline">\(A\)</span> alone, with the unbound
+names as independent letters <span class="math inline">\(U\)</span>.
+Give each placeholder the value of its original omitted body at this
+tuple. Mark the explicit fragments and primitive equations evaluated at
+these values. Each placeholder value is generated by the public values
+of its recorded names.</li>
+<li>At the second stage take the fully dereferenced public values after
+unifying <span class="math inline">\(A\land D\)</span>, with the
+remaining free names replaced by rigid letters. Give the placeholders
+their values at this tuple. These values are a simultaneous instance of
+the first-stage values, by the universal property of the first mgu. The
+explicit second-stage expressions are the fragments, the primitives,
+<span class="math inline">\(D,C\)</span>, and the recorded binding
+expressions. All their required identities hold. Each right-hand side of
+a traced binding points to a subexpression of the recorded fragments or
+ordinary formulas.</li>
+</ol>
+<p>Compress these stages by the lemma. For each placeholder, reconstruct
+a small ordinary open body generating its new
+<strong>first-stage</strong> value from its allowed public generators.
+It has polynomial DAG size by memoization on the first-stage DAG. That
+same body gives the required second-stage value by the substitution
+identity. Insert it in its original fragment.</p>
+<p>At the first stage the reconstructed primitives hold on the new
+public tuple. Each retained universal alias is still its original bare
+letter. No reconstructed coordinate has gained any first-stage letter.
+Specializing the remaining letters to a base constant therefore gives a
+valid term strategy and allowed witnesses by Round 31’s criterion. The
+tuple need only <em>satisfy</em> the reconstructed answer for this
+argument. Exact occurrence in each primitive is preserved by its
+recorded support paths and by restricting each placeholder to its
+original names. Restore the parent-atom padding when needed.</p>
+<p>At the second stage take any ordinary assignment satisfying the
+reconstructed primitives and <span class="math inline">\(D\)</span>. The
+retained constructor paths and variable jumps force the recorded
+bindings one by one. Each new right side uses a subset of its former
+input names, so the binding graph is acyclic. The second-stage explicit
+equalities say that instantiating the compressed public values gives
+precisely the unique solution of these bindings for the ground values of
+the free names. They also make <span class="math inline">\(C\)</span> an
+identity. This gives relevance at every active row and consistency by
+any ground specialization of the second-stage rigid letters. This is the
+replay from Round 29, now with an independent first-stage justification
+of validity.</p>
+<p>Guessing the polynomial-size presentation, checking its atomwise
+escape and validity, and checking its ordinary implication all take
+polynomial time on shared term graphs. The empty designated set gives
+the NP lower bound. <a href="round-30-monadic.html">One-branch lower
+bound</a></p>
+</section>
+<section id="an-empty-premise-with-arbitrary-carrier-permissions"
+class="level2">
+<h2>An empty premise with arbitrary carrier permissions</h2>
+<p>Here start instead from the shallow presentation in Round 32. Its
+generic validity play supplies values <span
+class="math inline">\(G\)</span> for original game moves and <span
+class="math inline">\(V\)</span> for ordinary answer coordinates over
+rigid universal letters. It is also a witness for the ordinary answer
+equations. The path compression there uses this row and retains
+polynomial depth in its <span class="math inline">\(V\)</span>-values as
+well as the selected primitives. <a
+href="round-32-carriers.html#an-empty-premise-with-arbitrary-atomwise-permissions">Generic
+row and shallow presentation</a></p>
+<p>Trace unification of the primitives alone. At the first stage take
+their fully dereferenced mgu tuple, its residual letters, and the
+omitted-fragment values. Require as explicit equations the primitive and
+binding identities <strong>and the entire ordinary conclusion <span
+class="math inline">\(C\)</span></strong>. The mgu makes <span
+class="math inline">\(C\)</span> an identity by ordinary relevance. The
+placeholder generation requirements have the same form as above.</p>
+<p>At the second stage instantiate the first-stage letters at the
+generic validity row <span class="math inline">\(V\)</span>. Add all
+<span class="math inline">\(G\)</span> as named values. Require the
+original game and witness generation conditions from Round 32 at this
+stage, including <span class="math inline">\(V_x=G_x\)</span> for
+nonsubstituted names and <span class="math inline">\(G_h=r_h\)</span>
+for each universal game move. The second-stage collapse preserves these
+explicit conditions and generation requirements. Reconstructing the
+placeholders at the first stage hence gives correct values throughout
+the generic play as well.</p>
+<p>This time replay the retained unification trace <strong>at the first
+stage</strong>. It forces the bindings throughout the ordinary answer
+relation; their unbound variables remain the distinct first-stage
+letters. The first-stage binding identities and <span
+class="math inline">\(C\)</span> give ordinary relevance. The generic
+second-stage play supplies validity with the specified carrier
+permissions, and grounding its letters supplies consistency. Scope
+records are restored as before. This gives NP membership for arbitrary
+weak presentations with empty premise. Supplied-answer validity is in
+NP, so guessing the presentation and its certificate stays in NP. <a
+href="round-32-carriers.html">Checker and reduction</a></p>
+<p>The same argument gives an NP upper bound if a nonempty premise is
+<em>required to hold at the generic validity play</em>, as an extra
+condition of the problem. Use that play as the joint witness, retain the
+explicit constructors of <span class="math inline">\(D,C\)</span> in the
+shallow compression, and trace the primitives together with <span
+class="math inline">\(D\)</span>. Use their common mgu for the first
+stage. The second-stage play is its instance by the added requirement.
+Replay establishes ordinary relevance on the whole active relation; the
+second stage also preserves <span class="math inline">\(D\)</span> at
+the generic play. In the original problem mere ordinary consistency
+allows a different row.</p>
+<p>With a nonempty premise one forbidden read gives r.e.-completeness
+even for arbitrary weak conjunctions on branching signatures. The proof
+uses a retained existential guard to leave one independent tag free at
+an ordinary active witness and counts the possible residuals in the
+proof. <a href="round-39-weak-conjunctions.html">General
+weak-conjunction lower bound</a></p>
+<p>The <a href="round-37-comparable.py">executable reconstruction</a>
+integrates the two-stage construction with the actual ordinary
+unification trace for the general-premise proof. It checks shared
+first-stage generators that coincide after the second substitution,
+validity of the reconstructed primitives, and independent ordinary
+entailment. The empty-premise application uses the same lemma with the
+two checks in the opposite order.</p>
+</section>
+</article>
+<script src="/assets/theme-toggle.js"></script>
+</body>
+</html>

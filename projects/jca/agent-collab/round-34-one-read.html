@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <meta name="dcterms.date" content="2026-11-21">
+  <meta property="og:title" content="JCA Round 34: Removing One Permitted Read Makes One Branch Undecidable">
+  <meta property="og:url" content="https://lukstafi.github.io/projects/jca/agent-collab/round-34-one-read.html">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="lukstafi&#x27;s blog">
+  <meta name="twitter:card" content="summary">
+  <title>JCA Round 34: Removing One Permitted Read Makes One Branch
+Undecidable</title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <link rel="stylesheet" href="/assets/tufte.css">
+  <link rel="stylesheet" href="/assets/pandoc-tufte.css">
+  <link rel="stylesheet" href="/assets/site.css">
+  <script defer=""
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+  type="text/javascript"></script>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+  <script>(function(){var t=localStorage.getItem('theme-preference');if(t)document.documentElement.setAttribute('data-theme',t);})()</script>
+</head>
+<body>
+<nav class="site-nav">
+  <a href="/">Home</a> &middot; <a href="/study/">Study Guide</a> &middot; <a href="/about.html">About</a> &middot; <a href="https://lukstafi.substack.com">Substack</a>
+</nav>
+<div class="theme-toggle">
+  <button id="theme-btn" aria-label="Toggle dark mode">&#9788;</button>
+</div>
+<article>
+<header>
+<h1 class="title">JCA Round 34: Removing one permitted read makes one
+branch undecidable</h1>
+<p class="byline">2026-11-21</p>
+</header>
+<nav id="TOC">
+<ul>
+<li><a href="#a-binary-encoding-with-a-varying-tag"
+id="toc-a-binary-encoding-with-a-varying-tag">A binary encoding with a
+varying tag</a></li>
+<li><a href="#the-tag-cannot-alias-a-formal-input"
+id="toc-the-tag-cannot-alias-a-formal-input">The tag cannot alias a
+formal input</a></li>
+<li><a href="#the-two-packed-evaluations-yield-a-single-body"
+id="toc-the-two-packed-evaluations-yield-a-single-body">The two packed
+evaluations yield a single body</a></li>
+<li><a href="#decoding-arbitrary-bodies"
+id="toc-decoding-arbitrary-bodies">Decoding arbitrary bodies</a></li>
+<li><a href="#verification" id="toc-verification">Verification</a></li>
+</ul>
+</nav>
+<p><strong>Theorem.</strong> Consider leading-fresh validity for
+idempotent substitution answers with the strong escape rule printed in
+the extraction. Over one binary constructor and one constant, one
+implication is NP-complete when substitution witnesses may use all
+public names. Remove <strong>one read by one witness</strong> and
+existence is r.e.-complete, even without the weak escape test. The
+prefix, public variables and forbidden read can be fixed independently
+of the input. The result also holds with both escape tests. <a
+href="round-31-leading.html">All reads permitted</a> · <a
+href="round-19-designated-parameters.html#two-parameter-conventions">The
+two escape conventions</a></p>
+<p>In Round 33 the weak check excluded an answer identifying the
+retained universal <span class="math inline">\(r\)</span> with a formal
+input <span class="math inline">\(n_j\)</span>. Here every formal input
+in an ordinary active row must strictly contain <span
+class="math inline">\(r\)</span>. Finite-tree consistency itself rules
+out the identification. <a
+href="round-33-carrier-reduction.html">Single-carrier
+construction</a></p>
+<p>A different guard gives the single-forbidden-read lower bound for
+arbitrary presentations under the extracted weak escape rule alone. <a
+href="round-39-weak-conjunctions.html">Arbitrary weak
+conjunctions</a></p>
+<section id="a-binary-encoding-with-a-varying-tag" class="level2">
+<h2>A binary encoding with a varying tag</h2>
+<p>Start with Round 17’s two requests <span
+class="math inline">\(B(L(d))=S(d,z)\)</span> and <span
+class="math inline">\(B(R)=z\)</span>. The ground vector <span
+class="math inline">\(R\)</span> is fixed. Each column has an atomic end
+and a compound end. The ordered columns are distinct for every ground
+choice of data. Every <span class="math inline">\(L_j\)</span> has an
+explicit outer constructor, including the data-dependent tail. <a
+href="round-17-three-branches.html">Source equivalence and binary
+templates</a></p>
+<p>Use the same binary symbol <span class="math inline">\(f\)</span> and
+constant <span class="math inline">\(a\)</span>. Take distinct ground
+trees <span class="math inline">\(c_0=f(a,f(a,a))\)</span> and <span
+class="math inline">\(c_1=f(f(a,a),a)\)</span> of equal size. Write
+<span class="math inline">\(\theta_i(r)=f(c_i,r)\)</span>. Define a
+translation <span class="math inline">\(e_r\)</span> which leaves a
+variable alone and interprets the source constructors by</p>
+<p><span class="math display">\[ A_r=f(\theta_0(r),a),\qquad
+F_r(x,y)=f(\theta_1(r),f(f(a,x),y)). \]</span></p>
+<p>Thus <span class="math inline">\(e_r(a)=A_r\)</span> and <span
+class="math inline">\(e_r(f(s,t))=F_r(e_r(s),e_r(t))\)</span>. The
+translation acts on the source expressions before instantiating their
+data. Use the prefix, designated set and packed lists <span
+class="math inline">\(M_r\)</span> of Round 33. The ordinary branch
+is</p>
+<p><span class="math display">\[
+\bigwedge_j n_j=e_r(L_j)(d)\quad\Longrightarrow\quad
+E=M_r([n_1,\ldots,n_k,e_r(S)(d,z)])\ \land\
+K=M_r([e_r(R_1),\ldots,e_r(R_k),z]).
+\]</span></p>
+<p>All public names are permitted to every substitution witness, with
+the sole exception that the witness for <span
+class="math inline">\(K\)</span> cannot mention <span
+class="math inline">\(r\)</span>. It can mention <span
+class="math inline">\(E\)</span>, the only original existential move
+after <span class="math inline">\(r\)</span>.</p>
+<p>Given source data <span class="math inline">\(d_*,z_*\)</span> and
+body <span class="math inline">\(B\)</span>, leave the ports and <span
+class="math inline">\(r\)</span> unbound. Define each data coordinate by
+its translated ground value <span
+class="math inline">\(e_r(d_*),e_r(z_*)\)</span>, which can use the
+later <span class="math inline">\(r\)</span> under the strong rule.
+Define <span class="math inline">\(E\)</span> as the left packed list
+with final payload <span class="math inline">\(e_r(B)(n)\)</span>, and
+<span class="math inline">\(K\)</span> as the right packed list with the
+translated <span class="math inline">\(z_*\)</span> inlined. At the
+activated ports the first source equality gives ordinary relevance. Any
+ground tag gives an active row. For validity, substitute <span
+class="math inline">\(e_r(R_j)\)</span> for the ports, the translated
+data for each datum, and <span class="math inline">\(E\)</span> for
+<span class="math inline">\(K\)</span>. The second source equality gives
+the common packed value that <span class="math inline">\(E\)</span>
+plays. The definition of <span class="math inline">\(E\)</span> is
+individually prefix-valid. All other defined heads are designated and
+use only the later universal <span class="math inline">\(r\)</span>, so
+the weak check is satisfied too.</p>
+<p>Restoring the missing read makes <strong>every instance of this
+particular family positive</strong>, including a source with no rewrite
+path. Fix arbitrary ground data and <span
+class="math inline">\(z\)</span>. Define <span
+class="math inline">\(E\)</span> literally by its required left
+expression (with the chosen data inlined), and define <span
+class="math inline">\(K\)</span> by the right expression. Use that right
+expression itself as the witness for <span
+class="math inline">\(K\)</span>. It can now build the answer directly
+from <span class="math inline">\(r\)</span> and its ground literals. The
+ports can use any ground validity witnesses. Relevance holds by
+construction, and the ordinary ports can activate the premise at any
+chosen tag.</p>
+</section>
+<section id="the-tag-cannot-alias-a-formal-input" class="level2">
+<h2>The tag cannot alias a formal input</h2>
+<p>Eliminate fresh names at a joint witness and write <span
+class="math inline">\(P_x\)</span> for the solved public coordinates. As
+in Round 33, the strong rule leaves each <span
+class="math inline">\(n_j\)</span> unbound and excludes all ports from
+<span class="math inline">\(P_d,P_z,P_K\)</span>. The generic validity
+play forces <span class="math inline">\(P_r\)</span> to be a bare
+parameter <span class="math inline">\(u\)</span>. If <span
+class="math inline">\(u=n_j\)</span>, the active premise would equate
+<span class="math inline">\(n_j\)</span> with a tree containing <span
+class="math inline">\(n_j\)</span> as a <em>proper</em> subtree inside
+its outer <span class="math inline">\(\theta_i(n_j)\)</span>. No finite
+active witness could exist. Hence <span
+class="math inline">\(P_r\)</span> omits the ports. <a
+href="round-31-leading.html#which-inputs-can-a-substitution-witness-observe">Fresh-name
+elimination</a></p>
+<p>For any values of the nonport parameters, set each port to its
+translated left input using <span class="math inline">\(r=u\)</span>.
+This activates the premise. The <span class="math inline">\(K\)</span>
+equality therefore holds identically on all nonport parameters. The form
+<span class="math inline">\(P_E\)</span> must have root <span
+class="math inline">\(f\)</span>: set every nonport parameter to <span
+class="math inline">\(a\)</span> and activate the ports. Its prescribed
+tree is compound and strictly contains every port value, so no bare
+parameter can equal it.</p>
+<p>In the generic validity play specialize the original, substituted
+port moves to <span class="math inline">\(a\)</span> and call the
+independent value of <span class="math inline">\(r\)</span> the rigid
+letter <span class="math inline">\(b\)</span>. Every original game move
+that <span class="math inline">\(K\)</span> may read, except <span
+class="math inline">\(E\)</span>, is ground over <span
+class="math inline">\(f,a\)</span>. This concerns the original moves
+before simultaneous substitution. The required <span
+class="math inline">\(K\)</span> has root <span
+class="math inline">\(f\)</span> with first child <span
+class="math inline">\(b\)</span>. No term in the ground moves and the
+compound value of <span class="math inline">\(E\)</span> can construct
+the bare letter <span class="math inline">\(b\)</span>. The witness must
+therefore return <span class="math inline">\(E\)</span> itself. <a
+href="round-33-probe.lean">Single-generator lemma</a></p>
+</section>
+<section id="the-two-packed-evaluations-yield-a-single-body"
+class="level2">
+<h2>The two packed evaluations yield a single body</h2>
+<p>Replace <span class="math inline">\(b\)</span> by <span
+class="math inline">\(a\)</span> in the validity row and freeze every
+nonport parameter at its resulting ground value. Write <span
+class="math inline">\(d&#39;,z&#39;\)</span> for these data values and
+<span class="math inline">\(N\)</span> for the actual port values in
+this row. The carrier is now an open binary body in the ports alone. On
+the ordinary activated ports <span
+class="math inline">\(L&#39;_j=e_a(L_j)(d&#39;)\)</span> it gives the
+left packed list. On <span class="math inline">\(N\)</span> it gives the
+right packed list by the carrier equality. Write <span
+class="math inline">\(R&#39;_j=e_a(R_j)\)</span>.</p>
+<p>The addresses of every payload already exist in that body. At the
+left evaluation each fork strictly above a payload has left child either
+<span class="math inline">\(a\)</span> or <span
+class="math inline">\(f(a,v)\)</span> for some <span
+class="math inline">\(v\)</span>. Every inserted port, on the other
+hand, has root <span class="math inline">\(f\)</span> with left child
+<span class="math inline">\(f(c_i,a)\)</span>, where <span
+class="math inline">\(c_i\ne a\)</span>. A port cannot occupy any of
+those strict ancestors. Extract the payload bodies <span
+class="math inline">\(T_j,T_*\)</span> at the same addresses in the two
+evaluations. Then</p>
+<p><span class="math display">\[ T_j(L&#39;)=L&#39;_j,\quad
+T_j(N)=R&#39;_j,\qquad T_*(L&#39;)=e_a(S)(d&#39;,z&#39;),\quad
+T_*(N)=z&#39;.\]</span></p>
+<p>Each <span class="math inline">\(T_j\)</span> must be a bare port. An
+atom could not produce <span class="math inline">\(L&#39;_j\)</span>. If
+<span class="math inline">\(T_j=f(v,w)\)</span>, the value <span
+class="math inline">\(v(L&#39;)\)</span> is one of the two tags <span
+class="math inline">\(\theta_i(a)\)</span>. Every left port tree is
+strictly larger than either tag, since the tags have equal size.
+Therefore <span class="math inline">\(v\)</span> contains no port at
+all. It must have the same value in the other row, whereas the two ends
+of the source column have opposite root types and hence different tags.
+This is impossible.</p>
+<p>The ordered encoded columns are distinct. The compound ends of two
+rule columns with the same orientation have distinct encodings of their
+fixed ground wrapper tags. The data-dependent tail still has its own
+outer wrapper. Equivalently, the decoder below maps every putative
+equality of encoded column pairs to an equality of original pairs at the
+common decoded data. As in Round 33, the <span
+class="math inline">\(k\)</span> bare probes select a permutation of the
+<span class="math inline">\(k\)</span> ports. Rename the formal inputs
+in <span class="math inline">\(T_*\)</span> by this permutation. The
+resulting binary body has the specified left value at <span
+class="math inline">\(L&#39;\)</span> and right value at <span
+class="math inline">\(R&#39;\)</span>.</p>
+</section>
+<section id="decoding-arbitrary-bodies" class="level2">
+<h2>Decoding arbitrary bodies</h2>
+<p>At a root hole the decoder returns the corresponding formal input. At
+a root matching <span class="math inline">\(F_a(x,y)\)</span> return
+<span class="math inline">\(f(D(x),D(y))\)</span>. At every other root
+return <span class="math inline">\(a\)</span>. These rules decode <span
+class="math inline">\(A_a\)</span> and <span
+class="math inline">\(F_a\)</span> to their original constructors for
+all child values. In particular <span
+class="math inline">\(D(e_a(S)(d&#39;,z&#39;))=S(D(d&#39;),D(z&#39;))\)</span>.</p>
+<p>For any open body <span class="math inline">\(T\)</span> and either
+vector of prescribed encoded arguments <span
+class="math inline">\(v=L&#39;,R&#39;\)</span>, decoding commutes with
+evaluation:</p>
+<p><span class="math display">\[ D(T[v])=D(T)[D(v)]. \]</span></p>
+<p>At a hole this is the definition. At a non-hole root an existing
+<span class="math inline">\(F_a\)</span> match keeps its two children
+after substitution. A new match could arise only if a whole substituted
+port occupied a strict fixed position in the pattern. At the tag or
+inside it this is impossible by size. At the right cell <span
+class="math inline">\(f(f(a,x),y)\)</span> it is impossible because a
+port’s left child is <span class="math inline">\(f(c_i,a)\)</span> with
+<span class="math inline">\(c_i\ne a\)</span>. At <span
+class="math inline">\(f(a,x)\)</span> the required left child would be
+<span class="math inline">\(a\)</span>. The remaining fixed leaf is
+<span class="math inline">\(a\)</span> itself. Thus the same case
+applies, and induction at the two payload children proves the identity.
+Applying it to the renamed body gives the original source solution with
+data <span class="math inline">\(D(d&#39;),D(z&#39;)\)</span>.</p>
+<p>Enumeration of candidates and prefix/unification checks give the r.e.
+upper bound. The construction also works on any fixed finite signature
+with a branching constructor and a constant: embed <span
+class="math inline">\(f\)</span> in the first two fields of that
+constructor with constant padding. In decoding, inspect only those two
+fields and treat every other root as a default. A bare probe is still
+forced because its first child at the left row is too small to contain a
+port. The proper-containment, generator, and address arguments use only
+the two selected fields. On monadic signatures both conventions are
+decidable for arbitrarily many branches. <a
+href="round-19-designated-parameters.html">Monadic result</a></p>
+</section>
+<section id="verification" class="level2">
+<h2>Verification</h2>
+<p>The <a href="round-34-one-read.py">executable check</a> builds an
+implication for a directed rewrite path and checks its explicit answer
+with and without the weak test. It also checks that every port alias
+violates consistency and tests the decoder on malformed bodies and
+insertions into fixed positions. <a
+href="round-34-decoder.lean">Lean</a> checks the fixed-position
+obstruction and proves decoder commutation for arbitrary binary bodies
+and lists of admissible replacements. The reduction from source
+reachability is the written proof above.</p>
+</section>
+</article>
+<script src="/assets/theme-toggle.js"></script>
+</body>
+</html>

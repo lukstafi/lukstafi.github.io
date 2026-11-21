@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <meta name="dcterms.date" content="2026-11-21">
+  <meta property="og:title" content="JCA Round 46: Two Compatible Input-Only Implications are NEXP-complete">
+  <meta property="og:url" content="https://lukstafi.github.io/projects/jca/agent-collab/round-46-two-observations.html">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="lukstafi&#x27;s blog">
+  <meta name="twitter:card" content="summary">
+  <title>JCA Round 46: Two Compatible Input-Only Implications are
+NEXP-complete</title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <link rel="stylesheet" href="/assets/tufte.css">
+  <link rel="stylesheet" href="/assets/pandoc-tufte.css">
+  <link rel="stylesheet" href="/assets/site.css">
+  <script defer=""
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+  type="text/javascript"></script>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+  <script>(function(){var t=localStorage.getItem('theme-preference');if(t)document.documentElement.setAttribute('data-theme',t);})()</script>
+</head>
+<body>
+<nav class="site-nav">
+  <a href="/">Home</a> &middot; <a href="/study/">Study Guide</a> &middot; <a href="/about.html">About</a> &middot; <a href="https://lukstafi.substack.com">Substack</a>
+</nav>
+<div class="theme-toggle">
+  <button id="theme-btn" aria-label="Toggle dark mode">&#9788;</button>
+</div>
+<article>
+<header>
+<h1 class="title">JCA Round 46: Two compatible input-only implications
+are NEXP-complete</h1>
+<p class="byline">2026-11-21</p>
+</header>
+<nav id="TOC">
+<ul>
+<li><a href="#store-arrays-in-the-second-observation"
+id="toc-store-arrays-in-the-second-observation">Store arrays in the
+second observation</a></li>
+<li><a href="#two-independent-tests-per-array-in-the-same-two-branches"
+id="toc-two-independent-tests-per-array-in-the-same-two-branches">Two
+independent tests per array, in the same two branches</a></li>
+<li><a href="#why-every-map-is-genuine"
+id="toc-why-every-map-is-genuine">Why every map is genuine</a></li>
+<li><a href="#semantic-feasibility-and-the-size-of-an-answer"
+id="toc-semantic-feasibility-and-the-size-of-an-answer">Semantic
+feasibility and the size of an answer</a></li>
+</ul>
+</nav>
+<p><strong>Theorem.</strong> Over finite trees with one binary
+constructor and one constant, parameter-free equational JCA is
+NEXP-complete with <strong>two implications</strong>, prefix <span
+class="math inline">\(\forall H\,\exists Y\)</span>, and jointly
+unifiable premises involving only <span
+class="math inline">\(H\)</span>. This is the ordinary per-branch
+consistency condition in the quantified problem. Prefix validity
+guarantees a row of the answer at their common input. The two premises
+and conclusions can all consist of equations of depth at most one. The
+lower bound still holds if the answer must cover an explicitly supplied
+full ground tuple represented as a DAG. One input-only implication with
+this prefix is P-complete. Any number of input premises ordered by
+containment is also P-complete. <a
+href="round-47-nested.html">Nested-premise algorithm</a> <a
+href="round-44-common-witness.html">Common-witness upper bound</a> · <a
+href="round-21-one-input.html">One-implication bounds</a></p>
+<p>Round 45 encoded exponential torus tiling by shaped arrays, pointwise
+maps on their leaf labels, and equations on their binary structure. Its
+five modes separately checked shapes, expansion and the two projections.
+Here each input port has a <em>pair</em> of prescribed values, one in
+each premise. A term in the ports has two observations. We use equality
+between observations in the same branch to check the same tiling with
+two implications. <a href="round-45-tiling.html">Tiling source and array
+construction</a></p>
+<section id="store-arrays-in-the-second-observation" class="level2">
+<h2>Store arrays in the second observation</h2>
+<p>For every stored array <span class="math inline">\(S\)</span> of
+alphabet <span class="math inline">\(A\)</span> and depth <span
+class="math inline">\(d\)</span>, introduce distinct universal color
+names <span class="math inline">\(r_{A,t}\)</span> for its labels.
+Arrays of the same alphabet use the same names. Their values in the
+second branch will be ordinary perfect terms over those names. This
+permits the structural requirements of Round 45, including <span
+class="math inline">\(T_{j+1}=f(L_j,R_j)\)</span>, subtree
+decompositions, and the initial-word equations, to appear verbatim in
+the second conclusion.</p>
+<p>The maps have source arrays <span class="math inline">\(P\)</span>
+over pairs, target arrays <span class="math inline">\(S\)</span> over
+tiles, and images <span class="math inline">\(m(t)\)</span> in the right
+colors of <span class="math inline">\(S\)</span>. A rotation expansion
+maps <span class="math inline">\((l,r)\)</span> to <span
+class="math inline">\(f(r_{j,l},r_{j,r})\)</span>. A projection maps it
+to one right color. In every map, the source <em>pair</em> alphabet and
+target <em>tile</em> alphabet are disjoint.</p>
+<p>For <strong>each occurrence</strong> <span
+class="math inline">\(e\)</span> of a map make a separate
+first-observation array of the same depth as <span
+class="math inline">\(P\)</span>, with private left colors <span
+class="math inline">\(l_{e,t}\)</span>. Use two ports per source label
+with these ordered observations:</p>
+<table>
+<thead>
+<tr>
+<th>Port</th>
+<th>First observation</th>
+<th>Second observation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Copy of label <span class="math inline">\(t\)</span></td>
+<td><span class="math inline">\(l_{e,t}\)</span></td>
+<td><span class="math inline">\(r_{A,t}\)</span> for the source
+alphabet</td>
+</tr>
+<tr>
+<td>Map of label <span class="math inline">\(t\)</span></td>
+<td><span class="math inline">\(l_{e,t}\)</span></td>
+<td><span class="math inline">\(m(t)\)</span> in the target
+alphabet</td>
+</tr>
+</tbody>
+</table>
+<p>A port is a universal input variable <span
+class="math inline">\(h\)</span>. An observation table entry <span
+class="math inline">\((u,v)\)</span> puts <span
+class="math inline">\(h=u\)</span> in the first premise and <span
+class="math inline">\(h=v\)</span> in the second premise. All left and
+right color names are separate and are themselves universal inputs.
+Within either premise the colors occurring in the table’s images are
+independent.</p>
+<p>Two existential outputs represent the copy and the map. In the first
+conclusion require both to equal the private left array. In the second
+conclusion require their outputs to equal the stored source and target
+respectively. The following test enforces the alphabet and depth of each
+left or right array, including when a proposed answer uses a probe
+register as an input.</p>
+</section>
+<section id="two-independent-tests-per-array-in-the-same-two-branches"
+class="level2">
+<h2>Two independent tests per array, in the same two branches</h2>
+<p>Suppose the array is to be stored on side <span
+class="math inline">\(i\)</span>. In the other branch introduce a
+private probe <span class="math inline">\(b_0\)</span> and registers
+<span class="math inline">\(b_{k+1}=f(b_k,b_k)\)</span> up to its depth
+<span class="math inline">\(d\)</span>. For every allowed label create a
+port whose side-<span class="math inline">\(i\)</span> observation is
+that label’s color and whose other observation is <span
+class="math inline">\(b_0\)</span>. Ask an output <span
+class="math inline">\(U\)</span> to equal <span
+class="math inline">\(b_d\)</span> in the other conclusion. Make two
+copies with disjoint probes, registers and ports. Require their outputs
+equal in the side-<span class="math inline">\(i\)</span> conclusion and
+use their common observation for the stored array.</p>
+<p>At the shape test for copy one, a term evaluating to <span
+class="math inline">\(f\)</span> iterated perfectly on its probe can use
+a constructor or one of its own label ports at a leaf. It might also use
+its literal probe or one of its registers, each occupying a whole
+perfect subtree of the required shape. These exhaust the possibilities.
+All other ports evaluate to different colors or markers, or to a fork
+with other colors as children. Other independent inputs cannot equal
+subtrees of this probe tree in the generic premise unifier. No original
+constant occurs in it.</p>
+<p>On the storage side, any shortcut leaves that copy’s own register or
+probe as a <strong>bare independent input</strong>. Copy two’s array can
+contain only its storage colors, binary constructors and its
+<em>own</em> private register names. The required equality of the two
+storage observations excludes every shortcut in both. Thus the common
+stored array really has the declared full binary shape with exactly the
+allowed leaves. The argument works in both directions and uses only
+universal inputs before the existential outputs.</p>
+</section>
+<section id="why-every-map-is-genuine" class="level2">
+<h2>Why every map is genuine</h2>
+<p>Consider its copy output at the first observation. A possible
+constructor follows the fixed shape of the typed left array. None of the
+first-observation port values is a compound subtree of that array: port
+images on this side are bare colors or shape markers. A raw register
+defined in this premise contains its own marker, which is absent from
+the left array. Therefore each leaf of the output body must be a name
+whose first observation is the left color <span
+class="math inline">\(l_{e,t}\)</span> at that address.</p>
+<p>The name could be the raw left color, a shape-test port of this left
+array, its copy port for <span class="math inline">\(t\)</span>, or its
+map port for <span class="math inline">\(t\)</span>. In the second
+observation these alternatives respectively give a raw left color, a
+private marker, the right <em>source</em> color, or the specified right
+<em>target</em> image. The typed stored source has only source labels at
+that depth, so the copy output must use the copy port. For the map
+output the typed target has only target labels there, or a fork of two
+target labels in the expansion case. Only the map port gives such an
+observation. The private left alphabet distinguishes different
+occurrences of maps even when their two target arrays share a tile
+alphabet.</p>
+<p>It follows that the stored source determines the label at every
+position in the left array. The stored target then implements exactly
+the prescribed map. The second conclusion also supplies all structural
+equations. The array proof now recovers a tiling. Conversely a tiling
+fills each stored array with its labels, each check output with the
+appropriate check ports, and each copy or map output with the
+corresponding ports for its source. Both implications hold for these
+term strategies.</p>
+<p>Give every raw color and shape probe its array alphabet’s rank from
+Round 45, and give each register one more level per doubling. Both
+entries of each port table have the same ground value at that
+assignment, including a map’s binary expansion. Each existential output
+takes the perfect ground tree of its source rank plus its depth. The
+complete public tuple points into <span class="math inline">\(g_0=a,\
+g_{k+1}=f(g_k,g_k)\)</span> for <span class="math inline">\(0\le
+k&lt;3n\)</span>. Hence both ordinary premises hold simultaneously
+independent of the instance word. This proves the stated standard-input
+and supplied-DAG lower bounds.</p>
+<p>For any other fixed finite signature with a branching constructor
+<span class="math inline">\(F\)</span> and a constant <span
+class="math inline">\(a\)</span>, use <span
+class="math inline">\(F(x,y,a,\ldots,a)\)</span> for <span
+class="math inline">\(f(x,y)\)</span>. The shape tests force the same
+skeleton with the prescribed padding. Projecting an arbitrary strategy
+by keeping the first two children at <span
+class="math inline">\(F\)</span>, preserving input leaves, and sending
+other constructors to <span class="math inline">\(a\)</span> commutes
+with all substitutions and sends the prescribed observations back to
+their binary versions. The binary converse applies. The upper bound is
+Round 44. On a nontrivial monadic signature the common-witness upper
+bound is NP for an arbitrary prefix. <a
+href="round-25-binary.html#signature-boundary">Signature transfer for
+finite trees</a></p>
+</section>
+<section id="semantic-feasibility-and-the-size-of-an-answer"
+class="level2">
+<h2>Semantic feasibility and the size of an answer</h2>
+<p>The hard instances have a true <em>semantic</em> sentence <span
+class="math inline">\(\forall H\,\exists Y.\bigwedge_i(D_i\Rightarrow
+C_i)\)</span> even when the given domino system has no tiling. For two
+input-only premises semantic feasibility can be checked at the three
+generic input unifiers for <span class="math inline">\(D_1\)</span>,
+<span class="math inline">\(D_2\)</span>, and <span
+class="math inline">\(D_1\land D_2\)</span>. At each consistent input
+unifier solve the active conclusions for <span
+class="math inline">\(Y\)</span> treating the residual input names as
+rigid. Necessity follows because each listed subset of conclusions
+applies on its whole input intersection. For sufficiency choose the
+actual set of active premises at the given inputs. The case of no active
+premise is immediate.</p>
+<p>In the first branch alone, choose the required register values for
+shape outputs and give each private left array and its two associated
+mapping outputs a common value. In the second branch alone, the left
+shape tests and the equations on stored right arrays can be met
+separately. Each tile board may use arbitrary tiles subject to its
+initial pins. Splitting its tree supplies its subtrees and halves. Copy
+and map outputs merely take their respective stored values. At the joint
+premise the check ports identify every color of each alphabet with its
+private probes. The copy and map ports equate the resulting source leaf
+to the correct target leaf or fork of leaves. Assign every array its
+perfect tree over its common color, every shape output the corresponding
+register tree, and each transfer output that common observation. All
+structural equations then hold, on <em>every</em> simultaneous input,
+without selecting a tiling. The fixed source domino system has nonempty
+alphabets. Thus recognizing a uniform equational answer remains
+NEXP-hard even under a promise of pointwise semantic feasibility.</p>
+<p>There are also polynomial-size positive instances for which every
+term strategy needs at least <span class="math inline">\(2^n\)</span>
+distinct DAG nodes. Use tiles <span class="math inline">\((c,p)\)</span>
+of two bits. A horizontal neighbor must have previous bit <span
+class="math inline">\(p&#39;=c\)</span>, and an upper neighbor must have
+current bit <span class="math inline">\(c&#39;=p\)</span>. In the first
+row require just one current bit at <span
+class="math inline">\(x=0\)</span> to be one. The tile sequence starts
+<span class="math inline">\((1,0),(0,1)\)</span> and all other tiles are
+<span class="math inline">\((0,0)\)</span>. Specify this row in the
+<span class="math inline">\(y\)</span>-first array at prefix <span
+class="math inline">\(0^n\)</span>. A repeated zero block has the
+equations <span class="math inline">\(Z_0=r_{(0,0)}\)</span>, <span
+class="math inline">\(Z_{i+1}=f(Z_i,Z_i)\)</span>. A block with a single
+exceptional tile <span class="math inline">\(t\)</span> at its all-zero
+address uses <span class="math inline">\(U_0^t=r_t\)</span>, <span
+class="math inline">\(U_{i+1}^t=f(U_i^t,Z_i)\)</span>. The two
+lowest-<span class="math inline">\(x\)</span>-bit halves of row zero are
+<span class="math inline">\(U_{n-1}^{(1,0)}\)</span> and <span
+class="math inline">\(U_{n-1}^{(0,1)}\)</span>. The auxiliary output
+definitions need only the second conclusion and their ground values
+still use the same chain of perfect trees.</p>
+<p>The unique current-bit pattern in successive rows shifts cyclically
+by one. In the <span class="math inline">\(x\)</span>-first board the
+subtree at each of the <span class="math inline">\(2^n\)</span> fixed
+<span class="math inline">\(x\)</span> addresses contains its one
+current bit at a different <span class="math inline">\(y\)</span>. These
+subtrees are all distinct. Its checker can contain only its color ports,
+so its term body already has that many distinct subterms. This gives a
+concrete obstruction to the polynomial-DAG bound used for one
+implication. <a href="round-29-small-dags.html">One-branch DAG
+bound</a></p>
+<p>The <a href="round-46-two-observations.py">two-branch compiler</a>
+checks valid and invalid grids against an independent finite-tree
+unifier. Its 36 cases include wraparound failures, initial-word
+failures, and boards of side eight. It verifies each explicit ground
+tuple, tests semantic feasibility, rejects the attempted register
+shortcut, and checks the forced diagonal at three sizes. <a
+href="round-46-probes.lean">Lean</a> verifies the two-probe typing
+argument at arbitrary depth, given the possible port observations. The
+equivalence of the full reduction is proved above.</p>
+</section>
+</article>
+<script src="/assets/theme-toggle.js"></script>
+</body>
+</html>

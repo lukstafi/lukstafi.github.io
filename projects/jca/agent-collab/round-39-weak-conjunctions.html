@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <meta name="dcterms.date" content="2026-11-21">
+  <meta property="og:title" content="JCA Round 39: One Forbidden Read for Arbitrary Weak Conjunctions">
+  <meta property="og:url" content="https://lukstafi.github.io/projects/jca/agent-collab/round-39-weak-conjunctions.html">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="lukstafi&#x27;s blog">
+  <meta name="twitter:card" content="summary">
+  <title>JCA Round 39: One Forbidden Read for Arbitrary Weak
+Conjunctions</title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <link rel="stylesheet" href="/assets/tufte.css">
+  <link rel="stylesheet" href="/assets/pandoc-tufte.css">
+  <link rel="stylesheet" href="/assets/site.css">
+  <script defer=""
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+  type="text/javascript"></script>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+  <script>(function(){var t=localStorage.getItem('theme-preference');if(t)document.documentElement.setAttribute('data-theme',t);})()</script>
+</head>
+<body>
+<nav class="site-nav">
+  <a href="/">Home</a> &middot; <a href="/study/">Study Guide</a> &middot; <a href="/about.html">About</a> &middot; <a href="https://lukstafi.substack.com">Substack</a>
+</nav>
+<div class="theme-toggle">
+  <button id="theme-btn" aria-label="Toggle dark mode">&#9788;</button>
+</div>
+<article>
+<header>
+<h1 class="title">JCA Round 39: One forbidden read for arbitrary weak
+conjunctions</h1>
+<p class="byline">2026-11-21</p>
+</header>
+<nav id="TOC">
+<ul>
+<li><a href="#the-guard-chooses-the-data-on-active-rows"
+id="toc-the-guard-chooses-the-data-on-active-rows">The guard chooses the
+data on active rows</a></li>
+<li><a href="#vary-the-tag-at-an-ordinary-witness"
+id="toc-vary-the-tag-at-an-ordinary-witness">Vary the tag at an ordinary
+witness</a></li>
+<li><a href="#one-raw-equation-for-the-observation"
+id="toc-one-raw-equation-for-the-observation">One raw equation for the
+observation</a></li>
+<li><a href="#account-for-every-possible-proof-parameter"
+id="toc-account-for-every-possible-proof-parameter">Account for every
+possible proof parameter</a></li>
+<li><a href="#what-the-missing-read-does"
+id="toc-what-the-missing-read-does">What the missing read does</a></li>
+</ul>
+</nav>
+<p><strong>Theorem.</strong> Under leading-fresh validity and the
+extracted weak atomwise escape test, one-branch existence for
+<strong>arbitrary conjunctive equational answers</strong> is NP-complete
+when every substitution witness may read every public name. Removing
+<strong>one read by one witness</strong> makes it r.e.-complete over one
+binary constructor and one constant. The prefix, all public names, the
+forbidden read and the number of atoms in the instance can be fixed. The
+premise is a single equality between a public variable and a term. The
+reduction extends to every finite single-sorted signature with a
+branching constructor and a constant. <a
+href="round-37-comparable.html">Unrestricted witnesses</a> · <a
+href="round-19-designated-parameters.html">Monadic decision
+procedure</a></p>
+<p>A solved answer has at most one definition per coordinate. A
+conjunction can equate two different bodies to the same carrier,
+effectively imposing equations whose direct presentation would fail
+escape. Round 38 gives a negative rewrite instance that passes in
+exactly this way. Here the proof starts with the mgu of
+<strong>any</strong> successful conjunction. Only one raw primitive is
+ever required to obey a particular scope restriction. <a
+href="round-38-weak-solved.html#two-individually-valid-equations-defeat-the-construction">The
+bridge counterexample</a></p>
+<section id="the-guard-chooses-the-data-on-active-rows" class="level2">
+<h2>The guard chooses the data on active rows</h2>
+<p>Use the hard two-call system of Round 17. Write <span
+class="math inline">\(X=(d,z)\)</span> for its entire data tuple, and
+<span class="math inline">\(k\)</span> for its number of ports. It asks
+for ground <span class="math inline">\(X_0\)</span> and a body <span
+class="math inline">\(B\)</span> with <span
+class="math inline">\(B(L(d_0))=S(d_0,z_0)\)</span> and <span
+class="math inline">\(B(R)=z_0\)</span>. The ordered pairs <span
+class="math inline">\((L_j(d),R_j)\)</span> are distinct at every ground
+data tuple and have opposite root types. Fix a machine with at least one
+rewrite rule. <a href="round-17-three-branches.html">One-constant
+source</a></p>
+<p>Use the tagged list <span
+class="math inline">\(M_r(w)=f(r,f(a,H_r(w)))\)</span> of Round 38, with
+<span class="math inline">\(H_r([])=a\)</span> and <span
+class="math inline">\(H_r(v::w)=f(f(r,v),H_r(w))\)</span>. Define <span
+class="math inline">\(J(X,v)\)</span> as a binary list containing each
+coordinate of <span class="math inline">\(X\)</span>, then each entry of
+a vector <span class="math inline">\(v\)</span>, followed by the two
+trees</p>
+<p><span class="math display">\[ M_a([L(d),S(d,z)]),\qquad M_a([R,z]).
+\]</span></p>
+<p>Here and below a vector inside brackets contributes its individual
+entries. The list displays <span class="math inline">\(X\)</span> and
+<span class="math inline">\(v\)</span> injectively, and both final trees
+occur as <strong>proper</strong> subtrees. Use the prefix</p>
+<p><span class="math display">\[ \forall X,n_1,\ldots,n_k\quad\exists
+G,K\quad\forall r\quad\exists E. \]</span></p>
+<p>Only the ports <span class="math inline">\(n_j\)</span> and the
+observation <span class="math inline">\(K\)</span> are designated and
+simultaneously substituted. Every witness may read every public name
+with the sole exception that <span class="math inline">\(K\)</span>
+cannot read <span class="math inline">\(r\)</span>. The guard <span
+class="math inline">\(G\)</span> is a retained existential move, chosen
+after all the ports and before the tag <span
+class="math inline">\(r\)</span>. The one implication is</p>
+<p><span class="math display">\[
+G=J(X,L(d))\quad\Longrightarrow\quad
+n=L(d)\ \land\ E=M_r([n,S(d,z)])\ \land\ K=M_r([R,z]).
+\]</span></p>
+<p>Given a source solution, define <span
+class="math inline">\(G=J(X_0,n)\)</span> with <strong>literal</strong>
+ground <span class="math inline">\(X_0\)</span>, define <span
+class="math inline">\(K=M_r([R,z_0])\)</span>, and define <span
+class="math inline">\(E=M_r([n,B(n)])\)</span>. Leave <span
+class="math inline">\(X,n,r\)</span> free. Equality of the guard lists
+forces <span class="math inline">\(X=X_0\)</span> and <span
+class="math inline">\(n=L(d_0)\)</span> on every active row, so the
+first source equality gives the conclusion. Choosing those values
+supplies a witness. For validity substitute the fixed <span
+class="math inline">\(R\)</span> for the ports and <span
+class="math inline">\(E\)</span> for <span
+class="math inline">\(K\)</span>. The second source equality lets the
+final move satisfy both requests for every original choice of the
+universals. The guard can play <span
+class="math inline">\(J(X_0,R)\)</span> at its turn. Both
+port-containing atoms are individually prefix-valid since <span
+class="math inline">\(G,E\)</span> follow the ports. The <span
+class="math inline">\(K\)</span> definition uses only the later
+universal <span class="math inline">\(r\)</span>. This forward answer is
+already an idempotent substitution.</p>
+</section>
+<section id="vary-the-tag-at-an-ordinary-witness" class="level2">
+<h2>Vary the tag at an ordinary witness</h2>
+<p>Remove fresh names at a joint witness. For a weak conjunction this
+means specializing its fresh names to their ground values at that
+witness. The leading validity sentence held at those values, ordinary
+relevance survives specialization, and every individually valid
+exemption survives. Let <span class="math inline">\(P_x\)</span> be the
+mgu coordinate forms over unbound <strong>public</strong> names. <a
+href="round-31-leading.html#which-inputs-can-a-substitution-witness-observe">Fresh
+elimination</a></p>
+<p>In a generic validity play the retained universal coordinates <span
+class="math inline">\(X,r\)</span> are distinct independent rigid
+letters. Hence their <span class="math inline">\(P\)</span>-forms are
+distinct bare parameters. Denote the one for <span
+class="math inline">\(r\)</span> by <span
+class="math inline">\(u\)</span>. The form <span
+class="math inline">\(P_G\)</span> omits <span
+class="math inline">\(u\)</span>: <span class="math inline">\(G\)</span>
+precedes <span class="math inline">\(r\)</span>, so its original,
+nonsubstituted game value cannot contain the rigid letter chosen for
+<span class="math inline">\(r\)</span>. Every <span
+class="math inline">\(P_X\)</span> omits <span
+class="math inline">\(u\)</span> by independence. These are <strong>all
+the coordinates in the premise</strong>. <a
+href="round-32-carriers.html">Generic play with read permissions</a></p>
+<p>Take an ordinary active witness and call its data <span
+class="math inline">\(X_0=(d_0,z_0)\)</span>. Hold all residuals other
+than <span class="math inline">\(u\)</span> at that witness and vary
+<span class="math inline">\(u\)</span>. The data and guard stay fixed,
+so the row remains active for every tag. Ordinary relevance now forces
+<span class="math inline">\(n=L(d_0)\)</span> throughout those rows.
+This is why even unrestricted port witnesses cannot pin the tag in this
+construction. Treat <span class="math inline">\(u\)</span> as a fresh
+formal letter <span class="math inline">\(b\)</span>. The prescribed
+observations are <span
+class="math inline">\(M_b([L(d_0),S(d_0,z_0)])\)</span> and <span
+class="math inline">\(M_b([R,z_0])\)</span>. Identities at every ground
+tag with the other values fixed are identities in that formal letter, by
+separation in the free algebra. The forms for <span
+class="math inline">\(K,E\)</span> both have root <span
+class="math inline">\(f\)</span>: they vary with <span
+class="math inline">\(u\)</span>, always have fork root, and cannot be
+the bare <span class="math inline">\(u\)</span> at <span
+class="math inline">\(u=a\)</span>.</p>
+</section>
+<section id="one-raw-equation-for-the-observation" class="level2">
+<h2>One raw equation for the observation</h2>
+<p>Decompose the original fresh-free atoms through identical constructor
+heads, drop identities, and orient every remaining consistent primitive
+as a variable against a term. These primitives are jointly equivalent to
+the answer. Each parent entails each of its primitives.</p>
+<p>At the varying ordinary row, the <span
+class="math inline">\(K\)</span> value occurs in <strong>no other public
+coordinate as a subtree</strong>. The guard, data and ports are ground
+trees without <span class="math inline">\(b\)</span>, while <span
+class="math inline">\(r\)</span> is the bare <span
+class="math inline">\(b\)</span>. In a packed list whose payloads are
+ground, the only subtree of the form <span
+class="math inline">\(f(b,v)\)</span> with <span
+class="math inline">\(b\)</span> <em>also in</em> <span
+class="math inline">\(v\)</span> is the whole list: the individual
+tagged entries have ground second children. A nonempty list cell has a
+compound left child and the extra wrapper has left child <span
+class="math inline">\(a\)</span>. The other packed tree <span
+class="math inline">\(E\)</span> differs from <span
+class="math inline">\(K\)</span> at a port payload by the opposite-root
+condition, so it cannot contain <span class="math inline">\(K\)</span>
+either. The symmetric exclusion holds for <span
+class="math inline">\(E\)</span> in <span
+class="math inline">\(K\)</span>.</p>
+<p>There must be a primitive involving <span
+class="math inline">\(K\)</span> because its mgu coordinate is not bare.
+By the subtree exclusion it has the form <span
+class="math inline">\(K=t\)</span> with <span
+class="math inline">\(t\)</span> over <span
+class="math inline">\(G,X,n,r\)</span>. Any nontrivial reverse
+occurrence, or any occurrence of <span class="math inline">\(E\)</span>
+in <span class="math inline">\(t\)</span>, would make one of the
+excluded subtrees. The variation in <span
+class="math inline">\(K\)</span> requires that <span
+class="math inline">\(t\)</span> literally use <span
+class="math inline">\(r\)</span>, since the other available coordinates
+are fixed on these rows.</p>
+<p>The primitive cannot mention <span class="math inline">\(n_j\)</span>
+<strong>or any data universal in <span
+class="math inline">\(X\)</span></strong>. Such a universal is in the
+earliest designated block. Its parent atom contains <span
+class="math inline">\(K\)</span> and has no strictly earlier designated
+name. Weak escape therefore requires the parent, and hence this
+primitive, to be individually prefix-valid. But <span
+class="math inline">\(K\)</span> is chosen before <span
+class="math inline">\(r\)</span>, and no fixed <span
+class="math inline">\(K\)</span> can equal a term containing every later
+choice of <span class="math inline">\(r\)</span> at a fixed address.
+Finally <span class="math inline">\(G\)</span> cannot occur in <span
+class="math inline">\(t\)</span>. At the same active row with <span
+class="math inline">\(r=a\)</span>, <span
+class="math inline">\(G=J(X_0,L(d_0))\)</span> strictly contains the
+entire prescribed <span class="math inline">\(K\)</span> value. An
+occurrence in <span class="math inline">\(t\)</span> would give the
+reverse subtree inclusion. Thus the original conjunction entails a
+literal identity <strong><span
+class="math inline">\(K=t(r)\)</span></strong>. On the varying row this
+unary term equals <span class="math inline">\(M_r([R,z_0])\)</span> for
+every tag. This proves that equality throughout the answer relation,
+regardless of any other equations imposed by its presentation.</p>
+</section>
+<section id="account-for-every-possible-proof-parameter" class="level2">
+<h2>Account for every possible proof parameter</h2>
+<p>At a generic validity play specialize the retained data universals to
+<span class="math inline">\(X_0\)</span> and the original dummy
+universal port moves to <span class="math inline">\(a\)</span>, keeping
+<span class="math inline">\(r\)</span> as the formal letter <span
+class="math inline">\(b\)</span>. Every accessible original move other
+than <span class="math inline">\(E\)</span> is now ground over <span
+class="math inline">\(f,a\)</span>. The required <span
+class="math inline">\(K=M_b([R,z_0])\)</span> has first child <span
+class="math inline">\(b\)</span>; the generator <span
+class="math inline">\(E\)</span> is compound. A witness with a
+constructor at its root could not produce that bare letter in its first
+child. Hence the witness copies <span class="math inline">\(E\)</span>,
+giving <span class="math inline">\(E=K\)</span> at this play. Ground
+<span class="math inline">\(b\)</span> to <span
+class="math inline">\(a\)</span> to get the second row. <a
+href="round-33-probe.lean">Single-generator lemma</a></p>
+<p>Specialize the <span class="math inline">\(|X|\)</span> residuals
+representing the data universals to <span
+class="math inline">\(X_0\)</span> in the open <span
+class="math inline">\(P_E\)</span> body. These are the same choices in
+both rows, regardless of which public names represent those universals.
+In the ordinary row with <span class="math inline">\(u\)</span> still
+formal, every remaining residual except <span
+class="math inline">\(u\)</span> has a fixed ground value. Every strict
+ancestor of a payload address in the carrier is a fork containing <span
+class="math inline">\(u\)</span>. No other residual can supply such a
+fork and the bare <span class="math inline">\(u\)</span> cannot supply
+one. Thus all payload addresses already exist in the open body. Set
+<span class="math inline">\(u=a\)</span> and extract the <span
+class="math inline">\(k+1\)</span> subterms at those addresses.</p>
+<p>The first <span class="math inline">\(k\)</span> extracted bodies
+take the values <span class="math inline">\(L_j(d_0)\)</span> at the
+ordinary assignment and <span class="math inline">\(R_j\)</span> at the
+grounded validity assignment. By opposite roots they are bare residuals.
+By distinct columns they are <span class="math inline">\(k\)</span>
+different residuals. The last body takes <span
+class="math inline">\(S(d_0,z_0)\)</span> and <span
+class="math inline">\(z_0\)</span> at these respective assignments.</p>
+<p>There are <strong>at most <span class="math inline">\(k\)</span>
+eligible residuals in any of these payloads</strong>. The public names
+are <span class="math inline">\(G,X,n,K,r,E\)</span>. Neither <span
+class="math inline">\(K\)</span> nor <span
+class="math inline">\(E\)</span> is an unbound name. The <span
+class="math inline">\(|X|+1\)</span> distinct residuals for <span
+class="math inline">\(X,r\)</span> have already been specialized. This
+leaves at most <span class="math inline">\(k+1\)</span>. If <span
+class="math inline">\(G\)</span> was defined, subtract its name as well.
+If <span class="math inline">\(G\)</span> is unbound, it cannot
+represent a coordinate of <span class="math inline">\(X\)</span>, since
+at the active witness <span class="math inline">\(G\)</span> strictly
+contains each such coordinate. It cannot represent <span
+class="math inline">\(r\)</span>, since it is played before <span
+class="math inline">\(r\)</span>. At the grounded ordinary row its value
+strictly contains the entire left packed observation. It cannot occur in
+<em>any</em> payload, whose value is a subtree of that observation.
+Either way at most <span class="math inline">\(k\)</span> residuals
+remain.</p>
+<p>The <span class="math inline">\(k\)</span> bare probes have therefore
+exhausted the possible inputs to the last body. Rename the residual
+selected by probe <span class="math inline">\(j\)</span> to the <span
+class="math inline">\(j\)</span>th formal argument. Its ordinary value
+was exactly <span class="math inline">\(L_j(d_0)\)</span>, and its
+grounded validity value was exactly <span
+class="math inline">\(R_j\)</span>. Evaluating the renamed last body
+gives the two source requests with common data <span
+class="math inline">\(d_0,z_0\)</span>. This counting step does not
+assume the ports were unbound, that the answer was triangular, or that
+<span class="math inline">\(G\)</span> had been defined by a
+literal.</p>
+<p>Enumeration of finite conjunctive answers and substitutions, followed
+by the effective scope, prefix and branch tests, gives membership in the
+recursively enumerable sets. For a higher-arity branching constructor
+use its first two children with constant padding. At the varying
+ordinary row the extra fields in the explicit observations are ground,
+so the subtree exclusions persist. Extract at the two selected fields,
+and project the recovered body and data to binary trees as in Round 25.
+<a href="round-25-binary.html#signature-boundary">Signature
+transfer</a></p>
+</section>
+<section id="what-the-missing-read-does" class="level2">
+<h2>What the missing read does</h2>
+<p>If <span class="math inline">\(K\)</span> can also read <span
+class="math inline">\(r\)</span>, choose arbitrary data <span
+class="math inline">\(X_0\)</span>, use <span
+class="math inline">\(G=J(X_0,n)\)</span> as before, give <span
+class="math inline">\(E\)</span> the literal left expression with these
+data, and give <span class="math inline">\(K\)</span> the literal right
+expression. Its witness can build the required value directly from <span
+class="math inline">\(r\)</span>. Every instance of this family becomes
+positive. For the full one-branch class with all reads permitted, Round
+37 gives NP-completeness.</p>
+<p>The forward construction only uses ground port witnesses and the
+single read of <span class="math inline">\(E\)</span> by <span
+class="math inline">\(K\)</span>. The converse permits all reads except
+<span class="math inline">\((K,r)\)</span>. Therefore hardness holds for
+every intermediate permission policy which allows those forward
+witnesses and omits that read. This includes the uniform policy in which
+every witness may read all public names except <span
+class="math inline">\(r\)</span>. It also includes the policy in which
+every witness may read precisely the existential moves: <span
+class="math inline">\(r\)</span> is then inaccessible while <span
+class="math inline">\(E\)</span> is available.</p>
+<p>For leading validity with the reflexive comparison, the same boundary
+holds when prior substituted names can be distinguished from designated
+invariants. <a href="round-40-reflexive.html">Reflexive-order
+construction</a></p>
+<p>The <a href="round-39-weak-conjunctions.py">executable checks</a>
+verify the positive path, the guard, the permission change on a reversed
+path, and extraction with a nonidentity permutation of the probes. They
+also test that the two individually admissible definitions imposing
+<span class="math inline">\(p=r\)</span> fail ordinary relevance in the
+revised implication. <a href="round-39-packing.lean">Lean</a> checks the
+packed-subtree exclusion used to isolate the raw observation equation.
+It also checks that distinct probes exhaust the remaining names and that
+renaming those names recovers a body with both prescribed
+evaluations.</p>
+</section>
+</article>
+<script src="/assets/theme-toggle.js"></script>
+</body>
+</html>

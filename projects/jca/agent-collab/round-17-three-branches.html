@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <meta name="dcterms.date" content="2026-11-21">
+  <meta property="og:title" content="JCA Round 17: Three Branches over One Binary Constructor and One Constant">
+  <meta property="og:url" content="https://lukstafi.github.io/projects/jca/agent-collab/round-17-three-branches.html">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="lukstafi&#x27;s blog">
+  <meta name="twitter:card" content="summary">
+  <title>JCA Round 17: Three Branches over One Binary Constructor and
+One Constant</title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <style type="text/css">
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="/assets/tufte.css">
+  <link rel="stylesheet" href="/assets/pandoc-tufte.css">
+  <link rel="stylesheet" href="/assets/site.css">
+  <script defer=""
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+  type="text/javascript"></script>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+  <script>(function(){var t=localStorage.getItem('theme-preference');if(t)document.documentElement.setAttribute('data-theme',t);})()</script>
+</head>
+<body>
+<nav class="site-nav">
+  <a href="/">Home</a> &middot; <a href="/study/">Study Guide</a> &middot; <a href="/about.html">About</a> &middot; <a href="https://lukstafi.substack.com">Substack</a>
+</nav>
+<div class="theme-toggle">
+  <button id="theme-btn" aria-label="Toggle dark mode">&#9788;</button>
+</div>
+<article>
+<header>
+<h1 class="title">JCA Round 17: Three branches over one binary
+constructor and one constant</h1>
+<p class="byline">2026-11-21</p>
+</header>
+<nav id="TOC">
+<ul>
+<li><a href="#the-source-equation" id="toc-the-source-equation">1. The
+source equation</a></li>
+<li><a href="#binary-templates-and-rule-positions"
+id="toc-binary-templates-and-rule-positions">2. Binary templates and
+rule positions</a></li>
+<li><a href="#a-rewrite-path-supplies-a-binary-body"
+id="toc-a-rewrite-path-supplies-a-binary-body">3. A rewrite path
+supplies a binary body</a></li>
+<li><a href="#decode-every-binary-body"
+id="toc-decode-every-binary-body">4. Decode every binary body</a></li>
+<li><a href="#three-jca-branches" id="toc-three-jca-branches">5. Three
+JCA branches</a></li>
+<li><a href="#dropping-scope-gives-symmetric-conversion-exactly"
+id="toc-dropping-scope-gives-symmetric-conversion-exactly">6. Dropping
+scope gives symmetric conversion exactly</a></li>
+<li><a href="#one-constant-suffices" id="toc-one-constant-suffices">7.
+One constant suffices</a></li>
+<li><a href="#verification" id="toc-verification">8.
+Verification</a></li>
+</ul>
+</nav>
+<p><strong>Theorem.</strong> Ordinary equational JCA answer existence
+over finite <span class="math inline">\(\{f/2,a\}\)</span>-trees is
+recursively enumerable complete with <strong>three branches</strong>.
+One branch has conclusion <span class="math inline">\(\top\)</span>.
+Each of the other two has a single conclusion equality. The number of
+instance variables can be fixed independently of the input. The proof
+first uses a second constant for a transparent binary encoding. Section
+7 removes it.</p>
+<p>In the <a href="round-14-four-branches.html">four-branch
+reduction</a>, a dedicated branch makes every formal argument of an
+unknown operation take an atomic value. With enough distinct constants,
+splitting each rewrite rule at a private atomic midpoint removes that
+branch. Here the atom <span class="math inline">\(a\)</span> serves
+every midpoint. Its enclosing wrappers record which rule it belongs to.
+The proof must account for an arbitrary answer body that places the same
+atom under different wrappers.</p>
+<section id="the-source-equation" class="level2">
+<h2>1. The source equation</h2>
+<p>Use the fixed ground rewrite system <span
+class="math inline">\(R=\{l_i\to r_i:1\le i\le k\}\)</span> of
+Ganzinger, Jacquemard and Veanes. Its hard family asks whether <span
+class="math inline">\(s(d)\to_R^*t(d)\)</span> for some ground values
+<span class="math inline">\(d\)</span> of the data variables. They use a
+fixed machine accepting an r.e.-complete language. With fresh symbols
+<span
+class="math inline">\(\operatorname{cons},\operatorname{nil}\)</span>,
+the reachability question is equivalent to the existence of <span
+class="math inline">\(d\)</span> and a finite term body <span
+class="math inline">\(B\)</span> satisfying</p>
+<p><span class="math display">\[ B(\vec
+l,\operatorname{cons}(t(d),\operatorname{nil}))
+=\operatorname{cons}\big(s(d), B(\vec r,\operatorname{nil})\big).
+\tag{1} \]</span></p>
+<p>This equivalence includes the reverse direction for arbitrary bodies
+and ground data in the enlarged signature. In the forward direction we
+use the actual rewrite path. <a
+href="https://www.microsoft.com/en-us/research/wp-content/uploads/2016/02/98ASIAN.pdf">Ganzinger,
+Jacquemard and Veanes, §§3–4, especially equation (6) and Lemma
+5</a></p>
+</section>
+<section id="binary-templates-and-rule-positions" class="level2">
+<h2>2. Binary templates and rule positions</h2>
+<p>First describe the encoding with unary wrappers <span
+class="math inline">\(W_1,\ldots,W_m\)</span>, where <span
+class="math inline">\(m=k+1\)</span>, and a symbol <span
+class="math inline">\(C_g\)</span> of the original arity for each source
+constructor <span class="math inline">\(g\)</span> other than <span
+class="math inline">\(\operatorname{nil}\)</span>. These are
+abbreviations for the binary templates below. Write <span
+class="math inline">\(W_{j:h}\)</span> for consecutive nested wrappers
+with <span class="math inline">\(W_j\)</span> outermost, using the
+identity when <span class="math inline">\(j&gt;h\)</span>.</p>
+<p>Encode a data variable by a raw target variable, encode <span
+class="math inline">\(\operatorname{nil}\)</span> by <span
+class="math inline">\(a\)</span>, and put</p>
+<p><span class="math display">\[e(g(\vec t))=W_{1:m}\big(C_g(e(\vec
+t))\big).\]</span></p>
+<p>Write <span class="math inline">\(E_g(\vec u)=W_{1:m}(C_g(\vec
+u))\)</span> for the constructor acting on already encoded children. For
+a rule side <span class="math inline">\(v=g(\vec t)\)</span> put</p>
+<p><span class="math display">\[v^{[i]}=W_{i+1:m}\big(C_g(e(\vec
+t))\big),\qquad e(v)=W_{1:i}(v^{[i]}).\]</span></p>
+<p>All rule sides have an original constructor at the root. The new
+<span class="math inline">\(\operatorname{nil}\)</span> is absent from
+<span class="math inline">\(R\)</span>.</p>
+<p>Use two formal slots <span class="math inline">\(I_i,O_i\)</span> for
+each rule, and one tail slot <span class="math inline">\(T\)</span>. The
+two calls use these argument columns.</p>
+<table>
+<thead>
+<tr>
+<th>Slot</th>
+<th>Left call</th>
+<th>Right call</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><span class="math inline">\(I_i\)</span></td>
+<td><span class="math inline">\(l_i^{[i]}\)</span></td>
+<td><span class="math inline">\(a\)</span></td>
+</tr>
+<tr>
+<td><span class="math inline">\(O_i\)</span></td>
+<td><span class="math inline">\(a\)</span></td>
+<td><span class="math inline">\(r_i^{[i]}\)</span></td>
+</tr>
+<tr>
+<td><span class="math inline">\(T\)</span></td>
+<td><span
+class="math inline">\(e(\operatorname{cons}(t,\operatorname{nil}))\)</span></td>
+<td><span class="math inline">\(a\)</span></td>
+</tr>
+</tbody>
+</table>
+<p>For fresh data coordinate <span class="math inline">\(z\)</span>
+require a single body <span class="math inline">\(Y\)</span> to return
+<span class="math inline">\(E_{\operatorname{cons}}(e(s),z)\)</span> on
+the left and <span class="math inline">\(z\)</span> on the right. Every
+slot is atomic in one call. It is compound in the other.</p>
+<p><strong>Actual binary templates.</strong> Put <span
+class="math inline">\(K=f(b,b)\)</span> and <span
+class="math inline">\(M=f(b,K)\)</span>. Assign distinct tags <span
+class="math inline">\(b,f(b,b),f(f(b,b),b),\ldots\)</span> to all the
+wrappers and constructor symbols. For macro symbol <span
+class="math inline">\(G\)</span> with tag <span
+class="math inline">\(t_G\)</span> use</p>
+<p><span class="math display">\[\begin{aligned}
+L()&amp;=b, &amp; L(x,\vec y)&amp;=f(f(K,x),L(\vec y)),\\
+G(\vec x)&amp;=f\big(M,f(t_G,L(\vec x))\big).
+\end{aligned}\]</span></p>
+<p>Call a tree protected when it equals <span
+class="math inline">\(a\)</span> or has the form <span
+class="math inline">\(f(M,v)\)</span>. Every call argument is protected,
+including the tail with arbitrary ground data. No fixed part strictly
+inside a template can match a protected tree. The fixed leaf is <span
+class="math inline">\(b\)</span>. A left-comb tag has no node whose left
+child is <span class="math inline">\(M\)</span>, and <span
+class="math inline">\(M\)</span> is too large to occur as a left child
+within itself or <span class="math inline">\(K\)</span>. The payload has
+a left-comb tag as left child. A list node has left child <span
+class="math inline">\(f(K,x)\)</span>, which differs from <span
+class="math inline">\(M=f(b,K)\)</span> for all <span
+class="math inline">\(x\)</span>. The node <span
+class="math inline">\(f(K,x)\)</span> itself has left child <span
+class="math inline">\(K\)</span>. This covers every fixed position. A
+macro match uniquely determines its symbol and its ordered list of
+slots.</p>
+</section>
+<section id="a-rewrite-path-supplies-a-binary-body" class="level2">
+<h2>3. A rewrite path supplies a binary body</h2>
+<p>Encode each tree of the source path. A rewrite at a redex <span
+class="math inline">\(l_i\)</span> now gives two local steps</p>
+<p><span class="math display">\[ W_{1:i}(l_i^{[i]})\ \longrightarrow\
+W_{1:i}(a)\ \longrightarrow\ W_{1:i}(r_i^{[i]}).\]</span></p>
+<p>At the first step put <span
+class="math inline">\(W_{1:i}(I_i)\)</span> in the encoded redex
+context. Its left and right evaluations give the trees just before and
+after that step. At the second step use <span
+class="math inline">\(W_{1:i}(O_i)\)</span> in that same context. All
+other subtrees remain fixed ground trees.</p>
+<p>If the resulting path is <span
+class="math inline">\(v_0,\ldots,v_N\)</span>, denote its two-evaluation
+step bodies by <span class="math inline">\(H_0,\ldots,H_{N-1}\)</span>.
+Build the body <span class="math inline">\(Y\)</span> as a list with
+these heads, using <span
+class="math inline">\(E_{\operatorname{cons}}\)</span> at each node and
+the tail hole <span class="math inline">\(T\)</span> at the end. The
+right evaluation produces the list of <span
+class="math inline">\(v_1,\ldots,v_N\)</span> ending in <span
+class="math inline">\(a\)</span>. Use this value for <span
+class="math inline">\(z\)</span>. The left evaluation produces the list
+of <span class="math inline">\(v_0,\ldots,v_N\)</span> ending in <span
+class="math inline">\(a\)</span>, since its tail already contains <span
+class="math inline">\(v_N=e(t(d))\)</span>. This is <span
+class="math inline">\(E_{\operatorname{cons}}(e(s(d)),z)\)</span>. An
+empty path uses <span class="math inline">\(T\)</span> as the whole
+body. All encoded data variables take the encodings of their source
+values.</p>
+</section>
+<section id="decode-every-binary-body" class="level2">
+<h2>4. Decode every binary body</h2>
+<p>Use modes <span class="math inline">\(0,\ldots,m\)</span>. The
+default output is <span
+class="math inline">\(c_0=c_m=\operatorname{nil}\)</span> and <span
+class="math inline">\(c_i=r_i\)</span> for <span
+class="math inline">\(1\le i\le k\)</span>. Define <span
+class="math inline">\(D_j\)</span> on arbitrary ground binary trees by
+the following three rules.</p>
+<ol type="1">
+<li>In mode <span class="math inline">\(j&lt;m\)</span>, a <span
+class="math inline">\(W_{j+1}(v)\)</span> macro match returns <span
+class="math inline">\(D_{j+1}(v)\)</span>.</li>
+<li>In mode <span class="math inline">\(m\)</span>, a <span
+class="math inline">\(C_g(\vec v)\)</span> match returns <span
+class="math inline">\(g(D_0(\vec v))\)</span>, applying <span
+class="math inline">\(D_0\)</span> to each child.</li>
+<li>All remaining inputs, including <span
+class="math inline">\(a\)</span>, return <span
+class="math inline">\(c_j\)</span>.</li>
+</ol>
+<p>The recursion descends into proper subtrees. For any target data
+assignment <span class="math inline">\(d&#39;\)</span>, structural
+induction gives <span
+class="math inline">\(D_0(e(s)[d&#39;])=s[D_0(d&#39;)]\)</span>, and
+likewise for <span class="math inline">\(t\)</span>.</p>
+<p>Read a rule column in mode <span class="math inline">\(i\)</span>.
+The left and right values of <span class="math inline">\(I_i\)</span>
+decode to <span class="math inline">\((l_i,r_i)\)</span>, while those of
+<span class="math inline">\(O_i\)</span> decode to <span
+class="math inline">\((r_i,r_i)\)</span>. In any other mode <span
+class="math inline">\(j\)</span> both values of either column decode to
+<span class="math inline">\((c_j,c_j)\)</span>, because the first
+wrapper on its compound value is <span
+class="math inline">\(W_{i+1}\)</span>. The tail column gives the last
+argument pair of (1) in mode zero and <span
+class="math inline">\((c_j,c_j)\)</span> in every other mode.</p>
+<p>Decode a target body <span class="math inline">\(Y\)</span> with the
+same rules, matching its formal holes as rigid leaves. At a hole use the
+following special rule. In mode <span class="math inline">\(i\)</span>,
+the hole <span class="math inline">\(I_i\)</span> yields the original
+rule hole <span class="math inline">\(\xi_i\)</span>. In mode zero,
+<span class="math inline">\(T\)</span> yields the original tail hole.
+Every other hole yields the current default <span
+class="math inline">\(c_j\)</span>. This gives source bodies <span
+class="math inline">\(D_j^*(Y)\)</span>; write <span
+class="math inline">\(B=D_0^*(Y)\)</span>.</p>
+<p><strong>Substitution lemma.</strong> In either call, decoding <span
+class="math inline">\(Y\)</span> after supplying the target arguments
+gives the same tree as evaluating <span
+class="math inline">\(D_j^*(Y)\)</span> on the corresponding source
+arguments.</p>
+<p><em>Proof.</em> At a root hole the assertion is exactly the column
+calculation above. At any other root, a previously recognized macro
+persists after substitution. A new match would place an inserted
+argument at a strict fixed position, which §2 excludes. Thus the same
+decoder case applies before and after substitution. In a matching case
+use induction at the slots, switching modes as the decoder prescribes.
+In a default case both sides return <span
+class="math inline">\(c_j\)</span>. <span
+class="math inline">\(\square\)</span></p>
+<p>Now apply <span class="math inline">\(D_0\)</span> to the two target
+requests at any binary solution. The right request gives <span
+class="math inline">\(B(\vec r,\operatorname{nil})=D_0(z)\)</span>.
+Substituting this in the decoded left request gives (1) with the
+<strong>same</strong> <span class="math inline">\(B\)</span> and data.
+The source equivalence recovers a successful reachability instance. In
+particular, putting a formal hole at a wrong wrapper position cannot
+introduce a spurious rule. Both evaluations there return the same ground
+default.</p>
+</section>
+<section id="three-jca-branches" class="level2">
+<h2>5. Three JCA branches</h2>
+<p>Use the two evaluations of §2 and the scope guard of Round 14.
+Explicitly, for data coordinates <span class="math inline">\(X\)</span>
+including <span class="math inline">\(z\)</span>, let <span
+class="math inline">\(K_X\)</span> be a binary list containing each
+coordinate and let <span class="math inline">\(J(t)=f(t,a)\)</span>.
+Number all the formal coordinates <span
+class="math inline">\(h_j\)</span> starting at one. The scope premise
+requires <span class="math inline">\(h_j=J^j(K_X)\)</span> for every
+<span class="math inline">\(j\)</span> and has conclusion <span
+class="math inline">\(\top\)</span>. Each evaluation requires <span
+class="math inline">\(h_j\)</span> equal to its entry in the table and
+has the one indicated result equality.</p>
+<p>Every <span class="math inline">\(P_{h_j}\)</span> takes the value
+<span class="math inline">\(a\)</span> at one evaluation witness and a
+compound value at scope. It must be a bare parameter. At the common
+scope witness these parameters have distinct sizes, all strictly larger
+than every data value. They are therefore distinct and absent from the
+data coordinates. Ground all other parameters once. The data are now a
+single ground tuple and the body coordinate gives one term operation on
+the formal parameters. Each evaluation premise can be realized at
+exactly its specified arguments, so its equality holds. Conversely any
+solution to the two requests gives an answer by using bare distinct
+formals, the solution data and the solution body. This is the <a
+href="round-14-undecidability.html#compiling-one-unknown-operation-into-branches">Round
+14 guard argument</a>.</p>
+<p>The fixed machine supplies fixed <span
+class="math inline">\(k\)</span>, signature and data-variable count.
+Only the input term grows. Enumeration and unification give membership
+in the recursively enumerable sets. Round 25 later obtains two ordinary
+branches by a different reduction. In the construction above, the two
+evaluations already distinguish the formal parameters by their atomic
+ends and their distinct wrapper tags. The scope witness also keeps these
+parameters out of the data, including <span
+class="math inline">\(z\)</span>.</p>
+</section>
+<section id="dropping-scope-gives-symmetric-conversion-exactly"
+class="level2">
+<h2>6. Dropping scope gives symmetric conversion exactly</h2>
+<p><strong>Proposition.</strong> For any finite ground rule set <span
+class="math inline">\(R\)</span> on the original signature, the two
+evaluation branches of §2 alone have an answer if and only if <span
+class="math inline">\(s(d)\leftrightarrow_R^* t(d)\)</span> for some
+ground tuple <span class="math inline">\(d\)</span> over that signature.
+Thus this particular two-branch family is decidable, including instances
+with data variables. It is a single rigid <span
+class="math inline">\(E\)</span>-unification constraint with ground
+equations. <a
+href="https://www.microsoft.com/en-us/research/wp-content/uploads/2016/02/98ASIAN.pdf">Ganzinger,
+Jacquemard and Veanes, §1, single rigid equation</a></p>
+<p><em>From an undirected path.</em> Encode the path and split each step
+as in §3, following the encoded half-steps in reverse order when the
+source rewrite is backwards. For each consecutive pair <span
+class="math inline">\(v_j,v_{j+1}\)</span> there are two head bodies
+<span class="math inline">\(H_j,K_j\)</span> with left evaluations <span
+class="math inline">\(v_j,v_{j+1}\)</span> and the same right
+evaluation. For a forward half-step choose its step body for <span
+class="math inline">\(H_j\)</span> and the literal <span
+class="math inline">\(v_{j+1}\)</span> for <span
+class="math inline">\(K_j\)</span>. For a backward half-step choose the
+literal <span class="math inline">\(v_j\)</span> for <span
+class="math inline">\(H_j\)</span> and the forward step body for <span
+class="math inline">\(K_j\)</span>.</p>
+<p>Take <span class="math inline">\(Y\)</span> to be the list of heads
+<span class="math inline">\(H_j\)</span> ending in <span
+class="math inline">\(T\)</span>. Take the coordinate <span
+class="math inline">\(z\)</span> to be the list of heads <span
+class="math inline">\(K_j\)</span> ending in the literal <span
+class="math inline">\(a\)</span>. At the right call the two lists
+coincide. At the left call the second list starts at <span
+class="math inline">\(v_1\)</span> and ends at <span
+class="math inline">\(v_N\)</span>, while the first starts at <span
+class="math inline">\(v_0\)</span> and acquires <span
+class="math inline">\(v_N\)</span> from its tail. Both evaluation
+equalities follow. An empty path gives <span
+class="math inline">\(Y=T,z=a\)</span>. This construction can use the
+formal parameters in <span class="math inline">\(z\)</span>.</p>
+<p><em>From an arbitrary answer.</em> Every formal takes both atomic and
+compound values. Slots of opposite orientation differ at one witness by
+their root. Two slots of the same orientation have different wrapper
+tags on their compound ends. The tail starts with <span
+class="math inline">\(W_1\)</span>, which distinguishes it from all rule
+slots. Thus all formal coordinates are distinct bare parameters already
+in the two evaluations.</p>
+<p>Ground all nuisance parameters to <span
+class="math inline">\(a\)</span>. For the left call set the rule formals
+to their specified ground values. The target data in <span
+class="math inline">\(t\)</span> can now be evaluated before setting the
+tail formal. Indeed its left value <span
+class="math inline">\(E_{\operatorname{cons}}(e(t),a)\)</span> strictly
+contains every coordinate occurring in <span
+class="math inline">\(t\)</span>. An occurrence of the tail parameter in
+any such coordinate would violate the occurs check at the original left
+witness. Set the tail formal to the resulting value. For the right call
+all formals have prescribed ground values. Other data and <span
+class="math inline">\(z\)</span> may vary freely between these two
+calls.</p>
+<p>Write <span class="math inline">\(d_L\)</span> for the componentwise
+decoding of the left data. Set <span
+class="math inline">\(s&#39;=s(d_L)\)</span> and <span
+class="math inline">\(t&#39;=t(d_L)\)</span>, which may contain the
+fresh list symbols through <span class="math inline">\(d_L\)</span>.
+After the common grounding, <span class="math inline">\(Y\)</span> and
+<span class="math inline">\(z\)</span> are both binary bodies on the
+slots. By §4 the two decoded evaluations of <strong>each</strong> are
+congruent modulo the ground equations</p>
+<p><span class="math display">\[\{l_i=r_i:1\le i\le k\}\ \cup\
+\{\operatorname{cons}(t&#39;,\operatorname{nil})=\operatorname{nil}\}.\]</span></p>
+<p>This follows by applying their decoded bodies to congruent argument
+vectors. Let <span class="math inline">\(Z_L\)</span> denote the decoded
+left value of <span class="math inline">\(z\)</span>. The evaluation
+equalities give <span
+class="math inline">\(\operatorname{cons}(s&#39;,Z_L)\equiv Z_L\)</span>
+in this congruence.</p>
+<p>To read this equality, let <span class="math inline">\(Q\)</span> be
+the original ground term algebra modulo the equations of <span
+class="math inline">\(R\)</span>. Project an extended term to <span
+class="math inline">\(Q\)</span> by interpreting <span
+class="math inline">\(\operatorname{nil}\)</span> as any original
+constant and <span
+class="math inline">\(\operatorname{cons}(u,v)\)</span> as the
+projection of <span class="math inline">\(v\)</span>. Write <span
+class="math inline">\(\pi\)</span> for this projection. Build a model on
+<span class="math inline">\(Q\times\mathbb N\)</span>. Every original
+constructor acts as usual on first coordinates and returns zero on the
+second. Give <span class="math inline">\(\operatorname{nil}\)</span> its
+projected value and second coordinate zero. Define</p>
+<p><span class="math display">\[\operatorname{cons}((u,h),(v,j))=(v,\
+j+\mathbf 1_{u\ne\pi(t&#39;)}).\]</span></p>
+<p>First coordinates compute <span class="math inline">\(\pi\)</span>
+throughout. All original rule equations hold, and prepending <span
+class="math inline">\(t&#39;\)</span> to <span
+class="math inline">\(\operatorname{nil}\)</span> preserves its value.
+The congruence equality for <span class="math inline">\(Z_L\)</span>
+therefore forces <span
+class="math inline">\(\pi(s&#39;)=\pi(t&#39;)\)</span>. Choosing
+original ground representatives of <span
+class="math inline">\(\pi(d_L)\)</span> gives a single substitution
+witnessing <span
+class="math inline">\(s(d)\leftrightarrow_R^*t(d)\)</span>. <span
+class="math inline">\(\square\)</span></p>
+<p>Round 23 makes two proofs of symmetric conversion coexist in two
+ordinary branches while sharing their data. <a
+href="round-23-two-rigid.html">Two simultaneous rigid
+constraints</a></p>
+<p>Even a backwards application of a single irreversible ground rule can
+therefore pass both evaluations. The third branch restores direction by
+making <span class="math inline">\(z\)</span> independent of the slots.
+The proposition applies to this compiled family. The general two-branch
+problem is r.e.-complete. <a href="round-25-binary.html">Exact
+threshold</a></p>
+</section>
+<section id="one-constant-suffices" class="level2">
+<h2>7. One constant suffices</h2>
+<p>Use <span class="math inline">\(a\)</span> as the only constant. The
+templates in §2 used <span class="math inline">\(b\)</span> at fixed
+leaves so that an atomic argument could never complete a template by
+substitution. Here the decoder reads a finite state at each tag. A hole
+and every value that may replace it have the same state. This makes even
+a tag containing a hole safe to inspect.</p>
+<p>Let <span class="math inline">\(N\)</span> be the number of wrapper
+and constructor macros. Number them <span
+class="math inline">\(0,\ldots,N-1\)</span>. Use states <span
+class="math inline">\(0,G,E,L,T_0,\ldots,T_{N-1}\)</span>. The atom
+<span class="math inline">\(a\)</span> and every unfilled hole have
+state <span class="math inline">\(0\)</span>. Compute the state of <span
+class="math inline">\(f(l,r)\)</span> from the states of its children by
+the following table. Omitted cases return <span
+class="math inline">\(0\)</span>.</p>
+<table>
+<thead>
+<tr>
+<th>Left state</th>
+<th>Right state</th>
+<th>Result</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><span class="math inline">\(0\)</span></td>
+<td><span class="math inline">\(0\)</span></td>
+<td><span class="math inline">\(G\)</span></td>
+</tr>
+<tr>
+<td><span class="math inline">\(G\)</span></td>
+<td>any</td>
+<td><span class="math inline">\(E\)</span></td>
+</tr>
+<tr>
+<td><span class="math inline">\(E\)</span></td>
+<td>any</td>
+<td><span class="math inline">\(L\)</span></td>
+</tr>
+<tr>
+<td><span class="math inline">\(0\)</span></td>
+<td><span class="math inline">\(G\)</span></td>
+<td><span class="math inline">\(T_0\)</span></td>
+</tr>
+<tr>
+<td><span class="math inline">\(T_i\)</span></td>
+<td><span class="math inline">\(G\)</span></td>
+<td><span class="math inline">\(T_{i+1}\)</span> when <span
+class="math inline">\(i+1&lt;N\)</span></td>
+</tr>
+</tbody>
+</table>
+<p>Put <span class="math inline">\(g=f(a,a)\)</span>, <span
+class="math inline">\(t_0=f(a,g)\)</span>, <span
+class="math inline">\(t_{i+1}=f(t_i,g)\)</span>. These trees have states
+<span class="math inline">\(G,T_0,T_1,\ldots\)</span> respectively.
+Encode the arguments of a macro by a list</p>
+<p><span class="math display">\[P()=a,\qquad P(x,\vec y)=f(f(g,x),P(\vec
+y)).\]</span></p>
+<p>For macro <span class="math inline">\(i\)</span> use <span
+class="math inline">\(f(t_i,P(\vec x))\)</span>. Every complete macro
+has state <span class="math inline">\(0\)</span> for
+<strong>arbitrary</strong> slot values. A nonempty list has state <span
+class="math inline">\(L\)</span>, its first entry <span
+class="math inline">\(f(g,x)\)</span> has state <span
+class="math inline">\(E\)</span>, and an empty list has state <span
+class="math inline">\(0\)</span>.</p>
+<p>The parser at a binary root reads the state of its left child to
+identify the macro. On the right it reads exactly the declared number of
+list nodes. To read one cell, require a fork of state <span
+class="math inline">\(L\)</span> whose left child is a fork of state
+<span class="math inline">\(E\)</span>. Its left child’s right child is
+the next slot. Continue on the cell’s right child. Require the final
+remainder to have state <span class="math inline">\(0\)</span>. This
+parser reads back the slots of every encoded macro. Its tag and end
+tests also define a unique result on arbitrary malformed trees whenever
+a match succeeds.</p>
+<p><strong>Substitution.</strong> Every inserted argument is <span
+class="math inline">\(a\)</span> or a complete macro, so replacing a
+hole by its argument preserves the state at every pre-existing node. A
+state test on a tag or list terminator therefore has the same result
+before and after substitution. Every strict position at which the parser
+<em>opens a fork</em> must have state <span
+class="math inline">\(L\)</span> or <span
+class="math inline">\(E\)</span>. A hole, even after filling, has state
+<span class="math inline">\(0\)</span> and cannot be opened there. Thus
+at a non-hole root the same macro matches before and after substitution
+with exactly the substituted slots. At a root hole the mode-specific
+column calculation of §4 still applies. This proves the substitution
+lemma for the new encoding. <span
+class="math inline">\(\square\)</span></p>
+<p>Use these templates everywhere in §§2–6. The scope guard uses only
+<span class="math inline">\(a\)</span> and <span
+class="math inline">\(f\)</span>. Atomic and compound endpoints still
+have distinct roots, and different wrapper tags still distinguish the
+compound columns. This proves both the three-branch theorem and the
+two-branch conversion proposition over the single-constant signature.
+One branch by itself is decidable: unify its premise and conclusion
+jointly, then use any ground solution as a singleton answer. Round 25
+attains the remaining value two over this same signature. <a
+href="round-25-binary.html">Two-branch proof</a></p>
+<p><a href="round-18-signature-boundary.html">Round 18</a> extends this
+lower bound to every finite signature with a branching constructor and a
+constant. It gives a decision procedure for all signatures with only
+unary constructors and constants.</p>
+</section>
+<section id="verification" class="level2">
+<h2>8. Verification</h2>
+<p><a href="round-17-proof.lean">Lean proof</a>. The kernel verifies
+substitution for both binary parsers, for every tag and arity. It checks
+that each one-constant macro has state zero and returns its original
+slots, including slots with arbitrary tree values. It also checks the
+counting-model argument for arbitrary body terms of any finite signature
+rank. The reported theorems use only <code>propext</code> and
+<code>Quot.sound</code>. The interpretation in modes and the full
+reductions are proved above.</p>
+<p><a href="round-17-three-branches.py">Executable reduction and
+checks</a>. The program constructs all three binary JCA branches and
+verifies a complete answer for two successive source rewrites inside a
+context. It also checks the empty path, malformed data, and 5,688
+instances of the decoding identity with the two-constant parser and
+7,360 with the one-constant parser, moving a hole through fixed template
+positions and genuine slots in every mode. The reversed path passes the
+two evaluation branches and fails the scope guard.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python3</span> projects/jca/agent-collab/round-17-three-branches.py</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="ex">lean</span> projects/jca/agent-collab/round-17-proof.lean  <span class="co"># Lean 4.19.0</span></span></code></pre></div>
+</section>
+</article>
+<script src="/assets/theme-toggle.js"></script>
+</body>
+</html>

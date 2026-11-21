@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <meta name="dcterms.date" content="2026-11-21">
+  <meta property="og:title" content="JCA Round 38: A Single Forbidden Read with Only the Weak Escape Test">
+  <meta property="og:url" content="https://lukstafi.github.io/projects/jca/agent-collab/round-38-weak-solved.html">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="lukstafi&#x27;s blog">
+  <meta name="twitter:card" content="summary">
+  <title>JCA Round 38: A Single Forbidden Read with Only the Weak Escape
+Test</title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <link rel="stylesheet" href="/assets/tufte.css">
+  <link rel="stylesheet" href="/assets/pandoc-tufte.css">
+  <link rel="stylesheet" href="/assets/site.css">
+  <script defer=""
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+  type="text/javascript"></script>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+  <script>(function(){var t=localStorage.getItem('theme-preference');if(t)document.documentElement.setAttribute('data-theme',t);})()</script>
+</head>
+<body>
+<nav class="site-nav">
+  <a href="/">Home</a> &middot; <a href="/study/">Study Guide</a> &middot; <a href="/about.html">About</a> &middot; <a href="https://lukstafi.substack.com">Substack</a>
+</nav>
+<div class="theme-toggle">
+  <button id="theme-btn" aria-label="Toggle dark mode">&#9788;</button>
+</div>
+<article>
+<header>
+<h1 class="title">JCA Round 38: A single forbidden read with only the
+weak escape test</h1>
+<p class="byline">2026-11-21</p>
+</header>
+<nav id="TOC">
+<ul>
+<li><a href="#put-the-data-before-the-formal-inputs"
+id="toc-put-the-data-before-the-formal-inputs">Put the data before the
+formal inputs</a></li>
+<li><a href="#what-the-weak-rule-forces-in-a-solved-answer"
+id="toc-what-the-weak-rule-forces-in-a-solved-answer">What the weak rule
+forces in a solved answer</a></li>
+<li><a href="#extracting-the-two-evaluations"
+id="toc-extracting-the-two-evaluations">Extracting the two
+evaluations</a></li>
+<li><a href="#two-individually-valid-equations-defeat-the-construction"
+id="toc-two-individually-valid-equations-defeat-the-construction">Two
+individually valid equations defeat the construction</a></li>
+</ul>
+</nav>
+<p><strong>Theorem.</strong> Under leading-fresh validity and the
+extracted <strong>weak</strong> escape test, existence of an idempotent
+substitution answer for one implication is r.e.-complete over one binary
+constructor and one constant when just one public name is forbidden to
+one witness. The prefix and the forbidden read can be fixed. With all
+reads permitted the same problem is NP-complete. The answer format
+matters: on the hard family below, allowing arbitrary weak conjunctions
+makes <em>every</em> instance positive. <a
+href="round-31-leading.html">All reads permitted</a> · <a
+href="round-34-one-read.html">Earlier strong-rule proof</a></p>
+<section id="put-the-data-before-the-formal-inputs" class="level2">
+<h2>Put the data before the formal inputs</h2>
+<p>Take the binary requests <span
+class="math inline">\(B(L(d))=S(d,z)\)</span> and <span
+class="math inline">\(B(R)=z\)</span> for a single unknown body. Each
+column has one atomic end and one compound end, the columns are distinct
+for every choice of data, and <span class="math inline">\(R\)</span> is
+fixed. Each compound left entry is a macro of the form <span
+class="math inline">\(f(t,P)\)</span>, where the argument list <span
+class="math inline">\(P\)</span> is either <span
+class="math inline">\(a\)</span> or <span
+class="math inline">\(f(f(g,x),p)\)</span>, with <span
+class="math inline">\(g=f(a,a)\)</span>. <a
+href="round-17-three-branches.html">Two-call source and one-constant
+encoding</a></p>
+<p>Write <span class="math inline">\(H_r([])=a\)</span>, <span
+class="math inline">\(H_r(v::w)=f(f(r,v),H_r(w))\)</span>, and <span
+class="math inline">\(M_r(w)=f(r,f(a,H_r(w)))\)</span>. An ordinary port
+value <span class="math inline">\(L_j(d)\)</span> can <strong>never
+equal <span class="math inline">\(M_r(w)\)</span></strong>. The atom has
+a different root; the right child of a compound port is either an atom
+or has a compound left child. The right child of <span
+class="math inline">\(M_r\)</span> has left child <span
+class="math inline">\(a\)</span>. This disjointness holds also when the
+data contain arbitrary malformed trees.</p>
+<p>Use the prefix and one ordinary branch</p>
+<p><span class="math display">\[
+\exists d,z\quad\forall n_1\cdots n_k\quad\exists K\quad\forall
+r\quad\exists E,
+\]</span></p>
+<p><span class="math display">\[
+n=L(d)\quad\Longrightarrow\quad
+E=M_r([n_1,\ldots,n_k,S(d,z)])\ \land\ K=M_r([R_1,\ldots,R_k,z]).
+\]</span></p>
+<p>Only the ports and <span class="math inline">\(K\)</span> are
+designated and substituted. All witnesses may use every public name,
+except that <span class="math inline">\(K\)</span> cannot read <span
+class="math inline">\(r\)</span>. Ordinary relevance and consistency see
+all variables before substitution. A source solution fixes the data to
+their literal ground values, leaves the ports and <span
+class="math inline">\(r\)</span> unbound, and defines <span
+class="math inline">\(E\)</span> by the left packed list with <span
+class="math inline">\(B(n)\)</span> as its final payload. Define <span
+class="math inline">\(K\)</span> by the right packed list with the
+ground result inlined. Its only universal is the later <span
+class="math inline">\(r\)</span>, so it passes weak escape directly. The
+<span class="math inline">\(E\)</span> atom is individually
+prefix-valid. Choosing <span class="math inline">\(n:=R\)</span> and
+<span class="math inline">\(K:=E\)</span> gives validity by the second
+source evaluation.</p>
+</section>
+<section id="what-the-weak-rule-forces-in-a-solved-answer"
+class="level2">
+<h2>What the weak rule forces in a solved answer</h2>
+<p>Remove fresh names at a joint witness as in Round 31. In an
+idempotent substitution each public coordinate is either unbound or has
+a single definition over unbound public names. Any answer atom
+containing a port must be individually prefix-valid. Indeed that port
+itself is universal in the earliest designated block; none of the
+designated names in the atom can be strictly earlier. This uses the
+extracted comparison <span class="math inline">\(u\not\le_Q k\)</span>.
+<a href="round-31-leading.html">Scope test and fresh-name
+elimination</a></p>
+<ol type="1">
+<li><strong>Each port is unbound.</strong> A definition of universal
+<span class="math inline">\(n_j\)</span> can pass individual validity
+only by equating it to a <em>bare later existential</em> that can copy
+it. A compound misses the atomic choice, a constant misses another
+choice, and other bare names are fixed earlier or independently
+universal. The only later existentials are <span
+class="math inline">\(K,E\)</span>. At an ordinary active row neither
+can equal a port, by the disjointness above. Consistency rules out both
+aliases.</li>
+<li><strong>Data definitions omit all ports.</strong> An initial
+existential cannot choose a value equal to a term containing a
+subsequently chosen universal for every choice of that universal. Thus a
+definition of a datum or of <span class="math inline">\(z\)</span>
+involving a port fails individual validity. If a datum is unbound its
+form already omits the ports.</li>
+<li><strong>The tag is literally the free name <span
+class="math inline">\(r\)</span>.</strong> In the generic validity play,
+a retained universal’s normal form must be a bare unbound name. A port
+alias <span class="math inline">\(r=n_j\)</span> fails individual
+validity under the two independent universal moves. An initial data
+coordinate cannot supply the rigid tag either: it is retained and played
+before <span class="math inline">\(r\)</span>. An alias to <span
+class="math inline">\(K\)</span> or <span
+class="math inline">\(E\)</span> would require a finite tree to equal a
+packed tree containing itself at the ordinary active row. These exhaust
+the names. Since the initial data have ground generic values and the
+free <span class="math inline">\(r\)</span> has a rigid-letter value,
+the data forms also omit <span class="math inline">\(r\)</span>. <a
+href="round-32-carriers.html">Generic-play criterion</a></li>
+<li><strong>The observation definition omits the ports.</strong> Hold
+the other nonport parameters fixed, set <span
+class="math inline">\(n=L(d)\)</span>, and vary <span
+class="math inline">\(r\)</span>. These choices always activate the
+premise because the data omit the ports and <span
+class="math inline">\(r\)</span>. The required <span
+class="math inline">\(K\)</span> varies. Hence <span
+class="math inline">\(K\)</span> is defined and its body contains the
+literal <span class="math inline">\(r\)</span>. If this same definition
+contained any port, it would require individual validity. The
+existential <span class="math inline">\(K\)</span> precedes <span
+class="math inline">\(r\)</span> and its finite value cannot contain
+every later choice of <span class="math inline">\(r\)</span> at a fixed
+address. This excludes every port from the body.</li>
+<li><strong>The carrier has constructor root.</strong> At the same
+varying ordinary rows its value is a fork that varies with <span
+class="math inline">\(r\)</span>. A constant or any input other than
+<span class="math inline">\(r\)</span> would be fixed; the bare <span
+class="math inline">\(r\)</span> fails at <span
+class="math inline">\(a\)</span>. Hence its normal form has root <span
+class="math inline">\(f\)</span>.</li>
+</ol>
+</section>
+<section id="extracting-the-two-evaluations" class="level2">
+<h2>Extracting the two evaluations</h2>
+<p>Since the <span class="math inline">\(K\)</span> form, data and tag
+omit the ports, setting <span class="math inline">\(n=L(d)\)</span> for
+arbitrary nonport parameters gives the identity <span
+class="math inline">\(P_K=M_r([R_1,\ldots,R_k,P_z])\)</span>. At a
+generic play let <span class="math inline">\(r\)</span> be a rigid
+letter and specialize the original dummy universal port moves to <span
+class="math inline">\(a\)</span>. Among moves accessible to the witness
+for <span class="math inline">\(K\)</span>, only <span
+class="math inline">\(E\)</span> can contain the rigid letter. Its value
+has root <span class="math inline">\(f\)</span>. To construct the
+required <span class="math inline">\(K\)</span> with a constructor at
+the root, a witness would have to produce the bare rigid letter in its
+first child. This is impossible with a compound generator and ground
+moves. Thus <span class="math inline">\(K\)</span> copies <span
+class="math inline">\(E\)</span>. <a
+href="round-33-probe.lean">Single-generator lemma</a></p>
+<p>Ground the letter to <span class="math inline">\(a\)</span> and
+freeze every nonport parameter except <span
+class="math inline">\(r\)</span> at this play. The data become <span
+class="math inline">\(d_0,z_0\)</span>. With the ports set to <span
+class="math inline">\(L(d_0)\)</span>, leave <span
+class="math inline">\(r\)</span> formal in the ordinary row. Every
+strict ancestor of a payload in the packed output is a fork containing
+<span class="math inline">\(r\)</span>, including the additional wrapper
+<span class="math inline">\(f(a,H_r(\ldots))\)</span> because the list
+is nonempty. No ground left port can supply such a fork, nor can the
+bare <span class="math inline">\(r\)</span>. The payload addresses
+therefore exist in the open <span class="math inline">\(E\)</span> body
+itself. Set <span class="math inline">\(r=a\)</span> and read their
+bodies on the ports alone.</p>
+<p>Write <span class="math inline">\(N\)</span> for the actual port
+values in the grounded validity row. The first <span
+class="math inline">\(k\)</span> payloads give <span
+class="math inline">\(L_j(d_0)\)</span> at <span
+class="math inline">\(L(d_0)\)</span> and <span
+class="math inline">\(R_j\)</span> at <span
+class="math inline">\(N\)</span>. Opposite endpoint roots force each
+body to be a bare port. Distinct columns make the <span
+class="math inline">\(k\)</span> selections a permutation. Renaming the
+ports by this permutation gives the last payload value <span
+class="math inline">\(S(d_0,z_0)\)</span> at <span
+class="math inline">\(L(d_0)\)</span> and <span
+class="math inline">\(z_0\)</span> at <span
+class="math inline">\(R\)</span>. This is the source solution.
+Enumeration of answers and witness terms gives the r.e. upper bound. The
+argument extends to every finite signature with a constant and a
+branching constructor by padding and projection as in Round 33. <a
+href="round-33-carrier-reduction.html">Renaming and signature
+transfer</a></p>
+</section>
+<section id="two-individually-valid-equations-defeat-the-construction"
+class="level2">
+<h2>Two individually valid equations defeat the construction</h2>
+<p>Choose a port <span class="math inline">\(p\)</span> with left entry
+<span class="math inline">\(a\)</span> (an outgoing rule slot). Fix
+arbitrary ground data <span class="math inline">\(d_0,z_0\)</span>. Let
+<span
+class="math inline">\(Y(n)=M_a([n_1,\ldots,n_k,S(d_0,z_0)])\)</span> and
+<span class="math inline">\(K_0=M_a([R_1,\ldots,R_k,z_0])\)</span>. Use
+the data pins, <span class="math inline">\(K=K_0\)</span>, and the two
+atoms</p>
+<p><span class="math display">\[ E=Y(n),\qquad E=Y(n[p:=r]).
+\]</span></p>
+<p>Each <span class="math inline">\(E\)</span> atom is individually
+prefix-valid, since <span class="math inline">\(E\)</span> is the last
+existential. Their conjunction entails <span
+class="math inline">\(p=r\)</span> by injectivity at the displayed
+payload. At an ordinary active row <span
+class="math inline">\(p=L_p=a\)</span>, so the tag must be <span
+class="math inline">\(a\)</span> and the prescribed conclusions both
+hold. An active row exists at these exact values. In validity choose
+<span class="math inline">\(p:=r\)</span>, any ground values for the
+other ports, and the literal <span class="math inline">\(K_0\)</span>
+for <span class="math inline">\(K\)</span>. The final carrier can
+satisfy both identical requests. This argument works equally well for a
+negative directed reachability instance.</p>
+<p>Thus changing to arbitrary weak conjunctions invalidates the converse
+for this family. A terminal carrier can impose an otherwise inadmissible
+equation between universal coordinates by using it in two individually
+valid definitions. Round 39 moves the port equations into the conclusion
+and proves the same lower bound for arbitrary weak conjunctions. <a
+href="round-39-weak-conjunctions.html">Guarded reduction</a> <a
+href="round-38-weak-solved.py">Executable branch, validity checks and
+counterexample</a></p>
+</section>
+</article>
+<script src="/assets/theme-toggle.js"></script>
+</body>
+</html>

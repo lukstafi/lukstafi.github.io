@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <meta name="dcterms.date" content="2026-11-21">
+  <meta property="og:title" content="JCA Round 21: When the Premise Can Test the Output">
+  <meta property="og:url" content="https://lukstafi.github.io/projects/jca/agent-collab/round-21-one-input.html">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="lukstafi&#x27;s blog">
+  <meta name="twitter:card" content="summary">
+  <title>JCA Round 21: When the Premise Can Test the Output</title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <style type="text/css">
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="/assets/tufte.css">
+  <link rel="stylesheet" href="/assets/pandoc-tufte.css">
+  <link rel="stylesheet" href="/assets/site.css">
+  <script defer=""
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+  type="text/javascript"></script>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+  <script>(function(){var t=localStorage.getItem('theme-preference');if(t)document.documentElement.setAttribute('data-theme',t);})()</script>
+</head>
+<body>
+<nav class="site-nav">
+  <a href="/">Home</a> &middot; <a href="/study/">Study Guide</a> &middot; <a href="/about.html">About</a> &middot; <a href="https://lukstafi.substack.com">Substack</a>
+</nav>
+<div class="theme-toggle">
+  <button id="theme-btn" aria-label="Toggle dark mode">&#9788;</button>
+</div>
+<article>
+<header>
+<h1 class="title">JCA Round 21: When the premise can test the
+output</h1>
+<p class="byline">2026-11-21</p>
+</header>
+<nav id="TOC">
+<ul>
+<li><a href="#count-the-free-inputs-in-the-premise"
+id="toc-count-the-free-inputs-in-the-premise">Count the free inputs in
+the premise</a></li>
+<li><a href="#pinning-the-inputs-by-constant-outputs"
+id="toc-pinning-the-inputs-by-constant-outputs">Pinning the inputs by
+constant outputs</a></li>
+<li><a href="#deciding-if-one-input-can-be-isolated"
+id="toc-deciding-if-one-input-can-be-isolated">Deciding if one input can
+be isolated</a></li>
+<li><a href="#the-case-with-all-projected-inputs-active"
+id="toc-the-case-with-all-projected-inputs-active">The case with all
+projected inputs active</a></li>
+<li><a href="#eliminate-a-defined-universal-in-the-three-block-prefix"
+id="toc-eliminate-a-defined-universal-in-the-three-block-prefix">Eliminate
+a defined universal in the three-block prefix</a></li>
+<li><a href="#verification-and-the-remaining-case"
+id="toc-verification-and-the-remaining-case">Verification and the
+remaining case</a></li>
+</ul>
+</nav>
+<p><strong>One implication with one universal input is
+P-complete</strong>, even when its premise tests the outputs. For
+example, consider</p>
+<p><span class="math display">\[\forall h\;\exists y.\qquad y=f(b,a)\
+\Rightarrow\ h=b.\]</span></p>
+<p>The answer <span class="math inline">\(y=f(h,a)\)</span> makes the
+premise true at precisely <span class="math inline">\(h=b\)</span>.
+Freezing <span class="math inline">\(y\)</span> at its value in that
+witness would make the premise true at every input. The distinction is
+whether a term strategy can arrange for one witness to be the only
+active input.</p>
+<p>The same test applies to arbitrarily many inputs linked by the
+premise. As in Round 20, work over the finite ground trees of a finite
+single-sorted signature with a constant. There are initial existential
+data <span class="math inline">\(X\)</span>, universal inputs <span
+class="math inline">\(H\)</span>, and existential outputs <span
+class="math inline">\(Y\)</span> interleaved with the inputs. There are
+no designated invariant variables. The single implication <span
+class="math inline">\(D(X,H,Y)\Rightarrow C(X,H,Y)\)</span> has
+conjunctive equational sides, and the sought answer is equational. The
+one-element algebra is immediate. <a
+href="round-20-one-branch.html#one-witness-determines-the-strategy-form">Term-strategy
+characterization</a></p>
+<section id="count-the-free-inputs-in-the-premise" class="level2">
+<h2>Count the free inputs in the premise</h2>
+<p>First unify <span class="math inline">\(D\land C\)</span>. Failure
+means that the branch cannot have a consistency witness. Separately take
+an idempotent most general unifier <span
+class="math inline">\(\mu\)</span> of <span
+class="math inline">\(D\)</span>, using original variables as residuals.
+For each ground choice of the data in the projection of <span
+class="math inline">\(D\)</span>, the residuals <span
+class="math inline">\(Z\)</span> in <span
+class="math inline">\(\mu(X)\)</span> have uniquely determined values.
+Count the remaining residuals appearing in <span
+class="math inline">\(\mu(H)\)</span>. Write <span
+class="math inline">\(R\)</span> for their set and call <span
+class="math inline">\(|R|\)</span> the <strong>input rank</strong> of
+the premise. This count is invariant under renaming the unifier’s
+parameters. It measures independent variations of the input tuple at
+fixed data in the projection of <span class="math inline">\(D\)</span>.
+Some may be visible only as subtrees of inputs.</p>
+<p><strong>Theorem.</strong> For premises of input rank at most one,
+one-branch existence is in NP for arbitrary quantifier order and in P
+when all inputs precede all outputs. Both bounds are tight on every
+branching signature. One public universal can contain several
+independent subtrees. The pinning argument below also covers that
+case.</p>
+<p>To see the qualification, <span
+class="math inline">\(h=f(y_1,y_2)\)</span> already gives rank two with
+just one public input. For one universal <span
+class="math inline">\(h\)</span>, either <span
+class="math inline">\(h\)</span> is the sole residual in <span
+class="math inline">\(\mu(h)\)</span>, or each residual of <span
+class="math inline">\(\mu(h)\)</span> distinct from <span
+class="math inline">\(h\)</span> is an unbound original data or output
+variable. In the latter case all members of <span
+class="math inline">\(R\)</span> occur in <span
+class="math inline">\(\mu(Y)\)</span>. More explicitly, if <span
+class="math inline">\(h\)</span> occurs in its own idempotent normal
+form then that form is <span class="math inline">\(h\)</span> by the
+occurs check. Otherwise every unbound name comes from <span
+class="math inline">\(X\)</span> or <span
+class="math inline">\(Y\)</span>. In both cases the tests below decide
+the instance in polynomial time.</p>
+</section>
+<section id="pinning-the-inputs-by-constant-outputs" class="level2">
+<h2>Pinning the inputs by constant outputs</h2>
+<p>Pick a ground joint witness of <span class="math inline">\(D\land
+C\)</span>. If <strong>all</strong> members of <span
+class="math inline">\(R\)</span> occur in <span
+class="math inline">\(\mu(Y)\)</span>, fix the data and the outputs to
+their joint witness values. Every input residual is then fixed by a
+subtree of some data or output coordinate. Only the witness input tuple
+can satisfy <span class="math inline">\(D\)</span> with those fixed
+values. This is an answer, regardless of the rank or the quantifier
+order. In particular rank zero needs only the initial joint-unification
+test.</p>
+<p>The remaining rank-one case has a single residual <span
+class="math inline">\(r\)</span> which occurs in <span
+class="math inline">\(\mu(H)\)</span> and is absent from <span
+class="math inline">\(\mu(X),\mu(Y)\)</span>. Since it is an unbound
+original variable, one public input is <span
+class="math inline">\(r\)</span> itself. Once the data are fixed, the
+projected input tuples are <span
+class="math inline">\(S(r)=\mu(H)\)</span> with the fixed residuals
+specialized. Each <span class="math inline">\(S_h(r)\)</span> is an
+ordinary term in this one variable. For any joint witness, holding its
+data and <strong>all its outputs</strong> constant still satisfies <span
+class="math inline">\(D\)</span> throughout this family. In the unifier
+of <span class="math inline">\(D\)</span> one can vary <span
+class="math inline">\(r\)</span> without changing a data or output
+coordinate.</p>
+<p>The one-witness specialization proof in Round 20 applies to arbitrary
+<span class="math inline">\(D\)</span>. A term strategy specializes an
+equational answer while retaining the chosen row and preserving
+relevance. For fixed data and any term strategy, substituting <span
+class="math inline">\(H=S(r)\)</span> and the chosen output terms into
+<span class="math inline">\(D\)</span> leaves a conjunction in the
+single variable <span class="math inline">\(r\)</span>. If satisfiable,
+it either consists of identities and holds everywhere, or has a unique
+ground solution. Indeed unifying a nonidentity over one variable must
+bind that variable to a ground tree. The binary-tree lemma also has a
+direct proof in Lean. <a href="round-21-fiber.lean">Two distinct inputs
+force term identity</a></p>
+</section>
+<section id="deciding-if-one-input-can-be-isolated" class="level2">
+<h2>Deciding if one input can be isolated</h2>
+<p>Call an output <span class="math inline">\(y\)</span>
+<strong>asymmetric in the premise</strong> if some atom has different
+sets of occurrence positions for <span class="math inline">\(y\)</span>
+on its two sides. In <span class="math inline">\(f(y,z)=f(y,a)\)</span>,
+for example, <span class="math inline">\(z\)</span> is asymmetric and
+<span class="math inline">\(y\)</span> is symmetric. Call an input <span
+class="math inline">\(h\)</span> <strong>varying</strong> if <span
+class="math inline">\(r\)</span> occurs in <span
+class="math inline">\(S_h(r)\)</span>. Both tests are independent of the
+chosen data values.</p>
+<p>A singleton active set is possible <strong>if and only if</strong>
+some asymmetric output <span class="math inline">\(y\)</span> has an
+earlier varying input <span class="math inline">\(h\)</span> and there
+is a joint witness of <span class="math inline">\(D\land C\)</span> in
+which the value of <span class="math inline">\(h\)</span> is a subtree
+of the value of <span class="math inline">\(y\)</span>. The statement
+requires the unique active point to satisfy the conclusion.</p>
+<p>For sufficiency, take such a joint witness, write its input parameter
+as <span class="math inline">\(r_0\)</span>, and begin with constant
+data and outputs. Inside the ground value of <span
+class="math inline">\(y\)</span>, replace one occurrence of the ground
+value of <span class="math inline">\(h\)</span> by the public name <span
+class="math inline">\(h\)</span>. Its value at <span
+class="math inline">\(r_0\)</span> is unchanged. The new strategy still
+contains the joint witness. To show it isolates <span
+class="math inline">\(r_0\)</span>, take a premise equality with an
+occurrence of <span class="math inline">\(y\)</span> on one side at a
+position <span class="math inline">\(q\)</span> absent on the other. At
+the joint witness all occurrences of this same ground value on the two
+sides of the equality have identical or disjoint root positions. Two
+strictly nested copies of one finite tree would contradict their sizes.
+Thus every occurrence of <span class="math inline">\(y\)</span> on the
+other side is disjoint from <span class="math inline">\(q\)</span>. With
+all outputs constant, both sides were identical as terms in <span
+class="math inline">\(r\)</span>, and there was no occurrence of <span
+class="math inline">\(r\)</span> under <span
+class="math inline">\(q\)</span>. After the replacement, <span
+class="math inline">\(S_h(r)\)</span> introduces an occurrence of <span
+class="math inline">\(r\)</span> underneath <span
+class="math inline">\(q\)</span> on just one side. This is now a
+nonidentity, so it can hold at only <span
+class="math inline">\(r_0\)</span>.</p>
+<p>For necessity, take a term strategy with its unique active point
+<span class="math inline">\(r_0\)</span>. Freeze all its outputs at
+their values there. This frozen strategy satisfies <span
+class="math inline">\(D\)</span> on the entire input family. A symmetric
+output occupies exactly the same positions on both sides of every atom,
+so changing its term back on both sides cannot create a difference
+there. If every asymmetric output expanded to a constant in <span
+class="math inline">\(r\)</span>, those constants would already agree
+with their values at <span class="math inline">\(r_0\)</span>, leaving
+every premise equality an identity. At least one asymmetric output
+therefore varies. Its body must contain an earlier varying <span
+class="math inline">\(h\)</span>. At <span
+class="math inline">\(r_0\)</span>, this makes the whole value of <span
+class="math inline">\(h\)</span> a subtree of that output in the joint
+witness.</p>
+<p><strong>Checking the subtree condition takes polynomial
+time.</strong> Let <span class="math inline">\(\lambda\)</span> unify
+<span class="math inline">\(D\land C\)</span>, put <span
+class="math inline">\(s=\lambda(h)\)</span>, <span
+class="math inline">\(t=\lambda(y)\)</span>, and try unifying <span
+class="math inline">\(s\)</span> with each syntactic subterm of <span
+class="math inline">\(t\)</span>. A successful test gives the required
+witness after grounding the remaining variables. Conversely suppose
+<span class="math inline">\(s\theta\)</span> is a subtree of <span
+class="math inline">\(t\theta\)</span>. Its root either corresponds to a
+node of <span class="math inline">\(t\)</span>, or lies strictly inside
+the value of a residual <span class="math inline">\(w\)</span> at a leaf
+of <span class="math inline">\(t\)</span>. In the latter case <span
+class="math inline">\(w\)</span> cannot occur in <span
+class="math inline">\(s\)</span>, since <span
+class="math inline">\(s\theta\)</span> would then contain <span
+class="math inline">\(w\theta\)</span> while lying strictly inside it.
+Hence <span class="math inline">\(s\)</span> unifies with that leaf
+<span class="math inline">\(w\)</span>. The successful test may choose
+different ground values from the original witness. Term DAGs have only
+polynomially many distinct subterm nodes.</p>
+</section>
+<section id="the-case-with-all-projected-inputs-active" class="level2">
+<h2>The case with all projected inputs active</h2>
+<p>When the isolation test fails, a successful strategy must satisfy
+<span class="math inline">\(D\land C\)</span> at every projected input
+for its chosen data. Conversely such a strategy gives an answer, since
+outside the projection the original premise cannot hold for any
+outputs.</p>
+<p>Express this as a Round 20 input-only instance. Give the residuals
+<span class="math inline">\(Z\)</span> in <span
+class="math inline">\(\mu(X)\)</span> fresh names and quantify them as
+additional initial data. Use the input-only premise</p>
+<p><span class="math display">\[X=\mu(X)(Z),\qquad
+H=\mu(H)(Z,r)\]</span></p>
+<p>and the conclusion <span class="math inline">\(D\land C\)</span>. The
+coordinate for <span class="math inline">\(r\)</span> is its original
+public input, so introducing this premise preserves when each output can
+first use <span class="math inline">\(r\)</span>. The data witnesses for
+<span class="math inline">\(Z\)</span> can be read from the original
+data. Conversely the solver for this instance returns fixed data and
+output terms on earlier original inputs, which also solve the initial
+branch. Keeping the projected templates shared gives a polynomial-size
+reduction. If the chosen input format requires unshared terms, name
+shared nodes in the verifier’s term graph. The polynomial upper bound
+for the three-block case follows from the two-unification algorithm. <a
+href="round-20-one-branch.html#when-two-unifications-suffice">Input-only
+decision procedure</a></p>
+<p>The NP lower bound with arbitrary order already uses an input-only
+premise of rank one. Its six earlier inputs have the forms <span
+class="math inline">\(f(f(c_i,c_j),r)\)</span>, with a single later
+universal <span class="math inline">\(r\)</span>. P-hardness for the
+three-block case holds even with the prefix <span
+class="math inline">\(\forall h\,\exists Y\)</span>, no initial data,
+<span class="math inline">\(D=\top\)</span> and <span
+class="math inline">\(C\)</span> an arbitrary unification problem on
+<span class="math inline">\(Y\)</span>. In particular <strong>one
+universal and one arbitrary implication is P-complete</strong> on every
+branching signature. With two implications the Round 19 hard family has
+rank <em>zero in each premise</em>: at fixed data each premise names its
+entire input tuple. <a href="round-20-one-branch.html">One-branch
+hardness proofs</a> · <a
+href="round-19-designated-parameters.html#the-prefix-replaces-the-scope-branch">Two-branch
+reduction</a></p>
+</section>
+<section id="eliminate-a-defined-universal-in-the-three-block-prefix"
+class="level2">
+<h2>Eliminate a defined universal in the three-block prefix</h2>
+<p>There is a normalization for <strong>arbitrary</strong> one-branch
+premises under <span class="math inline">\(\exists X\,\forall H\,\exists
+Y\)</span>. If a premise atom is <span
+class="math inline">\(h=t(X,H&#39;,Y)\)</span>, where <span
+class="math inline">\(h\)</span> is a universal and <span
+class="math inline">\(H&#39;=H\setminus\{h\}\)</span>, delete the atom
+and substitute <span class="math inline">\(t\)</span> for <span
+class="math inline">\(h\)</span> throughout the remaining premise and
+conclusion. Delete <span class="math inline">\(h\)</span> from the
+prefix. This preserves answer existence even though the original outputs
+could read <span class="math inline">\(h\)</span>.</p>
+<p>To lift a strategy for the reduced clause, take its output bodies
+independent of <span class="math inline">\(h\)</span> in the original
+game. The deleted atom then fixes exactly one value of <span
+class="math inline">\(h\)</span> at each choice of the other inputs. The
+two implications agree on those inputs, and a witness in the reduced
+branch extends with that value of <span
+class="math inline">\(h\)</span>.</p>
+<p>For the other direction fix the data and a term strategy <span
+class="math inline">\(Y=B(H&#39;,h)\)</span> from an original answer.
+Its active joint witness gives some <span
+class="math inline">\(h_0\)</span>. The deleted atom after substitution
+is <span class="math inline">\(h=T(H&#39;,h)\)</span>. If <span
+class="math inline">\(h\)</span> appeared properly inside <span
+class="math inline">\(T\)</span>, this equality could never hold on
+finite trees. Thus either <span class="math inline">\(T\)</span> omits
+<span class="math inline">\(h\)</span> or <span
+class="math inline">\(T=h\)</span> syntactically. In the first case put
+<span class="math inline">\(U(H&#39;)=T(H&#39;)\)</span>. In the second
+put <span class="math inline">\(U=h_0\)</span>. In both cases <span
+class="math inline">\(Y&#39;=B(H&#39;,U(H&#39;))\)</span> is a permitted
+strategy under the reduced prefix. It extends every active reduced row
+to an original one by taking <span
+class="math inline">\(h=U(H&#39;)\)</span>, and it retains the chosen
+witness. Having all <span class="math inline">\(H&#39;\)</span>
+available when each output is chosen makes the composition legal.</p>
+<p>Compute a solved unifier of the whole premise before applying the
+rule. Every bound universal has a definition using only unbound names,
+so all such definitions can be eliminated. The remaining premise
+consists solely of the solved data and output equations. For instance,
+if the premise just defines distinct universal inputs by trees in data,
+other inputs and outputs, the reduced premise is empty when those
+definitions have acyclic input dependencies. The three-block input-only
+algorithm then decides the instance in P, even at unbounded input rank.
+More generally, one can run either the rank test or the test for
+data-determined outputs on the normalized clause. <a
+href="round-22-ground-tests.html#when-the-initial-data-determine-the-test">Data-determined
+output tests</a></p>
+</section>
+<section id="verification-and-the-remaining-case" class="level2">
+<h2>Verification and the remaining case</h2>
+<p>The <a href="round-21-one-input.py">reference solver</a> returns term
+strategies and independently checks the original implication at each
+returned strategy. It compares all 625 combinations of a single premise
+equation and a single conclusion equation on two constants, one
+universal and two outputs against direct enumeration of every term
+strategy in that algebra. Another 625 comparisons check defined-input
+elimination against all strategies with two universal inputs. Branching
+examples check access to a whole earlier input, latent input parameters,
+incompatible output tests, and pinning several inputs by constant
+outputs.</p>
+<p>The remaining one-branch problem requires several independent input
+parameters and some parameter outside the data and output patterns. A
+nonidentity can then constrain the inputs to a proper family of positive
+dimension. The isolated-point argument no longer exhausts the
+possibilities. For instance, <span class="math inline">\(\forall
+h,k\,\exists y\)</span> with <span class="math inline">\(y=a\Rightarrow
+h=a\)</span> admits <span class="math inline">\(y=h\)</span>, whose
+active inputs are all <span class="math inline">\((a,k)\)</span>. The
+constant answer <span class="math inline">\(y=a\)</span> fails relevance
+and any different ground constant value for <span
+class="math inline">\(y\)</span> fails consistency. Round 22 handles
+active sets of this kind at arbitrary input rank when the premise pins
+its tested outputs to ground trees. <a
+href="round-22-ground-tests.html">Ground output tests</a> · <a
+href="round-30-monadic.html">General one-branch classification</a></p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python3</span> projects/jca/agent-collab/round-21-one-input.py</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="ex">lean</span> projects/jca/agent-collab/round-21-fiber.lean</span></code></pre></div>
+</section>
+</article>
+<script src="/assets/theme-toggle.js"></script>
+</body>
+</html>

@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <meta name="dcterms.date" content="2026-11-21">
+  <meta property="og:title" content="JCA Round 19: Designated Parameters and Two-Branch Prefix Hardness">
+  <meta property="og:url" content="https://lukstafi.github.io/projects/jca/agent-collab/round-19-designated-parameters.html">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="lukstafi&#x27;s blog">
+  <meta name="twitter:card" content="summary">
+  <title>JCA Round 19: Designated Parameters and Two-Branch Prefix
+Hardness</title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <style type="text/css">
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="/assets/tufte.css">
+  <link rel="stylesheet" href="/assets/pandoc-tufte.css">
+  <link rel="stylesheet" href="/assets/site.css">
+  <script defer=""
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+  type="text/javascript"></script>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+  <script>(function(){var t=localStorage.getItem('theme-preference');if(t)document.documentElement.setAttribute('data-theme',t);})()</script>
+</head>
+<body>
+<nav class="site-nav">
+  <a href="/">Home</a> &middot; <a href="/study/">Study Guide</a> &middot; <a href="/about.html">About</a> &middot; <a href="https://lukstafi.substack.com">Substack</a>
+</nav>
+<div class="theme-toggle">
+  <button id="theme-btn" aria-label="Toggle dark mode">&#9788;</button>
+</div>
+<article>
+<header>
+<h1 class="title">JCA Round 19: Designated parameters and two-branch
+prefix hardness</h1>
+<p class="byline">2026-11-21</p>
+</header>
+<nav id="TOC">
+<ul>
+<li><a href="#the-prefix-replaces-the-scope-branch"
+id="toc-the-prefix-replaces-the-scope-branch">1. The prefix replaces the
+scope branch</a>
+<ul>
+<li><a href="#one-branch-with-an-input-only-premise"
+id="toc-one-branch-with-an-input-only-premise">One branch with an
+input-only premise</a></li>
+</ul></li>
+<li><a href="#two-parameter-conventions"
+id="toc-two-parameter-conventions">2. Two parameter conventions</a></li>
+<li><a href="#trailing-witnesses-admit-a-direct-pattern-presentation"
+id="toc-trailing-witnesses-admit-a-direct-pattern-presentation">3.
+Trailing witnesses admit a direct pattern presentation</a></li>
+<li><a href="#a-small-presentation-for-leading-fresh-parameters"
+id="toc-a-small-presentation-for-leading-fresh-parameters">4. A small
+presentation for leading fresh parameters</a></li>
+<li><a href="#an-input-separating-the-two-conventions"
+id="toc-an-input-separating-the-two-conventions">5. An input separating
+the two conventions</a></li>
+<li><a href="#verification" id="toc-verification">6.
+Verification</a></li>
+</ul>
+</nav>
+<p><strong>Results.</strong> Over one binary constructor and one
+constant, two evaluation branches suffice for r.e.-complete equational
+JCA under an <span class="math inline">\(\exists\forall\exists\)</span>
+prefix. With only unary constructors and constants, allowing designated
+invariant parameters still gives a decision procedure under each of the
+two parameter conventions recorded in this project. They agree on this
+decidability boundary but can give different answers on the same
+one-branch input.</p>
+<p>Throughout, the model consists of finite ground terms over a finite
+single-sorted signature with at least one constant. Answers are finite
+conjunctions of equations, with existential projection of fresh
+variables for ordinary relevance and consistency. Sections 2–4 specify
+how fresh variables are treated for the additional validity test.</p>
+<section id="the-prefix-replaces-the-scope-branch" class="level2">
+<h2>1. The prefix replaces the scope branch</h2>
+<p>Let <span class="math inline">\(d\)</span> range over the data
+coordinates, <span class="math inline">\(h_1,\ldots,h_k\)</span> over
+the formal arguments and <span class="math inline">\(y\)</span> over the
+result. A two-call term interpolation instance asks for one ground data
+tuple and one finite body <span class="math inline">\(B\)</span> such
+that</p>
+<p><span class="math display">\[B(\vec s_i(d))=t_i(d)\qquad
+(i=1,2).\]</span></p>
+<p>Use the two branches <span class="math inline">\(\vec h=\vec
+s_i(d)\Rightarrow y=t_i(d)\)</span> and give them the common prefix</p>
+<p><span class="math display">\[\exists d\quad\forall\vec h\quad\exists
+y.\]</span></p>
+<p><strong>Lemma.</strong> With no designated parameters, these branches
+have an answer exactly when the two requests have a solution. The proof
+works for any number of requests.</p>
+<p>A solution supplies the answer equations fixing the data to <span
+class="math inline">\(d\)</span> and setting <span
+class="math inline">\(y=B(\vec h)\)</span>. They have no fresh
+variables. For every tuple of arguments, choosing this value of <span
+class="math inline">\(y\)</span> witnesses prefix validity. Each
+evaluation can choose its displayed arguments and then gives the
+required result.</p>
+<p>Conversely, prefix validity supplies a data tuple <span
+class="math inline">\(d_0\)</span> for which every argument tuple occurs
+in some full solution of the answer equations. For leading fresh
+universals, fix them all to one ground value first. For trailing fresh
+existentials, keep the witnesses selected after the arguments. In
+particular one may play all <span class="math inline">\(h_j=a\)</span>
+and, in another play at the same <span
+class="math inline">\(d_0\)</span>, set each <span
+class="math inline">\(h_j\)</span> to a different tree strictly larger
+than every component of <span class="math inline">\(d_0\)</span>, using
+the scope terms of Round 14. These are precisely the two consistency
+witnesses needed for its pin and scope guards. Their conclusions are
+empty since there are no separate data equations. Adding both guards to
+the ordinary evaluation conditions now gives an interpolation solution
+by Round 14. The data in that recovered solution need not equal <span
+class="math inline">\(d_0\)</span>. <a
+href="round-14-undecidability.html#compiling-one-unknown-operation-into-branches">Equational
+reduction and guard proof</a></p>
+<p>Apply the lemma to the two-call hard family over <span
+class="math inline">\(\{f/2,a\}\)</span> of Round 17. The resulting
+prefix problem is r.e.-complete with <strong>two branches</strong>, each
+with one conclusion equality, and a fixed number of coordinates.
+Enumeration checks a proposed finite answer and, when needed, its finite
+witness terms. Fixed candidate tests here reduce to unification and
+prefix games on finite-tree patterns. Round 18 extends the lower bound
+to every fixed signature with a branching constructor. Round 25
+subsequently proves ordinary two-branch hardness by a different
+construction. <a href="round-25-binary.html">Ordinary two-branch lower
+bound</a> In the construction here, omitting the guard from the
+<em>ordinary</em> reduction permits backwards rewrites; adding the
+prefix prevents the data from changing with the arguments. <a
+href="round-17-three-branches.html">One-constant encoding and the
+ordinary relaxation</a> · <a
+href="https://www.microsoft.com/en-us/research/wp-content/uploads/2016/02/98ASIAN.pdf">Ganzinger,
+Jacquemard and Veanes, equation (6) and Lemma 5</a></p>
+<section id="one-branch-with-an-input-only-premise" class="level3">
+<h3>One branch with an input-only premise</h3>
+<p>In the parameter-free three-block prefix <span
+class="math inline">\(\exists d\,\forall h\,\exists y\)</span>, allow
+arbitrary tuples and a single branch <span
+class="math inline">\(D(d,h)\Rightarrow C(d,h,y)\)</span> of
+conjunctions of equations. Answer existence is equivalent to the
+first-order sentence</p>
+<p><span class="math display">\[\exists d\;\big[(\exists h\; D(d,h))\
+\land\
+       \forall h\,(D(d,h)\Rightarrow\exists
+y\,C(d,h,y))\big].\]</span></p>
+<p>For necessity, project an answer to its tuple pattern. Its <span
+class="math inline">\(h\)</span> coordinates are independent bare
+parameters absent from every data coordinate, by prefix validity. Choose
+<span class="math inline">\(d\)</span> <strong>from the branch
+consistency witness</strong> and hold all parameters other than the
+<span class="math inline">\(h\)</span> parameters at their values in
+that witness. Every <span class="math inline">\(h\)</span> is still
+available with this same <span class="math inline">\(d\)</span>.
+Whenever <span class="math inline">\(D\)</span> holds, the answer
+outputs give <span class="math inline">\(C\)</span> by relevance.</p>
+<p>Conversely fix a ground <span class="math inline">\(d\)</span> from
+the sentence. Compute an idempotent unifier <span
+class="math inline">\(\mu\)</span> of <span
+class="math inline">\(D(d,h)\)</span> and write <span
+class="math inline">\(r\)</span> for its unbound original input
+variables. Every assignment to <span class="math inline">\(r\)</span>
+extends to inputs <span class="math inline">\(\mu(h)\)</span> satisfying
+<span class="math inline">\(D\)</span>, and at these inputs each
+coordinate in <span class="math inline">\(r\)</span> retains its freely
+assigned value. The sentence gives <span class="math inline">\(\forall
+r\,\exists y.\, C(d,\mu(h),y)\)</span>. The solutions of this
+conjunction form a tuple pattern. Its <span
+class="math inline">\(r\)</span> coordinates must be distinct bare
+parameters because every <span class="math inline">\(r\)</span> tuple is
+available. Rename them to the original <span
+class="math inline">\(r\)</span> variables and ground any other residual
+parameters. This gives a tuple of <strong>terms</strong> <span
+class="math inline">\(B(r)\)</span> that works at every assignment to
+<span class="math inline">\(r\)</span>. Use the answer fixing <span
+class="math inline">\(d\)</span> and setting <span
+class="math inline">\(y=B(r)\)</span> on the original input coordinates.
+It is valid even on inputs outside <span
+class="math inline">\(D\)</span>, and relevance and consistency follow.
+The one-element algebra is immediate.</p>
+<p>The first-order theory of finite ground terms is decidable, so this
+gives an exact one-versus-two branch threshold for the three-block
+prefix <strong>with input-only premises</strong> over branching
+signatures. Interleaving universals can change this argument. For
+instance, <span class="math inline">\(\forall u\,\exists y\,\forall
+v.\,(u=f(v,a)\Rightarrow y=v)\)</span> admits an ordinary semantic
+strategy that reads the left child. A term answer must choose <span
+class="math inline">\(y\)</span> using only <span
+class="math inline">\(u\)</span> and independent parameters. After
+grounding the latter, a term containing <span
+class="math inline">\(u\)</span> is too large when <span
+class="math inline">\(u=f(v,a)\)</span> and a term lacking <span
+class="math inline">\(u\)</span> cannot return every <span
+class="math inline">\(v\)</span>. <a
+href="https://inria.hal.science/inria-00075652/file/RR-0904.pdf">Comon
+and Lescanne, <em>Equational Problems and Disunification</em></a></p>
+<p>Round 20 gives a polynomial-time algorithm for this three-block case.
+It also decides one input-only branch for arbitrary interleavings, where
+the problem is NP-complete on branching signatures. <a
+href="round-20-one-branch.html">One-branch classification</a></p>
+</section>
+</section>
+<section id="two-parameter-conventions" class="level2">
+<h2>2. Two parameter conventions</h2>
+<p>Write <span class="math inline">\(X\)</span> for all public
+variables, <span class="math inline">\(K\subseteq X\)</span> for the
+designated invariants tested for escaping, <span
+class="math inline">\(T\subseteq X\)</span> for public variables
+substituted in validity, and <span class="math inline">\(B\)</span> for
+the fresh answer parameters. All public variables are quantified. Prior
+parameters can be included among <span class="math inline">\(T\)</span>
+when the convention calls for their substitution. Ordinary branch tests
+see the original public variables.</p>
+<ul>
+<li><strong>Trailing witnesses.</strong> In the original TeXmacs source
+both fresh and designated parameters receive term substitutions. Its
+operational validity test moves those variables into a trailing
+existential block. Use <span class="math inline">\(Q_{X\setminus
+T}\,\exists T\,\exists B.\,A\)</span> and allow substitution witnesses
+to mention the remaining universal variables. The original weak and
+strong escape clauses use the reflexive relation <span
+class="math inline">\(u\le_Q k\)</span>.</li>
+<li><strong>Leading fresh parameters.</strong> In the extraction and the
+later clarification, the fresh parameters survive the substitution. Test
+<span class="math inline">\(\forall B\, Q.\,A[T:=\vec t]\)</span> for
+some finite tuple of terms. Substitution is simultaneous. A finite set
+of allowed variable leaves for each <span
+class="math inline">\(t\)</span> specifies which original variables or
+fresh parameters it may mention. This covers ground witnesses as well as
+witnesses allowed to use earlier or later named variables. The
+construction below works with either printed comparison on prefix
+positions.</li>
+</ul>
+<p>The original <span class="math inline">\(\le_Q\)</span> compares
+quantifier blocks. The extraction prints <span
+class="math inline">\(\not\le_Q\)</span> in both escape clauses. We keep
+the scope predicate as an input to the leading-fresh decision procedure.
+This covers a fixed ancestry relation on public names when it is used as
+the <strong>atomwise</strong> test. An implementation can impose further
+conditions on substitutions and solved forms. <a
+href="../lukstafi-phd-thesis.tm">Original source, §4.2.1</a> · <a
+href="../thesis_section_4_2.md">Extracted definition</a> · <a
+href="round-9-subsumption-bottleneck.html">Recorded clarification and
+source comparison</a></p>
+</section>
+<section id="trailing-witnesses-admit-a-direct-pattern-presentation"
+class="level2">
+<h2>3. Trailing witnesses admit a direct pattern presentation</h2>
+<p><strong>Theorem.</strong> Under the trailing convention with <span
+class="math inline">\(K\subseteq T\)</span> and the original atomwise
+escape clauses, a public pattern relation has an admissible presentation
+if and only if its projection onto <span
+class="math inline">\(X\setminus T\)</span> passes the prefix game for
+<span class="math inline">\(Q_{X\setminus T}\)</span>.</p>
+<p>Necessity follows by projecting any valid presentation. For
+sufficiency, give <strong>every</strong> public coordinate <span
+class="math inline">\(x\)</span> the equation <span
+class="math inline">\(x=P_x(B)\)</span>, using only fresh names for the
+distinct residual parameters of the tuple pattern. These equations form
+an idempotent substitution. For any winning play of the projected prefix
+game, the remaining coordinates and fresh leaves have a joint extension
+by the definition of projection. They are precisely the trailing
+witnesses. The ordinary solution relation on <em>all</em> public
+coordinates, including <span class="math inline">\(T\)</span>, stays the
+same.</p>
+<p>This presentation also gives syntactic witness terms. By the Round 18
+criterion the retained universal coordinates have distinct bare leaves.
+Replace those fresh leaves by the corresponding original universals.
+Replace every other fresh leaf by one ground constant. Use these terms
+for <span class="math inline">\(B\)</span>, and the resulting <span
+class="math inline">\(P_t\)</span> for each <span
+class="math inline">\(t\in T\)</span>. Every retained existential can
+play its resulting coordinate term when its turn comes. By the
+criterion, that term contains only earlier retained universals. This
+realizes the source validity test with actual term witnesses. Before
+substitution the fresh parameters are jointly unconstrained in the
+ordinary sense that every assignment of all of them extends to an answer
+tuple. <a
+href="round-18-signature-boundary.html#parameter-free-quantifier-prefixes">Prefix
+pattern criterion</a></p>
+<p>Every answer atom contains at most one <em>public</em> variable. An
+atom involving <span class="math inline">\(k\in K\)</span> is <span
+class="math inline">\(k=P_k(B)\)</span>. The only possible universal
+from <span class="math inline">\(Q\)</span> in it is <span
+class="math inline">\(k\)</span> itself, and <span
+class="math inline">\(k\le_Q k\)</span>. Both original escape tests
+therefore hold, including the strong test for substitution-form answers.
+This is a statement about existence of a presentation. A scope test on
+the transitively expanded dependencies of the original variables could
+distinguish a different class of answers.</p>
+<p>On a monadic signature use the Round 18 word-equation construction on
+the full pattern for the branch tests and just its retained coordinates
+for prefix validity. This gives the same complexity bounds as ordinary
+JCA. For a single branch on any nontrivial signature, moving the
+substituted coordinates to the final existential block gives an
+NP-complete problem. <a
+href="round-30-monadic.html#designated-coordinates-under-the-trailing-witness-convention">Single-branch
+corollary</a></p>
+<p>For leading validity on branching signatures, one branch is
+NP-complete for solved answers with unrestricted witnesses. Restricting
+each witness to its own specified names can already give r.e.-complete
+one-branch existence under the extracted strong rule. <a
+href="round-31-leading.html">Unrestricted witnesses</a> · <a
+href="round-34-one-read.html">One forbidden read</a></p>
+</section>
+<section id="a-small-presentation-for-leading-fresh-parameters"
+class="level2">
+<h2>4. A small presentation for leading fresh parameters</h2>
+<p>The preceding presentation would turn a universal coordinate <span
+class="math inline">\(u\)</span> into an equation <span
+class="math inline">\(u=b\)</span> with <span
+class="math inline">\(b\)</span> fixed before <span
+class="math inline">\(u\)</span> is chosen. For leading fresh
+parameters, search the atom presentation itself. Assume for now that the
+algebra has at least two ground terms. The singleton case admits the
+empty answer for every instance.</p>
+<p><strong>Small-presentation lemma.</strong> Over a monadic signature,
+if an answer exists in the leading convention, an answer exists with at
+most <span class="math inline">\(n=|X|\)</span> fresh parameters and at
+most <span class="math inline">\(2n\)</span> atoms. The bound counts
+atoms and parameter names. Constructor words in those atoms can have
+unbounded length.</p>
+<p><em>One fresh root per component.</em> A satisfiable monadic equation
+has comparable unary prefixes. After cancelling their common prefix it
+is an identity, a relation <span class="math inline">\(x=w y\)</span>,
+or a pin <span class="math inline">\(x=w c\)</span> to a ground term.
+Use the variable-variable relations as edges, including isolated
+vertices. The value of either endpoint determines the value of the other
+whenever the equation holds, by prefix cancellation. A component can
+therefore contain at most one leading fresh parameter. Indeed validity
+supplies an ordinary solution of <span class="math inline">\(A\)</span>
+for <strong>every</strong> independent choice of <span
+class="math inline">\(B\)</span>: evaluate the witness terms for <span
+class="math inline">\(T\)</span> in a successful play and use those
+values in the original equations. Two distinct leading parameters in the
+same component would violate that independence. Discard components with
+no public variable. Their equations have a ground solution, so this
+preserves the public projection. Any removed fresh parameter occurring
+in a validity witness term can be specialized to a constant. Each
+remaining component contains a public vertex, proving <span
+class="math inline">\(|B|\le n\)</span>.</p>
+<p><em>Keep a spanning forest and one pin per component.</em> Retain the
+original atoms on the forest edges. The most general unifier of those
+edges assigns all variables in a connected component terms with the same
+leaf, since the two sides of every retained edge unify. A deleted chord
+<span class="math inline">\(x=w y\)</span> holds in one full ground
+witness of <span class="math inline">\(A\)</span>. At the forest unifier
+its sides have the form <span class="math inline">\(Ue\)</span> and
+<span class="math inline">\(Ve\)</span> with the same leaf <span
+class="math inline">\(e\)</span>. Equality in that witness gives <span
+class="math inline">\(U=V\)</span> by right cancellation. Thus the
+forest entails every deleted chord. One ground pin determines the whole
+component whenever a pin exists. A component on <span
+class="math inline">\(v\)</span> variables now uses at most <span
+class="math inline">\(v\)</span> atoms. The retained atoms are a subset
+of the original ones, so every atomwise check they passed still holds.
+Deleting an equation from an idempotent substitution also preserves its
+solved syntax.</p>
+<p>For the weak test, cancelling common prefixes in retained atoms
+preserves both their variable sets and their prefix validity, and
+exchanging sides preserves equality. For the strong substitution-form
+test use the original orientation <span
+class="math inline">\(x=t\)</span>; no cancellation is necessary. With
+no branches the empty answer suffices. Otherwise branch consistency
+supplies the joint witness used in the proof. <span
+class="math inline">\(\square\)</span></p>
+<p><strong>Decision procedure.</strong> Guess the names, the atom
+endpoints, and symbolic unary words on at most <span
+class="math inline">\(2n\)</span> edges and pins. For the strong test,
+guess an idempotent substitution and check its syntactic orientation.
+For each <span class="math inline">\(d\in T\)</span> guess a witness
+word and an allowed variable or constant leaf. Use the following tests
+on these shared word unknowns.</p>
+<ol type="1">
+<li>For each branch, compute a symbolic most general unifier of <span
+class="math inline">\(A\land D_i\)</span> and check <span
+class="math inline">\(C_i\)</span> at it. Round 18 implements each
+orientation of prefix cancellation with an existential word
+equation.</li>
+<li>After the single simultaneous substitution, unify <span
+class="math inline">\(A[T:=\vec t]\)</span> symbolically. Test the
+resulting full-coordinate pattern against <span
+class="math inline">\(\forall B\,Q\)</span>. At a universal, its
+normalized prefix must be empty and its leaf must be fresh relative to
+all preceding coordinates. These are word equalities and finite name
+tests.</li>
+<li>For the weak escape condition inspect each atom involving a
+designated variable. If some universal in the atom has no allowed
+designated partner there, require the <strong>original atom on its
+own</strong> to pass <span class="math inline">\(\forall B\,Q\)</span>.
+This implements the exemption for individually valid atoms. The strong
+oriented condition uses its prescribed syntactic test, without that
+exemption. The two tests can also be imposed together.</li>
+</ol>
+<p>Every passing disjunct directly specifies an answer and its permitted
+witness terms. The small-presentation lemma ensures completeness. Each
+trace has polynomial size: an elimination appends one fresh remainder
+word, and a removed leaf never reappears. A word-equation solver
+therefore puts the problem in PSPACE. With exactly one unary symbol the
+trace is a polynomial-size nonnegative linear system, giving NP
+membership. The all-existential instances give the matching one-letter
+NP lower bound; they also give the constants-only NP lower bound with at
+least two constants. The branching lower bound in §1 uses empty <span
+class="math inline">\(K,T\)</span>, so it applies to both full input
+classes. These results classify single-sorted
+<strong>existence</strong>, without requiring the enumeration of
+most-general answers. <a
+href="https://arxiv.org/abs/1702.00736">Word-equation bound</a> · <a
+href="round-18-signature-boundary.html">Ordinary lower bounds</a></p>
+</section>
+<section id="an-input-separating-the-two-conventions" class="level2">
+<h2>5. An input separating the two conventions</h2>
+<p>Use a unary constructor <span class="math inline">\(g\)</span>, a
+constant <span class="math inline">\(a\)</span>, <span
+class="math inline">\(K=T=\{k\}\)</span>, and the original weak scope
+order. Take</p>
+<p><span class="math display">\[\forall k\;\exists z\;\forall u.\quad
+(\top\Rightarrow k=g(u)).\]</span></p>
+<p>For trailing witnesses the two atoms <span
+class="math inline">\(u=b\)</span> and <span
+class="math inline">\(k=g(b)\)</span> work with fresh <span
+class="math inline">\(b\)</span>. Use <span
+class="math inline">\(b:=u,k:=g(u)\)</span> in validity. Each atom
+satisfies the escape check and the ordinary branch is consistent and
+relevant.</p>
+<p>For leading fresh parameters <strong>no answer exists</strong>, even
+when the witness for <span class="math inline">\(k\)</span> may mention
+<span class="math inline">\(u\)</span>. Fix the leading parameters and
+the original choice of the universally bound <span
+class="math inline">\(k\)</span> in the validity game. Choose the same
+winning <span class="math inline">\(z\)</span> before trying two
+different values of <span class="math inline">\(u\)</span>. After
+evaluating the substitution for <span class="math inline">\(k\)</span>,
+one obtains two ordinary solutions of <span
+class="math inline">\(A\)</span>, agreeing on every variable except
+<span class="math inline">\(u,k\)</span>. Relevance forces the two
+values of <span class="math inline">\(k\)</span> to be <span
+class="math inline">\(g(u)\)</span> in their respective rows. Some atom
+must mention both <span class="math inline">\(k\)</span> and <span
+class="math inline">\(u\)</span>: otherwise one could mix <span
+class="math inline">\(k\)</span> from the first row with <span
+class="math inline">\(u\)</span> from the second while preserving every
+atom, contradicting relevance. In a monadic language such an atom has
+the two distinct leaves <span class="math inline">\(k,u\)</span>, one on
+each side. It fails individual validity under their independent
+universal choices. It also fails the scope test because <span
+class="math inline">\(u\)</span> follows <span
+class="math inline">\(k\)</span> across an alternation. This
+contradiction uses the same scope order on both sides of the
+comparison.</p>
+</section>
+<section id="verification" class="level2">
+<h2>6. Verification</h2>
+<p><a href="round-19-prefix.lean">Lean reduction</a> · <a
+href="round-19-parameters.py">Executable monadic construction</a></p>
+<p>Lean checks the prefix-to-interpolation equivalence on the Round 14
+binary tree type for any finite argument count, data count and sample
+list with no separate data equations. It takes <strong>raw conjunctions
+of equations</strong> as candidate answers and universally quantifies
+their fresh variables at validity. The canonical witness uses equations
+on the original universals, and the converse constructs the two missing
+guard witnesses from the prefix game. The one-constant instance family
+and signature transfer are the separate Round 17–18 arguments.</p>
+<p>The Python generator emits the word equations for guessed
+leading-parameter presentations, substitution leaves, validity,
+relevance and scope. The independent finite check compares each chosen
+forest with its full presentation on 46,656 pairs of assignments and
+checks the witness-order example. The unbounded decision uses the
+word-equation result in §4.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python3</span> projects/jca/agent-collab/round-19-parameters.py</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Use Lean 4.19.0 and set src to this directory.</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="va">out</span><span class="op">=</span><span class="va">$(</span><span class="fu">mktemp</span> <span class="at">-d</span><span class="va">)</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="ex">lean</span> <span class="at">--root</span><span class="op">=</span><span class="st">&quot;</span><span class="va">$src</span><span class="st">&quot;</span> <span class="at">-o</span> <span class="st">&quot;</span><span class="va">$out</span><span class="st">/round-14-reduction.olean&quot;</span> <span class="st">&quot;</span><span class="va">$src</span><span class="st">/round-14-reduction.lean&quot;</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="va">LEAN_PATH</span><span class="op">=</span><span class="st">&quot;</span><span class="va">$out</span><span class="st">&quot;</span> <span class="ex">lean</span> <span class="st">&quot;</span><span class="va">$src</span><span class="st">/round-19-prefix.lean&quot;</span></span></code></pre></div>
+</section>
+</article>
+<script src="/assets/theme-toggle.js"></script>
+</body>
+</html>

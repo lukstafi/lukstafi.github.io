@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <meta name="dcterms.date" content="2026-11-21">
+  <meta property="og:title" content="JCA Round 12: How Much Tree Shape Do Two Branches Need?">
+  <meta property="og:url" content="https://lukstafi.github.io/projects/jca/agent-collab/round-12-same-shape.html">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="lukstafi&#x27;s blog">
+  <meta name="twitter:card" content="summary">
+  <title>JCA Round 12: How Much Tree Shape Do Two Branches Need?</title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <style type="text/css">
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="/assets/tufte.css">
+  <link rel="stylesheet" href="/assets/pandoc-tufte.css">
+  <link rel="stylesheet" href="/assets/site.css">
+  <script defer=""
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+  type="text/javascript"></script>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+  <script>(function(){var t=localStorage.getItem('theme-preference');if(t)document.documentElement.setAttribute('data-theme',t);})()</script>
+</head>
+<body>
+<nav class="site-nav">
+  <a href="/">Home</a> &middot; <a href="/study/">Study Guide</a> &middot; <a href="/about.html">About</a> &middot; <a href="https://lukstafi.substack.com">Substack</a>
+</nav>
+<div class="theme-toggle">
+  <button id="theme-btn" aria-label="Toggle dark mode">&#9788;</button>
+</div>
+<article>
+<header>
+<h1 class="title">JCA Round 12: How Much Tree Shape Do Two Branches
+Need?</h1>
+<p class="byline">2026-11-21</p>
+</header>
+<nav id="TOC">
+<ul>
+<li><a href="#a-coordinate-that-must-change-shape"
+id="toc-a-coordinate-that-must-change-shape">1. A coordinate that must
+change shape</a></li>
+<li><a href="#a-depth-bound-for-witnesses-of-the-same-shape"
+id="toc-a-depth-bound-for-witnesses-of-the-same-shape">2. A depth bound
+for witnesses of the same shape</a>
+<ul>
+<li><a href="#how-the-bound-grows-with-the-number-of-branches"
+id="toc-how-the-bound-grows-with-the-number-of-branches">How the bound
+grows with the number of branches</a></li>
+</ul></li>
+<li><a href="#when-the-decision-also-settles-ordinary-existence"
+id="toc-when-the-decision-also-settles-ordinary-existence">3. When the
+decision also settles ordinary existence</a></li>
+<li><a href="#executable-checks" id="toc-executable-checks">4.
+Executable checks</a></li>
+</ul>
+</nav>
+<p><em>Research note by Codex.</em></p>
+<p>Two ground terms have the <strong>same shape</strong> if changing
+every leaf to a dot makes their ordered trees identical. Suppose two
+branches of a joint constraint abduction problem have successful
+witnesses of the same shape at each coordinate. If each side of each
+input equation is a variable or a constant, then witnesses of depth at
+most <strong>two</strong> suffice. The bound is independent of the
+number of variables and equations.</p>
+<p>With five variables, a solvable instance can force a change of shape.
+In the example below, one coordinate must be a constant in the first
+branch and a compound term in the second. The smallest possible maximum
+depth is <strong>two for an answer pattern and three for its ground
+witnesses</strong>. Both branches have ground solutions of depth zero
+when considered separately.</p>
+<section id="a-coordinate-that-must-change-shape" class="level2">
+<h2>1. A coordinate that must change shape</h2>
+<p>Use ordinary joint constraint abduction (JCA) over finite trees built
+from the binary constructor <span class="math inline">\(f\)</span> and
+the constants <span class="math inline">\(a,b\)</span>. Depth counts the
+edges on a longest root-to-leaf path. Constants and parameters have
+depth zero. An answer is a tuple pattern <span
+class="math inline">\(P\)</span> on the input coordinates, with
+parameters that may occur in several places. For each branch <span
+class="math inline">\(D_i\Rightarrow C_i\)</span>, some ground instance
+of <span class="math inline">\(P\)</span> must satisfy <span
+class="math inline">\(D_i\)</span>, and every such instance must satisfy
+<span class="math inline">\(C_i\)</span>. Every satisfiable equational
+answer projects to a tuple pattern in this setting.</p>
+<p>Choose one ground tuple satisfying <span
+class="math inline">\(D_i\land C_i\)</span> for each branch <span
+class="math inline">\(i\)</span>. This witness family is
+<strong>successful</strong> if its simultaneous least general
+generalization is an answer. The generalization reuses a parameter
+wherever the same ordered vector of disagreeing subterms occurs.
+Choosing one premise witness from any answer in each branch always gives
+a successful family. <a
+href="round-10-witness-generalization.html#exact-witness-theorem">Round
+10, §4</a></p>
+<p>On the coordinates <span class="math inline">\((x,y,u,v,z)\)</span>,
+take the two branches</p>
+<p><span class="math display">\[
+\begin{aligned}
+x=y &amp;\quad\Rightarrow\quad u=a\land v=b\land z=a,\\
+u=b\land v=a\land z=x &amp;\quad\Rightarrow\quad \top.
+\end{aligned}
+\]</span></p>
+<p>The four-variable example in Round 11 used <span
+class="math inline">\(x=y\)</span> to force two parameter bindings. Here
+it must force a third. The second premise lets us observe where the
+third parameter can occur. <a
+href="round-11-witness-bounds.html#two-constructor-free-branches-can-require-a-constructor-answer">Round
+11, §4</a></p>
+<p><strong>Proposition 1.</strong> The minimum maximum-coordinate depth
+of an answer pattern is two. The minimum maximum-coordinate depth of a
+successful witness family is three. Every successful family changes
+shape at <span class="math inline">\(z\)</span>.</p>
+<p><em>Construction.</em> The following pattern uses three fresh
+parameters <span class="math inline">\(p,q,r\)</span>.</p>
+<p><span class="math display">\[P_x=f(f(p,q),a),\quad
+P_y=f(f(a,b),r),\quad
+P_u=p,\quad P_v=q,\quad P_z=r.\]</span></p>
+<p>In the first branch, <span class="math inline">\(x=y\)</span> gives
+<span class="math inline">\(p=a,q=b,r=a\)</span>. In the second, take
+<span class="math inline">\(p=b,q=a\)</span> and <span
+class="math inline">\(r=f(f(b,a),a)\)</span>. The term for <span
+class="math inline">\(x\)</span> has depth two, so placing it at <span
+class="math inline">\(r\)</span> in <span
+class="math inline">\(y\)</span> gives a witness of depth three. These
+two assignments give the required upper bounds.</p>
+<p><em>Why the shape changes.</em> In any answer, <span
+class="math inline">\(u\)</span> and <span
+class="math inline">\(v\)</span> must be distinct parameters <span
+class="math inline">\(p,q\)</span> because their required constant
+values switch in opposite directions. Both <span
+class="math inline">\(P_x\)</span> and <span
+class="math inline">\(P_y\)</span> must have constructor roots. An
+equation between two leaves can force at most one independent binding.
+An equation between a leaf and a compound term, if consistent, binds one
+parameter to that term. Neither can force <span
+class="math inline">\(p=a\)</span> and <span
+class="math inline">\(q=b\)</span>. Thus <span
+class="math inline">\(z\)</span> equals <span
+class="math inline">\(a\)</span> in the first branch. In the second it
+equals the compound value of <span class="math inline">\(x\)</span>. Its
+coordinate must be a third parameter <span
+class="math inline">\(r\)</span>, distinct from <span
+class="math inline">\(p,q\)</span>. To force <span
+class="math inline">\(r=a\)</span>, <span
+class="math inline">\(r\)</span> must occur in <span
+class="math inline">\(P_x\)</span> or <span
+class="math inline">\(P_y\)</span>. It cannot occur in <span
+class="math inline">\(P_x\)</span>, since the second premise would
+equate <span class="math inline">\(r\)</span> with a term containing it
+as a proper subtree. Therefore <span class="math inline">\(r\)</span>
+occurs in <span class="math inline">\(P_y\)</span>.</p>
+<p><em>Answer-depth lower bound.</em> If both compared terms had depth
+at most one, decomposing <span class="math inline">\(P_x=P_y\)</span>
+would give at most two leaf equalities. To bind three initially distinct
+parameters <span class="math inline">\(p,q,r\)</span> to constants
+requires at least three class mergers, even when two parameters end up
+at the same constant.</p>
+<p><em>Witness-depth lower bound.</em> Apply the preceding argument to
+the hull of a successful family. Suppose both witnesses had depth at
+most two. In the second witness, <span class="math inline">\(r\)</span>
+is the value of <span class="math inline">\(x\)</span> and occurs inside
+<span class="math inline">\(y\)</span>. Thus <span
+class="math inline">\(x\)</span> has depth exactly one there, and <span
+class="math inline">\(r\)</span> occurs as an immediate child of <span
+class="math inline">\(P_y\)</span>. Up to exchanging the two child
+positions, the first premise decomposes as</p>
+<p><span class="math display">\[L_1=r,\qquad L_2=t,\]</span></p>
+<p>where <span class="math inline">\(P_x=f(L_1,L_2)\)</span> has two
+leaves and <span class="math inline">\(P_y=f(r,t)\)</span>. Solving
+<span class="math inline">\(L_1=r\)</span> makes at most one class
+merger. Afterwards <span class="math inline">\(L_2\)</span> is still a
+leaf. If <span class="math inline">\(t\)</span> is a leaf, its equation
+supplies at most one more merger. If <span
+class="math inline">\(t\)</span> is compound, consistency permits only a
+binding to a compound term, which fixes no further parameter class to a
+constant. In either case <span
+class="math inline">\(p=a,q=b,r=a\)</span> cannot all follow. This
+proves the lower bound. <span class="math inline">\(\square\)</span></p>
+</section>
+<section id="a-depth-bound-for-witnesses-of-the-same-shape"
+class="level2">
+<h2>2. A depth bound for witnesses of the same shape</h2>
+<p>Let <span class="math inline">\(m\ge1\)</span> be the number of
+branches. A family is <strong>synchronous</strong> if, for each input
+variable <span class="math inline">\(x\)</span>, the <span
+class="math inline">\(m\)</span> ground values at <span
+class="math inline">\(x\)</span> all have the same shape. Different
+coordinates may have different shapes. The following decision result
+allows constructors anywhere in the input.</p>
+<p>First erase both constants to the same leaf symbol <span
+class="math inline">\(\bullet\)</span> throughout the input, keeping
+<span class="math inline">\(f\)</span> and the input variables. Unify
+the erased equations from <strong>all premises and all conclusions
+together</strong>. Failure rules out synchronous witnesses. On success,
+write <span class="math inline">\(S_x\)</span> for the image of each
+coordinate under an idempotent most general shape unifier. Its residual
+variables stand for unknown tree shapes. Let <span
+class="math inline">\(h\)</span> be the maximum depth of the <span
+class="math inline">\(S_x\)</span>, counting residual variables and dots
+as leaves (take <span class="math inline">\(h=0\)</span> for an empty
+tuple).</p>
+<p><strong>Theorem 2.</strong> Existence of a successful synchronous
+witness family is decidable. If one exists, there is one of depth at
+most</p>
+<p><span class="math display">\[h+\left\lceil\log_2 K\right\rceil,\qquad
+K=\max\{1,m(2^m-2)\}.\]</span></p>
+<p>For constructor-free input <span class="math inline">\(h=0\)</span>.
+With two branches the bound is two, giving at most seven nodes per
+witness coordinate. The two rows therefore form a polynomial-size
+certificate. Computing their hull and checking all branches by
+unification takes polynomial time.</p>
+<p><em>What a leaf records.</em> Start with a successful synchronous
+family and its hull <span class="math inline">\(P\)</span>. At a
+corresponding leaf in the <span class="math inline">\(m\)</span> rows,
+the column is a vector in <span
+class="math inline">\(\{a,b\}^m\)</span>. A constant vector contributes
+its constant to <span class="math inline">\(P\)</span>. Each other
+vector contributes one parameter shared by all its occurrences. Include
+<span class="math inline">\(a\)</span> and <span
+class="math inline">\(b\)</span> in the alphabet of leaf labels even if
+they never appear. The alphabet has at most <span
+class="math inline">\(2^m\)</span> labels. For two rows the four
+possible labels are <span class="math inline">\(a,b\)</span>, a
+parameter for <span class="math inline">\((a,b)\)</span>, and one for
+<span class="math inline">\((b,a)\)</span>.</p>
+<p><em>What a premise can detect.</em> The shapes of the rows solve the
+erased equations, so they arise by filling each residual shape variable
+<span class="math inline">\(Z\)</span> in the <span
+class="math inline">\(S_x\)</span> with a single ground shape <span
+class="math inline">\(T_Z\)</span>. Consequently both sides of every
+input equation evaluated on <span class="math inline">\(P\)</span> have
+identical shape. Decomposing them gives pairs of leaf labels. For branch
+<span class="math inline">\(i\)</span>, draw an edge between the labels
+of each premise pair. The connected components describe exactly which
+labels the premise equates. The <span class="math inline">\(i\)</span>th
+row witnesses consistency, so <span class="math inline">\(a\)</span> and
+<span class="math inline">\(b\)</span> belong to different components. A
+conclusion holds under that premise exactly when each conclusion pair
+belongs to one component.</p>
+<p>Choose a spanning forest of each premise graph and mark one original
+leaf comparison that supplied each forest edge. There are at most <span
+class="math inline">\(2^m-2\)</span> marks per branch. For example, in
+the first of two rows only the labels valued <span
+class="math inline">\(a\)</span> in that row can be joined to <span
+class="math inline">\(a\)</span>, and likewise for <span
+class="math inline">\(b\)</span>. Hundreds of copies of the same
+equality need only one marked comparison.</p>
+<p><em>How to shorten the trees.</em> In any input equation <span
+class="math inline">\(s=t\)</span>, the symbolic shapes <span
+class="math inline">\(S(s)\)</span> and <span
+class="math inline">\(S(t)\)</span> are identical
+<strong>before</strong> filling the residual variables. A comparison at
+a fixed dot can be kept as it stands. Every other leaf comparison aligns
+two occurrences of the same <span class="math inline">\(T_Z\)</span> at
+the same internal leaf address. For each <span
+class="math inline">\(Z\)</span>, collect the addresses used by any mark
+inside <span class="math inline">\(T_Z\)</span>. If no mark uses <span
+class="math inline">\(Z\)</span>, pick one leaf of <span
+class="math inline">\(T_Z\)</span>. Each list now has between one and
+<span class="math inline">\(K\)</span> addresses.</p>
+<p>At every occurrence of <span class="math inline">\(Z\)</span>,
+replace <span class="math inline">\(T_Z\)</span> by a balanced binary
+tree carrying the labels at its listed addresses, in the same order at
+all occurrences. The labels themselves come from the individual
+occurrence. One may use the same complete tree of depth <span
+class="math inline">\(\lceil\log_2 K\rceil\)</span> for every <span
+class="math inline">\(Z\)</span> by repeating the first address to fill
+spare leaves. This operation leaves the fixed dots alone.</p>
+<p>Every new premise pair is a copy of an old pair. All forest edges
+survive, so each branch induces exactly its old equivalence relation on
+the label alphabet. Every new conclusion pair also comes from the old
+conclusion, hence follows from the retained edges. Reading the <span
+class="math inline">\(i\)</span>th component of each label supplies a
+ground witness in branch <span class="math inline">\(i\)</span>. Their
+hull is the compressed pattern up to parameter names, since the labels
+still denote their original bit vectors. This proves the bound.
+Enumerating the finitely many binary leaf assignments on the padded
+skeletons and checking their hulls decides the question. <span
+class="math inline">\(\square\)</span></p>
+<section id="how-the-bound-grows-with-the-number-of-branches"
+class="level3">
+<h3>How the bound grows with the number of branches</h3>
+<p>For constructor-free input with <span
+class="math inline">\(m\ge3\)</span> branches, the worst-case minimum
+depth among successful synchronous families lies between <span
+class="math inline">\(m-1\)</span> and <span
+class="math inline">\(\lceil\log_2(m(2^m-2))\rceil\)</span>. The lower
+bound closes a one-level gap in the family from <a
+href="round-11-witness-bounds.html#constructor-free-inputs-can-force-arbitrarily-deep-tuple-pattern-answers">Round
+11, §5</a>.</p>
+<p>Write <span class="math inline">\(r=m-1\)</span>. Introduce one
+variable <span class="math inline">\(u_s\)</span> for each nonzero <span
+class="math inline">\(r\)</span>-bit string <span
+class="math inline">\(s\)</span>. The first branch has premise <span
+class="math inline">\(x=y\)</span> and requires all <span
+class="math inline">\(u_s=a\)</span>. Each of the <span
+class="math inline">\(r\)</span> other branches has empty conclusion and
+sets the <span class="math inline">\(u_s\)</span> according to the
+corresponding bit of <span class="math inline">\(s\)</span>, with zero
+denoting <span class="math inline">\(a\)</span> and one denoting <span
+class="math inline">\(b\)</span>. All <span
+class="math inline">\(2^r-1\)</span> coordinates <span
+class="math inline">\(u_s\)</span> must be distinct parameters. Each
+takes both constant values, and some branch separates every pair.</p>
+<p>All those parameters must occur in <span
+class="math inline">\(P_x\)</span> or <span
+class="math inline">\(P_y\)</span> for <span
+class="math inline">\(x=y\)</span> to force them to <span
+class="math inline">\(a\)</span>. The literal <span
+class="math inline">\(a\)</span> must occur there too. Otherwise a
+unifier of <span class="math inline">\(P_x=P_y\)</span> could be
+grounded using only <span class="math inline">\(f,b\)</span>. If both
+terms had depth at most <span class="math inline">\(r-1\)</span>, their
+combined leaf capacity would be exactly the <span
+class="math inline">\(2^r\)</span> occurrences already required. Both
+would therefore be perfect binary trees of depth <span
+class="math inline">\(r-1\)</span>, each parameter would occur just once
+across the pair, and one leaf would carry <span
+class="math inline">\(a\)</span>. Comparing corresponding leaves could
+fix only the parameter opposite <span class="math inline">\(a\)</span>.
+Each other pair would be free to take <span
+class="math inline">\(b\)</span>. This proves a depth lower bound of
+<span class="math inline">\(r\)</span> for every answer and hence for
+its successful witnesses.</p>
+<p>For the matching upper bound, give <span
+class="math inline">\(x\)</span> a balanced tree with the <span
+class="math inline">\(2^r-1\)</span> parameters as leaves. Give <span
+class="math inline">\(y\)</span> the same tree with every leaf set to
+<span class="math inline">\(a\)</span>. The first premise fixes all
+parameters and each remaining branch supplies its bit assignment. These
+witnesses are synchronous and have depth <span
+class="math inline">\(r\)</span>.</p>
+</section>
+</section>
+<section id="when-the-decision-also-settles-ordinary-existence"
+class="level2">
+<h2>3. When the decision also settles ordinary existence</h2>
+<p>A syntactic case covers constant tests with <strong>arbitrary
+constructor conclusions</strong>. More generally, suppose every premise
+is constructor-free. Check each <span class="math inline">\(D_i\land
+C_i\)</span> by ordinary unification and reject an inconsistent branch.
+For every variable occurring in a premise, require that some branch’s
+<span class="math inline">\(D_j\land C_j\)</span> forces that variable
+to <span class="math inline">\(a\)</span> or <span
+class="math inline">\(b\)</span>. A test <span
+class="math inline">\(x=a\)</span> or <span
+class="math inline">\(x=b\)</span> supplies its own coverage, while a
+comparison <span class="math inline">\(x=y\)</span> can obtain coverage
+for its two variables in other branches.</p>
+<p><strong>Corollary 3.</strong> On these inputs, ordinary JCA existence
+is decidable. If an answer exists, successful witnesses have maximum
+depth at most the number of occurrences of <span
+class="math inline">\(f\)</span> in the input.</p>
+<p><em>Proof.</em> Take any pattern answer. At a covered coordinate it
+must admit a constant instance, so the coordinate is a constant or a
+parameter. Substituting the answer into each premise therefore leaves
+only equalities between leaves. In each branch choose a solution by
+giving every free parameter class value <span
+class="math inline">\(a\)</span> and respecting the classes fixed to
+constants. This grounds every parameter of the answer to <span
+class="math inline">\(a\)</span> or <span
+class="math inline">\(b\)</span>, including those occurring only inside
+compound coordinates. The resulting rows all retain the shape of the
+answer, and their hull succeeds by Round 10’s witness theorem.</p>
+<p>For these rows we may add the shape equation <span
+class="math inline">\(x=\bullet\)</span> for every premise variable
+before computing the skeletons. Every premise comparison now falls at a
+fixed dot. The shortening step of Theorem 2 can fill each residual shape
+with just one leaf. In the acyclic term graph of the shape unifier, each
+constructor node contains at least one input occurrence of <span
+class="math inline">\(f\)</span> in its unification class. A path visits
+each such class at most once, giving the depth bound. It is sharp
+already for one empty premise with conclusions <span
+class="math inline">\(t_j=f(t_{j-1},a)\)</span> for <span
+class="math inline">\(1\le j\le k\)</span>. There are <span
+class="math inline">\(k\)</span> constructors in the input, and every
+witness has depth at least <span class="math inline">\(k\)</span> at
+<span class="math inline">\(t_k\)</span>. <span
+class="math inline">\(\square\)</span></p>
+<p>For example, <span class="math inline">\(s=a\Rightarrow
+t=f(a,a)\)</span> and <span class="math inline">\(s=b\Rightarrow
+t=f(b,b)\)</span> admit <span
+class="math inline">\(s=p,t=f(p,p)\)</span>. Round 11’s NP-completeness
+classification required constructor-free conclusions. Corollary 3 gives
+decidability with unrestricted conclusion depth. Proposition 1 shows why
+a negative decision about synchrony alone leaves a genuine case
+outstanding even for two constructor-free branches. Whether those
+branches always admit successful witnesses within a computable depth
+bound, allowing shape changes, remains open in this project.</p>
+</section>
+<section id="executable-checks" class="level2">
+<h2>4. Executable checks</h2>
+<p>The <a href="round-12-experiments.py">companion experiment</a> runs
+from the repository root.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python3</span> projects/jca/agent-collab/round-12-experiments.py</span></code></pre></div>
+<p>The procedure unifies shapes, enumerates ground rows on the resulting
+skeletons, and checks each candidate hull with the existing finite-term
+unifier. It returns a successful witness family or reports that no
+synchronous family exists. The lower-bound check rejects all 11,520
+assignments of leaf names and child positions left by the depth-two
+hypothesis in Proposition 1. On the 2,401 two-coordinate instances from
+Round 10, the procedure agrees with independent enumeration of flat
+answers in all cases (804 positive). The script also exercises three
+branches and a residual shape occurring twice under one constructor.</p>
+<p><a href="round-13-forced-copies.html">Round 13</a> follows the copied
+coordinate through a chain of comparisons. The answer patterns stay at
+depth two while the minimum witness depth grows by two levels per
+comparison.</p>
+</section>
+</article>
+<script src="/assets/theme-toggle.js"></script>
+</body>
+</html>

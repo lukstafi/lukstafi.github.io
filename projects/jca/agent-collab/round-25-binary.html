@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <meta name="dcterms.date" content="2026-11-21">
+  <meta property="og:title" content="JCA Round 25: The Exact Branch Threshold over One Binary Constructor and One Constant">
+  <meta property="og:url" content="https://lukstafi.github.io/projects/jca/agent-collab/round-25-binary.html">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="lukstafi&#x27;s blog">
+  <meta name="twitter:card" content="summary">
+  <title>JCA Round 25: The Exact Branch Threshold over One Binary
+Constructor and One Constant</title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <style type="text/css">
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="/assets/tufte.css">
+  <link rel="stylesheet" href="/assets/pandoc-tufte.css">
+  <link rel="stylesheet" href="/assets/site.css">
+  <script defer=""
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+  type="text/javascript"></script>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+  <script>(function(){var t=localStorage.getItem('theme-preference');if(t)document.documentElement.setAttribute('data-theme',t);})()</script>
+</head>
+<body>
+<nav class="site-nav">
+  <a href="/">Home</a> &middot; <a href="/study/">Study Guide</a> &middot; <a href="/about.html">About</a> &middot; <a href="https://lukstafi.substack.com">Substack</a>
+</nav>
+<div class="theme-toggle">
+  <button id="theme-btn" aria-label="Toggle dark mode">&#9788;</button>
+</div>
+<article>
+<header>
+<h1 class="title">JCA Round 25: The exact branch threshold over one
+binary constructor and one constant</h1>
+<p class="byline">2026-11-21</p>
+</header>
+<nav id="TOC">
+<ul>
+<li><a href="#what-the-two-rows-must-enforce"
+id="toc-what-the-two-rows-must-enforce">What the two rows must
+enforce</a></li>
+<li><a href="#a-tag-with-one-editable-leaf"
+id="toc-a-tag-with-one-editable-leaf">A tag with one editable
+leaf</a></li>
+<li><a href="#split-a-ground-equation-at-a-private-wrapper"
+id="toc-split-a-ground-equation-at-a-private-wrapper">Split a ground
+equation at a private wrapper</a></li>
+<li><a href="#why-a-binary-body-cannot-misuse-a-slot"
+id="toc-why-a-binary-body-cannot-misuse-a-slot">Why a binary body cannot
+misuse a slot</a></li>
+<li><a href="#signature-boundary" id="toc-signature-boundary">Signature
+boundary</a></li>
+<li><a href="#verification" id="toc-verification">Verification</a></li>
+</ul>
+</nav>
+<p><strong>Theorem.</strong> Ordinary equational JCA over the finite
+ground trees of <span class="math inline">\(\{f/2,a/0\}\)</span> is
+recursively enumerable complete with <strong>two implications</strong>.
+Each implication can have just one equality in its premise and one in
+its conclusion. With one implication, existence is decidable by
+finite-tree unification. Two is therefore the exact branch threshold,
+already on the smallest branching signature.</p>
+<p><a href="round-24-two-branches.html">Round 24</a> gives a two-branch
+reduction using a binary constructor and a unary constructor. It checks
+three rigid constraints arranged in two chains. The hypotheses in this
+hard family are ground. The extra unary root had ensured that an
+arbitrary answer uses distinct bare parameters for the proof slots. Here
+every slot takes the constant <span class="math inline">\(a\)</span> in
+its checking row and a distinct compound value in its marker row. A
+single editable leaf in a binary tag lets such slots implement an entire
+conversion.</p>
+<p>Round 35 sharpens the ordinary result further. One row can be
+replaced by a fixed consistency requirement, leaving just one nontrivial
+conclusion in the two-branch instance. <a
+href="round-35-required-example.html#an-ordinary-implication-with-a-fixed-partial-example">One
+ordinary implication and a fixed partial example</a></p>
+<section id="what-the-two-rows-must-enforce" class="level2">
+<h2>What the two rows must enforce</h2>
+<p>Use the colored intermediate instance from Round 24, with a distinct
+source list constructor <span class="math inline">\(C_i\)</span> per
+proof and a common fresh list terminator <span
+class="math inline">\(N\)</span>. Proof <span
+class="math inline">\(i\)</span> is to establish <span
+class="math inline">\(s_i(d)\equiv_{E_i}t_i(d)\)</span> for common data
+<span class="math inline">\(d\)</span>. Its checking row requires <span
+class="math inline">\(Y_i\)</span> to equal the encoded list with first
+element <span class="math inline">\(s_i(d)\)</span> and tail <span
+class="math inline">\(Z_i\)</span>. Its marker row requires <span
+class="math inline">\(Y_i=Z_i\)</span>. The two rows have opposite
+groups of checking proofs. Within either group the ground hypothesis
+sets are nested in increasing order.</p>
+<p>Every marker of a proof contains the raw data, both proof coordinates
+of every member of the opposite group, and both coordinates of every
+earlier member of its own group. As soon as the bare-parameter property
+holds, the marker witness excludes that slot from all the listed
+coordinates by strict subtree size. Thus each proof may use only slots
+from its own group up through its own stage. The data depend on none of
+the slots. <a
+href="round-24-two-branches.html#checking-two-chains-with-two-rows">Two-chain
+scope and row replay</a></p>
+</section>
+<section id="a-tag-with-one-editable-leaf" class="level2">
+<h2>A tag with one editable leaf</h2>
+<p>Use the one-constant binary macros from Round 17. Write <span
+class="math inline">\(g=f(a,a)\)</span> and index all auxiliary macro
+symbols by tags <span class="math inline">\(t_0=f(a,g)\)</span> and
+<span class="math inline">\(t_{n+1}=f(t_n,g)\)</span>. A macro of symbol
+<span class="math inline">\(j\)</span> is <span
+class="math inline">\(f(t_j,P(\vec x))\)</span>, with <span
+class="math inline">\(P()=a\)</span> and <span
+class="math inline">\(P(x,\vec z)=f(f(g,x),P(\vec z))\)</span>. Every
+macro has a literal <span class="math inline">\(a\)</span> at the same
+path <span class="math inline">\(p\)</span>: left, right, left. Write
+<span class="math inline">\(c[u]\)</span> for replacing
+<strong>only</strong> the leaf at <span class="math inline">\(p\)</span>
+of a macro-rooted template <span class="math inline">\(c\)</span> by
+<span class="math inline">\(u\)</span>. It satisfies <span
+class="math inline">\(c[a]=c\)</span>. A template may have arbitrary
+data variables elsewhere.</p>
+<p>Give each use of the construction its own literal binary identifier
+<span class="math inline">\(v\)</span>. For its protected-coordinate
+tuple <span class="math inline">\(D\)</span>, form</p>
+<p><span
+class="math display">\[M_v(D)=f\big(a,f(g,f(v,\operatorname{pack}(D)))\big),\]</span></p>
+<p>where <span class="math inline">\(\operatorname{pack}\)</span> is an
+injective binary list syntax containing every coordinate. Use two public
+slots <span class="math inline">\(q,p&#39;\)</span> with the following
+premise values.</p>
+<table>
+<thead>
+<tr>
+<th>Slot</th>
+<th>Checking row</th>
+<th>Marker row</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><span class="math inline">\(q\)</span></td>
+<td><span class="math inline">\(a\)</span></td>
+<td><span class="math inline">\(M_v(D)\)</span></td>
+</tr>
+<tr>
+<td><span class="math inline">\(p&#39;\)</span></td>
+<td><span class="math inline">\(a\)</span></td>
+<td><span class="math inline">\(c[M_v(D)]\)</span></td>
+</tr>
+</tbody>
+</table>
+<p>The two <strong>bodies</strong> <span
+class="math inline">\(c[q]\)</span> and <span
+class="math inline">\(p&#39;\)</span> give <span
+class="math inline">\(c\)</span> and <span
+class="math inline">\(a\)</span> in the checking row and identical trees
+in the marker row. If <span class="math inline">\(c=c(d)\)</span>
+contains data, its marker-row expression in the instance uses the public
+data variables. In a forward answer, the body <span
+class="math inline">\(c[q]\)</span> uses the fixed ground solution data
+as literals.</p>
+<p>All slots take different-root values in their two rows and must be
+bare parameters. Within one checking group the marker-side values
+distinguish the slots. Two markers have different identifiers. A marker
+has left child <span class="math inline">\(a\)</span>, while a patched
+macro has a compound left child. In two patched macros the subtree at
+the same path <span class="math inline">\(p\)</span> displays the full
+marker, including its identifier. Between groups a constant stands
+opposite a compound in one row. Each marker-side value contains every
+protected coordinate properly, including when it is embedded at <span
+class="math inline">\(p\)</span>.</p>
+<p>Round 17’s finite parser assigns state zero to the atom and to every
+complete macro. Each <span class="math inline">\(M_v(D)\)</span> has
+state zero for arbitrary <span class="math inline">\(D\)</span> and
+never matches a macro: its left child is the atom, which cannot be a
+tag. Replacing the selected atom by this marker preserves the state of
+the tag and does not change the argument spine. Thus <span
+class="math inline">\(c[M_v(D)]\)</span> is state zero and parses with
+exactly the symbol and arguments of <span
+class="math inline">\(c\)</span>. <a
+href="round-17-three-branches.html#one-constant-suffices">Parser and
+state table</a> · <a href="round-25-marker.lean">Lean proof for the
+fixed tag position</a></p>
+</section>
+<section id="split-a-ground-equation-at-a-private-wrapper"
+class="level2">
+<h2>Split a ground equation at a private wrapper</h2>
+<p>List the distinct ground hypotheses from both chains as <span
+class="math inline">\(l_j=r_j\)</span>, <span class="math inline">\(1\le
+j&lt;m\)</span>, with one extra wrapper at index <span
+class="math inline">\(m\)</span>. Encode every source constructor
+application, including the private <span
+class="math inline">\(C_i\)</span>, as its binary macro preceded by
+wrappers <span class="math inline">\(W_1,\ldots,W_m\)</span>. Encode
+<span class="math inline">\(N\)</span> by <span
+class="math inline">\(a\)</span>. A data variable is a raw binary
+variable. Write <span class="math inline">\(e(u)\)</span> for this
+encoding and <span class="math inline">\(u^{[j]}\)</span> for the
+encoding of a constructor-headed <span class="math inline">\(u\)</span>
+with its first <span class="math inline">\(j\)</span> wrappers removed.
+Every ground hypothesis side has an ordinary source constructor at its
+root. Each <span class="math inline">\(u^{[j]}\)</span> still has a
+macro at its root.</p>
+<p>For each occurrence of hypothesis <span
+class="math inline">\(j\)</span> in a proof, use the two-slot table once
+with <span class="math inline">\(c=l_j^{[j]}\)</span> and once with
+<span class="math inline">\(c=r_j^{[j]}\)</span>, using different
+markers. Under the first <span class="math inline">\(j\)</span> wrappers
+these give two half-steps in the checking row:</p>
+<p><span class="math display">\[e(l_j)\ \longleftrightarrow\ W_1\cdots
+W_j(a)\ \longleftrightarrow\ e(r_j).\]</span></p>
+<p>Each half-step has two bodies with identical marker-row values. Read
+them in either order and place them under the encoded context of the
+rewrite. Finally use a separate two-slot table for <span
+class="math inline">\(c=e(C_i(t_i(X),N))\)</span>. It gives the required
+two list ends <span class="math inline">\(e(C_i(t_i(d),N))\)</span> and
+<span class="math inline">\(a\)</span> directly, with the same
+marker-row value.</p>
+<p>Given a simultaneous source solution, encode its ground data. List
+the consecutive pairs of half-step bodies for a conversion from <span
+class="math inline">\(s_i(d)\)</span> to <span
+class="math inline">\(t_i(d)\)</span>. Use the first heads in <span
+class="math inline">\(Y_i\)</span>, the second in <span
+class="math inline">\(Z_i\)</span>, and the two list ends just
+constructed. All checking conditions and marker equalities follow,
+including for empty and reverse paths. To fill each row, first set all
+checking slots to <span class="math inline">\(a\)</span>. Then evaluate
+the marker group’s proofs in their chain order. This supplies consistent
+witnesses, and the list identities hold at every premise witness of this
+answer.</p>
+</section>
+<section id="why-a-binary-body-cannot-misuse-a-slot" class="level2">
+<h2>Why a binary body cannot misuse a slot</h2>
+<p>Take an arbitrary equational answer, project to its public tuple
+pattern, and apply the bare-parameter and strict-subtree arguments
+above. Ground the nuisance parameters once. Replaying the two rows now
+gives a common raw data tuple <span
+class="math inline">\(d&#39;\)</span> and valid proof equalities. A
+proof in stage <span class="math inline">\(i\)</span> may depend on
+slots of earlier stages of its group. We check all of those slots.</p>
+<p>Use the Round 17 decoder with modes <span
+class="math inline">\(0,\ldots,m\)</span>. In mode <span
+class="math inline">\(k&lt;m\)</span> read <span
+class="math inline">\(W_{k+1}\)</span> and continue in the next mode. In
+mode <span class="math inline">\(m\)</span> read an ordinary encoded
+constructor and decode its arguments in mode zero. A failed match
+returns the fixed default <span class="math inline">\(r_k\)</span> in
+hypothesis mode <span class="math inline">\(1\le k&lt;m\)</span>, and
+<span class="math inline">\(N\)</span> in modes <span
+class="math inline">\(0,m\)</span>. These defaults are ground and common
+to all proofs because the hypotheses are ground. For arbitrary raw data
+<span class="math inline">\(d&#39;\)</span> let <span
+class="math inline">\(d\)</span> be the mode-zero decoding followed by
+the projection that sends <span class="math inline">\(N\)</span> to a
+fixed source constant and every <span class="math inline">\(C_j\)</span>
+to its tail. Other source constructors act as themselves. This defines a
+single source substitution, even on malformed data.</p>
+<p>For proof <span class="math inline">\(i\)</span>, take the quotient
+of the source ground algebra by <span
+class="math inline">\(E_i\)</span>. Evaluate the decoded terms in its
+product with a nonnegative count. First coordinates give the source
+projection in the quotient. A source constructor or <span
+class="math inline">\(N\)</span> has count zero. A list constructor
+<span class="math inline">\(C_j\)</span> of another proof returns its
+tail’s first coordinate and count zero. Prepending <span
+class="math inline">\(u\)</span> with the active <span
+class="math inline">\(C_i\)</span> increases its tail’s count by one
+precisely when the class of <span class="math inline">\(u\)</span>
+differs from the class of <span
+class="math inline">\(t_i(d)\)</span>.</p>
+<p><strong>Every allowed slot agrees in both rows in every mode of this
+interpretation.</strong> For <span class="math inline">\(q\)</span>,
+both <span class="math inline">\(a\)</span> and <span
+class="math inline">\(M_v(D)\)</span> decode to the same default in
+every mode. For a patched hypothesis slot <span
+class="math inline">\(p&#39;\)</span>, the patched value reads like the
+unpatched suffix. Outside its own mode <span
+class="math inline">\(j\)</span>, its first wrapper is unexpected and
+gives the default, just like <span class="math inline">\(a\)</span>. In
+mode <span class="math inline">\(j\)</span> it reads as <span
+class="math inline">\(l_j\)</span> or <span
+class="math inline">\(r_j\)</span>, both equal to the default <span
+class="math inline">\(r_j\)</span> in the quotient since the hypothesis
+belongs to <span class="math inline">\(E_i\)</span>. This also covers
+slots from earlier stages. For a patched list-end slot the only
+nondefault mode is zero. In that mode <span
+class="math inline">\(C_k(t_k(d),N)\)</span> and <span
+class="math inline">\(N\)</span> have the same first coordinate and
+count. When <span class="math inline">\(k=i\)</span> the head is the
+target, and when <span class="math inline">\(k\ne i\)</span> its list
+constructor clears the count.</p>
+<p>Agreement in every mode suffices for an <em>arbitrary</em> binary
+proof body. Regard its parameter leaves as state-zero holes. Both
+assignments to those holes have state zero. At a non-hole root the
+parser matches the same macro before and after substitution, with its
+original argument subtrees subjected to that substitution. It only opens
+internal argument-spine positions of nonzero state. Tag and terminator
+tests depend solely on state. Follow this parsing recursively: at a hole
+use the preceding all-mode agreement, in a matching macro use agreement
+of its parsed children, and in a default case both sides return the same
+default. This is the place where merely having the right decoding at
+mode zero would be insufficient. <a
+href="round-17-proof.lean">Kernel-checked macro substitution</a> · <a
+href="round-25-marker.lean">All-mode substitution for arbitrary
+bodies</a></p>
+<p>It follows that the checking-row values of <span
+class="math inline">\(Y_i,Z_i\)</span> have the same interpretations as
+their marker-row values. The marker row equates them, while the checking
+row prepends <span class="math inline">\(s_i(d)\)</span> to <span
+class="math inline">\(Z_i\)</span> to obtain <span
+class="math inline">\(Y_i\)</span>. Equality of counts gives <span
+class="math inline">\(s_i(d)\equiv_{E_i}t_i(d)\)</span>. This holds for
+all three proofs on the common <span class="math inline">\(d\)</span>,
+and the coloring argument of Round 24 recovers the original SREU
+solution. <a
+href="round-24-two-branches.html#converting-arbitrary-ground-hypotheses-to-two-chains">Coloring
+equivalence</a></p>
+<p>The output size is polynomial. Each wrapper or tag has polynomial
+size and carries its argument once. Each template is patched at one
+fixed leaf. Marker identifiers and the repeated coordinate tuples have
+polynomial size. A list on each side of an equality in the actual free
+binary algebra packs each row’s premises into one equality and its
+conclusions into another. Enumerating candidates and verifying them by
+unification gives the r.e. upper bound.</p>
+</section>
+<section id="signature-boundary" class="level2">
+<h2>Signature boundary</h2>
+<p>The same two-branch threshold holds for depth-one input terms if
+conjunctions within a branch are allowed. Introduce a name for each
+compound subterm and put the common acyclic definitions in both
+premises. Every ground witness uniquely extends to those names.
+Conversely, conjoining the definitions to a flattened answer recovers an
+answer to the original equations. The number of names grows with the
+input in this version. A different restriction keeps the number of
+coordinates fixed and permits the depth of one ground subtree to grow.
+<a
+href="round-11-witness-bounds.html#shallow-syntax-is-a-normal-form-not-a-restricted-fragment">Flattening
+proposition</a> · <a href="round-26-fixed-template.html">Fixed
+two-branch template</a></p>
+<p>The two-branch lower bound transfers to any finite single-sorted
+signature with a constant and a branching constructor <span
+class="math inline">\(F\)</span>. Implement <span
+class="math inline">\(f(x,y)\)</span> by <span
+class="math inline">\(F(x,y,a,\ldots,a)\)</span>. The checking slots
+remain atomic, the marker values remain distinct compounds containing
+all protected coordinates, and the row replay still applies to an
+arbitrary answer. After replay, project a target tree to a binary tree
+by keeping the first two children of <span
+class="math inline">\(F\)</span> and sending other constructors to <span
+class="math inline">\(a\)</span>. This projection commutes with
+substitution when extended to open proof bodies by preserving their
+parameter leaves. It preserves the replayed literal equalities, and
+projects every endpoint template and protected marker to its binary
+instance on the projected data and proofs. The binary converse applies.
+With only unary and nullary constructors the word-equation procedure
+decides ordinary JCA for any number of branches. <a
+href="round-18-signature-boundary.html">Monadic procedure</a></p>
+</section>
+<section id="verification" class="level2">
+<h2>Verification</h2>
+<p>The <a href="round-25-binary.py">executable reduction</a> constructs
+both rows and an explicit answer for a three-constraint source instance,
+including nontrivial conversions below the root. It checks the result
+using an independent unifier on shared term graphs, both before and
+after packing the rows into single equalities. It accepts a proof that
+uses slots of an earlier stage, rejects the reverse dependency, and
+rejects a corrupted proof. Its parser checks cover 434 mode/template
+combinations, including marker insertion into templates containing
+data.</p>
+<p><a href="round-25-marker.lean">Lean</a> checks the marker’s state and
+failure to parse as a macro, the fixed tag edit, preservation of the
+parsed arguments, distinctness of slot values, the half-step identity,
+and lifting all-mode agreement through any binary body for a decoder
+defined by macro cases. <a href="round-24-colors.lean">Round 24</a>
+checks the color argument, and <a href="round-23-model.lean">Round
+23</a> checks scope and the counting inference. The end-to-end reduction
+is a written proof with these kernel-checked components.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python3</span> projects/jca/agent-collab/round-25-binary.py</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Lean 4.19.0, with src pointing to this directory.</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="va">out</span><span class="op">=</span><span class="va">$(</span><span class="fu">mktemp</span> <span class="at">-d</span><span class="va">)</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="ex">lean</span> <span class="at">--root</span><span class="op">=</span><span class="st">&quot;</span><span class="va">$src</span><span class="st">&quot;</span> <span class="at">-o</span> <span class="st">&quot;</span><span class="va">$out</span><span class="st">/round-17-proof.olean&quot;</span> <span class="st">&quot;</span><span class="va">$src</span><span class="st">/round-17-proof.lean&quot;</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="va">LEAN_PATH</span><span class="op">=</span><span class="st">&quot;</span><span class="va">$out</span><span class="st">&quot;</span> <span class="ex">lean</span> <span class="st">&quot;</span><span class="va">$src</span><span class="st">/round-25-marker.lean&quot;</span></span></code></pre></div>
+</section>
+</article>
+<script src="/assets/theme-toggle.js"></script>
+</body>
+</html>
