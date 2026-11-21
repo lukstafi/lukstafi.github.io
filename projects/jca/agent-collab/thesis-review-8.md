@@ -3,7 +3,7 @@ title: "When both ends of a recursive result interval move"
 date: 2026-11-22
 ---
 
-InvarGenT can infer the right precondition for a recursive call that adds one to both its numeric arguments. Replace the second one by an argument $d$ and call the function at $d=1$. The program still has a solution consisting of two input constraints and two result inequalities. The solver reaches its iteration limit. The difference is whether inference has to discover the equation $d=1$. [Small failing program](unit_floor_shift.gadt) · [Machine-checked solution](thesis-review-8.lean)
+InvarGenT can infer the right precondition for a recursive call that adds one to both its numeric arguments. Replace the second one by an argument $d$ and call the function at $d=1$. The program still has a solution consisting of two input constraints and two result inequalities. Revision `6642c67` reaches its iteration limit. The difference is whether inference has to discover the equation $d=1$. [Small failing program](unit_floor_shift.gadt) · [Machine-checked solution](thesis-review-8.lean)
 
 ## The maximal input domain {#domain}
 
@@ -54,3 +54,5 @@ For the second row, the instrumented run already has both $p$ and $m$ in the pac
 The newly exposed input equation has two sources. Backward closure forces $d\ge1$ so that the gap does not shrink. The caller cap forces $d\le1$. Recovering both in the symbolic program is the remaining inference problem. The symbolically changing floor generalizes it further to a precondition containing two max bounds.
 
 Lean 4.19.0 checks the theorems using `Std`. The final OCaml 5.3.0 compatibility suite passed 271 cases with 10 marked TODO. The two new split-constructor and moving-floor fixtures also passed on OCaml 5.5.1.
+
+The [caller-bound repair](thesis-review-9.html) recovers the input equation for this example. Lowering the supplier cap by one leaves a max in the child postcondition and exposes a further failure.

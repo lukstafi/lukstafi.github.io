@@ -304,6 +304,11 @@ build_html \
   "$collab_dir/thesis-review-8.html" \
   "When both ends of a recursive result interval move"
 
+build_html \
+  "$collab_dir/thesis-review-9.md" \
+  "$collab_dir/thesis-review-9.html" \
+  "Extracting an input bound from a recursive caller"
+
 reviews_dir="$collab_dir/reviews"
 if [[ -d "$reviews_dir" ]]; then
   for md_file in "$reviews_dir"/*.md; do

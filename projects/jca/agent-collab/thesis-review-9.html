@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <meta name="dcterms.date" content="2026-11-22">
+  <meta property="og:title" content="Extracting an input bound from a recursive caller">
+  <meta property="og:url" content="https://lukstafi.github.io/projects/jca/agent-collab/thesis-review-9.html">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="lukstafi&#x27;s blog">
+  <meta name="twitter:card" content="summary">
+  <title>Extracting an input bound from a recursive caller</title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <link rel="stylesheet" href="/assets/tufte.css">
+  <link rel="stylesheet" href="/assets/pandoc-tufte.css">
+  <link rel="stylesheet" href="/assets/site.css">
+  <script defer=""
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+  type="text/javascript"></script>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+  <script>(function(){var t=localStorage.getItem('theme-preference');if(t)document.documentElement.setAttribute('data-theme',t);})()</script>
+</head>
+<body>
+<nav class="site-nav">
+  <a href="/">Home</a> &middot; <a href="/study/">Study Guide</a> &middot; <a href="/about.html">About</a> &middot; <a href="https://lukstafi.substack.com">Substack</a>
+</nav>
+<div class="theme-toggle">
+  <button id="theme-btn" aria-label="Toggle dark mode">&#9788;</button>
+</div>
+<article>
+<header>
+<h1 class="title">Extracting an input bound from a recursive caller</h1>
+<p class="byline">2026-11-22</p>
+</header>
+<nav id="TOC">
+<ul>
+<li><a href="#abduction" id="toc-abduction">Which predicate should carry
+the bound?</a></li>
+<li><a href="#transport" id="toc-transport">Moving a demand to the
+result predicate</a></li>
+<li><a href="#closure" id="toc-closure">Eliminating the payload and the
+recursive depth</a></li>
+<li><a href="#runs" id="toc-runs">Where inference still stops</a></li>
+</ul>
+</nav>
+<p>The recursive call <code>climb d (p+1) (m+d)</code> has a solution
+exactly when <span class="math inline">\(d=1\)</span> and <span
+class="math inline">\(p\le m+19\)</span>. Its result lies between <span
+class="math inline">\(p\)</span> and <span
+class="math inline">\(m+19\)</span>. InvarGenT at <code>6642c67</code>
+already found this result interval. At each induction jump the caller
+nevertheless asked again for an upper bound on the child’s return value.
+Revision <code>02bc11c</code> infers the missing input equation and
+accepts the call at <span class="math inline">\(d=1\)</span>, <span
+class="math inline">\(p=3\)</span>, <span
+class="math inline">\(m=-16\)</span>. <a
+href="unit_floor_shift.gadt">Program</a> · <a
+href="thesis-review-8.html#domain">Proof of the maximal input
+domain</a></p>
+<section id="abduction" class="level2">
+<h2>Which predicate should carry the bound?</h2>
+<p>In Table 4.4 the binary predicate <span
+class="math inline">\(\chi_K(\delta,\delta&#39;)\)</span> describes a
+returned type and the parameters carried with that type. Here it gives a
+relation between the result index <span class="math inline">\(r\)</span>
+and the indices of the current call. The recursive caller instantiates
+the child’s relation at its own arguments. Once the result interval has
+stabilized, the child’s upper bound reads <span
+class="math inline">\(r\le m+d+19\)</span>. The parent needs <span
+class="math inline">\(r\le\max(m+20,p)\)</span>. Its input condition
+already gives <span class="math inline">\(p\le m+19\)</span>, so the
+larger arm is <span class="math inline">\(m+20\)</span>. The missing
+inequality is visible in the difference between the two caps.</p>
+<p><span class="math display">\[
+m+d+19\le m+20 \quad\Longleftrightarrow\quad d\le1.
+\]</span></p>
+<p>This bound mentions only a function argument. Assigning it to the
+unary input predicate lets every recursive call reuse it. The solver
+independently obtains <span class="math inline">\(1\le d\)</span> from
+the requirement that the input condition hold at the child. Together the
+two inequalities fix <span class="math inline">\(d=1\)</span>. Assigning
+the unsimplified demand to the binary predicate instead makes the
+suppliers prove a bound they already satisfy at their own arguments. <a
+href="thesis-review-8.html#solver">Earlier pass-by-pass trace</a> · <a
+href="../lukstafi-phd-thesis.pdf#page=71">Table 4.4</a></p>
+<p>The implementation first checks whether the current numeric branch
+proves an ordering of the two caller alternatives. It subtracts an
+available premise inequality from the weaker alternative and tries the
+difference when its variables are disjoint from those in the demand. The
+existing scope and branch checks still apply. In the example this
+proposes <span class="math inline">\(d\le1\)</span>. Subtracting a
+transient bound such as <span class="math inline">\(r\le p+5\)</span>
+would tighten the starting floor to <span class="math inline">\(p\le
+m+15\)</span> and lose the valid boundary call. That candidate still
+mentions the caller’s endpoints.</p>
+</section>
+<section id="transport" class="level2">
+<h2>Moving a demand to the result predicate</h2>
+<p>Let <span class="math inline">\(x\)</span> denote the caller’s
+arguments, <span class="math inline">\(f(x)\)</span> the indices carried
+by the child package, <span class="math inline">\(P\)</span> the
+admitted inputs, <span class="math inline">\(R\)</span> the package’s
+result predicate, and <span class="math inline">\(U\)</span> the
+caller’s demand. A single package can serve several callers. The
+obligation on that package is <span class="math display">\[
+R(y,r) \;\Rightarrow\; \forall x.\ (P(x)\land f(x)=y)\Rightarrow U(x,r).
+\]</span> Requiring this at every <span
+class="math inline">\(y,r\)</span> is equivalent to the original caller
+obligation <span class="math inline">\(P(x)\land R(f(x),r)\Rightarrow
+U(x,r)\)</span> at every <span class="math inline">\(x,r\)</span>. The
+equivalence holds for any map <span class="math inline">\(f\)</span>,
+including one that forgets a parameter. It gives a criterion for
+checking the part of an abductive answer that (4.6) adds to a binary
+predicate. <a href="thesis-review-9.lean">Transport equivalence</a></p>
+<p>For a child with floor <span class="math inline">\(q=p+e\)</span> and
+cap parameter <span class="math inline">\(s=m+d\)</span>, the parent’s
+demand in child coordinates is <span
+class="math inline">\(r\le\max(q-e,s-d+L)\)</span>. If the input admits
+every <span class="math inline">\(d\)</span> at these child indices, a
+package that forgets <span class="math inline">\(d\)</span> must satisfy
+this for all <span class="math inline">\(d\)</span>. The exact result is
+<span class="math inline">\(r\le q-e\)</span>. A rising floor makes this
+impossible even for the child’s base return <span
+class="math inline">\(r=q\)</span>. If the possible shifts are all
+integers through <span class="math inline">\(B\)</span>, the exact
+result instead is <span
+class="math inline">\(r\le\max(q-e,s-B+L)\)</span>, obtained by taking
+<span class="math inline">\(d=B\)</span>. This explains how bounding a
+caller argument changes what its result package can soundly promise. <a
+href="thesis-review-9.lean">Unrestricted and bounded shift
+proofs</a></p>
+</section>
+<section id="closure" class="level2">
+<h2>Eliminating the payload and the recursive depth</h2>
+<p><strong>Payload.</strong> If <span class="math inline">\(\ell\le
+u\)</span>, the statement that every <span
+class="math inline">\(r\)</span> in <span
+class="math inline">\([\ell,u]\)</span> satisfies <span
+class="math inline">\(r\le\max(A,B)\)</span> is equivalent to <span
+class="math inline">\(u\le\max(A,B)\)</span>. Necessity follows by
+choosing <span class="math inline">\(r=u\)</span>. For an upper endpoint
+of the form <span class="math inline">\(\max(U,V)\)</span>, both <span
+class="math inline">\(U\)</span> and <span
+class="math inline">\(V\)</span> must fit. Either may use either arm of
+the caller’s max.</p>
+<p>This gives an exact rule even when the child’s own result still
+contains a max. Suppose the floor rises by <span
+class="math inline">\(e&gt;0\)</span>, the cap shifts by <span
+class="math inline">\(d\)</span>, and the child supplies the interval
+<span class="math inline">\([p+e,\max(p+e,m+d+c)]\)</span>. The parent
+accepts all those payloads up to <span
+class="math inline">\(\max(m+L,p)\)</span> precisely when <span
+class="math display">\[
+p+e\le m+L \quad\land\quad d\le L-c.
+\]</span> The endpoint <span class="math inline">\(p+e\)</span> is
+already above <span class="math inline">\(p\)</span>. Covering it forces
+the caller to use <span class="math inline">\(m+L\)</span>. That arm
+must also cover <span class="math inline">\(m+d+c\)</span>. <a
+href="thesis-review-9.lean">Endpoint projection and rising-floor
+equivalence</a></p>
+<p><strong>Depth.</strong> Consider an input check <span
+class="math inline">\(G\lor x\le0\)</span>, where <span
+class="math inline">\(G\)</span> is fixed throughout a recursive
+computation. Each call may change <span class="math inline">\(x\)</span>
+to <span class="math inline">\(x+k\)</span> for any <span
+class="math inline">\(k\)</span> in a fixed set <span
+class="math inline">\(D\)</span>. Every transition is available at every
+admitted input. The greatest input domain under which the check succeeds
+at every depth is <span class="math display">\[
+(G\lor x\le0)\ \land\ (G\lor\forall k\in D.\ k\le0).
+\]</span> If <span class="math inline">\(G\)</span> is false and some
+<span class="math inline">\(k\)</span> is positive, repeating that call
+eventually makes <span class="math inline">\(x\)</span> positive,
+wherever it starts. If every increment is nonpositive, the first check
+suffices for every finite sequence of calls. The statement quantifies
+over arbitrary candidate input predicates and permits an empty set of
+increments. <a href="thesis-review-9.lean">Proof of
+<code>input_closure</code></a></p>
+<p>For the moving floor, put <span
+class="math inline">\(G=(e\le0)\)</span>, <span
+class="math inline">\(x=p+e-m-L\)</span>, and <span
+class="math inline">\(D=\{e-d\}\)</span>. The two checks become <span
+class="math inline">\(e\le\max(0,m-p+L)\)</span> and <span
+class="math inline">\(e\le\max(0,d)\)</span>. This computes the
+recursive closure of the child’s base-value obligation in one step. The
+current implementation derives bounds during abduction. The closure
+formula provides a separate exact calculation against which to check
+that iteration. <a href="thesis-review-9.lean">Specialization to the
+moving floor</a></p>
+</section>
+<section id="runs" class="level2">
+<h2>Where inference still stops</h2>
+<p>The rows use the same source apart from the three offsets and the
+closed call. The numeric domain in the middle column follows from the
+maximal-domain theorem. <a href="thesis-review-9.py">Executable
+comparison</a> · <a href="thesis-review-8.html#domain">Maximal-domain
+theorem</a></p>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr>
+<th>Supplier offset <span class="math inline">\(c\)</span>, caller
+offset <span class="math inline">\(L\)</span>, floor rise <span
+class="math inline">\(e\)</span></th>
+<th>Exact inputs</th>
+<th>InvarGenT at <code>02bc11c</code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><span class="math inline">\(19,20,1\)</span></td>
+<td><span class="math inline">\(d=1\)</span>, <span
+class="math inline">\(p\le m+19\)</span></td>
+<td>Infers the exact scheme. Rejects <span
+class="math inline">\(d=0\)</span>, <span
+class="math inline">\(d=2\)</span>, and a start one unit above the floor
+limit.</td>
+</tr>
+<tr>
+<td><span class="math inline">\(18,20,1\)</span></td>
+<td><span class="math inline">\(1\le d\le2\)</span>, <span
+class="math inline">\(p\le m+19\)</span></td>
+<td>Reports “Answers do not converge” at budgets 11 and 40 for <span
+class="math inline">\(d=1,p=19,m=0\)</span>.</td>
+</tr>
+<tr>
+<td><span class="math inline">\(17,20,2\)</span></td>
+<td><span class="math inline">\(2\le d\le3\)</span>, <span
+class="math inline">\(p\le m+18\)</span></td>
+<td>Infers an equivalent input condition. Both endpoint shifts execute
+at the largest admissible floor.</td>
+</tr>
+<tr>
+<td><span class="math inline">\(3,6,3\)</span></td>
+<td><span class="math inline">\(d=3\)</span>, <span
+class="math inline">\(p\le m+3\)</span></td>
+<td>Infers <span class="math inline">\(d=3\)</span>, <span
+class="math inline">\(p=m+3\)</span>, with result <span
+class="math inline">\(p\)</span>. Rejects the safe interior call <span
+class="math inline">\(d=3,p=2,m=0\)</span>.</td>
+</tr>
+</tbody>
+</table>
+<p>Lowering <span class="math inline">\(c\)</span> from 19 to 18 puts
+the child floor above the linear cap on some admitted inputs. The
+correct result predicate is <span class="math inline">\(p\le
+r\le\max(p,m+18)\)</span>. At the boundary <span
+class="math inline">\(p=19,m=0\)</span> the base returns 19, already
+above the linear cap 18. Both supplier alternatives matter in the
+recursive call. The endpoint equivalence above derives both required
+inequalities, while the observed loop repeatedly assigns the upper
+demand to the result predicate. This five-atom scheme is a
+counterexample to success at the executable’s default budget. The proof
+of infinite repetition under the original common-atom jump and the proof
+of an infinite chain under exact backward propagation concern different
+updates. <a href="thesis-review-3.html#update">Original induction
+jump</a> · <a href="thesis-review-8.html#iteration">Backward
+recurrence</a></p>
+<p>Lean 4.19.0 checks the projection and closure theorems using
+<code>Std</code>. The OCaml 5.3.0 compatibility suite passed 272 tests
+with 10 existing TODOs. The new fixture also passed on OCaml 5.5.1.</p>
+</section>
+</article>
+<script src="/assets/theme-toggle.js"></script>
+</body>
+</html>
