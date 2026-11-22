@@ -1,0 +1,5 @@
+datatype Gate : num * num
+datacons Live : Gate ((-1/2), (-1/3))
+datacons Bad : ∀i,j[min|max(i,j)]. Gate (i,j)
+let accept = function Live -> True | Bad -> assert false
+let sample = accept Live

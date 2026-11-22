@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <meta name="dcterms.date" content="2026-11-22">
+  <meta property="og:title" content="Can a failed caller tell us how to construct the next predicate?">
+  <meta property="og:url" content="https://lukstafi.github.io/projects/jca/agent-collab/thesis-review-48.html">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="lukstafi&#x27;s blog">
+  <meta name="twitter:card" content="summary">
+  <title>Can a failed caller tell us how to construct the next
+predicate?</title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <link rel="stylesheet" href="/assets/tufte.css">
+  <link rel="stylesheet" href="/assets/pandoc-tufte.css">
+  <link rel="stylesheet" href="/assets/site.css">
+  <script defer=""
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+  type="text/javascript"></script>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+  <script>(function(){var t=localStorage.getItem('theme-preference');if(t)document.documentElement.setAttribute('data-theme',t);})()</script>
+</head>
+<body>
+<nav class="site-nav">
+  <a href="/">Home</a> &middot; <a href="/study/">Study Guide</a> &middot; <a href="/about.html">About</a> &middot; <a href="https://lukstafi.substack.com">Substack</a>
+</nav>
+<div class="theme-toggle">
+  <button id="theme-btn" aria-label="Toggle dark mode">&#9788;</button>
+</div>
+<article>
+<header>
+<h1 class="title">Can a failed caller tell us how to construct the next
+predicate?</h1>
+<p class="byline">2026-11-22</p>
+</header>
+<nav id="TOC">
+<ul>
+<li><a href="#fit" id="toc-fit">Constructing a key from several failed
+proofs</a></li>
+<li><a href="#symbolic" id="toc-symbolic">Learning from a whole caller
+region</a></li>
+<li><a href="#limits" id="toc-limits">When every finite batch
+fits</a></li>
+<li><a href="#compiler" id="toc-compiler">What InvarGenT must
+preserve</a></li>
+<li><a href="#checks" id="toc-checks">Reproducing the checks</a></li>
+</ul>
+</nav>
+<p>A supplier at zero returns a distinguished result. Every positive
+integer input must exclude that result. One extra key, admitted exactly
+when <span class="math inline">\(x\ge1\)</span>, solves the problem. Yet
+an inference procedure that takes the least interval containing the
+failing inputs seen so far can run forever. After any finite number of
+examples it has learned a bounded interval. The next integer above its
+upper endpoint still fails.</p>
+<p>The distinction matters for Table 4.4. A bound on the final formula
+tells us how much we need to express. Convergence also depends on what
+the induction jump learns from a failure. In this example a single
+<em>symbolic</em> caller obligation gives the entire ray. Here is a
+criterion for extracting such predicates, followed by a case where the
+compiler needs a different sort of witness. <a
+href="thesis-review-3.html#update">Original Table 4.4 counterexample</a>
+· <a href="thesis-review-48.lean">Lean proofs</a></p>
+<section id="fit" class="level2">
+<h2>Constructing a key from several failed proofs</h2>
+<p>Let <span class="math inline">\(A_x\)</span> be the keys admitted at
+input <span class="math inline">\(x\)</span>. A result opens at <span
+class="math inline">\(x\)</span> when every key in <span
+class="math inline">\(A_x\)</span> stores it. A finite proof that a
+forbidden result must open records, at each node, a destination <span
+class="math inline">\(x\)</span> and finitely many sources <span
+class="math inline">\(D\)</span> whose menus cover <span
+class="math inline">\(A_x\)</span>. With the supplier rules and static
+guards fixed, preserving every inclusion in the proof forces the same
+result. An added key with support <span class="math inline">\(C\)</span>
+breaks the inclusion at <span class="math inline">\((x,D)\)</span>
+precisely when <span class="math inline">\(x\in C\)</span> and <span
+class="math inline">\(C\cap D=\varnothing\)</span>. <a
+href="thesis-review-47.html#complete">Proof replay and finite-subcover
+criterion</a></p>
+<p>Reserve <span class="math inline">\(m\)</span> fresh keys. The
+support for key <span class="math inline">\(j\)</span> must contain
+<span class="math inline">\(L_j\)</span> and lie inside <span
+class="math inline">\(U_j\)</span>. Suppose its permitted class has a
+least member <span class="math inline">\(h_j(P)\)</span> containing each
+set <span class="math inline">\(P\)</span> of positive observations. For
+intervals, <span class="math inline">\(h_j\)</span> takes the interval
+hull, with empty hull allowed. For unrestricted supports, <span
+class="math inline">\(h_j(P)=P\)</span>.</p>
+<p><strong>Joint construction.</strong> For each failed proof choose one
+of its nodes <span class="math inline">\((x,D)\)</span> and assign that
+node to a key <span class="math inline">\(j\)</span>. Let <span
+class="math inline">\(P_j\)</span> contain <span
+class="math inline">\(L_j\)</span> and all destinations assigned to
+<span class="math inline">\(j\)</span>. Let <span
+class="math inline">\(N_j\)</span> be the union of the source sets
+assigned to it. A tuple of legal supports respecting the bounds and
+breaking every proof exists exactly when some assignment satisfies <span
+class="math display">\[
+h_j(P_j)\subseteq U_j,\qquad h_j(P_j)\cap N_j=\varnothing\qquad\text{for
+every }j.
+\]</span> The hulls themselves supply the tuple. Conversely, any
+successful tuple identifies a broken node and a witnessing key for each
+proof. Its <span class="math inline">\(j\)</span>th support contains
+<span class="math inline">\(P_j\)</span>, hence contains the least legal
+hull. This constructs predicates without an advance list of formulas. A
+class lacking least members, such as single halfspaces in the plane,
+requires a separate fitting argument. <a
+href="thesis-review-48.lean">Lean theorem
+<code>synthesize</code></a></p>
+<p>Keep each failed proof as a disjunction of ways to break it. The next
+fit can change earlier assignments. After each fit, check all suppliers
+and callers again. On finite inputs, with terminating checks and
+effective hulls, each failed check eliminates the proposed tuple
+forever. There are at most <span class="math inline">\(2^{m|X|}\)</span>
+tuples. On infinite inputs the ray above defeats the same iteration even
+with <span class="math inline">\(m=1\)</span>. A point above every
+previously seen one is a counterexample whichever earlier points the
+verifier chose. <a href="thesis-review-48.py">Executable search</a> · <a
+href="thesis-review-48.lean">Lean theorem
+<code>unseen_positive</code></a></p>
+</section>
+<section id="symbolic" class="level2">
+<h2>Learning from a whole caller region</h2>
+<p>Give every input a common neutral key. Suppose a nonempty region
+<span class="math inline">\(B\)</span> supplies a marker and a region
+<span class="math inline">\(H\)</span> must exclude it. A tuple of extra
+supports works iff every <span class="math inline">\(x\in H\)</span>
+admits some extra key whose support misses all of <span
+class="math inline">\(B\)</span>. Indeed the neutral key stores the
+marker. Any key absent from the marker’s package must therefore be an
+extra key missing every supplier. Conversely, storing the marker exactly
+on the keys reached from <span class="math inline">\(B\)</span> realizes
+the condition. With one extra key and nonempty <span
+class="math inline">\(H\)</span>, the whole task is to find <span
+class="math inline">\(H\subseteq C\)</span> with <span
+class="math inline">\(C\cap B=\varnothing\)</span>. Taking <span
+class="math inline">\(h(H)\)</span> settles it whenever that hull can be
+computed and belongs to the answer language. <a
+href="thesis-review-48.lean">Lean theorem <code>marker</code></a></p>
+<p>There is a constructive bound for one conjunctive affine key. Suppose
+<span class="math inline">\(H\)</span> and <span
+class="math inline">\(B\)</span> are each presented as a finite union of
+rational polyhedra on rational inputs, using weak inequalities. Drop
+empty components. If such a key exists, <strong>one weak inequality per
+supplier component</strong> suffices. For each nonempty <span
+class="math inline">\(B_\ell\)</span> seek a normal <span
+class="math inline">\(a\)</span> and threshold <span
+class="math inline">\(c\)</span> satisfying <span
+class="math display">\[
+a\cdot x\le c\quad(x\in H),\qquad a\cdot y\ge c+1\quad(y\in B_\ell).
+\]</span> To see necessity, write a successful support as <span
+class="math inline">\(Gx\le g\)</span> and the supplier component as
+<span class="math inline">\(Fy\le f\)</span>. Their intersection is
+empty. Farkas’ lemma gives nonnegative multipliers <span
+class="math inline">\(u,v\)</span> with <span
+class="math inline">\(uG+vF=0\)</span> and <span
+class="math inline">\(ug+vf\le-1\)</span> after scaling. Take <span
+class="math inline">\(a=uG\)</span> and <span
+class="math inline">\(c=ug\)</span>. Conversely, intersect the
+halfspaces returned for the components. Every caller belongs to the
+intersection and every supplier violates one inequality. An empty caller
+region can use the empty support. <a
+href="https://people.math.carleton.ca/~kcheung/math/notes/MATH3801/04/4_1_farkas_lemma.html">Farkas’
+lemma</a></p>
+<p>The construction can find <span class="math inline">\(a,c\)</span>
+directly from the input. For each caller component <span
+class="math inline">\(M_ix\le d_i\)</span> introduce nonnegative <span
+class="math inline">\(u_i\)</span> and impose <span
+class="math inline">\(u_i M_i=a\)</span>, <span
+class="math inline">\(u_i d_i\le c\)</span>. For the current supplier
+component impose <span class="math inline">\(vF=-a\)</span>, <span
+class="math inline">\(vf\le-c-1\)</span>, <span
+class="math inline">\(v\ge0\)</span>. The valid-inequality form of
+Farkas’ lemma makes this rational linear feasibility problem exact. The
+coefficients have polynomial bit length for some feasible solution by
+the basic feasible solution bound. Thus one symbolic jump has a
+polynomial-size certificate in the explicit component presentation.
+Existential rational branch coordinates can be kept in the matrices with
+zero coefficients in the separator on those coordinates. The
+rational-input hypothesis matters. On the integer unit square let the
+callers be the diagonal endpoints and let the supplier region satisfy
+<span class="math inline">\(x+y=1\)</span>. The key <span
+class="math inline">\(x=y\)</span> separates the four integer points.
+Yet no single halfspace can keep both diagonal endpoints and exclude
+both off-diagonal endpoints, since the two segments share their
+midpoint. Taking the integer hull of each region still leaves that
+intersection. <a
+href="https://courses.csail.mit.edu/6.854/16/Notes/n11-lp.html">Polynomial
+bit bound for rational LP</a> · <a href="thesis-review-48.py">Primal and
+dual replay</a></p>
+</section>
+<section id="limits" class="level2">
+<h2>When every finite batch fits</h2>
+<p>Take <span class="math inline">\(H=\{(0,0)\}\cup\{(n,1):n\in\mathbb
+N\}\)</span> and <span class="math inline">\(B=\{(1,0)\}\)</span>.
+Keeping only <span class="math inline">\(n\le N\)</span> gives the
+separator <span class="math inline">\(x\le Ny\)</span>. For the entire
+ray, every valid inequality <span class="math inline">\(ax+by\le
+c\)</span> has <span class="math inline">\(c\ge0\)</span> from the
+origin and <span class="math inline">\(a\le0\)</span> from the ray. It
+therefore admits <span class="math inline">\((1,0)\)</span>. Even an
+arbitrary conjunction of such inequalities cannot express the required
+support. Two supports, <span class="math inline">\(x\le0\)</span> and
+<span class="math inline">\(y\ge1\)</span>, suffice. This is the
+boundary added by the closed convex hull in Definition 4.8, already
+visible on integral observations. It also explains why testing all
+finite samples can miss an impossibility that the symbolic separator
+program detects at once. <a href="thesis-review-48.lean">Lean proofs
+<code>prefix_fits</code> and <code>boundary_forced</code></a> · <a
+href="thesis-review-1.html#an-exact-target-for-linear-arithmetic-generalization">Definition
+4.8 and closed convex hulls</a> · <a
+href="https://bipop.inrialpes.fr/publis/CoLe2005MATHPROG.pdf">Cornuéjols
+and Lemaréchal, Lemma 6.4</a></p>
+<p>For a fixed finite key budget there is a precise sufficient condition
+for finite obstruction. View a support assignment as Boolean bits
+indexed by <span class="math inline">\((j,x)\)</span>. Breaking a finite
+proof is a finite disjunction of tests on finitely many bits. Each such
+condition is closed in the pointwise product topology. If the legal
+assignments also form a closed set there, compactness gives a single
+assignment satisfying all the proofs whenever every finite family can be
+broken. Unrestricted supports and classes specified by forbidding finite
+patterns have this property. The ray example above shows why geometric
+closedness of each individual halfspace does not establish pointwise
+closedness of the class. <a href="thesis-review-48.lean">Lean theorems
+<code>finite_obstruction</code> and <code>forbid_closed</code></a> · <a
+href="https://leanprover-community.github.io/mathlib4_docs/Mathlib/Topology/Compactness/Compact.html">Compactness
+in mathlib</a></p>
+<p>To recover a safe package, apply the condition to <em>all</em> finite
+forbidden proof shapes valid under the fixed base menus. Any proof
+surviving the added keys would already be valid under the base. If the
+base satisfies the finite-subcover criterion, finitely many extra keys
+preserve it. Then absence of a surviving proof supplies a safe semantic
+package. Definability is a separate obligation. For example, let input
+<span class="math inline">\(n+1\)</span> supply result <span
+class="math inline">\(n\)</span>, and require input <span
+class="math inline">\(n\)</span> to exclude <span
+class="math inline">\(n\)</span>. This forces <span
+class="math inline">\(A_n\nsubseteq A_{n+1}\)</span> for every <span
+class="math inline">\(n\)</span>. Two unrestricted keys, supported on
+even and odd inputs, work. Finitely many quantifier-free unary affine
+guards over the rationals are eventually constant along the naturals, so
+they cannot supply these admissions. A symbolic key parameter ranging
+over infinitely many values changes the interface. <a
+href="thesis-review-48.lean">Lean proofs for adjacent inputs</a> · <a
+href="thesis-review-47.html#complete">Package existence</a></p>
+</section>
+<section id="compiler" class="level2">
+<h2>What InvarGenT must preserve</h2>
+<p>InvarGenT’s numeric negative abduction has a different obligation.
+Each live validation state needs <em>one</em> witness satisfying the
+full proposed guard. The old search chose a side of each forbidden
+branch independently and used a unit gap. A live constructor at <span
+class="math inline">\(1/2\)</span> lies between forbidden constructors
+at zero and one. Stepping one unit to either side of zero removes the
+live point. In a second example the live indices satisfy <span
+class="math inline">\(i+j=0\)</span>. Excluding <span
+class="math inline">\(i\le0\land j\le0\)</span> by insisting on <span
+class="math inline">\(j\ge1\)</span> conflicts with a second forbidden
+branch that requires the answer to imply <span
+class="math inline">\(i&gt;0\)</span>. Choosing <span
+class="math inline">\(i\ge1\)</span> for both exclusions preserves a
+live witness. <a href="coherent_negative_guards.gadt">Both source
+programs</a></p>
+<p>The compiler now retries a failing choice by selecting the sides
+jointly and carrying a common positive slack. At a successful choice
+there are finitely many live witnesses and finitely many chosen strict
+rows. Their positive differences have a positive minimum, so a small
+enough common rational margin preserves every witness. The bounded
+implementation tests representable margins and checks the final guard
+against all supplied forbidden cells. In the exact-maximum example, the
+forbidden constructor satisfies <span
+class="math inline">\(\max(i,j)=0\)</span> and the live constructor has
+indices <span class="math inline">\((-1/2,-1/3)\)</span>. Requiring both
+indices to be at most <span class="math inline">\(-1/4\)</span> keeps
+the live constructor. These checks preserve a witness per validation
+state. Keeping an entire annotated caller region would require universal
+containment as above. <a href="negative_max_face.gadt">Exact-maximum
+program</a> · <a href="thesis-review-48.lean">Common-margin
+lemma</a></p>
+<p>A negative control exposed a separate soundness error. At
+<code>accept Bad</code> the solver retained both negative bounds and
+<span class="math inline">\(\max(i,j)=0\)</span> in the final residual.
+No pair of indices satisfies all three constraints. Projecting the
+indices out without checking joint feasibility gave the call type
+<code>Bool</code>. On the previous compiler a written domain with the
+same bounds and the single branch <code>Live -&gt; True</code>
+reproduced the error and the generated OCaml raised
+<code>Match_failure</code>. InvarGenT revision <code>b0a4ce7</code>
+checks the residual before projection. The illegal call is rejected. A
+declared domain <span class="math inline">\(i\le-1,\ j\le0\)</span>
+still admits the constructor with <span
+class="math inline">\(j=0\)</span>. <a href="thesis-review-48.py">Source
+and runtime replay</a></p>
+<p>One example marks the remaining gap. Put the two live constructors at
+<span class="math inline">\((1,0)\)</span> and <span
+class="math inline">\((0,1)\)</span> and the forbidden one in <span
+class="math inline">\(i\le0\land j\le0\)</span>. Choosing either
+violated face discards a live constructor, regardless of the margin. The
+symbolic construction gives the oblique guard <span
+class="math inline">\(i+j\ge1\)</span>. The current compiler accepts
+both calls when that guard is written and fails to infer it from the
+branches alone. <a href="thesis-review-48.py">Certificate and source
+replay</a></p>
+<p>For a single nonempty convex forbidden cell, the same separation
+argument gives a complete reference procedure even under the compiler’s
+one-witness obligation. A successful conjunctive guard has a separating
+halfspace containing it, so that halfspace keeps its witnesses. Write
+each nonempty live cell as <span
+class="math inline">\(\operatorname{conv}(V)+\operatorname{cone}(R)\)</span>
+with finite rational generators and <span
+class="math inline">\(V\)</span> nonempty. A halfspace <span
+class="math inline">\(a\cdot x\le c\)</span> meets the cell iff some
+<span class="math inline">\(v\in V\)</span> has <span
+class="math inline">\(a\cdot v\le c\)</span>, or some <span
+class="math inline">\(r\in R\)</span> has <span
+class="math inline">\(a\cdot r&lt;0\)</span>. In the second case travel
+far enough from any point of <span class="math inline">\(V\)</span>
+along <span class="math inline">\(r\)</span>. If both tests fail, every
+convex combination starts above <span class="math inline">\(c\)</span>
+and all conic contributions are nonnegative. Choosing one generator per
+live state leaves linear constraints on <span
+class="math inline">\(a,c\)</span> and the forbidden cell’s multipliers.
+Lineality can be represented by both signs of its generators. Several
+forbidden cells require a <em>shared</em> witness in each live state
+across the chosen halfspaces. Independently testing each halfspace can
+lose that witness. <a
+href="https://people.math.carleton.ca/~kcheung/math/notes/MATH5801/12/12_1_resolution_theorem.html">Polyhedral
+resolution theorem</a></p>
+</section>
+<section id="checks" class="level2">
+<h2>Reproducing the checks</h2>
+<p>The proofs use Lean and mathlib 4.19. <a
+href="thesis-review-48.lean">Formalization</a> Run
+<code>python3 thesis-review-48.py</code> for 240 finite synthesis
+comparisons against exhaustive admission and package enumeration. With
+<code>z3-solver</code> installed, <code>--polyhedra</code> checks 104
+instances against an independent lifted formulation of closed-hull
+intersection and verifies each returned separator over the original
+cells. Build the <a href="thesis-review-48-guards.ml">OCaml driver</a>
+as <code>src/Guards48.native</code> with the compiler’s ocamlbuild flags
+and pass its path as <code>--driver</code> for 363 joint numeric checks.
+Pass <code>--compiler</code> to replay the calls and run the emitted
+OCaml. Supplying revision <code>dcfe773</code> as <code>--before</code>
+also reproduces the earlier rejections and runtime failure. <a
+href="thesis-review-1.html">Build environment</a></p>
+</section>
+</article>
+<script src="/assets/theme-toggle.js"></script>
+</body>
+</html>

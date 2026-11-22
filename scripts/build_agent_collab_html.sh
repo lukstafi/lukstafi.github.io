@@ -499,6 +499,11 @@ build_html \
   "$collab_dir/thesis-review-47.html" \
   "What can a failed caller proof teach the next induction jump?"
 
+build_html \
+  "$collab_dir/thesis-review-48.md" \
+  "$collab_dir/thesis-review-48.html" \
+  "Can a failed caller tell us how to construct the next predicate?"
+
 reviews_dir="$collab_dir/reviews"
 if [[ -d "$reviews_dir" ]]; then
   for md_file in "$reviews_dir"/*.md; do
