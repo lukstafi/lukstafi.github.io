@@ -57,6 +57,7 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("invargent", type=Path)
     parser.add_argument("--before", type=Path, help="optional executable at 82587e2")
+    parser.add_argument("--before-placement", type=Path, help="optional executable at e9d7a45")
     parser.add_argument("--trace", type=Path, help="executable with the pass-trace and interface patches")
     args = parser.parse_args()
     exe = args.invargent.resolve(strict=True)
@@ -117,11 +118,15 @@ external let flag : ∀i. Num i → Flag i = "fun n -> if n >= 1 then Pos else O
             "opposites_reversed", raised.replace("relay n m", "relay m n"))
         for name, result in (("opposites", "-n"), ("opposites_reversed", "n")):
             assert f"(* {result} *) num -> (* n *) ex1" in (root / (name + ".ml")).read_text()
-        for budget in (0, 1, 6, 11, 10000):
-            check(f"coordinate_{budget}", coordinate, budget=budget,
-                  error="numerical abduction failed" if budget else "Answers do not converge")
-        check("coordinate_alone", coordinate.partition("\ntest (")[0],
-              error="numerical abduction failed")
+        for budget in (0, 1, 2, 3, 6, 11, 10000):
+            error = ("Answers do not converge" if budget == 0 else
+                     "numerical abduction failed" if budget < 3 else None)
+            check(f"coordinate_{budget}", coordinate, budget=budget, error=error)
+        check("coordinate_alone", coordinate.partition("\ntest (")[0])
+        if args.before_placement:
+            for budget in (1, 10000):
+                check(f"prior_coordinate_{budget}", coordinate, budget=budget,
+                      binary=args.before_placement.resolve(strict=True), error="numerical abduction failed")
         keyed = coordinate.replace("run state =", "run : ∀i. State i → Nat → ∃.Num i = fun state ->")
         assert "val run : ∀n. State n → Nat → ∃.Num n" in check("coordinate_written", keyed)
         merged = keyed.replace("∃.Num i", "∃j[0≤j ∧ j≤1].Num j")

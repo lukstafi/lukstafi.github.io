@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <meta name="dcterms.date" content="2026-11-22">
+  <meta property="og:title" content="Where the induction jump loses the state index">
+  <meta property="og:url" content="https://lukstafi.github.io/projects/jca/agent-collab/thesis-review-24.html">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="lukstafi&#x27;s blog">
+  <meta name="twitter:card" content="summary">
+  <title>Where the induction jump loses the state index</title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <style type="text/css">
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="/assets/tufte.css">
+  <link rel="stylesheet" href="/assets/pandoc-tufte.css">
+  <link rel="stylesheet" href="/assets/site.css">
+  <script defer=""
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+  type="text/javascript"></script>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+  <script>(function(){var t=localStorage.getItem('theme-preference');if(t)document.documentElement.setAttribute('data-theme',t);})()</script>
+</head>
+<body>
+<nav class="site-nav">
+  <a href="/">Home</a> &middot; <a href="/study/">Study Guide</a> &middot; <a href="/about.html">About</a> &middot; <a href="https://lukstafi.substack.com">Substack</a>
+</nav>
+<div class="theme-toggle">
+  <button id="theme-btn" aria-label="Toggle dark mode">&#9788;</button>
+</div>
+<article>
+<header>
+<h1 class="title">Where the induction jump loses the state index</h1>
+<p class="byline">2026-11-22</p>
+</header>
+<nav id="TOC">
+<ul>
+<li><a href="#placement" id="toc-placement">Which facts reach a package
+introduction?</a></li>
+<li><a href="#witnesses" id="toc-witnesses">When can the witnesses be
+shared?</a></li>
+<li><a href="#counterexample" id="toc-counterexample">A constant-size
+solution missed at every budget</a></li>
+<li><a href="#jump" id="toc-jump">Does the induction jump actually
+run?</a></li>
+<li><a href="#checks" id="toc-checks">Reproduction</a></li>
+</ul>
+</nav>
+<p>The two-state recursive function now infers <span
+class="math inline">\(\forall
+i.\,\mathsf{State}(i)\to\mathsf{Nat}\to\exists().\,\mathsf{Num}(i)\)</span>
+at outer budget 3. Inserting a single index-preserving observation into
+its base case gives a constant-size solution that the current algorithm
+misses at <strong>every</strong> outer budget. A second spelling lets us
+watch the caller restore the same bound through pass 40 and test the
+induction jump itself. <a href="state_coordinate.gadt">Two-state
+program</a> · <a href="observed_coordinate.gadt">Counterexample with the
+observation</a> · <a href="thesis-review-24.py">Executable
+checks</a></p>
+<section id="placement" class="level2">
+<h2>Which facts reach a package introduction?</h2>
+<p>In the base arm of <code>run</code>, a match on an input of type
+<span class="math inline">\(\mathsf{State}(i)\)</span> returns 0 at
+constructor <code>A</code> and 1 at <code>B</code>. The original
+normalization produces the following term, with <span
+class="math inline">\(K\)</span> the fresh constructor of the
+existential result.</p>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode ocaml"><code class="sourceCode ocaml"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">let</span> xcase = (<span class="kw">match</span> state <span class="kw">with</span> A -&gt; <span class="dv">0</span> | B -&gt; <span class="dv">1</span>) <span class="kw">in</span> K xcase</span></code></pre></div>
+<p>The supplier for <span class="math inline">\(K\)</span> sees a
+variable of unknown type. The two equations assigning it <span
+class="math inline">\(\mathsf{Num}(0)\)</span> and <span
+class="math inline">\(\mathsf{Num}(1)\)</span> have stronger premises
+than the supplier row. InvarGenT collects conclusions whose premises are
+included in the current row’s premise. Neither equation reaches that
+supplier. The first binary proposal admits any payload at the empty
+parameter tuple. <a href="thesis-review-23.html#counterexample">Previous
+interface trace</a></p>
+<p>InvarGenT now retries a failed inference with the package
+introduction in each returning arm of a tail match. The <code>A</code>
+supplier sees both <span class="math inline">\(i=0\)</span> and the
+value 0. The <code>B</code> supplier sees both <span
+class="math inline">\(i=1\)</span> and the value 1. Generalization can
+express the common equation <span class="math inline">\(o=i\)</span>. At
+positive recursive depth, <code>run B d</code> consequently returns 1.
+Its caller’s guard <span class="math inline">\(o\le0\)</span> cannot
+trigger a return of 2. The two original search attempts still fail on
+pass 1. The new placement takes passes 0 through 3 and runs both
+attached clients. Changing the recursive call to <code>run A d</code>
+makes 2 reachable and inference rejects the client bound. Widening the
+comparison to <span class="math inline">\(o\le1\)</span> also reaches 2,
+as a separately typed call at depth one confirms. <a
+href="thesis-review-24.py">Programs and pass checks</a></p>
+</section>
+<section id="witnesses" class="level2">
+<h2>When can the witnesses be shared?</h2>
+<p>Fix the outer predicate assignment and the package parameter. Let
+<span class="math inline">\(h\)</span> be the history available before
+the match and <span class="math inline">\(b\)</span> a reachable branch
+observation at <span class="math inline">\(h\)</span>. Write <span
+class="math inline">\(U_h\)</span> for witnesses satisfying obligations
+at the outer introduction and <span
+class="math inline">\(V_{h,b}\)</span> for witnesses satisfying the
+branch obligations. A witness includes the payload monotype and any
+opening decision that must be shared. Branch obligations include all
+subsequent universal choices.</p>
+<p>Packing after the match requires a witness function <span
+class="math inline">\(w(h)\)</span>. For unrestricted semantic
+strategies it exists exactly when, at every legal <span
+class="math inline">\(h\)</span>, <span class="math display">\[
+U_h\cap\bigcap_{b\text{ reachable at }h} V_{h,b}\ne\varnothing.
+\]</span> Restriction gives necessity. Selecting an element of each
+intersection gives sufficiency. A written scheme additionally needs a
+selector expressible in the answer language. Even when no branch is
+reachable, a supplier clause emitted outside the branch guards can
+require <span class="math inline">\(U_h\)</span> to contain a witness.
+Packing in an arm only requires a witness in <span
+class="math inline">\(U_h\cap V_{h,b}\)</span> there. The common state
+index <span class="math inline">\(i\)</span> supplies a selector for the
+original two-state program. With two constructors of the same unindexed
+type <code>Switch</code>, one arm can return <code>True</code> and the
+other 0. Both can return the same existential package. Their payload
+types have different heads, so the original match has no shared
+monotype. <a href="thesis-review-24.lean">Lean proofs of the criterion,
+both examples and the empty case</a></p>
+<p>For fixed opening and packing operations the operational argument is
+associativity of sequential evaluation. Evaluate the scrutinee and
+guards to select an arm, evaluate that arm to a payload, then open and
+pack the result. Moving the final operation just inside the selected arm
+preserves this sequence, including effects and failure. The
+implementation retains the package identity and allocates a separate
+binding for each arm’s opening decision. One test arm opens a previous
+package while its sibling packs an ordinary number. Another packs a
+closure. A runtime check records four scrutinee evaluations followed by
+the two failed guard comparisons in their original order. <a
+href="thesis-review-24.lean">Evaluation law</a> · <a
+href="thesis-review-24.py">Generated openings and runtime checks</a></p>
+</section>
+<section id="counterexample" class="level2">
+<h2>A constant-size solution missed at every budget</h2>
+<p>Change only the base computation. The external function
+<code>obs</code> has type <span class="math inline">\(\forall
+j.\,\mathsf{Num}(j)\to\mathsf{Num}(j)\)</span> and evaluates to the
+identity.</p>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode ocaml"><code class="sourceCode ocaml"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">let</span> t = (<span class="kw">match</span> state <span class="kw">with</span> A -&gt; <span class="dv">0</span> | B -&gt; <span class="dv">1</span>) <span class="kw">in</span> obs t</span></code></pre></div>
+<p>Use the same unary arrow and binary result predicates as before. In a
+call at input <span class="math inline">\(i\)</span>, choose parameter
+<span class="math inline">\(i\)</span>. Before case selection, assign
+<span class="math inline">\(\mathsf{Num}(i)\)</span> to the match result
+and instantiate <code>obs</code> at <span
+class="math inline">\(i\)</span>. Its contract gives the same index on
+return. The recursive call at <code>B</code> chooses parameter 1 before
+opening its result, and each top-level call uses its own input index.
+This is a solution of the joined obligations. Writing the scheme
+compiles and executes the exact source. Lean also checks that
+<strong>every</strong> result relation independent of the parameter
+fails, even when the unary call predicate is free. A shared relation
+must admit 0 from <code>A</code>. The recursive opening at
+<code>B</code> can then supply 2 to a client requiring at most 1. <a
+href="thesis-review-24.lean">Certificate and necessity of the
+parameter</a></p>
+<p>At InvarGenT revision <code>fc7c3ab</code>, the base package wraps
+<code>obs t</code>. Distributing the successor’s packages still leaves
+this base supplier outside the match. All four attempts, covering both
+placements and their guard retries, complete pass 0 and fail in numeric
+abduction on pass 1. There are no discard retries. Budget zero stops on
+the first update. For every positive budget, none of the four attempts
+reaches another budget-dependent decision after passing the pass-0 test.
+The traces at 1 and 10,000 agree. This refutes convergence under a
+solution-size bound for the current default choices, including any
+polynomial bound that admits the displayed scheme. Moving
+<code>obs</code> separately into each base arm recovers the exact
+inferred type. <a href="observed_coordinate.gadt">Source</a> · <a
+href="thesis-review-24.py">Budget and placement comparisons</a></p>
+</section>
+<section id="jump" class="level2">
+<h2>Does the induction jump actually run?</h2>
+<p>Write the same base computation as
+<code>obs (match state with A -&gt; 0 | B -&gt; 1)</code>. The first two
+attempts fail as before. The third reaches pass 40. On every pass from 2
+through 40, the supplier proposal admits <span
+class="math inline">\(\mathsf{Num}(o)\)</span> at <span
+class="math inline">\(()\)</span> without an upper bound. The two client
+openings each demand <span class="math inline">\(o\le1\)</span>. The
+stored relation regains that bound, the additional input constraint is
+empty, and all three predicate comparisons report equality with the
+previous pass. The outstanding client demand prevents termination.
+Returning the repeated predicates would be unsound by the preceding
+parameter-necessity proof. <a
+href="thesis-review-24-feedback.patch">Supplier, demand and
+stopping-test trace</a></p>
+<p>With the default jump threshold 8, the implementation calls numeric
+widening only when both the current and preceding passes are out of
+initialization. From pass 4 onward the search alternates a base-case
+restart with a full supplier pass. <strong>No numeric induction jump
+runs in this 40-pass trace.</strong> The scheduler marks pass 10 for
+one-pass supplier-cap recovery. That pass restarts, so the code path
+that could use the recovery flag never runs. Setting
+<code>-convergence_step 3</code> makes numeric widening run on pass 3.
+The binary proposal still carries <span
+class="math inline">\(()\)</span>, and the caller restores the same
+bound through pass 40. These are finite traces. The all-budget result
+above uses the separate early-failing spelling. For this example
+successful inference must recover a parameter that distinguishes the
+states. Changing when the algorithm widens an empty-parameter relation
+cannot supply that distinction. <a href="thesis-review-24.py">Both
+schedules and the 39 repeated updates</a> · <a
+href="thesis-review-3.html#update">Original common-atom jump with a
+proved infinite recurrence</a></p>
+</section>
+<section id="checks" class="level2">
+<h2>Reproduction</h2>
+<p>Run
+<code>python3 thesis-review-24.py /path/to/InvarGenT.native</code> with
+OCaml on the path. Pass an executable from <code>e9d7a45</code> with
+<code>--before</code> for the original comparison. For
+<code>--trace</code>, build <code>fc7c3ab</code> with the three
+diagnostic patches. Run <code>lean thesis-review-24.lean</code> with
+Lean 4.19. The solver suite passed 327 active tests with 10 existing
+TODOs on the OCaml 5.3 compatibility build. The CLI and trace checks
+used the OCaml 5.5 compatibility build. All 162 previous generated
+example signatures matched byte for byte. <a
+href="thesis-review-22-trace.patch">Pass trace</a> · <a
+href="thesis-review-23-interface.patch">Interface trace</a> · <a
+href="thesis-review-24-feedback.patch">Demand and jump trace</a></p>
+</section>
+</article>
+<script src="/assets/theme-toggle.js"></script>
+</body>
+</html>
