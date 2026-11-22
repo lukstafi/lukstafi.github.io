@@ -64,7 +64,7 @@ At revision `253cd6b`, the complete search starts with a pass-0 proposal that fa
 
 This gives two answers to the size-bound question. The original common-atom jump has an infinite execution in which a caller restores the same upper bound at every pass, even though the stored two-inequality result is already inductive. The current implementation repairs that feedback on the arithmetic example. At revision `253cd6b` it can still exhaust type search on the constant-size solution above before reaching a jump. A bound on certificate size gives completeness for a fair enumeration of a finite, checkable certificate language. It supplies no progress measure for either of these executions. [Infinite recurrence and jump repair](thesis-review-3.html#update) · [Finite certificate search](thesis-review-2.html)
 
-A later revision proves this direct guard impossible and finishes on pass 5. Two incompatible calls under an opaque guard give a further constant-size certificate and a finite all-budget failure. [Conditional typing at revision `16509d9`](thesis-review-21.html#residual) · [Current two-package counterexample](thesis-review-22.html#binary)
+A later revision proves this direct guard impossible and finishes on pass 5. Two incompatible calls under an opaque guard give a further constant-size certificate and a finite all-budget failure. [Conditional typing at revision `16509d9`](thesis-review-21.html#residual) · [Two-package counterexample at `82587e2`](thesis-review-22.html#binary)
 
 ## Reproduction {#checks}
 

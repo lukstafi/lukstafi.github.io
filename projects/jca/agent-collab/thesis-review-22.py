@@ -43,7 +43,8 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("invargent", type=Path)
     parser.add_argument("--before", type=Path, help="ordinary executable at 16509d9")
-    parser.add_argument("--trace", type=Path, help="current executable with the review-22 trace patch")
+    parser.add_argument("--before-joint", type=Path, help="ordinary executable at 82587e2")
+    parser.add_argument("--trace", type=Path, help="82587e2 executable with the review-22 trace patch")
     parser.add_argument("--old-trace", type=Path, help="16509d9 executable with the same patch")
     args = parser.parse_args()
     exe = args.invargent.resolve(strict=True)
@@ -115,8 +116,11 @@ let checked = require_true taken
         check("one_packed_call", single(packed), pinned)
         check("erased_packed_clients", single(packed).replace(CALL, "True"), PLAIN)
         for budget in (0, 1, 2, 3, 4, 5, 6, 11, 80, 10000):
-            check(f"packed_{budget}", packed, budget=budget,
-                  error="Answers do not converge" if budget < 6 else "Type mismatch")
+            check(f"packed_{budget}", packed, PLAIN if budget >= 6 else None, budget=budget,
+                  error="Answers do not converge" if budget < 6 else None)
+            if args.before_joint:
+                check(f"before_joint_{budget}", packed, binary=args.before_joint.resolve(strict=True),
+                      budget=budget, error="Answers do not converge" if budget < 6 else "Type mismatch")
         if args.before:
             before = args.before.resolve(strict=True)
             check("old_external_pair", pair, error="Quantifier violation", binary=before, budget=10000)

@@ -118,13 +118,14 @@ back to pass 0</a></li>
 </ul>
 </nav>
 <p>Two calls behind an effectful guard now typecheck when its helper
-returns an ordinary number. Changing one keyword from
-<code>function</code> to <code>efunction</code> gives a constant-size
-solution that the joint inference still misses at every outer budget.
-The change packages the returned number. Its relation to the input index
-must now be carried by a second binary postcondition. <a
-href="local_packed_guard.gadt">Runnable counterexample</a> · <a
-href="thesis-review-22.py">Budget, type and runtime checks</a></p>
+returns an ordinary number. At InvarGenT revision <code>82587e2</code>,
+changing one keyword from <code>function</code> to
+<code>efunction</code> gives a constant-size solution that joint
+inference misses at every outer budget. The change packages the returned
+number. Its relation to the input index must now be carried by a second
+binary postcondition. <a href="local_packed_guard.gadt">Runnable
+counterexample</a> · <a href="thesis-review-22.py">Budget, type and
+runtime checks</a></p>
 <section id="binary" class="level2">
 <h2>Two binary postconditions</h2>
 <p>The client matches a value of type <code>Seed</code>. Its constructor
@@ -220,6 +221,11 @@ their defaults. The complete event and discard traces at 6 and 10,000
 agree. A single jointly checked marked call succeeds. <a
 href="thesis-review-22-trace.patch">Instrumentation</a> · <a
 href="thesis-review-22.py">Reproduction</a></p>
+<p>A subsequent revision checks this package relation against an
+explicit negative obligation on the client. Its retry succeeds on pass 5
+as soon as the original search has enough budget to reach a failure on
+pass 6. <a href="thesis-review-23.html#checking">Joint exclusion and the
+least producer relation</a></p>
 <p>The original common-atom induction jump can renew the same numeric
 demand forever. This newer example exhausts a finite search. Its
 two-inequality predecessor and its four-predicate certificate both rule
@@ -394,10 +400,12 @@ OCaml on the path. Pass <code>--before</code> for an ordinary executable
 at <code>16509d9</code>. To check the traces, apply the supplied patch
 in separate build checkouts and pass their executables as
 <code>--trace</code> and <code>--old-trace</code>. The old trace
-deliberately exits once it has recorded 64 discards. The current trace
-runs to the compiler’s own outcome. Positive examples compile with full
-annotations and execute the resulting OCaml. Lean 4.19 checks the proof
-file using the standard library. <a
+deliberately exits once it has recorded 64 discards. The
+<code>--trace</code> executable at <code>82587e2</code> runs to its own
+outcome. Use <code>--before-joint</code> with the ordinary executable at
+that revision to reproduce its original budget sweep. Positive examples
+compile with full annotations and execute the resulting OCaml. Lean 4.19
+checks the proof file using the standard library. <a
 href="thesis-review-22.py">Driver</a> · <a
 href="thesis-review-22.lean">Proofs</a> · <a
 href="thesis-review-1.html">Compiler build notes</a></p>

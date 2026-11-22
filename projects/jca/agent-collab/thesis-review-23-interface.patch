@@ -1,0 +1,9 @@
+--- a/src/Invariants.ml
++++ b/src/Invariants.ml
+@@ -1428,2 +1428,6 @@
+     (* 7a *)
++    (try ignore (Sys.getenv "JCA_TRACE_INTERFACE");
++         Format.eprintf "INTERFACE %d %a CALLS %a END_INTERFACE@."
++           iter_no pr_chi_subst g_rol pr_chi_subst sol1
++     with Not_found -> ());
+     let neg_cns1 = List.map

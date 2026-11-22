@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <meta name="dcterms.date" content="2026-11-22">
+  <meta property="og:title" content="When does a recursive package have a least postcondition?">
+  <meta property="og:url" content="https://lukstafi.github.io/projects/jca/agent-collab/thesis-review-23.html">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="lukstafi&#x27;s blog">
+  <meta name="twitter:card" content="summary">
+  <title>When does a recursive package have a least
+postcondition?</title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <link rel="stylesheet" href="/assets/tufte.css">
+  <link rel="stylesheet" href="/assets/pandoc-tufte.css">
+  <link rel="stylesheet" href="/assets/site.css">
+  <script defer=""
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+  type="text/javascript"></script>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+  <script>(function(){var t=localStorage.getItem('theme-preference');if(t)document.documentElement.setAttribute('data-theme',t);})()</script>
+</head>
+<body>
+<nav class="site-nav">
+  <a href="/">Home</a> &middot; <a href="/study/">Study Guide</a> &middot; <a href="/about.html">About</a> &middot; <a href="https://lukstafi.substack.com">Substack</a>
+</nav>
+<div class="theme-toggle">
+  <button id="theme-btn" aria-label="Toggle dark mode">&#9788;</button>
+</div>
+<article>
+<header>
+<h1 class="title">When does a recursive package have a least
+postcondition?</h1>
+<p class="byline">2026-11-22</p>
+</header>
+<nav id="TOC">
+<ul>
+<li><a href="#checking" id="toc-checking">Check a proposed exclusion
+against the answer</a></li>
+<li><a href="#least" id="toc-least">When independent inference is
+enough</a></li>
+<li><a href="#coordinates" id="toc-coordinates">Two choices of package
+parameter</a></li>
+<li><a href="#fibers" id="toc-fibers">Which inputs may share one
+parameter?</a></li>
+<li><a href="#counterexample" id="toc-counterexample">A constant-size
+solution the joint updates still miss</a></li>
+<li><a href="#checks" id="toc-checks">Reproduction</a></li>
+</ul>
+</nav>
+<p>InvarGenT now accepts the local <code>efunction</code> whose two
+binary postconditions defeated every outer budget at revision
+<code>82587e2</code>. The helper returns a number at the input index
+<span class="math inline">\(i\)</span>. The caller opens its package at
+<span class="math inline">\(i\le0\)</span> and asks whether the result
+can be at least 1. Inference can answer that question with its proposed
+package relation still in scope. There is a least relation for this
+helper once its parameter is fixed. Choosing the parameter itself
+presents a different mathematical problem. <a
+href="thesis-review-22.html#binary">Original joint clauses and
+certificate</a> · <a href="thesis-review-23.py">Executable
+comparisons</a></p>
+<section id="checking" class="level2">
+<h2>Check a proposed exclusion against the answer</h2>
+<p>Write <span class="math inline">\(P\)</span> for the facts needed to
+reach an arm, <span class="math inline">\(E\)</span> for the obligations
+of evaluating its guard, <span class="math inline">\(G\)</span> for the
+successful comparison and <span class="math inline">\(B\)</span> for the
+body obligations. The original clause is <span
+class="math inline">\(P\Rightarrow E\land(G\Rightarrow B)\)</span>. On a
+retry, require <span class="math inline">\(P\Rightarrow
+E\land(G\Rightarrow\bot)\)</span> at a selected arm. Every solution to
+this stronger clause satisfies the original with the <strong>same
+predicates and witness strategy</strong>. On each play reaching <span
+class="math inline">\(P\)</span>, it establishes <span
+class="math inline">\(E\)</span>. A successful comparison would
+contradict the added obligation. This argument applies to a set of arms
+under one shared prefix. An indexed constructor pattern can supply the
+success premise on its own. Replacing an arm’s body leaves the
+evaluation of its scrutinee and guards in place. <a
+href="thesis-review-23.lean">Same-strategy proof</a> · <a
+href="thesis-review-21.lean">Operational replacement lemma</a></p>
+<p>The compiler tries ordinary inference first. After a failure it can
+propose such an exclusion inside the body of a let that may have opened
+a package. It retains the constructor premises, guard operands, other
+clients, and recursive definitions. The solver infers a candidate from
+the retained positive clauses and the program’s own assertions. For the
+proposed exclusions, it substitutes the <strong>final</strong> unary and
+binary predicates, adds the final residual constraints, and checks that
+each success premise is unsatisfiable. If a proposed exclusion fails,
+its original body can be restored. The compiler applies the same target
+and arithmetic restrictions as the earlier guard erasure. <a
+href="thesis-review-21.html#machine">Guard evaluation and native
+integers</a></p>
+<p>For the equality helper, the original 28 attempts still occur. Once
+the original search reports its type failure, the retry makes six more
+attempts, passes 0 through 5. The complete item succeeds at budget 6 and
+takes the same path at 10,000. Budget 5 exhausts the original search
+before the retry can start. The exported type matches inference on the
+definition alone. The previously successful one-call program retains the
+type selected by that call. A second test places a live arm between two
+impossible ones. Its OCaml body increments a counter exactly once.
+Moving the helper’s output to a genuinely attainable endpoint leaves the
+incompatible calls ill-typed. A type-indexed version returns
+<code>Key Marker</code> and excludes the constructor for
+<code>Key Cargo</code> without a numeric guard. <a
+href="thesis-review-23.py">Programs, signatures, runtime counts and pass
+trace</a></p>
+<p>With <span class="math inline">\(m\ge2\)</span> unresolved arms the
+implementation first tries them together. A failure naming the body of a
+proposed exclusion lets it restore that body and retry the smaller
+group. It also tries the individual sites. The descending sequence of
+groups of size at least two has at most <span
+class="math inline">\(m-1\)</span> members, followed by at most <span
+class="math inline">\(m\)</span> singleton attempts. The initial query
+using only independent guard proofs, if present, is additional. This
+bound counts solver invocations. A failed query or an untried subset
+supplies no unreachability proof.</p>
+</section>
+<section id="least" class="level2">
+<h2>When independent inference is enough</h2>
+<p>Fix the input predicates, the parameter tuple of each result, and any
+legal first-order witness choices shared with the clients. Suppose the
+remaining producer clauses have the form <span
+class="math inline">\(R_1(a_1)\land\cdots\land R_n(a_n)\Rightarrow
+R(b)\)</span> after instantiation. Keep the ground instances whose
+first-order premises hold. A base result has <span
+class="math inline">\(n=0\)</span>. Several mutually recursive
+postconditions fit these rules by tagging a tuple with its predicate
+name.</p>
+<p>Let <span class="math inline">\(L\)</span> contain exactly the
+conclusions with finite derivation trees. Attaching the finitely many
+premise trees beneath a rule instance puts its conclusion in <span
+class="math inline">\(L\)</span>, so <span
+class="math inline">\(L\)</span> satisfies every rule. Conversely,
+induction on a tree shows that every producer solution contains its
+conclusion. Thus <span class="math inline">\(L\)</span> is the least
+producer solution. Suppose also that shrinking these relations preserves
+the remaining client obligations, as it does for openings used only as
+hypotheses. Then some producer solution satisfies the clients <strong>if
+and only if</strong> <span class="math inline">\(L\)</span> does. The
+implication from an arbitrary solution keeps the same choices at the
+shared interface. To infer a written scheme from the reverse
+implication, <span class="math inline">\(L\)</span> itself must be
+expressible, or one must find an expressible closed enlargement which
+still satisfies the clients. <a href="thesis-review-23.lean">Least
+relation, elimination and written-answer theorems</a></p>
+<p>For <code>relay</code> with the parameter fixed to its input, the
+rules put <span class="math inline">\((i,i)\)</span> into the relation
+and repack each recursive result at the same <span
+class="math inline">\(i\)</span>. The diagonal is already closed. A
+larger producer relation can admit a positive result at zero and fail
+the client. A uniform size bound gives no reason to choose the diagonal
+over that larger relation.</p>
+<p>A second helper may keep the preceding result <span
+class="math inline">\(x\)</span> or return <span
+class="math inline">\(x-1\)</span>. Its declared step guarantees <span
+class="math inline">\(x\le o+1\)</span> and <span
+class="math inline">\(o\le x\)</span>. Starting with the empty relation,
+exact round <span class="math inline">\(k+1\)</span> over the integers
+gives the band <span class="math inline">\(i-k\le o\le i\)</span>. The
+point <span class="math inline">\(i-k-1\)</span> first appears at the
+next round. The union has the one-inequality description <span
+class="math inline">\(o\le i\)</span>. Even an exact, expressible
+<strong>least</strong> postcondition of constant size can require
+infinitely many exact finite rounds. InvarGenT’s induction jump recovers
+this inequality. The successful retry ends on pass 9 and the joint
+program needs outer budget 10. Reversing the step lets a call at zero
+return one. The compiler rejects the incompatible demands, and a
+well-typed client executes that arm. <a
+href="thesis-review-23.lean">Finite stages and their union</a> · <a
+href="thesis-review-23.py">Checked decreasing and increasing
+programs</a></p>
+</section>
+<section id="coordinates" class="level2">
+<h2>Two choices of package parameter</h2>
+<p>Give the helper two arguments of indices <span
+class="math inline">\(i\)</span> and <span
+class="math inline">\(-i\)</span> and let it return the first. Either
+index is available to carry as the parameter <span
+class="math inline">\(k\)</span>. Write <span
+class="math inline">\(X(i,k)\)</span> for the available package at a
+call and <span class="math inline">\(R(k,o)\)</span> for its payload.
+The obligations below admit the call at every <span
+class="math inline">\(i\)</span>, require the producer to supply its
+actual output, and let the client demand that output back. <span
+class="math display">\[
+\forall i.\,\exists k.\,X(i,k),\qquad
+X(i,k)\Rightarrow R(k,i),\qquad
+X(i,k)\land R(k,o)\Rightarrow o=i.
+\]</span></p>
+<p>One solution uses <span class="math inline">\(k=i\)</span> and <span
+class="math inline">\(o=k\)</span>. The other uses <span
+class="math inline">\(k=-i\)</span> and <span
+class="math inline">\(o=-k\)</span>. <strong>No feasible result relation
+is contained in both</strong>, even if its call predicate can be chosen
+freely. At <span class="math inline">\(i=1\)</span> there must be a
+<span class="math inline">\(k\)</span> such that <span
+class="math inline">\(R(k,1)\)</span>. Containment would give both <span
+class="math inline">\(k=1\)</span> and <span
+class="math inline">\(k=-1\)</span>. Yet in each solution the relation
+visible after opening, <span class="math inline">\(\exists
+k.\,X(i,k)\land R(k,o)\)</span>, is exactly <span
+class="math inline">\(o=i\)</span>. Intersecting private postconditions
+before aligning their coordinates destroys a real call. Jointly checking
+the chosen call predicate and result relation preserves it. A supplier
+with an unfixed existential output choice can likewise lack a least
+relation even over two Boolean values. <a
+href="thesis-review-23.lean">No-common-result and observation
+proofs</a></p>
+<p>The source example supplies the opposed indices through a constructor
+and an external function with the precondition <span
+class="math inline">\(i+j=0\)</span>. InvarGenT infers the local helper
+and runs the client at <span class="math inline">\((-1,1)\)</span>.
+Inferring the helper separately makes the representation visible. With
+the arguments in source order the generated package carries <span
+class="math inline">\(n\)</span> and holds <span
+class="math inline">\(-n\)</span>. Exchanging the arguments at every
+call makes it carry <span class="math inline">\(n\)</span> and hold
+<span class="math inline">\(n\)</span>. Both clients receive the
+original first value. The iteration must align these coordinates before
+comparing successive binary relations. Its unary predicate determines
+which input instances that alignment must cover. <a
+href="opposite_package.gadt">Runnable opposed-index example</a> · <a
+href="thesis-review-23.py">Both generated constructor
+annotations</a></p>
+</section>
+<section id="fibers" class="level2">
+<h2>Which inputs may share one parameter?</h2>
+<p>Suppose the available supplier outputs at input <span
+class="math inline">\(i\)</span> form a set <span
+class="math inline">\(S_i\)</span> and the client allows a set <span
+class="math inline">\(A_i\)</span>. Propose a parameter <span
+class="math inline">\(k=c(i)\)</span>. A relation satisfying <span
+class="math inline">\(S_i\subseteq R(c(i))\subseteq A_i\)</span> for
+every <span class="math inline">\(i\)</span> exists <strong>exactly
+when</strong> <span class="math display">\[
+c(i)=c(j)\quad\Longrightarrow\quad S_i\subseteq A_j
+\]</span> for every ordered pair of inputs. Necessity follows by opening
+the same package parameter at <span class="math inline">\(j\)</span>.
+For sufficiency take <span class="math inline">\(R(k)\)</span> to be the
+union of the supplier sets over all <span
+class="math inline">\(i\)</span> with <span
+class="math inline">\(c(i)=k\)</span>. When clients demand the exact
+output <span class="math inline">\(f(i)\)</span>, the test says that
+<span class="math inline">\(f\)</span> must be constant on each set of
+inputs sharing a parameter. Either signed coordinate passes for the
+opposed-index helper. A constant parameter would merge 1 and <span
+class="math inline">\(-1\)</span> and fail. <a
+href="thesis-review-23.lean">Parameter compatibility and exact-output
+proofs</a></p>
+<p>In a recursive definition, changing the parameter can change the
+supplier sets themselves. Consider two input states. The first supplies
+0. The second supplies 1 and has the additional rule that a recursive
+result of 0 supplies 2. With separate parameters the second rule never
+fires, and both clients can require an output at most 1. Merging the
+parameters makes 0 available to the second rule. It now supplies 2,
+which violates the client. Comparing the old outputs on the merged
+inputs would pass the displayed test. Applying the producer rules on the
+proposed interface before checking the clients detects the failure. <a
+href="thesis-review-23.lean">Finite counterexample</a></p>
+</section>
+<section id="counterexample" class="level2">
+<h2>A constant-size solution the joint updates still miss</h2>
+<p>The two-state rules yield a small source program. Constructors
+<code>A : State 0</code> and <code>B : State 1</code> expose the two
+inputs. At depth zero the corresponding results are 0 and 1. A successor
+at <code>A</code> returns 0. A successor at <code>B</code> calls
+<code>run B d</code>, returns 2 if the opened result is nonpositive, and
+otherwise returns 1. Two attached calls use both states and require
+results at most 1. <a href="state_coordinate.gadt">Runnable unannotated
+program</a></p>
+<p>A certificate for the joint clauses uses one unary arrow predicate
+and one binary package predicate. Admit the instances of <span
+class="math inline">\(\mathrm{State}(i)\to\mathrm{Nat}\to K(\langle
+i\rangle)\)</span> and put <span
+class="math inline">\(\mathrm{Num}(i)\)</span> at parameter <span
+class="math inline">\(\langle i\rangle\)</span>. The
+parameter-membership obligation at a definition uses its input index.
+The base and successor result types can both be chosen as <span
+class="math inline">\(\mathrm{Num}(i)\)</span> before the constructor
+tests. At <code>A</code> they become <span
+class="math inline">\(\mathrm{Num}(0)\)</span>. At <code>B</code> the
+recursive call chooses parameter 1 before opening its result. Every
+admitted payload then has index 1, so the comparison with zero fails.
+The other arm supplies 1. Choose the initial function instance at 0 and
+the two external instances at 0 and 1. These witnesses also discharge
+the two client bounds. Lean checks the index obligations with the result
+witnesses in that order. <a href="thesis-review-23.lean">Certificate
+proof</a></p>
+<p>Writing the type <span class="math inline">\(\forall
+i.\,\mathrm{State}(i)\to\mathrm{Nat}\to\exists().\,\mathrm{Num}(i)\)</span>
+gives executable OCaml. Giving the package just the common interval
+<span class="math inline">\([0,1]\)</span> fails. If the branch
+triggered by zero also returns 1, that interval suffices and the written
+version runs. These controls test the effect of the parameter on the
+recursive supplier.</p>
+<p><strong>At InvarGenT revision <code>e9d7a45</code>, the unannotated
+example fails at every outer budget with the other settings at their
+defaults.</strong> Budget zero exhausts the first update. At every
+positive budget the original search and its exclusion retry each
+complete pass 0 and fail in numeric abduction on pass 1. Neither search
+reaches the pass-1 budget comparison, a finished-proposal replay, or
+final answer extraction. The complete pass and discard traces agree at
+budgets 1 and 10,000. Immediately before both pass-1 abduction calls,
+the component proposal is <span class="math inline">\(\exists
+t.\,\delta&#39;=()\land\delta=t\)</span>. The proposed arrow also
+returns a package indexed by <span class="math inline">\(()\)</span>.
+The result predicate at that moment admits every payload type and
+carries no state coordinate. Removing the attached clients still fails.
+Even replacing 2 by 1 in the unannotated source leaves the early
+failure. A diagnosis of the pass-1 failure must therefore also explain
+the harmless variant. <a
+href="thesis-review-23-interface.patch">Interface trace</a> · <a
+href="thesis-review-23.py">Budget, annotation and trace controls</a></p>
+</section>
+<section id="checks" class="level2">
+<h2>Reproduction</h2>
+<p>Run
+<code>python3 thesis-review-23.py /path/to/InvarGenT.native</code> with
+OCaml on the path. The optional <code>--before</code> argument takes an
+executable at <code>82587e2</code>. For <code>--trace</code>, build the
+current executable with both the pass-trace and interface patches. Lean
+4.19 checks the proof file with the standard library. <a
+href="thesis-review-23.py">Test driver</a> · <a
+href="thesis-review-22-trace.patch">Pass trace</a> · <a
+href="thesis-review-23-interface.patch">Interface trace</a> · <a
+href="thesis-review-23.lean">Lean proofs</a></p>
+<p>InvarGenT commit <code>e9d7a45</code> implements the exclusion check.
+The regression suite passed 325 active tests with 10 existing TODOs. All
+161 previous example interfaces reproduced byte for byte. Both the
+default command and the fully annotated compiler generated executable
+OCaml for the original package example and the opposed-index
+variant.</p>
+</section>
+</article>
+<script src="/assets/theme-toggle.js"></script>
+</body>
+</html>
