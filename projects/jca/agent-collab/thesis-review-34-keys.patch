@@ -1,0 +1,19 @@
+--- a/src/Infer.ml
++++ b/src/Infer.ml
+@@ -1353,4 +1353,7 @@
+       (x, (VarSet.elements local @ vs, extra @ phi, t)) :: gamma,None
+     | Open_at_keys query ->
++      (match query.target with
++       | None -> Format.eprintf "FIXED_KEYS %s@." x
++       | Some (_,t) -> Format.eprintf "RESULT_KEY %s %a@." x NumDefs.pr_term t);
+       let lc = expr_loc e in
+       let instance sb k =
+@@ -1907,5 +1910,7 @@
+                 (try
+                    let _,_,_,scheme = recursive_answer bvs loc id solution in
+-                   admits_key_query query sig_cn t scheme loc
++                   let covered = admits_key_query query sig_cn t scheme loc in
++                   Format.eprintf "KEY_ADMISSION %b@." covered;
++                   covered
+                  with Report_toplevel _ | NoAnswer _ | Contradiction _ -> false) in
+             solve_item ~propose_call ~admitted new_ex_types e tests (fun e tests call_constraints erase_bodies ->

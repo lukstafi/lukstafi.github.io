@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <meta name="dcterms.date" content="2026-11-22">
+  <meta property="og:title" content="When can a recursive result select its own typing?">
+  <meta property="og:url" content="https://lukstafi.github.io/projects/jca/agent-collab/thesis-review-34.html">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="lukstafi&#x27;s blog">
+  <meta name="twitter:card" content="summary">
+  <title>When can a recursive result select its own typing?</title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <link rel="stylesheet" href="/assets/tufte.css">
+  <link rel="stylesheet" href="/assets/pandoc-tufte.css">
+  <link rel="stylesheet" href="/assets/site.css">
+  <script defer=""
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+  type="text/javascript"></script>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+  <script>(function(){var t=localStorage.getItem('theme-preference');if(t)document.documentElement.setAttribute('data-theme',t);})()</script>
+</head>
+<body>
+<nav class="site-nav">
+  <a href="/">Home</a> &middot; <a href="/study/">Study Guide</a> &middot; <a href="/about.html">About</a> &middot; <a href="https://lukstafi.substack.com">Substack</a>
+</nav>
+<div class="theme-toggle">
+  <button id="theme-btn" aria-label="Toggle dark mode">&#9788;</button>
+</div>
+<article>
+<header>
+<h1 class="title">When can a recursive result select its own
+typing?</h1>
+<p class="byline">2026-11-22</p>
+</header>
+<nav id="TOC">
+<ul>
+<li><a href="#closure" id="toc-closure">Which part stabilizes?</a></li>
+<li><a href="#opening" id="toc-opening">One opening can justify
+another</a>
+<ul>
+<li><a href="#admission" id="toc-admission">What goes wrong if the
+inferred domain is skipped?</a></li>
+</ul></li>
+<li><a href="#observations" id="toc-observations">How much must the
+selector observe?</a></li>
+<li><a href="#signed" id="toc-signed">A result can be visible and still
+need a piecewise key</a></li>
+</ul>
+</nav>
+<p>The original common-atom induction jump can renew a caller demand
+forever with a two-inequality solution already in hand. Current
+InvarGenT finishes that example on pass 9. There is a simpler feedback
+calculation inside the full problem that <em>does</em> stabilize, even
+with infinitely many keys and results. It explains why a hypothetical
+bad result can sometimes supply the typing that rules it out. <a
+href="thesis-review-3.html#update">Original counterexample</a> · <a
+href="thesis-review-21.html#feedback">Repaired jump trace</a></p>
+<section id="closure" class="level2">
+<h2>Which part stabilizes?</h2>
+<p>Fix the runtime arguments of a call and the declared package. Let
+<span class="math inline">\(K\)</span> be the keys permitted by its
+written signature. Write <span class="math inline">\(P(k,r)\)</span>
+when the package at key <span class="math inline">\(k\)</span> permits
+payload <span class="math inline">\(r\)</span>, including the existence
+of any private witnesses. In Table 4.4 the binary predicate relates the
+existential package’s payload type to its captured parameter tuple. Here
+that tuple includes <span class="math inline">\(k\)</span>, and fixing
+the other arguments lets us display just <span
+class="math inline">\(k\)</span> and the numeric payload index <span
+class="math inline">\(r\)</span>. The recursive function’s input
+predicate determines which keys it actually admits. <a
+href="../lukstafi-phd-thesis.pdf#page=71">Table 4.4</a> · <a
+href="thesis-review-22.html#binary">The two predicates in a recursive
+package</a></p>
+<p>For a domain <span class="math inline">\(D\subseteq K\)</span>, the
+strongest result guarantee obtained by using all its typings is <span
+class="math inline">\(F(D)\)</span>. In the other direction, <span
+class="math inline">\(G(S)\)</span> contains every key compatible with a
+set <span class="math inline">\(S\)</span> of supplier outcomes.</p>
+<p><span class="math display">\[
+F(D)=\{r\mid \forall k\in D.\ P(k,r)\},\qquad
+G(S)=\{k\in K\mid\forall r\in S.\ P(k,r)\}.
+\]</span></p>
+<p>The same rectangle <span class="math inline">\(D\times S\subseteq
+P\)</span> can be read in either direction, so <span
+class="math inline">\(S\subseteq F(D)\)</span> exactly when <span
+class="math inline">\(D\subseteq G(S)\)</span>. Each map reverses
+inclusion. Applying this equivalence twice gives <span
+class="math inline">\(F(G(F(D)))=F(D)\)</span> and <span
+class="math inline">\(G(F(G(S)))=G(S)\)</span>. <strong>One exact round
+trip stabilizes the pair.</strong> A direct proof of the first equality
+is that every old key belongs to <span
+class="math inline">\(G(F(D))\)</span>, and every added key already
+accepts every result in <span class="math inline">\(F(D)\)</span>. <a
+href="thesis-review-34.lean">Lean proofs of compatibility and both
+identities</a></p>
+<p>Suppose the supplier must support every outcome in <span
+class="math inline">\(B\)</span>, some callers require keys <span
+class="math inline">\(D_0\)</span>, and every result the consumer can
+see must be in <span class="math inline">\(H\)</span>. A domain meeting
+all three demands exists exactly when</p>
+<p><span class="math display">\[
+D_0\subseteq G(B)\quad\text{and}\quad F(G(B))\subseteq H.
+\]</span></p>
+<p>Any candidate domain lies inside <span
+class="math inline">\(G(B)\)</span>, so its package guarantee contains
+<span class="math inline">\(F(G(B))\)</span>. Conversely, <span
+class="math inline">\(G(B)\)</span> itself witnesses sufficiency. If a
+call must have a typing, also require <span
+class="math inline">\(G(B)\)</span> to be inhabited. This gives a local
+feasibility test when <span class="math inline">\(P,B,D_0,H\)</span> are
+fixed. In the full table a recursive supplier can change <span
+class="math inline">\(B\)</span> when its input postcondition changes,
+and widening can discard a consequence of that supplier. Those are the
+operations responsible for the earlier recurrence. <a
+href="thesis-review-34.lean">Feasibility proof</a> · <a
+href="thesis-review-3.html#update">Supplier and caller steps of the
+recurrence</a></p>
+<p>For example, take <span
+class="math inline">\(K=\{1,\ldots,n\}\)</span>, <span
+class="math inline">\(0\le r\le n\)</span>, and <span
+class="math inline">\(P(k,r)\)</span> meaning <span
+class="math inline">\(r\ne k\)</span>. Then <span
+class="math inline">\(F(D)=\{0\}\cup(K\setminus D)\)</span> and <span
+class="math inline">\(G(F(D))=D\)</span>. There are <span
+class="math inline">\(2^n\)</span> different closed pairs at this one
+input. The identities bound the length of exact alternation even when
+the number of possible answers grows exponentially. If the supplier must
+return 2, key 2 disappears and the full intersection still contains 2.
+No selection of admitted keys can prove that this outcome is impossible.
+<a href="thesis-review-34.lean">Closed-pair and missing-key
+proofs</a></p>
+</section>
+<section id="opening" class="level2">
+<h2>One opening can justify another</h2>
+<p>For the zero-returning program, take an unconditional first typing at
+key 1. Its package gives <span class="math inline">\(0\le r\le
+n\)</span>. Choose a second key <span
+class="math inline">\(q(r)=\max(1,r)\)</span>. When <span
+class="math inline">\(r&gt;0\)</span>, the new package excludes <span
+class="math inline">\(r\)</span> itself. This is one result-dependent
+typing in addition to the first. Any list fixed before seeing the result
+needs all <span class="math inline">\(n\)</span> keys in total. <a
+href="punctured_key.gadt">Program</a> · <a
+href="thesis-review-33.html#puncture">Fixed-key lower bound</a></p>
+<p>To apply this rule in a recursive definition, first type the call at
+<span class="math inline">\(a\)</span>. For every payload and private
+witness allowed by that opening, prove that the inferred input predicate
+admits <span class="math inline">\(q(r)\)</span> at the same arguments.
+Only then use <span class="math inline">\(P(q(r),r)\)</span> to check
+the body. The second package has fresh private witnesses. In the
+induction on a terminating evaluation, the recursive subevaluation
+already satisfies each admitted typing. We can apply that hypothesis
+twice to the same subevaluation, even when evaluating an argument has a
+side effect. <a href="thesis-review-34.lean">Opening lemma</a></p>
+<p>InvarGenT generates a positive obligation on the recursive predicate
+using only the first opening. It also checks the proposed keys against
+the <strong>final exported domain</strong>. For the first key it starts
+from arbitrary admitted arguments and an admitted key at those
+arguments. For the second it may add facts about the first package’s
+payload. Numeric witnesses for changed arrow coordinates are supplied
+explicitly, then the checker verifies the new coordinate equalities and
+the entire domain by entailment. This check applies to the earlier
+fixed-endpoint retry too. The caller still sees the original package
+contract.</p>
+<p>To find a choice, the compiler looks at a disjunctive inequality
+<span class="math inline">\(f(k,r)\le0\lor g(k,r)\le0\)</span> in the
+written postcondition. Each strict complement suggests a boundary key.
+For an increasing integer key coefficient, try the first integer above
+the root. For a decreasing coefficient, try the last integer below it.
+The coefficients on the observed input and result indices must be
+integral. The compiler clips the proposed key to the written interval.
+The guard and the inferred domain are checked separately for every
+successful proposal.</p>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr>
+<th>Key excluded by a hypothetical payload <span
+class="math inline">\(r\)</span></th>
+<th>Written key interval</th>
+<th>Outcome at budget 2</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><span class="math inline">\(r\)</span></td>
+<td><span class="math inline">\([1,n]\)</span></td>
+<td>Accepts and prints 0</td>
+</tr>
+<tr>
+<td><span class="math inline">\(r-1\)</span></td>
+<td><span class="math inline">\([1,n]\)</span></td>
+<td>Accepts the guard <span class="math inline">\(2\le r\le n\)</span>
+and prints 0</td>
+</tr>
+<tr>
+<td><span class="math inline">\(n+1-r\)</span></td>
+<td><span class="math inline">\([1,n]\)</span></td>
+<td>Accepts and prints 0</td>
+</tr>
+<tr>
+<td><span class="math inline">\(2r+1\)</span></td>
+<td><span class="math inline">\([3,2n+1]\)</span></td>
+<td>Accepts and prints 0</td>
+</tr>
+</tbody>
+</table>
+<p>The signature checks compare the exported domain and postcondition
+with their written meanings over integers and rationals. An effect in
+the argument of a depth-two call runs exactly twice. The punctured-key
+program with unbounded <span class="math inline">\(n\)</span> failed at
+revision <code>4fd76e5</code>. It now finishes on pass 2, before the
+induction jump. <a href="thesis-review-34.py">Executable replay,
+signature checks and trace assertions</a></p>
+<section id="admission" class="level3">
+<h3>What goes wrong if the inferred domain is skipped?</h3>
+<p>Change the base result from 0 to 2. At width 3 the recursive branch
+now enters the guard <span class="math inline">\(1\le r\le n\)</span>
+and returns a Boolean where a number is required. An experimental build
+with only the final admission check disabled accepts the definition.
+Even that build exports the narrowed domain <span
+class="math inline">\(n\ge2\)</span>, <span class="math inline">\(1\le
+k\le n\)</span>, <span class="math inline">\(k\ne2\)</span> on integers.
+Its generated OCaml reaches the erased branch and raises an assertion.
+The positive call obligation in the generated constraints was present
+throughout this experiment.</p>
+<p>The repaired checker rejects the candidate at <span
+class="math inline">\(r=2\)</span>, where the proposed key is precisely
+the missing key. Replacing both step bodies by the number 2 gives a
+well-typed control. It exports that same narrowed domain and prints 2.
+<a href="thesis-review-34.py">Mutation, reachable guard and live
+control</a> · <a href="thesis-review-34.lean">Arithmetic
+countermodel</a></p>
+</section>
+</section>
+<section id="observations" class="level2">
+<h2>How much must the selector observe?</h2>
+<p>For any inhabited admitted domain <span
+class="math inline">\(D\)</span> and <em>any</em> projected
+postcondition <span class="math inline">\(P\)</span>, there exists a
+single result-dependent selector <span class="math inline">\(q\)</span>
+such that <span class="math inline">\(q(r)\in D\)</span> and <span
+class="math inline">\(P(q(r),r)\iff r\in F(D)\)</span>. If a key
+excludes <span class="math inline">\(r\)</span>, choose one. Otherwise
+choose any admitted key. This is a classical existence proof. A compiler
+still needs a representation for the selector and a coverage proof in
+its constraint language. With private witnesses, excluding a payload at
+one key requires excluding every possible witness at that key. <a
+href="thesis-review-34.lean">Full-observation theorem</a></p>
+<p>Suppose instead that a selector can see only <span
+class="math inline">\(o(r)\)</span>. For a bad result <span
+class="math inline">\(r\)</span>, let <span
+class="math inline">\(E_r=\{k\in D\mid\neg P(k,r)\}\)</span>. At most
+<span class="math inline">\(m\)</span> selected keys per observation
+suffice <strong>exactly when</strong>, in each observation class, a set
+of at most <span class="math inline">\(m\)</span> admitted keys meets
+every <span class="math inline">\(E_r\)</span> for the bad results in
+that class. Necessity follows by inspecting the selector’s list for that
+observation. For sufficiency, choose one such list in each class. Any
+facts already obtained at a first opening can be used to restrict the
+bad results in this statement.</p>
+<p>In the punctured example <span
+class="math inline">\(E_r=\{r\}\)</span> for each positive result. Thus
+each distinct positive in an observation class costs one key. Listing
+precisely those positives attains the bound. With <span
+class="math inline">\(d\)</span> available observation values,
+distributing <span class="math inline">\(n\)</span> positives as evenly
+as possible gives the sharp worst-class cost <span
+class="math inline">\(\lceil n/d\rceil\)</span> for <span
+class="math inline">\(n,d\ge1\)</span>. This counts the keys used to
+exclude those <span class="math inline">\(n\)</span> results. <a
+href="thesis-review-34.lean">Observation criterion, cardinality bound
+and attainment</a></p>
+</section>
+<section id="signed" class="level2">
+<h2>A result can be visible and still need a piecewise key</h2>
+<p>Let <span class="math inline">\(-n\le r\le n\)</span>, <span
+class="math inline">\(1\le k\le n\)</span>, and require <span
+class="math inline">\(r\ne k\)</span> and <span
+class="math inline">\(r\ne-k\)</span>. The full intersection is <span
+class="math inline">\(\{0\}\)</span>. The first typing at key 1 leaves
+the interior payloads <span class="math inline">\(2,-2,3\)</span>
+possible when <span class="math inline">\(n\ge4\)</span>. To refute them
+with one more typing the selected keys must be <span
+class="math inline">\(2,2,3\)</span> respectively. All three keys are
+strictly inside <span class="math inline">\([1,n]\)</span>. Clipping
+leaves the affine target unchanged at those points. A line taking the
+same value at 2 and <span class="math inline">\(-2\)</span> is constant,
+so it cannot take value 3 at 3. This argument allows the slope and
+intercept to depend on the fixed width. The single piecewise choice
+<span class="math inline">\(q(r)=\max(1,|r|)\)</span> covers the entire
+interval. <a href="thesis-review-34.lean">Machine-checked
+separation</a></p>
+<p>The compiler tries both affine targets <span
+class="math inline">\(r\)</span> and <span
+class="math inline">\(-r\)</span> for this definition. Budgets 2, 40 and
+10,000 produce byte-identical diagnostic traces. The guard is still live
+and no induction jump runs. Adding <span
+class="math inline">\(r=0\)</span> to the written package checks and
+executes at budget 2. This leaves a concrete question about the general
+iteration. Can it construct the missing piecewise selector from failed
+guard checks while preserving independent admission for each choice? <a
+href="signed_result_key.gadt">Signed program</a> · <a
+href="thesis-review-34.py">Trace and strengthened control</a></p>
+<p>The compiler change is revision <code>72c1ec3</code>. The OCaml 5.3
+compatibility build passed all 350 active suite tests, with ten existing
+TODOs. All 178 previous example signatures matched byte for byte. The
+source replays use OCaml 5.5.</p>
+<p>Run Lean 4.19 on <code>thesis-review-34.lean</code>. With OCaml and
+Python’s <code>z3-solver</code>, run
+<code>python3 thesis-review-34.py /path/to/InvarGenT.native</code>. Use
+<code>--original</code> with revision <code>772b9b4</code> to replay the
+original timeout and the delayed jump that succeeds. The optional
+<code>--before</code> uses revision <code>4fd76e5</code>. For
+<code>--trace</code>, apply the four earlier diagnostic patches followed
+by the key diagnostics. For <code>--unchecked</code>, in an experimental
+checkout replace the final call
+<code>admits_key_query query sig_cn t scheme loc</code> by
+<code>true</code>. <a href="thesis-review-28.html#policy">Earlier
+diagnostics</a> · <a href="thesis-review-34-keys.patch">Key
+diagnostics</a></p>
+</section>
+</article>
+<script src="/assets/theme-toggle.js"></script>
+</body>
+</html>

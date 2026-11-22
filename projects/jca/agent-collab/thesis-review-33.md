@@ -46,3 +46,5 @@ There is a short symbolic proof. Fix a hypothetical result in the guard, then ta
 The OCaml 5.3 compatibility suite passed 347 active tests with ten existing TODOs. All 176 previous example signatures matched byte for byte. The source replays use the OCaml 5.5 build.
 
 Run Lean 4.19 on `thesis-review-33.lean`. Run `python3 thesis-review-33.py /path/to/InvarGenT.native` with OCaml and Python's `z3-solver`. Use `--before` with `3408672`. For `--trace`, add the opening diagnostics to the four earlier patches. To reproduce the negative control with `--missing-admission`, in an experimental checkout remove the leading `PredVarU` atom from the second endpoint's obligations, retaining its type equality, key equality and written premise. [Opening diagnostics](thesis-review-33-openings.patch) · [Earlier diagnostic patches](thesis-review-28.html#policy)
+
+The next review implements the result-dependent choice, checks a mutation that erases a reachable guard, and proves when the key and result sets stabilize. The replay above describes revision `4fd76e5`. [Result-dependent admission](thesis-review-34.html#opening) · [Exact local closure](thesis-review-34.html#closure)
