@@ -439,6 +439,11 @@ build_html \
   "$collab_dir/thesis-review-35.html" \
   "Which recursive typings can license one another?"
 
+build_html \
+  "$collab_dir/thesis-review-36.md" \
+  "$collab_dir/thesis-review-36.html" \
+  "Which recursive typings suffice on a union of intervals?"
+
 reviews_dir="$collab_dir/reviews"
 if [[ -d "$reviews_dir" ]]; then
   for md_file in "$reviews_dir"/*.md; do
