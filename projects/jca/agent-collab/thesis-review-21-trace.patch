@@ -1,0 +1,28 @@
+--- a/src/Invariants.ml
++++ b/src/Invariants.ml
+@@ -1162,4 +1162,5 @@
+     let guard = concat_map
+         (fun (_,(_,cnj)) -> cnj) sol1 in
++    Format.eprintf "guard-trace enter %d@." iter_no;
+     let old_initstep = !initstep in
+     initstep := !fallback_postcond || iter_no < disj_step.(2);
+@@ -1563,4 +1564,5 @@
+           iter_no (sort_str sort) pr_exception e;
+         *]*)
++        Format.eprintf "guard-trace fail %d@." iter_no;
+         Aux.Left (sort, e) in
+     match answer with
+@@ -1894,4 +1896,5 @@
+         dissoc_abdsj !initstep old_initstep !dropped_from_sol
+         finished1 finished2 finished3 finished; *]*)
++      Format.eprintf "guard-trace updated %d@." iter_no;
+       if not !initstep && finished
+       then                              (* final solution *)
+@@ -2014,5 +2017,6 @@
+           role, formula_diff p removed, c
+         else row in
+-      (match search (List.map strengthen brs) with
++      (Format.eprintf "guard-trace strengthen@.";
++       match search (List.map strengthen brs) with
+        | Aux.Right _ as answer -> answer
+        | Aux.Left _ -> err)

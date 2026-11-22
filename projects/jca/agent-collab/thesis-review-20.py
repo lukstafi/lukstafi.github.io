@@ -76,9 +76,11 @@ let at_live = safe Live
                 "test (match", "test (let (u,v) = f (Third Box) Z in let ok = same u Box in match"))]:
             sig = check(name, src)
             assert PINNED.replace("(a,a)", "(a, a)") in " ".join(sig.split()), sig
-        for budget in (0, 1, 6, 80, 10000):
-            check(f"impossible_guard_{budget}", impossible_guard, budget,
-                  "Quantifier violation" if budget else "Answers do not converge")
+        for budget in (0, 1, 4, 5, 6, 80, 10000):
+            sig = check(f"impossible_guard_{budget}", impossible_guard, budget,
+                        "Answers do not converge" if budget < 5 else None)
+            if sig:
+                assert "Tag (a, b, b, b) → Nat → ∃.(a, a)" in " ".join(sig.split()), sig
         if args.before_alias:
             old_alias = args.before_alias.resolve(strict=True)
             check("written_alias_before", written(alias, PINNED), exe=old_alias)

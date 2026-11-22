@@ -27,7 +27,7 @@ This gives a sufficient rule for a jump on a fixed interface. Once the branches 
 
 ## A constant-size certificate for which every outer budget fails {#guard}
 
-The all-budget trace in this section is for revision `80624f9`. A later solver recognizes the hidden-index call and infers its type on pass 6. Restricting the constructor so that the guard is impossible gives a new all-budget example. [Quantified guard criterion and current counterexample](thesis-review-20.html#budget)
+The all-budget trace in this section is for revision `80624f9`. A later solver recognizes the hidden-index call and infers its type on pass 6. An impossible direct guard later exposed a different failure at revision `253cd6b`. It now succeeds on pass 5. [Quantified guard criterion](thesis-review-20.html#budget) · [Two calls under an opaque guard](thesis-review-21.html#residual)
 
 The four constructors of `Tag` each put their payload type in a different argument position. The three other positions contain `Marker`, abbreviated $M$. The recursive function `f` returns its payload twice at depth zero and calls itself at the same tag at each successor. Give its attached client a value `Pick n` whose integer index is hidden by the constructor. The client opens `f (Third Box) (S Z)` and requires its first component to have type `Cargo` when $1\le n$. The external implementation supplies `Pick 1`, so execution reaches the call. [Guarded source](guarded_payload.gadt)
 

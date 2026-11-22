@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <meta name="dcterms.date" content="2026-11-22">
+  <meta property="og:title" content="What happens to a recursive call behind an impossible guard?">
+  <meta property="og:url" content="https://lukstafi.github.io/projects/jca/agent-collab/thesis-review-21.html">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="lukstafi&#x27;s blog">
+  <meta name="twitter:card" content="summary">
+  <title>What happens to a recursive call behind an impossible
+guard?</title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <link rel="stylesheet" href="/assets/tufte.css">
+  <link rel="stylesheet" href="/assets/pandoc-tufte.css">
+  <link rel="stylesheet" href="/assets/site.css">
+  <script defer=""
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+  type="text/javascript"></script>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+  <script>(function(){var t=localStorage.getItem('theme-preference');if(t)document.documentElement.setAttribute('data-theme',t);})()</script>
+</head>
+<body>
+<nav class="site-nav">
+  <a href="/">Home</a> &middot; <a href="/study/">Study Guide</a> &middot; <a href="/about.html">About</a> &middot; <a href="https://lukstafi.substack.com">Substack</a>
+</nav>
+<div class="theme-toggle">
+  <button id="theme-btn" aria-label="Toggle dark mode">&#9788;</button>
+</div>
+<article>
+<header>
+<h1 class="title">What happens to a recursive call behind an impossible
+guard?</h1>
+<p class="byline">2026-11-22</p>
+</header>
+<nav id="TOC">
+<ul>
+<li><a href="#feedback" id="toc-feedback">A demand that survives every
+induction jump</a></li>
+<li><a href="#erasure" id="toc-erasure">Which part of a guarded branch
+can disappear?</a>
+<ul>
+<li><a href="#machine" id="toc-machine">The machine representation
+matters</a></li>
+</ul></li>
+<li><a href="#retry" id="toc-retry">Trying a type that works even if the
+guard succeeds</a></li>
+<li><a href="#residual" id="toc-residual">A constant-size solution that
+still fails at every positive budget</a></li>
+<li><a href="#checks" id="toc-checks">Reproduction</a></li>
+</ul>
+</nav>
+<p>A bound on solution size cannot guarantee that Table 4.4 finds a
+solution. Two examples fail at different points. In the first, the
+induction jump loses an inequality that the caller asks for again on
+every pass. In the second, the current InvarGenT search exhausts its
+type proposals before reaching the induction jump. Both examples have
+fixed-size certificates. <a href="capped_climb.gadt">Arithmetic
+program</a> · <a href="opaque_guard_pair.gadt">Guarded two-call
+counterexample</a></p>
+<section id="feedback" class="level2">
+<h2>A demand that survives every induction jump</h2>
+<p>A binary postcondition <span
+class="math inline">\(\chi_K(\delta,\delta&#39;)\)</span> relates the
+type of an existential result to the tuple of parameters carried by its
+package. In <code>climb m t</code>, the result has type <span
+class="math inline">\(\mathrm{Num}(r)\)</span> and the parameter tuple
+carries <span class="math inline">\(m\)</span>. Write <span
+class="math inline">\(B_t\)</span> for the band <span
+class="math inline">\(m\le r\le m+t\)</span>. When the stored relation
+is <span class="math inline">\(B_{20}\)</span>, projecting the base and
+recursive suppliers gives <span class="math inline">\(B_{19}\)</span>.
+The caller requires <span class="math inline">\(B_{20}\)</span>. Both
+bands satisfy the original clauses. <a
+href="../lukstafi-phd-thesis.pdf#page=71">Table 4.4, equations
+(4.1–4.8)</a> · <a href="thesis-review-3.html#update">Exact supplier
+projection</a></p>
+<p>Here is a recurrence test for this part of the table. Fix the input
+predicate and the package parameters. Let <span
+class="math inline">\(W(R)\)</span> be the supplier summary after the
+jump and <span class="math inline">\(D\)</span> the caller demand.
+Suppose abduction restores <span class="math inline">\(D\)</span>
+whenever <span class="math inline">\(W(R)\)</span> fails to entail it,
+every supplier justifies the restoration, and the remaining update state
+repeats. The relation stored by (4.6) is <span
+class="math inline">\(W(R)\land D\)</span>. If this is <span
+class="math inline">\(R\)</span> again and some value satisfies <span
+class="math inline">\(W(R)\land\neg D\)</span>, induction gives the same
+relation and a fresh nonempty demand at every later pass. The stopping
+test observes that demand. Repetition of the stored predicate alone
+cannot establish convergence. The Lean lemma covers extensional
+predicate updates. For an implementation that inspects syntax, the
+repeated representations and auxiliary state also have to be checked. <a
+href="thesis-review-21.lean">Recurrence and sufficient condition for no
+renewal</a></p>
+<p>At revision <code>772b9b4</code>, the common-atom jump on <span
+class="math inline">\(B_{20}\)</span> and <span
+class="math inline">\(B_{19}\)</span> keeps only <span
+class="math inline">\(m\le r\)</span>. The caller restores <span
+class="math inline">\(r\le m+20\)</span>, so the recurrence applies. The
+current solver keeps the old inequality when the new suppliers entail
+it. On the same program it needs outer budget 9 and exports <span
+class="math inline">\(\forall
+m.\,\mathrm{Num}(m)\to\mathrm{Nat}\to\exists r[m\le r\le
+m+20].\,\mathrm{Num}(r)\)</span>. Budget 8 still times out. A
+two-inequality size promise covers the original infinite run’s solution
+and every band it stores. The table leaves choices to its component
+routines, so this refutes a guarantee for all such runs. <a
+href="thesis-review-3.html#update">Original pass trace</a> · <a
+href="thesis-review-21.py">Current executable checks</a></p>
+</section>
+<section id="erasure" class="level2">
+<h2>Which part of a guarded branch can disappear?</h2>
+<p>Consider the constructor <code>Pick : ∀i[i≤0]. Num i ⟶ Seed</code>. A
+client matches <code>Pick n when 1 &lt;= n</code>. Inside the arm it
+calls a recursive function <code>f</code> on <code>Third Box</code>,
+opens the returned pair and requires its first component to have type
+<code>Cargo</code>. The pattern gives <span
+class="math inline">\(n\le0\)</span>, so the client will never make this
+call. The previous implementation still tried to accommodate it at every
+positive outer budget. <a href="thesis-review-20.html#budget">Original
+clauses and certificate</a></p>
+<p>Write <span class="math inline">\(F\)</span> for the other
+obligations, <span class="math inline">\(P\)</span> for matching the
+pattern, <span class="math inline">\(E\)</span> for checking the guard
+operands, <span class="math inline">\(G\)</span> for the guard
+succeeding, and <span class="math inline">\(B\)</span> for the body
+obligations. Suppose <span class="math inline">\(F\land P\land E\land
+G\)</span> is impossible independently of <span
+class="math inline">\(B\)</span>. Then <span class="math display">\[
+F\land(P\Rightarrow E\land(G\Rightarrow B))
+\quad\longleftrightarrow\quad
+F\land(P\Rightarrow E).
+\]</span> The equivalence holds on each valuation. It therefore
+preserves every winning witness strategy under the original quantifier
+prefix, including strategies that share witnesses across guards. A
+contradiction that uses <span class="math inline">\(B\)</span> itself
+would be circular. For example, the two bodies <span
+class="math inline">\(P\Rightarrow x\)</span> and <span
+class="math inline">\(P\Rightarrow\neg x\)</span> together force <span
+class="math inline">\(\neg P\)</span>. Deleting both admits <span
+class="math inline">\(P\)</span>. <a href="thesis-review-21.lean">Lean
+proofs for dependent quantifier games</a></p>
+<p>InvarGenT now compares numeric literals and variables bound by the
+pattern against the constructor facts. An impossible subset of guard
+comparisons suffices. It still checks and emits the guard operands in
+their original order. With
+<code>observed n &lt;= n &amp;&amp; 1 &lt;= n</code>, the effectful
+identity function <code>observed</code> runs once at <span
+class="math inline">\(n=0\)</span>. Reversing the tests runs it zero
+times. The old emitter also dropped entire guarded
+<code>assert false</code> arms, losing this effect on the way to the
+next arm. The repair keeps the guard and replaces only a
+proven-unreachable body. Package declarations local to that body
+disappear with it. The same client can now contain separate calls on
+both <code>Third Box</code> and <code>First Box</code>. Inference on
+pass 5 gives exactly the type of the definition in isolation. Moving the
+guard endpoint from 1 to 0 restores a live call and selects a different
+type on pass 6. <a href="thesis-review-21.py">Effect and short-circuit
+checks</a> · <a href="thesis-review-21.lean">Trace-preserving
+replacement lemma</a></p>
+<section id="machine" class="level3">
+<h3>The machine representation matters</h3>
+<p>With native OCaml integers, <span class="math inline">\(n+1\le
+n\)</span> holds at <code>max_int</code>. Overflow can also happen
+<em>before</em> the match. Feed <code>min_int + 1</code> to
+<code>fun n -&gt; Pick (n+n)</code> under the input refinement <span
+class="math inline">\(n\le0\)</span>. The mathematical sum is
+nonpositive, yet its machine value is 2. A later match on
+<code>Pick n when 1 &lt;= n</code> must take the arm. With the float
+backend, converting the integer <span
+class="math inline">\(2^{53}+3\)</span> yields the same float as <span
+class="math inline">\(2^{53}+4\)</span>, making a strict gap disappear
+even without addition in the source. All three examples execute the
+selected positive branch. <a href="thesis-review-21.py">Executable
+machine-boundary cases</a></p>
+<p>The compiler enables this erasure for the native integer target when
+the compilation unit contains no source addition or scalar
+multiplication. Checking the whole unit covers a function that
+constructs a value later consumed by an earlier definition. A library
+caller generating annotations for multiple backends retains the bodies
+by default. As elsewhere in inference, external implementations are
+assumed to respect their declared types. The restriction leaves
+opportunities for a more precise analysis of where numeric values
+originate.</p>
+</section>
+</section>
+<section id="retry" class="level2">
+<h2>Trying a type that works even if the guard succeeds</h2>
+<p>Replace the comparison by <code>1 &lt;= observed n</code>, with
+<code>observed : ∀i. Num i → Num i</code>. Its type preserves the index.
+The local erasure test treats the application as opaque. After a
+type-search failure the solver can try a different question. Can it type
+the call even if the numeric test succeeds? It removes numeric
+hypotheses from a recursive call at an external client and from that
+client’s dependent positive clauses. It retains the quantifier prefix,
+the conclusions, the recursive suppliers and the final negative checks.
+More precisely, it selects client rows whose premises contain the
+original guarded call premise. Removing hypotheses strengthens their
+implications. A witness strategy solving the stronger obligations also
+solves the originals with the same witnesses. This costs at most one
+further invocation of the existing search. <a
+href="thesis-review-21.lean">Proof for a family of calls</a></p>
+<p>For one call on <code>Third Box</code>, the retry succeeds on pass 6
+with <span class="math inline">\(\forall
+a.\,\mathrm{Tag}(M,M,a,M)\to\mathrm{Nat}\to\exists().\,(a,a)\)</span>,
+where <span class="math inline">\(M\)</span> stands for
+<code>Marker</code>. The emitted OCaml keeps the original body and
+evaluates <code>observed 0</code> once. The retry also handles the same
+test split across an outer constructor match and an inner match on its
+payload. <a href="thesis-review-21.py">Generated-code and budget
+checks</a></p>
+</section>
+<section id="residual" class="level2">
+<h2>A constant-size solution that still fails at every positive
+budget</h2>
+<p>Put <strong>both</strong> calls behind
+<code>1 &lt;= observed n</code>. Each uses a fresh instance of
+<code>f</code>, opens the pair, and tests the first component against
+<code>Box</code>. The normalized guard-evaluation row requires <span
+class="math inline">\(i\le0\Rightarrow o=i\land h=o\land l=1\)</span>.
+Every client call, opening and payload-use row contains <span
+class="math inline">\(i\le0\land l\le h\)</span>. These premises are
+impossible whenever the guard-evaluation row holds. The definition and
+its suppliers have exactly the constant-size solution from the one-call
+example. Interpret the unary predicate as the instances of the displayed
+arrow type and the binary predicate as the pairs <span
+class="math inline">\((a,a)\)</span> carried with parameter tuple <span
+class="math inline">\(\langle a\rangle\)</span>. Pick <span
+class="math inline">\(a=M\)</span> for the initial instance. The third
+constructor supplies <span class="math inline">\(a\)</span> directly,
+and each other constructor forces <span
+class="math inline">\(a=M\)</span>. Recursion preserves the parameter.
+Choosing <span class="math inline">\(o=h=i\)</span> and <span
+class="math inline">\(l=1\)</span> respects the guard’s witness
+dependencies. This verifies the <em>original erased constraints</em>.
+Writing the third-axis type explicitly while retaining both OCaml call
+sites still produces a type mismatch at the first-axis call. <a
+href="thesis-review-21.lean">Guard witnesses and supplier induction in
+Lean</a> · <a href="thesis-review-20.html#budget">One-axis
+certificate</a> · <a href="thesis-review-21.py">Written and erased
+controls</a></p>
+<p>There is a structural obstacle to making both calls unconditional.
+Project a conjunctive free-type pattern to the four input axes and the
+first output component. Its ground leaves on these examples are fixed
+constructors or type holes. A domain admitting both marked inputs also
+admits the all-<span class="math inline">\(M\)</span> input, by
+assigning <span class="math inline">\(M\)</span> to the varying holes.
+On the all-<span class="math inline">\(M\)</span>, third-marked and
+first-marked inputs the actual outputs are <span
+class="math inline">\(M,C,C\)</span>, where <span
+class="math inline">\(C\)</span> is <code>Cargo</code>. No fixed
+constructor has that column. No input axis has it either, since every
+axis is <span class="math inline">\(M\)</span> on at least one of the
+two marked rows. Thus the output has an independent hole. Setting that
+hole to <span class="math inline">\(M\)</span> preserves the
+third-marked input and admits a result its client rejects. This proves
+the obstruction even for a postcondition allowed to overapproximate the
+producer. <a href="thesis-review-21.lean">Independent output hole
+lemma</a> · <a href="thesis-review-18.html">Pattern
+classification</a></p>
+<p>For this program, the original and strengthened searches together
+make 25 pass attempts. Ten pass-0 updates reach the budget comparison.
+Each leads to a type failure on pass 1. Five further attempts fail on
+pass 0. No proposal finishes, so the comparison before replaying a
+finished proposal is unreachable. The final use of the budget to extract
+an answer is unreachable as well. With the remaining settings fixed,
+every positive outer budget therefore gives the same finite quantifier
+violation. Budget zero stops at the first successful update. We compared
+the complete pass traces at budgets 1 and 10,000. This refutes
+successful convergence of the <strong>current search</strong> on
+size-bounded satisfiable constraints without claiming an infinite run of
+its repaired arithmetic jump. <a
+href="thesis-review-21-trace.patch">Instrumentation</a> · <a
+href="thesis-review-21.py">Budget sweep and trace check</a></p>
+<p>The remaining opportunity is to use the guard-evaluation row itself
+to prove that the body cannot run, while retaining the computation that
+produced the row. A certificate for a false guard can justify a
+conditional call that no single conjunctive scheme can type
+unconditionally. A general guarantee from a size promise still requires
+a search that can reach every bounded certificate, together with a
+decision procedure for checking each one. <a
+href="thesis-review-2.html">Bounded certificate theorem and its
+hypotheses</a></p>
+</section>
+<section id="checks" class="level2">
+<h2>Reproduction</h2>
+<p>Run
+<code>python3 thesis-review-21.py /path/to/InvarGenT.native</code> with
+a 64-bit OCaml on the path. The optional flags <code>--before</code> and
+<code>--before-retry</code> take executables at <code>253cd6b</code> and
+<code>18f071c</code>. To reproduce the pass counts, apply the trace
+patch in a separate checkout, build the executable and pass it as
+<code>--trace</code>. The driver compiles and executes the fully
+annotated OCaml for every positive case. Lean 4.19 checks
+<code>thesis-review-21.lean</code> with the standard library. <a
+href="thesis-review-1.html">Build instructions</a></p>
+<p>The InvarGenT commits are <code>18f071c</code> for preserving guard
+evaluation, <code>6c58471</code> for the stronger caller query and
+<code>16509d9</code> for the machine-arithmetic boundary. The OCaml 5.3
+compatibility build ran 318 active tests with 10 existing TODOs. All 155
+signatures generated at <code>253cd6b</code> compared byte for byte with
+the final build. The budget and runtime driver used OCaml 5.5.1.</p>
+</section>
+</article>
+<script src="/assets/theme-toggle.js"></script>
+</body>
+</html>

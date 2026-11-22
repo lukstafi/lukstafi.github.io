@@ -114,8 +114,8 @@ guards and witness order</a></li>
 return</a></li>
 <li><a href="#alias" id="toc-alias">A function that eventually returns a
 package</a></li>
-<li><a href="#budget" id="toc-budget">A small solution still missed by
-the current iteration</a></li>
+<li><a href="#budget" id="toc-budget">A small solution missed at
+revision <code>253cd6b</code></a></li>
 <li><a href="#checks" id="toc-checks">Reproduction</a></li>
 </ul>
 </nav>
@@ -317,7 +317,7 @@ href="thesis-review-20.lean">Arrow-depth lemma</a> · <a
 href="thesis-review-20.py">Executed examples</a></p>
 </section>
 <section id="budget" class="level2">
-<h2>A small solution still missed by the current iteration</h2>
+<h2>A small solution missed at revision <code>253cd6b</code></h2>
 <p>Change just the constructor declaration to
 <code>Pick : ∀i[i≤0]. Num i ⟶ Seed</code> and implement the external
 seed by <code>Pick 0</code>. The function and the attached client’s
@@ -366,14 +366,20 @@ keeping the impossible arm in the program.</p>
 common-atom jump has an infinite execution in which a caller restores
 the same upper bound at every pass, even though the stored
 two-inequality result is already inductive. The current implementation
-repairs that feedback on the arithmetic example. It can still exhaust
-type search on the constant-size solution above before reaching a jump.
-A bound on certificate size gives completeness for a fair enumeration of
-a finite, checkable certificate language. It supplies no progress
-measure for either of these executions. <a
+repairs that feedback on the arithmetic example. At revision
+<code>253cd6b</code> it can still exhaust type search on the
+constant-size solution above before reaching a jump. A bound on
+certificate size gives completeness for a fair enumeration of a finite,
+checkable certificate language. It supplies no progress measure for
+either of these executions. <a
 href="thesis-review-3.html#update">Infinite recurrence and jump
 repair</a> · <a href="thesis-review-2.html">Finite certificate
 search</a></p>
+<p>A later revision proves this direct guard impossible and finishes on
+pass 5. Two incompatible calls under an opaque guard give a further
+constant-size certificate and a finite all-budget failure. <a
+href="thesis-review-21.html#residual">Conditional typing and the current
+pass trace</a></p>
 </section>
 <section id="checks" class="level2">
 <h2>Reproduction</h2>
