@@ -113,8 +113,8 @@ def main():
         def annotated(ty):
             return shifted.replace("run state =", "run : " + ty + " = fun state ->")
 
-        check("translated", shifted, budget=40, error=ABDUCTION)
-        check("translated_early_jump", shifted, budget=40, opts=("-convergence_step", "3"), error=ABDUCTION)
+        check("translated", shifted, budget=40, expected="State n → Nat → ∃.Num (n + 1)")
+        check("translated_early_jump", shifted, budget=40, opts=("-convergence_step", "3"), expected="∃.Num (n + 1)")
         check("exact_coordinate", annotated("∀i. State i → Nat → ∃.Num (i+1)"),
               expected=SCHEME.replace("∃.Num n", "∃.Num (n + 1)"))
         band = "∃j[k+1≤j ∧ j≤k+2].Num j"
@@ -122,19 +122,20 @@ def main():
               expected="State k → Nat → ∃j[n + 1 ≤ j ∧ j ≤ n + 2].Num j")
         check("one_coordinate", annotated("∀k. State k → Nat → " + band), error=ABDUCTION)
         for budget in (0, 1, 11, 10000):
-            check(f"scaled_{budget}", scaled, budget=budget, error=ABDUCTION if budget else "Answers do not converge")
+            check(f"scaled_{budget}", scaled, budget=budget, error=("Answers do not converge" if not budget else ABDUCTION) if budget < 4 else None,
+                  expected="∃.Num (4 n)" if budget >= 4 else None)
         check("scaled_exact", scaled.replace("run state =", "run : ∀i. State i → Nat → ∃.Num (4 i) = fun state ->"),
               expected="State n → Nat → ∃.Num (4 n)")
-        check("postcondition_radius_4", scaled, opts=("-postcond_rotations", "4"), error=ABDUCTION)
+        check("postcondition_radius_4", scaled, opts=("-postcond_rotations", "4"), expected="∃.Num (4 n)")
         check("abduction_radius_4", scaled, opts=("-num_abduction_rotations", "4"),
               expected="State n → Nat → ∃")
         scaled_five = scaled.replace("-> 5 |", "-> 6 |").replace("4", "5")
-        check("five_at_radius_4", scaled_five, opts=("-num_abduction_rotations", "4"), error=ABDUCTION)
+        check("five_at_radius_4", scaled_five, opts=("-num_abduction_rotations", "4"), expected="∃.Num (5 n)")
         check("five_at_radius_5", scaled_five, opts=("-num_abduction_rotations", "5"),
               expected="State n → Nat → ∃")
         unit_band = scaled.replace("run state =",
                                    "run : ∀i[i≤4]. State i → Nat → ∃j[i≤j ∧ j≤4].Num j = fun state ->")
-        check("written_band_default", unit_band, error=ABDUCTION)
+        check("written_band_default", unit_band, expected="∃j[n ≤ j ∧ j ≤ 4].Num j")
         check("written_band_radius_4", unit_band, opts=("-num_abduction_rotations", "4"),
               expected="State n → Nat → ∃j[n ≤ j ∧ j ≤ 4].Num j")
         # The Left opening supplies Cargo. This caller demands Marker.

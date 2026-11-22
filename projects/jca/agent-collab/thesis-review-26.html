@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <meta name="dcterms.date" content="2026-11-22">
+  <meta property="og:title" content="Which calls make a fixed postcondition usable?">
+  <meta property="og:url" content="https://lukstafi.github.io/projects/jca/agent-collab/thesis-review-26.html">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="lukstafi&#x27;s blog">
+  <meta name="twitter:card" content="summary">
+  <title>Which calls make a fixed postcondition usable?</title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <style type="text/css">
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="/assets/tufte.css">
+  <link rel="stylesheet" href="/assets/pandoc-tufte.css">
+  <link rel="stylesheet" href="/assets/site.css">
+  <script defer=""
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+  type="text/javascript"></script>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+  <script>(function(){var t=localStorage.getItem('theme-preference');if(t)document.documentElement.setAttribute('data-theme',t);})()</script>
+</head>
+<body>
+<nav class="site-nav">
+  <a href="/">Home</a> &middot; <a href="/study/">Study Guide</a> &middot; <a href="/about.html">About</a> &middot; <a href="https://lukstafi.substack.com">Substack</a>
+</nav>
+<div class="theme-toggle">
+  <button id="theme-btn" aria-label="Toggle dark mode">&#9788;</button>
+</div>
+<article>
+<header>
+<h1 class="title">Which calls make a fixed postcondition usable?</h1>
+<p class="byline">2026-11-22</p>
+</header>
+<nav id="TOC">
+<ul>
+<li><a href="#calls" id="toc-calls">Fix the result relation and solve
+for the calls</a></li>
+<li><a href="#width" id="toc-width">The exact width threshold</a></li>
+<li><a href="#guard" id="toc-guard">A correct written interval still
+fails</a></li>
+<li><a href="#affine" id="toc-affine">Recovering the two affine
+postconditions</a></li>
+</ul>
+</nav>
+<p>InvarGenT now infers the two exact postconditions that defeated the
+previous revision, <span class="math inline">\(o=4i\)</span> and <span
+class="math inline">\(o=i+1\)</span>. The remaining failure occurs a
+step later. Give the compiler a correct width-two result interval and
+its admissible input parameters in the source. It can recover the
+written arrow and still reject the program at every outer budget. The
+guard check retains a range of possible recursive call parameters. A
+proof needs to choose one of them before opening the result. <a
+href="implicit_interval_parameter.gadt">Implicit parameter</a> · <a
+href="explicit_interval_parameter.gadt">Same choice supplied as an
+argument</a></p>
+<section id="calls" class="level2">
+<h2>Fix the result relation and solve for the calls</h2>
+<p>Hold the binary result relations fixed. An arrow instance <span
+class="math inline">\(h\)</span> includes the input and the chosen
+package parameter. A strategy for the body at <span
+class="math inline">\(h\)</span> must respect the quantifier prefix. It
+checks the local obligations for every permitted opening and specifies
+which recursive arrow instances the body can use. Given a set <span
+class="math inline">\(S\)</span> of available arrows, let <span
+class="math inline">\(F(S)\)</span> contain the instances for which some
+such strategy uses only arrows in <span
+class="math inline">\(S\)</span>. Mutually recursive functions can share
+this construction by including the function name in <span
+class="math inline">\(h\)</span>.</p>
+<p>A sound set of admitted arrows satisfies <span
+class="math inline">\(S\subseteq F(S)\)</span>. The same strategy still
+works when more recursive arrows are available, so <span
+class="math inline">\(F\)</span> is monotone. Let <span
+class="math inline">\(G\)</span> be the union of all sound sets. A
+strategy witnessing membership in a sound set works in <span
+class="math inline">\(G\)</span>, giving <span
+class="math inline">\(G\subseteq F(G)\)</span>. Monotonicity now makes
+<span class="math inline">\(F(G)\)</span> sound, hence <span
+class="math inline">\(F(G)\subseteq G\)</span>. For client demands
+preserved by adding admitted arrows, <strong>some sound set covers the
+clients exactly when <span class="math inline">\(G\)</span> covers
+them</strong>. The result concerns semantic relations with the other
+predicates and the legal information at each call fixed. Expressing
+<span class="math inline">\(G\)</span> in the thesis’s answer language
+is a further requirement. This complements the least producer relation
+obtained by fixing the call choices. <a
+href="thesis-review-26.lean">Greatest-call theorem</a> · <a
+href="thesis-review-23.html#least">Least-result theorem</a></p>
+<p>For the two-state program this eliminates the unknown arrow predicate
+entirely. Let <span class="math inline">\(a&lt;b\)</span> be the base
+values at <code>A</code> and <code>B</code>. A successor at
+<code>A</code> returns <span class="math inline">\(a\)</span>. At
+<code>B</code> a recursive result at most <span
+class="math inline">\(a\)</span> can trigger the bad result <span
+class="math inline">\(b+1\)</span>. Both external clients require at
+most <span class="math inline">\(b\)</span>. Write <span
+class="math inline">\(R_k\)</span> for the set of values a caller must
+handle after choosing parameter <span class="math inline">\(k\)</span>.
+Exactly three tests on the fixed relation decide the numeric rows.</p>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr>
+<th>Use</th>
+<th>Required result belongs to the set</th>
+<th>Every member of the set satisfies</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>External <code>A</code></td>
+<td><span class="math inline">\(a\in R_{k_A}\)</span></td>
+<td><span class="math inline">\(o\le b\)</span></td>
+</tr>
+<tr>
+<td>External <code>B</code></td>
+<td><span class="math inline">\(b\in R_{k_B}\)</span></td>
+<td><span class="math inline">\(o\le b\)</span></td>
+</tr>
+<tr>
+<td>Recursive <code>B</code></td>
+<td><span class="math inline">\(b\in R_{k_R}\)</span></td>
+<td><span class="math inline">\(o&gt;a\)</span></td>
+</tr>
+</tbody>
+</table>
+<p>Each row chooses its own parameter. For necessity, the base suppliers
+force the stated memberships. A value at most <span
+class="math inline">\(a\)</span> at the recursive opening would require
+both <span class="math inline">\(b\)</span> and <span
+class="math inline">\(b+1\)</span> as the successor index. For
+sufficiency, admit just the three displayed arrows. Both calls that
+enter <code>B</code> use <span class="math inline">\(k_R\)</span> for
+their own recursive call, so <span class="math inline">\(k_R\)</span>
+also supports itself. Three distinct choices can be necessary. At <span
+class="math inline">\(a=0,b=1\)</span>, give the three parameters the
+result sets <span class="math inline">\(\{0\}\)</span>, <span
+class="math inline">\(\{-1,1\}\)</span> and <span
+class="math inline">\(\{1,2\}\)</span> respectively. Each satisfies
+exactly one row. <a href="thesis-review-26.lean">Elimination and
+sharpness proofs</a></p>
+</section>
+<section id="width" class="level2">
+<h2>The exact width threshold</h2>
+<p>Take <span class="math inline">\(R_k=[k,k+w]\)</span> for <span
+class="math inline">\(w\ge0\)</span>. With independent parameters
+<strong>every width works</strong>. Use <span
+class="math inline">\(a-w\)</span> and <span
+class="math inline">\(b-w\)</span> at the external sites to put their
+actual results at the upper endpoints. Use <span
+class="math inline">\(b\)</span> at the recursive site to put its actual
+result at the lower endpoint. The guard cannot fire.</p>
+<p>If every call at <code>B</code> must use the same parameter, the
+exact condition is <strong><span
+class="math inline">\(w&lt;b-a\)</span></strong>. The shared interval
+must contain <span class="math inline">\(b\)</span>, end at or below
+<span class="math inline">\(b\)</span>, and start strictly above <span
+class="math inline">\(a\)</span>. Its only possible lower endpoint is
+therefore <span class="math inline">\(b-w\)</span>. For a uniform,
+writable arrow with independent choices, set <span
+class="math inline">\(f(i)=a+(b-a)i\)</span> and admit every <span
+class="math inline">\(k\)</span> with <span class="math inline">\(k\le
+f(i)\le k+w\)</span>. Lean checks the body at every instance of that
+arrow, including indices other than the two constructor indices. <a
+href="thesis-review-26.lean">Threshold and written-arrow proofs</a></p>
+</section>
+<section id="guard" class="level2">
+<h2>A correct written interval still fails</h2>
+<p>Set <span class="math inline">\(a=1\)</span>, <span
+class="math inline">\(b=2\)</span>, <span
+class="math inline">\(w=2\)</span>. The written scheme admits <span
+class="math inline">\(k\le i+1\le k+2\)</span> and returns an index in
+<span class="math inline">\([k,k+2]\)</span>. At InvarGenT revision
+<code>3ce4575</code> the implicit-parameter program fails at every outer
+budget. At budgets at least 2, each of six searches retaining the
+original arm fails on pass 1. Its retry with the proposed guard
+exclusion reaches a stable arrow on pass 2. All six retries fail their
+final check that the bad arm is unreachable. The last proposed arrow
+contains the written input inequalities and output interval. No discard
+or subsequent budget comparison occurs on that path. Budgets 0 and 1
+stop earlier. Traces at 2, 40 and 10,000 agree event for event. <a
+href="implicit_interval_parameter.gadt">Source</a> · <a
+href="thesis-review-26.py">Budget and final-guard checks</a></p>
+<p>The final numeric guard is a conjunction of difference constraints.
+Solving the recorded conjunction allows <span
+class="math inline">\((k,o)=(0,0),(0,1),(1,1)\)</span> at the recursive
+opening. Fixing <span class="math inline">\(k=2\)</span> makes it
+inconsistent. Supplying the call parameter as a numeric argument lets
+the ordinary solver check the program at budget 2. The external
+arguments are <span class="math inline">\(-1\)</span> and 0, and the
+recursive argument is 2. Passing 0 recursively fails. The explicit
+program also checks and executes with width 97 and the corresponding
+external arguments. A sound implicit recovery would have to commit the
+recursive choice across every obligation sharing that call, while
+leaving the opened value universal within the selected interval. <a
+href="explicit_interval_parameter.gadt">Explicit program</a> · <a
+href="thesis-review-26-guard.patch">Guard diagnostic</a></p>
+</section>
+<section id="affine" class="level2">
+<h2>Recovering the two affine postconditions</h2>
+<p>In the scaled program one supplier needs the numeric equation <span
+class="math inline">\(g=0\)</span> under a premise fixing <span
+class="math inline">\(v=x\)</span>. Any equation <span
+class="math inline">\(g+\lambda(v-x)=0\)</span> suffices there. If
+another branch fixes <span class="math inline">\(v=x&#39;\)</span> and
+<span class="math inline">\(g=y\)</span>, with <span
+class="math inline">\(x&#39;\ne x\)</span>, the unique coefficient
+making the equation hold there is <span
+class="math inline">\(-y/(x&#39;-x)\)</span>. The solver collects these
+values after substituting equations inherited from weaker premises. An
+input can be visible through a local alias in one row and directly in
+another. Each candidate passes the existing scope, branch and caller
+checks. Three collinear branches infer the expected slope. Changing just
+the third result by one rejects the exact client. <a
+href="thesis-review-26.lean">Secant proof</a> · <a
+href="thesis-review-26.py">Signed and rational examples</a></p>
+<p>The translated example needs a second operation. At a base-case
+restart one supplier presents the line <span
+class="math inline">\(o=i+1\)</span>. Another presents the point <span
+class="math inline">\((0,1)\)</span>. Their equation spaces share the
+line equation even though their displayed rows differ. InvarGenT already
+computed this intersection for product results. Its new retry also
+computes it for a scalar result with input parameters. The compiler
+first tries its original search on the whole item. After a failure with
+an opportunity for numeric recovery, it replays the search with both
+operations enabled. Both earlier programs now infer the exact result at
+budget 4. The same checks recover slopes <span
+class="math inline">\(100003\)</span>, <span
+class="math inline">\(-11\)</span> and <span
+class="math inline">\(17/3\)</span>. No bound on the convergence of the
+general predicate iteration follows from these recoveries. <a
+href="thesis-review-25.html#scaled">Previous counterexamples</a> · <a
+href="thesis-review-26.py">Compiler checks</a></p>
+<p>Run
+<code>python3 thesis-review-26.py /path/to/InvarGenT.native</code> with
+OCaml available. The optional <code>--before</code> uses revision
+<code>a3151c0</code>. For <code>--trace</code>, apply the review 22, 23,
+24 and 26 diagnostic patches in order to <code>3ce4575</code>. To check
+the proofs with Lean 4.19, run the following commands from this
+directory. On the OCaml 5.3 compatibility build the solver suite passed
+331 active tests with 10 existing TODOs. All 166 previous example
+signatures matched byte for byte. The CLI traces used the OCaml 5.5
+compatibility build. <a href="thesis-review-22-trace.patch">Pass
+trace</a> · <a href="thesis-review-23-interface.patch">Interface
+trace</a> · <a href="thesis-review-24-feedback.patch">Demand trace</a> ·
+<a href="thesis-review-26-guard.patch">Final guard</a></p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="va">proof_dir</span><span class="op">=</span><span class="va">$(</span><span class="fu">mktemp</span> <span class="at">-d</span><span class="va">)</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="ex">lean</span> <span class="at">-o</span> <span class="st">&quot;</span><span class="va">$proof_dir</span><span class="st">/thesis-review-25.olean&quot;</span> thesis-review-25.lean</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="va">LEAN_PATH</span><span class="op">=</span><span class="st">&quot;</span><span class="va">$proof_dir</span><span class="st">&quot;</span> <span class="ex">lean</span> thesis-review-26.lean</span></code></pre></div>
+</section>
+</article>
+<script src="/assets/theme-toggle.js"></script>
+</body>
+</html>

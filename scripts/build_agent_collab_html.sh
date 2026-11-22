@@ -389,6 +389,11 @@ build_html \
   "$collab_dir/thesis-review-25.html" \
   "Two calls at the same state can need different package parameters"
 
+build_html \
+  "$collab_dir/thesis-review-26.md" \
+  "$collab_dir/thesis-review-26.html" \
+  "Which calls make a fixed postcondition usable?"
+
 reviews_dir="$collab_dir/reviews"
 if [[ -d "$reviews_dir" ]]; then
   for md_file in "$reviews_dir"/*.md; do

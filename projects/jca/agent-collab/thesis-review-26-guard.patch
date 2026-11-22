@@ -1,0 +1,12 @@
+--- a/src/Invariants.ml
++++ b/src/Invariants.ml
+@@ -2057,4 +2057,9 @@
+             let guard = sb_formula_pred q false rol sol cnj in
+             ignore (satisfiable q empty_state (ans_res @ guard));
++            (try ignore (Sys.getenv "JCA_TRACE_LIVE_GUARD");
++                 let equations = unify ~use_quants:false q.op (ans_res @ guard) in
++                 Format.eprintf "LIVE_GUARD %a END_LIVE_GUARD@."
++                   NumDefs.pr_formula equations.cnj_num
++             with Not_found -> ());
+             true
+           with Contradiction _ -> false in

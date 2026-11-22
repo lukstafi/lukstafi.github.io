@@ -52,14 +52,14 @@ result</a></li>
 </ul>
 </nav>
 <p>A recursive function with base results 0 and 4 has a one-equation
-solution. Current InvarGenT misses it at every outer iteration budget
-with default component settings. Another function, with base results 1
-and 2, lets us follow the induction jump itself. Its postcondition
-alternates through pass 40. One of the two proposals already has enough
-information to type the program. Using it requires two different choices
-of package parameter at the same input state. <a
-href="scaled_coordinate.gadt">All-budget counterexample</a> · <a
-href="observed_coordinate.gadt">Unshifted program</a> · <a
+solution. InvarGenT revision <code>a3151c0</code> misses it at every
+outer iteration budget with default component settings. Another
+function, with base results 1 and 2, lets us follow the induction jump
+itself. Its postcondition alternates through pass 40. One of the two
+proposals already has enough information to type the program. Using it
+requires two different choices of package parameter at the same input
+state. <a href="scaled_coordinate.gadt">All-budget counterexample</a> ·
+<a href="observed_coordinate.gadt">Unshifted program</a> · <a
 href="translated_coordinate.gadt">Shifted program</a> · <a
 href="thesis-review-25.lean">Lean proofs</a></p>
 <section id="scaled" class="level2">
@@ -314,10 +314,16 @@ keeps its own local instance. The same client now terminates with a type
 error after 20 discards. <a href="thesis-review-25.py">Discard and
 opening checks</a> · <a href="thesis-review-25.lean">Witness
 transport</a></p>
+<p>InvarGenT revision <code>3ce4575</code> infers the exact scaled and
+shifted results at budget 4. A written interval exposes a further
+failure at final guard verification. <a
+href="thesis-review-26.html#affine">Affine recovery</a> · <a
+href="thesis-review-26.html#guard">Implicit parameters at the
+guard</a></p>
 <p>Run <code>lean thesis-review-25.lean</code> with Lean 4.19 and
 <code>python3 thesis-review-25.py /path/to/InvarGenT.native</code> with
 OCaml available. The driver’s optional arguments compare named
-historical revisions and instrumented executables. For the current
+historical revisions and instrumented executables. For the historical
 trace, apply the three diagnostic patches in order to InvarGenT revision
 <code>a3151c0</code>. The compiler suite passed 329 active tests with 10
 existing TODOs. All 164 example signatures generated before the
