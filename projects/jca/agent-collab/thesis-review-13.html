@@ -55,11 +55,12 @@ move</a></li>
 </nav>
 <p>A size bound on a solution does not guarantee that InvarGenT’s Table
 4.4 iteration finds it. The counterexample below has four input atoms
-and two result atoms. Removing one guarantee from a constructor makes
-inference succeed on the same function body. Restoring the guarantee
-makes numeric abduction fail on pass 2 for every outer budget that
-reaches that pass. The default induction jump is scheduled for pass 8.
-<a href="tighter_supplier.gadt">Counterexample</a> · <a
+and two result atoms. At revision <code>761939f</code>, removing one
+guarantee from a constructor makes inference succeed on the same
+function body. Restoring the guarantee makes numeric abduction fail on
+pass 2 for every outer budget that reaches that pass. The default
+induction jump is scheduled for pass 8. <a
+href="tighter_supplier.gadt">Counterexample</a> · <a
 href="thesis-review-13.lean">Six-atom certificate</a> · <a
 href="thesis-review-13.py">Budget and runtime controls</a></p>
 <p>The moving-floor example has a solution with four input conditions
@@ -72,6 +73,10 @@ href="moving_floor_calls.gadt">Unannotated program</a> · <a
 href="thesis-review-11.html#convex">Earlier trace and proof of the
 greatest domain</a> · <a href="thesis-review-13.py">Executable
 comparisons</a></p>
+<p>The next review repairs this inference, derives the greater domain
+the extra guarantee permits, and gives a new six-atom counterexample for
+the repaired solver. <a href="thesis-review-14.html">Two supplier caps
+and the induction jump</a></p>
 <section id="coverage" class="level2">
 <h2>Projecting both ends of the interval</h2>
 <p>Write <span class="math inline">\(p\)</span> for the floor and <span
@@ -381,8 +386,10 @@ byte. The comparison driver also passed on OCaml 5.5.1. To reproduce the
 historical runs, pass executables from revisions <code>8c9d34f</code>
 and <code>8f22708</code> as <code>--baseline</code> and
 <code>--projection</code>. Use <code>--before-pruning</code> with
-<code>e78f3a1</code> for the redundant-declaration comparison. <a
-href="thesis-review-13.py">Comparison driver</a></p>
+<code>e78f3a1</code> for the redundant-declaration comparison and
+<code>--before-supplement</code> with <code>761939f</code> for the
+strengthened declaration. <a href="thesis-review-13.py">Comparison
+driver</a></p>
 </section>
 </article>
 <script src="/assets/theme-toggle.js"></script>

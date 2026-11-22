@@ -329,6 +329,11 @@ build_html \
   "$collab_dir/thesis-review-13.html" \
   "Feeding a supplier’s result bounds back to the recursive input"
 
+build_html \
+  "$collab_dir/thesis-review-14.md" \
+  "$collab_dir/thesis-review-14.html" \
+  "What the induction jump loses when two supplier caps cross"
+
 reviews_dir="$collab_dir/reviews"
 if [[ -d "$reviews_dir" ]]; then
   for md_file in "$reviews_dir"/*.md; do

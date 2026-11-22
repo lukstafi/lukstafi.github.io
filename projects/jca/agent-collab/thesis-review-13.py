@@ -44,6 +44,7 @@ def main():
     parser.add_argument("--baseline", type=Path, help="executable from revision 8c9d34f")
     parser.add_argument("--projection", type=Path, help="8f22708, before the reflected-input repair")
     parser.add_argument("--before-pruning", type=Path, help="e78f3a1, before pruning implied arms")
+    parser.add_argument("--before-supplement", type=Path, help="761939f, before deferring constructor bounds")
     args = parser.parse_args()
     current = args.invargent.resolve(strict=True)
     climb = (HERE / "moving_floor_calls.gadt").read_text()
@@ -103,10 +104,13 @@ def main():
         weaker = tighter.replace(" ∧ k≤max(j,m+19+i)", "")
         assert weaker != tighter
         check("same_body_weaker_contract", weaker)
-        for budget in (1, 2, 11, 80):
-            check(f"tighter_supplier_{budget}", tighter,
-                  error="Answers do not converge" if budget == 1 else rejected,
-                  options=("-iterations_timeout", str(budget)))
+        check("tighter_supplier", tighter)
+        if args.before_supplement:
+            old = args.before_supplement.resolve(strict=True)
+            for budget in (1, 2, 11, 80):
+                compile_and_run(out, old, f"tighter_supplier_{budget}", tighter,
+                                error="Answers do not converge" if budget == 1 else rejected,
+                                options=("-iterations_timeout", str(budget)))
         check("skew", (HERE / "skew_floor.gadt").read_text())
         tagged = (HERE / "tagged_floor.gadt").read_text()
         for budget in (11, 80):

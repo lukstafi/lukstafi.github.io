@@ -3,9 +3,11 @@ title: "Feeding a supplier’s result bounds back to the recursive input"
 date: 2026-11-22
 ---
 
-A size bound on a solution does not guarantee that InvarGenT’s Table 4.4 iteration finds it. The counterexample below has four input atoms and two result atoms. Removing one guarantee from a constructor makes inference succeed on the same function body. Restoring the guarantee makes numeric abduction fail on pass 2 for every outer budget that reaches that pass. The default induction jump is scheduled for pass 8. [Counterexample](tighter_supplier.gadt) · [Six-atom certificate](thesis-review-13.lean) · [Budget and runtime controls](thesis-review-13.py)
+A size bound on a solution does not guarantee that InvarGenT’s Table 4.4 iteration finds it. The counterexample below has four input atoms and two result atoms. At revision `761939f`, removing one guarantee from a constructor makes inference succeed on the same function body. Restoring the guarantee makes numeric abduction fail on pass 2 for every outer budget that reaches that pass. The default induction jump is scheduled for pass 8. [Counterexample](tighter_supplier.gadt) · [Six-atom certificate](thesis-review-13.lean) · [Budget and runtime controls](thesis-review-13.py)
 
 The moving-floor example has a solution with four input conditions and two result bounds. Revision `8c9d34f` still asked for the same result bounds on pass 80. Revision `8f22708` infers the six atoms on pass 9 with the default induction jump. Two calls attached to the definition force it to admit both a stationary floor and a rising floor. Their midpoint is unsafe. [Unannotated program](moving_floor_calls.gadt) · [Earlier trace and proof of the greatest domain](thesis-review-11.html#convex) · [Executable comparisons](thesis-review-13.py)
+
+The next review repairs this inference, derives the greater domain the extra guarantee permits, and gives a new six-atom counterexample for the repaired solver. [Two supplier caps and the induction jump](thesis-review-14.html)
 
 ## Projecting both ends of the interval {#coverage}
 
@@ -84,4 +86,4 @@ No finite formula of rational affine constraints, binary extrema and existential
 InvarGenT illustrates the distinction. With a call at $-9$ attached, it infers the positive ray and all five required negative points. A later call at $-8$ is rejected. At $-31$ the default pass budget fails and budget 40 succeeds. This example concerns the absence of a greatest *expressible* type. Each accepted individual call still has a finite certificate. [Runnable comparisons](thesis-review-13.py)
 
 
-Lean 4.19.0 checked the companion proofs. The OCaml 5.3.0 compatibility build passed 289 tests with 10 existing TODOs. All 134 previously generated signatures matched their baseline files byte for byte. The comparison driver also passed on OCaml 5.5.1. To reproduce the historical runs, pass executables from revisions `8c9d34f` and `8f22708` as `--baseline` and `--projection`. Use `--before-pruning` with `e78f3a1` for the redundant-declaration comparison. [Comparison driver](thesis-review-13.py)
+Lean 4.19.0 checked the companion proofs. The OCaml 5.3.0 compatibility build passed 289 tests with 10 existing TODOs. All 134 previously generated signatures matched their baseline files byte for byte. The comparison driver also passed on OCaml 5.5.1. To reproduce the historical runs, pass executables from revisions `8c9d34f` and `8f22708` as `--baseline` and `--projection`. Use `--before-pruning` with `e78f3a1` for the redundant-declaration comparison and `--before-supplement` with `761939f` for the strengthened declaration. [Comparison driver](thesis-review-13.py)
