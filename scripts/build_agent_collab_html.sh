@@ -404,6 +404,11 @@ build_html \
   "$collab_dir/thesis-review-28.html" \
   "Which observations can a recursive call use to choose its interval?"
 
+build_html \
+  "$collab_dir/thesis-review-29.md" \
+  "$collab_dir/thesis-review-29.html" \
+  "Choosing a recursive interval from the input state"
+
 reviews_dir="$collab_dir/reviews"
 if [[ -d "$reviews_dir" ]]; then
   for md_file in "$reviews_dir"/*.md; do

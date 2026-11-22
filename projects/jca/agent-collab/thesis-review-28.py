@@ -11,7 +11,7 @@ HERE = Path(__file__).resolve().parent
 compile_and_run = runpy.run_path(str(HERE / "thesis-review-13.py"))["compile_and_run"]
 
 
-def check_projection(guard, z3, sort):
+def check_projection(guard, z3, sort, states=(0, 1)):
     """Read the exact linear constraints printed in this program's guard."""
     from z3.z3util import get_vars
 
@@ -46,7 +46,7 @@ def check_projection(guard, z3, sort):
             intervals.add(band.groups())
     [(output, child)] = intervals
     r, j, i, k = map(sort, (output, child, "i", "k"))
-    expected = z3.And(z3.Or(i == 0, i == 1), k <= 4*i+1, 4*i+1 <= k+2,
+    expected = z3.And(z3.Or([i == x for x in states]), k <= 4*i+1, 4*i+1 <= k+2,
                       j == k, j <= r, r <= j+2, 2 <= r, r <= 4)
     full = z3.And(*constraints)
     hidden = [v for v in get_vars(full) if not any(v.eq(obs) for obs in (r, j, i, k))]
@@ -56,7 +56,7 @@ def check_projection(guard, z3, sort):
     assert oracle.check() == z3.unsat, oracle.reason_unknown()
 
 
-def trace(exe, source, options):
+def trace(exe, source, options, states=(0, 1)):
     import z3
     stable = None
     for budget in (0, 1, 2, 3, 40, 10000):
@@ -74,7 +74,7 @@ def trace(exe, source, options):
             stable = run.stderr
             for guard in guards:
                 for sort in (z3.Int, z3.Real):
-                    check_projection(guard, z3, sort)
+                    check_projection(guard, z3, sort, states)
         elif budget > 2:
             assert run.stderr == stable
 
@@ -120,7 +120,7 @@ def main():
             result = subprocess.run(["ocaml", "-noinit", out / (name+".ml")], capture_output=True, text=True, check=True)
             assert result.stdout.splitlines() == ["6"]*6, result.stdout
         check("reachable", reachable, error="negative clause")
-        check("implicit", policy, error="Type mismatch")
+        check("implicit", policy, width=2)
         check("explicit", explicit, width=2)
         check("split", split, width=2)
         if args.before:

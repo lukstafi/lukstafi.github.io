@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <meta name="dcterms.date" content="2026-11-22">
+  <meta property="og:title" content="Choosing a recursive interval from the input state">
+  <meta property="og:url" content="https://lukstafi.github.io/projects/jca/agent-collab/thesis-review-29.html">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="lukstafi&#x27;s blog">
+  <meta name="twitter:card" content="summary">
+  <title>Choosing a recursive interval from the input state</title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <link rel="stylesheet" href="/assets/tufte.css">
+  <link rel="stylesheet" href="/assets/pandoc-tufte.css">
+  <link rel="stylesheet" href="/assets/site.css">
+  <script defer=""
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+  type="text/javascript"></script>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+  <script>(function(){var t=localStorage.getItem('theme-preference');if(t)document.documentElement.setAttribute('data-theme',t);})()</script>
+</head>
+<body>
+<nav class="site-nav">
+  <a href="/">Home</a> &middot; <a href="/study/">Study Guide</a> &middot; <a href="/about.html">About</a> &middot; <a href="https://lukstafi.substack.com">Substack</a>
+</nav>
+<div class="theme-toggle">
+  <button id="theme-btn" aria-label="Toggle dark mode">&#9788;</button>
+</div>
+<article>
+<header>
+<h1 class="title">Choosing a recursive interval from the input
+state</h1>
+<p class="byline">2026-11-22</p>
+</header>
+<nav id="TOC">
+<ul>
+<li><a href="#recovery" id="toc-recovery">A call can choose its own
+interval</a></li>
+<li><a href="#three" id="toc-three">A third state needs a different
+witness</a></li>
+<li><a href="#four" id="toc-four">Four observations characterize failure
+of an affine witness</a></li>
+</ul>
+</nav>
+<p>Table 4.4 leaves choices to the widening and abduction routines. With
+the original common-atom jump, the suppliers can imply an upper bound
+that widening discards and the caller restores on every pass. The
+stopping test requires an empty caller demand, so this recurrence
+persists even when the stored two inequalities already solve the
+clauses. On the capped-climb example at revision <code>3eb191e</code>,
+the caller restores the bound on pass 8. The jump retains it on pass 9
+and the solver returns with an empty demand. A second failure occurs
+earlier. An update can finish and then fail a guard check because the
+recursive call chose the wrong existential parameter. The two-state and
+three-state programs below distinguish these failures. <a
+href="thesis-review-3.html#update">Original recurrence</a> · <a
+href="thesis-review-28.html#policy">Two-state trace before the
+repair</a></p>
+<section id="recovery" class="level2">
+<h2>A call can choose its own interval</h2>
+<p>The recursive function returns an integer in <span
+class="math inline">\([k,k+2]\)</span>. The caller may choose any <span
+class="math inline">\(k\)</span> whose interval contains the supplier
+value <span class="math inline">\(4i+1\)</span> at input state <span
+class="math inline">\(i\)</span>. Inside the recursive branch, the child
+call needs its own interval. Every value in that interval must miss the
+guard <span class="math inline">\([2,4]\)</span>. With states 0 and 1
+the only possible child keys are <span class="math inline">\(-1\)</span>
+and 5, respectively. InvarGenT now infers the single equation <span
+class="math inline">\(k_{\rm child}=6i-1\)</span> and checks the program
+at an outer iteration budget of 2. <a
+href="state_dependent_interval.gadt">Program</a> · <a
+href="thesis-review-28.lean">Uniqueness proof</a></p>
+<p>After the ordinary guard checks fail, the compiler takes literal
+forbidden bands from the unresolved arms. It reads sample indices from
+constructors of the argument type and drops those incompatible with the
+written precondition. Suppose the package bounds its result between
+<span class="math inline">\(k+a\)</span> and <span
+class="math inline">\(k+b\)</span>. Avoiding a band <span
+class="math inline">\([l,u]\)</span> requires <span
+class="math inline">\(k\le l-b-1\)</span> or <span
+class="math inline">\(k\ge u-a+1\)</span>. The compiler intersects those
+choices with the input bounds. When each sample leaves one finite
+interval of keys, it fits an integer slope and intercept using the pair
+inequalities below. It adds the proposed equation to the fresh instance
+at each recursive use. All original branches, calls and negative guards
+go through the checker again. The samples guide inference even when the
+datatype also has a constructor whose index varies. <a
+href="thesis-review-29.py">Executable checks</a></p>
+<p>One client requires the result at state 0 to be at least 1. This
+forces its <em>parent</em> key to be 1, although its child must choose
+<span class="math inline">\(-1\)</span>. The client at state 1 requires
+a result at most 5 and forces parent key 3, although its child must
+choose 5. Both clients check and execute together. The emitted OCaml
+still calls <code>run s d</code>. Reversing the sign of the slope,
+exchanging the two guard comparisons, and using constructor indices
+<span class="math inline">\(-2\)</span> and 1 also pass. A constructor
+carrying an arbitrary index can supply the reachable value 3 in a
+negative control. The compiler rejects that program. <a
+href="thesis-review-29.py">Clients and controls</a></p>
+</section>
+<section id="three" class="level2">
+<h2>A third state needs a different witness</h2>
+<p>Add a constructor with index 2. The supplier values now give the
+following choices after removing the forbidden band.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: right;">Input state <span
+class="math inline">\(i\)</span></th>
+<th style="text-align: right;">Supplier <span
+class="math inline">\(4i+1\)</span></th>
+<th style="text-align: right;">Legal child keys</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;"><span
+class="math inline">\(\{-1\}\)</span></td>
+</tr>
+<tr>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;"><span
+class="math inline">\(\{5\}\)</span></td>
+</tr>
+<tr>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">9</td>
+<td style="text-align: right;"><span
+class="math inline">\([7,9]\)</span></td>
+</tr>
+</tbody>
+</table>
+<p>The first two rows force slope 6 and intercept <span
+class="math inline">\(-1\)</span>. At the third input that line gives
+11. Every pair of rows admits an integer line, for example <span
+class="math inline">\(4i-1\)</span> on states 0 and 2 and <span
+class="math inline">\(2i+3\)</span> on states 1 and 2. One minimum of
+two lines serves all three states,</p>
+<p><span class="math display">\[ k_{\rm child}=\min(6i-1,4i+1).
+\]</span></p>
+<p>At each state this interval contains the supplier and excludes the
+guard for every opening. Both the base branch and the surviving
+recursive branch return <span class="math inline">\(4i+1\)</span>, which
+lies in every permitted parent interval. This proves the same local
+obligation at every recursive depth. The clients can choose the interval
+ending at <span class="math inline">\(4i+1\)</span>. Supplying the
+minimum explicitly or splitting on the three constructors before the
+call both verify and execute at budget 2. <a
+href="three_state_interval.gadt">Three-state source</a> · <a
+href="thesis-review-29.lean">Lean proof</a> · <a
+href="thesis-review-29.py">Both controls</a></p>
+<p>With the key implicit, the final guards still fail. Z3 projects each
+failing guard exactly onto the input <span
+class="math inline">\(i\)</span>, parent key <span
+class="math inline">\(k\)</span>, child key <span
+class="math inline">\(j\)</span>, and opened result <span
+class="math inline">\(r\)</span>.</p>
+<p><span class="math display">\[
+i\in\{0,1,2\},\quad k\le4i+1\le k+2,\quad j=k,\quad
+j\le r\le j+2,\quad 2\le r\le4.
+\]</span></p>
+<p>On this path state 0 admits <span
+class="math inline">\(k=j=1\)</span> and <span
+class="math inline">\(r=2\)</span>. State 1 admits <span
+class="math inline">\(k=j=3\)</span> and <span
+class="math inline">\(r=4\)</span>. State 2 cannot enter the bad guard.
+Budgets 0 and 1 stop in the definition of the supplier. For any budget
+of at least 2, the supplier finishes on pass 2, and two searches of the
+recursive definition finish their predicate updates on pass 2. Their
+final guards fail. The other searches encounter the Boolean branch where
+a numeric result is required, and the affine retry has no witness on the
+three rows. None of these outcomes depends on an additional pass or
+reaches the induction jump. Traces at budgets 2, 3, 40 and 10,000 agree
+byte for byte in each annotation mode. The projection holds over
+integers and over rationals for the index domain written in the source.
+<a href="thesis-review-29.py">Pass and projection checks</a></p>
+</section>
+<section id="four" class="level2">
+<h2>Four observations characterize failure of an affine witness</h2>
+<p>Let each history <span class="math inline">\(h\)</span> have an
+integer observation <span class="math inline">\(x_h\)</span> and a
+closed range of keys <span class="math inline">\([L_h,U_h]\)</span> with
+finite integer endpoints. <strong>One integer-affine policy works on
+every history if and only if one works on every subset of at most four
+histories.</strong> This also holds for infinitely many histories. For
+finite families the upper bound is an instance of the lattice Helly
+theorem in the two integer coordinates <span
+class="math inline">\((m,c)\)</span>. The interval structure gives a
+direct proof, a way to compute the policy, and a sharp example using
+actual package constraints. <a
+href="https://link.springer.com/article/10.1007/BF01949705">Doignon</a>
+· <a href="https://arxiv.org/abs/1405.2480">Lattice bound</a> · <a
+href="thesis-review-29.lean">Formal proof</a></p>
+<p>For <span class="math inline">\(x_h&lt;x_j\)</span>, set <span
+class="math inline">\(d=x_j-x_h\)</span>. The two rows admit a common
+intercept at an integer slope <span class="math inline">\(m\)</span>
+precisely when both rows are nonempty and <span class="math display">\[
+\left\lceil\frac{L_j-U_h}{d}\right\rceil \le m \le
+\left\lfloor\frac{U_j-L_h}{d}\right\rfloor .
+\]</span> If every four histories fit, any two of these closed slope
+intervals meet. Even in an infinite family, the integer intervals have a
+common point. Indeed, any one upper endpoint bounds all their lower
+endpoints, which therefore attain a maximum. Histories with the same
+observation impose the slope-independent checks <span
+class="math inline">\(L_h\le U_j\)</span>. For a slope satisfying all
+pairs, the intervals <span
+class="math inline">\([L_h-mx_h,U_h-mx_h]\)</span> have a common integer
+intercept by the same argument. If all observations coincide, take slope
+zero. For <span class="math inline">\(n\)</span> explicit rows the
+compiler intersects <span class="math inline">\(n^2\)</span> slope
+inequalities and then takes the largest adjusted lower endpoint as the
+intercept. This step finds a policy whenever the rows admit one and its
+coefficients fit the term representation. Inferring the rows and
+checking the rest of the program are separate obligations. <a
+href="thesis-review-28.html#uniform">Shared-intercept criterion</a></p>
+<p>Four histories can be necessary.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: right;">Observation <span
+class="math inline">\(x\)</span></th>
+<th style="text-align: right;">Legal key interval</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: right;"><span
+class="math inline">\(-2\)</span></td>
+<td style="text-align: right;"><span
+class="math inline">\([-5,0]\)</span></td>
+</tr>
+<tr>
+<td style="text-align: right;"><span
+class="math inline">\(-1\)</span></td>
+<td style="text-align: right;"><span
+class="math inline">\([0,5]\)</span></td>
+</tr>
+<tr>
+<td style="text-align: right;"><span
+class="math inline">\(1\)</span></td>
+<td style="text-align: right;"><span
+class="math inline">\([1,5]\)</span></td>
+</tr>
+<tr>
+<td style="text-align: right;"><span
+class="math inline">\(2\)</span></td>
+<td style="text-align: right;"><span
+class="math inline">\([-5,2]\)</span></td>
+</tr>
+</tbody>
+</table>
+<p>The rows at <span class="math inline">\(-2\)</span> and 1 force <span
+class="math inline">\(3m\ge1\)</span>. The rows at <span
+class="math inline">\(-1\)</span> and 2 force <span
+class="math inline">\(3m\le2\)</span>. No integer slope meets both.
+Omitting the rows in table order gives the respective witnesses <span
+class="math inline">\(1\)</span>, <span
+class="math inline">\(x\)</span>, <span
+class="math inline">\(0\)</span>, and <span
+class="math inline">\(x+1\)</span>. Each row is realizable with the same
+package width 7, supplier <span class="math inline">\(U_h\)</span>, and
+a single forbidden value <span class="math inline">\(L_h-1\)</span>.
+Thus checking every triple can miss a genuine incompatibility between
+recursive interval requirements. <a
+href="thesis-review-29.lean">Sharpness and package realization</a></p>
+<p>To reproduce the checks, compile reviews 27 and 28 into a temporary
+Lean search path and run Lean 4.19 on
+<code>thesis-review-29.lean</code>. Run
+<code>python3 thesis-review-29.py /path/to/InvarGenT.native</code> with
+OCaml available. The optional <code>--original</code> runs the capped
+climb at revision <code>772b9b4</code>. The optional
+<code>--before</code> takes revision <code>311a5e4</code>. The optional
+<code>--trace</code> uses Python’s <code>z3-solver</code> and revision
+<code>3eb191e</code> built with the existing diagnostics for passes,
+interfaces, jumps, and guards. The OCaml 5.3 compatibility build passed
+335 active tests with 10 existing TODOs. All 170 previous example
+signatures matched byte for byte. The source executions and traces used
+the OCaml 5.5 compatibility build. <a
+href="thesis-review-28.html#policy">Build diagnostics</a></p>
+</section>
+</article>
+<script src="/assets/theme-toggle.js"></script>
+</body>
+</html>

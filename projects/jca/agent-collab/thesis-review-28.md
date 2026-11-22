@@ -3,7 +3,7 @@ title: "Which observations can a recursive call use to choose its interval?"
 date: 2026-11-22
 ---
 
-A recursive call must choose its package parameter before it sees the returned value. It can already know the input state. In the new example, the result at `A` is 1 and the result at `B` is 5. A width-two interval containing that result must avoid $[2,4]$. At `A` the only interval is $[-1,1]$. At `B` it is $[5,7]$. The state indices are 0 and 1, so the single affine expression $6i-1$ makes both choices. InvarGenT checks this witness and executes both recursive clients at budget 2. With the same parameter left implicit, it rejects the program at every outer budget. [Recursive source](state_dependent_interval.gadt) · [Explicit witness and split-state control](thesis-review-28.py)
+A recursive call must choose its package parameter before it sees the returned value. It can already know the input state. In the new example, the result at `A` is 1 and the result at `B` is 5. A width-two interval containing that result must avoid $[2,4]$. At `A` the only interval is $[-1,1]$. At `B` it is $[5,7]$. The state indices are 0 and 1, so the single affine expression $6i-1$ makes both choices. InvarGenT checks this witness and executes both recursive clients at budget 2. With the same parameter left implicit, revision `311a5e4` rejects the program at every outer budget. The following review fits the child key from the two state indices and gives a three-state counterexample. [Affine recovery and its limit](thesis-review-29.html#three) [Recursive source](state_dependent_interval.gadt) · [Explicit witness and split-state control](thesis-review-28.py)
 
 ## What a package boundary can tell abduction {#boundaries}
 

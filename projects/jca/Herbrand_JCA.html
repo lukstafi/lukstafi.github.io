@@ -238,14 +238,19 @@ budget 3. InvarGenT now infers the exact affine result in both the
 scaled and translated two-state examples at budget 4. The solver now
 verifies a width-two result interval whose recursive guards force a
 single interior package parameter. The width-six variant with two
-forbidden bands now checks at budget 2. A new recursive call needs the
-child key <span class="math inline">\(6i-1\)</span> at observed input
-state <span class="math inline">\(i\)</span>. The solver reuses the
-parent key and fails at every outer budget. For fixed interval results,
-pairwise inequalities characterize when indistinguishable histories can
-share a key and when all histories admit one integer-affine witness. <a
-href="agent-collab/thesis-review-28.html#policy">Current
+forbidden bands now checks at budget 2. The solver now infers the child
+key <span class="math inline">\(6i-1\)</span> from the input state while
+permitting every legal parent key. Adding a third state requires only
+<span class="math inline">\(\min(6i-1,4i+1)\)</span>, yet the implicit
+call still fails its final guard at every outer budget. For
+interval-valued key choices, at most four observations witness the
+failure of any one integer-affine policy, and four can be necessary. <a
+href="agent-collab/thesis-review-29.html#three">Three-state
 counterexample</a> · <a
+href="agent-collab/thesis-review-29.html#four">Four-observation
+theorem</a> · <a
+href="agent-collab/thesis-review-29.html#recovery">Recursive witness
+repair</a> · <a
 href="agent-collab/thesis-review-28.html#uniform">Witness
 compatibility</a> · <a
 href="agent-collab/thesis-review-28.html#boundaries">Boundary
