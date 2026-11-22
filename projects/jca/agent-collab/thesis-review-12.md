@@ -63,4 +63,24 @@ On the first input, the trace shows the caller asking for an upper bound, then t
 
 The earlier two-call moving-floor example behaves differently after the alignment repair. Its owned-variable count stays at 45 from pass 8 through pass 80. The fresh-variable counter advances from 212 to 284. On each of those passes the three predicate comparisons succeed while the caller still contributes its two bounds. Transient variable ownership explained the growth seen in the earlier trace. Removing that growth leaves the missing input restriction to be inferred. [Moving-floor obligations and earlier trace](thesis-review-11.html#iteration)
 
-Lean 4.19.0 checked the companion proofs. The OCaml 5.3.0 compatibility build passed 281 tests with 10 existing TODOs. All 132 previously generated signatures matched byte for byte. The compiler comparison runs both the generated OCaml and its failing baseline clients. To reproduce it, run `python3 thesis-review-12.py /path/to/fixed/InvarGenT.native --baseline /path/to/e7dc91c/InvarGenT.native`. [Driver](thesis-review-12.py) · [Lean companion](thesis-review-12.lean)
+## Giving a restart time before the next induction jump {#restart}
+
+The cap trace explains why delaying the jump on the command line helps. The first jump sees two consecutive diagonal summaries, one bounded by 6 and the other by 7. The next supplier projection separates the indices and includes $(8,10)$ because the stored approximation already permits $(9,9)$. The caller's $y\le9$ therefore needs a stronger inductive hypothesis. When the attempt to force the postcondition fails, the solver starts again with the base cases. Its absolute pass counter is already beyond the jump threshold, so widening starts again after the initialization passes.
+
+Revision `8c9d34f` keeps the first jump at pass 8. If postcondition inference restarts at pass $s$ past the current threshold, it schedules the next eligible jump at $2s+1$. The restart thus gets $s+1$ passes to develop its approximation before widening. The enclosing iteration budget still applies. Each alternative explored by backtracking inherits the schedule at its own call site.
+
+| Cap $M$ | Restart passes | First successful pass |
+|---|---|---|
+| 8 | 10 | 21 |
+| 16 | 10, 23 | 42 |
+| 32 | 10, 23, 49 | 83 |
+| 64 | 10, 23, 49, 101 | 167 |
+| 128 | 10, 23, 49, 101, 205 | 336 |
+
+Every row uses the single attached requirement $y\le M+1$. The driver executes each accepted program at depth $M+1$. For $M=8$, budget 20 still fails, budget 21 suffices, and a later client requiring $y\le8$ is rejected. The bare definition still exports its weak scheme before seeing a later caller. In the moving-floor example the postcondition demand repeats without triggering a restart, so this scheduling rule has no opportunity to change the run. [Executable comparisons](thesis-review-12.py) · [Moving-floor driver](thesis-review-11.py)
+
+**Conditional convergence.** Consider a forward run in which every unsuccessful restarted attempt reaches its scheduled jump and eventually takes another post-jump restart. Suppose also that $D$ consecutive unwidened passes from a restart suffice to finish, uniformly over the state carried into those restarts. With unbounded pass counters and the timeout removed, some attempt must finish. Indeed, successive restart passes satisfy $s_{i+1} > 2s_i+1$, so their unwidened windows exceed any prescribed finite $D$. If each shorter attempt either finishes or restarts within $K$ passes of its jump, a solution returns by pass $\max(s_0,2D+K)+D$, where $s_0$ is the first restart. A preceding inadequate window has $s+1<D$, so the next restart occurs by $2s+1+K\le2D+K$. This result concerns the scheduling step of the implemented loop. A small certificate alone supplies neither the uniform horizon $D$ nor the restart hypothesis. [Lean proof of the conditional pass bound](thesis-review-12.lean)
+
+The final assertion check exposed a separate soundness bug. It raised the same exception for a reachable `assert false` that it caught to recognize an impossible guard. With the earlier negative-clause checks disabled for the comparison, InvarGenT accepted `if 0 <= 0 then assert false else 1`. Revision `64072ba` checks the instantiated guard together with the final residual answer and reports a reachable branch outside the exception handler. The control with guard `1 <= 0` still passes.
+
+Lean 4.19.0 checked the companion proofs. The final OCaml 5.3.0 compatibility suite passed 283 tests with 10 existing TODOs. All 132 signatures generated before the alignment repair matched their baseline files byte for byte. The separating-pair signature also survived the scheduling change byte for byte. The comparison driver also passed on OCaml 5.5.1. Run `python3 thesis-review-12.py /path/to/current/InvarGenT.native` to reproduce the current behavior. The optional `--baseline` and `--alignment-only` arguments compare executables from revisions `e7dc91c` and `5099580`. [Driver](thesis-review-12.py) · [Lean companion](thesis-review-12.lean)

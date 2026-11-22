@@ -113,4 +113,36 @@ theorem greatest_safe {m x y : Int} (hm : 0 ≤ m) :
     have hs := safe _ _ (step x y hp)
     exact ⟨by omega, safe x y hp⟩
 
+-- A post-jump restart at s schedules the next jump at 2*s+1.
+-- These bounds concern one forward sequence of such restarts.
+theorem unbounded_windows (s : Nat → Nat) (grow : ∀ n, 2*s n+1 ≤ s (n+1)) :
+    ∀ d, d ≤ s d := by
+  intro d
+  induction d with
+  | zero => omega
+  | succ n ih => have h := grow n; omega
+
+-- A short attempt must either finish or reach another restart promptly.
+theorem restart_budget (live done : Nat → Prop) (s₀ d k : Nat) (start : live s₀)
+    (enough : ∀ s, live s → d ≤ s+1 → ∃ p, p ≤ s+d ∧ done p)
+    (short : ∀ s, live s → s+1 < d →
+      (∃ p, p ≤ 2*s+1+k ∧ done p) ∨
+      ∃ t, 2*s+1 ≤ t ∧ t ≤ 2*s+1+k ∧ live t) :
+    ∃ p, p ≤ max s₀ (2*d+k) + d ∧ done p := by
+  let bound := max s₀ (2*d+k)
+  have visit : ∀ fuel s, d-(s+1) = fuel → s ≤ bound → live s →
+      ∃ p, p ≤ bound+d ∧ done p := by
+    intro fuel
+    induction fuel using Nat.strongRecOn with
+    | ind n ih =>
+      intro s hf hs ls
+      by_cases h : d ≤ s+1
+      · obtain ⟨p, hp, result⟩ := enough s ls h
+        exact ⟨p, by omega, result⟩
+      · have cap : 2*s+1+k ≤ bound := by dsimp [bound]; omega
+        rcases short s ls (by omega) with ⟨p, hp, result⟩ | ⟨t, lo, hi, lt⟩
+        · exact ⟨p, by omega, result⟩
+        · exact ih (d-(t+1)) (by omega) t rfl (by omega) lt
+  exact visit _ s₀ rfl (by dsimp [bound]; omega) start
+
 end WitnessAlignment

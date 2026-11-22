@@ -112,6 +112,8 @@ reused?</a></li>
 pair</a></li>
 <li><a href="#box" id="toc-box">Two affine bounds suffice for the
 remaining feedback loop</a></li>
+<li><a href="#restart" id="toc-restart">Giving a restart time before the
+next induction jump</a></li>
 </ul>
 </nav>
 <p>At revision <code>e7dc91c</code>, InvarGenT accepts a function whose
@@ -317,13 +319,118 @@ explained the growth seen in the earlier trace. Removing that growth
 leaves the missing input restriction to be inferred. <a
 href="thesis-review-11.html#iteration">Moving-floor obligations and
 earlier trace</a></p>
-<p>Lean 4.19.0 checked the companion proofs. The OCaml 5.3.0
-compatibility build passed 281 tests with 10 existing TODOs. All 132
-previously generated signatures matched byte for byte. The compiler
-comparison runs both the generated OCaml and its failing baseline
-clients. To reproduce it, run
-<code>python3 thesis-review-12.py /path/to/fixed/InvarGenT.native --baseline /path/to/e7dc91c/InvarGenT.native</code>.
-<a href="thesis-review-12.py">Driver</a> · <a
+</section>
+<section id="restart" class="level2">
+<h2>Giving a restart time before the next induction jump</h2>
+<p>The cap trace explains why delaying the jump on the command line
+helps. The first jump sees two consecutive diagonal summaries, one
+bounded by 6 and the other by 7. The next supplier projection separates
+the indices and includes <span class="math inline">\((8,10)\)</span>
+because the stored approximation already permits <span
+class="math inline">\((9,9)\)</span>. The caller’s <span
+class="math inline">\(y\le9\)</span> therefore needs a stronger
+inductive hypothesis. When the attempt to force the postcondition fails,
+the solver starts again with the base cases. Its absolute pass counter
+is already beyond the jump threshold, so widening starts again after the
+initialization passes.</p>
+<p>Revision <code>8c9d34f</code> keeps the first jump at pass 8. If
+postcondition inference restarts at pass <span
+class="math inline">\(s\)</span> past the current threshold, it
+schedules the next eligible jump at <span
+class="math inline">\(2s+1\)</span>. The restart thus gets <span
+class="math inline">\(s+1\)</span> passes to develop its approximation
+before widening. The enclosing iteration budget still applies. Each
+alternative explored by backtracking inherits the schedule at its own
+call site.</p>
+<table>
+<thead>
+<tr>
+<th>Cap <span class="math inline">\(M\)</span></th>
+<th>Restart passes</th>
+<th>First successful pass</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>8</td>
+<td>10</td>
+<td>21</td>
+</tr>
+<tr>
+<td>16</td>
+<td>10, 23</td>
+<td>42</td>
+</tr>
+<tr>
+<td>32</td>
+<td>10, 23, 49</td>
+<td>83</td>
+</tr>
+<tr>
+<td>64</td>
+<td>10, 23, 49, 101</td>
+<td>167</td>
+</tr>
+<tr>
+<td>128</td>
+<td>10, 23, 49, 101, 205</td>
+<td>336</td>
+</tr>
+</tbody>
+</table>
+<p>Every row uses the single attached requirement <span
+class="math inline">\(y\le M+1\)</span>. The driver executes each
+accepted program at depth <span class="math inline">\(M+1\)</span>. For
+<span class="math inline">\(M=8\)</span>, budget 20 still fails, budget
+21 suffices, and a later client requiring <span
+class="math inline">\(y\le8\)</span> is rejected. The bare definition
+still exports its weak scheme before seeing a later caller. In the
+moving-floor example the postcondition demand repeats without triggering
+a restart, so this scheduling rule has no opportunity to change the run.
+<a href="thesis-review-12.py">Executable comparisons</a> · <a
+href="thesis-review-11.py">Moving-floor driver</a></p>
+<p><strong>Conditional convergence.</strong> Consider a forward run in
+which every unsuccessful restarted attempt reaches its scheduled jump
+and eventually takes another post-jump restart. Suppose also that <span
+class="math inline">\(D\)</span> consecutive unwidened passes from a
+restart suffice to finish, uniformly over the state carried into those
+restarts. With unbounded pass counters and the timeout removed, some
+attempt must finish. Indeed, successive restart passes satisfy <span
+class="math inline">\(s_{i+1} &gt; 2s_i+1\)</span>, so their unwidened
+windows exceed any prescribed finite <span
+class="math inline">\(D\)</span>. If each shorter attempt either
+finishes or restarts within <span class="math inline">\(K\)</span>
+passes of its jump, a solution returns by pass <span
+class="math inline">\(\max(s_0,2D+K)+D\)</span>, where <span
+class="math inline">\(s_0\)</span> is the first restart. A preceding
+inadequate window has <span class="math inline">\(s+1&lt;D\)</span>, so
+the next restart occurs by <span
+class="math inline">\(2s+1+K\le2D+K\)</span>. This result concerns the
+scheduling step of the implemented loop. A small certificate alone
+supplies neither the uniform horizon <span
+class="math inline">\(D\)</span> nor the restart hypothesis. <a
+href="thesis-review-12.lean">Lean proof of the conditional pass
+bound</a></p>
+<p>The final assertion check exposed a separate soundness bug. It raised
+the same exception for a reachable <code>assert false</code> that it
+caught to recognize an impossible guard. With the earlier
+negative-clause checks disabled for the comparison, InvarGenT accepted
+<code>if 0 &lt;= 0 then assert false else 1</code>. Revision
+<code>64072ba</code> checks the instantiated guard together with the
+final residual answer and reports a reachable branch outside the
+exception handler. The control with guard <code>1 &lt;= 0</code> still
+passes.</p>
+<p>Lean 4.19.0 checked the companion proofs. The final OCaml 5.3.0
+compatibility suite passed 283 tests with 10 existing TODOs. All 132
+signatures generated before the alignment repair matched their baseline
+files byte for byte. The separating-pair signature also survived the
+scheduling change byte for byte. The comparison driver also passed on
+OCaml 5.5.1. Run
+<code>python3 thesis-review-12.py /path/to/current/InvarGenT.native</code>
+to reproduce the current behavior. The optional <code>--baseline</code>
+and <code>--alignment-only</code> arguments compare executables from
+revisions <code>e7dc91c</code> and <code>5099580</code>. <a
+href="thesis-review-12.py">Driver</a> · <a
 href="thesis-review-12.lean">Lean companion</a></p>
 </section>
 </article>

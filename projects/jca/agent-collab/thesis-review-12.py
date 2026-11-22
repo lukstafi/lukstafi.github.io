@@ -43,8 +43,9 @@ def check(exe, out, name, source, *, error=None, assertion=False, options=()):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("invargent", type=Path, help="solver with injective alignment")
+    parser.add_argument("invargent", type=Path, help="solver with adaptive postcondition restarts")
     parser.add_argument("--baseline", type=Path, help="solver at revision e7dc91c")
+    parser.add_argument("--alignment-only", type=Path, help="solver at revision 5099580")
     args = parser.parse_args()
     exe = args.invargent.resolve(strict=True)
     sample = (HERE / "separating_pair.gadt").read_text()
@@ -74,14 +75,31 @@ let seen = let xy = pair (S Z) in lower xy
         check(exe, out, "shared", small.replace("(1, x+1)", "(y+1, x+1)") + equal_two)
         check(exe, out, "scaled", seed)
         check(exe, out, "after_jump", definition + equal_nine, error=REJECT)
-        for budget in (11, 40, 80):
-            check(exe, out, f"single_bound_{budget}", cap, error=LIMIT,
+        check(exe, out, "initial_budget", cap, error=LIMIT)
+        check(exe, out, "before_convergence", cap, error=LIMIT,
+              options=("-iterations_timeout", "20"))
+        cap_client = cap + ninth + "let seen = let xy = pair ninth in bound xy\n"
+        check(exe, out, "restarted_at_eight", cap_client, options=("-iterations_timeout", "21"))
+        false_client = cap_client + '''external let short : ∀i,j[j≤8]. (Num i, Num j) → Bool =
+  "fun (_,y) -> assert (y <= 8); true"
+let bad = let xy = pair ninth in short xy
+'''
+        check(exe, out, "too_tight", false_client, error=REJECT, options=("-iterations_timeout", "40"))
+        for threshold, budget in [(16, 42), (32, 83), (64, 167), (128, 336)]:
+            larger = cap_client.replace("9", str(threshold+1)).replace(
+                "min(8,i)", f"min({threshold},i)").replace("min 8 x", f"min {threshold} x")
+            check(exe, out, f"restart_cap_{threshold}", larger,
                   options=("-iterations_timeout", str(budget)))
         check(exe, out, "later_bound", later_bound, error=REJECT,
               options=("-iterations_timeout", "80"))
         check(exe, out, "two_bounds", box)
         check(exe, out, "delayed_jump", cap,
               options=("-convergence_step", "13", "-iterations_timeout", "30"))
+        if args.alignment_only:
+            aligned = args.alignment_only.resolve(strict=True)
+            for budget in (11, 40, 80):
+                check(aligned, out, f"fixed_window_{budget}", cap, error=LIMIT,
+                      options=("-iterations_timeout", str(budget)))
         if args.baseline:
             old = args.baseline.resolve(strict=True)
             check(old, out, "old_independent", small + equal_two, assertion=True)
