@@ -1,0 +1,9 @@
+--- a/src/NumS.ml
++++ b/src/NumS.ml
+@@ -2845,4 +2845,6 @@
+     ~upward_of ~nonparam_vars
+     ~discard ?(iter_no=2) ?caller_checks brs =
++  if iter_no = 1 then Format.eprintf "NUMROWS@.%a@.ENDROWS@."
++      (pr_line_list "| " pr_br4) brs;
+   let calls = lazy (map_some (fun (_, uses, prem, _) ->
+       if uses = [] then None else Some (uses, prem)) brs) in

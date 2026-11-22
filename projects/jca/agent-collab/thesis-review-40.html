@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <meta name="dcterms.date" content="2026-11-22">
+  <meta property="og:title" content="What can one client tell the joint abduction problem?">
+  <meta property="og:url" content="https://lukstafi.github.io/projects/jca/agent-collab/thesis-review-40.html">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="lukstafi&#x27;s blog">
+  <meta name="twitter:card" content="summary">
+  <title>What can one client tell the joint abduction problem?</title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <link rel="stylesheet" href="/assets/tufte.css">
+  <link rel="stylesheet" href="/assets/pandoc-tufte.css">
+  <link rel="stylesheet" href="/assets/site.css">
+  <script defer=""
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+  type="text/javascript"></script>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+  <script>(function(){var t=localStorage.getItem('theme-preference');if(t)document.documentElement.setAttribute('data-theme',t);})()</script>
+</head>
+<body>
+<nav class="site-nav">
+  <a href="/">Home</a> &middot; <a href="/study/">Study Guide</a> &middot; <a href="/about.html">About</a> &middot; <a href="https://lukstafi.substack.com">Substack</a>
+</nav>
+<div class="theme-toggle">
+  <button id="theme-btn" aria-label="Toggle dark mode">&#9788;</button>
+</div>
+<article>
+<header>
+<h1 class="title">What can one client tell the joint abduction
+problem?</h1>
+<p class="byline">2026-11-22</p>
+</header>
+<nav id="TOC">
+<ul>
+<li><a href="#clients" id="toc-clients">Where the iteration
+stopped</a></li>
+<li><a href="#cut" id="toc-cut">An unconditional numeric consequence can
+enter a guard</a></li>
+<li><a href="#finite" id="toc-finite">A bounded solution can require
+infinitely many fixed probes</a></li>
+<li><a href="#packing" id="toc-packing">How many input-only probes can a
+closed guard need?</a></li>
+<li><a href="#order" id="toc-order">When the client fixing the key comes
+second</a></li>
+<li><a href="#replay" id="toc-replay">Reproducing the checks</a></li>
+</ul>
+</nav>
+<p>InvarGenT could infer the written scheme of a recursive function on
+its own. It could also check two clients against that scheme in a later
+declaration. Attaching the same clients to the definition as a
+<code>test</code> made inference fail. The flag-zero client fixes a
+package index through a disjunction. When this client comes second, its
+admission also depends on opening the first call. Propagating the forced
+key under the right premise lets joint inference handle both client
+orders. The exported scheme retains the whole interval of indices. <a
+href="interior_result_key.gadt">Source program</a> · <a
+href="thesis-review-40.py">Executable checks</a></p>
+<section id="clients" class="level2">
+<h2>Where the iteration stopped</h2>
+<p>The function takes a flag <span class="math inline">\(f\)</span>, a
+width <span class="math inline">\(n\ge2\)</span> and a natural number
+for recursion. The flag satisfies <span class="math inline">\(0\le
+f\le1\)</span>. The caller chooses a rational index <span
+class="math inline">\(k\)</span> satisfying <span
+class="math inline">\(0\le k\le n\)</span> and <span
+class="math inline">\(k\le0\lor1\le f\)</span>. The result has a numeric
+payload <span class="math inline">\(r\)</span> with</p>
+<p><span class="math display">\[
+0\le r\le f,\qquad k+r\le n\ \lor\ n\le k.
+\]</span></p>
+<p>The base case returns zero. The successor calls the function at the
+same flag and width. If the previous result satisfies <span
+class="math inline">\(1\le r\le f\)</span>, it returns a Boolean,
+otherwise it returns zero. The Boolean arm must be unreachable for the
+declared numeric return type to hold. Each numeric introduction supplies
+zero at every admitted key. At the guard <span
+class="math inline">\(f=r=1\)</span>, opening the call at <span
+class="math inline">\(k=n-1/2\)</span> excludes that observation. <a
+href="thesis-review-39.html#all">Guard check for all admitted
+typings</a></p>
+<p>At revision <code>ea0cf2c</code>, each row below uses the same
+definition without a written <span
+class="math inline">\(r=0\)</span>.</p>
+<table>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr>
+<th>How the clients enter inference</th>
+<th>Outcome with iteration budget two</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Definition alone</td>
+<td>Full written domain and package</td>
+</tr>
+<tr>
+<td>An attached call at flag one</td>
+<td>Same scheme, prints 0</td>
+</tr>
+<tr>
+<td>An attached call at flag zero</td>
+<td>Type mismatch</td>
+</tr>
+<tr>
+<td>Attached calls at zero and then one</td>
+<td>Type mismatch</td>
+</tr>
+<tr>
+<td>Those same two calls in a subsequent declaration</td>
+<td>Same scheme, prints 0 twice</td>
+</tr>
+<tr>
+<td>Attached calls at zero and then one, successor replaced by literal
+zero</td>
+<td>Numeric abduction fails</td>
+</tr>
+</tbody>
+</table>
+<p>On the recursive two-client case the solver made fourteen attempts,
+each entering iteration zero, completing its update and failing in
+numeric abduction at iteration one. No attempt reached the guard check.
+The event sequence was identical at outer budgets 2 and 10,000. In this
+revision the predicate loop tests its budget after a completed update.
+Every positive budget allows the observed iteration-zero update, and
+there is no iteration-one update at which extra fuel could matter. This
+is a failure of candidate search before the next Table 4.4 update. <a
+href="thesis-review-40.py">Trace and replay</a> · <a
+href="../lukstafi-phd-thesis.pdf#page=71">Predicate loop in Table
+4.4</a></p>
+</section>
+<section id="cut" class="level2">
+<h2>An unconditional numeric consequence can enter a guard</h2>
+<p>Consider the numeric abduction problem on <strong>one pass</strong>.
+Let <span class="math inline">\(P\)</span> be the conjunction of the
+conclusions of its active rows with empty numeric premise. For each
+remaining row <span class="math inline">\(D_i\Rightarrow C_i\)</span>,
+choose facts <span class="math inline">\(H_i\)</span> with <span
+class="math inline">\(P\models H_i\)</span>. Then</p>
+<p><span class="math display">\[
+P\land\bigwedge_i(D_i\Rightarrow C_i)
+\quad\longleftrightarrow\quad
+P\land\bigwedge_i((D_i\land H_i)\Rightarrow C_i).
+\]</span></p>
+<p>Fix a valuation, including the witnesses chosen by the candidate
+answer. From left to right, discard <span
+class="math inline">\(H_i\)</span> when applying the original row. From
+right to left, <span class="math inline">\(P\)</span> holds in that same
+valuation, so <span class="math inline">\(H_i\)</span> holds wherever
+the original guard holds. Both directions keep every witness and every
+quantifier dependency. Among valuations compatible with the candidate
+and its chosen witnesses, each original guard has exactly the same live
+witnesses after the change. This matters when a branch must remain
+satisfiable. <a href="thesis-review-40.lean">Lean proof</a></p>
+<p>At a call with <span class="math inline">\(f=0\)</span>, its
+admission gives <span class="math inline">\(0\le k\)</span> and <span
+class="math inline">\(k\le0\lor1\le0\)</span>. Thus <em>that call’s
+own</em> <span class="math inline">\(k\)</span> is zero. At a call with
+<span class="math inline">\(f=1\)</span> the whole interval remains
+available. On a failed numeric search InvarGenT solves the conjunction
+<span class="math inline">\(P\)</span>, takes the constant bindings the
+solver obtained, and retries with each binding added to premises that
+mention its variable. The original provider and its conclusion are still
+present. A comparison build collecting only explicit equations continued
+to fail on the literal-zero version. The inequalities and the
+disjunction can establish a constant together. <a
+href="thesis-review-40.py">Program and controls</a></p>
+<p>A conditional provider would need a stronger argument. Suppose mode
+zero permits only <span class="math inline">\((k,r)=(0,0)\)</span> and
+mode one permits <span class="math inline">\(0\le k\le1\)</span> with
+<span class="math inline">\(r=k\)</span>. Then <span
+class="math inline">\(f=0\Rightarrow k=0\)</span>. Adding <span
+class="math inline">\(k=0\)</span> to the guard of <span
+class="math inline">\(f=1\Rightarrow r=0\)</span> would make the row
+pass. Its guard would even have a live witness at <span
+class="math inline">\((1,0,0)\)</span>. The original row fails at <span
+class="math inline">\((1,1,1)\)</span>. A provider deferred to a later
+pass likewise supplies no premise for this pass. <a
+href="thesis-review-40.lean">Checked countermodel</a></p>
+<p>The repaired compiler reaches the tuple check at iteration two,
+excludes the Boolean arm and prints zero for each client. The per-key
+exported package still allows positive payloads at some keys. In a
+control whose contract returns its input flag, the Boolean arm really is
+reachable at flag one. InvarGenT rejects that arm, and replacing it by a
+numeric return prints zero and one. <a
+href="thesis-review-40.py">Exported scheme and native execution
+checks</a></p>
+</section>
+<section id="finite" class="level2">
+<h2>A bounded solution can require infinitely many fixed probes</h2>
+<p>Fix <span class="math inline">\(f=1\)</span> and any
+<strong>integral</strong> width <span
+class="math inline">\(n\ge2\)</span>. At <span
+class="math inline">\(k=n\)</span> the package admits every <span
+class="math inline">\(r\in[0,1]\)</span>. At each <span
+class="math inline">\(k&lt;n\)</span> it admits <span
+class="math inline">\([0,\min(1,n-k)]\)</span>. The intersection over
+all rational keys is exactly <span class="math inline">\(\{0\}\)</span>.
+For any <span class="math inline">\(0&lt;r\le1\)</span>, the rational
+key <span class="math inline">\(k=n-r/2\)</span> lies in the interval
+and makes both alternatives of the package false.</p>
+<p>Now choose any finite set of rational keys <strong>before observing
+the result</strong>. They can depend on the entire input. At this fixed
+input, take a common positive denominator <span
+class="math inline">\(D\)</span> of the chosen keys, with <span
+class="math inline">\(D=1\)</span> for the empty set. Whenever <span
+class="math inline">\(k&lt;n\)</span>, the gap <span
+class="math inline">\(n-k\)</span> is at least <span
+class="math inline">\(1/D\)</span>. Every chosen key therefore admits
+<span class="math inline">\(r=1/D&gt;0\)</span>. Sampling even the
+entire <span class="math inline">\(1/D\)</span> grid in <span
+class="math inline">\([0,n]\)</span> leaves exactly <span
+class="math inline">\([0,1/D]\)</span>, since the predecessor <span
+class="math inline">\(n-1/D\)</span> attains the upper bound. In
+particular, every integral key together still permits the native result
+one, even at width four. <a href="thesis-review-40.lean">Denominator and
+predecessor proofs</a> · <a href="thesis-review-40.py">Compiler
+arithmetic checks</a></p>
+<p>This example gives an exact criterion whenever the per-key sets of
+results are nested by inclusion. At a fixed input with at least one
+admitted key, a finite sample recovers the full intersection <strong>if
+and only if one admitted key has a smallest result set</strong>. Every
+nonempty finite sample has a smallest member, and its intersection is
+that member. If the sample is exact, this member lies inside the result
+set of every admitted key. Conversely, a smallest member alone is an
+exact sample. Here the intervals shrink as <span
+class="math inline">\(k\)</span> approaches <span
+class="math inline">\(n\)</span> from below and jump back to <span
+class="math inline">\([0,1]\)</span> at <span
+class="math inline">\(n\)</span>. No key attains the smallest interval.
+<a href="thesis-review-40.lean">Finite-basis theorem</a></p>
+<p>The dyadic grids give the strict sequence <span
+class="math inline">\([0,1], [0,1/2], [0,1/4],\ldots\)</span>. Their
+limit has the one-equation description <span
+class="math inline">\(r=0\)</span>, yet no finite grid reaches it. One
+affine expression using the observed result, <span
+class="math inline">\(n-r/2\)</span>, certifies every positive rational
+refutation. If only the integer guard <span
+class="math inline">\(r=1\)</span> matters, the fixed fractional probe
+<span class="math inline">\(n-1/2\)</span> already suffices. This
+separates exact recovery of a rational result set from excluding this
+particular program arm. It refutes a bounded-solution argument based on
+enumerating input-dependent probes. The actual Table 4.4 recurrence has
+other ways to obtain a candidate, including the implemented tuple check.
+<a href="thesis-review-39.html#elimination">Result-dependent affine
+proposals</a> · <a
+href="thesis-review-21.html#feedback">Predicate-update
+recurrence</a></p>
+</section>
+<section id="packing" class="level2">
+<h2>How many input-only probes can a closed guard need?</h2>
+<p>There is also a constant-size package for which a finite sample
+excludes the guard at every input width, yet the number required grows
+without bound. Admit <span class="math inline">\(0\le k\le n\)</span> at
+integral width <span class="math inline">\(n\ge1\)</span>, and give the
+package the constraints <span class="math display">\[
+-1\le r\le n,\qquad r+1\le k\ \lor\ k+1\le r.
+\]</span> A supplier returning <span class="math inline">\(-1\)</span>
+works at every key. Consider the closed guard <span
+class="math inline">\(0\le r\le n\)</span>. For every observed result in
+that guard, the single expression <span
+class="math inline">\(k=r\)</span> gives an admitted refutation. It also
+follows that the full common result set is exactly <span
+class="math inline">\(\{-1\}\)</span>, since <span
+class="math inline">\(k=0\)</span> refutes <span
+class="math inline">\(-1&lt;r&lt;0\)</span>.</p>
+<p><strong>Exactly <span class="math inline">\(\lfloor
+n/2\rfloor+1\)</span> input-only keys are necessary and sufficient to
+exclude this guard.</strong> A key rules out the open interval <span
+class="math inline">\((k-1,k+1)\)</span>. The guard contains <span
+class="math inline">\(0,2,\ldots,2\lfloor n/2\rfloor\)</span>. An open
+interval of length two contains at most one of those points. For the
+upper bound, split <span class="math inline">\([0,n]\)</span> into <span
+class="math inline">\(t=\lfloor n/2\rfloor+1\)</span> equal closed
+intervals. Each has length <span
+class="math inline">\(n/t&lt;2\)</span>. Its midpoint is an admitted
+rational key and excludes the whole interval, including both endpoints.
+Thus even for a <em>closed</em> guard and a one-equation common result,
+no fixed number of input-only proposals can serve all widths. The lower
+bound already uses native integer observations. <a
+href="thesis-review-40.lean">Sharp lower bound and midpoint construction
+in Lean</a> · <a href="thesis-review-40.py">Seven widths checked by the
+compiler’s arithmetic solver</a></p>
+</section>
+<section id="order" class="level2">
+<h2>When the client fixing the key comes second</h2>
+<p>Keep the calls’ width, recursion depth and positions. Exchange only
+their flags. The repair using unconditional rows alone, revision
+<code>de5fd6a</code>, still rejects the order <span
+class="math inline">\(1,0\)</span>. Even replacing the whole successor
+branch with literal zero leaves a numeric abduction failure. Reversing
+the internal list of numeric rows on the retry also fails on that
+reduced program. The source-level order has changed which premises guard
+the obligations. <a href="thesis-review-40.py">Two client orders</a> ·
+<a href="thesis-review-40-rows.patch">Numeric row diagnostic</a></p>
+<p>Write <span class="math inline">\(O_1\)</span> for the first package
+opening and <span class="math inline">\(O_2\)</span> for the second. In
+the reduced program, the numeric rows for the client include an
+unconditional admission for the first call, a row <span
+class="math inline">\(O_1\Rightarrow A_2\)</span> requiring admission of
+the second call, and a row with premise <span
+class="math inline">\(O_1\land O_2\)</span> for its result. At flag
+zero, <span class="math inline">\(A_2\)</span> forces the second key to
+zero. The deepest row can use this equality because it already assumes
+<span class="math inline">\(O_1\)</span>. The earlier row has to keep
+proving <span class="math inline">\(A_2\)</span> wherever <span
+class="math inline">\(O_1\)</span> holds. <a
+href="interior_result_key.gadt">Program</a> · <a
+href="thesis-review-40.lean">Conditional-provider countermodel</a></p>
+<p><strong>Ranked conditional cut.</strong> Give each active provider
+row a natural-number rank. Keep <span class="math inline">\(P\)</span>
+and every conclusion. An added premise <span
+class="math inline">\(H_i\)</span> is sound if <span
+class="math inline">\(P\)</span>, <span
+class="math inline">\(D_i\)</span>, and the original implications of
+strictly smaller rank entail <span class="math inline">\(H_i\)</span>.
+The strengthened system implies the original by induction on rank. In a
+valuation satisfying the strengthened rows and <span
+class="math inline">\(D_i\)</span>, induction gives the earlier
+implications, so <span class="math inline">\(H_i\)</span> holds.
+Applying the strengthened row yields <span
+class="math inline">\(C_i\)</span>. The converse drops <span
+class="math inline">\(H_i\)</span> from the evidence required to use an
+original row. At every witness choice satisfying the original rows,
+<span class="math inline">\(D_i\)</span> entails <span
+class="math inline">\(H_i\)</span>, so the strengthening also preserves
+the live witnesses of that guard. <a
+href="thesis-review-40.lean">Machine-checked ranked cut and witness
+lemma</a></p>
+<p>The rank condition prevents circular justification. For two
+unconditional rows with conclusions <span
+class="math inline">\(x=0\)</span> and <span
+class="math inline">\(y=0\)</span>, importing each conclusion into the
+other’s premise leaves <span class="math inline">\(y=0\Rightarrow
+x=0\)</span> and <span class="math inline">\(x=0\Rightarrow
+y=0\)</span>. Both implications hold at <span
+class="math inline">\(x=y=1\)</span>. Each provider must be proved
+before another row can rely on it. <a
+href="thesis-review-40.lean">Cyclic counterexample</a></p>
+<p>InvarGenT uses premise length as the rank. After the ordinary search
+and the retry with unconditional constants fail, it looks for active
+rows whose premises are shorter and whose atoms all occur in the target
+premise. It solves their conclusions together with <span
+class="math inline">\(P\)</span> and the target premise. Only newly
+available constant bindings on variables of that guard can trigger the
+extra search. A variable keeps its original scope. With the reversed
+clients this recovers the full scheme for both the literal-zero and
+recursive programs. In both orders the recursive program reaches the
+tuple check at iteration two. The recursive cases with three clients at
+flags <span class="math inline">\(1,0,1\)</span> and <span
+class="math inline">\(0,0,0\)</span> also retain the scheme and each
+print three zeros. <a href="thesis-review-40.py">Compiler and scheme
+checks</a></p>
+<p>The rank theorem allows more than the compiler’s syntactic test. For
+example, <span class="math inline">\(x\le0\)</span> entails <span
+class="math inline">\(x\le1\)</span> although those singleton premises
+share no atom. A proof order that puts the second premise’s obligation
+first can license that use. Which additional entailments help candidate
+search remains open. The rank decreases within one numeric retry, and
+the table can still change the predicates on its next pass. This proof
+gives no bound on the number of outer updates, even when a small
+solution exists. <a href="thesis-review-21.html#feedback">A repeating
+jump and caller demand</a></p>
+</section>
+<section id="replay" class="level2">
+<h2>Reproducing the checks</h2>
+<p>InvarGenT revisions <code>de5fd6a</code> and <code>f11480e</code>
+implement the unconditional and ranked conditional retries. At the
+latter revision the OCaml 5.3 compatibility build passed all 369 active
+suite cases, with ten recorded as TODO. All 188 earlier example
+signatures were byte-identical, and the two new regression programs
+produced the expected schemes. Run Lean 4.19 on <a
+href="thesis-review-40.lean">the proof file</a>. The finite-probe proofs
+clear denominators and use integer arithmetic on the rescaled
+coordinates. Run
+<code>python3 thesis-review-40.py --compiler /path/to/InvarGenT.native</code>
+with Python’s <code>z3-solver</code> and OCaml available. The replay
+compares the exported domain and package with the displayed formulas
+over both integer and rational-linear coordinates. Add
+<code>--before</code> with a compiler at <code>ea0cf2c</code> to
+reproduce the client-placement comparisons, and
+<code>--unconditional</code> with <code>de5fd6a</code> for the scope of
+the first repair. The program checks use a budget of two throughout. Add
+<code>--chains</code> to run the three-client comparisons.</p>
+<p>To inspect the two client admissions, apply the <a
+href="thesis-review-40-rows.patch">row diagnostic</a> to
+<code>ea0cf2c</code> and pass the resulting compiler as
+<code>--rows</code>. The replay checks which admission is unconditional
+and which is guarded by a preceding opening in the first
+<code>NUMROWS</code> block for each order. For the iteration trace,
+apply the <a href="thesis-review-22-trace.patch">iteration
+diagnostic</a> and <a href="thesis-review-39-trace.patch">tuple
+diagnostic</a> to each compiler revision. Pass the resulting binaries as
+<code>--trace</code> and <code>--old-trace</code>. For the arithmetic
+checks, build <a href="thesis-review-39-numeric.ml">the numeric
+driver</a> as <code>src/JointOracle.native</code> and pass it as
+<code>--numeric-driver</code>. Its 55 checks cover six rational grids
+and seven widths of the closed guard.</p>
+</section>
+</article>
+<script src="/assets/theme-toggle.js"></script>
+</body>
+</html>

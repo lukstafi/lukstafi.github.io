@@ -370,14 +370,16 @@ class="math inline">\(u\le0\lor v\le0\)</span> when positive weights
 <span class="math inline">\(a,b\)</span> give a constant <span
 class="math inline">\(au+bv\le0\)</span>. If both arms were positive
 their weighted sum would be positive. The compiler accepts the annotated
-program with budget two, and it prints zero twice. Remove just <span
-class="math inline">\(r=0\)</span> and the same budget still ends in a
-type mismatch. The remaining failure occurs while finding a candidate
-for the suppliers, before the guard checker can use the interior key.
-This example isolates a question about Table 4.4 that survives a
-complete check of the typings of a fixed call. <a
+program with budget two, and it prints zero twice. Removing just <span
+class="math inline">\(r=0\)</span> still produced a type mismatch at
+revision <code>ea0cf2c</code>. A later comparison isolated the joint
+inference of the definition and its attached clients. Carrying
+unconditional numeric consequences into guarded premises now lets this
+example reach the guard check at iteration two. <a
 href="thesis-review-39.lean">Opposing-arms lemma</a> · <a
-href="thesis-review-39.py">Supplier variant and replay</a></p>
+href="thesis-review-39.py">Historical replay</a> · <a
+href="thesis-review-40.html#clients">Client comparison and
+repair</a></p>
 </section>
 <section id="replay" class="level2">
 <h2>Reproducing the checks</h2>
