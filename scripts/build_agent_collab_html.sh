@@ -529,6 +529,11 @@ build_html \
   "$collab_dir/thesis-review-53.html" \
   "Which recursive caller domains can finite term guards express?"
 
+build_html \
+  "$collab_dir/thesis-review-54.md" \
+  "$collab_dir/thesis-review-54.html" \
+  "What can arithmetic abduction gain by combining premises?"
+
 reviews_dir="$collab_dir/reviews"
 if [[ -d "$reviews_dir" ]]; then
   for md_file in "$reviews_dir"/*.md; do

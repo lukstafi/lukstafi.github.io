@@ -44,4 +44,6 @@ Two further examples show why choosing witnesses jointly matters.
 
 ## Reproducing the checks {#checks}
 
+Positive branches ask for a hypothesis that proves a required inequality for every hidden payload. Two independent bounds on the payload can determine an exact caller guard, and some guards require a disjunction. [Abduction from several premises](thesis-review-54.html#bounds)
+
 Run the [Python replay](thesis-review-49.py) with `z3-solver`. It compares a generator-based linear oracle for one forbidden cell with a bilinear oracle on 48 overlapping cases. The native comparison covers 322 single-cell and 414 multi-cell problems. The preceding compiler misses 161 feasible instances in this batch. Build the [numeric driver](thesis-review-48-guards.ml) and pass `--driver` and optionally `--before-driver`. With `--compiler` the replay executes eight admitted calls and checks rejection of seven forbidden ones. Pass `--before` to reproduce the earlier rejection. The [Lean file](thesis-review-49.lean) checks the witness, density, face-count and window lemmas.

@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <meta name="dcterms.date" content="2026-11-22">
+  <meta property="og:title" content="What can arithmetic abduction gain by combining premises?">
+  <meta property="og:url" content="https://lukstafi.github.io/projects/jca/agent-collab/thesis-review-54.html">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="lukstafi&#x27;s blog">
+  <meta name="twitter:card" content="summary">
+  <title>What can arithmetic abduction gain by combining
+premises?</title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <link rel="stylesheet" href="/assets/tufte.css">
+  <link rel="stylesheet" href="/assets/pandoc-tufte.css">
+  <link rel="stylesheet" href="/assets/site.css">
+  <script defer=""
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+  type="text/javascript"></script>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+  <script>(function(){var t=localStorage.getItem('theme-preference');if(t)document.documentElement.setAttribute('data-theme',t);})()</script>
+</head>
+<body>
+<nav class="site-nav">
+  <a href="/">Home</a> &middot; <a href="/study/">Study Guide</a> &middot; <a href="/about.html">About</a> &middot; <a href="https://lukstafi.substack.com">Substack</a>
+</nav>
+<div class="theme-toggle">
+  <button id="theme-btn" aria-label="Toggle dark mode">&#9788;</button>
+</div>
+<article>
+<header>
+<h1 class="title">What can arithmetic abduction gain by combining
+premises?</h1>
+<p class="byline">2026-11-22</p>
+</header>
+<nav id="TOC">
+<ul>
+<li><a href="#pairs" id="toc-pairs">Where the algorithm selects
+pairs</a></li>
+<li><a href="#equations" id="toc-equations">Fitting several coefficients
+from sibling branches</a></li>
+<li><a href="#bounds" id="toc-bounds">Projecting hidden variables from a
+required inequality</a></li>
+<li><a href="#alternatives" id="toc-alternatives">Where a single
+inferred bound loses callers</a></li>
+</ul>
+</nav>
+<p>Suppose a constructor hides two numbers <span
+class="math inline">\(x,y\)</span> and publishes upper bounds <span
+class="math inline">\(i,j\)</span>. A function adds the numbers and
+compares their sum with a cap <span class="math inline">\(z\)</span>.
+What condition can its type ask of the caller? From <span
+class="math inline">\(x\le i\)</span> alone the sum is unbounded. The
+same holds for <span class="math inline">\(y\le j\)</span> alone.
+Together they give <strong>exactly <span class="math inline">\(i+j\le
+z\)</span></strong>. Sufficiency follows by adding the inequalities.
+Necessity follows by choosing the allowed payload <span
+class="math inline">\((x,y)=(i,j)\)</span>. InvarGenT at
+<code>29feeaf</code> accepted this annotation and failed to infer a type
+for the unannotated definition. The new search infers the guard. <a
+href="joint_affine_abduction.gadt">Source program</a> · <a
+href="thesis-review-54.lean">Lean proof</a></p>
+<section id="pairs" class="level2">
+<h2>Where the algorithm selects pairs</h2>
+<p>Section 4.2.4.2 of the thesis distinguishes two ways of proposing a
+single answer atom. For an <strong>inequality</strong>, select the
+required atom and a premise inequality. Eliminate a shared variable or
+cancel a constant to obtain a sufficient condition. InvarGenT chooses
+bounds from a solved context, so one available bound can already
+incorporate several source inequalities. For an
+<strong>equation</strong>, the thesis allows a linear combination of the
+required equation and several premise equations. InvarGenT searches a
+finite set of rational coefficients and prunes wide combinations. Joint
+abduction accumulates the proposed atoms and checks compatibility across
+branches. The separate problem of excluding a negative branch also has a
+search over entire polyhedra. <a
+href="../lukstafi-phd-thesis.pdf#page=65">Thesis §4.2.4.2</a> · <a
+href="thesis-review-49.html#dual">Negative branches and shared
+witnesses</a></p>
+</section>
+<section id="equations" class="level2">
+<h2>Fitting several coefficients from sibling branches</h2>
+<p>Three constructors have public indices <span
+class="math inline">\((0,0),(1,0),(0,1)\)</span>. Their branches return
+<span class="math inline">\(0,7,11\)</span>. For an affine result index
+<span class="math inline">\(a i+b j+c\)</span>, the branches give <span
+class="math inline">\(c=0\)</span>, <span
+class="math inline">\(a+c=7\)</span> and <span
+class="math inline">\(b+c=11\)</span>. The old scalar recovery step
+could learn one coefficient from another branch. The compiler accepted
+the written result <span class="math inline">\(7i+11j\)</span> and
+rejected the unannotated function.</p>
+<p>Let the current goal be <span class="math inline">\(g=0\)</span>.
+Adding any combination of equations <span
+class="math inline">\(e_s=0\)</span> known in the current branch gives
+an equivalent goal there. To find a candidate that also works on
+siblings, start with rows <span
+class="math inline">\(e_1,\ldots,e_k,g\)</span>. Substitute each
+eligible sibling’s solved equations into the rows and use Gaussian
+elimination to keep the combinations with zero residual. Keeping <span
+class="math inline">\(g\)</span> last preserves its coefficient of one
+whenever its row survives. The compiler checks that the correction
+vanishes on the current branch, applies its existing support limit, then
+submits the proposal to ordinary joint validation. The recovery uses
+siblings where the goal residual is constant.</p>
+<p>InvarGenT now infers <span
+class="math inline">\(\mathrm{Axis}(i,j)\to\mathrm{Num}(7i+11j)\)</span>.
+The replay also recovers mixed signs and a four-index result with
+coefficients <span class="math inline">\(7,11,13,17\)</span> while the
+coefficient enumeration radius is one. <a
+href="thesis-review-54.py">Native compiler replay</a></p>
+</section>
+<section id="bounds" class="level2">
+<h2>Projecting hidden variables from a required inequality</h2>
+<p>Write a required inequality as <span
+class="math inline">\(g(p,h)\le0\)</span>, with public parameters <span
+class="math inline">\(p\)</span> and hidden payload <span
+class="math inline">\(h\)</span> satisfying a conjunction <span
+class="math inline">\(D(p,h)\)</span> of weak linear inequalities and
+equations over the rationals. Introduce a fresh scalar <span
+class="math inline">\(t\)</span> and project <span
+class="math display">\[
+  \exists h.\ D(p,h)\land t\le g(p,h).
+\]</span> Every public upper bound <span class="math inline">\(t\le
+u(p)\)</span> in this projection gives an abduction candidate <span
+class="math inline">\(u(p)\le0\)</span>. Indeed, for each allowed
+payload we may choose <span class="math inline">\(t=g(p,h)\)</span>. The
+new recovery step puts hidden variables first in the existing
+elimination order, reads off the upper bounds on <span
+class="math inline">\(t\)</span>, and tries each candidate subject to
+the usual scope and validation checks.</p>
+<p>There is no fixed bound on how many source premises one answer
+inequality can need. For <span class="math inline">\(n\)</span>
+independent hidden payloads <span class="math inline">\(x_s\le
+i_s\)</span>, summing gives the exact public guard <span
+class="math inline">\(\sum_s i_s\le z\)</span>. Omit any one premise and
+its payload can grow until the sum exceeds <span
+class="math inline">\(z\)</span>, at every fixed public input. InvarGenT
+infers the guard for three, four and six independent payloads. Removing
+one essential premise in the original two-payload program makes
+inference fail. <a href="thesis-review-54.lean">Lean theorems
+<code>many_bounds</code> and <code>missing_row</code></a> · <a
+href="thesis-review-54.py">Native checks</a></p>
+<p>For an oblique example, take <span class="math inline">\(x+y\le
+i\)</span> and <span class="math inline">\(x-y\le j\)</span>. The sharp
+bound on <span class="math inline">\(3x+y\)</span> is <span
+class="math inline">\(2i+j\)</span>. Add twice the first premise to the
+second for sufficiency. Both are tight at <span
+class="math inline">\(x=(i+j)/2\)</span>, <span
+class="math inline">\(y=(i-j)/2\)</span>. InvarGenT infers the guard on
+<span class="math inline">\(z\)</span>. <a
+href="thesis-review-54.lean">Sharp bounds in Lean</a> · <a
+href="thesis-review-54.py">Compiler replay</a></p>
+</section>
+<section id="alternatives" class="level2">
+<h2>Where a single inferred bound loses callers</h2>
+<p>Fix public parameters with at least one feasible payload. An exact
+projection with finitely many upper bounds <span
+class="math inline">\(t\le u_1,\ldots,t\le u_k\)</span> permits all and
+only <span class="math inline">\(t\)</span> below every bound.
+<strong>The weakest safe guard is <span
+class="math inline">\(\bigvee_{s=1}^k u_s\le0\)</span>.</strong> If
+every bound is positive, some positive rational <span
+class="math inline">\(t\)</span> lies below them all. With no upper
+bounds one can take <span class="math inline">\(t=1\)</span>. Either
+case witnesses an allowed payload whose goal is positive. On a public
+input with no feasible payload the implication is vacuous. <a
+href="thesis-review-54.lean">Lean theorem
+<code>projected_alternatives</code></a></p>
+<p>For example, suppose <span class="math inline">\(x\le i\)</span>,
+<span class="math inline">\(x\le j\)</span> and <span
+class="math inline">\(y\le j\)</span>. Then the exact guard for <span
+class="math inline">\(x+y\le z\)</span> is <span
+class="math inline">\(\min(i+j,2j)\le z\)</span>. InvarGenT infers <span
+class="math inline">\(2j\le z\)</span>. It checks the written minimum
+and runs clients at <span class="math inline">\((i,j,z)=(0,6,6)\)</span>
+and <span class="math inline">\((8,2,4)\)</span>. The first client needs
+<span class="math inline">\(i+j\le z\)</span> and the second needs <span
+class="math inline">\(2j\le z\)</span>. Their midpoint <span
+class="math inline">\((4,4,5)\)</span> admits the unsafe payload <span
+class="math inline">\((4,4)\)</span>. Every conjunction of affine
+inequalities admitting both clients also admits their midpoint.
+Preserving these alternatives during abduction would recover a contract
+the existing type language can already express. <a
+href="thesis-review-54.py">Both callers and the inference result</a></p>
+<p>For several fixed branch obligations, take the conjunction of their
+exact guards. In particular, if the branches under consideration have
+feasible payloads throughout the public region and each goal has one or
+two projected upper bounds, ordinary inequalities and binary minima
+already express the exact safety condition there. The full iteration
+must also choose what its recursive predicates mean. This calculation
+applies once their meanings in the branch premises are fixed.</p>
+</section>
+</article>
+<script src="/assets/theme-toggle.js"></script>
+</body>
+</html>
