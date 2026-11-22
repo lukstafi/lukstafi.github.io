@@ -1,0 +1,18 @@
+datatype Bit : num
+datacons Off : Bit 0
+datacons On : Bit 1
+datatype Nat
+datacons Z : Nat
+datacons S : Nat ⟶ Nat
+
+let value : ∀i. Bit i → Num i = function Off -> 0 | On -> 1
+let switch : ∀i. Bit i → Bit (1 + -i) = function Off -> On | On -> Off
+external let flip : ∀i[0≤i ∧ i≤1]. Num i → Num (1 + -i) = "fun r -> 1-r"
+external let observe : ∀i[0≤i ∧ i≤1]. Num i → Bool = "fun n -> print_int n; print_newline (); true"
+
+let rec run : ∀i[0≤i ∧ i≤1]. Bit i → Nat → ∃l[0≤l ∧ l≤1]. Num l =
+  fun bit -> efunction
+  | Z -> value bit
+  | S d -> let prior = run (switch bit) d in flip prior
+test (let p = run Off (S Z) in let _ = observe p in
+      let q = run On (S (S Z)) in observe q)

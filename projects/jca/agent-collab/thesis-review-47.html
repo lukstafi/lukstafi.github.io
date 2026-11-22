@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <meta name="dcterms.date" content="2026-11-22">
+  <meta property="og:title" content="What can a failed caller proof teach the next induction jump?">
+  <meta property="og:url" content="https://lukstafi.github.io/projects/jca/agent-collab/thesis-review-47.html">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="lukstafi&#x27;s blog">
+  <meta name="twitter:card" content="summary">
+  <title>What can a failed caller proof teach the next induction
+jump?</title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <link rel="stylesheet" href="/assets/tufte.css">
+  <link rel="stylesheet" href="/assets/pandoc-tufte.css">
+  <link rel="stylesheet" href="/assets/site.css">
+  <script defer=""
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+  type="text/javascript"></script>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+  <script>(function(){var t=localStorage.getItem('theme-preference');if(t)document.documentElement.setAttribute('data-theme',t);})()</script>
+</head>
+<body>
+<nav class="site-nav">
+  <a href="/">Home</a> &middot; <a href="/study/">Study Guide</a> &middot; <a href="/about.html">About</a> &middot; <a href="https://lukstafi.substack.com">Substack</a>
+</nav>
+<div class="theme-toggle">
+  <button id="theme-btn" aria-label="Toggle dark mode">&#9788;</button>
+</div>
+<article>
+<header>
+<h1 class="title">What can a failed caller proof teach the next
+induction jump?</h1>
+<p class="byline">2026-11-22</p>
+</header>
+<nav id="TOC">
+<ul>
+<li><a href="#cover" id="toc-cover">A result can come from several
+inputs</a></li>
+<li><a href="#complete" id="toc-complete">Exactly when finite proofs
+suffice</a></li>
+<li><a href="#search" id="toc-search">A search with a bound on added
+keys</a></li>
+<li><a href="#chain" id="toc-chain">One caller can leave many ways to
+repair its proof</a></li>
+<li><a href="#compiler" id="toc-compiler">What InvarGenT can check
+today</a></li>
+<li><a href="#checks" id="toc-checks">Reproducing the checks</a></li>
+</ul>
+</nav>
+<p>A caller at <span class="math inline">\(b\)</span> forbids zero. The
+base returns zero at <span class="math inline">\(a\)</span>. If every
+key admitted at <span class="math inline">\(b\)</span> is also admitted
+at <span class="math inline">\(a\)</span>, every package satisfying the
+base opens zero at <span class="math inline">\(b\)</span>. Adjusting the
+postcondition cannot help. The inference procedure needs a key admitted
+at <span class="math inline">\(b\)</span> and absent at <span
+class="math inline">\(a\)</span>.</p>
+<p>The same reasoning works through recursion. A finite derivation
+forcing a forbidden result supplies a list of inclusions between menus
+of keys. A repair must break at least one inclusion. Given a library of
+possible key supports, that list lets a search branch only on changes
+that could repair this proof. A solution using <span
+class="math inline">\(m\)</span> supports guarantees a successful branch
+of depth at most <span class="math inline">\(m\)</span> under the
+checking assumptions below. <a href="thesis-review-47.lean">Lean
+proof</a> · <a href="thesis-review-47.py">Executable search</a> · <a
+href="thesis-review-46.html#fit">Joint witness criterion</a></p>
+<section id="cover" class="level2">
+<h2>A result can come from several inputs</h2>
+<p>Let <span class="math inline">\(A_x\)</span> be the keys admitted at
+input <span class="math inline">\(x\)</span>. Result <span
+class="math inline">\(r\)</span> opens at <span
+class="math inline">\(x\)</span> if every key in <span
+class="math inline">\(A_x\)</span> stores <span
+class="math inline">\(r\)</span>. Consider a ground supplier instance
+with fixed local values. It opens a finite list of observations <span
+class="math inline">\((y_i,s_i)\)</span> and, if all open, stores <span
+class="math inline">\(t\)</span> at every key in its destination menu.
+Static guards determine which instances are available. Private package
+witnesses are existential inside the stored relation.</p>
+<p>A proof that <span class="math inline">\(r\)</span> must open at
+<span class="math inline">\(x\)</span> can use several suppliers. Choose
+finitely many inputs <span class="math inline">\(D\)</span>. For each
+<span class="math inline">\(y\in D\)</span>, give a supplier returning
+<span class="math inline">\(r\)</span> at <span
+class="math inline">\(y\)</span>, together with proofs of its recursive
+premises. The sole admission test at this node is <span
+class="math display">\[
+A_x\subseteq\bigcup_{y\in D} A_y.
+\]</span> Every key at <span class="math inline">\(x\)</span> receives
+<span class="math inline">\(r\)</span> from at least one chosen
+supplier. For example, if <span
+class="math inline">\(A_x=\{u,v\}\)</span>, a base at <span
+class="math inline">\(a\)</span> with menu <span
+class="math inline">\(\{u\}\)</span> and another at <span
+class="math inline">\(b\)</span> with menu <span
+class="math inline">\(\{v\}\)</span> can together force <span
+class="math inline">\(r\)</span> at <span
+class="math inline">\(x\)</span>. A test for inclusion in a single
+source menu misses the opening. A call at an input with an empty menu
+opens every result by an empty cover. Legal program inputs can
+separately require nonempty menus. <a href="thesis-review-47.lean">Lean
+theorem <code>sound</code></a></p>
+<p>When this proof reaches a forbidden caller observation, retain its
+menu inclusions and the rule instances that produced them. Any new
+policy satisfying all those inclusions replays the same proof, for
+<em>every</em> package satisfying the suppliers. A caller that forbids a
+tuple of simultaneous observations can join the finitely many premise
+proofs at one root. This argument assumes the same ground rules and
+static guards under the new policy. Explicit key tests in a supplier
+require their own obligations. <a href="thesis-review-47.lean">Finite
+support theorem</a></p>
+<p>For comparison, take one input with a single key, a base returning
+zero and a caller forbidding one. A trial package that permits every
+number fails the caller. No supplier returns one, so there is no
+derivation of the forbidden opening. Keeping the same admission and
+storing only zero solves the clauses. Learning an admission restriction
+from that failed candidate would discard a solution.</p>
+</section>
+<section id="complete" class="level2">
+<h2>Exactly when finite proofs suffice</h2>
+<p>Fix a policy. Suppose that whenever a family of source menus covers
+<span class="math inline">\(A_x\)</span>, some finite subfamily covers
+it. Finite menus have this property. So do finitely many distinct menu
+shapes, even with infinitely many inputs and infinitely many keys.
+Choose one actual source for each shape appearing in the cover.</p>
+<p>Let <span class="math inline">\(S(x,r)\)</span> mean that there is a
+finite proof of this kind. Construct a package by storing <span
+class="math inline">\(r\)</span> at <span
+class="math inline">\(k\)</span> whenever some supplier at an input
+admitting <span class="math inline">\(k\)</span> returns <span
+class="math inline">\(r\)</span> from calls in <span
+class="math inline">\(S\)</span>. Its opening at <span
+class="math inline">\(x\)</span> is exactly <span
+class="math inline">\(S(x,r)\)</span>. Indeed, if the package permits
+the opening, the menus of those suppliers cover <span
+class="math inline">\(A_x\)</span>. Take a finite subcover, choose a
+supplier and its premise proofs at each source, and attach them below a
+new root. Conversely, the root of any existing proof names enough
+suppliers to store <span class="math inline">\(r\)</span> at every key
+of <span class="math inline">\(x\)</span>.</p>
+<p>The constructed package therefore validates every supplier. Induction
+on proofs shows that every other supplier solution contains every entry
+in this package. It follows that a package satisfying the caller exists
+iff no forbidden observation has a proof. Moreover every finite proof
+opens at some finite producer stage. Take the maximum of its finitely
+many premise stages, then take one supplier step. The union of the
+finite producer stages is the least package. This gives an <span
+class="math inline">\(\omega\)</span> bound even for infinite menus with
+finitely many shapes. <a href="thesis-review-47.lean">Lean theorems
+<code>safe_scheme</code>, <code>proof_height</code> and
+<code>at_omega</code></a> · <a href="thesis-review-43.html#limits">A
+fixed policy taking two limits</a></p>
+<p>The finite-subcover condition is also necessary for completeness
+<em>uniformly over supplier systems</em>. Given any cover lacking a
+finite subcover, offer a single result unconditionally at exactly its
+source inputs. Every supplier solution permits the result at the covered
+input. A finite proof there would exhibit the missing subcover at its
+root. For instance, take a query menu <span
+class="math inline">\([0,1]\)</span> and a base at each singleton <span
+class="math inline">\(\{u\}\)</span> in that interval. The opening is
+forced on the first supplier pass. Its ground evidence uses infinitely
+many sources. This example uses a finite description of the entire
+family of bases. A symbolic proof could discharge that family with one
+quantified inclusion. <a href="thesis-review-47.lean">Lean theorem
+<code>uniform_completeness</code></a></p>
+</section>
+<section id="search" class="level2">
+<h2>A search with a bound on added keys</h2>
+<p>Keep a base policy and a library of supports <span
+class="math inline">\(C_j\)</span>, where <span
+class="math inline">\(C_j(x)\)</span> means that a fresh key <span
+class="math inline">\(j\)</span> would be admitted at <span
+class="math inline">\(x\)</span>. Select any subset of the library and
+infer its package sections freely. A selected key breaks a recorded
+inclusion <span class="math inline">\((x,D)\)</span> exactly when <span
+class="math display">\[
+C_j(x)\quad\text{and}\quad \forall y\in D,\ \neg C_j(y).
+\]</span> An old key keeps its admissions. Adding keys can only destroy
+cover inclusions. A previously successful scheme still works after an
+addition by permitting all results at the fresh key. <a
+href="thesis-review-47.lean">Lean theorems <code>extend_cover</code> and
+<code>neutral_open</code></a></p>
+<p><strong>Bounded refinement.</strong> Start with no additions. Check
+the current policy. A successful check returns an inductive package
+satisfying the caller. On failure obtain a finite proof that the
+caller’s forbidden observation is forced. Collect the library supports
+that break at least one of its inclusions. Every safe solution using
+this library must pick one of the collected supports. If it picked none,
+the entire proof would replay. Each collected support is fresh to the
+current selection, since all the recorded inclusions just held there.
+Save that disjunction for future checks. <a
+href="thesis-review-47.lean">Lean theorem <code>learn_cut</code></a></p>
+<p>Suppose a target solution uses <span class="math inline">\(m\)</span>
+supports. At each failure along a branch consisting of target choices,
+at least one of the proposed additions belongs to the target. After at
+most <span class="math inline">\(m\)</span> additions such a branch
+succeeds. Trying every proposed choice to depth <span
+class="math inline">\(m\)</span> is complete for that budget if the
+library is finite and each policy check terminates with a package or a
+failure proof. Without a budget, testing the full library suffices for
+semantic existence. If that succeeds, repeated deletion of dispensable
+keys yields an inclusion-minimal selection. With a budget, a single
+greedy run can spend its last slot on the wrong key. Let the base return
+zero at <span class="math inline">\(a\)</span> and let callers at <span
+class="math inline">\(b,c\)</span> forbid zero. With common initial
+menus, separating only <span class="math inline">\(b\)</span> repairs
+the first failure. A key supported at both <span
+class="math inline">\(b\)</span> and <span
+class="math inline">\(c\)</span> repairs both for the same cost. The
+replay learns the two disjunctions and finds the shared key with a
+budget of one. <a href="thesis-review-47.lean">Bounded branch
+theorem</a> · <a href="thesis-review-47.py">Finite search</a></p>
+<p>Adding finitely many key supports preserves the finite-subcover
+condition on the base policy. Cover its old keys with finitely many
+sources, then take one more source for each admitted new key. Thus at
+every finite search depth the initial condition suffices, even for
+infinite input and result spaces. For finite ground input and result
+tables, finite rules and decidable menu inclusions, closure gives the
+required terminating check. For infinite results the theorem still gives
+finite evidence of each forced forbidden observation. Deciding that a
+policy succeeds can still require induction. The least package is a
+semantic relation. In a restricted answer language, a verified
+expressible enlargement can witness success. Failure to express the
+least package alone cannot justify a cut. The depth bound counts
+selected supports. A short formula can describe infinitely many keys,
+and branching can visit many subsets. The original Table 4.4
+generalization and jump follow different updates and already admit a
+two-inequality counterexample. <a href="thesis-review-47.lean">Finite
+extensions in Lean</a> · <a href="thesis-review-3.html#update">Original
+feedback loop</a></p>
+<p>When no key budget is imposed and each input can have a private key,
+a simpler refinement suffices. Pick any recorded inclusion with <span
+class="math inline">\(x\notin D\)</span> and give <span
+class="math inline">\(x\)</span> a fresh private key. Every previous
+failed proof stays broken, and the same input can never need isolation
+again. If every recorded inclusion has <span class="math inline">\(x\in
+D\)</span>, the proof works even when each input already has its own
+key. The failure is then forced by the ordinary suppliers. On <span
+class="math inline">\(n\)</span> inputs this takes at most <span
+class="math inline">\(n\)</span> additions and one final check. The
+method starts with a coarse opening. If it already proves the caller, it
+can return a package that forgets distinctions in the concrete reachable
+results. Each later split records a distinction needed to invalidate an
+actual derivation. This is a form of counterexample-guided abstraction
+refinement. Here the reusable evidence specifies exactly which
+admissions can invalidate a particular derivation. <a
+href="thesis-review-47.lean">Private-key split in Lean</a> · <a
+href="https://doi.org/10.1184/R1/6604547">Clarke et al. on abstraction
+refinement</a></p>
+</section>
+<section id="chain" class="level2">
+<h2>One caller can leave many ways to repair its proof</h2>
+<p>Use input pairs <span class="math inline">\((a_i,b_i)\)</span> for
+<span class="math inline">\(1\le i\le n\)</span>. The base at <span
+class="math inline">\(a_1\)</span> returns tag one. For <span
+class="math inline">\(i&lt;n\)</span>, opening tag <span
+class="math inline">\(i\)</span> at <span
+class="math inline">\(b_i\)</span> supplies tag <span
+class="math inline">\(i+1\)</span> at <span
+class="math inline">\(a_{i+1}\)</span>. These are the only rules. The
+caller at <span class="math inline">\(b_n\)</span> forbids tag <span
+class="math inline">\(n\)</span>. In the least package, the keys storing
+tag one are exactly <span class="math inline">\(A_{a_1}\)</span>.
+Inductively, the keys storing tag <span
+class="math inline">\(i+1\)</span> are <span
+class="math inline">\(A_{a_{i+1}}\)</span> if the preceding opening
+succeeds and empty otherwise. For nonempty menus the caller therefore
+fails exactly when <span class="math display">\[
+\bigwedge_{i=1}^n A_{b_i}\subseteq A_{a_i}.
+\]</span> Start with the same one-key menu everywhere. For any <span
+class="math inline">\(i\)</span>, adding a second key only at <span
+class="math inline">\(b_i\)</span> breaks just that inclusion and yields
+a safe package. Every one of the <span class="math inline">\(n\)</span>
+separating choices can be the only available repair. An inference rule
+that picks a particular pair to separate has made a search decision.
+Reporting the full disjunction preserves all the solutions. <a
+href="thesis-review-47.py">Chain replay</a></p>
+</section>
+<section id="compiler" class="level2">
+<h2>What InvarGenT can check today</h2>
+<p>The bit-flip program implements the preceding review’s example. The
+base returns the input bit. The recursive arm switches the input and
+flips the answer. With the written postcondition <span
+class="math inline">\(0\le r\le1\)</span>, InvarGenT exports that
+interval with outer budget two. Removing the annotation gives the
+input-dependent result <span class="math inline">\(r=i\)</span> with
+budget three. Both generated programs print zero and one. The caller
+accepts either scheme. InvarGenT checks the weaker hypothesis when it is
+proposed. These runs exercise its existing inference and checking code.
+The cover-guided choice of supports above is implemented in the
+independent finite search. <a href="caller_bit_flip.gadt">Bit-flip
+program</a> · <a href="thesis-review-46.html#flip">Why weakening can
+save a key</a></p>
+<p>InvarGenT already has the numeric operations for checking an
+individual cover over rational keys. Project the private witnesses of
+each source menu separately. To find a gap, ask whether a target cell is
+satisfiable together with the negation of every projected source cell,
+keeping the public indices shared. The same conditional satisfiability
+routine is used when inference checks alternative admission cells. The
+cover driver tests 127 such inclusions. Two closed half-intervals cover
+the unit interval when their endpoints meet. Two singletons at the
+endpoints leave a gap even though they cover every integer in the
+interval. <a href="thesis-review-47-covers.ml">Cover driver</a></p>
+<p>A rational valuation can also give a spurious reason to change the
+admission or package. In the <a href="lattice_guard.gadt">integer-guard
+program</a>, any positive result <span class="math inline">\(r\)</span>
+at input <span class="math inline">\(i\)</span> must satisfy <span
+class="math display">\[
+11\le5(i+r)\le19,\qquad -4\le5(i-r)\le4.
+\]</span> Both runtime values are integers. Rounding yields <span
+class="math inline">\(i+r=3\)</span> and <span
+class="math inline">\(i-r=0\)</span>, whose unique rational solution is
+<span class="math inline">\((3/2,3/2)\)</span>. Revision
+<code>c74beee</code> retained this case and rejected the program with
+outer budget four. Revision <code>dcfe773</code> accepts at budget two.
+The example returns zero. Decreasing the lower bound to ten allows <span
+class="math inline">\((1,1)\)</span> and the guard observes one. Making
+the input type <code>Num (2 i)</code> allows the native input three at
+<span class="math inline">\(i=3/2\)</span> and the guard observes two.
+Both controls reject the original Boolean branch and reach its numeric
+replacement at runtime. <a href="thesis-review-45.html#native">Earlier
+joint relaxation</a> · <a href="thesis-review-47.py">Whole-program
+replay</a></p>
+<p>After projecting out rational witnesses and keys, the compiler visits
+each feasible alternative of the rounded constraints. It clears
+denominators in the solved equations and tests whether their target
+vector is in the integer span of the coefficient columns. Replacing two
+columns <span class="math inline">\(u,v\)</span> by <span
+class="math inline">\(v,u-qv\)</span> preserves their integer span.
+Euclidean division repeats this operation until just one pivot is
+nonzero in the current row. Its required multiple must be integral.
+Subtract that multiple and recurse on the remaining columns and rows. A
+rational alternative survives only if all its solved equations admit a
+simultaneous integer assignment. For example, two narrow bands in four
+native values can round to <span class="math inline">\(2x-u-v=0\)</span>
+and <span class="math inline">\(2y-u+v=1\)</span>. Each coordinate
+ranges over the whole rational line, and each equation separately admits
+integers. Adding them gives <span
+class="math inline">\(2(x+y-u)=1\)</span>. The repaired checker excludes
+this entire affine plane. Changing the right-hand side to two leaves an
+integer point. <a href="thesis-review-47.lean">Column-operation
+proofs</a></p>
+<p>General inequalities can still prevent an integer solution of the
+equations from lying in the cell. For example, <span
+class="math inline">\(0\le8i+7r\le1\)</span> and <span
+class="math inline">\(2\le12i+11r\le3\)</span> survive the test. The
+difference of the two forms would be a multiple of four strictly between
+zero and four. <a href="thesis-review-47.py">Arithmetic replay</a> · <a
+href="https://doi.org/10.1145/125826.125848">Pugh on integer constraint
+elimination</a></p>
+</section>
+<section id="checks" class="level2">
+<h2>Reproducing the checks</h2>
+<p>The <a href="thesis-review-47.lean">formal proofs</a> use Lean 4.19
+and mathlib v4.19.0. Run <code>python3 thesis-review-47.py</code> for
+the finite policy search. It compares 1,280 closures with every possible
+package, replays proofs under changed policies, and checks 256 bounded
+searches against exhaustive joint synthesis. With <code>z3-solver</code>
+installed, pass <code>--driver</code> and the executable built from the
+<a href="thesis-review-45-numeric.ml">numeric driver</a> to check 220
+equality systems in rational, single-native and joint-native modes.
+Build the cover driver as <code>src/Cover47.native</code> with the same
+ocamlbuild flags and pass it as <code>--covers</code>. Pass
+<code>--compiler</code> for the source cases and optionally
+<code>--before</code> for the earlier compiler.</p>
+<p>The OCaml 5.3 compatibility build of InvarGenT revision
+<code>dcfe773</code> passed 380 active tests. Ten cases are marked TODO.
+All 195 previously generated example signatures matched revision
+<code>c74beee</code> byte for byte. The source replays and both numeric
+drivers ran on the OCaml 5.5 compatibility build.</p>
+</section>
+</article>
+<script src="/assets/theme-toggle.js"></script>
+</body>
+</html>
