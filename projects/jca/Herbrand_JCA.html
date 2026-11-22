@@ -231,27 +231,60 @@ the thesis’ full PDF.</p>
 4.4?</strong> No. The original induction jump can discard an upper bound
 that the caller restores on every pass, even when the stored
 two-inequality answer already solves the clauses. Current InvarGenT
-retains that bound and finishes on pass 9. Recursive calls can also fail
-before the induction jump. For a result in <span
-class="math inline">\([k,k+2]\)</span>, the compiler now infers child
-keys depending on one integer input, including a four-state example
-whose keys have slopes 6, 2 and 6. Four observations can be necessary to
-refute a single integer-affine line. Three suffice to refute a minimum
-of arbitrarily many lines on a finite interval table. For any finite set
-of fixed forbidden bands, the greatest safe key below an observed upper
-endpoint gives a uniform choice whenever a legal key exists. InvarGenT
-now checks the two-input example and unbounded affine variants at budget
-2. When the package width depends on the input, a constant-size relation
-can force choices beyond every finite affine min/max term. The implicit
-program fails its guard before any jump. Supplying that conditional
-choice or recording the exact result in the postcondition makes it
-check. <a href="agent-collab/thesis-review-31.html#projection">Uniform
-choice theorem</a> · <a
+retains that bound and finishes on pass 9. <a
+href="agent-collab/thesis-review-3.html#update">Original infinite
+recurrence</a> · <a
+href="agent-collab/thesis-review-24.html#jump">Earlier jump
+schedules</a> · <a
+href="agent-collab/thesis-review-16.html#dimension">Fixed-interface
+convergence theorem</a></p>
+<p><strong>What can still fail before the jump?</strong> Two recursive
+calls on identical arguments can force different instantiations of the
+same written package. With the choices supplied separately, InvarGenT
+checks the program at budget 2. The implicit search reaches a live guard
+at the same pass for budgets through 10,000. The package parameter is
+erased, so one can also strengthen the postcondition by intersecting the
+result sets at every admitted parameter. Here that intersection
+determines the result exactly. <a
+href="agent-collab/thesis-review-32.html#sites">Two-site
+counterexample</a> · <a
+href="agent-collab/thesis-review-32.html#erasure">What the erased key
+implies</a> · <a
+href="agent-collab/thesis-review-27.html#elimination">Shared-key
+theorem</a> · <a
+href="agent-collab/thesis-review-28.html#uniform">Witness
+compatibility</a> · <a
+href="agent-collab/thesis-review-22.html#binary">Two recursive
+packages</a> · <a href="agent-collab/thesis-review-21.html">Guarded
+calls</a> · <a href="agent-collab/thesis-review-23.html#least">Least
+relations and parameter choices</a></p>
+<p>For a single opening, InvarGenT now infers a conditional choice when
+both the width and guard depend on the inputs. With <span
+class="math inline">\(m\)</span> forbidden bands in arbitrary order,
+<span class="math inline">\(m\)</span> sweeps suffice to choose a key
+whenever a legal one exists. A constant-size relation can specify this
+choice even when no finite affine min/max term expresses it. For fixed
+forbidden bands, projecting one observed upper endpoint gives a uniform
+choice. <a href="agent-collab/thesis-review-32.html#sweeps">Coverage and
+bounded key selection</a> · <a
+href="agent-collab/thesis-review-31.html#projection">Uniform choice
+theorem</a> · <a
 href="agent-collab/thesis-review-31.html#width">Variable-width
 separation</a> · <a
 href="agent-collab/thesis-review-31.html#feedback">Two repairs for the
 same guard</a> · <a
-href="agent-collab/thesis-review-30.html#joint">Earlier two-input
+href="agent-collab/thesis-review-26.html#calls">Greatest-call
+theorem</a> · <a href="agent-collab/thesis-review-26.html#width">Exact
+interval-width threshold</a> · <a
+href="agent-collab/thesis-review-28.html#boundaries">Boundary
+recovery</a></p>
+<p>The compiler also checks the two-input example and unbounded affine
+variants at budget 2. For the fixed-width interval <span
+class="math inline">\([k,k+2]\)</span>, it can infer keys depending on
+one integer input with successive slopes 6, 2 and 6. Four observations
+can be necessary to refute an integer-affine line. Three suffice to
+refute a minimum of arbitrarily many lines on a finite interval table.
+<a href="agent-collab/thesis-review-30.html#joint">Earlier two-input
 failure</a> · <a
 href="agent-collab/thesis-review-30.html#scalar">Piecewise witness and
 three-observation theorem</a> · <a
@@ -262,27 +295,9 @@ three-state obstruction</a> · <a
 href="agent-collab/thesis-review-29.html#four">Four-observation
 theorem</a> · <a
 href="agent-collab/thesis-review-29.html#recovery">Recursive witness
-repair</a> · <a
-href="agent-collab/thesis-review-28.html#uniform">Witness
-compatibility</a> · <a
-href="agent-collab/thesis-review-28.html#boundaries">Boundary
-recovery</a> · <a
-href="agent-collab/thesis-review-27.html#elimination">Shared-key
-theorem</a> · <a
-href="agent-collab/thesis-review-27.html#recovery">Guard repair</a> · <a
-href="agent-collab/thesis-review-26.html#calls">Greatest-call
-theorem</a> · <a href="agent-collab/thesis-review-26.html#width">Exact
-interval-width threshold</a> · <a
-href="agent-collab/thesis-review-26.html#affine">Affine recovery</a> ·
-<a href="agent-collab/thesis-review-24.html#jump">Earlier jump
-schedules</a> · <a href="agent-collab/thesis-review-23.html#least">Least
-relations and parameter choices</a> · <a
-href="agent-collab/thesis-review-22.html#binary">Two recursive
-packages</a> · <a href="agent-collab/thesis-review-21.html">Guarded
-calls</a> · <a href="agent-collab/thesis-review-3.html#update">Original
-infinite recurrence</a> · <a
-href="agent-collab/thesis-review-16.html#dimension">Fixed-interface
-convergence theorem</a></p>
+repair</a> · <a href="agent-collab/thesis-review-27.html#recovery">Guard
+repair</a> · <a href="agent-collab/thesis-review-26.html#affine">Affine
+recovery</a></p>
 <p>The moving-floor example reaches its two-inequality solution on pass
 9, including when the caller recovers the payload from an affine tag. A
 hidden constructor index guides inference on pass 6. Two calls behind an

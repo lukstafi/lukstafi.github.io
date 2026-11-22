@@ -419,6 +419,11 @@ build_html \
   "$collab_dir/thesis-review-31.html" \
   "Choosing a recursive witness from an input bound"
 
+build_html \
+  "$collab_dir/thesis-review-32.md" \
+  "$collab_dir/thesis-review-32.html" \
+  "Choosing a recursive key when the interval and its guard move"
+
 reviews_dir="$collab_dir/reviews"
 if [[ -d "$reviews_dir" ]]; then
   for md_file in "$reviews_dir"/*.md; do

@@ -1,0 +1,18 @@
+datatype State : num
+datacons Neg : State (-3)
+datacons Pos : State 3
+datatype Nat
+datacons Z : Nat
+datacons S : Nat ⟶ Nat
+
+let base : ∀i. State i → Num i = function Neg -> (-3) | Pos -> 3
+external let negative : ∀i[i≤(-1)]. Num i → Bool = "fun n -> assert (n <= -1); true"
+external let positive : ∀i[1≤i]. Num i → Bool = "fun n -> assert (1 <= n); true"
+
+let rec run : ∀i,j,k,m,n[(-2)≤j ∧ j≤2 ∧ (-2)≤m ∧ m≤2 ∧ 0≤n ∧ (-3)≤i ∧ i≤3 ∧ min(i+3,3 + -i)≤0 ∧ k≤i ∧ i≤k+n].
+  State i → Num j → Num m → Num n → Nat → ∃l[k≤l ∧ l≤k+n]. Num l = fun s left right width -> efunction
+  | Z -> base s
+  | S d -> let prior = run s left right width d in
+           (match prior with r when left <= r && r <= left -> True | r when right <= r && r <= right -> True | _ -> base s)
+test (let a = run Neg 2 (-2) 19 (S Z) in let t = negative a in
+      let b = run Pos (-2) 2 237 (S (S Z)) in positive b)
