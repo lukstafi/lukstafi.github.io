@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <meta name="dcterms.date" content="2026-11-22">
+  <meta property="og:title" content="A recursive package that fails before the induction jump">
+  <meta property="og:url" content="https://lukstafi.github.io/projects/jca/agent-collab/thesis-review-16.html">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="lukstafi&#x27;s blog">
+  <meta name="twitter:card" content="summary">
+  <title>A recursive package that fails before the induction
+jump</title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <link rel="stylesheet" href="/assets/tufte.css">
+  <link rel="stylesheet" href="/assets/pandoc-tufte.css">
+  <link rel="stylesheet" href="/assets/site.css">
+  <script defer=""
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+  type="text/javascript"></script>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+  <script>(function(){var t=localStorage.getItem('theme-preference');if(t)document.documentElement.setAttribute('data-theme',t);})()</script>
+</head>
+<body>
+<nav class="site-nav">
+  <a href="/">Home</a> &middot; <a href="/study/">Study Guide</a> &middot; <a href="/about.html">About</a> &middot; <a href="https://lukstafi.substack.com">Substack</a>
+</nav>
+<div class="theme-toggle">
+  <button id="theme-btn" aria-label="Toggle dark mode">&#9788;</button>
+</div>
+<article>
+<header>
+<h1 class="title">A recursive package that fails before the induction
+jump</h1>
+<p class="byline">2026-11-22</p>
+</header>
+<nav id="TOC">
+<ul>
+<li><a href="#package" id="toc-package">A result with no hidden
+index</a>
+<ul>
+<li><a href="#budget" id="toc-budget">Why every outer budget
+fails</a></li>
+<li><a href="#restarts" id="toc-restarts">What happens at an actual jump
+on the moving-floor program</a></li>
+</ul></li>
+<li><a href="#affine" id="toc-affine">Recovering an equation written
+differently by the suppliers</a></li>
+<li><a href="#dimension" id="toc-dimension">When an affine induction
+jump does converge</a></li>
+<li><a href="#interfaces" id="toc-interfaces">Rational endpoints and
+exported packages</a></li>
+</ul>
+</nav>
+<p>The current Table 4.4 implementation can miss a constant-size
+solution on a single recursive definition for every outer iteration
+budget. There is no arithmetic in the example. InvarGenT checks the
+written type, and its generated OCaml runs. With the annotation erased,
+the solver retries its first input guess and reports a quantifier
+violation. The induction jump is scheduled for pass 8. <a
+href="packed_payload.gadt">Unannotated source</a> · <a
+href="thesis-review-16.py">Executable comparison</a> · <a
+href="../lukstafi-phd-thesis.pdf#page=71">Table 4.4</a></p>
+<section id="package" class="level2">
+<h2>A result with no hidden index</h2>
+<p>The constructor <code>Left</code> gives its argument type the second
+position in <code>Tag(Marker,a)</code>. The constructor
+<code>Right</code> gives it the first position in
+<code>Tag(a,Marker)</code>. At depth zero the function unpacks either
+constructor and returns its payload twice. At a successor it makes the
+same call at the preceding depth. The attached test unpacks the result
+of <code>f (Left Box) (S Z)</code> and checks the first component
+against <code>Box</code>, whose type is <code>Cargo</code>. Because the
+test is attached to the recursive definition, the solver sees its call
+together with the base and successor branches. <a
+href="packed_payload.gadt">Source</a></p>
+<p>A certificate is <span class="math display">\[
+\forall a.\; \mathrm{Tag}(\mathrm{Marker},a)\to\mathrm{Nat}
+   \to \exists().\,(a,a).
+\]</span> The package captures <span class="math inline">\(a\)</span>.
+It introduces no hidden witness and requires no side conditions. For
+<code>Left</code>, the payload has type <span
+class="math inline">\(a\)</span>. For <code>Right</code>, matching the
+declared input equates <span class="math inline">\(a\)</span> with
+<code>Marker</code>, and the payload has type <code>Marker</code>. Both
+constructors are live. The successor returns the preceding result at the
+same type. The attached call instantiates <span
+class="math inline">\(a\)</span> with <code>Cargo</code>. Lean checks
+the two constructor cases and the returned pair at every depth.
+InvarGenT accepts the annotation, and the driver executes both
+constructors. Reversing the two input positions gives the symmetric type
+for a client using <code>Right Box</code>. Giving that client the first
+type is rejected. <a href="thesis-review-16.lean">Proof and constructor
+witnesses</a> · <a href="thesis-review-16.py">Executable checks</a></p>
+<p>The erased program’s constraints name the binary postcondition <span
+class="math inline">\(X_1\)</span> and the unary function predicate
+<span class="math inline">\(X_2\)</span>. Write <span
+class="math inline">\(K(s)\)</span> for a package with parameter tuple
+<span class="math inline">\(s\)</span>, and <span
+class="math inline">\(\langle a\rangle\)</span> for the one-entry tuple.
+An explicit interpretation is <span class="math display">\[
+\begin{aligned}
+X_1(u,s) &amp;\iff \exists a.\;s=\langle a\rangle\land u=(a,a),\\
+X_2(v) &amp;\iff \exists
+a.\;v=(\mathrm{Tag}(\mathrm{Marker},a)\to\mathrm{Nat}\to K(\langle
+a\rangle)).
+\end{aligned}
+\]</span> The unary use of <span class="math inline">\(X_1\)</span> in
+the solver records the choice of parameter tuple at the package
+definition. Choose <span class="math inline">\(\langle a\rangle\)</span>
+from the input there. In the base branch, both tag matches now give the
+payload type <span class="math inline">\(a\)</span>, so <span
+class="math inline">\((a,a)\)</span> satisfies the binary predicate. The
+recursive application instantiates <span
+class="math inline">\(X_2\)</span> at the same <span
+class="math inline">\(a\)</span> and repacks the child’s pair with the
+same parameter. At the attached call choose <span
+class="math inline">\(a=\mathrm{Cargo}\)</span>. Every opening of the
+resulting package then gives <span
+class="math inline">\((\mathrm{Cargo},\mathrm{Cargo})\)</span>, as
+required by the test. These choices supply the witnesses for the erased
+definition as well as explaining its written annotation.</p>
+<section id="budget" class="level3">
+<h3>Why every outer budget fails</h3>
+<p>At revision <code>cac61af</code>, pass 0 initially guesses <span
+class="math inline">\(\mathrm{Tag}(a,a)\)</span> for the input and
+leaves the binary result predicate empty. The diagonal is a sound choice
+for the base definition in isolation. It cannot admit the test’s <span
+class="math inline">\(\mathrm{Tag}(\mathrm{Marker},\mathrm{Cargo})\)</span>.
+The trace for the complete definition is short.</p>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr>
+<th>Pass</th>
+<th>Search action</th>
+<th>Outcome</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td>First abduction</td>
+<td>Stores the diagonal input. Continues if the budget is positive.</td>
+</tr>
+<tr>
+<td>1</td>
+<td>Checks the next approximation</td>
+<td>Returns a type mismatch to pass 0.</td>
+</tr>
+<tr>
+<td>0</td>
+<td>Retries with the rejected choice recorded</td>
+<td>Returns a quantifier violation involving the test’s pair type.</td>
+</tr>
+</tbody>
+</table>
+<p>The last two failures take the error arm of <code>match answer</code>
+in <code>Invariants.solve</code>. Neither reaches the budget comparison.
+The retry returns directly to the caller of the first pass. There are no
+earlier inferred definitions whose answers could depend on the budget.
+The only earlier read of the outer limit tests whether pass 0 has
+exhausted it. The other read in this module occurs after a successful
+solve. Thus every positive budget follows this same finite path, even if
+the outer timeout is removed. Budget zero stops on the first row. The
+driver checks budgets 0, 1, 8, 11, 80 and 10,000 with the other settings
+at their defaults. As a control, change the function to return the
+ordinary payload. InvarGenT then accepts the left and right client tests
+when each is attached separately. <a
+href="thesis-review-16.py">Driver</a> · <a
+href="thesis-review-1.html">Earlier nonprincipality theorem</a></p>
+<p>This refutes guaranteed <em>successful</em> convergence of the
+implemented iteration under a solution-size promise, even for a fixed
+type with zero constraint atoms. On this example the search terminates
+early. In the earlier two-inequality example, the original common-atom
+jump regenerates a caller obligation forever. <a
+href="thesis-review-3.html#update">Infinite recurrence</a></p>
+</section>
+<section id="restarts" class="level3">
+<h3>What happens at an actual jump on the moving-floor program</h3>
+<p>The two-result arithmetic program does reach the jump. It returns a
+payload <span class="math inline">\(r\)</span> and a tag <span
+class="math inline">\(p+r\)</span> at floor <span
+class="math inline">\(p\)</span>. A recursive call raises the floor by
+<span class="math inline">\(e\)</span>. The six-atom certificate admits
+both attached calls. At <code>cac61af</code> the default run exhausts
+budget 11, and a longer run exhausts budget 80. Its jump starts at pass
+8. After failed retries, passes 9, 20 and 42 restart from the base and
+reschedule the jump for passes 19, 41 and 85 respectively. The restart
+rule sets the new threshold to twice the current pass number plus one.
+<a href="tagged_floor.gadt">Recursive source</a> · <a
+href="thesis-review-13.html#tag">Certificate and driver</a></p>
+<p>At pass 41 the caller asks for <span class="math inline">\(2p+e\le
+p+r\)</span>, or <span class="math inline">\(p+e\le r\)</span>. The base
+returns <span class="math inline">\(r=p\)</span>, so this demand would
+require <span class="math inline">\(e\le 0\)</span>. One attached call
+starts at <span class="math inline">\(p=3,e=1\)</span> and depth two. It
+reaches the base at <span class="math inline">\(p=5\)</span>, where the
+demand would require <span class="math inline">\(6\le 5\)</span>. The
+candidate input on that pass actually fixes <span
+class="math inline">\(e=0\)</span>. The next pass fails numeric
+abduction. The retry of pass 41 puts <span class="math inline">\(r\le
+p+e\)</span> in the result instead and drops the restriction <span
+class="math inline">\(e=0\)</span> from the input. Pass 42 restarts.
+Thus even the direction of the disputed bound changes across a retry.
+The three observed restarts explain why extrapolating from two repeated
+printed bounds would be insufficient. Whether the run on this particular
+program eventually succeeds remains open.</p>
+</section>
+</section>
+<section id="affine" class="level2">
+<h2>Recovering an equation written differently by the suppliers</h2>
+<p>An arithmetic example locates a repair in the supplier step itself.
+On input <span class="math inline">\(p\)</span> the base returns <span
+class="math inline">\((p,2p)\)</span>. The successor calls the function
+at <span class="math inline">\(-p\)</span>, checks the child’s pair, and
+returns <span class="math inline">\((p+1,2p+1)\)</span>. A pair <span
+class="math inline">\((r,t)\)</span> at input <span
+class="math inline">\(p\)</span> must satisfy <span
+class="math inline">\(t=p+r\)</span>. The identity holds in both
+branches for every <span class="math inline">\(p\)</span>. Indeed the
+certificate <span class="math inline">\(\forall
+p.\;\mathrm{Num}(p)\to\mathrm{Nat}\to\exists
+r.\,(\mathrm{Num}(r),\mathrm{Num}(p+r))\)</span> needs no side
+conditions. <a href="affine_tag.gadt">Recursive source</a></p>
+<p>The old generalizer intersected finite lists of equations from the
+solved branches. The base can write <span class="math inline">\(r=p,\
+t=2p\)</span>. The successor can write <span
+class="math inline">\(r=p+1,\ t=2p+1\)</span>. Neither list needs to
+contain <span class="math inline">\(t=p+r\)</span>. For any integer
+<span class="math inline">\(k\)</span>, replacing the second coordinates
+by <span class="math inline">\((k+1)p\)</span> and <span
+class="math inline">\((k+1)p+k\)</span> gives an example where
+<em>every</em> common affine equation is a multiple of <span
+class="math inline">\(t=p+kr\)</span>. To check the claim, substitute
+the base at <span class="math inline">\(p=0,1\)</span> and the step at
+<span class="math inline">\(p=0\)</span> into <span
+class="math inline">\(A p+B r+C t+D=0\)</span>. The resulting equations
+force <span class="math inline">\(D=0\)</span>, <span
+class="math inline">\(B=-kC\)</span>, and <span
+class="math inline">\(A=-C\)</span>. <a
+href="thesis-review-16.lean">Lean proof</a></p>
+<p>Revision <code>9119892</code> supplements the common equations when
+the numeric result has at least two target indices outside the candidate
+parameter set. Start with a basis for the equations in the first solved
+region. Substitute the second region’s solved equations into every basis
+row, obtaining a residual for each. Reduce the residual rows by Gaussian
+elimination and apply each row operation to the original equations as
+well. The original combinations whose residual is zero span exactly the
+intersection of the two equation spaces. Row operations preserve the
+span, and the surviving nonzero residual pivots are independent. The
+constant column participates in elimination. Repeat for every remaining
+region. A third region that violates the proposed equation removes it.
+This calculation concerns the affine equations present in the solved
+regions. Inequalities and extrema continue through their own
+generalizer.</p>
+<p>At <code>e5cd09c</code> the reflected recursion commits to <span
+class="math inline">\(p=0\)</span> on pass 5 and rejects the separately
+defined client at <span class="math inline">\(p=7\)</span>. The
+explicitly written unrestricted certificate passes on that same
+revision. At <code>9119892</code> the solver infers <span
+class="math inline">\(p\le r\le p+1\)</span> and puts <span
+class="math inline">\(p+r\)</span> directly in the second component’s
+type. The client at 7 executes, and a client claiming <span
+class="math inline">\(t=8+r\)</span> fails. <a
+href="thesis-review-16.py">Source and signature checks</a></p>
+</section>
+<section id="dimension" class="level2">
+<h2>When an affine induction jump does converge</h2>
+<p>Fix the input predicate, the captured parameters and the type shape.
+Suppose one result predicate ranges over <span
+class="math inline">\(d\)</span> rational coordinates. Let <span
+class="math inline">\(B\)</span> be the nonempty set of base results,
+and write <span class="math inline">\(x\mathrel T y\)</span> when a
+recursive supplier can return <span class="math inline">\(y\)</span>
+given <span class="math inline">\(x\)</span>. Represent the stored
+predicate by an affine subspace. Take the exact affine hull of the
+suppliers on each pass, starting with <span
+class="math inline">\(S_0=\operatorname{aff}(B)\)</span> and updating by
+<span class="math display">\[
+S_{n+1}=\operatorname{aff}\bigl(B\cup\{y\mid \exists x\in
+S_n.\;x\mathrel T y\}\bigr).
+\]</span></p>
+<p>Suppose there is an inductive affine solution <span
+class="math inline">\(R\)</span> whose results satisfy the caller. Then
+<span class="math inline">\(S_n\subseteq R\)</span> on every pass. The
+base lies in <span class="math inline">\(R\)</span>, the suppliers
+preserve <span class="math inline">\(R\)</span>, and taking an affine
+hull stays inside an affine subspace containing its arguments.
+Consequently the caller can consume every <span
+class="math inline">\(S_n\)</span> and requires no strengthening.
+Monotonicity gives <span class="math inline">\(S_n\subseteq
+S_{n+1}\)</span>, starting with inclusion of the base. Widening by <span
+class="math inline">\(\operatorname{aff}(S_n\cup S_{n+1})\)</span>
+therefore leaves <span class="math inline">\(S_{n+1}\)</span>
+intact.</p>
+<p><strong>There are at most <span class="math inline">\(d-\dim
+S_0\)</span> strict increases, followed by one verification
+pass.</strong> A point outside a nonempty affine subspace adds a
+linearly independent direction. At equality the supplier update contains
+the base and all successors of its current points, which proves
+inductiveness. Applying the bound to an implementation requires a join
+that preserves the common affine consequences, an equality test that
+recognizes equivalent presentations, and a fixed interface and input
+predicate. The Lean development proves containment, the decreasing
+dimension budget and the inductiveness test given the dimension rank. <a
+href="thesis-review-16.lean">Formal iteration lemmas</a></p>
+<p>The bound is sharp. Start at zero in <span
+class="math inline">\(d\)</span> coordinates and take <span
+class="math inline">\(T(x_1,\ldots,x_d)=(1,x_1,\ldots,x_{d-1})\)</span>.
+After <span class="math inline">\(k\le d\)</span> strict increases the
+first <span class="math inline">\(k\)</span> coordinates range freely
+and all later coordinates are zero. The base and the first <span
+class="math inline">\(k\)</span> iterates have this affine hull because
+successive iterates differ by each of the first <span
+class="math inline">\(k\)</span> coordinate vectors. The next pass adds
+the next coordinate direction. This is a convergence guarantee for a
+specified instance of the update, with the ambient dimension providing
+the bound. The package counterexample shows what changes when Table 4.4
+must infer the interface and solve the input obligations too.</p>
+</section>
+<section id="interfaces" class="level2">
+<h2>Rational endpoints and exported packages</h2>
+<p>A supplier returning <span class="math inline">\(1/2\)</span> at the
+base and <span class="math inline">\(3/2\)</span> at each successor has
+an immediate two-bound contract. Before <code>ef47f20</code> pass 2
+raised an OCaml exception while comparing two rational constants by
+structural equality. Numeric equality repairs the operation. InvarGenT
+now infers the interval and the emitted OCaml executes. Increasing the
+successor to <span class="math inline">\(5/2\)</span> violates the next
+caller’s range and is rejected. <a
+href="rational_endpoints.gadt">Program</a> · <a
+href="thesis-review-16.py">Comparisons</a></p>
+<p>The package proof exposed two export problems, repaired in
+<code>cac61af</code>. A vacuous existential binder printed as
+<code>∃.(a,a)</code>, which the parser could not read back. It now
+accepts an empty binder list and preserves the package and its captured
+parameters. In generated OCaml a locally abstract type named
+<code>a</code> could also shadow the concrete type for the source
+datatype <code>A</code>. With concrete types <code>A</code> and
+<code>A'</code> in scope the printer now chooses <code>a''</code> for
+that binder and uses it consistently in the body annotations. Both the
+reimported interface and the generated OCaml are checked by executable
+regressions.</p>
+<p>The regression suite passed all 299 active tests, with 10 existing
+TODOs. All 143 signatures generated from the earlier examples matched
+their outputs at <code>e5cd09c</code> byte for byte. The comparison
+driver passed on OCaml 5.3 and 5.5.</p>
+<p>Lean 4.19.0 checks the standalone file with
+<code>lean thesis-review-16.lean</code>. Run
+<code>python3 thesis-review-16.py /path/to/InvarGenT.native</code> in
+this directory. Add <code>--before-affine</code> with a binary from
+<code>e5cd09c</code> to reproduce the earlier arithmetic failures. <a
+href="thesis-review-16.lean">Lean file</a> · <a
+href="thesis-review-16.py">Comparison driver</a></p>
+</section>
+</article>
+<script src="/assets/theme-toggle.js"></script>
+</body>
+</html>

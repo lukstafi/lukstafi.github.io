@@ -339,6 +339,11 @@ build_html \
   "$collab_dir/thesis-review-15.html" \
   "Which rates must a recursive postcondition remember?"
 
+build_html \
+  "$collab_dir/thesis-review-16.md" \
+  "$collab_dir/thesis-review-16.html" \
+  "A recursive package that fails before the induction jump"
+
 reviews_dir="$collab_dir/reviews"
 if [[ -d "$reviews_dir" ]]; then
   for md_file in "$reviews_dir"/*.md; do

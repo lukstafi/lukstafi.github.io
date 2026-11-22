@@ -1,0 +1,19 @@
+datatype Marker
+datacons Mark : Marker
+datatype Cargo
+datacons Box : Cargo
+datatype Tag : type * type
+datacons Left : ∀b. b ⟶ Tag(Marker,b)
+datacons Right : ∀a. a ⟶ Tag(a,Marker)
+datatype Nat
+datacons Z : Nat
+datacons S : Nat ⟶ Nat
+
+external let same : ∀a. a → a → Bool =
+  "fun a b -> assert (a = b); true"
+
+let rec f t = efunction
+  | Z -> let z = (match t with Left y -> y | Right x -> x) in (z,z)
+  | S n -> f t n
+
+test (let (x,y) = f (Left Box) (S Z) in same x Box)

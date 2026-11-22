@@ -1,0 +1,10 @@
+datatype Nat
+datacons Z : Nat
+datacons S : Nat ⟶ Nat
+external let half : Num (1/2) = "0.5"
+external let one_and_half : Num (3/2) = "1.5"
+external let inside : ∀i[1/2≤i ∧ i≤3/2]. Num i → Bool = "fun x -> assert (0.5 <= x && x <= 1.5); true"
+let rec f = efunction
+ | Z -> half
+ | S n -> let r = f n in let good = inside r in one_and_half
+test (let r = f (S (S Z)) in inside r)
