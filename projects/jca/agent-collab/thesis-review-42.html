@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <meta name="dcterms.date" content="2026-11-22">
+  <meta property="og:title" content="Which inputs must survive an induction jump?">
+  <meta property="og:url" content="https://lukstafi.github.io/projects/jca/agent-collab/thesis-review-42.html">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="lukstafi&#x27;s blog">
+  <meta name="twitter:card" content="summary">
+  <title>Which inputs must survive an induction jump?</title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <link rel="stylesheet" href="/assets/tufte.css">
+  <link rel="stylesheet" href="/assets/pandoc-tufte.css">
+  <link rel="stylesheet" href="/assets/site.css">
+  <script defer=""
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+  type="text/javascript"></script>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+  <script>(function(){var t=localStorage.getItem('theme-preference');if(t)document.documentElement.setAttribute('data-theme',t);})()</script>
+</head>
+<body>
+<nav class="site-nav">
+  <a href="/">Home</a> &middot; <a href="/study/">Study Guide</a> &middot; <a href="/about.html">About</a> &middot; <a href="https://lukstafi.substack.com">Substack</a>
+</nav>
+<div class="theme-toggle">
+  <button id="theme-btn" aria-label="Toggle dark mode">&#9788;</button>
+</div>
+<article>
+<header>
+<h1 class="title">Which inputs must survive an induction jump?</h1>
+<p class="byline">2026-11-22</p>
+</header>
+<nav id="TOC">
+<ul>
+<li><a href="#interface" id="toc-interface">An exact test for changing
+the captured parameters</a></li>
+<li><a href="#rank" id="toc-rank">A finite bound on parameter
+discovery</a></li>
+<li><a href="#allowance" id="toc-allowance">When all three inputs are
+captured and the iteration still restarts</a></li>
+<li><a href="#repair" id="toc-repair">A supplier check for the missing
+sum</a></li>
+<li><a href="#projection" id="toc-projection">Keeping disjunctions after
+a witness is determined</a></li>
+<li><a href="#replay" id="toc-replay">Reproducing the checks</a></li>
+</ul>
+</nav>
+<p>A caller checks only the first component of a recursive result. One
+supplier can move an error from the third component to the second.
+Another can move it from the second to the first. Their composition
+makes the third input indispensable. For affine updates of this form,
+the caller and the suppliers determine the coarsest sufficient parameter
+interface. A variant exposes a separate failure after the compiler has
+already found every parameter. Its join loses the bound on the sum of
+three errors. <a href="mixed_affine_capture.gadt">InvarGenT example</a>
+· <a href="unit_result_allowance.gadt">Program with the shared
+bound</a></p>
+<section id="interface" class="level2">
+<h2>An exact test for changing the captured parameters</h2>
+<p>Fix a legal input domain <span
+class="math inline">\(U\subseteq\mathbb Q^d\)</span> and a function
+<span class="math inline">\(h\)</span> giving the parameters carried by
+the package. At input <span class="math inline">\(x\)</span>, the base
+supplier returns <span class="math inline">\(x\)</span>. There are
+finitely many successor suppliers. Supplier <span
+class="math inline">\(i\)</span> opens a recursive result <span
+class="math inline">\(r\)</span> at the same input and returns <span
+class="math inline">\(x+T_i(r-x)\)</span>, where <span
+class="math inline">\(T_i\)</span> is a rational matrix. Every supplier
+is available at each legal input. The caller asks for one inequality
+<span class="math inline">\(cr\le cx\)</span>. A package relation <span
+class="math inline">\(R\)</span> must satisfy the following obligations
+at each <span class="math inline">\(x\in U\)</span>. <span
+class="math display">\[
+R(h(x),x),\quad
+R(h(x),r)\Rightarrow R(h(x),x+T_i(r-x)),\quad
+R(h(x),r)\Rightarrow cr\le cx .
+\]</span> These are base, successor and caller clauses for a binary
+postcondition in Table 4.4. Each input uses the single specified key
+<span class="math inline">\(h(x)\)</span>. The unknown relation sees
+only that key and the result. The statements below use rational
+arithmetic. The OCaml executions use small integers for which every
+operation is representable. <a
+href="../lukstafi-phd-thesis.pdf#page=71">Table 4.4</a> · <a
+href="thesis-review-16.html#dimension">Earlier fixed-interface
+theorem</a></p>
+<p>For a word <span class="math inline">\(w\)</span> of supplier choices
+let <span class="math inline">\(T_w\)</span> be their product in
+execution order, with the identity for the empty word. The rows <span
+class="math inline">\(cT_w\)</span> measure every error that can reach
+the caller.</p>
+<p><strong>Interface theorem.</strong> A package relation exists exactly
+when <span class="math display">\[
+  x,y\in U,\quad h(x)=h(y)\quad\Longrightarrow\quad
+  cT_w x=cT_w y\quad\text{for every }w .
+\]</span> This holds for arbitrary <span
+class="math inline">\(h\)</span>. For necessity, a package at <span
+class="math inline">\(h(x)\)</span> must admit the base result <span
+class="math inline">\(y\)</span> whenever <span
+class="math inline">\(h(y)=h(x)\)</span>. Running the suppliers in <span
+class="math inline">\(w\)</span> at <span
+class="math inline">\(x\)</span> then forces it to admit <span
+class="math inline">\(x+T_w(y-x)\)</span>. The caller gives <span
+class="math inline">\(cT_w y\le cT_w x\)</span>. Exchanging <span
+class="math inline">\(x\)</span> and <span
+class="math inline">\(y\)</span> gives the reverse inequality. For
+sufficiency, require a result at key <span
+class="math inline">\(k\)</span> to agree with every legal input at
+<span class="math inline">\(k\)</span> on all rows <span
+class="math inline">\(cT_w\)</span>. The base passes by the displayed
+condition. Applying supplier <span class="math inline">\(i\)</span>
+reduces the check for a word <span class="math inline">\(w\)</span> to
+the check for the word that applies <span
+class="math inline">\(i\)</span> first and then <span
+class="math inline">\(w\)</span>. The empty word gives the caller’s
+bound. In particular this relation remains inductive when separate
+package openings use different representatives of the same key. <a
+href="thesis-review-42.lean">Proof in Lean</a></p>
+<p>For an arbitrary key function the theorem gives a relation as a set.
+For semilinear <span class="math inline">\(U\)</span> and an affine key
+<span class="math inline">\(h\)</span>, the same construction has a
+formula in rational linear arithmetic. Replace all the word observations
+by the finite row basis computed below and quantify over the legal
+inputs with the specified key. Eliminating those input variables can
+introduce disjunctions.</p>
+</section>
+<section id="rank" class="level2">
+<h2>A finite bound on parameter discovery</h2>
+<p>Start with the span <span class="math inline">\(L_0\)</span> of <span
+class="math inline">\(c\)</span>, then set <span
+class="math inline">\(L_{j+1}=L_j+\sum_i L_jT_i\)</span>. After <span
+class="math inline">\(j\)</span> steps the rows span every observation
+for words of length at most <span class="math inline">\(j\)</span>.
+Equality on one step gives closure under all suppliers. Each strict step
+adds a dimension, so for <span class="math inline">\(c\ne0\)</span>
+there are at most <span class="math inline">\(d-1\)</span> strict steps
+followed by one check. Write <span class="math inline">\(O\)</span> for
+a matrix whose rows are a basis at closure. The single-matrix case is
+the observability matrix of a linear dynamical system. Allowing several
+recursive suppliers requires closing under their mixed products. <a
+href="https://web.stanford.edu/class/archive/ee/ee263/ee263.1082/lectures/observ2.pdf">Boyd,
+observability and state estimation, slides 19–6 to 19–7</a> · <a
+href="thesis-review-42.py">Row closure checked against recursive
+unfolding</a></p>
+<p>The interface <span class="math inline">\(h(x)=Ox\)</span> suffices,
+with package <span class="math inline">\(Or=h(x)\)</span>. Every
+sufficient interface distinguishes any two legal inputs that <span
+class="math inline">\(O\)</span> distinguishes. Over unrestricted
+inputs, an affine capture <span class="math inline">\(Mx+b\)</span>
+therefore suffices exactly when <span class="math inline">\(\ker
+M\subseteq\ker O\)</span>, or equivalently when every row of <span
+class="math inline">\(O\)</span> is a linear combination of rows of
+<span class="math inline">\(M\)</span>. The minimum number of
+independent affine parameters is <span
+class="math inline">\(\operatorname{rank}O\)</span>. On an affine domain
+<span class="math inline">\(u+V\)</span>, apply the same argument to the
+restrictions of the rows to <span class="math inline">\(V\)</span>. On
+an arbitrary rational semilinear domain, test whether two admitted
+inputs have the same <span class="math inline">\(h\)</span> but
+different <span class="math inline">\(O\)</span> values by rational
+linear arithmetic when <span class="math inline">\(h\)</span> is
+affine.</p>
+<p>This gives a terminating repair for this part of the table. Keep the
+existing capture rows <span class="math inline">\(M\)</span>. When a
+collision is found, append one row of <span
+class="math inline">\(O\)</span> that distinguishes the two inputs. That
+row is independent of everything captured so far, since every linear
+combination of the old rows agrees on the pair. Starting from <span
+class="math inline">\(M_0\)</span>, there can be at most <span
+class="math display">\[
+   \operatorname{rank}\begin{pmatrix}M_0\\O\end{pmatrix}
+   -\operatorname{rank}M_0
+\]</span> such repairs, even if the input domain changes between checks.
+Narrowing the domain preserves an already sufficient interface.
+Expansion can expose another collision. This bound counts additions of
+capture rows for these suppliers. Each repair keeps the previous rows,
+and each added affine statistic must be available at the definition and
+its uses. InvarGenT selects parameters from the variables in scope. The
+full outer loop also changes the supplier summaries and caller demands.
+<a href="thesis-review-42.lean">Closure and rank-increase lemmas</a></p>
+<p>The construction can need all <span class="math inline">\(d\)</span>
+coordinates for one caller inequality. Let <span
+class="math inline">\(c\)</span> read coordinate one, and let a supplier
+shift an error left by one place, inserting zero at the end. A
+difference confined to coordinate <span class="math inline">\(d\)</span>
+first affects the caller after <span class="math inline">\(d-1\)</span>
+successors. On <span class="math inline">\(\mathbb Q^d\)</span> every
+coordinate must be distinguished. For <span
+class="math inline">\(d=3\)</span> use the two separate updates <span
+class="math inline">\(A(e)=(e_2,0,0)\)</span> and <span
+class="math inline">\(B(e)=(0,e_3,0)\)</span>. Repetition of <span
+class="math inline">\(A\)</span> sees the first two coordinates,
+repetition of <span class="math inline">\(B\)</span> only the first. The
+word that applies <span class="math inline">\(B\)</span> and then <span
+class="math inline">\(A\)</span> sees the third.</p>
+<p>The unannotated source exports the unrestricted triple <span
+class="math inline">\((x,y,z)\)</span>. A written unrestricted package
+keeping the first two coordinates and leaving the third free fails. With
+<span class="math inline">\(A\)</span> alone that package checks. With
+<span class="math inline">\(B\)</span> alone keeping the first
+coordinate checks. Both suppliers work on domain <span
+class="math inline">\(y=z\)</span> with result <span
+class="math inline">\((x,y,y)\)</span>, so two inputs determine the
+entire interface there. The client <span
+class="math inline">\((3,5,7)\)</span> is rejected under that
+restriction. <a href="mixed_affine_capture.gadt">Program</a> · <a
+href="thesis-review-42.py">Scheme and execution checks</a></p>
+</section>
+<section id="allowance" class="level2">
+<h2>When all three inputs are captured and the iteration still
+restarts</h2>
+<p>Give the base a positive allowance <span
+class="math inline">\(s\)</span> by returning <span
+class="math inline">\((x,y,z+s)\)</span>. Keep suppliers <span
+class="math inline">\(A,B\)</span> above and let the caller demand <span
+class="math inline">\(e_1+e_2+e_3\le s\)</span>, with <span
+class="math inline">\(e=r-(x,y,z)\)</span>. Supply the three inputs
+through an opaque existential package, so inference must accept every
+triple. The exact reachable errors are <span
+class="math inline">\(s\)</span> times the three unit vectors and zero.
+Starting with the third vector, <span class="math inline">\(B\)</span>
+reaches the second, <span class="math inline">\(A B\)</span> reaches the
+first, and <span class="math inline">\(A\)</span> alone reaches zero.
+The smallest convex invariant is their simplex <span
+class="math display">\[
+e_1,e_2,e_3\ge0,\qquad e_1+e_2+e_3\le s .
+\]</span> Each supplier moves at most one nonnegative component into the
+next error. Each point in the simplex has weights <span
+class="math inline">\(e_1/s,e_2/s,e_3/s\)</span> on the three unit
+vertices scaled by <span class="math inline">\(s\)</span>, with the
+remaining weight on zero. A join keeping only nonnegativity and the
+three pairwise bounds <span class="math inline">\(e_i+e_j\le s\)</span>
+admits <span class="math inline">\((s/2,s/2,s/2)\)</span>. For <span
+class="math inline">\(s=2\)</span> that spurious result already has
+integral coordinates. <a href="thesis-review-42.lean">Reachability,
+inductiveness and convex weights in Lean</a></p>
+<p>For an exact convex join there is a separate convergence bound. Let
+<span class="math inline">\(C_0=\operatorname{conv}(B)\)</span> for a
+base set of errors <span class="math inline">\(B\)</span>, and <span
+class="math inline">\(C_{n+1}=\operatorname{conv}(B\cup\bigcup_i T_i
+C_n)\)</span>. Linear maps preserve finite convex combinations.
+Induction gives <span
+class="math inline">\(C_n=\operatorname{conv}\bigcup_{|w|\le n}T_w
+B\)</span>. If every product of <span class="math inline">\(N\)</span>
+supplier matrices sends <span class="math inline">\(B\)</span> to zero,
+truncating any longer word after <span class="math inline">\(N\)</span>
+steps leaves its output unchanged. The exact update stabilizes by <span
+class="math inline">\(N\)</span>, followed by one equality check. A
+convex caller condition containing every reachable error holds on each
+intermediate hull, so it asks for no strengthening. On the
+three-coordinate example the hull already contains all four vertices at
+depth two. <a href="thesis-review-42.lean">Word-truncation proof</a></p>
+<p>A finite reachable set gives another bound on this exact update. If
+<span class="math inline">\(P\)</span> is the set of reachable errors,
+each strict hull enlargement contains a newly reachable error outside
+the old hull. Otherwise every new generator would already belong to that
+convex set. The initial hull contains <span
+class="math inline">\(B\)</span>, so at most <span
+class="math inline">\(|P|-|B|\)</span> enlargements are possible. For
+integer base errors and integer matrices, a known bounded box containing
+the orbit gives an explicit bound by counting its lattice points. This
+argument also covers finite orbits that never reach zero.</p>
+<p>A bound on the size of the invariant formula allows a different
+outcome. Over the rationals take <span
+class="math inline">\(B=\{1\}\)</span> and successor <span
+class="math inline">\(e\mapsto e/2\)</span>. The exact hull at depth
+<span class="math inline">\(n\)</span> is <span
+class="math inline">\([2^{-n},1]\)</span>. The two inequalities <span
+class="math inline">\(0\le e\le1\)</span> are inductive, yet every
+finite exact update strictly enlarges the hull. The denominator of the
+moving endpoint doubles on every pass. Widening changes the operator in
+this calculation. The trace below records when InvarGenT actually
+widens. <a href="thesis-review-42.lean">Strict enlargement in
+Lean</a></p>
+<p>At revision <code>e9e7c00</code> the written simplex passes. On the
+unannotated program with <span class="math inline">\(s=1\)</span>, the
+input predicate already carries all three parameters on pass 1. The
+following table gives the stored relations through budget 80. A fresh
+witness can acquire a different printed name on each restart.</p>
+<table>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr>
+<th>Pass</th>
+<th>Numeric relation on the stored result</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><span class="math inline">\(1,4,7,\ldots\)</span></td>
+<td>The base point <span class="math inline">\((0,0,1)\)</span>.</td>
+</tr>
+<tr>
+<td><span class="math inline">\(2,5,8,\ldots\)</span></td>
+<td><span class="math inline">\(e_1=0\)</span>, <span
+class="math inline">\(e_2,e_3\ge0\)</span>, <span
+class="math inline">\(e_2+e_3\le1\)</span>.</td>
+</tr>
+<tr>
+<td><span class="math inline">\(3,6,9,\ldots\)</span></td>
+<td>Nonnegativity and all three pairwise bounds, plus a caller
+contribution <span class="math inline">\(e_j\le0\)</span> for one
+coordinate.</td>
+</tr>
+</tbody>
+</table>
+<p>The thesis attributes monotonicity of branch generalization to
+substitution of the previous answer. At a fixed interface, positive
+substitution preserves inclusion of supplier sets. An order-preserving
+generalization, such as the exact convex hull, then preserves inclusion
+of their summaries. Sound coverage alone imposes no such order on the
+choice of generalization. Moreover, the stored answer in (4.6) includes
+the caller contribution. On pass 3 that contribution is <span
+class="math inline">\(e_3\le0\)</span>. Pass 2 admits <span
+class="math inline">\((0,0,1)\)</span> and excludes <span
+class="math inline">\((1,0,0)\)</span>. Pass 3 reverses both decisions.
+The two stored answers are incomparable even though the captured inputs
+have stayed fixed. <a href="../lukstafi-phd-thesis.pdf#page=134">Thesis
+discussion of monotonicity</a> · <a
+href="thesis-review-3.html#update">Supplier and caller updates</a></p>
+<p>The last row satisfies the sum bound by forcing one coordinate to
+zero. Each choice excludes a reachable unit vector. The attempted
+justification of the caller contribution fails and the solver restarts
+from the base. The numeric widening path is active on passes 9, 21 and
+45. Later restarts postpone the next jump to 93. The trace verifies the
+three forms up to pass 80, with the strengthening coordinate read from
+each pass. The earlier capped climb had an infinite recurrence under its
+original jump. Here the schedule and fresh names also change, so the
+observed period alone leaves the unbounded run open. <a
+href="thesis-review-42-trace.patch">Pass diagnostic</a> · <a
+href="thesis-review-42.py">Semantic checks for all 80 stored
+relations</a> · <a href="thesis-review-21.html#feedback">Capped-climb
+recurrence</a></p>
+</section>
+<section id="repair" class="level2">
+<h2>A supplier check for the missing sum</h2>
+<p>On its affine retry, InvarGenT now looks for an inequality involving
+one fresh result coordinate and captured parameters. A lone face fixes
+its orientation. If several qualify, prefer a face that is identically
+tight on more supplier polytopes than any rival. A tie leaves that
+coordinate out. Normalize the result coefficient to absolute value one
+and take the inward signed distance. For example, <span
+class="math inline">\(x\le r_1\)</span> contributes <span
+class="math inline">\(r_1-x\)</span>. Sum the selected distances. To
+find its tight upper bound on a supplier polytope, introduce one scalar
+equal to the sum and eliminate all other coordinates first. A projected
+singleton gives its value directly. Otherwise the scalar’s upper
+endpoint gives the bound. An unbounded upper ray rules out a finite cap
+in that direction. For a finite union of bounded-above projections, the
+largest endpoint is the least constant cap in this direction. At least
+one projected supplier attains it. The solver checks the candidate on
+<strong>every</strong> supplier polytope and adds it only if it gives
+information beyond the current join. The final implication check covers
+all the branches, including any that can increase the total beyond its
+base value. The proof is the branch implication followed by disjunction
+elimination in (4.2). The calculation uses rational endpoints
+throughout. <a href="thesis-review-3.html#update">Thesis supplier
+update</a></p>
+<p>A uniform change of units leaves the ordinary sum useful. Rescale the
+three coordinates separately and the supporting face can acquire
+different coefficients. For each inward distance <span
+class="math inline">\(d_i\)</span>, the same projection gives its
+maximum <span class="math inline">\(u_i\)</span> on the supplier union.
+Finite positive maxima give a second candidate direction <span
+class="math inline">\(\sum_i d_i/u_i\)</span>. Project and verify its
+upper bound as before. If the reachable errors include zero and every
+axis endpoint <span class="math inline">\(u_i e_i\)</span>, and every
+supplier lies on those axis segments, their exact convex hull has
+nonnegative distances and <span class="math inline">\(\sum_i
+d_i/u_i\le1\)</span>. The normalized distances are the weights on the
+endpoints. The remaining weight belongs to zero. This calculation works
+in any dimension. <a href="thesis-review-42.lean">Barycentric
+equivalence in Lean</a></p>
+<p>Let <span class="math inline">\(A\)</span> transfer twice the second
+error and <span class="math inline">\(B\)</span> transfer three times
+the third. The unit base then gives axis lengths <span
+class="math inline">\(6,3,1\)</span>. On retry the compiler infers <span
+class="math inline">\(e_1+2e_2+6e_3\le6\)</span>. At <span
+class="math inline">\(A(B Z)\)</span> the program prints six, and the
+client demanding five fails. The arithmetic replay also compares the
+returned linear hull with the exact simplex on 48 translated and
+independently rescaled triples of axis segments. It checks that
+shrinking the cap or leaving one axis unbounded defeats the proposed
+bound in every case. <a href="thesis-review-42-join.ml">Join
+driver</a></p>
+<p>For the example, the base gives sum one. The other suppliers can
+spend the same unit on different coordinates. Budget three exhausts the
+search. At budget four the retry infers the unrestricted input and the
+four simplex inequalities. The executable reaches total one. If the base
+instead supplies an error anywhere in <span
+class="math inline">\([0,s]\)</span>, the sum varies on every supplier
+and the same projection still recovers <span
+class="math inline">\(s\)</span>. Other controls take <span
+class="math inline">\(s=3/2\)</span>, put the base on a two-dimensional
+triangle, and remove its upper bound altogether. The same check recovers
+the exact signed simplex for all eight choices of error signs, at
+allowances one and two. A control duplicates the third error in two
+result components. Its call at <span class="math inline">\(B Z\)</span>
+exceeds allowance one and is rejected. Allowing two accepts the control
+and prints two. <a href="unit_result_allowance.gadt">Source</a> · <a
+href="thesis-review-42.py">Rational equivalence of the exported packages
+and runtime checks</a></p>
+</section>
+<section id="projection" class="level2">
+<h2>Keeping disjunctions after a witness is determined</h2>
+<p>Existential projection had a separate cost in the preceding guard
+checks. Let the private witness be <span
+class="math inline">\(m=\max(0,k)\)</span>. Add <span
+class="math inline">\(q\)</span> public pairs <span
+class="math inline">\(u_i,v_i\)</span> and require <span
+class="math inline">\(m+u_i\le0\lor v_i\le0\)</span> for every pair.
+Each of the two arms defining <span class="math inline">\(m\)</span>
+gives a public formula of size <span class="math inline">\(O(q)\)</span>
+by substitution. The earlier projector continued splitting the <span
+class="math inline">\(q\)</span> disjunctions. Revision
+<code>e9e7c00</code> substitutes each arm’s solved equalities before
+deciding whether the next disjunction still contains a private variable.
+Once the variable is gone, the disjunction stays in that branch. For
+<span class="math inline">\(q=1\)</span> through <span
+class="math inline">\(7\)</span>, the number of returned cells falls
+from <span class="math inline">\(2^{q+1}\)</span> to two. Both unions
+agree with the original existential formula. <a
+href="thesis-review-42.py">Arithmetic replay</a> · <a
+href="thesis-review-38-projection.ml">Projection driver</a></p>
+<p>There is a real lower bound behind the difference in representation.
+At <span class="math inline">\(k=0\)</span> choose <span
+class="math inline">\((u_i,v_i)=(0,2)\)</span> or <span
+class="math inline">\((2,0)\)</span> independently, giving <span
+class="math inline">\(2^q\)</span> legal points. The midpoint of two
+distinct choices has some pair <span
+class="math inline">\((1,1)\)</span> and violates its clause. One convex
+cell contained in the projection can cover at most one marked point. Any
+exact union of convex cells therefore needs at least <span
+class="math inline">\(2^q\)</span> cells. The two cells returned by the
+new projector can each contain public disjunctions. On the earlier
+ternary-digit example it now leaves two legal keys in each cell at
+lengths two through five. <a href="thesis-review-38.html#cells">Earlier
+projection bound</a></p>
+</section>
+<section id="replay" class="level2">
+<h2>Reproducing the checks</h2>
+<p>InvarGenT revision <code>a953fc1</code> adds the shared-bound
+calculation. Its interval-base example is part of the OCaml 5.3
+compatibility suite. All 373 active cases passed, with ten recorded as
+TODO. The 191 earlier example signatures were byte-identical to those
+from <code>e9e7c00</code>.</p>
+<p>Run Lean 4.19 with mathlib v4.19.0 on <a
+href="thesis-review-42.lean">the proof</a>. Run
+<code>python3 thesis-review-42.py</code> with <code>z3-solver</code> to
+compare the row calculation against recursively unfolded package
+openings. Build the <a href="thesis-review-42-join.ml">join driver</a>
+in the repaired InvarGenT source tree and pass its executable as
+<code>--join</code>. Add <code>--compiler</code> with the repaired
+executable and <code>--before</code> with <code>e9e7c00</code> for the
+source comparisons. For <code>--before-trace</code>, apply the <a
+href="thesis-review-42-trace.patch">diagnostic</a> to the earlier
+compiler. Build the <a href="thesis-review-38-projection.ml">projection
+driver</a> on <code>e9e7c00</code> and <code>581f479</code> and pass the
+executables as <code>--projection</code> and
+<code>--before-projection</code>, respectively. The revision with the
+projection repair also agrees with quantified Z3 on all 1,280 earlier
+projections. The digit check for that revision uses
+<code>thesis-review-38.py --numeric-driver DRIVER --paired-digits</code>.
+On the separate 480-case guard replay, 476 cases agreed at a two-second
+per-query limit. Retrying the four unfinished queries at twenty seconds
+settled case 426. Both the compiler and Z3 found it unsatisfiable for
+each sort. Cases 258, 282 and 359 remain unverified in this comparison.
+<a href="thesis-review-41.html#replay">Stress replay and original
+limits</a></p>
+</section>
+</article>
+<script src="/assets/theme-toggle.js"></script>
+</body>
+</html>

@@ -1,0 +1,13 @@
+datatype Nat
+datacons Z : Nat
+datacons A : Nat ⟶ Nat
+datacons B : Nat ⟶ Nat
+
+external let at_most : ∀i,j[j≤i]. Num i → Num j → Bool =
+  "fun x r -> print_int r; print_newline (); r <= x"
+
+let rec run x y z = efunction
+  | Z -> (x,y,z)
+  | A d -> let (a,b,c) = run x y z d in (x+b+(-1*y), y, z)
+  | B d -> let (a,b,c) = run x y z d in (x, y+c+(-1*z), z)
+test (let (a,b,c) = run 3 5 7 (A (B Z)) in at_most 3 a)

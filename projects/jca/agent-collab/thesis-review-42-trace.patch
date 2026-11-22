@@ -1,0 +1,11 @@
+--- a/src/Invariants.ml
++++ b/src/Invariants.ml
+@@ -1923,4 +1923,8 @@
+         dissoc_abdsj !initstep old_initstep !dropped_from_sol
+         finished1 finished2 finished3 finished; *]*)
++      Format.eprintf
++        "PASS %d jump %d init %b previous-init %b stable %b %b %b pending %b@.INPUT %a@.STORED %a@.DEMAND %a@.END_PASS@."
++        iter_no jump_at !initstep old_initstep finished1 finished2 finished3
++        !unfinished_postcond_flag pr_chi_subst sol2 pr_chi_subst rol2 pr_formula !unfinished_postcond;
+       if not !initstep && finished
+       then                              (* final solution *)

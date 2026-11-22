@@ -53,7 +53,7 @@ def projection_oracle(driver):
     print(f"All {len(lines)} projections agree with quantified linear arithmetic.")
 
 
-def check_digits(driver):
+def check_digits(driver, paired=False):
     k = z3.Real("k")
     values = [0]
     counts = []
@@ -65,13 +65,15 @@ def check_digits(driver):
         assert len(cells) == count
         prior["prior"]["equivalent"](z3.Or(*cells),z3.Or(*(k==v for v in values)))
         if length >= 2:
-            assert count == len(values)
+            per_cell = 2 if paired else 1
+            assert count * per_cell == len(values)
             for cell in cells:
                 s = z3.Solver()
                 s.add(cell)
-                assert s.check() == z3.sat
-                witness = s.model().eval(k)
-                s.add(k != witness)
+                for _ in range(per_cell):
+                    assert s.check() == z3.sat
+                    witness = s.model().eval(k)
+                    s.add(k != witness)
                 assert s.check() == z3.unsat
         counts.append(count)
         values = [3*v+b for v in values for b in (0,2)]
@@ -149,13 +151,15 @@ if __name__ == "__main__":
     p.add_argument("compiler", nargs="?",type=Path)
     p.add_argument("--before", type=Path,help="revision be8af94")
     p.add_argument("--numeric-driver", type=Path)
+    p.add_argument("--paired-digits", action="store_true",
+                   help="check the later projector that retains two digit values per cell")
     args = p.parse_args()
     if not (args.compiler or args.numeric_driver):
         p.error("supply a compiler or a numeric driver")
     if args.numeric_driver:
         driver = args.numeric_driver.resolve(strict=True)
         projection_oracle(driver)
-        check_digits(driver)
+        check_digits(driver, args.paired_digits)
     if args.compiler:
         check_programs(args.compiler.resolve(strict=True),
                        args.before.resolve(strict=True) if args.before else None)
