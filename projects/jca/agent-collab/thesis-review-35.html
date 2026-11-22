@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <meta name="dcterms.date" content="2026-11-22">
+  <meta property="og:title" content="Which recursive typings can license one another?">
+  <meta property="og:url" content="https://lukstafi.github.io/projects/jca/agent-collab/thesis-review-35.html">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="lukstafi&#x27;s blog">
+  <meta name="twitter:card" content="summary">
+  <title>Which recursive typings can license one another?</title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <link rel="stylesheet" href="/assets/tufte.css">
+  <link rel="stylesheet" href="/assets/pandoc-tufte.css">
+  <link rel="stylesheet" href="/assets/site.css">
+  <script defer=""
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+  type="text/javascript"></script>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+  <script>(function(){var t=localStorage.getItem('theme-preference');if(t)document.documentElement.setAttribute('data-theme',t);})()</script>
+</head>
+<body>
+<nav class="site-nav">
+  <a href="/">Home</a> &middot; <a href="/study/">Study Guide</a> &middot; <a href="/about.html">About</a> &middot; <a href="https://lukstafi.substack.com">Substack</a>
+</nav>
+<div class="theme-toggle">
+  <button id="theme-btn" aria-label="Toggle dark mode">&#9788;</button>
+</div>
+<article>
+<header>
+<h1 class="title">Which recursive typings can license one another?</h1>
+<p class="byline">2026-11-22</p>
+</header>
+<nav id="TOC">
+<ul>
+<li><a href="#saturation" id="toc-saturation">A finite iteration with a
+sharp bound</a></li>
+<li><a href="#staged" id="toc-staged">A program that needs the second
+round</a></li>
+<li><a href="#retry" id="toc-retry">Which proposals survive a change of
+the inferred domain?</a></li>
+<li><a href="#separation" id="toc-separation">Two typings can express
+more than one min/max key</a></li>
+<li><a href="#conditional" id="toc-conditional">What a payload-dependent
+admission test would add</a></li>
+</ul>
+</nav>
+<p>The signed program returns zero, but its package at key <span
+class="math inline">\(k\)</span> promises only <span
+class="math inline">\(-n\le r\le n\)</span>, <span
+class="math inline">\(r\ne k\)</span> and <span
+class="math inline">\(r\ne-k\)</span>. At positive <span
+class="math inline">\(r\)</span>, choosing key <span
+class="math inline">\(r\)</span> rules it out. At negative <span
+class="math inline">\(r\)</span>, choosing key <span
+class="math inline">\(-r\)</span> rules it out. InvarGenT now uses both
+typings of the same returned number and checks the program on Table 4.4
+pass 2. An effect in a recursive argument still runs once per call. <a
+href="signed_result_key.gadt">Signed program</a> · <a
+href="thesis-review-34.html#signed">Earlier failure</a> · <a
+href="thesis-review-35.py">Compiler replay</a></p>
+<p>Combining two proofs raises an admission question. The first typing
+may tell us that the second key is legal. If we also use the second
+typing to license the first, the compiler can erase a reachable guard.
+The ordering that avoids this cycle has its own convergence theorem.</p>
+<section id="saturation" class="level2">
+<h2>A finite iteration with a sharp bound</h2>
+<p>Fix the runtime arguments, an inferred domain <span
+class="math inline">\(D\)</span>, and a finite pool of <span
+class="math inline">\(m\)</span> proposed typings. A proposal <span
+class="math inline">\(i\)</span> assigns a key <span
+class="math inline">\(q_i(r)\)</span> to the observed payload <span
+class="math inline">\(r\)</span>. Write <span
+class="math inline">\(A_i(r)\)</span> for <span
+class="math inline">\(q_i(r)\in D\)</span> and <span
+class="math inline">\(P_i(r)\)</span> for what the package at that key
+says about <span class="math inline">\(r\)</span>. Private witnesses in
+<span class="math inline">\(P_i\)</span> are existential and fresh at
+each opening. Let <span class="math inline">\(B\)</span> be the possible
+payloads after one unconditional typing. If we have licensed the
+proposals in <span class="math inline">\(T\)</span>, the remaining
+payloads form the set</p>
+<p><span class="math display">\[
+S(T)=B\cap\bigcap_{i\in T} P_i.
+\]</span></p>
+<p>Start with <span class="math inline">\(T=\varnothing\)</span>. In one
+round, license every remaining <span class="math inline">\(i\)</span>
+for which <span class="math inline">\(S(T)\subseteq A_i\)</span>. Only
+after those checks add their package facts to the next round. This
+procedure stops after at most <span class="math inline">\(m\)</span>
+productive rounds. Every productive round removes at least one untried
+proposal.</p>
+<p><strong>With exact entailment the terminal family contains every
+proposal that any sound sequence of these admissions can reach.</strong>
+More openings shrink <span class="math inline">\(S(T)\)</span>, so an
+enabled proposal stays enabled. Take any terminal family and follow a
+legal sequence from the initial opening. If its earlier proposals belong
+to the terminal family, its next proposal is enabled there too. Closure
+puts it in the terminal family. Soundness follows by a separate
+induction. Every actual result obeys <span
+class="math inline">\(B\)</span>. If it obeys the previously licensed
+postconditions, each new key is admitted for that result, and its typing
+supplies the next postcondition. This proof excludes a circular grant of
+admission even when all the keys in the cycle would pass if checked
+together. <a href="thesis-review-35.lean">Termination, maximality and
+soundness proofs</a></p>
+<p>The bound is attained. Take possible results <span
+class="math inline">\(0,\ldots,m\)</span> and probes numbered <span
+class="math inline">\(0,\ldots,m-1\)</span>. Probe <span
+class="math inline">\(i\)</span> rules out result <span
+class="math inline">\(i+1\)</span>. Probe 0 is always admitted. Each
+other probe <span class="math inline">\(i\)</span> requires result <span
+class="math inline">\(i\)</span> to have been ruled out. After <span
+class="math inline">\(j\)</span> productive rounds the possible results
+are <span class="math inline">\(0\)</span> and <span
+class="math inline">\(j+1,\ldots,m\)</span>. Exactly one new probe is
+enabled. The final result guarantee is the same one equality <span
+class="math inline">\(r=0\)</span> at every <span
+class="math inline">\(m\)</span>. With all natural numbers as results
+and infinitely many probes, every finite prefix still permits a positive
+return. Their intersection is <span
+class="math inline">\(\{0\}\)</span>. A further probe requiring <span
+class="math inline">\(r=0\)</span> would become available only at that
+limit. This is a bound on admission within a fixed proposed solution. In
+the full table the inferred domain and the supplier summaries can
+change. The common-atom induction jump still has its two-inequality
+counterexample. <a href="thesis-review-35.lean">Sharp chain</a> · <a
+href="thesis-review-3.html#update">Original recurrence</a></p>
+</section>
+<section id="staged" class="level2">
+<h2>A program that needs the second round</h2>
+<p>Let <span class="math inline">\(n\ge6\)</span>. The recursive
+function admits the integer keys <span
+class="math inline">\(1,\ldots,n\)</span> except 3. Its package says
+that <span class="math inline">\(r\)</span> is either <span
+class="math inline">\(-5\)</span> or in <span
+class="math inline">\([1,n]\)</span> and excludes <span
+class="math inline">\(k=r\)</span> and <span
+class="math inline">\(k=r+3\)</span>. Both surviving branches of the
+program return <span class="math inline">\(-5\)</span>. Write <span
+class="math inline">\([t]\)</span> for <span
+class="math inline">\(t\)</span> clipped to <span
+class="math inline">\([1,n]\)</span>. Open first at key 1. <a
+href="staged_result_keys.gadt">Source program</a></p>
+<ol type="1">
+<li>The probe <span class="math inline">\([r+3]\)</span> is admitted
+immediately. It is 1 at <span class="math inline">\(r=-5\)</span> and at
+least 4 at every positive result. Payload 3 would choose key 6 and
+thereby contradict its own package. This opening can still admit <span
+class="math inline">\(r=n-1\)</span>.</li>
+<li>The probe <span class="math inline">\([r]\)</span> would have
+requested the missing key 3 at the first opening. After the first probe,
+that payload has been ruled out. The second probe is now admitted and
+excludes every remaining positive result.</li>
+</ol>
+<p>The trace records one ready and one pending probe, then one ready and
+none pending. The emitted program prints <code>-5</code>. The exported
+input predicate still excludes key 3, and the postcondition preserves
+both punctures. The replay checks both formulas against the inferred
+signature. <a href="thesis-review-35.lean">Arithmetic proof</a> · <a
+href="thesis-review-35.py">Trace and exported-domain checks</a></p>
+<p>For a negative control, remove both keys 3 and 6, restrict the
+possible results to <span class="math inline">\(-5\)</span> and 3, and
+make the base return 3. Key 1 permits that return. At <span
+class="math inline">\(r=3\)</span> the two probes request exactly the
+missing keys. Neither admission can begin. A mutant supplies each probe
+with the other probe’s postcondition during the admission check. Each
+then excludes 3 on the other’s authority. The mutant accepts and the
+generated OCaml reaches the erased guard. The repaired checker rejects
+it. Giving both step arms the numeric result 3 makes the control execute
+and print 3. <a href="thesis-review-35.py">Mutation and live
+control</a></p>
+</section>
+<section id="retry" class="level2">
+<h2>Which proposals survive a change of the inferred domain?</h2>
+<p>The compiler tries individual targets, then combines the distinct
+candidates extracted from the package’s disjunctive inequalities. The
+combined trial gives the guard checker a fresh copy of each candidate
+package with one shared payload. The primary call generates its ordinary
+positive typing obligation. For a combined trial the extra package
+premises remain provisional until the admission iteration checks them
+against the exported recursive predicate. Each productive round imports
+only the numeric facts of packages licensed in that round. Unresolved
+private facts can make this check conservative.</p>
+<p>A provisional proof can contain an unnecessary, unavailable key.
+Consider <span class="math inline">\(n\ge3\)</span>, <span
+class="math inline">\(1\le k\le2n\)</span>, <span
+class="math inline">\(-n\le r\le n\)</span>, with three excluded
+equalities</p>
+<p><span class="math display">\[
+k=r,\qquad k=-r,\qquad k=n+1+r.
+\]</span></p>
+<p>The base result 0 removes key <span
+class="math inline">\(n+1\)</span> from the inferred domain. At <span
+class="math inline">\(r=0\)</span> the third probe still requests
+precisely that key. The first two probes take values in <span
+class="math inline">\([1,n]\)</span> and suffice to rule out every
+nonzero result. After both are licensed the third probe is still
+unavailable. InvarGenT restores the local package declarations from
+before this trial, regenerates the definition using only the licensed
+pair, solves again, and rechecks admission against the new inferred
+domain. Its public type admits every key in <span
+class="math inline">\([1,2n]\)</span> except <span
+class="math inline">\(n+1\)</span> on integer inputs. On the rerun the
+pair is admitted in one round. <a href="thesis-review-35.py">Program
+generator, trace and exact signature</a></p>
+</section>
+<section id="separation" class="level2">
+<h2>Two typings can express more than one min/max key</h2>
+<p>For a second example let <span class="math inline">\(1\le k\le
+n\)</span>, <span class="math inline">\(-n\le r\le n\)</span>, and
+forbid the keys <span class="math inline">\(r\)</span> and <span
+class="math inline">\(n+1+r\)</span>. The clipped versions of the two
+terms are always admitted. Every positive result is excluded by the
+first. Every negative result is excluded by the second. At the actual
+result 0 they choose 1 and <span class="math inline">\(n\)</span>. If
+the package also records <span class="math inline">\(r=k+w\)</span>, its
+two private witnesses must be <span class="math inline">\(-1\)</span>
+and <span class="math inline">\(-n\)</span>. The compiler handles this
+version with an effect in the recursive argument. A depth-two call
+prints <code>!!0</code>. <a href="thesis-review-35.lean">Exact
+intersection and witnesses</a> · <a href="thesis-review-35.py">Effectful
+replay</a></p>
+<p>No single finite expression made from integer-affine leaves,
+addition, negation, minimum and maximum can make this choice uniformly
+in <span class="math inline">\(n\)</span>, even after the first opening
+at key 1. At every <span class="math inline">\(n\ge4\)</span>, the
+initial opening still permits <span class="math inline">\(r=-1\)</span>
+and <span class="math inline">\(r=2\)</span>. Their only refuting keys
+are <span class="math inline">\(n\)</span> and 2. A finite expression of
+this grammar changes by at most <span class="math inline">\(3C\)</span>
+when <span class="math inline">\(r\)</span> moves from <span
+class="math inline">\(-1\)</span> to 2 with <span
+class="math inline">\(n\)</span> fixed. An affine leaf uses the absolute
+value of its coefficient on <span class="math inline">\(r\)</span> for
+<span class="math inline">\(C\)</span>. Addition adds the bounds,
+negation preserves them, and min and max use the larger bound. Choosing
+<span class="math inline">\(n&gt;3C+2\)</span> gives a contradiction.
+Two probes avoid the need to synthesize a discontinuous selector. <a
+href="thesis-review-35.lean">Machine-checked separation</a></p>
+</section>
+<section id="conditional" class="level2">
+<h2>What a payload-dependent admission test would add</h2>
+<p>Fix a single hypothetical payload <span
+class="math inline">\(r\)</span>. Any sequence of admissions that
+refutes it on this singleton can be replaced by one probe <span
+class="math inline">\(i\)</span> with <span
+class="math inline">\(A_i(r)\)</span> true and <span
+class="math inline">\(P_i(r)\)</span> false. Until a postcondition
+excludes <span class="math inline">\(r\)</span>, the singleton remains
+intact, so every admission proved on it held at <span
+class="math inline">\(r\)</span> all along. Conversely, a probe with
+these two properties is already licensed on the singleton. This gives a
+precise target for a branch-sensitive checker. It must find expressible
+conditions under which the refuting probes are admitted. <a
+href="thesis-review-35.lean">Pointwise normal form</a></p>
+<p>Suppose the projected integer postcondition is a key-independent
+bound <span class="math inline">\(H(r)\)</span> together with excluded
+equalities <span class="math inline">\(k\ne h_i(r)\)</span>. For
+<strong>any inhabited admitted domain</strong> <span
+class="math inline">\(D\)</span> its full intersection is exactly</p>
+<p><span class="math display">\[
+H(r)\ \land\ \bigwedge_i h_i(r)\notin D.
+\]</span></p>
+<p>If <span class="math inline">\(h_i(r)\)</span> were admitted, its own
+typing would exclude <span class="math inline">\(r\)</span>. Conversely,
+every admitted key differs from every excluded value when the right-hand
+side holds. The formula also covers disconnected domains. <a
+href="thesis-review-35.lean">Elimination theorem</a></p>
+<p>Let <span class="math inline">\(D=[1,n]\cup[3n+1,4n]\)</span>, <span
+class="math inline">\(n\ge2\)</span>. For <span
+class="math inline">\(-n\le r\le n\)</span> take <span
+class="math inline">\(h_1(r)=n+1+r\)</span> and <span
+class="math inline">\(h_2(r)=3n+r\)</span>. At zero both proposals are
+in the unadmitted gap. The first opening permits zero, so neither
+clipped proposal is admitted for every remaining result. The finite
+iteration stops immediately for these two proposals. Yet the full
+intersection is <span class="math inline">\(\{0\}\)</span>. For a
+negative result choose <span class="math inline">\(h_1(r)\)</span> in
+the lower band, for a positive result choose <span
+class="math inline">\(h_2(r)\)</span> in the upper band, and at zero
+choose the already admitted key 1. Budgets 2, 40 and 10,000 all fail
+with no proposal licensed in the final two-key trial. Writing <span
+class="math inline">\(r=0\)</span> in the package checks and executes at
+budget 40. The same budget accepts a control with numeric bodies in
+every arm and preserves both written bands in the exported domain. A way
+forward is to check admission under the sign condition that selects each
+key. <a href="separated_result_keys.gadt">Program</a> · <a
+href="thesis-review-35.lean">Conditional selector proof</a></p>
+<p>The compiler change is revision <code>b56ec02</code>. The OCaml 5.3
+compatibility suite passed all 353 active tests with ten existing TODOs.
+All 180 previous example signatures matched byte for byte. The program
+replays use the OCaml 5.5 build.</p>
+<p>Run Lean 4.19 on <code>thesis-review-35.lean</code>. With OCaml and
+Python’s <code>z3-solver</code>, run
+<code>python3 thesis-review-35.py /path/to/InvarGenT.native</code>. The
+optional <code>--before</code> accepts revision <code>72c1ec3</code>.
+For <code>--trace</code>, apply the review 22, 23, 24 and 26
+diagnostics, followed by the admission-round diagnostics. To reproduce
+<code>--circular</code> in a separate checkout, add the facts from all
+other pending probes to the premise of each admission check in
+<code>certify</code>. <a href="thesis-review-35-admission.patch">Round
+diagnostics</a> · <a href="thesis-review-28.html#policy">Earlier
+diagnostic patches</a></p>
+</section>
+</article>
+<script src="/assets/theme-toggle.js"></script>
+</body>
+</html>

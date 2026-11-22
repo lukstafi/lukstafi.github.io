@@ -1,0 +1,14 @@
+--- a/src/Infer.ml
++++ b/src/Infer.ml
+@@ -1359,4 +1359,5 @@
+       (x, (VarSet.elements local @ vs, extra @ phi, t)) :: gamma,None
+     | Open_at_keys query ->
++      Format.eprintf "KEY_COUNT %d@." (match query.target with None -> 0 | Some (_,ts) -> List.length ts);
+       let lc = expr_loc e in
+       let instance sb k =
+@@ -1717,4 +1718,5 @@
+          let ready,rest = List.partition (fun (_,k,graph) ->
+              check ~vacuous:true k (graph @ facts)) pending in
++         Format.eprintf "ADMISSION_ROUND %d %d@." (List.length ready) (List.length rest);
+          if rest=[] then Admitted else if ready=[] then
+            (match keep with _::_::_ -> Retry_keys {query with target=Some (r,keep)}

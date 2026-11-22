@@ -248,28 +248,34 @@ href="agent-collab/thesis-review-34.html#closure">Closure and
 feasibility proofs</a> · <a
 href="agent-collab/thesis-review-21.html#feedback">Original feedback
 recurrence</a></p>
-<p><strong>What can still fail before the jump?</strong> At key <span
-class="math inline">\(k\)</span> a package promises any result in <span
-class="math inline">\([0,n]\)</span> except <span
-class="math inline">\(k\)</span>. Ruling out every positive result by
-fixing keys in advance requires all <span
-class="math inline">\(n\)</span> typings. InvarGenT can now use the
-result of one opening to select a second key at the same evaluation. It
-checks admission against the exported predicate before accepting an
-erasure. The unbounded example finishes on pass 2. With signed results
-the excluding key can be <span class="math inline">\(|r|\)</span>. No
-single affine choice clipped to the key interval covers that example,
-and budgets 2, 40 and 10,000 give the same failure trace. <a
-href="agent-collab/thesis-review-34.html#opening">Result-dependent
-typing</a> · <a href="agent-collab/thesis-review-34.html#signed">Signed
-counterexample</a> · <a
-href="agent-collab/thesis-review-33.html#puncture">Fixed-key lower
-bound</a> · <a
-href="agent-collab/thesis-review-33.html#criterion">Endpoint
-criterion</a> · <a href="agent-collab/thesis-review-22.html#binary">Two
-recursive packages</a> · <a
-href="agent-collab/thesis-review-28.html#uniform">Witness
-compatibility</a></p>
+<p><strong>When can recursive typings license one another?</strong>
+Start with one admitted opening. Add typings whose keys are admitted for
+every payload still possible, then use their postconditions in the next
+round. With a fixed domain, exact entailment and <span
+class="math inline">\(m\)</span> proposed keys, this process reaches the
+greatest family accessible by such steps in at most <span
+class="math inline">\(m\)</span> productive rounds. The bound is sharp.
+InvarGenT now handles the signed example on pass 2 and a second program
+that needs two successive admission rounds. A mutation that lets two
+pending typings license each other erases a reachable guard. <a
+href="agent-collab/thesis-review-35.html#saturation">Termination and
+maximality</a> · <a
+href="agent-collab/thesis-review-35.html#staged">Staged program and
+circular control</a> · <a
+href="agent-collab/thesis-review-33.html#puncture">Earlier fixed-key
+lower bound</a></p>
+<p><strong>What can still fail before the jump?</strong> When the input
+predicate admits two separated intervals, one refuting key can be legal
+only on the negative payloads and another only on the positive payloads.
+Requiring either key to work for every remaining payload misses a valid
+conditional proof. For packages excluding point equalities, there is an
+exact test against any inhabited inferred domain. <a
+href="agent-collab/thesis-review-35.html#conditional">Conditional
+selector and remaining example</a> · <a
+href="agent-collab/thesis-review-35.html#separation">Finite min/max
+separation</a> · <a
+href="agent-collab/thesis-review-34.html#admission">Checking the
+inferred domain</a></p>
 <p>For a single opening, InvarGenT now infers a conditional choice when
 both the width and guard depend on the inputs. With <span
 class="math inline">\(m\)</span> forbidden bands in arbitrary order,

@@ -434,6 +434,11 @@ build_html \
   "$collab_dir/thesis-review-34.html" \
   "When can a recursive result select its own typing?"
 
+build_html \
+  "$collab_dir/thesis-review-35.md" \
+  "$collab_dir/thesis-review-35.html" \
+  "Which recursive typings can license one another?"
+
 reviews_dir="$collab_dir/reviews"
 if [[ -d "$reviews_dir" ]]; then
   for md_file in "$reviews_dir"/*.md; do
