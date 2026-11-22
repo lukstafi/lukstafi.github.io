@@ -324,6 +324,11 @@ build_html \
   "$collab_dir/thesis-review-12.html" \
   "When a recursive result stops being a pair of equal indices"
 
+build_html \
+  "$collab_dir/thesis-review-13.md" \
+  "$collab_dir/thesis-review-13.html" \
+  "Feeding a supplier’s result bounds back to the recursive input"
+
 reviews_dir="$collab_dir/reviews"
 if [[ -d "$reviews_dir" ]]; then
   for md_file in "$reviews_dir"/*.md; do

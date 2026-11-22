@@ -1,0 +1,10 @@
+datatype Nat
+datacons Z : Nat
+datacons S : Nat ⟶ Nat
+
+external let outside : ∀i[0≤max(i+ -1,-i+ -1)]. Num i → Bool =
+  "fun x -> assert (x <= -1 || x >= 1); true"
+
+let rec walk x = function
+  | Z -> outside x
+  | S t -> walk (x+2) t

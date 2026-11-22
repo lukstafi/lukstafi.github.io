@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <meta name="dcterms.date" content="2026-11-22">
+  <meta property="og:title" content="Feeding a supplier’s result bounds back to the recursive input">
+  <meta property="og:url" content="https://lukstafi.github.io/projects/jca/agent-collab/thesis-review-13.html">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="lukstafi&#x27;s blog">
+  <meta name="twitter:card" content="summary">
+  <title>Feeding a supplier’s result bounds back to the recursive
+input</title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <link rel="stylesheet" href="/assets/tufte.css">
+  <link rel="stylesheet" href="/assets/pandoc-tufte.css">
+  <link rel="stylesheet" href="/assets/site.css">
+  <script defer=""
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+  type="text/javascript"></script>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+  <script>(function(){var t=localStorage.getItem('theme-preference');if(t)document.documentElement.setAttribute('data-theme',t);})()</script>
+</head>
+<body>
+<nav class="site-nav">
+  <a href="/">Home</a> &middot; <a href="/study/">Study Guide</a> &middot; <a href="/about.html">About</a> &middot; <a href="https://lukstafi.substack.com">Substack</a>
+</nav>
+<div class="theme-toggle">
+  <button id="theme-btn" aria-label="Toggle dark mode">&#9788;</button>
+</div>
+<article>
+<header>
+<h1 class="title">Feeding a supplier’s result bounds back to the
+recursive input</h1>
+<p class="byline">2026-11-22</p>
+</header>
+<nav id="TOC">
+<ul>
+<li><a href="#coverage" id="toc-coverage">Projecting both ends of the
+interval</a></li>
+<li><a href="#reflection" id="toc-reflection">An outer budget cannot
+rescue an early abduction failure</a></li>
+<li><a href="#counterexample" id="toc-counterexample">A six-atom
+solution that every outer budget misses</a></li>
+<li><a href="#tag" id="toc-tag">A result that carries its own check
+value</a></li>
+<li><a href="#arms" id="toc-arms">Duplicating a supplier used to change
+a true upper bound into a false one</a></li>
+<li><a href="#walk" id="toc-walk">When both sides of an input guard
+move</a></li>
+</ul>
+</nav>
+<p>A size bound on a solution does not guarantee that InvarGenT’s Table
+4.4 iteration finds it. The counterexample below has four input atoms
+and two result atoms. Removing one guarantee from a constructor makes
+inference succeed on the same function body. Restoring the guarantee
+makes numeric abduction fail on pass 2 for every outer budget that
+reaches that pass. The default induction jump is scheduled for pass 8.
+<a href="tighter_supplier.gadt">Counterexample</a> · <a
+href="thesis-review-13.lean">Six-atom certificate</a> · <a
+href="thesis-review-13.py">Budget and runtime controls</a></p>
+<p>The moving-floor example has a solution with four input conditions
+and two result bounds. Revision <code>8c9d34f</code> still asked for the
+same result bounds on pass 80. Revision <code>8f22708</code> infers the
+six atoms on pass 9 with the default induction jump. Two calls attached
+to the definition force it to admit both a stationary floor and a rising
+floor. Their midpoint is unsafe. <a
+href="moving_floor_calls.gadt">Unannotated program</a> · <a
+href="thesis-review-11.html#convex">Earlier trace and proof of the
+greatest domain</a> · <a href="thesis-review-13.py">Executable
+comparisons</a></p>
+<section id="coverage" class="level2">
+<h2>Projecting both ends of the interval</h2>
+<p>Write <span class="math inline">\(p\)</span> for the floor and <span
+class="math inline">\(m+c\)</span> for the cap. The recursive call moves
+<span class="math inline">\((p,m)\)</span> to <span
+class="math inline">\((p+e,m+d)\)</span> and leaves <span
+class="math inline">\(e,d\)</span> fixed. The parent can consume every
+<span class="math inline">\(r\)</span> in <span
+class="math inline">\([p,\max(p,m+L)]\)</span>. The supplier offers
+<span class="math inline">\([p+e,\max(p+e,m+d+c)]\)</span> at the child.
+Assume <span class="math inline">\(c\le L\)</span>, and put <span
+class="math inline">\(s=m-p+L\)</span> and <span
+class="math inline">\(h=L-c\)</span>.</p>
+<p>The lower endpoint fits exactly when <span class="math inline">\(0\le
+e\)</span>. Each of the two terms in the supplier’s upper endpoint has
+to fit under the caller’s maximum. Subtracting <span
+class="math inline">\(p\)</span> gives <span class="math display">\[
+(e\le0\lor e\le s)\quad\land\quad(d\le h\lor s+d\le h).
+\]</span> These tests are exact. To see necessity, offer the largest
+value in the supplier interval. For sufficiency, every offered value is
+at most that large.</p>
+<p>The same caller check must work at every recursive depth. After one
+call the slack becomes <span class="math inline">\(s+d-e\)</span>. In
+the first disjunction, <span class="math inline">\(e\le0\)</span> is
+stationary. When it fails, the inequality <span
+class="math inline">\(e\le s\)</span> survives all calls exactly when
+the slack does not decrease. The additional guard is <span
+class="math inline">\(e\le0\lor e\le d\)</span>. In the second
+disjunction, <span class="math inline">\(d\le h\)</span> is stationary.
+When it fails, <span class="math inline">\(s+d\le h\)</span> survives
+all calls exactly when <span class="math inline">\(s\)</span> does not
+increase. This gives <span class="math inline">\(d\le h\lor d\le
+e\)</span>.</p>
+<p><strong>Together these five tests reduce to the four input
+atoms</strong> <span class="math display">\[
+0\le e,\qquad d\le h,\qquad e\le\max(0,d),\qquad e\le\max(0,s).
+\]</span> Indeed, <span class="math inline">\(d&gt;h\ge0\)</span> would
+force <span class="math inline">\(d\le e\)</span>, hence <span
+class="math inline">\(e&gt;0\)</span>, and then <span
+class="math inline">\(e\le s\)</span>. The second endpoint would require
+<span class="math inline">\(s+d\le h\)</span>, an impossibility. In the
+other direction the four displayed atoms give every test directly.
+Replacing <span class="math inline">\(s\)</span> by <span
+class="math inline">\(s+d-e\)</span> preserves all four. This recovers
+the greatest domain proved earlier even when other result predicates are
+allowed. The result band is <span class="math inline">\(p\le
+r\le\max(p,m+c)\)</span>. Lean checks endpoint coverage, simplification
+and the successor on integer numerators. Multiplying by a common
+positive denominator gives the rational statement. <a
+href="thesis-review-13.lean">Lean companion</a> · <a
+href="thesis-review-11.html">Greatest-domain proof</a></p>
+<p>In Table 4.4 the binary predicate relates the packed result type to
+its captured parameters. A call can ask the solver to strengthen that
+predicate. The missing fact in this example belongs to the
+<em>input</em> predicate. The implementation now cancels the result
+variable between caller and supplier bounds, uses the recursive argument
+equations to compute how each remaining inequality changes, and checks
+the proposed input guard against the branch obligations. When removing
+redundant atoms it also checks the obligations already proved at the
+recursive arguments. Testing only the present call had allowed it to
+delete the slope condition that the next call needs. <a
+href="../lukstafi-phd-thesis.pdf#page=71">Table 4.4</a> · <a
+href="thesis-review-9.html">Deriving a guard from a stationary
+alternative</a></p>
+<p>At <span class="math inline">\(c=19,L=20\)</span>, the driver
+executes both integer calls and a half-unit call exactly on the
+boundary. It rejects the unsafe midpoint and four calls that violate
+individual input atoms. A separate client checks the inferred upper
+bound on a payload strictly above the floor. Asking the solver to
+certify that payload as at most the floor fails. <a
+href="thesis-review-13.py">Driver and primitive bodies</a></p>
+</section>
+<section id="reflection" class="level2">
+<h2>An outer budget cannot rescue an early abduction failure</h2>
+<p>Change the sign convention for the first input. Pass <span
+class="math inline">\(f=-e\)</span> to the function and advance the
+floor by <span class="math inline">\(-f\)</span>. This is an involution
+on rational inputs, and every branch of the two programs corresponds
+under this substitution. The four input conditions become <span
+class="math inline">\(f\le0\)</span>, <span
+class="math inline">\(d\le1\)</span>, <span
+class="math inline">\(-f\le\max(0,d)\)</span> and <span
+class="math inline">\(-f\le\max(0,m-p+20)\)</span>. The result band is
+identical. The reflected calls use <span
+class="math inline">\(f=0\)</span> and <span
+class="math inline">\(f=-1\)</span>. <a
+href="reflected_floor.gadt">Reflected source</a></p>
+<p><strong>At revision <code>8f22708</code>, the reflected program fails
+for every outer iteration budget with the other solver settings at their
+defaults.</strong> On pass 2 the original program offers <span
+class="math inline">\(p\le r\le\max(p,m+19)\)</span>. The reflected
+program also offers <span
+class="math inline">\(r\le\max(p,m-f+20)\)</span>. This extra atom puts
+<span class="math inline">\(f\)</span> into the existential package.
+Numeric abduction returns failure on the same pass. A partial annotation
+with the result band and three input atoms succeeds, and the solver
+infers <span class="math inline">\(f\le0\)</span>.</p>
+<p>Here the all-budget claim follows from the control flow. The trace
+takes the outer budget comparison on passes 0 and 1. It returns the
+abduction error on pass 2 without reaching that comparison or retrying.
+The only other read of the outer budget in the solver is after a
+successful return. Every budget at least 2 therefore takes this same
+finite failing path. Smaller budgets cannot advance farther. This is a
+counterexample to <em>successful</em> convergence under a solution-size
+promise with the component searches fixed. The original common-atom jump
+has a separate example that keeps iterating indefinitely if the outer
+timeout is removed. <a href="thesis-review-3.html#update">Original
+infinite recurrence</a> · <a
+href="thesis-review-12.html#restart">Capped-pair restart theorem</a></p>
+<p>Revision <code>c93489b</code> postpones a candidate during the
+guessing phase if another bound shares one arm and captures a strict
+subset of its parameters. In the reflected example the bound with <span
+class="math inline">\(m+19\)</span> can carry the result without
+capturing <span class="math inline">\(f\)</span>. The unannotated
+reflected program then infers the exact scheme. This preference changes
+which parameter interface the early passes explore. A smaller parameter
+set alone gives no implication between the two bounds. The table’s
+original common-atom counterexample remains a negative answer to a
+uniform convergence claim. A decision procedure that enumerates all
+bounded schemes and verifies them fairly answers a different question.
+<a href="thesis-review-2.html#convergence">Bounded-certificate
+search</a></p>
+<p>A different change of coordinates exposes a second issue. Write <span
+class="math inline">\(p=2u+v\)</span> and <span
+class="math inline">\(m=u+v\)</span>. The child takes <span
+class="math inline">\(u&#39;=u+e-d\)</span>, <span
+class="math inline">\(v&#39;=v+2d-e\)</span>. Then <span
+class="math inline">\(p&#39;=p+e\)</span> and <span
+class="math inline">\(m&#39;=m+d\)</span> as before. The parent’s upper
+alternatives both mention <span class="math inline">\(u\)</span> and
+<span class="math inline">\(v\)</span>. Projecting the child result
+should eliminate <span class="math inline">\(r\)</span> while retaining
+the difference <span class="math inline">\(m-p=-u\)</span>. A test that
+treated <em>every</em> shared index as a result index rejected this
+projection through pass 80. Revision <code>9b21d72</code> identifies the
+indices that actually disappear from all endpoint differences. It infers
+the guard with <span class="math inline">\(e\le\max(0,20-u)\)</span> and
+the band <span class="math inline">\(2u+v\le
+r\le\max(2u+v,u+v+19)\)</span> on the unannotated program. <a
+href="skew_floor.gadt">Skew-coordinate source</a></p>
+</section>
+<section id="counterexample" class="level2">
+<h2>A six-atom solution that every outer budget misses</h2>
+<p>Pass the reflected rate <span class="math inline">\(f\)</span>
+explicitly to the step primitive and add it as an index to its result
+datatype. The child advances the floor by <span
+class="math inline">\(-f\)</span>. The input guard is <span
+class="math display">\[
+f\le0,\quad d\le1,\quad -f\le\max(0,d),\quad -f\le\max(0,m-p+20).
+\]</span> The packed result has the two bounds <span
+class="math inline">\(p\le r\le\max(p,m+19)\)</span>.</p>
+<p>At first the payload constructor guarantees <span
+class="math inline">\(p\le u\)</span>, <span class="math inline">\(u\le
+n+1\)</span> and <span class="math inline">\(u\le m+19\)</span>, where
+<span class="math inline">\(n\)</span> is the incoming result. The
+solver infers the six atoms and both attached calls execute. Now give
+the constructor one <strong>additional</strong> guarantee, <span
+class="math display">\[
+u\le\max(p,m+19+f).
+\]</span> The primitive body is identical in the two runs and satisfies
+the stronger declaration. It takes the minimum of its three upper bounds
+and returns the floor constructor if that minimum is at most <span
+class="math inline">\(p\)</span>. Every payload allowed by the stronger
+declaration was already allowed by the weaker one. Hence the same scheme
+meets every result and caller obligation. Both constructors remain live,
+for example with <span class="math inline">\(f=d=p=m=0\)</span> and
+incoming result zero the declaration allows the floor and also payload
+1. Lean checks the base, recursive input, consumer, both return cases
+and the primitive’s arithmetic on integer grids. A grid denominator of 1
+gives the integer case. Multiplying all indices and constants in a
+rational clause instance by a common positive denominator gives the
+general case. <a href="thesis-review-13.py">Source of both runs</a> · <a
+href="thesis-review-13.lean">Formal certificate</a></p>
+<p><strong>At revision <code>761939f</code>, the solver fails with the
+additional guarantee for every outer pass budget</strong>, holding the
+component algorithms and their settings fixed. On the unannotated
+source, passes 0 and 1 continue. On pass 2 the supplier summary adds
+<span class="math inline">\(r\le\max(p,m+19+f)\)</span> alongside <span
+class="math inline">\(r\le\max(p,m+20)\)</span> and <span
+class="math inline">\(p\le r\)</span>. Numeric abduction rejects this
+choice before the timeout comparison, and the error reaches the driver.
+Budgets 0 and 1 terminate earlier with a timeout. For any budget at
+least 2 the only earlier comparisons are <span
+class="math inline">\(0&lt;B\)</span> and <span
+class="math inline">\(1&lt;B\)</span>, so the same finite execution
+fails. There are no earlier inferred definitions whose schemes could
+depend on the budget. This proof also applies if the outer timeout is
+removed. It proves a failure to <em>reach a solution</em>. The separate
+common-atom example proves an infinite <em>outer iteration</em>. <a
+href="tighter_supplier.gadt">Unannotated counterexample</a> · <a
+href="thesis-review-3.html#update">Original infinite iteration</a></p>
+<p>A control separates two ways in which extra supplier information can
+affect a run. At revision <code>e78f3a1</code>, adding just <span
+class="math inline">\(u\le\max(n+1,p+f)\)</span> also caused an
+all-budget pass-2 failure. This addition is redundant for every
+instantiation, since the constructor already guarantees <span
+class="math inline">\(u\le n+1\)</span>. Removing it leaves the
+constructor arity and OCaml body untouched and restores successful
+inference. Revision <code>761939f</code> checks whether an affine arm
+already follows before splitting a numeric disjunction into supplier
+regions. This makes both equivalent declarations succeed. The bound
+<span class="math inline">\(u\le\max(p,m+19+f)\)</span> in the
+counterexample can genuinely restrict the payload, so this
+simplification leaves the counterexample in place. <a
+href="redundant_supplier.gadt">Redundant constructor declaration</a> ·
+<a href="thesis-review-13.py">Control and former failure</a></p>
+</section>
+<section id="tag" class="level2">
+<h2>A result that carries its own check value</h2>
+<p>Let the function return <span class="math inline">\((r,r+p)\)</span>
+at floor <span class="math inline">\(p\)</span>. The parent receives
+<span class="math inline">\((r,t)\)</span> from the child and feeds
+<span class="math inline">\(t-(p+e)\)</span> to the primitive. The
+child’s second component makes this expression exactly <span
+class="math inline">\(r\)</span>. The original six numeric atoms still
+suffice. Change only the packed result type to <span
+class="math inline">\((\mathrm{Num}(r),\mathrm{Num}(r+p))\)</span>. The
+base returns <span class="math inline">\((p,2p)\)</span> and each
+returning constructor attaches the current floor to its own payload.
+This proves the scheme at every depth. <a
+href="tagged_floor.gadt">Tagged source</a> · <a
+href="thesis-review-13.lean">Lean proof of decoding</a></p>
+<p>With the default settings the splitter encountered an equation
+between two local result witnesses that it could assign to no unary
+input predicate. The solver asserted that the residual had to be empty.
+Its trace visits pass 9, backtracks and reaches that assertion on a
+retry of pass 8. Revision <code>e78f3a1</code> checks whether the
+current residual already proves the obligation. Otherwise it returns the
+failure to the existing backtracking search. The revised run reports
+“Answers do not converge” at outer budgets 11 and 80. The six-atom
+certificate gives a bounded-size counterexample at both budgets. I also
+interrupted a diagnostic run with the full tagged annotation after four
+minutes on pass 2. The certificate above follows by substitution and the
+Lean decoding lemma. An infinite recurrence for the unannotated run
+would also have to account for the state carried through the retries. <a
+href="thesis-review-13.py">Executable comparison</a></p>
+</section>
+<section id="arms" class="level2">
+<h2>Duplicating a supplier used to change a true upper bound into a
+false one</h2>
+<p>Let a constructor return <span class="math inline">\(i\)</span> only
+when <span class="math inline">\(j+1\le i\)</span>, and let another
+always return <span class="math inline">\(j\)</span>. The result
+satisfies <span class="math inline">\(j\le r\le\max(i,j)\)</span>. Add a
+third constructor with exactly the first constructor’s guard and
+payload. The set of possible numeric results stays the same. Yet
+revision <code>8c9d34f</code> then exports <span
+class="math inline">\(j\le r\le i\)</span>. At <span
+class="math inline">\((i,j)=(0,3)\)</span> the unconditional constructor
+returns 3. A client whose primitive asserts <span
+class="math inline">\(r\le0\)</span> passes inference and fails the
+assertion in generated OCaml. Removing the duplicate makes that same
+solver reject the client. <a href="choice_arms.gadt">Three-branch
+source</a> · <a href="thesis-review-13.py">Compiled counterexample and
+two-branch control</a></p>
+<p>The numeric generalizer scored an arm ordering by its
+<em>feasibility</em> on the supplier regions. Turning the winner into an
+unconditional bound instead requires <em>entailment</em> on every
+region. Revision <code>03a5cb6</code> proves the proposed equality or
+inequality against each region. During initialization it can also try an
+ordering on one input parameter. It checks that the ordering leaves
+every region live and proves the arm there, then sends the ordering
+itself to abduction. The old path discarded that obligation. The
+repaired solver returns the same true bound with two or three
+constructors.</p>
+</section>
+<section id="walk" class="level2">
+<h2>When both sides of an input guard move</h2>
+<p>Consider a function that advances <span
+class="math inline">\(x\)</span> by 2 at each successor and demands
+<span class="math inline">\(x\le-1\lor x\ge1\)</span> at the base. Depth
+is arbitrary. Its greatest rational input domain is <span
+class="math display">\[
+[1,\infty)\;\cup\;\{-1,-3,-5,\ldots\}.
+\]</span> For an initial value below 1, consider the first iterate at
+least 1. Safety requires its predecessor to be at most <span
+class="math inline">\(-1\)</span>. A step of exactly 2 can cross that
+interval only by going from <span class="math inline">\(-1\)</span> to
+1. Conversely every listed point is safe at every depth. The Lean proof
+works on every positive-denominator grid. <a
+href="stride_walk.gadt">Program</a> · <a
+href="thesis-review-13.lean">Proof of the first-crossing
+characterization</a></p>
+<p>No finite formula of rational affine constraints, binary extrema and
+existential numeric witnesses describes this greatest domain. Splitting
+the finitely many alternatives gives finitely many polyhedra. Their
+projections onto one coordinate are intervals or points. A finite union
+cannot have these infinitely many isolated negative points. Every
+particular safe input nevertheless belongs to a finitely describable
+inductive domain. Starting at <span
+class="math inline">\(-(2N-1)\)</span>, take the first <span
+class="math inline">\(N\)</span> negative odd points and the entire
+positive ray.</p>
+<p>InvarGenT illustrates the distinction. With a call at <span
+class="math inline">\(-9\)</span> attached, it infers the positive ray
+and all five required negative points. A later call at <span
+class="math inline">\(-8\)</span> is rejected. At <span
+class="math inline">\(-31\)</span> the default pass budget fails and
+budget 40 succeeds. This example concerns the absence of a greatest
+<em>expressible</em> type. Each accepted individual call still has a
+finite certificate. <a href="thesis-review-13.py">Runnable
+comparisons</a></p>
+<p>Lean 4.19.0 checked the companion proofs. The OCaml 5.3.0
+compatibility build passed 289 tests with 10 existing TODOs. All 134
+previously generated signatures matched their baseline files byte for
+byte. The comparison driver also passed on OCaml 5.5.1. To reproduce the
+historical runs, pass executables from revisions <code>8c9d34f</code>
+and <code>8f22708</code> as <code>--baseline</code> and
+<code>--projection</code>. Use <code>--before-pruning</code> with
+<code>e78f3a1</code> for the redundant-declaration comparison. <a
+href="thesis-review-13.py">Comparison driver</a></p>
+</section>
+</article>
+<script src="/assets/theme-toggle.js"></script>
+</body>
+</html>

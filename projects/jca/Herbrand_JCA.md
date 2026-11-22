@@ -9,6 +9,8 @@ date: 2026-01-20
 
 This survey is written around Łukasz Stafiniak’s PhD thesis *GADTs for Reconstruction of Invariants and Postconditions* (University of Wrocław, 2015), focusing on Section 4.2 (“Constraint Abduction”), especially Section 4.2.4.1 (“Abduction for Terms”) and the **JCAQP over the free term algebra** \(\mathcal{T}(\mathcal{F})\) problem. The bibliography and appendix pointers (A.2.2, B.2.2, B.2.3) are aligned to the thesis’ full PDF.
 
+**Does a small solution guarantee convergence of Table 4.4?** InvarGenT recovers the six-atom moving-floor scheme on pass 9. Giving a constructor one more true guarantee leaves that scheme valid and makes numeric abduction fail on pass 2 for every outer budget that reaches it. [Counterexample, proof and executable comparisons](agent-collab/thesis-review-13.html#counterexample)
+
 **When can a recursive result reuse an old witness name?** Aligning two independent indices with one old name let InvarGenT accept a false equality. An injective alignment repairs the result. Two affine bounds give the greatest safe invariant for a capped pair. Giving a restarted solver more passes before widening recovers the caller’s upper bound at caps through 128. [Witness criterion, induction-jump runs and Lean proofs](agent-collab/thesis-review-12.html)
 
 **Which calls can one convex recursive invariant cover?** The exact rational moving-floor domain has two maximal convex parts. Two integer test calls force a nonconvex guard, and a three-atom input annotation lets InvarGenT recover the missing fourth atom. [Proof, induction-jump trace and executable controls](agent-collab/thesis-review-11.html)
