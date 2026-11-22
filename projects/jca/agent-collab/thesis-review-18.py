@@ -85,11 +85,13 @@ def exercise(binary, before_tag, long_runs):
         assert expected in " ".join(check("two_instances", two).split())
         check("wrong_result", direct.replace("same x Box", "same x Mark"), error="Type mismatch")
         check("incompatible_axes", two.replace("Third Mark", "Fourth Box").replace(
-            "same v Mark", "same v Box"), error="Type mismatch")
+            "same v Mark", "same v Box"), error="Quantifier violation")
 
-        for budget in (0, 1, 5, 8, 11, 80, 10000):
-            check(f"guarded_{budget}", guarded, budget,
-                  "term abduction failed" if budget else "Answers do not converge")
+        for budget in (0, 1, 5, 6, 11, 80, 10000):
+            result = check(f"guarded_{budget}", guarded, budget,
+                           "Answers do not converge" if budget < 6 else None)
+            if result:
+                assert expected in " ".join(result.split())
         for value in (0, 1):
             check(f"written_guarded_{value}", written(guarded, PINNED).replace('"Pick 1"', f'"Pick {value}"'))
         for i, arguments in enumerate(("b,b,a,b", "Marker,b,a,b", "b,Marker,a,b", "b,b,a,Marker")):

@@ -327,16 +327,20 @@ the caller’s need in a coordinate the supplier keeps through the jump. A
 small certificate alone still gives no guarantee for Table 4.4. With the
 original common-atom jump, two inequalities suffice for a solution, yet
 every later pass reinstates the same caller demand and fails the
-stopping test. In the current implementation the reachable guarded call
-on the four-constructor example still exhausts term abduction before the
-jump for every positive outer budget. Its written certificate has zero
-constraint atoms and checks. These are distinct failures of discovery,
-one through perpetual feedback and the other through finite exhaustion.
-A fair search through a finite, checkable bounded certificate language
-has a separate completeness argument. <a
+stopping test. At revision <code>f570a4b</code> the reachable guarded
+call on the four-constructor example still exhausts term abduction
+before the jump for every positive outer budget. Its written certificate
+has zero constraint atoms and checks. These are distinct failures of
+discovery, one through perpetual feedback and the other through finite
+exhaustion. A fair search through a finite, checkable bounded
+certificate language has a separate completeness argument. <a
 href="thesis-review-3.html#update">Infinite recurrence</a> · <a
 href="thesis-review-18.html#guard">Guarded call and budget-independent
 control flow</a> · <a href="thesis-review-2.html">Bounded search</a></p>
+<p>A later revision recovers the hidden-index call on pass 6. The same
+program with an impossible guard still has a constant-size solution that
+search exhausts before the jump. <a href="thesis-review-20.html">Guard
+criterion and new all-budget trace</a></p>
 <p>The three solver changes are <code>1ffe1eb</code>,
 <code>9ae38cf</code> and <code>f570a4b</code>. The OCaml 5.3
 compatibility build passed all 306 active tests, with 10 existing TODOs.

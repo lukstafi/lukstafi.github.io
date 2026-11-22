@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <meta name="dcterms.date" content="2026-11-22">
+  <meta property="og:title" content="When must a guarded call constrain an input type?">
+  <meta property="og:url" content="https://lukstafi.github.io/projects/jca/agent-collab/thesis-review-20.html">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="lukstafi&#x27;s blog">
+  <meta name="twitter:card" content="summary">
+  <title>When must a guarded call constrain an input type?</title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <style type="text/css">
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="/assets/tufte.css">
+  <link rel="stylesheet" href="/assets/pandoc-tufte.css">
+  <link rel="stylesheet" href="/assets/site.css">
+  <script defer=""
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+  type="text/javascript"></script>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+  <script>(function(){var t=localStorage.getItem('theme-preference');if(t)document.documentElement.setAttribute('data-theme',t);})()</script>
+</head>
+<body>
+<nav class="site-nav">
+  <a href="/">Home</a> &middot; <a href="/study/">Study Guide</a> &middot; <a href="/about.html">About</a> &middot; <a href="https://lukstafi.substack.com">Substack</a>
+</nav>
+<div class="theme-toggle">
+  <button id="theme-btn" aria-label="Toggle dark mode">&#9788;</button>
+</div>
+<article>
+<header>
+<h1 class="title">When must a guarded call constrain an input type?</h1>
+<p class="byline">2026-11-22</p>
+</header>
+<nav id="TOC">
+<ul>
+<li><a href="#occurrence" id="toc-occurrence">A call that every typing
+must admit</a>
+<ul>
+<li><a href="#patterns-numeric-guards-and-witness-order"
+id="toc-patterns-numeric-guards-and-witness-order">Patterns, numeric
+guards and witness order</a></li>
+</ul></li>
+<li><a href="#replay" id="toc-replay">A second call behind the first
+return</a></li>
+<li><a href="#alias" id="toc-alias">A function that eventually returns a
+package</a></li>
+<li><a href="#budget" id="toc-budget">A small solution still missed by
+the current iteration</a></li>
+<li><a href="#checks" id="toc-checks">Reproduction</a></li>
+</ul>
+</nav>
+<p>The four-constructor example that failed at every outer budget now
+finishes on pass 6. The call sits under
+<code>Pick n when 1 &lt;= n</code>. Its argument has the fixed type
+<span class="math inline">\(\mathrm{Tag}(M,M,\mathrm{Cargo},M)\)</span>,
+where <span class="math inline">\(M\)</span> abbreviates
+<code>Marker</code>. A legal typing must admit this argument because the
+hidden index of <code>Pick</code> can be 1. Changing the external OCaml
+value from <code>Pick 1</code> to <code>Pick 0</code> changes which arm
+executes. The type checker sees the same constructor declaration in both
+programs. <a href="guarded_payload.gadt">Guarded source</a> · <a
+href="thesis-review-18.html#guard">Earlier all-budget failure</a> · <a
+href="thesis-review-20.py">Executable checks</a></p>
+<section id="occurrence" class="level2">
+<h2>A call that every typing must admit</h2>
+<p>Let <span class="math inline">\(Q\)</span> be the original quantifier
+prefix, <span class="math inline">\(F\)</span> the facts known about the
+branch, and <span class="math inline">\(G\)</span> the entire guard of a
+call. A strategy chooses existential witnesses using only the universal
+moves already visible. A play follows that strategy for one sequence of
+universal moves. Call a strategy legal when <span
+class="math inline">\(F\)</span> holds on every one of its plays. Assume
+there is a legal strategy. Then the following statements are
+equivalent.</p>
+<ol type="1">
+<li>Every legal strategy has a play on which <span
+class="math inline">\(G\)</span> holds.</li>
+<li><span class="math inline">\(Q.(F\land\neg G)\)</span> is false.</li>
+<li><span class="math inline">\(\bar Q.(F\Rightarrow G)\)</span> is
+true, where <span class="math inline">\(\bar Q\)</span> exchanges the
+quantifiers in place.</li>
+</ol>
+<p>A strategy winning <span class="math inline">\(F\land\neg G\)</span>
+is precisely a legal strategy that avoids the call on every play.
+Negating this statement gives the first equivalence. Quantifier duality
+gives the second. The Lean proof allows the domain of each move to
+depend on previous moves. <a href="thesis-review-20.lean">Proof of both
+equivalences</a></p>
+<p>For example, under <span class="math inline">\(\exists x\,\forall
+y\)</span>, the guard <span class="math inline">\(x=y\)</span> occurs on
+some play of every strategy. Whatever <span
+class="math inline">\(x\)</span> the strategy picks, the opponent can
+match it. Under <span class="math inline">\(\forall y\,\exists
+x\)</span>, the strategy <span class="math inline">\(x=y+1\)</span> can
+avoid the guard. Testing satisfiability after erasing the prefix would
+give the same answer to both queries.</p>
+<p>A candidate input pattern must <strong>overlap</strong> the
+instantiated arguments at each such site. Take the play supplied by the
+theorem. The original call obligation puts its argument in the candidate
+domain. Different sites may obtain their witnesses on different plays
+and at different instances of the candidate type. For a fixed argument
+this recovers the argument itself. A call with a varying argument can
+warrant just one instance. Admitting <em>every</em> public instance
+takes the stronger coverage condition from the earlier review. The
+solver uses overlap to guide term abduction, then checks the original
+clauses. <a href="thesis-review-20.lean">Lean overlap lemma</a> · <a
+href="thesis-review-18.html#coverage">Public argument coverage</a></p>
+<p>The same theorem applies to a family of sites offering one fixed
+argument <span class="math inline">\(t\)</span>. Use <span
+class="math inline">\(G=\bigvee_i G_i\)</span>. If every legal strategy
+must reach <em>some</em> site, the domain must admit <span
+class="math inline">\(t\)</span>, even when every individual site has an
+avoiding strategy. For instance, let the original prefix be <span
+class="math inline">\(\exists n\)</span> and put the same call under
+<span class="math inline">\(n\le0\)</span> and <span
+class="math inline">\(0\le n\)</span>. Choosing 1 avoids the first,
+choosing <span class="math inline">\(-1\)</span> avoids the second, and
+no choice avoids both. This is a further source of required input
+instances beyond the implementation’s per-site test. <a
+href="thesis-review-20.lean">Common-argument theorem and two-site
+example</a></p>
+<section id="patterns-numeric-guards-and-witness-order" class="level3">
+<h3>Patterns, numeric guards and witness order</h3>
+<p>A constructor match can determine how to interpret a later test.
+Suppose an earlier test <span class="math inline">\(H\)</span> entails
+an equation <span class="math inline">\(e\)</span>. Simplify the
+remaining test <span class="math inline">\(J\)</span> using <span
+class="math inline">\(e\)</span>, obtaining <span
+class="math inline">\(J&#39;\)</span>. Under the facts, <span
+class="math inline">\(H\land J\)</span> is equivalent to <span
+class="math inline">\(H\land J&#39;\)</span>. Keeping <span
+class="math inline">\(H\)</span> in the accumulated guard is essential.
+Taking <span class="math inline">\(H\)</span> to be false and <span
+class="math inline">\(J&#39;\)</span> to be true already shows what goes
+wrong if the earlier test disappears. InvarGenT processes premises
+contained in the guard in order of size and retains the tests that
+licensed each rewrite. This covers nested constructor matches, including
+a GADT witness, and a constructor with two hidden indices and guard
+<span class="math inline">\(m+1\le n\)</span>. <a
+href="thesis-review-20.lean">Guarded rewrite proof</a> · <a
+href="thesis-review-20.py">Compiler examples</a></p>
+<p>The dual game can share an index between the type and arithmetic
+components. Consider <span class="math inline">\(\exists a\,\forall
+n\,\exists k.\ a=\mathrm{Num}(k)\land k=n\)</span>. It is false.
+Choosing the type <span class="math inline">\(a\)</span> also fixes the
+enclosed index before <span class="math inline">\(n\)</span> is known.
+Moving <span class="math inline">\(n\)</span> before <span
+class="math inline">\(a\)</span> makes the same matrix true. In general,
+a proposed value for a type witness can be chosen at its move exactly
+when it is constant on plays with the same visible history. The
+implementation checks a sufficient condition on the variables of the
+solved term. When all remaining numeric moves belong to the witness
+player, it can fix their joint values in advance. <a
+href="thesis-review-20.lean">Witness factorization lemma</a></p>
+<p>A numeric subproblem exposed an independent error. The conjunction
+<span class="math inline">\(x\le0,\ y\le0,\ 1\le\max(x,y)\)</span> has
+no solution. InvarGenT previously returned a feasible state, even though
+its implication check could prove a contradiction from that state. The
+satisfiability routine now chooses one arm from each unresolved
+alternative and checks their joint linear system. It stops at the first
+feasible combination and returns the original state so later constraints
+can still choose another arm. A source constructor with these three
+constraints now allows <code>assert false</code> in its match arm.
+Relaxing <span class="math inline">\(x\le0\)</span> to <span
+class="math inline">\(x\le1\)</span> makes the arm possible, and the
+assertion is rejected. <a href="thesis-review-20.py">Source-level
+comparison</a></p>
+</section>
+</section>
+<section id="replay" class="level2">
+<h2>A second call behind the first return</h2>
+<p>Consider this attached client, with the all-<span
+class="math inline">\(M\)</span> call first.</p>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode ocaml"><code class="sourceCode ocaml"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">let</span> (u,v) = f (Third Mark) Z <span class="kw">in</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="kw">let</span> first = same u Mark <span class="kw">in</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="kw">let</span> (x,y) = f (Third Box) (S Z) <span class="kw">in</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>same x Box</span></code></pre></div>
+<p>Opening the first pair puts its binary postcondition <span
+class="math inline">\(X_1(u&#39;,s)\)</span> into the premise of the
+second call. Here <span class="math inline">\(u&#39;\)</span> is the
+carried type and <span class="math inline">\(s\)</span> is the captured
+parameter tuple. With the later call hidden, an input proposal that
+covers only the all-<span class="math inline">\(M\)</span> instance can
+stabilize on pass 5. Restoring the clients rejects it on pass 6. The
+solver now substitutes the rejected producer proposal into the earlier
+opening and can then see the later call. The argument fed to the next
+search comes from the original equations at that call. The new proposal
+stabilizes on pass 5 and passes with every original branch restored on
+pass 6. Putting the marked call first gives the same type. <a
+href="thesis-review-20.py">Driver for both call orders</a> · <a
+href="thesis-review-17.html">The restored-client pass</a></p>
+<p>Evidence from a particular proposal can suggest a later call that
+another solution could avoid. The accepted answer still owes the
+complete validation. A stronger justification is available if every
+solution covers the original suppliers and one can exhibit a supplier
+return satisfying the continuation. That return witnesses the guarded
+call in every solution. The formalization proves this implication
+separately. <a href="thesis-review-20.lean">Supplier-return
+lemma</a></p>
+<p>There is a finite bound on the <strong>additional retries induced by
+earlier openings</strong>. Count the originally deferred call clauses.
+Every further proposal consumes at least one of them and puts none back.
+With <span class="math inline">\(k\)</span> deferred clauses there can
+be at most <span class="math inline">\(k\)</span> such proposals,
+independently of any size bound on answers. A proposal still runs the
+predicate iteration, including the induction jump. Its convergence
+requires a separate argument. <a href="thesis-review-20.lean">Lean
+bound</a> · <a href="../lukstafi-phd-thesis.pdf#page=71">Table
+4.4</a></p>
+</section>
+<section id="alias" class="level2">
+<h2>A function that eventually returns a package</h2>
+<p>The inferred type is <span class="math inline">\(\forall
+a.\;\mathrm{Tag}(M,M,a,M)\to\mathrm{Nat}\to\exists().\,(a,a)\)</span>.
+It has two arrows before the package. Passing the function through a
+callback exposed a discrepancy. Inference accepted the erased program.
+Writing the inferred type caused the elaborator to reject the callback
+argument with “Should not be existential”. The elaborator knew that an
+eventual result was packaged and applied that information to the
+function’s outermost constructor. Keeping separate information about the
+head repairs this round trip. <a href="thesis-review-20.py">Inferred and
+written program checks</a></p>
+<p>A local alias exposed the same distinction earlier in elaboration. In
+revision <code>dbd005d</code>, <code>let g = f in …</code> opened
+<code>f</code> itself. Among the normalized clauses were <span
+class="math inline">\(\top\Rightarrow X_2(v)\land v=K(s)\)</span> and
+<span class="math inline">\(X_2(t)\Rightarrow t=A\to B\)</span>. These
+clauses are jointly impossible in the free type algebra. The source has
+the written type above, which checks and executes. Failure of the
+predicate iteration on these particular clauses says nothing about
+convergence on satisfiable clauses. <a
+href="thesis-review-20.lean">Constructor clash proof</a> · <a
+href="thesis-review-20.py">Erased and written alias comparison</a></p>
+<p>Leading lambdas and declared arrows give a lower bound <span
+class="math inline">\(d\)</span> on the function’s arrow depth. After
+<span class="math inline">\(k&lt;d\)</span> applications, the value
+still has an arrow at its head. The elaborator can bind a variable
+pattern directly at that monotype and use the same type at every
+occurrence of the alias. Applying this rule through two aliases and a
+partial application gives
+<code>let g = f in let h = g in let at_box = h (Third Box) in …</code>.
+The final call <code>at_box (S Z)</code> opens the package. The same
+implementation also recovers the original input when it reaches the call
+through a higher-order argument. <a
+href="thesis-review-20.lean">Arrow-depth lemma</a> · <a
+href="thesis-review-20.py">Executed examples</a></p>
+</section>
+<section id="budget" class="level2">
+<h2>A small solution still missed by the current iteration</h2>
+<p>Change just the constructor declaration to
+<code>Pick : ∀i[i≤0]. Num i ⟶ Seed</code> and implement the external
+seed by <code>Pick 0</code>. The function and the attached client’s
+guard <span class="math inline">\(1\le n\)</span> remain the same. This
+time the call cannot occur. The normalized constructor branch supplies
+<span class="math inline">\(i\le0\Rightarrow h=i\land l=1\)</span>. The
+client’s antecedent contains <span class="math inline">\(i\le0\land l\le
+h\)</span>, which is therefore impossible. The written type still checks
+and the generated OCaml executes. <a href="thesis-review-20.lean">Guard
+contradiction</a> · <a href="thesis-review-20.py">Budget sweep and
+positive controls</a></p>
+<p>There is also a certificate for the <strong>erased</strong> clauses.
+Interpret <span class="math inline">\(X_2\)</span> as all instances of
+the displayed function type, and <span
+class="math inline">\(X_1\)</span> as the relation between <span
+class="math inline">\((a,a)\)</span> and the parameter tuple <span
+class="math inline">\(\langle a\rangle\)</span>. Choose that tuple at
+the definition and preserve it at the recursive call. The third
+constructor gives a payload of type <span
+class="math inline">\(a\)</span>. Each of the other three forces its
+payload and <span class="math inline">\(a\)</span> to be <span
+class="math inline">\(M\)</span>. The base supplies the pair and the
+successor repacks it at the same parameter. The existential witness for
+an initial <span class="math inline">\(X_2\)</span> instance can use
+<span class="math inline">\(a=M\)</span>. Every additional client
+obligation that would require the call has the impossible antecedent
+above. The certificate has zero side-condition atoms and fixed total
+length. <a href="thesis-review-16.html#package">Erased predicate
+construction</a> · <a href="thesis-review-17.html#four">Four-constructor
+invariant</a></p>
+<p>At revision <code>253cd6b</code>, the complete search starts with a
+pass-0 proposal that fails on pass 1. A further pass-0 attempt ends in a
+quantifier violation. Deferring external openings yields four pass-0
+proposals, each rejected on pass 1. Term abduction then fails on pass 0.
+There is no required call with an informative argument and no stable
+producer proposal to replay. Only successful pass-0 updates reach the
+outer-budget comparison. Thus every <strong>positive</strong> outer
+budget takes the same finite failing path with the other settings at
+their defaults. Budget zero stops at the first comparison. The driver
+checks budgets 0, 1, 6, 80 and 10,000. Changing the guard to <span
+class="math inline">\(0\le n\)</span> admits the endpoint zero and
+restores successful inference. Adding a live call on
+<code>Third Box</code> before the match also recovers the type while
+keeping the impossible arm in the program.</p>
+<p>This gives two answers to the size-bound question. The original
+common-atom jump has an infinite execution in which a caller restores
+the same upper bound at every pass, even though the stored
+two-inequality result is already inductive. The current implementation
+repairs that feedback on the arithmetic example. It can still exhaust
+type search on the constant-size solution above before reaching a jump.
+A bound on certificate size gives completeness for a fair enumeration of
+a finite, checkable certificate language. It supplies no progress
+measure for either of these executions. <a
+href="thesis-review-3.html#update">Infinite recurrence and jump
+repair</a> · <a href="thesis-review-2.html">Finite certificate
+search</a></p>
+</section>
+<section id="checks" class="level2">
+<h2>Reproduction</h2>
+<p>The guard checker was compared with independent quantified queries in
+Z3. Of 9,828 two-index rational queries, 6,038 had facts admitting a
+winning strategy. On those, the checker reported zero spurious
+occurrences and missed 432 necessary ones. It agreed on all 264
+conjunctions of two linear tests with no additional facts. The mixed
+type-and-index comparison tried 144 combinations of order, polarity and
+comparison. It found zero spurious occurrences and three missed ones.
+These finite comparisons measure the sufficient test. The equivalence
+for arbitrary games is proved separately. <a
+href="guard_probe.ml">Probe</a> · <a href="thesis-review-20-audit.py">Z3
+comparison</a> · <a href="thesis-review-20.lean">Lean proofs</a></p>
+<p>Run the program checks with
+<code>python3 thesis-review-20.py /path/to/InvarGenT.native</code>.
+Optional arguments <code>--before</code> and <code>--before-alias</code>
+take executables at <code>f570a4b</code> and <code>dbd005d</code>.
+Successful cases execute the generated OCaml with full annotations. For
+the guard comparison, copy <code>guard_probe.ml</code> to
+<code>src/Guard_probe.ml</code> in an InvarGenT build checkout, build
+<code>src/Guard_probe.native</code> with the solver libraries, then run
+<code>python3 thesis-review-20-audit.py /path/to/Guard_probe.native</code>
+with the Python Z3 bindings installed. Lean 4.19 checks
+<code>thesis-review-20.lean</code> using only <code>Std</code>. <a
+href="thesis-review-1.html">Build notes</a></p>
+<p>The InvarGenT commits are <code>cc0a90f</code> (joint numeric
+feasibility), <code>73f409f</code> (quantified guards),
+<code>40b289a</code> (calls behind earlier openings),
+<code>10e0da6</code> (scoped witnesses and caller arguments),
+<code>dbd005d</code> (written callback types) and <code>253cd6b</code>
+(ordinary function aliases). The OCaml 5.3 compatibility build passed
+315 active tests with 10 existing TODOs. All 149 example signatures
+generated by the baseline at <code>f570a4b</code> compared byte for byte
+with the final build. The program driver used OCaml 5.5.1.</p>
+</section>
+</article>
+<script src="/assets/theme-toggle.js"></script>
+</body>
+</html>

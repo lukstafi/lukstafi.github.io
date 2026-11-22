@@ -228,18 +228,18 @@ class="math inline">\(\mathcal{T}(\mathcal{F})\)</span> problem. The
 bibliography and appendix pointers (A.2.2, B.2.2, B.2.3) are aligned to
 the thesis’ full PDF.</p>
 <p><strong>Does a small solution guarantee convergence of Table
-4.4?</strong> No. The original common-atom jump can repeatedly discard a
-bound that the caller restores. InvarGenT now infers the
-four-constructor packed type on pass 6. Moving the call under a
-reachable numeric guard gives a zero-constraint certificate missed at
-every outer budget. The arithmetic moving-floor example now converges on
-pass 9 whether the caller passes the payload directly or recovers it
-from its tag. Substituting the child’s actual floor into its tag
-equation removes an extra floor increment from the caller’s demand. <a
-href="agent-collab/thesis-review-19.html">Guard reduction, signed tags
-and proof</a> · <a href="agent-collab/thesis-review-18.html">Guarded
-counterexample and graph proof</a> · <a
-href="agent-collab/thesis-review-3.html#update">Original infinite
+4.4?</strong> No. With the original common-atom induction jump, the
+caller can restore the same upper bound forever. InvarGenT now infers
+the two-inequality moving-floor postcondition on pass 9, including when
+the caller recovers the payload from an affine tag. In the
+four-constructor example, a call guarded by a hidden index guides
+inference on pass 6. An exact criterion says when every legal strategy
+must reach such a call on some play. Making this guard impossible leaves
+a valid constant-size solution that the current type search misses at
+every outer budget. <a href="agent-collab/thesis-review-20.html">Guarded
+calls, finite retries and the remaining counterexample</a> · <a
+href="agent-collab/thesis-review-19.html">Signed tags and pass 9</a> ·
+<a href="agent-collab/thesis-review-3.html#update">Original infinite
 recurrence</a> · <a
 href="agent-collab/thesis-review-16.html#dimension">Fixed-interface
 affine convergence</a></p>
