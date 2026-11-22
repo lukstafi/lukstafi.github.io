@@ -1,0 +1,52 @@
+---
+title: "What shape does the combined iteration infer for free terms?"
+date: 2026-11-22
+---
+
+At a successful return of Table 4.4, each satisfiable, purely equational predicate on a fixed interface describes **the ground instances of one finite tuple pattern**. A hole can stand for any finite constructor tree. Two occurrences of the same hole must stand for the same tree. This describes both the unary predicate for the recursive function type and the binary predicate relating a packaged result to its captured parameters. Keep free environment parameters among the coordinates. The quantifier prefix still controls which parameters a witness can read.
+
+For example, the current compiler infers the following type for a recursive function that extracts a payload, returns it twice, and is called at `Left Box`:
+$$
+  \forall a.\quad \mathrm{Tag}(\mathrm{Marker},a)\to\mathrm{Nat}
+       \to \exists().\,(a,a).
+$$
+The pair carries the type $a$ chosen at the call. The package introduces no private type. Unpacking `Hide : ∀b. b → Hidden` and returning the hidden payload twice actually infers $\mathrm{Hidden}\to\exists b.\,(b,b)$. Its component types agree, and the caller does not learn which type they have. Both use a repeated hole. The binder distinguishes what the caller knows. [Recursive source](packed_payload.gadt) · [Compiler replay](thesis-review-50.py)
+
+## One pattern per predicate, potentially many answers {#patterns}
+
+Unify all equations in a predicate body together, with the occurs check. A clash or an infinite-tree equation gives the empty relation. Otherwise apply the most general unifier to the public tuple and forget the private coordinates. Every grounding of the remaining holes extends to a solution of the original equations, and every solution is such a grounding. This normal form describes the relation of each individual predicate. Branch implications remain obligations on the inferred predicates. [Projection argument](thesis-review-1.html#a-program-with-no-principal-conjunctive-type) · [Table 4.4](../lukstafi-phd-thesis.pdf#page=71)
+
+For fixed supplier rows the least general generalization keeps their common constructor heads and reuses a hole at positions with the same disagreement. The rows $(A,A)$ and $(B,B)$ generalize to $(h,h)$. Abduction can impose an equation on the branch assumptions or the call interface to make the caller's obligation hold. Changing those assumptions changes the rows reaching generalization. InvarGenT also tries admissible substitutions while anti-unifying; its convergence step aligns witness names and carries forward the new type equations. [Plotkin on least general generalization](https://homepages.inf.ed.ac.uk/gdp/publications/MI6_further_note.pdf) · [Thesis generalization](../lukstafi-phd-thesis.pdf#page=66)
+
+The two constructors `Left : b → Tag(Marker,b)` and `Right : a → Tag(a,Marker)` give a nonrecursive example. The function returning their payload can soundly have either type
+$$
+  \forall a.\ \mathrm{Tag}(\mathrm{Marker},a)\to a,
+  \qquad \forall a.\ \mathrm{Tag}(a,\mathrm{Marker})\to a.
+$$
+The compiler accepts both annotations. Without the annotation it infers $\forall a.\ \mathrm{Tag}(a,a)\to a$ and rejects the separate call `payload (Left Box)`. A single sound tuple pattern cannot cover both axis types. It would have to cover the triples $(M,M,M),(M,B,B),(B,M,B)$ for distinct nullary types $M,B$. Every coordinate must then be a bare hole and the result hole must differ from both input holes. The pattern consequently admits the wrong result in $(M,M,B)$. For $m$ constructor axes, covering all constructor-compatible calls can require exactly $m$ conjunctive schemes. [Coverage theorem](thesis-review-1.html#how-many-inferred-types-would-a-beam-need) · [Replayed signatures](thesis-review-50.py)
+
+## What all admitted typings say about one result {#packages}
+
+Fix a binary postcondition, projecting its private witnesses first. Write its pattern as $(s,t)$ with key $k$ matching $s$ and result $r$ matching $t$. Free type parameters shared with the environment are fixed throughout. Matching a ground key against $s$ uniquely determines every hole occurring in $s$. Matching a ground result against $t$ does the same for $t$. The two matches assemble into a package witness exactly when they assign identical values to the holes occurring on both sides.
+
+This gives the relation a simple shape. For each tuple of values of the shared holes, take the matching keys on the left and the matching results on the right. Their Cartesian product is one block of the relation. Distinct blocks have disjoint keys and disjoint results. Equivalently, **two keys that allow a common result allow exactly the same results**. If $P(k,r),P(l,r),P(l,u)$ hold, the shared holes agree along all three matches, so $P(k,u)$ holds. The Lean proof constructs that fourth witness. [Rectangle theorem](thesis-review-50.lean)
+
+Let $A_x$ be the keys admitted at a fixed input. A result opens at every typing when $P(k,r)$ holds for every $k\in A_x$. For **any nonempty menu**, even an infinite one, at most **two keys** determine this whole intersection, independently of $r$. If a key has an empty section, it suffices. If two nonempty sections differ, they are disjoint and that pair suffices. Otherwise every section is the same and any key suffices. In particular, once the all-typings result set is known inhabited, any admitted key gives the full result set at this input. Two are sometimes necessary to detect emptiness. With $P(k,r)$ given by $r=k$, two distinct admitted keys have no common result, although each alone allows one. Call typing separately requires an admitted key. [Lean theorems `two_keys` and `inhabited_opening`](thesis-review-50.lean)
+
+## Eliminating the key on the admitted domain {#eliminate}
+
+When admission itself is one pattern $(p(a),q(a,u))$, $a$ denotes the holes occurring in the input and $u$ those private to the key. There is an explicit pair of keys that works for **every** single-pattern package. Use a ground constant $A$ and a unary context $S$ with a different root, for example $S(z)=z\to A$. In one copy of $q$ substitute $A$ for each private hole. In the other substitute the distinct tags $S(A),S^2(A),\ldots$. Repeated occurrences of a hole receive the same tag.
+
+At a fixed admitted ground input, $a$ is determined. Anti-unifying the two resulting keys reconstructs $q(a,u)$ up to renaming. All constructor positions and the ground pieces fixed by $a$ agree. Each private position disagrees at the root, and its ordered pair of probe values identifies exactly which hole it came from. Pair both keys with the same ground result $r$. Their least general generalization is $(q(a,u),r)$. A package pattern containing both rows therefore contains every key instance paired with $r$. The converse follows because the probes are admitted. Lean checks this containment test by combining the two matching substitutions, preserving every common constructor and decoding the tags at disagreements. [Lean theorem `probes_cover`](thesis-review-50.lean)
+
+Symbolically, equate $x$ to $p(a)$, take two freshly renamed copies of the package pattern, and unify them with the two probe keys paired with one shared variable $r$. Project to $(x,r)$. The admitted all-typings relation is again **one tuple pattern or empty**. This computation is for a fixed pair of inferred predicates. Private package witnesses in its two copies must be fresh. For example, key $(a,u)$ with package $((b,v),(b,w))$ yields result $(a,w)$ with $w$ free. Changing the result pattern to $v$ makes the joint opening empty since $u$ ranges freely. The tagged probes use the constructors available in the free type algebra; the preceding two-key theorem for a fixed package requires no such coding assumption. [Executable elimination and rigid-matching comparison](thesis-review-50.py)
+
+## What can be said about the iteration {#iteration}
+
+For a fixed tuple interface define $\rho$ as its unfolded node count minus its number of distinct holes. A strict specialization increases $\rho$. A strict generalization decreases it. Consequently an ascending supplier closure that joins each new result with the accumulated pattern can change only finitely often after its first nonempty result. With finitely many such components each can leave the empty relation at most once. In the other direction, a strengthening chain retaining a fixed ground tuple $g$ can make at most $|g|-\rho(P_0)$ strict changes from a nonempty $P_0$. Acyclic substitutions can share subtrees, so an unfolded size bound and a stored DAG size bound differ. [Finite-height proof](thesis-review-2.html#a-positive-convergence-theorem-for-free-term-predicates)
+
+There is also a bound on the *alternative answers* under a coverage assumption. Give one mandatory ground tuple for every nonempty predicate and fix all interfaces. Every pattern admitting such a tuple comes from replacing some subtrees by holes and identifying holes only where the removed subtrees were identical. There are finitely many choices up to renaming. Thus there are finitely many covering tuples of predicate bodies, even if incomparable. This does not bound all answers when admission itself is free to change which examples it covers. [Generalizations above a seed](round-42-maximal.html#enumerate-all-maximal-extensions-of-one-answer)
+
+The actual combined procedure can change the input assumptions, the captured interface, or which incomparable typing it tries. The rank argument applies when its stated order and coverage hypotheses hold. It gives neither a principal type for the two-constructor program nor a general guarantee that Table 4.4 finds an existing pure-term solution. The numeric oscillation previously exhibited for the induction jump uses arithmetic. The term-only evidence above identifies the shape and strength of a successful answer independently of that example. [Term-only recursive search history](thesis-review-17.html) · [Table 4.4 counterexample](thesis-review-3.html#update)
+
+The [Lean proofs](thesis-review-50.lean) use Lean and mathlib 4.19. The [Python replay](thesis-review-50.py) checks 503 pairs of admission and package patterns with 49,797 ground queries against symbolic one-sided matching. With `--compiler` it also runs the recursive and nonprincipal source examples.

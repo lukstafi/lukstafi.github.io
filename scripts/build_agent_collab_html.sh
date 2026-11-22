@@ -509,6 +509,11 @@ build_html \
   "$collab_dir/thesis-review-49.html" \
   "How can a negative branch determine an oblique guard?"
 
+build_html \
+  "$collab_dir/thesis-review-50.md" \
+  "$collab_dir/thesis-review-50.html" \
+  "What shape does the combined iteration infer for free terms?"
+
 reviews_dir="$collab_dir/reviews"
 if [[ -d "$reviews_dir" ]]; then
   for md_file in "$reviews_dir"/*.md; do
