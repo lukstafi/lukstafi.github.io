@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <meta name="dcterms.date" content="2026-11-22">
+  <meta property="og:title" content="Which observations can a recursive call use to choose its interval?">
+  <meta property="og:url" content="https://lukstafi.github.io/projects/jca/agent-collab/thesis-review-28.html">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="lukstafi&#x27;s blog">
+  <meta name="twitter:card" content="summary">
+  <title>Which observations can a recursive call use to choose its
+interval?</title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <link rel="stylesheet" href="/assets/tufte.css">
+  <link rel="stylesheet" href="/assets/pandoc-tufte.css">
+  <link rel="stylesheet" href="/assets/site.css">
+  <script defer=""
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+  type="text/javascript"></script>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+  <script>(function(){var t=localStorage.getItem('theme-preference');if(t)document.documentElement.setAttribute('data-theme',t);})()</script>
+</head>
+<body>
+<nav class="site-nav">
+  <a href="/">Home</a> &middot; <a href="/study/">Study Guide</a> &middot; <a href="/about.html">About</a> &middot; <a href="https://lukstafi.substack.com">Substack</a>
+</nav>
+<div class="theme-toggle">
+  <button id="theme-btn" aria-label="Toggle dark mode">&#9788;</button>
+</div>
+<article>
+<header>
+<h1 class="title">Which observations can a recursive call use to choose
+its interval?</h1>
+<p class="byline">2026-11-22</p>
+</header>
+<nav id="TOC">
+<ul>
+<li><a href="#boundaries" id="toc-boundaries">What a package boundary
+can tell abduction</a></li>
+<li><a href="#uniform" id="toc-uniform">When histories must share a
+key</a></li>
+<li><a href="#policy" id="toc-policy">What the failed update
+chose</a></li>
+</ul>
+</nav>
+<p>A recursive call must choose its package parameter before it sees the
+returned value. It can already know the input state. In the new example,
+the result at <code>A</code> is 1 and the result at <code>B</code> is 5.
+A width-two interval containing that result must avoid <span
+class="math inline">\([2,4]\)</span>. At <code>A</code> the only
+interval is <span class="math inline">\([-1,1]\)</span>. At
+<code>B</code> it is <span class="math inline">\([5,7]\)</span>. The
+state indices are 0 and 1, so the single affine expression <span
+class="math inline">\(6i-1\)</span> makes both choices. InvarGenT checks
+this witness and executes both recursive clients at budget 2. With the
+same parameter left implicit, it rejects the program at every outer
+budget. <a href="state_dependent_interval.gadt">Recursive source</a> ·
+<a href="thesis-review-28.py">Explicit witness and split-state
+control</a></p>
+<section id="boundaries" class="level2">
+<h2>What a package boundary can tell abduction</h2>
+<p>First consider the earlier program whose recursive call always enters
+<code>B</code>. Its base value is 6. Its result interval <span
+class="math inline">\([k,k+6]\)</span> must contain 6 and avoid both
+<span class="math inline">\([1,2]\)</span> and <span
+class="math inline">\([10,11]\)</span>. To avoid the first band the
+result must exceed 2. Indeed, its upper endpoint is at least 6, so the
+comparison <span class="math inline">\(1\le r\)</span> succeeds
+somewhere in every admissible interval. To avoid the second band the
+result must stay below 10, since its lower endpoint is at most 6.
+Together the two requirements force <span
+class="math inline">\(k=3\)</span>. <a
+href="guarded_interval_bands.gadt">Previous counterexample</a></p>
+<p>More generally, for <span class="math inline">\(w\ge0\)</span> and
+every <span class="math inline">\(k\)</span> with <span
+class="math inline">\(f\in[k,k+w]\)</span>, some opening satisfies <span
+class="math inline">\(l\le r\)</span> exactly when <span
+class="math inline">\(l\le f\)</span>. For sufficiency use the upper
+endpoint. For necessity check <span
+class="math inline">\(k=f-w\)</span>. Dually, some opening satisfies
+<span class="math inline">\(r\le u\)</span> at every legal key exactly
+when <span class="math inline">\(f\le u\)</span>. If the supplier value
+lies strictly outside a forbidden band, these tests identify which
+comparison a successful interval must falsify. If it lies inside the
+band, every admissible interval contains a bad value. <a
+href="thesis-review-28.lean">Endpoint lemmas</a></p>
+<p>InvarGenT now uses this observation when the ordinary guard search
+leaves several comparisons unresolved. It sets one declared package
+inequality at a time to equality, discards infeasible boundaries, and
+checks which comparisons hold throughout each remaining boundary. If one
+comparison survives as a candidate to falsify, the compiler proposes its
+integer complement as a positive goal. For a general package, a feasible
+boundary may exist at only some parameter values. The proposal therefore
+goes through the original full-package and final guard checks. A
+width-six package with endpoints 0 and 6 still rejects an assertion
+reached at 3. <a href="thesis-review-28.py">Compiler regressions and
+guard controls</a></p>
+<p>This repair also covers a source arm that directly says
+<code>assert false</code>. The original assertion stays in the
+constraint system. After ordinary searches fail, the retry can use the
+guard’s comparison to guide abduction and check the negative obligation
+against the resulting solution. The width-six program now succeeds at
+budget 2 with either form of the bad arms. Instrumenting the guards at
+two recursive depths produces the expected six operand evaluations,
+including with <code>-keep_assert_false</code>. Reversing the conjuncts
+and moving the two forbidden bands to force the negative key <span
+class="math inline">\(-39\)</span> at width 97 also succeed. <a
+href="thesis-review-28.py">Executable comparisons</a></p>
+</section>
+<section id="uniform" class="level2">
+<h2>When histories must share a key</h2>
+<p>Let a history <span class="math inline">\(h\)</span> require a
+supplier value <span class="math inline">\(f_h\)</span>, a width <span
+class="math inline">\(w_h\ge0\)</span>, and avoidance of a finite
+collection of nonempty integer bands. The entire set of legal keys is
+the closed integer interval <span
+class="math inline">\([L_h,U_h]\)</span>, possibly empty. Start with
+<span class="math inline">\(L_h=f_h-w_h\)</span> and <span
+class="math inline">\(U_h=f_h\)</span>. For each forbidden band <span
+class="math inline">\([l,u]\)</span> ending below <span
+class="math inline">\(f_h\)</span>, raise <span
+class="math inline">\(L_h\)</span> to at least <span
+class="math inline">\(u+1\)</span>. For every other band, lower <span
+class="math inline">\(U_h\)</span> to at most <span
+class="math inline">\(l-w_h-1\)</span>. A band containing <span
+class="math inline">\(f_h\)</span> crosses the two bounds. This also
+gives the greatest feasible key whenever one exists. <a
+href="thesis-review-28.lean">Exact key interval</a></p>
+<p>Write <span class="math inline">\(z(h)\)</span> for the information
+available when the call chooses its parameter. A policy must pick the
+same key on all histories with the same observation. <strong>A policy
+exists exactly when <span class="math inline">\(L_h\le U_j\)</span> for
+every ordered pair with <span
+class="math inline">\(z(h)=z(j)\)</span>.</strong> Thus one empty
+interval or two incompatible histories witness failure. This holds even
+for infinitely many histories. In a nonempty observation class, any one
+upper endpoint bounds all lower endpoints. A nonempty bounded-above set
+of integers attains its maximum. The pairwise inequalities put that
+maximum below every upper endpoint, so it serves the entire class. For
+finite input this constructs the policy by grouping the histories and
+taking their extrema. With infinitely many histories this proof
+establishes existence. An effective synthesis procedure needs a
+representation of the classes and their extrema. <a
+href="thesis-review-28.lean">Uniform-choice theorem</a></p>
+<p>A different requirement arises when the witness must be one
+integer-affine expression <span class="math inline">\(m x+c\)</span> in
+an observed scalar <span class="math inline">\(x\)</span>. <strong>A
+slope <span class="math inline">\(m\)</span> works exactly when <span
+class="math inline">\(m(x_j-x_h)\le U_j-L_h\)</span> for every ordered
+pair.</strong> Subtract <span class="math inline">\(m x_h\)</span> from
+each history’s two endpoints. The resulting intervals must share one
+intercept. For finite histories these inequalities give lower and upper
+bounds on the integer slope, with a direct compatibility check when two
+observations coincide. Any admissible slope and the largest adjusted
+lower endpoint supply a witness. Three observations can rule out a
+single affine expression even when every pair admits one. At <span
+class="math inline">\(x=0,1,2\)</span>, force keys <span
+class="math inline">\(0,1,0\)</span> respectively using two forbidden
+bands per history. Each pair fits an integer line. The three values do
+not. <a href="thesis-review-28.lean">Slope criterion and
+three-observation proof</a></p>
+</section>
+<section id="policy" class="level2">
+<h2>What the failed update chose</h2>
+<p>In the recursive program the written arrow admits every interval
+containing <span class="math inline">\(4i+1\)</span> at <span
+class="math inline">\(i\in\{0,1\}\)</span>. Let <span
+class="math inline">\(k\)</span> be the current call’s parameter, <span
+class="math inline">\(j\)</span> its child’s parameter, and <span
+class="math inline">\(r\)</span> the opened result. Projecting each
+reported bad guard onto these four coordinates gives exactly</p>
+<p><span class="math display">\[
+i\in\{0,1\},\qquad k\le4i+1\le k+2,\qquad j=k,\qquad j\le r\le
+j+2,\qquad 2\le r\le4 .
+\]</span></p>
+<p>The failed proposal passes the parent’s key to the child. At
+<code>A</code>, <span class="math inline">\(k=j=1\)</span> permits <span
+class="math inline">\(r=2\)</span>. At <code>B</code>, <span
+class="math inline">\(k=j=3\)</span> permits <span
+class="math inline">\(r=4\)</span>. Z3 checked the projected formula in
+both directions, over integers and over rationals. The Lean proof
+verifies the replacement <span class="math inline">\(j=6i-1\)</span> for
+every admitted parent, including the call that uses that formula again
+at the next depth. Moving the case split on <code>A</code> and
+<code>B</code> before the recursive call also lets the compiler infer
+both choices. <a href="thesis-review-28.lean">Machine-checked policy</a>
+· <a href="thesis-review-28.py">Projection and executions</a></p>
+<p>With budget 0 or 1, inference stops in the preceding definition of
+<code>base</code>. For every budget of at least 2, that definition
+finishes on pass 2. Two searches on <code>run</code> reach a finished
+predicate update on pass 2 and fail their final guard checks. The other
+attempted constraints retain a Boolean arm where the result must be
+numeric. There is no later pass, induction jump, or producer-only replay
+at the budget boundary on these paths. Complete traces agree at budgets
+2, 3, 40 and 10,000 in each annotation mode. The remaining inference
+problem is to choose a witness using an input that is already in scope.
+<a href="thesis-review-28.py">Trace checks</a> · <a
+href="thesis-review-3.html#update">Original infinite jump
+recurrence</a></p>
+<p>To reproduce the proofs with Lean 4.19, compile
+<code>thesis-review-27.lean</code> to
+<code>thesis-review-27.olean</code> in a temporary directory and include
+it in <code>LEAN_PATH</code> when checking
+<code>thesis-review-28.lean</code>. Run
+<code>python3 thesis-review-28.py /path/to/InvarGenT.native</code> with
+OCaml available. The optional <code>--before</code> takes revision
+<code>41750f0</code>. The <code>--trace</code> option uses Python’s
+<code>z3-solver</code> and compiler revision <code>311a5e4</code> built
+with the four existing diagnostics. The OCaml 5.3 compatibility build
+passed 334 active tests with 10 existing TODOs. All 169 previous example
+signatures matched byte for byte. The source-level checks and traces
+used the OCaml 5.5 compatibility build. <a
+href="thesis-review-22-trace.patch">Passes</a> · <a
+href="thesis-review-23-interface.patch">Predicate interfaces</a> · <a
+href="thesis-review-24-feedback.patch">Jump and demand</a> · <a
+href="thesis-review-26-guard.patch">Final guard</a></p>
+</section>
+</article>
+<script src="/assets/theme-toggle.js"></script>
+</body>
+</html>

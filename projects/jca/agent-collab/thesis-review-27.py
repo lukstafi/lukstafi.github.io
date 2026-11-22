@@ -41,7 +41,7 @@ def main():
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("compiler", type=Path)
     ap.add_argument("--before", type=Path, help="InvarGenT at 3ce4575")
-    ap.add_argument("--trace", type=Path, help="review 27 with the review 22–24 and 26 trace patches")
+    ap.add_argument("--trace", type=Path, help="41750f0 with the review 22–24 and 26 trace patches")
     args = ap.parse_args()
     current = args.compiler.resolve(strict=True)
     original, interior, bands = [(HERE / (name + ".gadt")).read_text() for name in
@@ -70,7 +70,7 @@ def main():
         check("two_calls", two_calls)
         check("aliased_opening", two_calls.replace("later = run B d", "later = prior"), error="Type mismatch")
         check("no_shared_key", interior.replace("when 4 <=", "when 3 <="), error="Type mismatch")
-        check("bands", bands, error="Type mismatch")
+        check("bands", bands, width=6)
         check("explicit_bands", explicit, width=6)
         for k in (2, 4):
             check(f"wrong_key_{k}", explicit.replace("run B 3 d", f"run B {k} d"), error="Type mismatch")

@@ -399,6 +399,11 @@ build_html \
   "$collab_dir/thesis-review-27.html" \
   "Choosing one package parameter for every use of an opening"
 
+build_html \
+  "$collab_dir/thesis-review-28.md" \
+  "$collab_dir/thesis-review-28.html" \
+  "Which observations can a recursive call use to choose its interval?"
+
 reviews_dir="$collab_dir/reviews"
 if [[ -d "$reviews_dir" ]]; then
   for md_file in "$reviews_dir"/*.md; do
