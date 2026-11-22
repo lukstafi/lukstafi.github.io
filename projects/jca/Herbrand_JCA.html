@@ -51,6 +51,11 @@ Invariant Synthesis</a>
 <li><a href="#note-to-the-reader-re-thesis-context"
 id="toc-note-to-the-reader-re-thesis-context">Note to the reader (re
 thesis context)</a></li>
+<li><a href="#research-directions" id="toc-research-directions">Open
+questions as of November 22, 2026</a></li>
+<li><a href="#results-behind-these-questions"
+id="toc-results-behind-these-questions">Results behind these
+questions</a></li>
 <li><a href="#abstract" id="toc-abstract">Abstract</a></li>
 <li><a href="#problem-family-and-motivations"
 id="toc-problem-family-and-motivations">1. Problem family and
@@ -227,6 +232,122 @@ over the free term algebra</strong> <span
 class="math inline">\(\mathcal{T}(\mathcal{F})\)</span> problem. The
 bibliography and appendix pointers (A.2.2, B.2.2, B.2.3) are aligned to
 the thesis’ full PDF.</p>
+</section>
+<section id="research-directions" class="level2">
+<h2>Open questions as of November 22, 2026</h2>
+<p>Three results change the research agenda. The project manuscript
+proves general finite-term JCA answer existence undecidable already for
+two branches over one binary constructor and one constant. Theorem 4.5R
+proves witness compatibility and coverage for strict mixed-sort JCA,
+including designated parameters, given complete component enumerators.
+The original Table 4.4 iteration can repeat with a two-inequality
+solution. A known bit bound on a whole certificate, including required
+syntactic witnesses, gives a separate exhaustive decision procedure when
+verification is decidable. <a
+href="agent-collab/round-25-binary.html">Two-branch reduction</a> · <a
+href="agent-collab/thesis-review-2.html#combination">Combination
+theorem</a> · <a
+href="agent-collab/thesis-review-3.html#update">Repeating update</a> ·
+<a
+href="agent-collab/thesis-review-2.html#what-a-polynomial-bound-buys-without-monotone-iteration">Bounded
+verification</a></p>
+<ol type="1">
+<li><p><strong>When should inference improve a successful type?</strong>
+Given a hidden <span class="math inline">\(x\)</span> with <span
+class="math inline">\(x\le i\)</span> and <span
+class="math inline">\(x\le j\)</span>, the ordinary search proves <span
+class="math inline">\(x\le z\)</span> by asking for <span
+class="math inline">\(j\le z\)</span>. The written guard <span
+class="math inline">\(\min(i,j)\le z\)</span> accepts a caller needing
+each alternative. A first target is a second pass on a successful
+declaration with a fixed public interface. Accept a replacement when it
+admits every old input, provides at least the old result guarantee
+there, and satisfies the original obligations on its entire domain. The
+test case should admit both callers and reject one with <span
+class="math inline">\(x&gt;z\)</span>. For incomparable types we also
+need a rule for choosing which alternatives to retain. The term examples
+already rule out a universally sufficient finite list. <a
+href="agent-collab/thesis-review-54.html#alternatives">Arithmetic
+replay</a> · <a
+href="agent-collab/thesis-review-52.html#infinite">Incomparable maximal
+term domains</a> · <a href="lukstafi-phd-thesis.pdf#page=83">Thesis
+proposal for beam search</a></p></li>
+<li><p><strong>What evidence should change an induction jump?</strong> A
+failed caller can show that the current postcondition is too weak.
+Sometimes the suppliers force the failure under <em>every</em>
+postcondition for the current admissions. The latter proof shows that a
+solution must change which keys some input admits. We have a complete
+bounded search for a finite library of candidate key supports under
+terminating policy checks, and a symbolic construction for one extra key
+and one distinguished result over explicit rational polyhedral regions.
+The next theorem to try is a construction for two extra keys in that
+setting. Their two convex supports must together cover the region where
+callers forbid the result, and each support used for exclusion must
+avoid every input that supplies it. Can we construct the supports and a
+checkable package, or identify exactly which split defeats the one-key
+construction? <a
+href="agent-collab/thesis-review-47.html#search">Failure proofs and
+bounded search</a> · <a
+href="agent-collab/thesis-review-48.html#symbolic">One-key
+construction</a> · <a
+href="agent-collab/thesis-review-46.html#conflicts">Two-key
+conflicts</a></p></li>
+<li><p><strong>Which guarantees can an independent checker give the
+compiler?</strong> Theorem 4.5R gives a specification for combining
+sorts. An implementable first step is to replay a proposed mixed scheme
+against the original branch obligations, recording when each witness can
+be chosen. Two small regressions exercise different parts of that
+checker. It must reject an early type choice that depends on a later
+numeric input. It must also reject an erased assertion whose guard is
+compatible with the <em>final</em> residual. Such a checker would let us
+try more aggressive searches and identify the branch that invalidates a
+proposal. <a
+href="agent-collab/thesis-review-2.html#implementation">Quantified
+witnesses and compiler obligations</a> · <a
+href="agent-collab/thesis-review-48.html#compiler">An accepted call that
+raised a match failure before the repair</a></p></li>
+<li><p><strong>What may a value binding reveal about its
+datatype?</strong> The short indexed <code>append</code> in thesis
+§5.2.2 still rejects the call on two empty lists at InvarGenT revision
+<code>f159a3e</code>. Expanding the match on the second list produces an
+unrestricted length signature and the same ground-typed call runs. A
+first language extension would validate a length invariant against each
+constructor, then make it available when binding a list value. The proof
+must say what external producers guarantee. The index expression <span
+class="math inline">\(\mathrm{List}(a,-1)\)</span> remains a legal type
+expression even though the constructors cannot produce a value there. <a
+href="agent-collab/thesis-review-1.html#what-a-variable-pattern-knows-about-list-length">Two
+programs and the constructor-induction rule</a> · <a
+href="lukstafi-phd-thesis.pdf#page=77">Original example</a></p></li>
+<li><p><strong>Which term domains should a public interface
+express?</strong> On unary constructor chains a finite Boolean
+combination of equational patterns describes exactly the eventually
+constant depth predicates. A total recursive test can accept exactly the
+even depths. An indexed evidence datatype already expresses that domain.
+A concrete extension is to recognize finite-control structural recursion
+on a branching datatype, synthesize the evidence constructors, and prove
+that an input has evidence exactly when its check succeeds.
+Shared-variable tests between subtrees are a useful boundary to state
+explicitly. <a href="agent-collab/thesis-review-53.html#cycle">Term
+guards and evidence</a> · <a
+href="agent-collab/thesis-review-52.html#guard">Exact guards for fixed
+branches</a></p></li>
+<li><p><strong>Can source programs generate the hard abduction
+instances?</strong> The abstract two-branch reduction leaves open
+whether the thesis’s constraint generator can realize its shared
+unknown, quantifier order, and branch witness requirements without
+polymorphic recursion. An initial deliverable would be a translation of
+the fixed two-branch template into source cases, or a structural
+invariant of generated clauses that excludes that encoding. Either would
+explain what the abstract theorem tells us about inference on programs.
+<a href="agent-collab/round-26-fixed-template.html">Fixed template</a> ·
+<a
+href="agent-collab/thesis-review-1.html#status-of-the-remaining-questions">Source-level
+question</a></p></li>
+</ol>
+</section>
+<section id="results-behind-these-questions" class="level2">
+<h2>Results behind these questions</h2>
 <p><strong>Does a small solution guarantee convergence of Table
 4.4?</strong> No. The original induction jump can discard an upper bound
 that the caller restores on every pass, even when the stored
@@ -1337,6 +1458,10 @@ id="open-problems-and-research-directions-centered-on-jcaqp_mathcaltmathcalf"
 class="level2">
 <h2>8. Open problems and research directions (centered on JCAQP<span
 class="math inline">\(_{\mathcal{T}(\mathcal{F})}\)</span>)</h2>
+<p>This list records the January investigation. The November stocktake
+links the undecidability proof, the repaired combination theorem, and
+the questions that grew out of them. <a
+href="#research-directions">Current research directions</a></p>
 <ol type="1">
 <li><strong>Decidability of JCAQP over <span
 class="math inline">\(\mathcal{T}(\mathcal{F})\)</span>:</strong> the
