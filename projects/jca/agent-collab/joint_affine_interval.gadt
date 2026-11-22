@@ -1,0 +1,15 @@
+datatype Nat
+datacons Z : Nat
+datacons S : Nat ⟶ Nat
+
+external let base : ∀i,j. Num i → Num j → Num (i+j) = "fun a b -> a+b"
+external let between : ∀i,j,k[i≤j ∧ j≤k]. Num i → Num j → Num k → Bool =
+  "fun lo x hi -> assert (lo <= x && x <= hi); true"
+
+let rec run : ∀i,j,k[min(i+j + (-1),5 + -i + -j)≤0 ∧ k≤i+j ∧ i+j≤k+2].
+  Num i → Num j → Nat → ∃l[k≤l ∧ l≤k+2]. Num l = fun a b -> efunction
+  | Z -> base a b
+  | S d -> let prior = run a b d in
+           (match prior with r when 2 <= r && r <= 4 -> True | _ -> base a b)
+test (let p = run (-1000) 1001 (S Z) in let t = between (-1) p 1 in
+      let q = run 1000 (-995) (S (S Z)) in between 3 q 5)

@@ -59,7 +59,9 @@ $$
 
 satisfies all four input pairs. Its interval contains the supplier and avoids the forbidden guard for every permitted opening. The base and surviving step branches both return $f$, which every legal parent interval contains. The same argument thus works at every recursion depth. Making the key an explicit source argument verifies and executes at budget 2. [Implicit program](two_input_interval.gadt) · [Explicit control](thesis-review-30.py) · [Lean witness and impossibility of either unary policy](thesis-review-30.lean)
 
-The implicit program still fails at `bee08b1`. InvarGenT considers one input coordinate at a time, and the supplier bounds involve both. Each of two candidate searches finishes its predicate updates on pass 2. Projecting either failing guard onto the inputs, parent key $k$, child key $c$ and result $r$ gives exactly
+The implicit program fails at `bee08b1`. Revision `a549d0d` recovers the joint observation from the upper bound on the key and checks it at budget 2. [Symbolic witness and unbounded inputs](thesis-review-31.html#implementation)
+
+At the earlier revision, InvarGenT considers one input coordinate at a time, and the supplier bounds involve both. Each of two candidate searches finishes its predicate updates on pass 2. Projecting either failing guard onto the inputs, parent key $k$, child key $c$ and result $r$ gives exactly
 
 $$
 i,j\in\{0,1\},\qquad k\le f\le k+2,\qquad
@@ -68,4 +70,4 @@ $$
 
 For instance, $i=j=0$, $k=c=1$, $r=2$ satisfies that guard. Budgets 0 and 1 stop in the supplier. From budget 2 onward both final checks fail before a jump, and the other searches encounter incompatible return types. The trace is identical at budgets 2, 3, 40 and 10,000 in each annotation mode. Z3 checks both projections over integer and rational variables. This leaves a concrete inference question. Can the compiler recover the scalar observation $i+j$ from the supplier bounds while preserving the full set of choices available to each caller? [Trace and projection checks](thesis-review-30.py)
 
-Run Lean 4.19 on `thesis-review-30.lean` and `python3 thesis-review-30.py /path/to/InvarGenT.native` with OCaml and Python's `z3-solver` available. Supply `--before` with revision `3eb191e` to reproduce the failing client and `--trace` with `bee08b1` built with the four existing diagnostics to check the guard traces. The source runs used the OCaml 5.5 compatibility build. The OCaml 5.3 suite passed 339 active tests with ten existing TODOs. All 171 previous generated example signatures matched byte for byte. [Diagnostic patches](thesis-review-28.html#policy)
+Run Lean 4.19 on `thesis-review-30.lean` and `python3 thesis-review-30.py /path/to/InvarGenT.native` with revision `bee08b1` as the first executable, OCaml and Python's `z3-solver` available. Supply `--before` with revision `3eb191e` to reproduce the failing client and `--trace` with `bee08b1` built with the four existing diagnostics to check the guard traces. The source runs used the OCaml 5.5 compatibility build. The OCaml 5.3 suite passed 339 active tests with ten existing TODOs. All 171 previous generated example signatures matched byte for byte. [Diagnostic patches](thesis-review-28.html#policy)

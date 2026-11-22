@@ -270,11 +270,16 @@ the key an explicit source argument verifies and executes at budget 2.
 href="thesis-review-30.py">Explicit control</a> · <a
 href="thesis-review-30.lean">Lean witness and impossibility of either
 unary policy</a></p>
-<p>The implicit program still fails at <code>bee08b1</code>. InvarGenT
-considers one input coordinate at a time, and the supplier bounds
-involve both. Each of two candidate searches finishes its predicate
-updates on pass 2. Projecting either failing guard onto the inputs,
-parent key <span class="math inline">\(k\)</span>, child key <span
+<p>The implicit program fails at <code>bee08b1</code>. Revision
+<code>a549d0d</code> recovers the joint observation from the upper bound
+on the key and checks it at budget 2. <a
+href="thesis-review-31.html#implementation">Symbolic witness and
+unbounded inputs</a></p>
+<p>At the earlier revision, InvarGenT considers one input coordinate at
+a time, and the supplier bounds involve both. Each of two candidate
+searches finishes its predicate updates on pass 2. Projecting either
+failing guard onto the inputs, parent key <span
+class="math inline">\(k\)</span>, child key <span
 class="math inline">\(c\)</span> and result <span
 class="math inline">\(r\)</span> gives exactly</p>
 <p><span class="math display">\[
@@ -295,13 +300,14 @@ each caller? <a href="thesis-review-30.py">Trace and projection
 checks</a></p>
 <p>Run Lean 4.19 on <code>thesis-review-30.lean</code> and
 <code>python3 thesis-review-30.py /path/to/InvarGenT.native</code> with
-OCaml and Python’s <code>z3-solver</code> available. Supply
-<code>--before</code> with revision <code>3eb191e</code> to reproduce
-the failing client and <code>--trace</code> with <code>bee08b1</code>
-built with the four existing diagnostics to check the guard traces. The
-source runs used the OCaml 5.5 compatibility build. The OCaml 5.3 suite
-passed 339 active tests with ten existing TODOs. All 171 previous
-generated example signatures matched byte for byte. <a
+revision <code>bee08b1</code> as the first executable, OCaml and
+Python’s <code>z3-solver</code> available. Supply <code>--before</code>
+with revision <code>3eb191e</code> to reproduce the failing client and
+<code>--trace</code> with <code>bee08b1</code> built with the four
+existing diagnostics to check the guard traces. The source runs used the
+OCaml 5.5 compatibility build. The OCaml 5.3 suite passed 339 active
+tests with ten existing TODOs. All 171 previous generated example
+signatures matched byte for byte. <a
 href="thesis-review-28.html#policy">Diagnostic patches</a></p>
 </section>
 </article>

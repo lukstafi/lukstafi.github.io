@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <meta name="dcterms.date" content="2026-11-22">
+  <meta property="og:title" content="Choosing a recursive witness from an input bound">
+  <meta property="og:url" content="https://lukstafi.github.io/projects/jca/agent-collab/thesis-review-31.html">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="lukstafi&#x27;s blog">
+  <meta name="twitter:card" content="summary">
+  <title>Choosing a recursive witness from an input bound</title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <link rel="stylesheet" href="/assets/tufte.css">
+  <link rel="stylesheet" href="/assets/pandoc-tufte.css">
+  <link rel="stylesheet" href="/assets/site.css">
+  <script defer=""
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+  type="text/javascript"></script>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+  <script>(function(){var t=localStorage.getItem('theme-preference');if(t)document.documentElement.setAttribute('data-theme',t);})()</script>
+</head>
+<body>
+<nav class="site-nav">
+  <a href="/">Home</a> &middot; <a href="/study/">Study Guide</a> &middot; <a href="/about.html">About</a> &middot; <a href="https://lukstafi.substack.com">Substack</a>
+</nav>
+<div class="theme-toggle">
+  <button id="theme-btn" aria-label="Toggle dark mode">&#9788;</button>
+</div>
+<article>
+<header>
+<h1 class="title">Choosing a recursive witness from an input bound</h1>
+<p class="byline">2026-11-22</p>
+</header>
+<nav id="TOC">
+<ul>
+<li><a href="#projection" id="toc-projection">One observed bound
+suffices</a></li>
+<li><a href="#implementation" id="toc-implementation">What the compiler
+infers</a></li>
+<li><a href="#width" id="toc-width">A growing width separates a relation
+from a witness term</a></li>
+<li><a href="#feedback" id="toc-feedback">The feedback loop has two ways
+to discharge the guard</a></li>
+</ul>
+</nav>
+<p>On the two-input program, a child call must choose an interval
+containing <span class="math inline">\(4(i+j)+1\)</span> that misses the
+guard <span class="math inline">\([2,4]\)</span>. Neither <span
+class="math inline">\(i\)</span> nor <span
+class="math inline">\(j\)</span> alone determines a safe choice. The
+written upper bound on the child key already contains the sum. InvarGenT
+at <code>a549d0d</code> reads that bound, constructs a witness, and
+checks the implicit program at iteration budget 2. The same construction
+works when the inputs range over all integers. <a
+href="thesis-review-30.html#joint">Earlier failure</a> · <a
+href="two_input_interval.gadt">Two-state inputs</a> · <a
+href="joint_affine_interval.gadt">Unbounded numeric inputs</a></p>
+<section id="projection" class="level2">
+<h2>One observed bound suffices</h2>
+<p>Let an input history <span class="math inline">\(h\)</span> admit
+integer keys between <span class="math inline">\(L(h)\)</span> and <span
+class="math inline">\(U(h)\)</span>. A key <span
+class="math inline">\(k\)</span> promises a result anywhere in <span
+class="math inline">\([k+a,k+b]\)</span>, for fixed integer offsets
+<span class="math inline">\(a\le b\)</span>. The recursive use must
+exclude the result band <span class="math inline">\([l,u]\)</span>. Such
+an opening is possible exactly when <span class="math inline">\(k+b\ge
+l\)</span> and <span class="math inline">\(k+a\le u\)</span>. The
+forbidden <strong>keys</strong> therefore form <span
+class="math inline">\([l-b,u-a]\)</span>. Several guards give a finite
+union <span class="math inline">\(B\)</span> of such bands.</p>
+<p>Let <span class="math inline">\(P_B(x)\)</span> be the greatest
+integer at most <span class="math inline">\(x\)</span> outside <span
+class="math inline">\(B\)</span>. For every history,</p>
+<p><span class="math display">\[
+\exists k\in[L(h),U(h)]\setminus B
+\quad\Longleftrightarrow\quad
+L(h)\le P_B(U(h)).
+\]</span></p>
+<p>Indeed, <span class="math inline">\(P_B(U(h))\)</span> dominates
+every feasible key and is itself safe. This gives one policy for all
+histories, including histories with the same upper endpoint and
+different lower endpoints. A child that can observe <span
+class="math inline">\(U(h)\)</span> needs no access to <span
+class="math inline">\(L(h)\)</span> to make its choice. The statement
+allows infinitely many histories and imposes no bound on recursion
+depth. <a href="thesis-review-31.lean">Lean proof of pointwise
+elimination and uniform choice</a></p>
+<p>The thesis’s numeric language can express <span
+class="math inline">\(P_B\)</span>. For one forbidden key band <span
+class="math inline">\([a,b]\)</span>, set</p>
+<p><span class="math display">\[
+P_{[a,b]}(x)=\min\left(x,\max\left(a-1,\;a-1+(b-a+2)(x-b)\right)\right).
+\]</span></p>
+<p>At <span class="math inline">\(x=b\)</span> the affine term is <span
+class="math inline">\(a-1\)</span>. At <span
+class="math inline">\(b+1\)</span> it is <span
+class="math inline">\(b+1\)</span>. On integers the expression returns
+<span class="math inline">\(a-1\)</span> throughout the forbidden band
+and <span class="math inline">\(x\)</span> everywhere else. Merge
+overlapping or adjacent bands and apply the expression in decreasing
+order of their lower endpoints. Moving below a later band preserves the
+exclusions already established. With one intermediate variable per
+computed value, the graph uses two extrema per merged band. Taking the
+minimum of <span class="math inline">\(m\)</span> written upper bounds
+costs another <span class="math inline">\(m-1\)</span> extrema. The
+number of input states plays no role in this size bound. <a
+href="thesis-review-31.lean">One-band identity, merging and
+composition</a></p>
+</section>
+<section id="implementation" class="level2">
+<h2>What the compiler infers</h2>
+<p>InvarGenT first tries its existing witnesses from sampled scalar
+inputs. If those fail, it looks for affine upper bounds on <span
+class="math inline">\(k\)</span> involving numeric indices exposed by
+the arguments. It takes their minimum, converts the forbidden result
+bands to key bands, and constructs the graph above. Reflecting <span
+class="math inline">\(k\)</span> about zero gives the dual proposal from
+lower bounds. Each recursive occurrence gets fresh graph variables. The
+ordinary solver checks the recursive call, the original guards and the
+public type. The construction gives a completeness result for choosing
+from the specified integer interval with fixed exclusions. The solver
+also has to find the interval in the program’s constraints and discharge
+its other obligations. <a href="thesis-review-31.py">End-to-end
+checks</a></p>
+<p>For the two-state inputs the forbidden keys are <span
+class="math inline">\([0,4]\)</span>. Applying <span
+class="math inline">\(P_{[0,4]}\)</span> to <span
+class="math inline">\(4(i+j)+1\)</span> yields <span
+class="math inline">\(-1,5,9\)</span> at sums <span
+class="math inline">\(0,1,2\)</span>. The parents retain all their legal
+choices. An unbounded variant supplies <span
+class="math inline">\(f=i+j\)</span> and allows <span
+class="math inline">\(f\le1\)</span> or <span class="math inline">\(5\le
+f\)</span>. For example, the parent of a positive call at <span
+class="math inline">\(f=5\)</span> may require the result in <span
+class="math inline">\([3,5]\)</span>, whereas the child must choose
+<span class="math inline">\([5,7]\)</span> to exclude the guard. The
+compiler checks both choices. Using <span
+class="math inline">\(2i-3j+1\)</span> for the supplier or adding a
+second band <span class="math inline">\([10,12]\)</span> also works. Z3
+checks the inferred public domains against the written ones over
+integers and rationals. Every program executes its client assertions at
+budget 2 in both annotation modes. Allowing <span
+class="math inline">\(f=3\)</span> and calling that input makes the
+compiler reject the program. <a
+href="joint_affine_interval.gadt">Unbounded program</a> · <a
+href="thesis-review-31.py">Signature and negative checks</a></p>
+</section>
+<section id="width" class="level2">
+<h2>A growing width separates a relation from a witness term</h2>
+<p>Take a state <span class="math inline">\(s\in\{-1,1\}\)</span> and
+any integer width <span class="math inline">\(n\ge0\)</span>. Both
+surviving branches return <span class="math inline">\(s\)</span>. A call
+promises a result in <span class="math inline">\([k,k+n]\)</span>, which
+must contain <span class="math inline">\(s\)</span>. The recursive use
+must exclude zero from the whole interval. This forces one choice at
+each sign.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: right;">State</th>
+<th style="text-align: right;">Forced child key</th>
+<th>Reason</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: right;"><span
+class="math inline">\(-1\)</span></td>
+<td style="text-align: right;"><span
+class="math inline">\(-1-n\)</span></td>
+<td>The right endpoint must equal <span
+class="math inline">\(-1\)</span>.</td>
+</tr>
+<tr>
+<td style="text-align: right;"><span
+class="math inline">\(1\)</span></td>
+<td style="text-align: right;"><span
+class="math inline">\(1\)</span></td>
+<td>The left endpoint must equal <span
+class="math inline">\(1\)</span>.</td>
+</tr>
+</tbody>
+</table>
+<p>The graph of these choices has a constant-size formula in the
+existing assertion language,</p>
+<p><span class="math display">\[
+k\le s\le k+n \quad\land\quad \min(k+n+1,1-k)\le0.
+\]</span></p>
+<p>Yet <strong>no finite term built from integer-affine expressions,
+addition, negation, minimum and maximum computes this key for every
+width</strong>. Each term has a constant <span
+class="math inline">\(C\)</span> such that changing the sign from <span
+class="math inline">\(-1\)</span> to <span
+class="math inline">\(1\)</span> changes its value by at most <span
+class="math inline">\(2C\)</span>, uniformly in <span
+class="math inline">\(n\)</span>. For an affine leaf take the absolute
+value of the sign coefficient. Addition adds the two bounds. Negation
+preserves the bound. Minimum and maximum take the larger bound. The
+forced keys differ by <span class="math inline">\(n+2\)</span>. Choosing
+<span class="math inline">\(n&gt;2C\)</span> gives a contradiction. <a
+href="thesis-review-31.lean">Machine-checked separation</a> · <a
+href="variable_width_interval.gadt">Variable-width program</a></p>
+<p>Bounding the <em>width</em> changes the result. For <span
+class="math inline">\(0\le n\le N\)</span>, let <span
+class="math inline">\(M=\lceil N/2\rceil\)</span>. A single minimum now
+works,</p>
+<p><span class="math display">\[
+k=\min\bigl(s,(M+1)s+M-n\bigr).
+\]</span></p>
+<p>The graph of the conditional choice has constant size even as <span
+class="math inline">\(N\)</span> increases. A uniform size bound on that
+relational solution therefore gives no uniform bound on the change of an
+explicit affine-extremum witness over the two signs. The compiler
+verifies and executes the displayed minimum as an explicit key contract
+at <span class="math inline">\(N=240\)</span>. It also verifies the
+unbounded relational contract when a source function branches on the
+state to supply the key. <a href="thesis-review-31.lean">Bounded-width
+proof</a> · <a href="thesis-review-31.py">Both explicit controls</a></p>
+</section>
+<section id="feedback" class="level2">
+<h2>The feedback loop has two ways to discharge the guard</h2>
+<p>At <code>a549d0d</code> the unbounded variable-width program still
+fails with its key implicit. Both failed searches finish their predicate
+updates on pass 2. The final guard in each search projects exactly to
+<span class="math inline">\(s=-1\)</span>, <span
+class="math inline">\(n\ge1\)</span>, <span class="math inline">\(k\le
+s\le k+n\)</span>, child key <span class="math inline">\(c=s\)</span>,
+child width <span class="math inline">\(n\)</span>, and opened value
+<span class="math inline">\(r=0\)</span>. Choosing <span
+class="math inline">\(c=-1\)</span> admits zero as soon as the width is
+positive. The forced choice <span class="math inline">\(c=-1-n\)</span>
+excludes it. Budgets 2, 3, 40 and 10,000 produce identical traces in
+each annotation mode. There is no induction jump on this path. <a
+href="thesis-review-31.py">Trace and exact projections</a></p>
+<p>Changing only the written postcondition gives another way through the
+same program. Writing <span class="math inline">\(r=s\)</span> makes the
+implicit call check at budget 2. Writing <span
+class="math inline">\(r=s\)</span> together with the original interval
+bounds checks at budget 3. The exact postcondition discharges the guard
+for every opening because the result retains the input sign. This leaves
+two distinct inference questions for Table 4.4. Can the implementation
+synthesize a total conditional choice for the written package? When both
+surviving branches already return the input sign, can it infer the
+missing dependency in the postcondition? Each intervention on its own
+suffices for this source. <a href="thesis-review-31.py">Three runs on
+the same body</a></p>
+<p>Run Lean 4.19 on <code>thesis-review-31.lean</code>. Run
+<code>python3 thesis-review-31.py /path/to/InvarGenT.native</code> with
+OCaml and Python’s <code>z3-solver</code> available. The optional
+<code>--before</code> takes <code>bee08b1</code>. The optional
+<code>--trace</code> takes <code>a549d0d</code> with the four existing
+diagnostics. The source checks used the OCaml 5.5 compatibility build.
+The OCaml 5.3 suite passed 341 active tests, with ten existing TODOs.
+All 173 previous generated example signatures matched byte for byte. <a
+href="thesis-review-28.html#policy">Diagnostic patches</a></p>
+</section>
+</article>
+<script src="/assets/theme-toggle.js"></script>
+</body>
+</html>

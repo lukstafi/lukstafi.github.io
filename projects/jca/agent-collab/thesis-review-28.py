@@ -67,8 +67,11 @@ def check_projection(guard, z3, sort, states=(0, 1), indices=("i",)):
     assert oracle.check() == z3.unsat, oracle.reason_unknown()
 
 
-def trace(exe, source, options, states=(0, 1), indices=("i",)):
+def trace(exe, source, options, states=(0, 1), indices=("i",), projection=None):
     import z3
+    if projection is None:
+        def projection(guard, z3, sort):
+            check_projection(guard, z3, sort, states, indices)
     stable = None
     for budget in (0, 1, 2, 3, 40, 10000):
         run = subprocess.run([exe, "-no_sig", "-no_ml", "-no_verif", *options,
@@ -85,7 +88,7 @@ def trace(exe, source, options, states=(0, 1), indices=("i",)):
             stable = run.stderr
             for guard in guards:
                 for sort in (z3.Int, z3.Real):
-                    check_projection(guard, z3, sort, states, indices)
+                    projection(guard, z3, sort)
         elif budget > 2:
             assert run.stderr == stable
 
