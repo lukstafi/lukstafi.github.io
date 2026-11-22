@@ -42,7 +42,7 @@ One caller requires $r\le x$ at every input. The following closed package has co
 $$
  C(k,r)\ \equiv\ r\le1\ \land\ (k+r\le1\ \lor\ k=1).
 $$
-For $x>0$, open at $k=1-x<1$ to get $r\le x$. At $x=0$ all ordinary $k<1$ give $r\le1-k$, hence $r\le0$. Conversely every $r\le x$ satisfies the package at each admitted key. The base returns $x$ and $2r-x\le x$ whenever $r\le x$. This proves all three clauses. A finite collection of keys at input zero still leaves a positive rational result possible, since each ordinary cap in that collection is positive. [Inductiveness and caller bound in Lean](thesis-review-43.lean)
+For $x>0$, open at $k=1-x<1$ to get $r\le x$. At $x=0$ all ordinary $k<1$ give $r\le1-k$, hence $r\le0$. Conversely every $r\le x$ satisfies the package at each admitted key. The base returns $x$ and $2r-x\le x$ whenever $r\le x$. This proves all three clauses. Projecting the forced opening $r\le x$ onto the admitted keys derives this formula directly. [Construction and completeness for interval sections](thesis-review-44.html#projection) A finite collection of keys at input zero still leaves a positive rational result possible, since each ordinary cap in that collection is positive. [Inductiveness and caller bound in Lean](thesis-review-43.lean)
 
 ## Every finite approximation {#finite}
 

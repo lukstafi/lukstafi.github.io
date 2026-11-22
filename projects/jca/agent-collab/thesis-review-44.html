@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <meta name="dcterms.date" content="2026-11-22">
+  <meta property="og:title" content="When can the supplier clauses determine an induction jump?">
+  <meta property="og:url" content="https://lukstafi.github.io/projects/jca/agent-collab/thesis-review-44.html">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="lukstafi&#x27;s blog">
+  <meta name="twitter:card" content="summary">
+  <title>When can the supplier clauses determine an induction
+jump?</title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <link rel="stylesheet" href="/assets/tufte.css">
+  <link rel="stylesheet" href="/assets/pandoc-tufte.css">
+  <link rel="stylesheet" href="/assets/site.css">
+  <script defer=""
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+  type="text/javascript"></script>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+  <script>(function(){var t=localStorage.getItem('theme-preference');if(t)document.documentElement.setAttribute('data-theme',t);})()</script>
+</head>
+<body>
+<nav class="site-nav">
+  <a href="/">Home</a> &middot; <a href="/study/">Study Guide</a> &middot; <a href="/about.html">About</a> &middot; <a href="https://lukstafi.substack.com">Substack</a>
+</nav>
+<div class="theme-toggle">
+  <button id="theme-btn" aria-label="Toggle dark mode">&#9788;</button>
+</div>
+<article>
+<header>
+<h1 class="title">When can the supplier clauses determine an induction
+jump?</h1>
+<p class="byline">2026-11-22</p>
+</header>
+<nav id="TOC">
+<ul>
+<li><a href="#orbit" id="toc-orbit">What does expansion force at the
+opening?</a></li>
+<li><a href="#projection" id="toc-projection">One projection decides
+whether interval sections suffice</a></li>
+<li><a href="#changing" id="toc-changing">Which jumps survive a change
+in admission?</a></li>
+<li><a href="#finite" id="toc-finite">Finitely many centres decide the
+case with gaps</a></li>
+<li><a href="#rounds" id="toc-rounds">A fixed answer can still take
+exponentially many rounds</a></li>
+<li><a href="#compiler" id="toc-compiler">What this changes for
+InvarGenT</a></li>
+</ul>
+</nav>
+<p>The previous example takes <span
+class="math inline">\(\omega+\omega\)</span> rounds to reach its least
+producer relation. Its upper-bound caller nevertheless has a short
+proof. The supplier clauses determine the bound <span
+class="math inline">\(r\le x\)</span> at the recursive opening.
+Projecting that bound onto the keys constructs the package in one step.
+This calculation works for a whole family of scalar suppliers, including
+examples in which the caller allows slack. It also detects exactly when
+a package needs a gap between two results stored at the same key. <a
+href="thesis-review-43.html#limits">Two-limit example</a> · <a
+href="thesis-review-44.lean">Formal proof</a></p>
+<section id="orbit" class="level2">
+<h2>What does expansion force at the opening?</h2>
+<p>Fix a set of legal inputs. At input <span
+class="math inline">\(x\)</span>, let <span
+class="math inline">\(A_x\)</span> be its nonempty set of admitted keys.
+The base returns a rational <span class="math inline">\(g(x)\)</span>,
+called its centre. Each successor at that input maps <span
+class="math inline">\(r\)</span> to <span class="math display">\[
+f_{x,a}(r)=g(x)+a(r-g(x)).
+\]</span> The set of available gains may depend on <span
+class="math inline">\(x\)</span>. They are nonnegative, and at least one
+gain <span class="math inline">\(a&gt;1\)</span> is available at every
+input. A caller checks <span class="math inline">\(r\le d(x)\)</span>
+for a finite rational <span class="math inline">\(d(x)\)</span>. The
+same input, admissions and available gains apply on each recursive call.
+All the theorems below concern this fixed interface. <a
+href="thesis-review-43.html#operator">Producer clauses and their place
+in Table 4.4</a></p>
+<p>Write <span class="math inline">\(P(k,r)\)</span> for the stored
+package. A result opens at <span class="math inline">\(x\)</span> if it
+is stored at every key of <span class="math inline">\(A_x\)</span>. The
+base must open at <span class="math inline">\(x\)</span>, and each
+successor applied to an open result must itself open at <span
+class="math inline">\(x\)</span>. If some <span
+class="math inline">\(r&gt;g(x)\)</span> opened there, repeated use of a
+single available gain <span class="math inline">\(a&gt;1\)</span> would
+open <span class="math display">\[
+g(x)+a^n(r-g(x))
+\]</span> there for every <span class="math inline">\(n\)</span>.
+Eventually this exceeds <span class="math inline">\(d(x)\)</span>. Thus
+<strong>every solution forces <span class="math inline">\(r\le
+g(x)\)</span> at the opening</strong>, however large the caller’s finite
+allowance. Checking <span class="math inline">\(g(x)\le d(x)\)</span>
+for all <span class="math inline">\(x\)</span> is necessary already at
+the base. Assume that check passes below. <a
+href="thesis-review-44.lean">Lean theorem
+<code>upper_forces_centre</code></a></p>
+</section>
+<section id="projection" class="level2">
+<h2>One projection decides whether interval sections suffice</h2>
+<p>For a proposed relation <span class="math inline">\(S(x,r)\)</span>
+at the opening, store it at every key its input admits. Opening a
+package intersects its key sections. These operations are <span
+class="math display">\[
+(L S)(k,r)\iff\exists y\ (k\in A_y\land S(y,r)),\qquad
+(H P)(x,r)\iff\forall k\in A_x\ P(k,r).
+\]</span> Then <span class="math inline">\(L S\subseteq P\)</span> iff
+<span class="math inline">\(S\subseteq H P\)</span>. Both statements
+require each result in <span class="math inline">\(S\)</span> to be
+stored at each of its input’s keys. In particular <span
+class="math inline">\(S\)</span> can be the <em>exact</em> opening of a
+package iff <span class="math inline">\(H L S=S\)</span>. Indeed <span
+class="math inline">\(S\subseteq H L S\)</span> always. If <span
+class="math inline">\(S=H P\)</span>, then <span class="math inline">\(L
+S\subseteq P\)</span> and <span class="math inline">\(H L S\subseteq H
+P=S\)</span>. This adjunction is independent of the suppliers. <a
+href="thesis-review-44.lean">Formal statements <code>store_open</code>
+and <code>exact_open</code></a></p>
+<p>Take <span class="math inline">\(S(x,r)\)</span> to be <span
+class="math inline">\(r\le g(x)\)</span>. Its projection is the explicit
+candidate <span class="math display">\[
+C(k,r)\iff\exists y\ (k\in A_y\land r\le g(y)).
+\]</span> <strong>A solution with a convex result set at each key exists
+iff <span class="math inline">\(H C(x,r)\)</span> implies <span
+class="math inline">\(r\le g(x)\)</span> at every input.</strong> In
+that case <span class="math inline">\(C\)</span> is such a solution, and
+its opening is exactly <span class="math inline">\(r\le g(x)\)</span>.
+Convexity here means that a key storing <span
+class="math inline">\(u\)</span> and <span
+class="math inline">\(v\)</span> must store every rational between them.
+The key domain and the joint graph of the package can have any
+shape.</p>
+<p>For sufficiency, each <span class="math inline">\(r\le g(x)\)</span>
+is stored at every key of <span class="math inline">\(x\)</span> using
+witness <span class="math inline">\(y=x\)</span>. The base opens. A
+nonnegative gain sends any such <span class="math inline">\(r\)</span>
+to another value at most <span class="math inline">\(g(x)\)</span>, so
+the supplier and caller clauses hold. For necessity, suppose <span
+class="math inline">\(H C\)</span> admitted <span
+class="math inline">\(r&gt;g(x)\)</span> at input <span
+class="math inline">\(x\)</span>. At each of its keys <span
+class="math inline">\(k\)</span> there would be an input <span
+class="math inline">\(y\)</span> admitting <span
+class="math inline">\(k\)</span> with <span
+class="math inline">\(g(y)\ge r\)</span>. Every solution stores both
+base values <span class="math inline">\(g(x)\)</span> and <span
+class="math inline">\(g(y)\)</span> at <span
+class="math inline">\(k\)</span>. Convexity would force it to store
+<span class="math inline">\(r\)</span> there as well. This happens at
+<em>every</em> key of <span class="math inline">\(x\)</span>,
+contradicting the expanding orbit. The witness <span
+class="math inline">\(y\)</span> may vary with <span
+class="math inline">\(k\)</span>. The argument needs neither a greatest
+centre at a key nor a finite set of keys. <a
+href="thesis-review-44.lean">Lean theorem
+<code>cap_complete</code></a></p>
+<p>For rational semilinear admissions and a rational semilinear graph of
+<span class="math inline">\(g\)</span>, linear quantifier elimination
+performs the projection and checks its opening. In the two-limit example
+<span class="math inline">\(0\le x,k\le1\)</span>, <span
+class="math inline">\(g(x)=x\)</span>, and admission means <span
+class="math inline">\(x+k\le1\)</span> or <span
+class="math inline">\((x,k)=(1,1)\)</span>. Eliminating <span
+class="math inline">\(y\)</span> gives <span class="math display">\[
+C(k,r)\iff r\le1\ \land\ (k+r\le1\ \lor\ k=1)
+\]</span> on legal keys. Opening gives exactly <span
+class="math inline">\(r\le x\)</span>. This derives the earlier closed
+certificate directly from the clauses. It also explains why a finite
+input-only sample at zero can miss the bound. Each positive hypothetical
+result may require a different key to refute it. <a
+href="thesis-review-44.py">Quantifier-elimination replay</a> · <a
+href="thesis-review-43.html#example">Earlier finite-sample
+obstruction</a></p>
+<p>Here is a case where projection exposes the need for a gap. Give
+inputs <span class="math inline">\(0,1,2\)</span> the centres <span
+class="math inline">\(0,1,2\)</span>, gain two, and respective menus
+<span class="math inline">\(\{a,b\},\{a\},\{b\}\)</span>. At <span
+class="math inline">\(a\)</span> the projected interval reaches one and
+at <span class="math inline">\(b\)</span> it reaches two. Their
+intersection opens one at input zero. The theorem rules out every
+solution with convex sections. Yet storing <span
+class="math inline">\(r\le0\)</span> or <span
+class="math inline">\(r=1\)</span> at <span
+class="math inline">\(a\)</span>, and <span
+class="math inline">\(r\le0\)</span> or <span
+class="math inline">\(r=2\)</span> at <span
+class="math inline">\(b\)</span>, is inductive. The only results opening
+at zero are nonpositive. At each other input the positive point is its
+own centre. <a href="thesis-review-44.py">Finite replay and compiler
+guard checks</a></p>
+</section>
+<section id="changing" class="level2">
+<h2>Which jumps survive a change in admission?</h2>
+<p>Suppose the solver may change the menu at each input between known
+bounds <span class="math inline">\(A^-_x\subseteq A_x\subseteq
+A^+_x\)</span>. Keep the legal inputs, centres, gains and callers fixed.
+Seek one package that certifies every policy in this interval, including
+its two endpoints. <strong>Store using the largest menus and open using
+the smallest.</strong> More precisely, form <span
+class="math inline">\(C^+=L_{A^+}(r\le g(x))\)</span>. A common solution
+with convex sections exists exactly when <span class="math display">\[
+(H_{A^-} C^+)(x,r)\implies r\le g(x) \qquad\text{for all }x,r.
+\]</span></p>
+<p>For sufficiency, every intermediate menu admits enough keys to
+inherit the upper bound from the smallest menu. Every key it admits lies
+in the largest menu, so <span class="math inline">\(C^+\)</span> stores
+every result at or below the input’s centre there. These two facts give
+the base, successor and caller clauses at every policy. For necessity,
+take a result above the centre surviving the displayed test at input
+<span class="math inline">\(x\)</span>. At each key of the smallest
+menu, the smallest policy forces the base <span
+class="math inline">\(g(x)\)</span>. The largest policy forces some base
+<span class="math inline">\(g(y)\ge r\)</span> at that same key. Any
+common convex solution must therefore open <span
+class="math inline">\(r\)</span> under the smallest policy, where the
+expanding orbit rules it out. <a href="thesis-review-44.lean">Lean
+theorem <code>admission_interval</code></a></p>
+<p>Checking each endpoint with its <em>own</em> package can miss the
+conflict. At centre zero let the small menu be <span
+class="math inline">\(\{a\}\)</span> and the large one <span
+class="math inline">\(\{a,c\}\)</span>. At centre one let them be <span
+class="math inline">\(\{b\}\)</span> and <span
+class="math inline">\(\{a,b\}\)</span>. Each endpoint has an interval
+solution. Under the large policy, key <span
+class="math inline">\(c\)</span> protects the caller at zero. But the
+base at one now forces one at <span class="math inline">\(a\)</span>,
+the only key tested at zero under the small policy. No single package,
+even with gaps, works for both. Of the 361 nested menu pairs for two
+centres and three keys, 18 admit separate endpoint solutions but no
+common one. <a href="thesis-review-44.py">Exhaustive replay</a></p>
+<p>If several policies can occur but the pointwise smallest menu cannot,
+one can instead store using their union and check each actual menu. This
+is the fixed-admission projection theorem applied to inputs <span
+class="math inline">\((\text{policy},x)\)</span> that share the same
+stored package.</p>
+</section>
+<section id="finite" class="level2">
+<h2>Finitely many centres decide the case with gaps</h2>
+<p>Now assume that the sets of centres <span
+class="math inline">\(G\)</span> and available gains are finite and
+nonempty. In this part every gain is at least one, and each input still
+has an expanding gain. Inputs and key menus may be infinite. Let <span
+class="math inline">\(m=\min G\)</span>. <strong>There is a terminating
+test for the existence of any package for these upper-bound
+callers</strong>, provided the admission and branch-availability
+formulas admit effective projection and universal tests, as rational
+semilinear formulas do.</p>
+<p>First put the whole tail <span class="math inline">\(r\le m\)</span>
+at every key. This preserves feasibility. Given any solution <span
+class="math inline">\(P\)</span>, adjoin the tail. Results above <span
+class="math inline">\(m\)</span> have exactly their old openings. For
+<span class="math inline">\(r\le m\le g(x)\)</span> and <span
+class="math inline">\(a\ge1\)</span>, the successor returns at most
+<span class="math inline">\(r\)</span>, already in the tail. The caller
+admits every tail value. The enlarged solution contains the new seed,
+and any solution built with the seed also satisfies the original
+clauses. This move depends on the direction of the caller and on the
+gains. <a href="thesis-review-44.lean">Lean theorem
+<code>add_tail</code></a></p>
+<p>Above <span class="math inline">\(m\)</span> start with the base
+values. A value <span class="math inline">\(t\)</span> opening at <span
+class="math inline">\(x\)</span> has three possible effects.</p>
+<table>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr>
+<th>Condition</th>
+<th>Consequence</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><span class="math inline">\(t&gt;g(x)\)</span></td>
+<td>Reject. Repeating an expanding branch at this input eventually
+breaks the caller.</td>
+</tr>
+<tr>
+<td><span class="math inline">\(t=g(x)\)</span> or <span
+class="math inline">\(a=1\)</span>, after the preceding check</td>
+<td>The output is already stored at every key of <span
+class="math inline">\(x\)</span>.</td>
+</tr>
+<tr>
+<td><span class="math inline">\(t&lt;g(x)\)</span> and <span
+class="math inline">\(a&gt;1\)</span></td>
+<td>Store <span class="math inline">\(v=g(x)+a(t-g(x))&lt;t\)</span>
+throughout <span class="math inline">\(A_x\)</span>. If <span
+class="math inline">\(v\le m\)</span> the tail already contains it.</td>
+</tr>
+</tbody>
+</table>
+<p>Only finitely many values above <span
+class="math inline">\(m\)</span> need consideration. Form a tree rooted
+at each base value above <span class="math inline">\(m\)</span>. Its
+children are all strict images <span class="math inline">\(v\)</span> in
+the last row with <span class="math inline">\(v&gt;m\)</span>, allowing
+every centre and gain from the two finite sets. If a path were infinite,
+some pair <span class="math inline">\((c,a)\)</span> would occur
+infinitely often. Let <span class="math inline">\(t_0&lt;c\)</span> be
+the value at its first occurrence. Every later use of this pair would
+decrease the current value by at least <span
+class="math inline">\((a-1)(c-t_0)&gt;0\)</span>. Other steps also
+decrease it. Enough uses would take the path below <span
+class="math inline">\(m\)</span>. Thus every path is finite. A finitely
+branching tree with infinitely many nodes would have a child with
+infinitely many descendants at each successive depth. Hence the trees
+themselves are finite. <a href="thesis-review-44.lean">Lean proofs of
+well-foundedness and finite closure</a></p>
+<p>Process these values from greatest to least. The row <span
+class="math inline">\(E_t\)</span> is the set of keys so far required to
+store <span class="math inline">\(t\)</span>. Initialize it with the
+keys admitted by inputs of centre <span
+class="math inline">\(t\)</span>. When processing <span
+class="math inline">\(t\)</span>, test <span
+class="math inline">\(A_x\subseteq E_t\)</span> for the opening at <span
+class="math inline">\(x\)</span>. All strict introductions into this row
+come from larger values, so the row is complete when tested. For each
+strict output <span class="math inline">\(v&gt;m\)</span>, add to <span
+class="math inline">\(E_v\)</span> all keys admitted by an input where
+<span class="math inline">\(t\)</span> opens and the corresponding
+branch is available. Each addition is an existential projection. Empty
+rows can be skipped by keeping a queue of values actually introduced.
+Universal admission tests still range over the whole menu.</p>
+<p>Every entry above <span class="math inline">\(m\)</span> in these
+rows is forced in every original solution. The base starts the
+induction, and a strict introduction uses a larger row already proved
+necessary. A rejection therefore rules out arbitrary solutions,
+including ones with gaps. If no check rejects, use the package <span
+class="math display">\[
+r\le m\quad\lor\quad\bigvee_{t&gt;m\ \text{in the processed
+rows}}(r=t\land k\in E_t).
+\]</span> Every base is present. The three cases in the table cover
+every successor, and the orbit check bounds each opening by its centre.
+This proves sufficiency. With rational semilinear data and finite
+rational gains the construction is effective in rational linear
+arithmetic. Its row formulas may use strict inequalities. Existence in
+the thesis’s weak-inequality language can impose an additional
+closedness condition. <a href="thesis-review-43.html#closed">Closedness
+and projection</a></p>
+</section>
+<section id="rounds" class="level2">
+<h2>A fixed answer can still take exponentially many rounds</h2>
+<p>Use three inputs again, with the following admissions. The caller at
+each input asks for its centre as the upper bound.</p>
+<table>
+<thead>
+<tr>
+<th>Centre</th>
+<th>Keys</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><span class="math inline">\(0\)</span></td>
+<td><span class="math inline">\(c\)</span></td>
+</tr>
+<tr>
+<td><span class="math inline">\(1\)</span></td>
+<td><span class="math inline">\(a,b\)</span></td>
+</tr>
+<tr>
+<td><span class="math inline">\(2\)</span></td>
+<td><span class="math inline">\(b\)</span></td>
+</tr>
+</tbody>
+</table>
+<p>All three use the same gain <span
+class="math inline">\(1+1/q\)</span>, with <span
+class="math inline">\(q=2^N\)</span> and <span
+class="math inline">\(N\ge1\)</span>. The projected solution is always
+<span class="math inline">\(r\le0\)</span> at <span
+class="math inline">\(c\)</span>, <span
+class="math inline">\(r\le1\)</span> at <span
+class="math inline">\(a\)</span>, and <span
+class="math inline">\(r\le2\)</span> at <span
+class="math inline">\(b\)</span>. Only the gain in the supplier changes.
+The answer and its three bounds are independent of <span
+class="math inline">\(N\)</span>.</p>
+<p>Start simultaneous rounds with the bases and the entire tail <span
+class="math inline">\(r\le0\)</span>. Above the tail, <span
+class="math inline">\(a\)</span> keeps just one and <span
+class="math inline">\(c\)</span> stays empty. At <span
+class="math inline">\(b\)</span> the centre two is fixed. The base one
+starts a second sequence there. Each round adds exactly the next
+positive value <span class="math display">\[
+t_j=2-(1+1/q)^j,\qquad t_0=1,
+\]</span> until the next value lies in the tail. No other input supplies
+a new positive value. Let <span class="math inline">\(h\)</span> be the
+first <span class="math inline">\(j\)</span> with <span
+class="math inline">\((1+1/q)^j\ge2\)</span>. There are exactly <span
+class="math inline">\(h-1\)</span> productive rounds after seeding. For
+<span class="math inline">\(j\le q/3\)</span>, the binomial expansion
+gives <span
+class="math inline">\((1+1/q)^j\le\sum_{i\ge0}(j/q)^i\le3/2\)</span>. At
+<span class="math inline">\(j=q\)</span>, Bernoulli’s inequality gives
+<span class="math inline">\((1+1/q)^q\ge2\)</span>. Thus the round count
+is <span class="math inline">\(\Theta(q)\)</span>, exponential in the
+binary length of the gain. Without the initial tail, the same orbit
+continues through infinitely many negative values at <span
+class="math inline">\(b\)</span>. The literal producer reaches its first
+fixed point at <span class="math inline">\(\omega\)</span>, since all
+menus here are finite. With the projected jump, one calculation gives
+the three bounds for every <span class="math inline">\(N\)</span>. <a
+href="thesis-review-44.py">Exact rational replay</a></p>
+</section>
+<section id="compiler" class="level2">
+<h2>What this changes for InvarGenT</h2>
+<p>In InvarGenT revision <code>f872939</code>,
+<code>NumS.converge</code> can retain an earlier inequality when all
+projected suppliers imply it. The solver can also schedule a pass to
+recover a tighter cap when a caller keeps renewing a demand. The
+projection above supplies a different source of candidate inequalities.
+An expanding branch derives the bound at the <em>opening</em>, and
+projecting through admission translates it to a formula at the
+<em>stored keys</em>. A compiler could try that formula as soon as it
+recognizes the recentered suppliers. An implementation would need to
+establish that the expanding branch can repeat at the same input and
+check the projected candidate against the original clauses. The
+admission-interval theorem supplies a certificate that survives
+subsequent changes within proved bounds. Whether the evolving predicates
+in Table 4.4 provide useful such bounds early enough to guide an actual
+jump remains open. <a href="thesis-review-42.html#repair">Supplier
+bounds in the implemented jump</a> · <a
+href="thesis-review-43.html#operator">Changing-admission example</a> ·
+<a href="thesis-review-3.html#update">Original Table 4.4
+recurrence</a></p>
+<p>The <a href="thesis-review-44.lean">Lean file</a> checks the
+adjunction, the orbit argument, completeness for convex sections at
+fixed and varying admissions, tail extension, and finiteness of the
+strict value graph with Lean 4.19 and mathlib v4.19.0. The <a
+href="thesis-review-44.py">Python replay</a> takes
+<code>z3-solver</code>. It checks the triangle projection symbolically,
+compares descending evaluation with simultaneous rounds on 1,372 finite
+menu, branch and caller configurations, checks 361 nested admission
+pairs for two centres, and verifies the round family through <span
+class="math inline">\(q=512\)</span>. With <code>--driver</code> pointed
+to the executable built from the <a
+href="thesis-review-41-numeric.ml">InvarGenT arithmetic driver</a>, it
+also checks the two packages in the gap example against 48 guards with
+both rational and native result observations. These guards exercise the
+existing all-keys predicate.</p>
+</section>
+</article>
+<script src="/assets/theme-toggle.js"></script>
+</body>
+</html>

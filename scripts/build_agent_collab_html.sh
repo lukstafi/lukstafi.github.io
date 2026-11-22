@@ -479,6 +479,11 @@ build_html \
   "$collab_dir/thesis-review-43.html" \
   "What happens at the limit of recursive package openings?"
 
+build_html \
+  "$collab_dir/thesis-review-44.md" \
+  "$collab_dir/thesis-review-44.html" \
+  "When can the supplier clauses determine an induction jump?"
+
 reviews_dir="$collab_dir/reviews"
 if [[ -d "$reviews_dir" ]]; then
   for md_file in "$reviews_dir"/*.md; do
