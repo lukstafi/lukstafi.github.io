@@ -484,6 +484,11 @@ build_html \
   "$collab_dir/thesis-review-44.html" \
   "When can the supplier clauses determine an induction jump?"
 
+build_html \
+  "$collab_dir/thesis-review-45.md" \
+  "$collab_dir/thesis-review-45.html" \
+  "Which changes of admission must an induction jump survive?"
+
 reviews_dir="$collab_dir/reviews"
 if [[ -d "$reviews_dir" ]]; then
   for md_file in "$reviews_dir"/*.md; do

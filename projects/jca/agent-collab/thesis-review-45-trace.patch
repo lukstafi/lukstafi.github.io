@@ -1,0 +1,24 @@
+--- a/src/Infer.ml
++++ b/src/Infer.ml
+@@ -1947,2 +1947,4 @@
+           | call_constraints::rest, _ ->
++            Format.eprintf "PROPOSAL %s@." (match call_constraints with
++              | Restrict_calls _ -> "restricted" | Open_at_keys _ -> "probes" | Exclude_bands _ -> "all");
+             let candidate = try Some (search ~call_constraints (Observe_comparisons (ref false)))
+@@ -1953,3 +1955,3 @@
+                match admitted call_constraints answer with
+-               | Admitted -> answer
++               | Admitted -> Format.eprintf "CERTIFIED@."; answer
+                | retry ->
+--- a/src/Invariants.ml
++++ b/src/Invariants.ml
+@@ -1082,2 +1082,3 @@
+   let rec loop ~branches ?(call_inputs=[]) ?retry_proposal ?supplier_pass ~jump_at iter_no discard rol1 sol1 ans1_res =
++    Format.eprintf "PASS %d/%d@." iter_no jump_at;
+     try
+--- a/src/NumS.ml
++++ b/src/NumS.ml
+@@ -4484,2 +4484,3 @@
+ let converge q ?(recover_caps=false) ?localvs ?(guard=[]) ?suppliers ~initstep cnj1 cnj2 =
++  Format.eprintf "WIDEN@.";
+   (*[* Format.printf

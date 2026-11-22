@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <meta name="dcterms.date" content="2026-11-22">
+  <meta property="og:title" content="Which changes of admission must an induction jump survive?">
+  <meta property="og:url" content="https://lukstafi.github.io/projects/jca/agent-collab/thesis-review-45.html">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="lukstafi&#x27;s blog">
+  <meta name="twitter:card" content="summary">
+  <title>Which changes of admission must an induction jump
+survive?</title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <link rel="stylesheet" href="/assets/tufte.css">
+  <link rel="stylesheet" href="/assets/pandoc-tufte.css">
+  <link rel="stylesheet" href="/assets/site.css">
+  <script defer=""
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+  type="text/javascript"></script>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+  <script>(function(){var t=localStorage.getItem('theme-preference');if(t)document.documentElement.setAttribute('data-theme',t);})()</script>
+</head>
+<body>
+<nav class="site-nav">
+  <a href="/">Home</a> &middot; <a href="/study/">Study Guide</a> &middot; <a href="/about.html">About</a> &middot; <a href="https://lukstafi.substack.com">Substack</a>
+</nav>
+<div class="theme-toggle">
+  <button id="theme-btn" aria-label="Toggle dark mode">&#9788;</button>
+</div>
+<article>
+<header>
+<h1 class="title">Which changes of admission must an induction jump
+survive?</h1>
+<p class="byline">2026-11-22</p>
+</header>
+<nav id="TOC">
+<ul>
+<li><a href="#one" id="toc-one">A key used for storage is also available
+for opening</a></li>
+<li><a href="#coverage" id="toc-coverage">What if only the existence of
+a key is guaranteed?</a></li>
+<li><a href="#endpoints" id="toc-endpoints">Why checking the endpoints
+misses a supplier</a></li>
+<li><a href="#omega" id="toc-omega">A finite lower menu bounds the
+common producer by one limit</a></li>
+<li><a href="#recheck" id="toc-recheck">Recomputing admission can take
+one more step after the limit</a></li>
+<li><a href="#limit" id="toc-limit">A sequence of individually valid
+schemes can lose its proof</a></li>
+<li><a href="#compiler" id="toc-compiler">A moving menu in
+InvarGenT</a></li>
+<li><a href="#native" id="toc-native">Which coordinates are
+native?</a></li>
+<li><a href="#checks" id="toc-checks">Reproducing the checks</a></li>
+</ul>
+</nav>
+<p>To certify a recursive package while its input predicate changes,
+suppose we know two bounds. Every future menu at input <span
+class="math inline">\(x\)</span> contains <span
+class="math inline">\(L_x\)</span> and lies inside <span
+class="math inline">\(U_x\)</span>. A supplier might fail its check at
+some intermediate menu even if it passes at both bounds. For the
+all-keys producer clauses, testing the lower menus with <strong>one
+additional key at one input</strong> suffices. This holds for arbitrary
+package relations and for suppliers that open several recursive calls.
+It gives a bound of <span class="math inline">\(\omega\)</span> on the
+exact producer iteration when the lower menus are finite, even if every
+upper menu is infinite. Reversing the calculation can take longer. With
+the package held fixed, exact recomputation of admission can take <span
+class="math inline">\(\omega+1\)</span> steps to find a singleton
+domain. <a href="thesis-review-44.html#changing">Earlier certificate for
+convex sections</a> · <a href="thesis-review-45.lean">Formal
+proofs</a></p>
+<section id="one" class="level2">
+<h2>A key used for storage is also available for opening</h2>
+<p>Write <span class="math inline">\(P(k,r)\)</span> when the package at
+key <span class="math inline">\(k\)</span> contains result <span
+class="math inline">\(r\)</span>. A recursive result <span
+class="math inline">\(s\)</span> opens at <span
+class="math inline">\(y\)</span> if <span
+class="math inline">\(P(j,s)\)</span> holds for every <span
+class="math inline">\(j\in A_y\)</span>. Fix a supplier clause and
+values for its local variables. Its static premises determine which
+instances are legal. An instance opens a finite list of calls <span
+class="math inline">\((y_i,s_i)\)</span> and introduces result <span
+class="math inline">\(t\)</span> at input <span
+class="math inline">\(x\)</span>. A base clause has an empty list. The
+step must store <span class="math inline">\(t\)</span> at every key
+<span class="math inline">\(k\in A_x\)</span>. One can tag the input and
+key spaces with the recursive function name for a mutually recursive
+group. Private package witnesses are already existentially quantified
+inside <span class="math inline">\(P\)</span>. <a
+href="thesis-review-43.html#operator">Semantic producer step</a> · <a
+href="thesis-review-39.html#all">Witness scope at recursive
+openings</a></p>
+<p><strong>One-key criterion.</strong> Fix <span
+class="math inline">\(k\in U_x\)</span>. The clause can introduce <span
+class="math inline">\(t\)</span> at <span
+class="math inline">\(k\)</span> under some intermediate policy exactly
+when the following requirements hold for every recursive call in the
+instance.</p>
+<ol type="1">
+<li><span class="math inline">\(P(j,s_i)\)</span> holds for every <span
+class="math inline">\(j\in L_{y_i}\)</span>.</li>
+<li>Whenever <span class="math inline">\(y_i=x\)</span>, also <span
+class="math inline">\(P(k,s_i)\)</span> holds.</li>
+</ol>
+<p>To prove necessity, take a policy witnessing the introduction. It
+contains the lower menus everywhere and contains <span
+class="math inline">\(k\)</span> at <span
+class="math inline">\(x\)</span>. Each opening satisfies both
+requirements. Conversely, take the lower policy and add <span
+class="math inline">\(k\)</span> just at <span
+class="math inline">\(x\)</span>. The two requirements list <em>all</em>
+the keys needed by each opening under this policy. The supplier can now
+store <span class="math inline">\(t\)</span> at <span
+class="math inline">\(k\)</span>. Consequently a violation under any
+policy has a witness at this one-key change. A caller clause with a
+fixed forbidden conclusion requires only the lower policy, since
+shrinking menus preserves its open premises. Nonempty lower menus ensure
+every legal input still admits a typing. <a
+href="thesis-review-45.lean">Lean theorems <code>body_pin</code> and
+<code>one_key_step</code></a></p>
+<p>The same argument covers extra explicit positive admission tests.
+Collect the finitely many pairs required by a violating instance in
+<span class="math inline">\(E\)</span>, including the destination pair
+if it has one. Suppose the remaining condition <span
+class="math inline">\(D(A)\)</span> is preserved by shrinking <span
+class="math inline">\(A\)</span>. There exists a policy between <span
+class="math inline">\(L\)</span> and <span
+class="math inline">\(U\)</span> containing <span
+class="math inline">\(E\)</span> and satisfying <span
+class="math inline">\(D\)</span> iff <span
+class="math inline">\(E\subseteq U\)</span> and <span
+class="math inline">\(D(L\cup E)\)</span>. This removes the quantifier
+over policies. In rational linear arithmetic, the test for an opened
+call becomes an ordinary first-order formula using equality of input
+tuples. If the solver requires additional correlations between optional
+keys, testing the entire interval gives a sufficient certificate for
+that smaller family. An exact test for correlated policies can use their
+least legal extension of <span class="math inline">\(L\cup E\)</span>
+when it exists. <a href="thesis-review-45.lean">Lean theorem
+<code>least_completion</code></a></p>
+</section>
+<section id="coverage" class="level2">
+<h2>What if only the existence of a key is guaranteed?</h2>
+<p>A caller can require <em>some</em> key in a set without fixing a
+representative. Replacing such a requirement by the intersection of all
+legal menus can lose every useful key. There is a dual way to eliminate
+the policy quantifier. For one concrete list of openings, take the
+<strong>largest compatible menus</strong> <span class="math display">\[
+M_y=\{j\in U_y:\ \forall i,\ y_i=y\implies P(j,s_i)\}.
+\]</span> A policy below <span class="math inline">\(U\)</span> permits
+all the openings exactly when it is contained in <span
+class="math inline">\(M\)</span>. Let <span
+class="math inline">\(N(A)\)</span> be any admission demand preserved by
+adding keys. A witnessing policy exists iff <span
+class="math inline">\(N(M)\)</span> holds. Necessity follows from
+containment and upward preservation. For sufficiency take <span
+class="math inline">\(A=M\)</span>. Include the destination test <span
+class="math inline">\(k\in A_x\)</span> in <span
+class="math inline">\(N\)</span> if the violation concerns a supplier.
+The requirements can couple different calls or inputs. For a demand to
+hit a given set, one tests whether <span
+class="math inline">\(M\)</span> intersects it. Calls at the same input
+must use the same <span class="math inline">\(M_y\)</span>, even when
+they open different results. <a href="thesis-review-45.lean">Lean
+theorem <code>greatest_completion</code></a></p>
+<p>For example, allow key zero and require at least one positive key
+from <span class="math inline">\([0,1]\)</span>. Store the package <span
+class="math inline">\(0\le r\le1-k\)</span>. Every permissible menu
+opens only zero for an integer result. Their intersection can consist of
+key zero alone, where one also opens. The largest compatible menu for
+the hypothetical one contains only zero, so it fails the positive-key
+demand. This gives an exact certificate without choosing a mandatory
+positive representative. The moving program below realizes the same
+demand.</p>
+</section>
+<section id="endpoints" class="level2">
+<h2>Why checking the endpoints misses a supplier</h2>
+<p>Use one input, base zero, and a guarded successor that returns two
+when it opens one. Let <span class="math inline">\(L=\{a\}\)</span> and
+<span class="math inline">\(U=\{a,b,c\}\)</span>. The key sections of
+the proposed package are <span class="math inline">\(P_a=[0,2]\)</span>,
+<span class="math inline">\(P_b=[0,1]\)</span> and <span
+class="math inline">\(P_c=\{0\}\)</span>.</p>
+<table>
+<thead>
+<tr>
+<th>Admitted keys</th>
+<th>Does one open?</th>
+<th>Supplier check</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><span class="math inline">\(\{a\}\)</span></td>
+<td>Yes</td>
+<td><span class="math inline">\(a\)</span> stores two.</td>
+</tr>
+<tr>
+<td><span class="math inline">\(\{a,b,c\}\)</span></td>
+<td>No</td>
+<td><span class="math inline">\(c\)</span> excludes one.</td>
+</tr>
+<tr>
+<td><span class="math inline">\(\{a,b\}\)</span></td>
+<td>Yes</td>
+<td><span class="math inline">\(b\)</span> fails to store two.</td>
+</tr>
+</tbody>
+</table>
+<p>There is also a false alarm if one opens at <span
+class="math inline">\(L\)</span> and unconditionally writes at every key
+of <span class="math inline">\(U\)</span>. Remove <span
+class="math inline">\(b\)</span> from the example. Every remaining
+policy works. Storing two at <span class="math inline">\(c\)</span>
+would require admitting <span class="math inline">\(c\)</span>, and that
+same admission prevents the supplier from opening one. This dependence
+accounts for the second requirement in the criterion. When the recursive
+call is at a <em>different</em> input, adding <span
+class="math inline">\(k\)</span> at the destination places no constraint
+on that call. The <a href="thesis-review-45.py">finite replay</a>
+compares the criterion with explicit policy enumeration on 12,960 cases,
+including repeated calls to the same input.</p>
+</section>
+<section id="omega" class="level2">
+<h2>A finite lower menu bounds the common producer by one limit</h2>
+<p>Define <span class="math inline">\(T(P)\)</span> to be the union of
+the exact producer steps over all intermediate policies. A package
+satisfies the producers throughout the interval iff <span
+class="math inline">\(T(P)\subseteq P\)</span>. The operation <span
+class="math inline">\(T\)</span> is monotone in <span
+class="math inline">\(P\)</span>. For an increasing sequence <span
+class="math inline">\(P_n\)</span>, any result introduced from <span
+class="math inline">\(\bigcup_n P_n\)</span> has a witnessing clause
+instance, destination key and list of calls. By the criterion, that
+instance tests only the mandatory keys of those calls and, at calls to
+the destination, one extra key. If each mandatory menu is finite, all
+those tests already pass at one finite stage. Take the maximum of the
+stages at which the required entries appear. It follows that <span
+class="math display">\[
+T\left(\bigcup_n P_n\right)=\bigcup_n T(P_n).
+\]</span></p>
+<p>Starting at the empty package, the union of the finite iterates is
+therefore fixed and is contained in every common producer invariant. The
+argument also extends to independently chosen menus with finitely many
+mandatory keys and finitely many requirements per input to hit specified
+sets. In a policy witnessing an introduction at the limit, retain the
+mandatory keys and one witness for each requirement at each called
+input. Keep the destination key if it is present at one of those inputs.
+Leave the policy alone elsewhere. The revised policy still meets the
+demands, and the instance now tests finitely many package entries. This
+finite selection uses no bound on the sizes of the prescribed sets. The
+bound is sharp. With one input, one mandatory key, base zero and
+successor <span class="math inline">\(r\mapsto r+1\)</span>, the
+producer introduces every natural number and adds a new one at every
+finite round. With an infinite mandatory menu the earlier <span
+class="math inline">\(\omega+\omega\)</span> example applies by taking
+<span class="math inline">\(L=U\)</span>. These bounds concern the least
+relation closed under the specified clauses. A fixed caller with
+positive opening premises can be checked at the least relation. Whether
+that relation has a formula in the answer language is a separate
+question. <a href="thesis-review-45.lean">Lean theorem
+<code>least_at_omega</code></a> · <a
+href="thesis-review-43.html#limits">Two-limit producer</a></p>
+</section>
+<section id="recheck" class="level2">
+<h2>Recomputing admission can take one more step after the limit</h2>
+<p>Now freeze the package <span class="math inline">\(P\)</span> and
+recompute the admission predicate itself. Given a domain <span
+class="math inline">\(A\)</span> for recursive calls, let <span
+class="math inline">\(G(A)_x\)</span> contain each <span
+class="math inline">\(k\in U_x\)</span> at which every supplier checks.
+For a clause instance whose prospective result <span
+class="math inline">\(t\)</span> fails <span
+class="math inline">\(P(k,t)\)</span>, keeping <span
+class="math inline">\((x,k)\)</span> requires at least one of its calls
+<span class="math inline">\((y_i,s_i)\)</span> to have an admitted key
+<span class="math inline">\(j\)</span> with <span
+class="math inline">\(\neg P(j,s_i)\)</span>. An instance with no calls
+has no such defence. This translates a fixed postcondition into explicit
+demands on the unary predicate. The domain is sound exactly when <span
+class="math inline">\(A\subseteq G(A)\)</span>. Enlarging <span
+class="math inline">\(A\)</span> can only add defences, so <span
+class="math inline">\(G\)</span> is monotone. Iterating down from <span
+class="math inline">\(U\)</span>, taking intersections at limits,
+computes the greatest sound domain. Upward-preserved caller demands can
+then be tested on that domain. <a
+href="thesis-review-26.html#calls">General greatest-domain theorem</a> ·
+<a href="thesis-review-45.lean">Fixed-package clause equivalence</a></p>
+<p>If each offending instance has only finitely many possible blocking
+pairs <span class="math inline">\((y_i,j)\)</span> in <span
+class="math inline">\(U\)</span>, descending rechecks reach their
+greatest fixed point by <span class="math inline">\(\omega\)</span>. If
+a destination key survives every recheck, each offending instance has a
+blocker at every stage. Among finitely many possible blockers, one must
+remain throughout the decreasing domains. Thus the destination key
+survives the recheck of their intersection. This condition counts the
+keys that can <em>refute</em> an observation. The finite-core producer
+theorem counted the keys needed to <em>permit</em> one. <a
+href="thesis-review-45.lean">Lean theorem
+<code>recheck_limit</code></a></p>
+<p><strong>With a constant-size fixed package and a singleton admission
+solution, the exact recheck can take <span
+class="math inline">\(\omega+1\)</span> steps.</strong> Use one input,
+two isolated keys <span class="math inline">\(a,b\)</span> and all
+ordinary rational keys <span class="math inline">\(k\ge0\)</span>.
+Numeric results are tagged separately from two marker results <span
+class="math inline">\(p,q\)</span>. The package at <span
+class="math inline">\(a\)</span> accepts everything. The package at
+<span class="math inline">\(b\)</span> accepts everything except <span
+class="math inline">\(q\)</span>. The ordinary key <span
+class="math inline">\(k\)</span> accepts <span
+class="math inline">\(q\)</span>, rejects <span
+class="math inline">\(p\)</span>, and accepts a numeric <span
+class="math inline">\(r\)</span> exactly when <span
+class="math inline">\(r+1\le k\)</span> or <span
+class="math inline">\(k+1\le r\)</span>. All numeric constraints are
+weak affine inequalities with a finite disjunction. The base supplies
+zero. One rule takes a nonnegative open number <span
+class="math inline">\(r\)</span> to <span
+class="math inline">\(r+1\)</span>. Another takes an open <span
+class="math inline">\(p\)</span> to <span
+class="math inline">\(q\)</span>.</p>
+<p>Start with all keys available. After <span
+class="math inline">\(n\)</span> rechecks the domain consists of <span
+class="math inline">\(a,b\)</span> and the ordinary tail <span
+class="math inline">\([n,\infty)\)</span>. Indeed a nonnegative numeric
+result opens against that tail exactly when <span
+class="math inline">\(r+1\le n\)</span>. If <span
+class="math inline">\(r\ge n\)</span>, key <span
+class="math inline">\(r\)</span> blocks it. If <span
+class="math inline">\(r&lt;n\)</span>, key <span
+class="math inline">\(n\)</span> gives the required inequality. The base
+removes <span class="math inline">\([0,1)\)</span> on the first pass.
+For <span class="math inline">\(n\ge1\)</span> the successor then
+supplies all numbers in <span class="math inline">\([1,n]\)</span>,
+which together with the base exclude exactly the ordinary keys below
+<span class="math inline">\(n+1\)</span>. A remaining ordinary key
+always blocks <span class="math inline">\(p\)</span>, protecting <span
+class="math inline">\(b\)</span>.</p>
+<p>At <span class="math inline">\(\omega\)</span> the ordinary tail is
+empty. The two isolated keys both permit <span
+class="math inline">\(p\)</span>. The next recheck supplies <span
+class="math inline">\(q\)</span> and removes <span
+class="math inline">\(b\)</span>. Every numeric result also opens, so
+the base and successors still exclude every ordinary key. The domain
+<span class="math inline">\(\{a\}\)</span> is fixed and is greatest by
+monotonicity. Every finite stage still admits the client requiring <span
+class="math inline">\(b\)</span>, although no sound domain admits it.
+The surviving scheme for a client requiring <span
+class="math inline">\(a\)</span> has constant size. This is the exact
+unary subproblem with a fixed package. Table 4.4 can also change the
+package and generalize an approximation. <a
+href="thesis-review-45-admission.lean">Strict stages, fixedness and
+greatestness in Lean</a> · <a href="thesis-review-45.py">Symbolic
+recheck</a></p>
+<p>There is a short induction jump for this particular recheck. In
+<em>any</em> sound policy, zero opens by the base. If the natural number
+<span class="math inline">\(n\)</span> opens, the numeric successor
+makes <span class="math inline">\(n+1\)</span> open. Thus every admitted
+key must store every natural number. An ordinary key <span
+class="math inline">\(k\)</span> fails on <span
+class="math inline">\(\lfloor k\rfloor\)</span>, whose distance from it
+is less than one. Drop the whole ordinary half-line at once. The marker
+rule then drops <span class="math inline">\(b\)</span>. This proof
+constructs the singleton domain directly from the supplier clauses. <a
+href="thesis-review-45-admission.lean">Orbit certificate in Lean</a></p>
+</section>
+<section id="limit" class="level2">
+<h2>A sequence of individually valid schemes can lose its proof</h2>
+<p>A different question arises if we check only the menu actually chosen
+on each pass. Let <span class="math inline">\(A_n\)</span> decrease and
+<span class="math inline">\(P_n\)</span> increase. For a fixed input
+<span class="math inline">\(x\)</span> and result <span
+class="math inline">\(r\)</span>, the keys that block the opening form
+the decreasing sets <span class="math display">\[
+D_n(x,r)=\{k\in A_{n,x}:\neg P_n(k,r)\}.
+\]</span> At the limiting menu and package the blocking set is exactly
+<span class="math inline">\(\bigcap_n D_n(x,r)\)</span>. If <span
+class="math inline">\(D_0\)</span> is compact and each <span
+class="math inline">\(D_n\)</span> is closed in the key space, nonempty
+blockers at every finite stage have a common point. A result opening at
+the limit must then have opened at some finite stage. Conversely, once
+it opens it stays open. For a finite list of calls we can synchronize
+those stages. Every destination key still admitted at the limit was
+admitted on the synchronized pass. If that pass validated its suppliers,
+their output belongs to the limiting package. A fixed caller inherits
+validity by the same argument. A nonempty common lower menu also
+preserves the existence of a typing at each legal input. The compactness
+hypothesis concerns the <strong>blocking keys for each
+observation</strong>. <a href="thesis-review-45.lean">Lean theorems
+<code>diagonal_open</code> and <code>diagonal_inductive</code></a></p>
+<p>A positive margin can supply the compactness argument even with weak
+package inequalities. Suppose the menus are closed in a compact metric
+key space. For this fixed observation, suppose every pass has an
+admitted blocking key whose entire open ball of radius <span
+class="math inline">\(\varepsilon&gt;0\)</span> also blocks the
+observation. The same radius must work on every pass. These centres form
+closed sets inside the menus. Indeed, all keys within distance strictly
+less than <span class="math inline">\(\varepsilon\)</span> of any
+permitted key form an open set. Since the menus shrink and the permitted
+keys grow, the closed sets of centres decrease. Their common point
+blocks the observation at the limit.</p>
+<p>Consider one input with <span
+class="math inline">\(A_n=[0,1/(n+1)]\)</span>, base zero and successor
+<span class="math inline">\(r\mapsto2r\)</span>. Keep the same package
+throughout: <span class="math display">\[
+P(k,r)\iff r=0\ \lor\ (k=0\land 0\le r\le1).
+\]</span> At each finite pass a positive admitted key restricts the
+opening to zero. Every pass validates the successor and the caller <span
+class="math inline">\(r\le0\)</span>. The limit menu is <span
+class="math inline">\(\{0\}\)</span>, where one now opens. The caller
+fails, and its double, two, fails the supplier check. For observation
+one the blocking keys are <span
+class="math inline">\((0,1/(n+1)]\)</span> and disappear at the limit.
+The example works over the rationals and over the reals. Over the reals
+every menu is a compact interval and the package graph is closed. This
+shows why compactness of the menus alone cannot justify a limit jump
+when the evidence excluding a result moves on each pass. <a
+href="thesis-review-45.lean">Exact finite and limiting openings in
+Lean</a></p>
+</section>
+<section id="compiler" class="level2">
+<h2>A moving menu in InvarGenT</h2>
+<p>The <a href="moving_native_menu.gadt">recursive program</a> takes a
+native numeric argument <span class="math inline">\(i\)</span> between
+zero and two. Its written and exported admissions both give <span
+class="math display">\[
+0\le k\le1,\qquad k\le |2i-3|.
+\]</span> At key <span class="math inline">\(k\)</span> the result
+satisfies <span class="math inline">\(0\le r\)</span> and <span
+class="math inline">\(r+k\le1\)</span>. The base opens a seed package.
+The seed permits a positive number only at <span
+class="math inline">\(i=3/2\)</span>. The recursive branch treats <span
+class="math inline">\(r\ge1\)</span> as impossible and otherwise doubles
+<span class="math inline">\(r\)</span>. For a rational input of <span
+class="math inline">\(3/2\)</span> the sole admitted key is zero and the
+package permits one. At every native integer input the whole unit
+interval of keys is admitted, so the recursive opening is zero and
+doubling preserves it.</p>
+<p>For this native caller, any one positive mandatory key suffices. The
+integer result is at most <span class="math inline">\(1-k&lt;1\)</span>.
+If a possible menu contains only zero, it permits one. Thus the concrete
+lower bound <span class="math inline">\(L_i=\{1/2\}\)</span> and upper
+bound <span class="math inline">\(U_i=[0,1]\)</span> certify the
+displayed package for every intermediate menu at native inputs. The
+implementation checks the domain actually exported by inference. A
+proposed lower bound for future passes would still have to be
+established for those passes. <a href="thesis-review-45.py">Symbolic
+projection, exported scheme and scaled-key control</a></p>
+<p>Revision <code>f872939</code> rejected the Boolean guarded arm even
+at outer budget four. Revision <code>c74beee</code> accepts the complete
+scheme at budget two and both example calls return zero. A diagnostic
+records passes zero, one and two in the accepted all-keys trial. It
+records no call to numeric widening, even when its configured threshold
+is lowered from eight to one. A scaled version admits <span
+class="math inline">\(0\le2k\le1\)</span> and uses <span
+class="math inline">\(r+2k\le1\)</span> in the package. There every
+positive refuting key is fractional, and the guard is still proved. This
+repair acts when the candidate recursive typings are checked against the
+inferred and written domains. The proof of convergence for the common
+producer above applies to a separate, exact update. <a
+href="thesis-review-39.html#all">Quantified guard checker</a> · <a
+href="thesis-review-45.py">Whole-program replay</a> · <a
+href="thesis-review-45-trace.patch">Pass and proposal diagnostic</a></p>
+</section>
+<section id="native" class="level2">
+<h2>Which coordinates are native?</h2>
+<p>At a fully applied recursive call, a direct <code>Num</code> argument
+and a <code>Num</code> component of an actual tuple each have an
+integral value on the OCaml integer target. Its numeric index can be a
+whole affine expression. If the argument is <code>Num (2i)</code>, the
+runtime value three realizes <span class="math inline">\(i=3/2\)</span>.
+The corresponding source control reaches the guard with result one. An
+abstract type carrying index <span class="math inline">\(i\)</span> can
+have a perfectly good value at <span
+class="math inline">\(i=3/2\)</span>. Private package witnesses and
+fresh key choices remain rational.</p>
+<p>The <a href="joint_native_guard.gadt">second program</a> makes the
+correlation visible. Its seed permits a positive result only when <span
+class="math inline">\(2r+2i=5\)</span>. The function takes a pair of
+native arguments <span class="math inline">\((i,h)\)</span> and tests
+<span class="math inline">\(1\le r\le h\)</span>. At <span
+class="math inline">\(h=2\)</span> the guard requires genuinely joint
+information. Checking only an integer result permits <span
+class="math inline">\((i,r)=(3/2,1)\)</span>. Checking only an integer
+input permits <span class="math inline">\((1,3/2)\)</span>. Both satisfy
+the guard at that same upper bound. Joint integrality rules out the
+equation itself. Replacing the input by a constructor at phantom index
+<span class="math inline">\(3/2\)</span> lets a native result of one
+enter the guard. Changing the right-hand side to four also makes the arm
+reachable, and a float-target call reaches it at native floating-point
+argument <span class="math inline">\(1.5\)</span>. A further control
+takes <span class="math inline">\((i,h)=(0,2)\)</span> and returns two
+in the base case. The test reaches the guard through the second
+component. The compiler now tracks the numeric operand through the tuple
+pattern and its local aliases. The replay checks the rejected Boolean
+body and the observed numeric result in all five reachable controls.</p>
+<p>InvarGenT first eliminates the rational keys and private witnesses as
+in the earlier guard test. In a remaining region it names the observed
+native expressions, projects away other rational coordinates, and keeps
+the positive slack used for strict inequalities. A projected side has
+the form <span class="math inline">\(u+c+bd\le0\)</span> at <span
+class="math inline">\(d=0^+\)</span>. Clear denominators and divide the
+variable coefficients of the slack-free side by their positive gcd,
+rescaling the constant as well. The resulting <span
+class="math inline">\(u\)</span> is an integer linear form on the joint
+native tuple. For <span class="math inline">\(b\le0\)</span> the
+constraint becomes <span class="math inline">\(u+\lceil
+c\rceil\le0\)</span>. For <span class="math inline">\(b&gt;0\)</span> it
+becomes <span class="math inline">\(u+\lfloor c\rfloor+1\le0\)</span>.
+The checker applies this to both sides of equations and to the
+alternatives of min/max constraints. If every remaining rounded cell is
+inconsistent, the guard is unreachable. <a
+href="thesis-review-41.html#native">Scalar slack calculation</a> · <a
+href="thesis-review-45.lean">Rounding and difference bounds in
+Lean</a></p>
+<p>This test is exact on unions of cells whose rounded inequalities are
+integer difference bounds. A rational solution of <span
+class="math inline">\(z_i-z_j\le b\)</span> with integral <span
+class="math inline">\(b\)</span> still satisfies the inequality after
+flooring every coordinate. Unary bounds use zero as the other
+coordinate. General integer feasibility can require more work. For
+example, <span class="math inline">\(1\le5(i+r)\le9\)</span> and <span
+class="math inline">\(-4\le5(i-r)\le4\)</span> round to <span
+class="math inline">\(i+r=1\)</span> and <span
+class="math inline">\(i-r=0\)</span>. The rational point <span
+class="math inline">\((1/2,1/2)\)</span> survives the relaxed joint
+check. The integer caller still needs another proof. <a
+href="thesis-review-45.py">Arithmetic replay</a> · <a
+href="https://www.cs.umd.edu/projects/omega/paragraphstar3_2_0_0_2.html">Omega
+Project on eliminating integer variables</a></p>
+</section>
+<section id="checks" class="level2">
+<h2>Reproducing the checks</h2>
+<p>The OCaml 5.3 compatibility build of InvarGenT revision
+<code>c74beee</code> passed all 378 active tests, with ten marked TODO.
+All 193 previously generated example signatures were byte-identical to
+those at <code>f872939</code>. The whole-program replay and arithmetic
+driver ran on the OCaml 5.5 compatibility build.</p>
+<p>Use Lean 4.19 with mathlib v4.19.0 for the <a
+href="thesis-review-45.lean">policy and convergence proofs</a> and the
+<a href="thesis-review-45-admission.lean">exact descending
+iteration</a>. Run <code>python3 thesis-review-45.py</code> with
+<code>z3-solver</code> for the policy comparison and symbolic moving
+menu. Add <code>--compiler</code> with the patched InvarGenT binary and
+optionally <code>--before</code> with revision <code>f872939</code> for
+the source comparisons. Copy the <a
+href="thesis-review-45-numeric.ml">arithmetic driver</a> to
+<code>src/Native45.ml</code> in the patched source tree. Build
+<code>src/Native45.native</code> with the same ocamlbuild options as
+InvarGenT and pass the executable as <code>--driver</code>. It tests 205
+cases with exact expected answers and another 161 with general affine
+constraints against Z3. The displayed parallelogram is the single
+conservative answer in that run. Apply the pass diagnostic to a separate
+compiler build and pass it as <code>--trace</code> to check the winning
+trial under both widening thresholds.</p>
+</section>
+</article>
+<script src="/assets/theme-toggle.js"></script>
+</body>
+</html>
