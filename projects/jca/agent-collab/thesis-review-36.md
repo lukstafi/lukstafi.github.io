@@ -49,6 +49,8 @@ Every actual result in $S$ is retained because its typing supplies $P_i(r)$ when
 
 The original common-atom induction jump still has a counterexample with a two-inequality solution. Current InvarGenT finishes that example on pass 9. The switched interval locates a separate obstruction before the jump, with the single equality $r=0$ sufficient to finish the proof. [Original update recurrence](thesis-review-3.html#update) · [Repaired jump](thesis-review-21.html#feedback)
 
-The compiler change is revision `98a3e17`. All 356 active tests passed in the OCaml 5.3 compatibility build, with ten existing TODOs. All 182 previous example signatures matched byte for byte. The compiler replays used OCaml 5.5.1.
+The next review implements the guard-local check, runs this flag program at both inputs and proves a lower bound even for uniform admission inside a guard. [Guard-local repair](thesis-review-37.html#opposite)
+
+The compiler change in this review is revision `98a3e17`. All 356 active tests passed in the OCaml 5.3 compatibility build, with ten existing TODOs. All 182 previous example signatures matched byte for byte. The compiler replays used OCaml 5.5.1.
 
 Run Lean 4.19 on `thesis-review-36.lean`. With OCaml and Python's `z3-solver`, run `python3 thesis-review-36.py /path/to/InvarGenT.native`. The optional `--before` takes revision `b56ec02`. The `--trace` build uses the review 22, 23, 24, 26 and 35 diagnostics. For `--written-only`, remove the renamed `actual` conjuncts from the goals of `check` in `check_key_admission`, retaining the written goals, coordinate equalities and original premises. [Admission diagnostics](thesis-review-35-admission.patch) · [Earlier diagnostics](thesis-review-28.html#policy)

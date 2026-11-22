@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <meta name="dcterms.date" content="2026-11-22">
+  <meta property="og:title" content="Which recursive typings can rule out this guard?">
+  <meta property="og:url" content="https://lukstafi.github.io/projects/jca/agent-collab/thesis-review-37.html">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="lukstafi&#x27;s blog">
+  <meta name="twitter:card" content="summary">
+  <title>Which recursive typings can rule out this guard?</title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <link rel="stylesheet" href="/assets/tufte.css">
+  <link rel="stylesheet" href="/assets/pandoc-tufte.css">
+  <link rel="stylesheet" href="/assets/site.css">
+  <script defer=""
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+  type="text/javascript"></script>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+  <script>(function(){var t=localStorage.getItem('theme-preference');if(t)document.documentElement.setAttribute('data-theme',t);})()</script>
+</head>
+<body>
+<nav class="site-nav">
+  <a href="/">Home</a> &middot; <a href="/study/">Study Guide</a> &middot; <a href="/about.html">About</a> &middot; <a href="https://lukstafi.substack.com">Substack</a>
+</nav>
+<div class="theme-toggle">
+  <button id="theme-btn" aria-label="Toggle dark mode">&#9788;</button>
+</div>
+<article>
+<header>
+<h1 class="title">Which recursive typings can rule out this guard?</h1>
+<p class="byline">2026-11-22</p>
+</header>
+<nav id="TOC">
+<ul>
+<li><a href="#check" id="toc-check">A countermodel for the consumer
+guard</a></li>
+<li><a href="#opposite" id="toc-opposite">Two keys that work only
+together</a></li>
+<li><a href="#number" id="toc-number">How many conditional keys can be
+necessary?</a></li>
+<li><a href="#private" id="toc-private">A hidden coordinate of
+admission</a></li>
+</ul>
+</nav>
+<p>The recursive result <span class="math inline">\(r\)</span> enters a
+guard only when <span class="math inline">\(1\le r\le f\)</span>, where
+the input flag <span class="math inline">\(f\)</span> is zero or one.
+Under that guard, <span class="math inline">\(f=r=1\)</span>. The call
+then admits key <span class="math inline">\(n\)</span>, and its package
+at <span class="math inline">\(n\)</span> excludes <span
+class="math inline">\(r=1\)</span>. At <span
+class="math inline">\(f=0\)</span> the same key is unavailable.
+InvarGenT now checks the program on Table 4.4 pass 2. The exported
+scheme retains both flag values. Running the compiled program at depth
+two for each flag prints zero twice. The earlier compiler still failed
+with a budget of 10,000. <a href="switched_result_band.gadt">Flag
+program</a> · <a href="thesis-review-36.html#switch">Earlier failure</a>
+· <a href="thesis-review-37.py">Compiler replay</a></p>
+<section id="check" class="level2">
+<h2>A countermodel for the consumer guard</h2>
+<p>Fix a proposed recursive scheme and an ordinary typing of the
+recursive call. Write <span class="math inline">\(B(x,r)\)</span> for
+the facts from that typing, where <span class="math inline">\(x\)</span>
+includes its input coordinates and <span
+class="math inline">\(r\)</span> is the shared result. A candidate
+expression gives key <span class="math inline">\(q_i(x,r)\)</span>.
+Write <span class="math inline">\(A_i\)</span> for the admission
+conditions at this key and <span
+class="math inline">\(P_i(x,r,w_i)\)</span> for the package facts with
+fresh private witnesses <span class="math inline">\(w_i\)</span>. The
+compiler can certify exclusion of a guard <span
+class="math inline">\(G\)</span> by checking that the following formula
+has no model,</p>
+<p><span class="math display">\[B(x,r)\land G(x,r)\land
+  \bigwedge_i\bigl(\neg A_i(x,r)\lor\exists w_i.\
+P_i(x,r,w_i)\bigr).\]</span></p>
+<p>Every actual return that reaches the guard would be a model. Where
+the function admits a key, its typing supplies the required witnesses.
+The argument permits a different set of admitted keys at every
+observation. With exact arithmetic and exact admission predicates the
+test captures everything this finite family can rule out. The compiler
+can use sufficient admission conditions such as an explicit witness for
+a hidden coordinate. These give it fewer typings than the exact
+predicate might admit. <a href="thesis-review-37.lean">Witness choice
+and soundness</a> · <a href="thesis-review-36.html#switch">Fixed-domain
+conditional update</a></p>
+<p>On a retry, the compiler proposes exclusion of a two-sided band or a
+single upper or lower guard. It uses the original recursive call as the
+initial opening. An enclosing interval for its keys is optional. For
+each candidate key it checks both the written domain and the inferred
+domain at the same arguments. The exported-domain check is independent
+of the proposed exclusion. Only the verified exclusion is needed by the
+consumer. At an integer opening, exclusion of <span
+class="math inline">\(a\le r\le b\)</span> supplies <span
+class="math inline">\(r+1\le a\lor b+1\le r\)</span>. A one-sided band
+needs just one inequality. The bounds come from integer literals or
+indices of observed numeric arguments, including lexical aliases. An
+effectful recursive argument still executes once per call. Adding the
+hidden equation <span class="math inline">\(r=k+j\)</span> to the flag
+example produces the output <code>!!0</code> at each flag. <a
+href="thesis-review-37.lean">Integer complement</a> · <a
+href="thesis-review-37.py">Effect, private witness and unbounded-domain
+checks</a></p>
+<p>The admission check itself uses rational arithmetic. To seek a
+countermodel it tries a postcondition or the failure of one admission
+atom. Failing <span class="math inline">\(a\le b\)</span> requires <span
+class="math inline">\(a&gt;b\)</span>. Failure of <span
+class="math inline">\(\min(a,b)\le0\)</span> requires both <span
+class="math inline">\(a&gt;0\)</span> and <span
+class="math inline">\(b&gt;0\)</span>. Replacing a strict inequality by
+a unit gap here would lose fractional countermodels. Instead every
+strict difference on the chosen branch must be at least a fresh common
+<span class="math inline">\(d\)</span>, and the branch must permit <span
+class="math inline">\(d&gt;0\)</span>. Any finite list of positive
+differences has a positive minimum. A model with such a <span
+class="math inline">\(d\)</span> satisfies every original strict
+comparison. This gives a finite search over the proposed implications
+and their numeric alternatives. The main predicate iteration can still
+change the recursive scheme on a later pass. <a
+href="thesis-review-37.lean">Common-slack proof</a> · <a
+href="thesis-review-37-numeric.ml">Numeric oracle driver</a></p>
+</section>
+<section id="opposite" class="level2">
+<h2>Two keys that work only together</h2>
+<p>For <span class="math inline">\(n\ge2\)</span>, let flag zero admit
+<span class="math inline">\([0,n]\)</span> and flag one admit <span
+class="math inline">\([-n,0]\)</span>. The primary key 0 works in both.
+The package permits <span class="math inline">\(0\le r\le1\)</span> and
+forbids the keys <span class="math inline">\(n+1-r\)</span> and <span
+class="math inline">\(-n-1+r\)</span>. At zero both holes are outside
+either domain. At one the holes are <span
+class="math inline">\(n\)</span> and <span
+class="math inline">\(-n\)</span>. The step must rule out this latter
+result under both flags. <a
+href="opposite_result_bands.gadt">Program</a></p>
+<table>
+<thead>
+<tr>
+<th>Flag</th>
+<th>Admitted keys</th>
+<th>Typing that rules out <span class="math inline">\(r=1\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td><span class="math inline">\([0,n]\)</span></td>
+<td><span class="math inline">\(k=n\)</span></td>
+</tr>
+<tr>
+<td>1</td>
+<td><span class="math inline">\([-n,0]\)</span></td>
+<td><span class="math inline">\(k=-n\)</span></td>
+</tr>
+</tbody>
+</table>
+<p>Even <em>inside the guard</em>, a procedure that licenses each probe
+uniformly can miss both proofs. At <span
+class="math inline">\(r=1\)</span> each finite expression built from
+integer-affine terms, addition, negation, minimum and maximum changes by
+at most some <span class="math inline">\(C\)</span> when the flag
+changes from zero to one at fixed <span
+class="math inline">\(n\)</span>. An affine leaf changes by its flag
+coefficient. Addition adds the bounds and min or max takes the larger
+bound. Choose <span class="math inline">\(n\)</span> greater than the
+bound for every expression in the proposed pool. If an expression is
+admitted in both states, it is nonnegative at flag zero and nonpositive
+at flag one. Its two values stay within <span
+class="math inline">\(C\)</span> of zero. Neither can reach the refuting
+endpoint. Both observations survive, so another uniform admission round
+starts with the same obstruction. <a
+href="thesis-review-37.lean">Uniform-pool proof</a></p>
+<p>InvarGenT proposes the two enclosing endpoints and the two
+payload-dependent hole boundaries. Its numeric replay certifies the
+whole guard with those four proposals. Repeating the check on each
+singleton leaves a countermodel every time. In this instance the two
+endpoints alone suffice by the table above. The emitted scheme preserves
+both opposite intervals and both holes. The highest traced pass was 2.
+<a href="thesis-review-37.py">Family and singleton traces</a></p>
+</section>
+<section id="number" class="level2">
+<h2>How many conditional keys can be necessary?</h2>
+<p>There is a sharp bound for a family with <span
+class="math inline">\(m\)</span> input modes numbered <span
+class="math inline">\(1\)</span> through <span
+class="math inline">\(m\)</span>. At mode <span
+class="math inline">\(j\)</span> admit just keys 0 and <span
+class="math inline">\(jn\)</span>, and at a hypothetical return of one
+let only <span class="math inline">\(jn\)</span> refute it. The domain
+is the union of <span class="math inline">\(m\)</span> linear cases, one
+for each fixed mode number. For example, take results zero and one and
+forbid the keys <span class="math inline">\(in+1-r\)</span> for each
+mode number <span class="math inline">\(i\)</span>. At zero none of
+these holes equals an admitted key when <span
+class="math inline">\(n\ge2\)</span>. The <span
+class="math inline">\(m\)</span> expressions <span
+class="math inline">\(n,2n,\ldots,mn\)</span> suffice. Each gets used
+only where it is admitted.</p>
+<p><strong>A finite pool of fewer than <span
+class="math inline">\(m\)</span> affine min/max expressions fails at
+some width.</strong> Fix the guard <span
+class="math inline">\(r=1\)</span>, the initial key 0 and any two
+distinct modes <span class="math inline">\(i,j\)</span>. For one such
+expression the difference between its values at these modes is bounded
+independently of <span class="math inline">\(n\)</span>. Take a common
+bound for all expressions in the pool and all pairs of modes. Choose a
+larger <span class="math inline">\(n\)</span>. Hitting <span
+class="math inline">\(in\)</span> at mode <span
+class="math inline">\(i\)</span> and <span
+class="math inline">\(jn\)</span> at mode <span
+class="math inline">\(j\)</span> would require a change of at least
+<span class="math inline">\(n\)</span>. Each expression can therefore
+cover at most one mode at that width. This lower bound allows
+conditional admission and arbitrarily large coefficients in the proposed
+expressions. The only result fact the consumer needs is still <span
+class="math inline">\(r=0\)</span>. <a
+href="thesis-review-37.lean">Counting bound and matching
+construction</a></p>
+</section>
+<section id="private" class="level2">
+<h2>A hidden coordinate of admission</h2>
+<p>Change the flag program’s written precondition from <span
+class="math inline">\(D(f,n,k)\)</span> to <span
+class="math inline">\(D(f,n,k)\land j=k\)</span> and quantify the new
+<span class="math inline">\(j\)</span>. It occurs nowhere in the
+argument or result types. Each instantiation can choose <span
+class="math inline">\(j=k\)</span>, so projecting this coordinate gives
+exactly the original domain. Nevertheless the current guard replay
+rejects this spelling at budgets 2 and 10,000. Its certificate for
+changing key 0 to <span class="math inline">\(n\)</span> keeps the
+original <span class="math inline">\(j=0\)</span> and then asks for
+<span class="math inline">\(j=n\)</span>. Giving the package <span
+class="math inline">\(r=0\)</span> explicitly or replacing the guarded
+body by a numeric zero makes both flag values check. Both controls
+export the projected input predicate. <a
+href="thesis-review-37.lean">Projection identity and fixed-witness
+counterexample</a> · <a href="thesis-review-37.py">Hidden-coordinate
+controls</a></p>
+<p>This failure identifies which witness needs to vary. The checker
+already freshens the private witnesses of each <em>result</em>. A
+quantified variable used only in <em>admission</em> may also need a new
+witness at the new key. Dropping its constraint outright would be
+unsound. In a separate control the base returns one, so the inferred
+domain excludes <span class="math inline">\(n\)</span> at flag one. A
+mutant drops only the inferred domain from the conditional admission
+goals. It accepts, and the generated OCaml reaches the erased guard. A
+numeric control runs and prints one with the correctly narrowed domain.
+<a href="thesis-review-37.py">Mutation and exported signatures</a></p>
+<p>The compiler change is revision <code>be8af94</code>. All 360 active
+OCaml 5.3 compatibility tests passed, with ten existing TODOs. The 183
+prior example signatures matched byte for byte. The OCaml 5.5.1 numeric
+checker agreed with Z3 on 512 generated rational formulas, including 338
+with a model. The original common-atom induction jump still has its
+two-inequality counterexample. The current compiler’s trace on that
+program finishes on pass 9. The guard proofs in this review take effect
+before that jump. <a href="thesis-review-3.html#update">Original
+recurrence</a> · <a href="thesis-review-21.html#feedback">Repaired
+trace</a></p>
+<p>Run Lean 4.19 on <code>thesis-review-37.lean</code>. With OCaml and
+Python’s <code>z3-solver</code>, run
+<code>python3 thesis-review-37.py /path/to/InvarGenT.native</code>. The
+optional <code>--before</code> takes revision <code>98a3e17</code>. For
+<code>--trace</code>, apply the review 22, 23, 24 and 26 diagnostics
+followed by the guard-cover diagnostics. To reproduce
+<code>--written-only</code>, omit the renamed inferred predicates from
+the conditional probes’ admission goals, retaining them in the original
+premises and ordinary admission checks. For
+<code>--numeric-driver</code>, copy the driver to
+<code>src/ConditionalOracle.ml</code> in the compiler build and build
+the native target with the same OCaml flags. <a
+href="thesis-review-37-cover.patch">Guard-cover diagnostics</a> · <a
+href="thesis-review-28.html#policy">Earlier diagnostics</a> · <a
+href="thesis-review-37-numeric.ml">Driver</a></p>
+</section>
+</article>
+<script src="/assets/theme-toggle.js"></script>
+</body>
+</html>

@@ -1,0 +1,48 @@
+---
+title: "Which recursive typings can rule out this guard?"
+date: 2026-11-22
+---
+
+The recursive result $r$ enters a guard only when $1\le r\le f$, where the input flag $f$ is zero or one. Under that guard, $f=r=1$. The call then admits key $n$, and its package at $n$ excludes $r=1$. At $f=0$ the same key is unavailable. InvarGenT now checks the program on Table 4.4 pass 2. The exported scheme retains both flag values. Running the compiled program at depth two for each flag prints zero twice. The earlier compiler still failed with a budget of 10,000. [Flag program](switched_result_band.gadt) · [Earlier failure](thesis-review-36.html#switch) · [Compiler replay](thesis-review-37.py)
+
+## A countermodel for the consumer guard {#check}
+
+Fix a proposed recursive scheme and an ordinary typing of the recursive call. Write $B(x,r)$ for the facts from that typing, where $x$ includes its input coordinates and $r$ is the shared result. A candidate expression gives key $q_i(x,r)$. Write $A_i$ for the admission conditions at this key and $P_i(x,r,w_i)$ for the package facts with fresh private witnesses $w_i$. The compiler can certify exclusion of a guard $G$ by checking that the following formula has no model,
+
+$$B(x,r)\land G(x,r)\land
+  \bigwedge_i\bigl(\neg A_i(x,r)\lor\exists w_i.\ P_i(x,r,w_i)\bigr).$$
+
+Every actual return that reaches the guard would be a model. Where the function admits a key, its typing supplies the required witnesses. The argument permits a different set of admitted keys at every observation. With exact arithmetic and exact admission predicates the test captures everything this finite family can rule out. The compiler can use sufficient admission conditions such as an explicit witness for a hidden coordinate. These give it fewer typings than the exact predicate might admit. [Witness choice and soundness](thesis-review-37.lean) · [Fixed-domain conditional update](thesis-review-36.html#switch)
+
+On a retry, the compiler proposes exclusion of a two-sided band or a single upper or lower guard. It uses the original recursive call as the initial opening. An enclosing interval for its keys is optional. For each candidate key it checks both the written domain and the inferred domain at the same arguments. The exported-domain check is independent of the proposed exclusion. Only the verified exclusion is needed by the consumer. At an integer opening, exclusion of $a\le r\le b$ supplies $r+1\le a\lor b+1\le r$. A one-sided band needs just one inequality. The bounds come from integer literals or indices of observed numeric arguments, including lexical aliases. An effectful recursive argument still executes once per call. Adding the hidden equation $r=k+j$ to the flag example produces the output `!!0` at each flag. [Integer complement](thesis-review-37.lean) · [Effect, private witness and unbounded-domain checks](thesis-review-37.py)
+
+The admission check itself uses rational arithmetic. To seek a countermodel it tries a postcondition or the failure of one admission atom. Failing $a\le b$ requires $a>b$. Failure of $\min(a,b)\le0$ requires both $a>0$ and $b>0$. Replacing a strict inequality by a unit gap here would lose fractional countermodels. Instead every strict difference on the chosen branch must be at least a fresh common $d$, and the branch must permit $d>0$. Any finite list of positive differences has a positive minimum. A model with such a $d$ satisfies every original strict comparison. This gives a finite search over the proposed implications and their numeric alternatives. The main predicate iteration can still change the recursive scheme on a later pass. [Common-slack proof](thesis-review-37.lean) · [Numeric oracle driver](thesis-review-37-numeric.ml)
+
+## Two keys that work only together {#opposite}
+
+For $n\ge2$, let flag zero admit $[0,n]$ and flag one admit $[-n,0]$. The primary key 0 works in both. The package permits $0\le r\le1$ and forbids the keys $n+1-r$ and $-n-1+r$. At zero both holes are outside either domain. At one the holes are $n$ and $-n$. The step must rule out this latter result under both flags. [Program](opposite_result_bands.gadt)
+
+| Flag | Admitted keys | Typing that rules out $r=1$ |
+|---|---|---|
+| 0 | $[0,n]$ | $k=n$ |
+| 1 | $[-n,0]$ | $k=-n$ |
+
+Even *inside the guard*, a procedure that licenses each probe uniformly can miss both proofs. At $r=1$ each finite expression built from integer-affine terms, addition, negation, minimum and maximum changes by at most some $C$ when the flag changes from zero to one at fixed $n$. An affine leaf changes by its flag coefficient. Addition adds the bounds and min or max takes the larger bound. Choose $n$ greater than the bound for every expression in the proposed pool. If an expression is admitted in both states, it is nonnegative at flag zero and nonpositive at flag one. Its two values stay within $C$ of zero. Neither can reach the refuting endpoint. Both observations survive, so another uniform admission round starts with the same obstruction. [Uniform-pool proof](thesis-review-37.lean)
+
+InvarGenT proposes the two enclosing endpoints and the two payload-dependent hole boundaries. Its numeric replay certifies the whole guard with those four proposals. Repeating the check on each singleton leaves a countermodel every time. In this instance the two endpoints alone suffice by the table above. The emitted scheme preserves both opposite intervals and both holes. The highest traced pass was 2. [Family and singleton traces](thesis-review-37.py)
+
+## How many conditional keys can be necessary? {#number}
+
+There is a sharp bound for a family with $m$ input modes numbered $1$ through $m$. At mode $j$ admit just keys 0 and $jn$, and at a hypothetical return of one let only $jn$ refute it. The domain is the union of $m$ linear cases, one for each fixed mode number. For example, take results zero and one and forbid the keys $in+1-r$ for each mode number $i$. At zero none of these holes equals an admitted key when $n\ge2$. The $m$ expressions $n,2n,\ldots,mn$ suffice. Each gets used only where it is admitted.
+
+**A finite pool of fewer than $m$ affine min/max expressions fails at some width.** Fix the guard $r=1$, the initial key 0 and any two distinct modes $i,j$. For one such expression the difference between its values at these modes is bounded independently of $n$. Take a common bound for all expressions in the pool and all pairs of modes. Choose a larger $n$. Hitting $in$ at mode $i$ and $jn$ at mode $j$ would require a change of at least $n$. Each expression can therefore cover at most one mode at that width. This lower bound allows conditional admission and arbitrarily large coefficients in the proposed expressions. The only result fact the consumer needs is still $r=0$. [Counting bound and matching construction](thesis-review-37.lean)
+
+## A hidden coordinate of admission {#private}
+
+Change the flag program's written precondition from $D(f,n,k)$ to $D(f,n,k)\land j=k$ and quantify the new $j$. It occurs nowhere in the argument or result types. Each instantiation can choose $j=k$, so projecting this coordinate gives exactly the original domain. Nevertheless the current guard replay rejects this spelling at budgets 2 and 10,000. Its certificate for changing key 0 to $n$ keeps the original $j=0$ and then asks for $j=n$. Giving the package $r=0$ explicitly or replacing the guarded body by a numeric zero makes both flag values check. Both controls export the projected input predicate. [Projection identity and fixed-witness counterexample](thesis-review-37.lean) · [Hidden-coordinate controls](thesis-review-37.py)
+
+This failure identifies which witness needs to vary. The checker already freshens the private witnesses of each *result*. A quantified variable used only in *admission* may also need a new witness at the new key. Dropping its constraint outright would be unsound. In a separate control the base returns one, so the inferred domain excludes $n$ at flag one. A mutant drops only the inferred domain from the conditional admission goals. It accepts, and the generated OCaml reaches the erased guard. A numeric control runs and prints one with the correctly narrowed domain. [Mutation and exported signatures](thesis-review-37.py)
+
+The compiler change is revision `be8af94`. All 360 active OCaml 5.3 compatibility tests passed, with ten existing TODOs. The 183 prior example signatures matched byte for byte. The OCaml 5.5.1 numeric checker agreed with Z3 on 512 generated rational formulas, including 338 with a model. The original common-atom induction jump still has its two-inequality counterexample. The current compiler's trace on that program finishes on pass 9. The guard proofs in this review take effect before that jump. [Original recurrence](thesis-review-3.html#update) · [Repaired trace](thesis-review-21.html#feedback)
+
+Run Lean 4.19 on `thesis-review-37.lean`. With OCaml and Python's `z3-solver`, run `python3 thesis-review-37.py /path/to/InvarGenT.native`. The optional `--before` takes revision `98a3e17`. For `--trace`, apply the review 22, 23, 24 and 26 diagnostics followed by the guard-cover diagnostics. To reproduce `--written-only`, omit the renamed inferred predicates from the conditional probes' admission goals, retaining them in the original premises and ordinary admission checks. For `--numeric-driver`, copy the driver to `src/ConditionalOracle.ml` in the compiler build and build the native target with the same OCaml flags. [Guard-cover diagnostics](thesis-review-37-cover.patch) · [Earlier diagnostics](thesis-review-28.html#policy) · [Driver](thesis-review-37-numeric.ml)

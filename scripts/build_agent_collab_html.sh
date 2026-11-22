@@ -444,6 +444,11 @@ build_html \
   "$collab_dir/thesis-review-36.html" \
   "Which recursive typings suffice on a union of intervals?"
 
+build_html \
+  "$collab_dir/thesis-review-37.md" \
+  "$collab_dir/thesis-review-37.html" \
+  "Which recursive typings can rule out this guard?"
+
 reviews_dir="$collab_dir/reviews"
 if [[ -d "$reviews_dir" ]]; then
   for md_file in "$reviews_dir"/*.md; do

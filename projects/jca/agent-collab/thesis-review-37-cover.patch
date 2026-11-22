@@ -1,0 +1,20 @@
+--- a/src/Infer.ml
++++ b/src/Infer.ml
+@@ -1419,4 +1419,5 @@
+       (x, (VarSet.elements local @ vs, extra @ phi, t)) :: gamma,None
+     | Open_at_keys query ->
++      Format.eprintf "KEY_POLICY %s@." (match query.use with Endpoints _ -> "endpoints" | Result_keys (_,_,ts) -> string_of_int (List.length ts) | Exclude_bands (_,ts,bs) -> Printf.sprintf "guard %d %d" (List.length ts) (List.length bs));
+       let lc = expr_loc e in
+       let instance sb k =
+@@ -1789,5 +1790,10 @@
+            | At_most hi -> [Leq (observed,hi,loc)]
+            | Between (lo,hi) -> [Leq (lo,observed,loc); Leq (observed,hi,loc)] in
+-         not (NumS.conditional_satisfiable (inside @ facts) clauses) in
++         let check clauses = not (NumS.conditional_satisfiable (inside @ facts) clauses) in
++         let passed = check clauses in
++         Format.eprintf "GUARD_COVER %d %b@." (List.length clauses) passed;
++         if Sys.getenv_opt "JCA_SINGLE_PROBES" = Some "1" then
++           List.iter (fun clause -> Format.eprintf "GUARD_SINGLE %b@." (check [clause])) clauses;
++         passed in
+        if List.for_all refuted bands then Admitted else Unavailable
+      | Result_keys (lower,r,targets) ->
