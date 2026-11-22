@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <meta name="dcterms.date" content="2026-11-22">
+  <meta property="og:title" content="Which input types must an existential result remember?">
+  <meta property="og:url" content="https://lukstafi.github.io/projects/jca/agent-collab/thesis-review-51.html">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="lukstafi&#x27;s blog">
+  <meta name="twitter:card" content="summary">
+  <title>Which input types must an existential result remember?</title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <link rel="stylesheet" href="/assets/tufte.css">
+  <link rel="stylesheet" href="/assets/pandoc-tufte.css">
+  <link rel="stylesheet" href="/assets/site.css">
+  <script defer=""
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+  type="text/javascript"></script>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+  <script>(function(){var t=localStorage.getItem('theme-preference');if(t)document.documentElement.setAttribute('data-theme',t);})()</script>
+</head>
+<body>
+<nav class="site-nav">
+  <a href="/">Home</a> &middot; <a href="/study/">Study Guide</a> &middot; <a href="/about.html">About</a> &middot; <a href="https://lukstafi.substack.com">Substack</a>
+</nav>
+<div class="theme-toggle">
+  <button id="theme-btn" aria-label="Toggle dark mode">&#9788;</button>
+</div>
+<article>
+<header>
+<h1 class="title">Which input types must an existential result
+remember?</h1>
+<p class="byline">2026-11-22</p>
+</header>
+<nav id="TOC">
+<ul>
+<li><a href="#representation" id="toc-representation">Which distinctions
+can one admission express?</a></li>
+<li><a href="#captures" id="toc-captures">Reading the smallest capture
+set from the result</a></li>
+<li><a href="#feedback" id="toc-feedback">One feedback step and the
+least inductive answer</a></li>
+<li><a href="#joint" id="toc-joint">When call admission can be inferred
+in the same iteration</a></li>
+</ul>
+</nav>
+<p>Consider a recursive function with three arguments. It opens a hidden
+payload of type <span class="math inline">\(h\)</span>, takes a known
+value of type <span class="math inline">\(b\)</span>, and ignores an
+argument of type <span class="math inline">\(c\)</span>. At depth zero
+it returns the payload twice with the known value between the two
+copies. At positive depth it calls itself. InvarGenT infers, up to
+renaming, <span class="math display">\[
+  \forall b,c.\quad \mathrm{Hidden}\to b\to c\to\mathrm{Nat}
+       \to \exists h.\,(h,(b,h)).
+\]</span> The generated OCaml declares a package with exactly one type
+parameter, <span class="math inline">\(b\)</span>. A caller can compare
+the middle component with the known argument, or the two hidden
+components with each other. Both clients type-check and run. A third
+client that equates the hidden type with the known argument’s concrete
+type is rejected. <a href="thesis-review-51.py">Source and compiler
+replay</a></p>
+<p>For conjunctive free-term predicates there is an exact test for which
+input types a package must remember. It also explains why changing
+admission can move one feedback step in either direction, while the
+<em>least inductive results</em> for the two admissions obey a definite
+order.</p>
+<section id="representation" class="level2">
+<h2>Which distinctions can one admission express?</h2>
+<p>Let <span class="math inline">\(A(x,k)\)</span> admit a package key
+<span class="math inline">\(k\)</span> at a public input <span
+class="math inline">\(x\)</span>. Put <span
+class="math inline">\(D(x)=\exists k\,A(x,k)\)</span>. For a stored
+postcondition <span class="math inline">\(P(k,r)\)</span> the admitted
+opening is <span class="math display">\[
+  U(x,r) = D(x)\land\forall k\,(A(x,k)\Rightarrow P(k,r)).
+\]</span> Keep <span class="math inline">\(D\)</span> even if no result
+opens at some admitted input. An input to a diverging recursive call can
+be typeable. Fix ambient parameters throughout, or include the public
+ones explicitly among the input coordinates. A satisfiable equational
+admission is one pattern <span class="math inline">\((p,q)\)</span>, and
+its admitted opening with a term-pattern package is again a pattern or
+empty. <a href="thesis-review-50.html#eliminate">Term representation and
+elimination proof</a></p>
+<p>Write <span class="math inline">\(x\sim_A y\)</span> when the two
+inputs share a key. The ground match of <span
+class="math inline">\(x\)</span> against <span
+class="math inline">\(p\)</span> determines all holes of <span
+class="math inline">\(p\)</span>. Its menu of keys consists of the
+instances of <span class="math inline">\(q\)</span> with the holes
+shared between <span class="math inline">\(p\)</span> and <span
+class="math inline">\(q\)</span> fixed by that match. A key determines
+those same holes on its side. Thus the menus at admitted inputs are
+equal or disjoint. On <span class="math inline">\(D\)</span>, <span
+class="math inline">\(x\sim_A y\)</span> holds exactly when their
+matches agree on every shared hole.</p>
+<p><strong>Representation theorem.</strong> A proposed public term
+pattern <span class="math inline">\(U\)</span>, including the empty
+relation, is expressible at admission <span
+class="math inline">\(A\)</span> exactly when its inputs lie in <span
+class="math inline">\(D\)</span> and its result sections agree for any
+two inputs sharing a key. When expressible, its least stored package is
+<span class="math display">\[
+  P_A(k,r) = \exists y\,(A(y,k)\land U(y,r)).
+\]</span> Compute it by unifying the input coordinates of two freshly
+renamed patterns and projecting to <span
+class="math inline">\((k,r)\)</span>. This returns one pattern or empty.
+Every realization must store these rows, since each result opening at
+<span class="math inline">\(y\)</span> must be available at every key of
+<span class="math inline">\(y\)</span>.</p>
+<p>To see exactly what this construction does, open <span
+class="math inline">\(P_A\)</span> at <span
+class="math inline">\(x\)</span>. From any admitted key at <span
+class="math inline">\(x\)</span> storing <span
+class="math inline">\(r\)</span> one obtains a source <span
+class="math inline">\(y\)</span> that admits this key and has <span
+class="math inline">\(U(y,r)\)</span>. Conversely, if such a <span
+class="math inline">\(y\)</span> shares one key with <span
+class="math inline">\(x\)</span>, its menu contains <em>every</em> key
+of <span class="math inline">\(x\)</span>, so <span
+class="math inline">\(r\)</span> opens there. The resulting public
+relation is precisely <span class="math inline">\(\exists y\,(x\sim_A
+y\land U(y,r))\)</span>. This proves sufficiency. Necessity follows
+because equal menus give equal openings. <a
+href="thesis-review-51.lean">Lean proofs of representation, saturation
+and least storage</a></p>
+</section>
+<section id="captures" class="level2">
+<h2>Reading the smallest capture set from the result</h2>
+<p>Fix a nonempty domain pattern <span
+class="math inline">\(p(a_1,\ldots,a_n)\)</span> with each distinct hole
+listed once. The <span class="math inline">\(a_i\)</span> range
+independently over ground terms. Suppose the proposed public result
+<span class="math inline">\(U\)</span> lies over this domain. Which of
+the <span class="math inline">\(a_i\)</span> must appear in the key
+pattern <span class="math inline">\(q\)</span>? Unify <span
+class="math inline">\(x=p(a_1,\ldots,a_n)\)</span> with the input of
+<span class="math inline">\(U(x,r)\)</span> and project onto <span
+class="math inline">\((a_1,\ldots,a_n,r)\)</span>. For a nonempty result
+write this lifted pattern as <span
+class="math inline">\((w_1,\ldots,w_n,t)\)</span>.</p>
+<p><strong>Minimum capture theorem.</strong> An input hole <span
+class="math inline">\(a_i\)</span> can be forgotten exactly when <span
+class="math inline">\(w_i\)</span> is a bare hole that occurs just once
+in the entire lifted pattern. All such coordinates can be forgotten
+simultaneously. The other coordinates form the unique least set of input
+holes needed to express this particular <span
+class="math inline">\(U\)</span>. An empty <span
+class="math inline">\(U\)</span> needs none. The count is of independent
+input holes, several of which can be bundled into a single key term.</p>
+<p>A bare hole occurring once can be varied independently in every
+matching row. If <span class="math inline">\(w_i\)</span> has a
+constructor head, take any matching row and replace coordinate <span
+class="math inline">\(i\)</span> by a ground term with a different head.
+If <span class="math inline">\(w_i\)</span> is a hole that occurs
+elsewhere, change its ground value at coordinate <span
+class="math inline">\(i\)</span> alone. The other occurrence still fixes
+the old value. In both cases the changed row no longer matches.
+Forgetting <span class="math inline">\(a_i\)</span> would give the two
+inputs identical menus, contradicting the representation theorem. This
+argument uses two available ground root symbols, as in the free type
+algebra with a constant and the arrow constructor. Capturing precisely
+the necessary holes gives a key whose equivalence classes preserve <span
+class="math inline">\(U\)</span>. The representation theorem then
+constructs the package. <a href="thesis-review-51.lean">Lean proof that
+single-coordinate dependence determines capture</a> · <a
+href="thesis-review-51.py">Symbolic construction and checks</a></p>
+<p>For example, over all inputs <span
+class="math inline">\((a,b)\)</span>, the result <span
+class="math inline">\((a,a)\)</span> requires only <span
+class="math inline">\(a\)</span>. A <em>constant</em> result <span
+class="math inline">\(M\)</span> that opens exactly when <span
+class="math inline">\(a=b\)</span> requires <strong>both</strong>
+coordinates. Keeping <span class="math inline">\(b\)</span> alone would
+make inputs <span class="math inline">\((B,B)\)</span> and <span
+class="math inline">\((M,B)\)</span> indistinguishable. The test
+therefore accounts for where a result exists as well as for the
+variables written in the result type. It applies to a specified public
+result. Different sound answers to the original inference problem can
+require incomparable captures.</p>
+</section>
+<section id="feedback" class="level2">
+<h2>One feedback step and the least inductive answer</h2>
+<p>Fix the admitted domain and the ground supplier rules. Each rule
+tests earlier admitted openings, then requires its destination result at
+every admitted key there. Take the least inductive <em>pattern</em>
+opening on each of two admissions. If every pair sharing a key on the
+first admission also shares a key on the second, the first least opening
+is contained in the second. Indeed, the second opening is constant on
+the coarser classes, hence on the finer ones. Its least store on the
+finer admission realizes it exactly and obeys the same suppliers.
+Leastness on the finer admission gives the inclusion. Existence follows
+from finite ascending pattern closure with a fixed admission, since
+opening is monotone in the stored package. This comparison even allows
+different key types on the two sides. <a
+href="thesis-review-51.lean">Transfer proof</a> · <a
+href="thesis-review-50.html#iteration">Finite least-package
+theorem</a></p>
+<p>In particular, capturing every input hole gives the finest partition.
+With the domain fixed, if its least opening violates a caller forbidding
+observations, every coarser capture fails too. If a coarser capture
+already proves the caller, its least result may be less informative. For
+a base that returns <span class="math inline">\((x,x)\)</span> at every
+input <span class="math inline">\(x\)</span>, capturing <span
+class="math inline">\(x\)</span> gives <span
+class="math inline">\(r=(x,x)\)</span>. Forgetting <span
+class="math inline">\(x\)</span> gives <span
+class="math inline">\(r=(h,h)\)</span> with <span
+class="math inline">\(h\)</span> private. Both preserve equality of the
+components.</p>
+<p>The hull of the rows freshly required by one producer step can still
+move in both directions. Use distinct constants <span
+class="math inline">\(M,B\)</span>. Start from the trial package <span
+class="math inline">\(P(k,r)\)</span> given by <span
+class="math inline">\(k=r\)</span>. A base stores <span
+class="math inline">\(M\)</span> at input <span
+class="math inline">\(M\)</span>. A second supplier stores <span
+class="math inline">\(B\)</span> there if <span
+class="math inline">\(B\)</span> opens at input <span
+class="math inline">\(B\)</span>. With <span
+class="math inline">\(k=x\)</span> the second supplier fires, giving the
+required rows <span class="math inline">\((M,M),(M,B)\)</span> and their
+hull <span class="math inline">\((M,h)\)</span>. With every key admitted
+at every input it cannot fire, and the base forces <span
+class="math inline">\((h,M)\)</span>. The two fresh hulls are
+incomparable. Joining each with the trial package would give the
+unrestricted relation on both sides. Starting the two inductions from
+empty gives least packages <span class="math inline">\((M,M)\)</span>
+and <span class="math inline">\((h,M)\)</span> respectively. The second
+supplier never fires in either run. The comparison theorem concerns
+these inductive answers. <a href="thesis-review-51.py">Executable
+two-input example</a></p>
+</section>
+<section id="joint" class="level2">
+<h2>When call admission can be inferred in the same iteration</h2>
+<p>Suppose the key interface may capture the public input tuple <span
+class="math inline">\(x\)</span>. For <strong>any</strong> pair of
+patterns <span class="math inline">\(D,U\)</span> with <span
+class="math inline">\(U(x,r)\Rightarrow D(x)\)</span>, take admission
+<span class="math inline">\(D(x)\land k=x\)</span> and package <span
+class="math inline">\(U(k,r)\)</span>. The opening at each admitted
+input is exactly <span class="math inline">\(U(x,r)\)</span>. This
+permits a finite joint inference for systems whose clauses are positive
+first-order Horn rules on the public predicates <span
+class="math inline">\(D,U\)</span>. A rule can require <span
+class="math inline">\(D(y)\)</span> as soon as a call must be typeable,
+and later use <span class="math inline">\(U(y,s)\)</span> when consuming
+its result. Include <span class="math inline">\(U(x,r)\Rightarrow
+D(x)\)</span> for each function. Destination inputs in supplier
+obligations must be admitted for the obligation to require an opening.
+Static guards may mention the ground values. <a
+href="thesis-review-51.lean">Identity-key proof</a> · <a
+href="thesis-review-46.html#opening">Supplier semantics</a></p>
+<p>Start every predicate empty. At each step take the pattern hull of
+its previous rows and all rows forced by the current premises. Each
+component ascends. After the first nonempty pattern, every strict ascent
+lowers the number of term nodes minus the number of distinct holes. Thus
+finitely many predicates stabilize after finitely many changes. Every
+inductive pattern pair contains every iterate, by positivity and
+leastness of the hull. Reifying the stationary pair gives a scheme. For
+conjunctive equational branches each head projection uses unification,
+and finitely many projected patterns are joined by anti-unification.
+This computes the <strong>least required call domain</strong> alongside
+the least inductive opened result for these rules, with no promise on
+solution size. A downward-closed caller succeeds for some scheme in this
+class iff it succeeds for the least pair. <a
+href="thesis-review-50.html#iteration">Rank and hull proof</a></p>
+<p>For instance, demand a call at <span
+class="math inline">\(S(M)\)</span>, and let a call at <span
+class="math inline">\(S(x)\)</span> demand a call at <span
+class="math inline">\(x\)</span>. An admitted base at <span
+class="math inline">\(M\)</span> returns <span
+class="math inline">\(M\)</span>. If <span
+class="math inline">\(x\)</span> opens <span
+class="math inline">\(r\)</span>, an admitted successor at <span
+class="math inline">\(S(x)\)</span> returns <span
+class="math inline">\(S(r)\)</span>. The call hull first contains just
+<span class="math inline">\(S(M)\)</span>, then generalizes to every
+input. The result is still empty at that point. The next two rounds give
+<span class="math inline">\((M,M)\)</span> and then <span
+class="math inline">\((h,h)\)</span>, which is inductive. <a
+href="thesis-review-51.py">Four-round symbolic replay</a></p>
+<p>Table 4.4 also chooses abduced assumptions, solves for witnesses
+under quantifier prefixes, and can change the captured interface. The
+joint theorem requires that the clauses see keys only through call
+admission and the all-keys opening, and that the needed input captures
+are in scope. A client demanding a <em>particular</em> key can
+distinguish even two constant singleton keys giving identical <span
+class="math inline">\(D,U\)</span>. A choice between several admissible
+call typings can also persist when the rules fail to determine a single
+required head. Those obligations fall outside the positive iteration.
+The full search for a most general function domain or for a preferred
+solution among incomparable schemes remains a separate question. <a
+href="../lukstafi-phd-thesis.pdf#page=71">Table 4.4</a> · <a
+href="thesis-review-50.html#patterns">Incomparable pure-term function
+types</a></p>
+</section>
+</article>
+<script src="/assets/theme-toggle.js"></script>
+</body>
+</html>
