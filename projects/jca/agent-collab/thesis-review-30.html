@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <meta name="dcterms.date" content="2026-11-22">
+  <meta property="og:title" content="Which recursive interval witnesses can InvarGenT infer?">
+  <meta property="og:url" content="https://lukstafi.github.io/projects/jca/agent-collab/thesis-review-30.html">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="lukstafi&#x27;s blog">
+  <meta name="twitter:card" content="summary">
+  <title>Which recursive interval witnesses can InvarGenT infer?</title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <link rel="stylesheet" href="/assets/tufte.css">
+  <link rel="stylesheet" href="/assets/pandoc-tufte.css">
+  <link rel="stylesheet" href="/assets/site.css">
+  <script defer=""
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+  type="text/javascript"></script>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+  <script>(function(){var t=localStorage.getItem('theme-preference');if(t)document.documentElement.setAttribute('data-theme',t);})()</script>
+</head>
+<body>
+<nav class="site-nav">
+  <a href="/">Home</a> &middot; <a href="/study/">Study Guide</a> &middot; <a href="/about.html">About</a> &middot; <a href="https://lukstafi.substack.com">Substack</a>
+</nav>
+<div class="theme-toggle">
+  <button id="theme-btn" aria-label="Toggle dark mode">&#9788;</button>
+</div>
+<article>
+<header>
+<h1 class="title">Which recursive interval witnesses can InvarGenT
+infer?</h1>
+<p class="byline">2026-11-22</p>
+</header>
+<nav id="TOC">
+<ul>
+<li><a href="#scalar" id="toc-scalar">What a recursive call has to
+choose</a></li>
+<li><a href="#mixed" id="toc-mixed">Four states require both changes of
+slope</a></li>
+<li><a href="#public" id="toc-public">A private witness can hide a
+public precondition</a></li>
+<li><a href="#joint" id="toc-joint">A witness can depend on two
+arguments together</a></li>
+</ul>
+</nav>
+<p>A constant-size solution can escape Table 4.4 in two ways. On the
+capped climb, the original induction jump drops an upper bound that the
+caller then restores. The stored answer already solves the clauses, yet
+the caller has fresh work on every pass. Current InvarGenT retains the
+bound and finishes on pass 9. On the two-input example below, the
+predicate updates finish on pass 2. The final check fails because the
+recursive call has chosen the wrong interval for its result. The
+induction jump never runs. <a
+href="thesis-review-3.html#update">Original recurrence and proof</a> ·
+<a href="two_input_interval.gadt">Two-input program</a></p>
+<section id="scalar" class="level2">
+<h2>What a recursive call has to choose</h2>
+<p>Suppose a function at state <span class="math inline">\(i\)</span>
+supplies the integer <span class="math inline">\(4i+1\)</span> and
+promises a result in <span class="math inline">\([k,k+2]\)</span>. Its
+caller may choose any <span class="math inline">\(k\)</span> whose
+interval contains <span class="math inline">\(4i+1\)</span>. Inside the
+recursive body, the child needs an interval that also misses a guard.
+For the forbidden band <span class="math inline">\([2,4]\)</span>, the
+possible child keys at states 0, 1 and 2 are <span
+class="math inline">\(\{-1\}\)</span>, <span
+class="math inline">\(\{5\}\)</span> and <span
+class="math inline">\([7,9]\)</span>. One affine function cannot fit all
+three. InvarGenT now infers <span class="math inline">\(k_{\rm
+child}=\min(6i-1,7)\)</span> and checks the unsplit program at iteration
+budget 2. The emitted OCaml calls <code>run s d</code>. <a
+href="three_state_interval.gadt">Three-state source</a> · <a
+href="thesis-review-29.html#three">Single-line obstruction</a></p>
+<p>There is an exact test for when a minimum of any finite number of
+integer-affine lines can work. Let observation <span
+class="math inline">\(h\)</span> require the key at <span
+class="math inline">\(x_h\)</span> to lie in a fixed integer interval
+<span class="math inline">\([L_h,U_h]\)</span>. Every line in the
+minimum must lie above every <span class="math inline">\(L_h\)</span>.
+To meet the upper bound at observation <span
+class="math inline">\(j\)</span>, one such line must also lie below
+<span class="math inline">\(U_j\)</span> there. Translating that line up
+until it meets <span class="math inline">\(U_j\)</span> gives the
+following slope test.</p>
+<p><span class="math display">\[
+\text{For each } j\text{ there is an }m_j\in\mathbb Z
+\text{ such that } m_j(x_j-x_h)\le U_j-L_h\quad\text{for every }h.
+\]</span></p>
+<p>If the test passes, the lines <span class="math inline">\(x\mapsto
+m_j(x-x_j)+U_j\)</span> give a witness. For fixed <span
+class="math inline">\(j\)</span>, each other observation imposes an
+upper or lower integer bound on <span
+class="math inline">\(m_j\)</span>, or a slope-independent test when the
+coordinates coincide. If the bounds have empty intersection, at most two
+of them suffice to show it. Thus <strong>on a finite set of
+observations, every triple admits a minimum if and only if the whole set
+does</strong>. Repeated observations cover sets of size one or two. The
+bound is sharp. Take the exact values 5, 7, 13 at coordinates 1, 2, 3.
+Each pair lies on an integer line. At the middle coordinate a supporting
+line would need slope at most 2 and at least 6. Negating the intervals
+gives the dual test for maxima. <a href="thesis-review-30.lean">Lean
+proofs of the criterion and sharpness</a> · <a
+href="thesis-review-29.html#four">Four observations for a single
+line</a></p>
+<p>The compiler first tries the single affine line. For a minimum it
+considers the observations in increasing order. It fits one line to the
+longest initial block of upper bounds it can cover while clearing
+<em>all</em> lower bounds, then starts a new block. An active line in a
+pointwise minimum is active on an interval, since comparison with each
+competitor cuts out a half-line or the whole domain. With ties assigned
+in slope order, an optimal envelope therefore partitions the
+observations into consecutive blocks. Extending its first block to the
+greedy endpoint leaves a suffix of the original partition. Repeating
+gives the fewest lines on the supplied rows. Computing the slope bounds
+for a new upper endpoint costs one scan over the lower endpoints, so the
+fit takes <span class="math inline">\(O(n^2)\)</span> arithmetic
+operations on <span class="math inline">\(n\)</span> rows.</p>
+</section>
+<section id="mixed" class="level2">
+<h2>Four states require both changes of slope</h2>
+<p>Add a fourth state and forbid <span
+class="math inline">\([10,12]\)</span> as well as <span
+class="math inline">\([2,4]\)</span>. The permissible child keys are now
+singletons.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: right;">State</th>
+<th style="text-align: right;">Supplier</th>
+<th style="text-align: right;">Child key</th>
+<th style="text-align: right;">Child interval</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;"><span
+class="math inline">\(-1\)</span></td>
+<td style="text-align: right;"><span
+class="math inline">\([-1,1]\)</span></td>
+</tr>
+<tr>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;"><span
+class="math inline">\([5,7]\)</span></td>
+</tr>
+<tr>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">9</td>
+<td style="text-align: right;">7</td>
+<td style="text-align: right;"><span
+class="math inline">\([7,9]\)</span></td>
+</tr>
+<tr>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">13</td>
+<td style="text-align: right;">13</td>
+<td style="text-align: right;"><span
+class="math inline">\([13,15]\)</span></td>
+</tr>
+</tbody>
+</table>
+<p>The successive slopes are 6, 2 and 6. A minimum of lines has
+nonincreasing slopes, and a maximum has nondecreasing slopes. Neither
+can fit the table. With <span
+class="math inline">\(v_+=\max(0,v)\)</span>, one expression serves all
+four states,</p>
+<p><span class="math display">\[
+k_{\rm child}(i)=6i-1-4(i-1)_+ +4(i-2)_+ .
+\]</span></p>
+<p>Each change in slope contributes its coefficient times a positive
+part. Across an integer gap of length <span
+class="math inline">\(d\)</span> with a rise of <span
+class="math inline">\(a\)</span>, write <span
+class="math inline">\(a=md+r\)</span> with <span
+class="math inline">\(0\le r&lt;d\)</span>. Use slope <span
+class="math inline">\(m\)</span> for the first <span
+class="math inline">\(d-r\)</span> units and <span
+class="math inline">\(m+1\)</span> for the last <span
+class="math inline">\(r\)</span>. This also works for a negative rise.
+Joining consecutive observations gives every finite table on distinct
+integer inputs an expression with linearly many terms. Lean checks the
+bridge identity and, independently, a finite-table construction using
+integer point indicators. <a href="four_state_interval.gadt">Four-state
+source</a> · <a href="thesis-review-30.lean">Extremum obstruction and
+interpolation proofs</a></p>
+<p>Revision <code>bee08b1</code> proposes these graphs for a recursive
+use and runs the existing branch and guard checks on each proposal. The
+intermediate numeric variables are fresh at each call. A test makes
+three calls in the same branch, at the first state, the last state, and
+the current state. The generated program executes with distinct interval
+choices. Other tests reverse the guard to require a maximum, space the
+observations three units apart, and obtain the observations from the
+written bounds on a plain numeric argument. All check and execute at
+budget 2. For a row with disjoint legal intervals, the fitter uses the
+leftmost component. Constructor indices and written scalar boundaries
+supply sample coordinates. The finite-table theorem assumes those rows
+are given. Additional inhabitants, public input bounds, and the other
+calls still have to pass the checker. <a
+href="thesis-review-30.py">Executable controls</a></p>
+</section>
+<section id="public" class="level2">
+<h2>A private witness can hide a public precondition</h2>
+<p>The first three-state experiment also exposed a bad exported type. It
+occurs on the unmodified compiler at <code>3eb191e</code>. Give the
+function an extra numeric argument <span
+class="math inline">\(l\)</span> and write <span
+class="math inline">\(k=\min(l,4i+1)\)</span> and <span
+class="math inline">\(k\le4i+1\le k+2\)</span> in its precondition.
+Every result must lie in <span class="math inline">\([k,k+2]\)</span>.
+At <span class="math inline">\(i=0\)</span>, <span
+class="math inline">\(l=-3\)</span>, the upper bound on the supplier
+would require <span class="math inline">\(1\le-1\)</span>. The old
+public signature lost this bound. The compiler accepted a client calling
+<code>run A (-3) Z</code> and passing its result to a function requiring
+a nonpositive number. The base case returns 1. Running the generated
+OCaml reaches the client’s failing assertion. <a
+href="public_interval_bound.gadt">Source program</a> · <a
+href="thesis-review-30.py">Client and historical compiler check</a></p>
+<p>The numeric abducer had found the bound. When it trimmed the joint
+answer, facts about a private recursive witness sufficed to discharge
+the same obligations without that bound. Splitting the remaining answer
+put the private facts outside the public interface. In miniature, <span
+class="math inline">\(y=x\land y\le0\)</span> entails <span
+class="math inline">\(x\le0\)</span>. Erasing the public restriction on
+<span class="math inline">\(x\)</span> would let a client supply <span
+class="math inline">\(x=1\)</span>, for which no private <span
+class="math inline">\(y\)</span> exists.</p>
+<p>Revision <code>0c3c4fc</code> checks each proposed erasure against
+the remaining facts in every predicate interface that owns the atom, as
+well as against the joint obligations. The repaired compiler rejects the
+bad client, accepts the valid calls and exports exactly the written
+input domain on this example. Z3 checks that last equality over integers
+and over rationals after reading the generated signature. <a
+href="thesis-review-30.lean">Scope lemma</a> · <a
+href="thesis-review-30.py">Public signature check</a></p>
+</section>
+<section id="joint" class="level2">
+<h2>A witness can depend on two arguments together</h2>
+<p>Give the function two independent states <span
+class="math inline">\(i,j\in\{0,1\}\)</span> and let the supplier return
+<span class="math inline">\(f=4(i+j)+1\)</span>. The recursive result
+must again miss <span class="math inline">\([2,4]\)</span>. Fix <span
+class="math inline">\(i=0\)</span>. At <span
+class="math inline">\(j=0\)</span> the only possible child key is <span
+class="math inline">\(-1\)</span>. At <span
+class="math inline">\(j=1\)</span> it is 5. So no function of <span
+class="math inline">\(i\)</span> alone works, however large its
+expression. Holding <span class="math inline">\(j=0\)</span> rules out a
+function of <span class="math inline">\(j\)</span> alone. The joint
+witness</p>
+<p><span class="math display">\[
+k_{\rm child}=\min\bigl(6(i+j)-1,\;4(i+j)+1\bigr)
+\]</span></p>
+<p>satisfies all four input pairs. Its interval contains the supplier
+and avoids the forbidden guard for every permitted opening. The base and
+surviving step branches both return <span
+class="math inline">\(f\)</span>, which every legal parent interval
+contains. The same argument thus works at every recursion depth. Making
+the key an explicit source argument verifies and executes at budget 2.
+<a href="two_input_interval.gadt">Implicit program</a> · <a
+href="thesis-review-30.py">Explicit control</a> · <a
+href="thesis-review-30.lean">Lean witness and impossibility of either
+unary policy</a></p>
+<p>The implicit program still fails at <code>bee08b1</code>. InvarGenT
+considers one input coordinate at a time, and the supplier bounds
+involve both. Each of two candidate searches finishes its predicate
+updates on pass 2. Projecting either failing guard onto the inputs,
+parent key <span class="math inline">\(k\)</span>, child key <span
+class="math inline">\(c\)</span> and result <span
+class="math inline">\(r\)</span> gives exactly</p>
+<p><span class="math display">\[
+i,j\in\{0,1\},\qquad k\le f\le k+2,\qquad
+c=k,\qquad c\le r\le c+2,\qquad 2\le r\le4.
+\]</span></p>
+<p>For instance, <span class="math inline">\(i=j=0\)</span>, <span
+class="math inline">\(k=c=1\)</span>, <span
+class="math inline">\(r=2\)</span> satisfies that guard. Budgets 0 and 1
+stop in the supplier. From budget 2 onward both final checks fail before
+a jump, and the other searches encounter incompatible return types. The
+trace is identical at budgets 2, 3, 40 and 10,000 in each annotation
+mode. Z3 checks both projections over integer and rational variables.
+This leaves a concrete inference question. Can the compiler recover the
+scalar observation <span class="math inline">\(i+j\)</span> from the
+supplier bounds while preserving the full set of choices available to
+each caller? <a href="thesis-review-30.py">Trace and projection
+checks</a></p>
+<p>Run Lean 4.19 on <code>thesis-review-30.lean</code> and
+<code>python3 thesis-review-30.py /path/to/InvarGenT.native</code> with
+OCaml and Python’s <code>z3-solver</code> available. Supply
+<code>--before</code> with revision <code>3eb191e</code> to reproduce
+the failing client and <code>--trace</code> with <code>bee08b1</code>
+built with the four existing diagnostics to check the guard traces. The
+source runs used the OCaml 5.5 compatibility build. The OCaml 5.3 suite
+passed 339 active tests with ten existing TODOs. All 171 previous
+generated example signatures matched byte for byte. <a
+href="thesis-review-28.html#policy">Diagnostic patches</a></p>
+</section>
+</article>
+<script src="/assets/theme-toggle.js"></script>
+</body>
+</html>

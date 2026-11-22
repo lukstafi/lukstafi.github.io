@@ -409,6 +409,11 @@ build_html \
   "$collab_dir/thesis-review-29.html" \
   "Choosing a recursive interval from the input state"
 
+build_html \
+  "$collab_dir/thesis-review-30.md" \
+  "$collab_dir/thesis-review-30.html" \
+  "Which recursive interval witnesses can InvarGenT infer?"
+
 reviews_dir="$collab_dir/reviews"
 if [[ -d "$reviews_dir" ]]; then
   for md_file in "$reviews_dir"/*.md; do

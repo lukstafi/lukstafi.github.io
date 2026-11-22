@@ -11,10 +11,8 @@ HERE = Path(__file__).resolve().parent
 compile_and_run = runpy.run_path(str(HERE / "thesis-review-13.py"))["compile_and_run"]
 
 
-def check_projection(guard, z3, sort, states=(0, 1)):
-    """Read the exact linear constraints printed in this program's guard."""
-    from z3.z3util import get_vars
-
+def numeric_constraints(atoms, z3, sort):
+    """Decode the arithmetic printed in a guard or a public signature."""
     def term(source):
         summands = []
         for monomial in source.strip().split(" + "):
@@ -29,15 +27,25 @@ def check_projection(guard, z3, sort, states=(0, 1)):
                 summands.append(z3.RealVal(monomial.strip("()")))
         return sum(summands)
 
-    atoms = " ".join(guard.split()).split(" ∧ ")
     constraints = []
     for atom in atoms:
         if atom.startswith("min||max ("):
             left, right = atom[len("min||max ("):-1].split(", ")
             constraints.append(z3.Or(term(left) <= 0, term(right) <= 0))
+        elif match := re.fullmatch(r"(\w+)=(min|max) \((.*), (.*)\)", atom):
+            target, op, a, b = match.groups()
+            a, b = term(a), term(b)
+            constraints.append(sort(target) == z3.If(a <= b if op == "min" else a >= b, a, b))
         else:
             left, sign, right = re.fullmatch(r"(.+) (≤|=) (.+)", atom).groups()
             constraints.append(term(left) <= term(right) if sign == "≤" else term(left) == term(right))
+    return constraints
+
+
+def check_projection(guard, z3, sort, states=(0, 1), indices=("i",)):
+    from z3.z3util import get_vars
+    atoms = " ".join(guard.split()).split(" ∧ ")
+    constraints = numeric_constraints(atoms, z3, sort)
     # Locate the fresh key and returned value by the declared two bounds.
     intervals = set()
     for atom in atoms:
@@ -45,18 +53,21 @@ def check_projection(guard, z3, sort, states=(0, 1)):
         if band and f"{band[2]} ≤ {band[1]}" in atoms:
             intervals.add(band.groups())
     [(output, child)] = intervals
-    r, j, i, k = map(sort, (output, child, "i", "k"))
-    expected = z3.And(z3.Or([i == x for x in states]), k <= 4*i+1, 4*i+1 <= k+2,
+    r, j, k = map(sort, (output, child, "k"))
+    coords = list(map(sort, indices))
+    domains = [z3.Or([v == x for x in states]) for v in coords]
+    supplier = 4*sum(coords)+1
+    expected = z3.And(*domains, k <= supplier, supplier <= k+2,
                       j == k, j <= r, r <= j+2, 2 <= r, r <= 4)
     full = z3.And(*constraints)
-    hidden = [v for v in get_vars(full) if not any(v.eq(obs) for obs in (r, j, i, k))]
+    hidden = [v for v in get_vars(full) if not any(v.eq(obs) for obs in (*coords, r, j, k))]
     oracle = z3.Solver()
     oracle.set(timeout=30000)
     oracle.add(z3.Xor(z3.Exists(hidden, full), expected))
     assert oracle.check() == z3.unsat, oracle.reason_unknown()
 
 
-def trace(exe, source, options, states=(0, 1)):
+def trace(exe, source, options, states=(0, 1), indices=("i",)):
     import z3
     stable = None
     for budget in (0, 1, 2, 3, 40, 10000):
@@ -74,7 +85,7 @@ def trace(exe, source, options, states=(0, 1)):
             stable = run.stderr
             for guard in guards:
                 for sort in (z3.Int, z3.Real):
-                    check_projection(guard, z3, sort, states)
+                    check_projection(guard, z3, sort, states, indices)
         elif budget > 2:
             assert run.stderr == stable
 

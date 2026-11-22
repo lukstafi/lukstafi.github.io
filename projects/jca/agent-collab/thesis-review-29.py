@@ -29,6 +29,15 @@ def controls(source):
     return split, explicit
 
 
+def check_climb_jump(trace, source):
+    repaired = subprocess.run(
+        [trace, "-no_ml", "-no_sig", "-no_verif", "-iterations_timeout", "9", source],
+        text=True, capture_output=True, check=True, timeout=30,
+        env=dict(os.environ, JCA_TRACE_DEMAND="1"))
+    assert re.search(r"^JUMP 8 true .*\nDEMAND 8 [^\n]*\+ 20 STORED", repaired.stderr, re.M)
+    assert re.search(r"^JUMP 9 true .*\nDEMAND 9  STORED", repaired.stderr, re.M)
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("compiler", type=Path)
@@ -84,12 +93,7 @@ def main():
             check("old_two", two, binary=before, error="Type mismatch")
         if args.trace:
             trace = args.trace.resolve(strict=True)
-            repaired = subprocess.run(
-                [trace, "-no_ml", "-no_sig", "-no_verif", "-iterations_timeout", "9", out / "climb.gadt"],
-                text=True, capture_output=True, check=True, timeout=30,
-                env=dict(os.environ, JCA_TRACE_DEMAND="1"))
-            assert re.search(r"^JUMP 8 true .*\nDEMAND 8 [^\n]*\+ 20 STORED", repaired.stderr, re.M)
-            assert re.search(r"^JUMP 9 true .*\nDEMAND 9  STORED", repaired.stderr, re.M)
+            check_climb_jump(trace, out / "climb.gadt")
             for options in ((), ("-full_annot",)):
                 review28["trace"](trace, out / "three.gadt", options, states=(0, 1, 2))
 

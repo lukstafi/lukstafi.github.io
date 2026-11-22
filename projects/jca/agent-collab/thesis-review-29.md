@@ -29,7 +29,9 @@ $$ k_{\rm child}=\min(6i-1,4i+1). $$
 
 At each state this interval contains the supplier and excludes the guard for every opening. Both the base branch and the surviving recursive branch return $4i+1$, which lies in every permitted parent interval. This proves the same local obligation at every recursive depth. The clients can choose the interval ending at $4i+1$. Supplying the minimum explicitly or splitting on the three constructors before the call both verify and execute at budget 2. [Three-state source](three_state_interval.gadt) · [Lean proof](thesis-review-29.lean) · [Both controls](thesis-review-29.py)
 
-With the key implicit, the final guards still fail. Z3 projects each failing guard exactly onto the input $i$, parent key $k$, child key $j$, and opened result $r$.
+With the key implicit, the final guards fail at revision `3eb191e`. The later piecewise fitter checks this program at budget 2. [Three-state repair](thesis-review-30.html#scalar)
+
+At the earlier revision, Z3 projects each failing guard exactly onto the input $i$, parent key $k$, child key $j$, and opened result $r$.
 
 $$
 i\in\{0,1,2\},\quad k\le4i+1\le k+2,\quad j=k,\quad
@@ -60,4 +62,4 @@ Four histories can be necessary.
 
 The rows at $-2$ and 1 force $3m\ge1$. The rows at $-1$ and 2 force $3m\le2$. No integer slope meets both. Omitting the rows in table order gives the respective witnesses $1$, $x$, $0$, and $x+1$. Each row is realizable with the same package width 7, supplier $U_h$, and a single forbidden value $L_h-1$. Thus checking every triple can miss a genuine incompatibility between recursive interval requirements. [Sharpness and package realization](thesis-review-29.lean)
 
-To reproduce the checks, compile reviews 27 and 28 into a temporary Lean search path and run Lean 4.19 on `thesis-review-29.lean`. Run `python3 thesis-review-29.py /path/to/InvarGenT.native` with OCaml available. The optional `--original` runs the capped climb at revision `772b9b4`. The optional `--before` takes revision `311a5e4`. The optional `--trace` uses Python's `z3-solver` and revision `3eb191e` built with the existing diagnostics for passes, interfaces, jumps, and guards. The OCaml 5.3 compatibility build passed 335 active tests with 10 existing TODOs. All 170 previous example signatures matched byte for byte. The source executions and traces used the OCaml 5.5 compatibility build. [Build diagnostics](thesis-review-28.html#policy)
+To reproduce the checks, compile reviews 27 and 28 into a temporary Lean search path and run Lean 4.19 on `thesis-review-29.lean`. Run `python3 thesis-review-29.py /path/to/InvarGenT.native` with OCaml available and revision `3eb191e` as the first executable. The optional `--original` runs the capped climb at revision `772b9b4`. The optional `--before` takes revision `311a5e4`. The optional `--trace` uses Python's `z3-solver` and revision `3eb191e` built with the existing diagnostics for passes, interfaces, jumps, and guards. The OCaml 5.3 compatibility build passed 335 active tests with 10 existing TODOs. All 170 previous example signatures matched byte for byte. The source executions and traces used the OCaml 5.5 compatibility build. [Build diagnostics](thesis-review-28.html#policy)
