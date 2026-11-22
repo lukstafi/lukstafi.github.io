@@ -504,6 +504,11 @@ build_html \
   "$collab_dir/thesis-review-48.html" \
   "Can a failed caller tell us how to construct the next predicate?"
 
+build_html \
+  "$collab_dir/thesis-review-49.md" \
+  "$collab_dir/thesis-review-49.html" \
+  "How can a negative branch determine an oblique guard?"
+
 reviews_dir="$collab_dir/reviews"
 if [[ -d "$reviews_dir" ]]; then
   for md_file in "$reviews_dir"/*.md; do

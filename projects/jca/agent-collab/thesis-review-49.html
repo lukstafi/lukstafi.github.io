@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <meta name="dcterms.date" content="2026-11-22">
+  <meta property="og:title" content="How can a negative branch determine an oblique guard?">
+  <meta property="og:url" content="https://lukstafi.github.io/projects/jca/agent-collab/thesis-review-49.html">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="lukstafi&#x27;s blog">
+  <meta name="twitter:card" content="summary">
+  <title>How can a negative branch determine an oblique guard?</title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <link rel="stylesheet" href="/assets/tufte.css">
+  <link rel="stylesheet" href="/assets/pandoc-tufte.css">
+  <link rel="stylesheet" href="/assets/site.css">
+  <script defer=""
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+  type="text/javascript"></script>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+  <script>(function(){var t=localStorage.getItem('theme-preference');if(t)document.documentElement.setAttribute('data-theme',t);})()</script>
+</head>
+<body>
+<nav class="site-nav">
+  <a href="/">Home</a> &middot; <a href="/study/">Study Guide</a> &middot; <a href="/about.html">About</a> &middot; <a href="https://lukstafi.substack.com">Substack</a>
+</nav>
+<div class="theme-toggle">
+  <button id="theme-btn" aria-label="Toggle dark mode">&#9788;</button>
+</div>
+<article>
+<header>
+<h1 class="title">How can a negative branch determine an oblique
+guard?</h1>
+<p class="byline">2026-11-22</p>
+</header>
+<nav id="TOC">
+<ul>
+<li><a href="#faces" id="toc-faces">One inequality per forbidden
+cell</a></li>
+<li><a href="#dual" id="toc-dual">Computing a separator in coefficient
+space</a></li>
+<li><a href="#compiler" id="toc-compiler">What the compiler
+infers</a></li>
+<li><a href="#checks" id="toc-checks">Reproducing the checks</a></li>
+</ul>
+</nav>
+<p>A datatype has live constructors at <span
+class="math inline">\((1,0)\)</span> and <span
+class="math inline">\((0,1)\)</span> and a forbidden constructor in the
+quadrant <span class="math inline">\(i\le0,\ j\le0\)</span>. Requiring
+<span class="math inline">\(i&gt;0\)</span> loses the second live case.
+Requiring <span class="math inline">\(j&gt;0\)</span> loses the first.
+InvarGenT now infers <span class="math inline">\(i+j\ge1\)</span>.
+Adding the opposite forbidden quadrant <span
+class="math inline">\(i\ge1,\ j\ge1\)</span> leads it to infer <span
+class="math inline">\(i+j=1\)</span>. The generated OCaml runs both
+admitted calls in both programs. <a href="oblique_guard.gadt">Four
+source examples</a> · <a href="thesis-review-48.html#compiler">Earlier
+face search</a></p>
+<section id="faces" class="level2">
+<h2>One inequality per forbidden cell</h2>
+<p>Fix the public rational indices. Each live validation state <span
+class="math inline">\(L_i\)</span> must retain a witness. The guard must
+exclude every point of each forbidden polyhedron <span
+class="math inline">\(B_j\)</span>. All cells use rational, weak affine
+constraints. Project private rational coordinates existentially and
+split finite alternatives. A live state may give a union of cells from
+which one witness suffices. Discard empty forbidden cells. An empty live
+state makes the problem infeasible.</p>
+<p><strong>A shared tuple characterizes existence.</strong> A
+conjunctive affine guard exists iff one can choose <span
+class="math inline">\(p_i\in L_i\)</span> such that <span
+class="math inline">\(\operatorname{conv}\{p_i\}\)</span> misses every
+<span class="math inline">\(B_j\)</span>. Every successful guard
+contains that hull. Conversely the hull of finitely many rational points
+is a rational polytope. It is itself a guard. There is also an answer
+with <strong>one inequality per forbidden cell</strong>. If <span
+class="math inline">\(B_j\)</span> has rows <span
+class="math inline">\(A_jx\le b_j\)</span>, find <span
+class="math inline">\(\lambda_j\ge0\)</span> such that <span
+class="math display">\[
+   \lambda_j(A_jp_i-b_j)\ge1\qquad\text{for every }i .
+\]</span> The guard consists of those same inequalities with <span
+class="math inline">\(x\)</span> in place of <span
+class="math inline">\(p_i\)</span>. For necessity, apply Farkas’ lemma
+to the infeasible intersection of the hull and <span
+class="math inline">\(B_j\)</span>. A nonnegative combination of the
+forbidden rows separates the hull with a strict gap, which can be scaled
+to one. Once the <span class="math inline">\(p_i\)</span> are fixed this
+is ordinary rational linear feasibility, independently for each <span
+class="math inline">\(j\)</span>. The <em>same</em> points must work for
+every <span class="math inline">\(j\)</span>. With no live states the
+empty guard region suffices, and with no forbidden cells the whole space
+suffices. <a
+href="https://people.math.carleton.ca/~kcheung/math/notes/MATH3801/04/4_1_farkas_lemma.html">Farkas’
+lemma</a> · <a href="thesis-review-49.lean">Witness quantifiers</a></p>
+<p>The row count is sharp even in two public dimensions. Take all
+vertices of a strictly convex rational polygon as singleton live states.
+For each edge move its midpoint a small rational distance outwards to
+make a forbidden singleton. The midpoint of any two original edge
+midpoints is strictly inside the polygon. Finitely many pairs allow a
+small enough displacement that all these pairwise midpoints stay inside.
+Every guard containing the vertices must contain them. A single weak
+inequality cannot reject two forbidden points whose midpoint it admits.
+The polygon’s own edge inequalities attain the bound. This counts rows
+written on the public coordinates. <a
+href="thesis-review-49.lean">Counting proof</a> · <a
+href="thesis-review-49.py">Exact rational polygons</a></p>
+<p>With the witnesses unknown, the displayed system is existential and
+bilinear. It gives a decision procedure for this entire finite guard
+problem over the rationals. Use real closed field decision on the real
+system. A real solution has strict positive separation at all chosen
+witnesses. Keeping the real multipliers, move each witness slightly to a
+rational point in the same live component. Rational points are dense
+there, including on lower-dimensional rational polyhedra, and finitely
+many strict inequalities remain true in a neighborhood. Rescale to
+restore unit gaps. With the points fixed the multiplier systems are
+feasible rational polyhedra and have rational solutions. The reverse
+implication is immediate. A positive real decision can therefore be
+followed by fair rational witness enumeration and linear certificate
+checks. This argument bounds the number of rows. It supplies no
+polynomial bit bound on the general joint witnesses and proves no
+convergence theorem for recursive Table 4.4 updates. <a
+href="thesis-review-49.lean">Dense-witness lemma</a> · <a
+href="https://www.math.purdue.edu/~sbasu/raag_survey2011.pdf">Real
+algebraic decision procedures</a> · <a
+href="https://theory.stanford.edu/~sipma/papers/cav03.html">Coefficient
+synthesis in invariant inference</a></p>
+</section>
+<section id="dual" class="level2">
+<h2>Computing a separator in coefficient space</h2>
+<p>For a cell <span class="math inline">\(S\)</span> let <span
+class="math inline">\(D(S)\)</span> be the coefficient pairs <span
+class="math inline">\((a,c)\)</span> for which <span
+class="math inline">\(a\cdot x+c\le0\)</span> throughout <span
+class="math inline">\(S\)</span>. Farkas multipliers for the cell
+equations are unrestricted and those for weak inequalities are
+nonnegative. Equating the linear coefficients and bounding the constant
+gives a linear system. Project its multipliers out. The resulting
+polyhedral cone describes <span class="math inline">\(D(S)\)</span>
+exactly. For a union, intersect the cones of its nonempty
+components.</p>
+<p>A single positive side <span class="math inline">\(a\cdot
+x+c&gt;0\)</span> hits every live state and misses every forbidden cell
+iff <span class="math inline">\((a,c)\)</span> belongs to all forbidden
+validity cones and lies outside each live validity cone. The complements
+are finite disjunctions of strict linear tests. All rows are
+homogeneous, so a common rescaling can give the selected violations unit
+gaps. Once a direction is selected, the finitely many live witnesses
+have a common positive rational margin in the original coordinates. For
+one convex forbidden cell, the one-row theorem makes this test complete
+for arbitrary conjunctive guards in exact arithmetic. <a
+href="thesis-review-49.lean">Validity-cone equivalence</a> · <a
+href="thesis-review-48.lean">Common-margin lemma</a></p>
+<p>For several cells, fix some of the live witnesses. Each forbidden
+cell now has a polyhedron <span class="math inline">\(K_j\)</span> of
+possible separator coefficients, valid on <span
+class="math inline">\(B_j\)</span> and reaching at least one at all the
+fixed points. For another point <span class="math inline">\(x\)</span>,
+the obstruction from cell <span class="math inline">\(j\)</span> is
+<span class="math display">\[
+   \forall (a,c)\in K_j,\quad a\cdot x+c\le0 .
+\]</span> This is a <em>polyhedral region in <span
+class="math inline">\(x\)</span></em>. Apply the same Farkas projection
+to <span class="math inline">\(K_j\)</span> with coefficient vector
+<span class="math inline">\((x,1)\)</span> and zero constant. A possible
+last witness must lie in its live region and outside all these
+obstructions. This is a Boolean linear test even when there are many
+forbidden cells. Once <span class="math inline">\(x\)</span> is chosen,
+positive evaluations at <span class="math inline">\(x\)</span> can again
+be scaled to one while keeping all earlier unit margins. Thus a single
+continuously movable live witness after fixed points requires no grid
+search. <a href="thesis-review-49.lean">Last-witness theorem</a></p>
+</section>
+<section id="compiler" class="level2">
+<h2>What the compiler infers</h2>
+<p>InvarGenT revision <code>4d2075a</code> keeps the earlier guard when
+it passes validation. On failure it tries the common separator and the
+individually chosen separators. It checks their full conjunction. If the
+live witnesses disagree, it chooses common points, keeps the feasible
+coefficient systems, and solves the last witness symbolically. Each
+fixed point can discard a whole search branch as soon as one coefficient
+system becomes empty. Before selecting points the compiler projects away
+local indices and drops live regions containing an already required
+smaller one. A witness in the smaller region serves both. This matters
+in the source examples where two unconstrained validation states would
+otherwise consume the last symbolic step.</p>
+<p>When several witnesses remain free, the search tries feasible
+endpoints, midpoints and rational coordinates of increasing numerator
+and denominator. A rational tuple appears at finite height in ideal
+exact search. The compiler uses its existing numeric abduction budget
+and representable coefficients. Its final check replays the proposed
+guard against all original live states and forbidden branches.</p>
+<p>Two further examples show why choosing witnesses jointly matters.</p>
+<ul>
+<li>A constructor fixes <span class="math inline">\((3,3)\)</span> and
+another can have indices <span class="math inline">\((-t,-2t)\)</span>
+for <span class="math inline">\(0\le t\le1\)</span>. The forbidden
+points are <span class="math inline">\((0,-1)\)</span> and <span
+class="math inline">\((2,2)\)</span>. InvarGenT infers the line <span
+class="math inline">\(7j=8i-3\)</span>. It keeps the fixed point and
+selects <span class="math inline">\(t=1/2\)</span> for the flexible
+constructor.</li>
+<li>Fix <span class="math inline">\((0,0)\)</span> and let the tip be
+<span class="math inline">\((2,2t)\)</span> for <span
+class="math inline">\(0\le t\le1\)</span>. At <span
+class="math inline">\(x=1\)</span> forbid the point <span
+class="math inline">\(y=0\)</span> and the interval <span
+class="math inline">\(1/q\le y\le1\)</span>. Convexity forces the
+midpoint <span class="math inline">\((1,t)\)</span> into every guard
+keeping these two witnesses. Thus <span
+class="math inline">\(0&lt;t&lt;1/q\)</span> is necessary, and the line
+<span class="math inline">\(y=tx\)</span> suffices for each such choice.
+In lowest terms the denominator of <span
+class="math inline">\(t\)</span> exceeds <span
+class="math inline">\(q\)</span>. A grid-height search can therefore
+take exponentially many heights in the bit length of <span
+class="math inline">\(q\)</span>. With <span
+class="math inline">\(q=2^{20}\)</span> the compiler infers <span
+class="math inline">\(y\le1/(2q)\)</span> and <span
+class="math inline">\(x\le4q y\)</span>. These bounds keep the origin
+and precisely <span class="math inline">\(y=1/(2q)\)</span> at the tip.
+Closing the window makes the joint witness problem infeasible. <a
+href="thesis-review-49.py">Source and controls</a> · <a
+href="thesis-review-49.lean">Denominator lemma</a></li>
+</ul>
+</section>
+<section id="checks" class="level2">
+<h2>Reproducing the checks</h2>
+<p>Run the <a href="thesis-review-49.py">Python replay</a> with
+<code>z3-solver</code>. It compares a generator-based linear oracle for
+one forbidden cell with a bilinear oracle on 48 overlapping cases. The
+native comparison covers 322 single-cell and 414 multi-cell problems.
+The preceding compiler misses 161 feasible instances in this batch.
+Build the <a href="thesis-review-48-guards.ml">numeric driver</a> and
+pass <code>--driver</code> and optionally <code>--before-driver</code>.
+With <code>--compiler</code> the replay executes eight admitted calls
+and checks rejection of seven forbidden ones. Pass <code>--before</code>
+to reproduce the earlier rejection. The <a
+href="thesis-review-49.lean">Lean file</a> checks the witness, density,
+face-count and window lemmas.</p>
+</section>
+</article>
+<script src="/assets/theme-toggle.js"></script>
+</body>
+</html>
