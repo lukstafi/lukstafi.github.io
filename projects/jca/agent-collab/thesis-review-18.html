@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <meta name="dcterms.date" content="2026-11-22">
+  <meta property="og:title" content="Which caller observations can guide the induction jump?">
+  <meta property="og:url" content="https://lukstafi.github.io/projects/jca/agent-collab/thesis-review-18.html">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="lukstafi&#x27;s blog">
+  <meta name="twitter:card" content="summary">
+  <title>Which caller observations can guide the induction jump?</title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <link rel="stylesheet" href="/assets/tufte.css">
+  <link rel="stylesheet" href="/assets/pandoc-tufte.css">
+  <link rel="stylesheet" href="/assets/site.css">
+  <script defer=""
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+  type="text/javascript"></script>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+  <script>(function(){var t=localStorage.getItem('theme-preference');if(t)document.documentElement.setAttribute('data-theme',t);})()</script>
+</head>
+<body>
+<nav class="site-nav">
+  <a href="/">Home</a> &middot; <a href="/study/">Study Guide</a> &middot; <a href="/about.html">About</a> &middot; <a href="https://lukstafi.substack.com">Substack</a>
+</nav>
+<div class="theme-toggle">
+  <button id="theme-btn" aria-label="Toggle dark mode">&#9788;</button>
+</div>
+<article>
+<header>
+<h1 class="title">Which caller observations can guide the induction
+jump?</h1>
+<p class="byline">2026-11-22</p>
+</header>
+<nav id="TOC">
+<ul>
+<li><a href="#graph" id="toc-graph">Eliminating a determined result
+coordinate</a></li>
+<li><a href="#guard" id="toc-guard">A constant-size certificate for
+which every outer budget fails</a></li>
+<li><a href="#coverage" id="toc-coverage">When a call can rule out a
+guess</a></li>
+<li><a href="#patterns" id="toc-patterns">Which input types solve the
+marked-call problem?</a></li>
+</ul>
+</nav>
+<p>The same moving-floor program gives two outcomes in InvarGenT at
+revision <code>80624f9</code>. A recursive call returns a payload and a
+tag from which the caller can recover that payload. Passing the payload
+directly to the next operation lets inference finish at the default
+budget of 11. Recovering it from the tag exhausts budgets 11, 80 and
+171. <strong>The type inferred from the first spelling checks the second
+spelling verbatim.</strong> Both generated OCaml programs execute the
+stationary and rising calls. <a href="tagged_floor.gadt">Source</a> · <a
+href="thesis-review-18.py">Executable comparison</a></p>
+<section id="graph" class="level2">
+<h2>Eliminating a determined result coordinate</h2>
+<p>At floor <span class="math inline">\(p\)</span> the base branch
+returns <span class="math inline">\((p,2p)\)</span>. Each returning arm
+of the successor produces either <span
+class="math inline">\((u,u+p)\)</span> or <span
+class="math inline">\((p,2p)\)</span>. Thus every returned pair <span
+class="math inline">\((r,t)\)</span> satisfies <span
+class="math inline">\(t=r+p\)</span>, independently of how the abducer
+estimates the range of <span class="math inline">\(r\)</span>. The
+recursive call uses floor <span class="math inline">\(p+e\)</span>. Its
+caller passes <span class="math inline">\(t-(p+e)\)</span> to
+<code>step</code>. On every possible return this is <span
+class="math inline">\(r\)</span>. Changing that one argument preserves
+the recursion, the pair type, the primitive declaration and both
+attached calls.</p>
+<p>The inferred type has the four input conditions <span
+class="math display">\[
+d\le1,\qquad 0\le e,\qquad e\le\max(0,d),\qquad e\le\max(0,m-p+20).
+\]</span> Its result is <span class="math inline">\(\exists r\,[p\le
+r\land r\le\max(p,m+19)].\,(\mathrm{Num}(r),\mathrm{Num}(p+r))\)</span>.
+The equality appears in the type of the second coordinate, so the
+consumer can use it without an extra abductive guess. At budget 171 the
+original spelling still reports “Answers do not converge”. Whether some
+larger budget suffices for that spelling remains open. <a
+href="thesis-review-16.html#restarts">Earlier jump and restart
+trace</a></p>
+<p><strong>Graph lemma.</strong> Let <span
+class="math inline">\(x\)</span> include the inputs, captured parameters
+and payload of a scalar state. Enlarge each state with a tag <span
+class="math inline">\(g(x)\)</span>, and write <span
+class="math inline">\(L(R)=\{(x,g(x)):x\in R\}\)</span>. Let <span
+class="math inline">\(F(R)\)</span> contain all bases and one-step
+successors from <span class="math inline">\(R\)</span>, with <span
+class="math inline">\(F&#39;\)</span> the corresponding supplier
+operation on tagged states. Suppose the tagged bases are exactly the
+images of the scalar bases. Suppose that from <span
+class="math inline">\((x,g(x))\)</span> the tagged transition can
+produce <span class="math inline">\((y,t)\)</span> exactly when the
+scalar transition can produce <span class="math inline">\(y\)</span> and
+<span class="math inline">\(t=g(y)\)</span>. Then <span
+class="math display">\[
+F&#39;(L(R))=L(F(R)).
+\]</span> A base or transition witness projects to the scalar witness.
+Conversely, append <span class="math inline">\(g\)</span> to each state
+of a scalar witness. A caller test <span
+class="math inline">\(A(x,t)\)</span> accepts every member of <span
+class="math inline">\(L(R)\)</span> exactly when <span
+class="math inline">\(A(x,g(x))\)</span> accepts every <span
+class="math inline">\(x\in R\)</span>. These two identities transport
+supplier obligations, caller obligations and inductive certificates.
+They hold for arbitrary <span class="math inline">\(R\)</span>,
+including the approximations <em>before</em> a solution is known. <a
+href="thesis-review-18.lean">Lean proof</a></p>
+<p>This gives a sufficient rule for a jump on a fixed interface. Once
+the branches prove the graph equation, run the scalar widening and
+caller abduction on the projected constraints and restore the tag when
+storing the answer. Each scalar pass lifts to a tagged pass by the two
+identities, provided the split answers, empty-demand test and retries
+are transported too. Induction on the pass number gives the same
+stopping pass for the projected iteration. The observed difference
+between the two spellings shows that the current search does not have
+this invariance. Finding the graph and its captured floor during
+reconstruction remains a separate obligation.</p>
+</section>
+<section id="guard" class="level2">
+<h2>A constant-size certificate for which every outer budget fails</h2>
+<p>The four constructors of <code>Tag</code> each put their payload type
+in a different argument position. The three other positions contain
+<code>Marker</code>, abbreviated <span class="math inline">\(M\)</span>.
+The recursive function <code>f</code> returns its payload twice at depth
+zero and calls itself at the same tag at each successor. Give its
+attached client a value <code>Pick n</code> whose integer index is
+hidden by the constructor. The client opens
+<code>f (Third Box) (S Z)</code> and requires its first component to
+have type <code>Cargo</code> when <span class="math inline">\(1\le
+n\)</span>. The external implementation supplies <code>Pick 1</code>, so
+execution reaches the call. <a href="guarded_payload.gadt">Guarded
+source</a></p>
+<p>A solution is <span class="math inline">\(\forall a.\
+\mathrm{Tag}(M,M,a,M)\to\mathrm{Nat}\to\exists().\,(a,a)\)</span>. On
+the third constructor its payload has type <span
+class="math inline">\(a\)</span>. Matching any other constructor forces
+both its payload type and <span class="math inline">\(a\)</span> to be
+<span class="math inline">\(M\)</span>. Recursion preserves <span
+class="math inline">\(a\)</span>, and the client uses <span
+class="math inline">\(a=\mathrm{Cargo}\)</span>. In the erased problem
+the unary predicate accepts those arrow instances and the binary
+predicate relates the pair <span class="math inline">\((a,a)\)</span> to
+the captured tuple <span class="math inline">\(\langle
+a\rangle\)</span>. Thus the certificate covers the suppliers, recursive
+use and client for every value of the hidden index. InvarGenT checks the
+written type and the driver executes both <code>Pick 0</code> and
+<code>Pick 1</code>. <a href="thesis-review-16.html#package">Erased
+predicate witnesses</a> · <a href="thesis-review-18.py">Driver</a></p>
+<p>With the annotation erased, the full search proposes two inputs on
+pass 0. Pass 1 rejects each with a type mismatch. Pass 0 then exhausts
+term abduction. Deferring the three external result-opening clauses
+gives four proposals. Each fails on pass 1 and term abduction again
+fails on pass 0. The normalized client guard is <span
+class="math inline">\(1\le n\)</span> with <span
+class="math inline">\(n\)</span> unknown, so the required-call test
+below finds no further input sample. The two searches read the outer
+budget only at the end of successful pass-0 updates. The pass-1 errors
+return before the comparison, and neither search reaches a stable
+proposal. <strong>Every positive outer budget therefore follows the same
+finite failing path</strong>, with the component settings at their
+defaults. Budget zero stops at the first comparison. The driver checks
+budgets through 10,000.</p>
+<p>This example refutes a guarantee of successful discovery under a
+bound on certificate size for the revised implementation. Its type has
+zero constraint atoms. The earlier common-atom induction jump gives a
+different failure, where a caller restores the same upper bound on every
+pass forever under that update rule. Table 4.4 leaves choices to its
+component algorithms. A finite exhaustive search over bounded, checkable
+certificates would have a different guarantee. <a
+href="thesis-review-3.html#update">Infinite recurrence and its
+repair</a> · <a href="thesis-review-2.html">Bounded certificate
+search</a></p>
+</section>
+<section id="coverage" class="level2">
+<h2>When a call can rule out a guess</h2>
+<p>Suppose a client in public context <span
+class="math inline">\(b\)</span> supplies argument <span
+class="math inline">\(t(b)\)</span> whenever a private witness <span
+class="math inline">\(w\)</span> satisfies <span
+class="math inline">\(G(b,w)\)</span>. A candidate input domain <span
+class="math inline">\(D\)</span> must admit every argument of a guarded
+call. When does this license checking <span
+class="math inline">\(t(b)\)</span> in <em>all</em> contexts, for every
+<span class="math inline">\(D\)</span>? Exactly when every such argument
+has a guarded representative. Formally, for each <span
+class="math inline">\(b\)</span> there are <span
+class="math inline">\(c,w\)</span> with <span
+class="math inline">\(G(c,w)\)</span> and <span
+class="math inline">\(t(c)=t(b)\)</span>. For sufficiency use the
+obligation at <span class="math inline">\(c\)</span>. For necessity
+choose <span class="math inline">\(D\)</span> to be the set of arguments
+with a guarded representative. If the candidate can distinguish public
+contexts too, include <span class="math inline">\(b\)</span> in the
+observable argument. The condition then becomes <span
+class="math inline">\(\forall b\,\exists w.\,G(b,w)\)</span>. For a
+fixed argument the check needs just one reachable call. <a
+href="thesis-review-18.lean">Lean equivalences</a></p>
+<p>Revision <code>80624f9</code> uses a sufficient case of this rule.
+After the existing searches report a type failure, it reads calls with
+empty guards or numeric guards entailed by unconditional numeric facts.
+It matches the arguments in the common prefix of the call and definition
+arrows. Each call instantiates the proposed type separately, preserving
+repeated variables within that call. These comparisons guide the first
+term-abduction pass of the retry. The complete original clients still
+have to pass. In particular, a call at <code>Third Box</code> and
+another at <code>Third Mark</code> can use the same polymorphic
+scheme.</p>
+<p>For the direct four-constructor call the solver now confirms the
+result on pass 6, with the arms in their original order. It does the
+same under <span class="math inline">\(1\le n\)</span> when the
+unconditional facts set <span class="math inline">\(n=1\)</span>. The
+ordinary unboxed pair succeeds on pass 2. An incompatible result test
+and simultaneous marked calls on two different axes are rejected.
+Incremental validation also needed an occurs check. Given <span
+class="math inline">\(a=\mathrm{Box}(b)\)</span>, the previous validator
+admitted <span class="math inline">\(b=\mathrm{Wrap}(a)\)</span> because
+<span class="math inline">\(b\)</span> had no binding of its own.
+Revision <code>d41f835</code> composes the binding with the current
+substitution and detects the cycle. <a
+href="thesis-review-17.html#four">Original four-way trace</a> · <a
+href="thesis-review-18.py">Regression programs</a></p>
+</section>
+<section id="patterns" class="level2">
+<h2>Which input types solve the marked-call problem?</h2>
+<p>Take <span class="math inline">\(m\)</span> constructors, a payload
+type <span class="math inline">\(C\ne M\)</span> and a client calling
+constructor <span class="math inline">\(j\)</span> with a payload of
+type <span class="math inline">\(C\)</span>. Restrict attention to
+conjunctions of finite free-type equations with existential witnesses.
+Require the common all-<span class="math inline">\(M\)</span> input to
+be admitted. Every constructor can produce a value there. Project a
+solution to its <span class="math inline">\(m\)</span> input indices and
+the first component of the returned pair. Joint unification and
+projection give a single tuple pattern for this relation. <a
+href="thesis-review-1.html">Projection lemma</a></p>
+<p><strong>Classification.</strong> The selected input and the observed
+result must be the same hole <span class="math inline">\(a\)</span>.
+Each other position is pinned to <span class="math inline">\(M\)</span>
+or belongs to a group of at least two positions sharing a hole of their
+own. Every pattern of this form is the projection of a solution.</p>
+<p>The all-<span class="math inline">\(M\)</span> input returns <span
+class="math inline">\(M\)</span>, so the pattern contains the all-<span
+class="math inline">\(M\)</span> row. Since <span
+class="math inline">\(M\)</span> is nullary, each coordinate of the
+pattern is either <span class="math inline">\(M\)</span> or a bare hole.
+The marked row has <span class="math inline">\(C\)</span> at <span
+class="math inline">\(j\)</span> and in the result, and <span
+class="math inline">\(M\)</span> everywhere else. The holes at <span
+class="math inline">\(j\)</span> and in the result can occur in no other
+input. If they were different, one could change just the result hole to
+<span class="math inline">\(M\)</span> on the marked row. That would
+violate the client’s guarantee. Now suppose an unmarked input hole
+occurs just once. Give it <span class="math inline">\(C\)</span> and set
+all other holes to <span class="math inline">\(M\)</span>. Its
+constructor would return <span class="math inline">\(C\)</span> where
+the pattern predicts <span class="math inline">\(M\)</span>. Conversely,
+a pair of tied unmarked positions forces their common type to <span
+class="math inline">\(M\)</span> whenever one of them supplies the
+constructor, since its partner is <span
+class="math inline">\(M\)</span>. Each admitted constructor therefore
+returns the selected type. Returning <span
+class="math inline">\((a,a)\)</span> supplies a full scheme at every
+recursive depth. <a href="thesis-review-18.lean">Lean proofs for the
+marked call and repeated holes</a></p>
+<p>There are exactly <span class="math inline">\(B_{m-1}\)</span>
+projected patterns up to hole renaming, where <span
+class="math inline">\(B_n\)</span> is the number of partitions of <span
+class="math inline">\(n\)</span> labeled positions. The singleton blocks
+are the pins. Compare these patterns by inclusion on <strong>all ground
+type tuples</strong>. A pattern is maximal exactly when it has at most
+one pin and every free group has size two or three. Two pins can be
+freed together. A group of at least four can be split into two free
+groups. Conversely, an enlargement can pin only a previously pinned
+coordinate. Any equality it keeps must already hold for every old
+assignment. Thus its free groups can only split an old group or release
+old pins together. Neither change is possible under the stated
+conditions.</p>
+<p>For four constructors and the third marked, there are five patterns.
+The inferred <span class="math inline">\((M,M,a,M)\)</span> lies below
+the four incomparable maxima <span class="math display">\[
+(b,b,a,b),\quad (M,b,a,b),\quad (b,M,a,b),\quad (b,b,a,M).
+\]</span> All five admit exactly the same
+<strong>constructor-built</strong> ground inputs. They give different
+interfaces to an abstract caller. A forwarding function inferred against
+the first maximal annotation accepts <span
+class="math inline">\(\mathrm{Tag}(b,b,a,b)\)</span> at arbitrary <span
+class="math inline">\(b\)</span>. Against the inferred all-pinned type
+it requires <span class="math inline">\(b=M\)</span>. InvarGenT checks
+all four written maxima, and the driver compiles and executes their
+OCaml together with calls on the other constructors. Enumerating the
+ground truth tables over <span class="math inline">\(M,C\)</span> for
+one through seven axes gives <span
+class="math inline">\(1,1,1,4,7,25,85\)</span> maxima. The
+classification proof applies to arbitrary ground types.</p>
+<p>Lean 4.19 checks the graph, coverage and hole lemmas. Run
+<code>python3 thesis-review-18.py</code> for the independent finite
+enumeration. Supply an InvarGenT executable to check the programs, and
+add <code>--long</code> to run the arithmetic comparison through pass
+171. The OCaml 5.3 compatibility build passed 303 active tests with 10
+existing TODOs. All 145 earlier generated interfaces were
+byte-identical. <a href="thesis-review-18.lean">Lean proofs</a> · <a
+href="thesis-review-18.py">Comparison driver</a></p>
+</section>
+</article>
+<script src="/assets/theme-toggle.js"></script>
+</body>
+</html>

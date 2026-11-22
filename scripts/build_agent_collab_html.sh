@@ -349,6 +349,11 @@ build_html \
   "$collab_dir/thesis-review-17.html" \
   "Checking a caller after inferring the package it opens"
 
+build_html \
+  "$collab_dir/thesis-review-18.md" \
+  "$collab_dir/thesis-review-18.html" \
+  "Which caller observations can guide the induction jump?"
+
 reviews_dir="$collab_dir/reviews"
 if [[ -d "$reviews_dir" ]]; then
   for md_file in "$reviews_dir"/*.md; do

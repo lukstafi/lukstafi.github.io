@@ -5,6 +5,8 @@ date: 2026-11-22
 
 InvarGenT at revision `0da0cd6` infers the two-constructor packed-payload type on pass 6. The client that needs a `Cargo` payload passes, and the client that asks for `Marker` on the same call fails. A four-constructor program still has a constant-size solution that every outer budget misses. Interchanging two disjoint match arms is enough for the solver to infer the written solution. [Two-constructor source](packed_payload.gadt) · [Four-constructor source](four_axis_payload.gadt) · [Executable comparisons](thesis-review-17.py)
 
+Revision `80624f9` subsequently inferred the original four-constructor program with the default settings. A guarded client still forces finite failure at every outer budget. Supply a `0da0cd6` executable to the driver with `--before-call-inputs` to reproduce the historical failures. [Required calls and the guarded counterexample](thesis-review-18.html#guard)
+
 ## Where the retry loses the payload {#opening}
 
 The program returns its payload twice. Its test opens the result of `f (Left Box) (S Z)` and checks the first component against `Box`. The successful input must admit $\mathrm{Tag}(\mathrm{Marker},\mathrm{Cargo})$. At `cac61af` pass 0 first guesses $\mathrm{Tag}(a,a)$. After pass 1 rejects that diagonal, the term abducer actually proposes $\mathrm{Tag}(\mathrm{Marker},a)$ on the retry. The failure occurs in the next operation, which splits the conjecture among the predicates and the residual constraint. [Previous proof and normalized predicates](thesis-review-16.html#package)

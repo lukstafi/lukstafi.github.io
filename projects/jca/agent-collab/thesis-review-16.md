@@ -5,7 +5,7 @@ date: 2026-11-22
 
 InvarGenT at revision `cac61af` can miss a constant-size solution on a single recursive definition for every outer iteration budget. There is no arithmetic in the example. InvarGenT checks the written type, and its generated OCaml runs. With the annotation erased, the solver retries its first input guess and reports a quantifier violation. The induction jump is scheduled for pass 8. [Unannotated source](packed_payload.gadt) · [Executable comparison](thesis-review-16.py) · [Table 4.4](../lukstafi-phd-thesis.pdf#page=71)
 
-A later revision infers this type on pass 6 and checks the complete client. A four-constructor version still fails at every outer budget. [Repair, four-way counterexample and scope audit](thesis-review-17.html)
+A later revision infers this type on pass 6 and checks the complete client. At that revision a four-constructor version fails at every outer budget. [Repair, four-way counterexample and scope audit](thesis-review-17.html)
 
 ## A result with no hidden index {#package}
 

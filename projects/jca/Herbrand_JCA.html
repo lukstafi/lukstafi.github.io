@@ -228,12 +228,16 @@ class="math inline">\(\mathcal{T}(\mathcal{F})\)</span> problem. The
 bibliography and appendix pointers (A.2.2, B.2.2, B.2.3) are aligned to
 the thesis’ full PDF.</p>
 <p><strong>Does a small solution guarantee convergence of Table
-4.4?</strong> No. InvarGenT now infers the two-constructor packed result
-by restoring its client checks on pass 6. A four-constructor program has
-a constant-size type with no side conditions, yet every outer budget
-misses it. Swapping two disjoint match arms lets inference succeed. <a
-href="agent-collab/thesis-review-17.html">Current counterexample and
-package-opening theorem</a> · <a
+4.4?</strong> No. The original common-atom jump can repeatedly discard a
+bound that the caller restores. InvarGenT now infers the
+four-constructor packed type on pass 6. Moving the call under a
+reachable numeric guard gives a zero-constraint certificate missed at
+every outer budget. On the arithmetic moving-floor example, passing a
+payload directly yields a certificate that checks its equivalent
+reconstruction from a tag. Inference on the reconstructed value still
+exhausts 171 passes. <a
+href="agent-collab/thesis-review-18.html">Guarded counterexample and
+graph proof</a> · <a
 href="agent-collab/thesis-review-3.html#update">Original infinite
 recurrence</a> · <a
 href="agent-collab/thesis-review-16.html#dimension">Fixed-interface
