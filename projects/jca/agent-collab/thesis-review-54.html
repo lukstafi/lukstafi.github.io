@@ -45,8 +45,8 @@ pairs</a></li>
 from sibling branches</a></li>
 <li><a href="#bounds" id="toc-bounds">Projecting hidden variables from a
 required inequality</a></li>
-<li><a href="#alternatives" id="toc-alternatives">Where a single
-inferred bound loses callers</a></li>
+<li><a href="#alternatives" id="toc-alternatives">When callers need
+alternative bounds</a></li>
 </ul>
 </nav>
 <p>Suppose a constructor hides two numbers <span
@@ -131,8 +131,9 @@ class="math inline">\(u(p)\le0\)</span>. Indeed, for each allowed
 payload we may choose <span class="math inline">\(t=g(p,h)\)</span>. The
 new recovery step puts hidden variables first in the existing
 elimination order, reads off the upper bounds on <span
-class="math inline">\(t\)</span>, and tries each candidate subject to
-the usual scope and validation checks.</p>
+class="math inline">\(t\)</span>, and submits proposals to the usual
+scope and validation checks. When it finds two upper bounds it tries
+their binary minimum before trying each separately.</p>
 <p>There is no fixed bound on how many source premises one answer
 inequality can need. For <span class="math inline">\(n\)</span>
 independent hidden payloads <span class="math inline">\(x_s\le
@@ -157,7 +158,7 @@ href="thesis-review-54.lean">Sharp bounds in Lean</a> · <a
 href="thesis-review-54.py">Compiler replay</a></p>
 </section>
 <section id="alternatives" class="level2">
-<h2>Where a single inferred bound loses callers</h2>
+<h2>When callers need alternative bounds</h2>
 <p>Fix public parameters with at least one feasible payload. An exact
 projection with finitely many upper bounds <span
 class="math inline">\(t\le u_1,\ldots,t\le u_k\)</span> permits all and
@@ -175,18 +176,19 @@ href="thesis-review-54.lean">Lean theorem
 <span class="math inline">\(x\le j\)</span> and <span
 class="math inline">\(y\le j\)</span>. Then the exact guard for <span
 class="math inline">\(x+y\le z\)</span> is <span
-class="math inline">\(\min(i+j,2j)\le z\)</span>. InvarGenT infers <span
-class="math inline">\(2j\le z\)</span>. It checks the written minimum
-and runs clients at <span class="math inline">\((i,j,z)=(0,6,6)\)</span>
-and <span class="math inline">\((8,2,4)\)</span>. The first client needs
-<span class="math inline">\(i+j\le z\)</span> and the second needs <span
+class="math inline">\(\min(i+j,2j)\le z\)</span>. Trying each projected
+bound on its own inferred <span class="math inline">\(2j\le z\)</span>.
+The compiler now infers the minimum and runs clients at <span
+class="math inline">\((i,j,z)=(0,6,6)\)</span> and <span
+class="math inline">\((8,2,4)\)</span>. The first client needs <span
+class="math inline">\(i+j\le z\)</span> and the second needs <span
 class="math inline">\(2j\le z\)</span>. Their midpoint <span
 class="math inline">\((4,4,5)\)</span> admits the unsafe payload <span
 class="math inline">\((4,4)\)</span>. Every conjunction of affine
-inequalities admitting both clients also admits their midpoint.
-Preserving these alternatives during abduction would recover a contract
-the existing type language can already express. <a
-href="thesis-review-54.py">Both callers and the inference result</a></p>
+inequalities admitting both clients also admits their midpoint. The
+compiler rejects this midpoint call. <a
+href="joint_affine_abduction.gadt">Both admitted calls</a> · <a
+href="thesis-review-54.py">Rejection control</a></p>
 <p>For several fixed branch obligations, take the conjunction of their
 exact guards. In particular, if the branches under consideration have
 feasible payloads throughout the public region and each goal has one or
@@ -194,6 +196,19 @@ two projected upper bounds, ordinary inequalities and binary minima
 already express the exact safety condition there. The full iteration
 must also choose what its recursive predicates mean. This calculation
 applies once their meanings in the branch premises are fixed.</p>
+<p>A smaller example isolates a remaining search decision. A constructor
+hides just <span class="math inline">\(x\)</span> under <span
+class="math inline">\(x\le i\)</span> and <span
+class="math inline">\(x\le j\)</span>. To prove <span
+class="math inline">\(x\le z\)</span>, either original premise already
+gives a sufficient public guard. Ordinary pair search succeeds with
+<span class="math inline">\(j\le z\)</span>, so the declaration never
+enters recovery. The written <span class="math inline">\(\min(i,j)\le
+z\)</span> type accepts one caller needing each alternative. The
+inferred type rejects their combination. Making this improvement
+available on successful declarations requires a choice about when to
+seek a weaker public guard and how to validate it across other
+obligations. <a href="thesis-review-54.py">Native comparison</a></p>
 </section>
 </article>
 <script src="/assets/theme-toggle.js"></script>

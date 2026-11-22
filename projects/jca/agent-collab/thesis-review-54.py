@@ -61,6 +61,7 @@ def check(compiler, before):
     run(compiler, SOURCE)
     run(compiler, SOURCE + "\nlet bad = verify (value East) 8\n", accept=False)
     run(compiler, SOURCE + "\nlet bad = check (Bounded (3,4)) 6\n", accept=False)
+    run(compiler, SOURCE + "\nlet bad = check_two (Two (4,4)) 5\n", accept=False)
     run(compiler, BOX.replace("k≤i ∧ l≤j", "k≤i"), accept=False)
     if before:
         for source, name, annotation in [
@@ -79,16 +80,17 @@ def check(compiler, before):
     ]:
         source = BOX.replace("k≤i ∧ l≤j", premise).replace("(x+y)", f"({expression})")
         run(compiler, source + f"let exported : ∀i,j,n[{guard}]. Bounds (i,j) → Num n → Bool = check\n")
-    alternatives = BOX.replace("k≤i ∧ l≤j", "k≤i ∧ k≤j ∧ l≤j")
-    clients = ('external let left : Bounds (0,6) = "Bounded (0,6)"\n'
-               'external let right : Bounds (8,2) = "Bounded (2,2)"\n'
-               'let uses = (check left 6, check right 4)\n')
-    exact = "let check : ∀i,j,n[min(i+j,2 j)≤n]. Bounds (i,j) → Num n → Bool ="
-    run(compiler, alternatives.replace("let check =", exact) + clients)
-    # The inferred single inequality loses one of these two valid calls.
-    run(compiler, alternatives + clients, accept=False)
-    print("Two alternative upper bounds, inferred scheme:",
-          " ".join(run(compiler, alternatives).split("val check :")[1].split()))
+    # When ordinary pair search already succeeds, recovery never sees the second bound.
+    single = BOX.replace("k,l[k≤i ∧ l≤j]. Num k * Num l", "k[k≤i ∧ k≤j]. Num k")
+    single = single.replace("Bounded (x,y)", "Bounded x").replace("(x+y)", "x")
+    clients = ('external let left : Bounds (0,6) = "Bounded 0"\n'
+               'external let right : Bounds (8,2) = "Bounded 2"\n'
+               'let uses = (check left 0, check right 2)\n')
+    exact = "let check : ∀i,j,n[min(i,j)≤n]. Bounds (i,j) → Num n → Bool ="
+    run(compiler, single.replace("let check =", exact) + clients)
+    run(compiler, single + clients, accept=False)
+    print("Single-payload example, ordinary inferred scheme:",
+          " ".join(run(compiler, single).split("val check :")[1].split()))
     print("Arithmetic abduction examples and rejection controls passed.")
 
 
