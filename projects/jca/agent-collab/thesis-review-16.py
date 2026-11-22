@@ -13,6 +13,7 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("invargent", type=Path)
     parser.add_argument("--before-affine", type=Path, help="executable from e5cd09c")
+    parser.add_argument("--before-package", type=Path, help="executable from cac61af")
     args = parser.parse_args()
     exe = args.invargent.resolve(strict=True)
     pair = (HERE / "packed_payload.gadt").read_text()
@@ -25,9 +26,14 @@ def main():
             return compile_and_run(out, binary, name, source,
                                    options=("-iterations_timeout", str(budget), *options), **kwargs)
 
-        for budget in (0, 1, 8, 11, 80, 10000):
-            check(f"packed_{budget}", pair, budget=budget,
-                  error="Answers do not converge" if budget == 0 else "Quantifier violation")
+        check("packed_0", pair, budget=0, error="Answers do not converge")
+        for budget in (6, 8, 11, 80, 10000):
+            check(f"packed_{budget}", pair, budget=budget)
+        if args.before_package:
+            original = args.before_package.resolve(strict=True)
+            for budget in (0, 1, 8, 11, 80, 10000):
+                check(f"original_packed_{budget}", pair, binary=original, budget=budget,
+                      error="Answers do not converge" if budget == 0 else "Quantifier violation")
         definition = "let rec f t = efunction"
         def annotated(source, result):
             assert definition in source

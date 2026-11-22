@@ -3,7 +3,9 @@ title: "A recursive package that fails before the induction jump"
 date: 2026-11-22
 ---
 
-The current Table 4.4 implementation can miss a constant-size solution on a single recursive definition for every outer iteration budget. There is no arithmetic in the example. InvarGenT checks the written type, and its generated OCaml runs. With the annotation erased, the solver retries its first input guess and reports a quantifier violation. The induction jump is scheduled for pass 8. [Unannotated source](packed_payload.gadt) · [Executable comparison](thesis-review-16.py) · [Table 4.4](../lukstafi-phd-thesis.pdf#page=71)
+InvarGenT at revision `cac61af` can miss a constant-size solution on a single recursive definition for every outer iteration budget. There is no arithmetic in the example. InvarGenT checks the written type, and its generated OCaml runs. With the annotation erased, the solver retries its first input guess and reports a quantifier violation. The induction jump is scheduled for pass 8. [Unannotated source](packed_payload.gadt) · [Executable comparison](thesis-review-16.py) · [Table 4.4](../lukstafi-phd-thesis.pdf#page=71)
+
+A later revision infers this type on pass 6 and checks the complete client. A four-constructor version still fails at every outer budget. [Repair, four-way counterexample and scope audit](thesis-review-17.html)
 
 ## A result with no hidden index {#package}
 
@@ -35,7 +37,7 @@ At revision `cac61af`, pass 0 initially guesses $\mathrm{Tag}(a,a)$ for the inpu
 | 1 | Checks the next approximation | Returns a type mismatch to pass 0. |
 | 0 | Retries with the rejected choice recorded | Returns a quantifier violation involving the test's pair type. |
 
-The last two failures take the error arm of `match answer` in `Invariants.solve`. Neither reaches the budget comparison. The retry returns directly to the caller of the first pass. There are no earlier inferred definitions whose answers could depend on the budget. The only earlier read of the outer limit tests whether pass 0 has exhausted it. The other read in this module occurs after a successful solve. Thus every positive budget follows this same finite path, even if the outer timeout is removed. Budget zero stops on the first row. The driver checks budgets 0, 1, 8, 11, 80 and 10,000 with the other settings at their defaults. As a control, change the function to return the ordinary payload. InvarGenT then accepts the left and right client tests when each is attached separately. [Driver](thesis-review-16.py) · [Earlier nonprincipality theorem](thesis-review-1.html)
+The last two failures take the error arm of `match answer` in `Invariants.solve`. Neither reaches the budget comparison. The retry returns directly to the caller of the first pass. There are no earlier inferred definitions whose answers could depend on the budget. The only earlier read of the outer limit tests whether pass 0 has exhausted it. The other read in this module occurs after a successful solve. Thus every positive budget follows this same finite path, even if the outer timeout is removed. Budget zero stops on the first row. With the historical executable supplied via `--before-package`, the driver checks budgets 0, 1, 8, 11, 80 and 10,000 with the other settings at their defaults. As a control, change the function to return the ordinary payload. InvarGenT then accepts the left and right client tests when each is attached separately. [Driver](thesis-review-16.py) · [Earlier nonprincipality theorem](thesis-review-1.html)
 
 This refutes guaranteed *successful* convergence of the implemented iteration under a solution-size promise, even for a fixed type with zero constraint atoms. On this example the search terminates early. In the earlier two-inequality example, the original common-atom jump regenerates a caller obligation forever. [Infinite recurrence](thesis-review-3.html#update)
 
@@ -76,4 +78,4 @@ The package proof exposed two export problems, repaired in `cac61af`. A vacuous 
 
 The regression suite passed all 299 active tests, with 10 existing TODOs. All 143 signatures generated from the earlier examples matched their outputs at `e5cd09c` byte for byte. The comparison driver passed on OCaml 5.3 and 5.5.
 
-Lean 4.19.0 checks the standalone file with `lean thesis-review-16.lean`. Run `python3 thesis-review-16.py /path/to/InvarGenT.native` in this directory. Add `--before-affine` with a binary from `e5cd09c` to reproduce the earlier arithmetic failures. [Lean file](thesis-review-16.lean) · [Comparison driver](thesis-review-16.py)
+Lean 4.19.0 checks the standalone file with `lean thesis-review-16.lean`. Run `python3 thesis-review-16.py /path/to/InvarGenT.native` in this directory. Add `--before-package` with a binary from `cac61af` to reproduce the original two-constructor failure. Add `--before-affine` with a binary from `e5cd09c` to reproduce the earlier arithmetic failures. [Lean file](thesis-review-16.lean) · [Comparison driver](thesis-review-16.py)

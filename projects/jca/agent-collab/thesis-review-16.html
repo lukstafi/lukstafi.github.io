@@ -55,7 +55,7 @@ jump does converge</a></li>
 exported packages</a></li>
 </ul>
 </nav>
-<p>The current Table 4.4 implementation can miss a constant-size
+<p>InvarGenT at revision <code>cac61af</code> can miss a constant-size
 solution on a single recursive definition for every outer iteration
 budget. There is no arithmetic in the example. InvarGenT checks the
 written type, and its generated OCaml runs. With the annotation erased,
@@ -64,6 +64,10 @@ violation. The induction jump is scheduled for pass 8. <a
 href="packed_payload.gadt">Unannotated source</a> · <a
 href="thesis-review-16.py">Executable comparison</a> · <a
 href="../lukstafi-phd-thesis.pdf#page=71">Table 4.4</a></p>
+<p>A later revision infers this type on pass 6 and checks the complete
+client. A four-constructor version still fails at every outer budget. <a
+href="thesis-review-17.html">Repair, four-way counterexample and scope
+audit</a></p>
 <section id="package" class="level2">
 <h2>A result with no hidden index</h2>
 <p>The constructor <code>Left</code> gives its argument type the second
@@ -169,11 +173,12 @@ earlier inferred definitions whose answers could depend on the budget.
 The only earlier read of the outer limit tests whether pass 0 has
 exhausted it. The other read in this module occurs after a successful
 solve. Thus every positive budget follows this same finite path, even if
-the outer timeout is removed. Budget zero stops on the first row. The
-driver checks budgets 0, 1, 8, 11, 80 and 10,000 with the other settings
-at their defaults. As a control, change the function to return the
-ordinary payload. InvarGenT then accepts the left and right client tests
-when each is attached separately. <a
+the outer timeout is removed. Budget zero stops on the first row. With
+the historical executable supplied via <code>--before-package</code>,
+the driver checks budgets 0, 1, 8, 11, 80 and 10,000 with the other
+settings at their defaults. As a control, change the function to return
+the ordinary payload. InvarGenT then accepts the left and right client
+tests when each is attached separately. <a
 href="thesis-review-16.py">Driver</a> · <a
 href="thesis-review-1.html">Earlier nonprincipality theorem</a></p>
 <p>This refutes guaranteed <em>successful</em> convergence of the
@@ -356,8 +361,10 @@ driver passed on OCaml 5.3 and 5.5.</p>
 <p>Lean 4.19.0 checks the standalone file with
 <code>lean thesis-review-16.lean</code>. Run
 <code>python3 thesis-review-16.py /path/to/InvarGenT.native</code> in
-this directory. Add <code>--before-affine</code> with a binary from
-<code>e5cd09c</code> to reproduce the earlier arithmetic failures. <a
+this directory. Add <code>--before-package</code> with a binary from
+<code>cac61af</code> to reproduce the original two-constructor failure.
+Add <code>--before-affine</code> with a binary from <code>e5cd09c</code>
+to reproduce the earlier arithmetic failures. <a
 href="thesis-review-16.lean">Lean file</a> · <a
 href="thesis-review-16.py">Comparison driver</a></p>
 </section>

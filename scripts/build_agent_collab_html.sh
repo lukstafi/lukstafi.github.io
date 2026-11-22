@@ -344,6 +344,11 @@ build_html \
   "$collab_dir/thesis-review-16.html" \
   "A recursive package that fails before the induction jump"
 
+build_html \
+  "$collab_dir/thesis-review-17.md" \
+  "$collab_dir/thesis-review-17.html" \
+  "Checking a caller after inferring the package it opens"
+
 reviews_dir="$collab_dir/reviews"
 if [[ -d "$reviews_dir" ]]; then
   for md_file in "$reviews_dir"/*.md; do

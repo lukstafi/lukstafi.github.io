@@ -228,17 +228,16 @@ class="math inline">\(\mathcal{T}(\mathcal{F})\)</span> problem. The
 bibliography and appendix pointers (A.2.2, B.2.2, B.2.3) are aligned to
 the thesis’ full PDF.</p>
 <p><strong>Does a small solution guarantee convergence of Table
-4.4?</strong> No. On a single recursive definition with an attached
-client, current InvarGenT checks a constant-size type with no side
-conditions. Erasing it makes every positive outer budget fail on the
-first retry, before the induction jump. For a fixed interface with exact
-affine joins, each strict increase adds a dimension and the caller needs
-no strengthening when an affine solution exists. <a
-href="agent-collab/thesis-review-16.html">Counterexample, proof and
-current implementation</a> · <a
+4.4?</strong> No. InvarGenT now infers the two-constructor packed result
+by restoring its client checks on pass 6. A four-constructor program has
+a constant-size type with no side conditions, yet every outer budget
+misses it. Swapping two disjoint match arms lets inference succeed. <a
+href="agent-collab/thesis-review-17.html">Current counterexample and
+package-opening theorem</a> · <a
 href="agent-collab/thesis-review-3.html#update">Original infinite
-recurrence</a> · <a href="agent-collab/thesis-review-15.html">Which
-rates must a result capture?</a></p>
+recurrence</a> · <a
+href="agent-collab/thesis-review-16.html#dimension">Fixed-interface
+affine convergence</a></p>
 <p><strong>When can a recursive result reuse an old witness
 name?</strong> Aligning two independent indices with one old name let
 InvarGenT accept a false equality. An injective alignment repairs the

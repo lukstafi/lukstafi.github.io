@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <meta name="dcterms.date" content="2026-11-22">
+  <meta property="og:title" content="Checking a caller after inferring the package it opens">
+  <meta property="og:url" content="https://lukstafi.github.io/projects/jca/agent-collab/thesis-review-17.html">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="lukstafi&#x27;s blog">
+  <meta name="twitter:card" content="summary">
+  <title>Checking a caller after inferring the package it opens</title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <link rel="stylesheet" href="/assets/tufte.css">
+  <link rel="stylesheet" href="/assets/pandoc-tufte.css">
+  <link rel="stylesheet" href="/assets/site.css">
+  <script defer=""
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+  type="text/javascript"></script>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+  <script>(function(){var t=localStorage.getItem('theme-preference');if(t)document.documentElement.setAttribute('data-theme',t);})()</script>
+</head>
+<body>
+<nav class="site-nav">
+  <a href="/">Home</a> &middot; <a href="/study/">Study Guide</a> &middot; <a href="/about.html">About</a> &middot; <a href="https://lukstafi.substack.com">Substack</a>
+</nav>
+<div class="theme-toggle">
+  <button id="theme-btn" aria-label="Toggle dark mode">&#9788;</button>
+</div>
+<article>
+<header>
+<h1 class="title">Checking a caller after inferring the package it
+opens</h1>
+<p class="byline">2026-11-22</p>
+</header>
+<nav id="TOC">
+<ul>
+<li><a href="#opening" id="toc-opening">Where the retry loses the
+payload</a></li>
+<li><a href="#confirmation" id="toc-confirmation">What the solver now
+checks</a></li>
+<li><a href="#four" id="toc-four">A four-constructor counterexample
+after the repair</a></li>
+<li><a href="#scope" id="toc-scope">Quantifiers in the unifier</a></li>
+</ul>
+</nav>
+<p>InvarGenT at revision <code>0da0cd6</code> infers the two-constructor
+packed-payload type on pass 6. The client that needs a
+<code>Cargo</code> payload passes, and the client that asks for
+<code>Marker</code> on the same call fails. A four-constructor program
+still has a constant-size solution that every outer budget misses.
+Interchanging two disjoint match arms is enough for the solver to infer
+the written solution. <a href="packed_payload.gadt">Two-constructor
+source</a> · <a href="four_axis_payload.gadt">Four-constructor
+source</a> · <a href="thesis-review-17.py">Executable
+comparisons</a></p>
+<section id="opening" class="level2">
+<h2>Where the retry loses the payload</h2>
+<p>The program returns its payload twice. Its test opens the result of
+<code>f (Left Box) (S Z)</code> and checks the first component against
+<code>Box</code>. The successful input must admit <span
+class="math inline">\(\mathrm{Tag}(\mathrm{Marker},\mathrm{Cargo})\)</span>.
+At <code>cac61af</code> pass 0 first guesses <span
+class="math inline">\(\mathrm{Tag}(a,a)\)</span>. After pass 1 rejects
+that diagonal, the term abducer actually proposes <span
+class="math inline">\(\mathrm{Tag}(\mathrm{Marker},a)\)</span> on the
+retry. The failure occurs in the next operation, which splits the
+conjecture among the predicates and the residual constraint. <a
+href="thesis-review-16.html#package">Previous proof and normalized
+predicates</a></p>
+<p>The client asks the splitter to account for <span
+class="math inline">\(u=(\mathrm{Cargo},b)\)</span>, where <span
+class="math inline">\(u\)</span> is the type inside the opened package.
+In this candidate <span class="math inline">\(b\)</span> is a rigid type
+variable local to the caller’s pattern. The splitter cannot put that
+variable in the result predicate. Putting the equality in the residual
+also fails the quantifier check. The client itself places no requirement
+on the second component.</p>
+<p>There is an exact rule for this use of a package. Let <span
+class="math inline">\(p:W\to V\)</span> assemble the part opened by the
+pattern, and let <span class="math inline">\(P(w)\)</span> be the
+client’s test on the visible fields. Write the requirement that <span
+class="math inline">\(v\)</span> matches and every matching assignment
+passes as <span class="math display">\[
+  (\exists w.\ p(w)=v)\ \land\ \forall w.\,(p(w)=v\Rightarrow P(w)).
+\]</span> <strong>This is equivalent for every <span
+class="math inline">\(v\)</span> to <span class="math inline">\(\exists
+w.\,p(w)=v\land P(w)\)</span> exactly when <span
+class="math inline">\(P\)</span> has the same truth value on any two
+assignments producing the same <span
+class="math inline">\(v\)</span>.</strong> For sufficiency, transport
+the witnessing assignment’s test along equality of the assembled values.
+For necessity, take any successful assignment <span
+class="math inline">\(w\)</span>, put <span
+class="math inline">\(v=p(w)\)</span>, and apply the universal test to
+every other assignment producing <span class="math inline">\(v\)</span>.
+An injective tuple constructor satisfies the condition for every test. A
+constructor that forgets a hidden Boolean illustrates the limit. If
+<span class="math inline">\(P\)</span> requires <code>true</code>, both
+Booleans produce the same visible value and only one passes. <a
+href="thesis-review-17.lean">Lean equivalence and counterexample</a></p>
+<p>For the pair test the exact condition on <span
+class="math inline">\(u\)</span> is <span class="math inline">\(\exists
+h.\,u=(\mathrm{Cargo},h)\)</span>. The witness belongs to this opening.
+Putting the caller’s rigid <span class="math inline">\(b\)</span> into a
+global predicate changes the quantifier. For a constructor pattern with
+several field tests, fix the public parameter values and let <span
+class="math inline">\(P\)</span> be a conjunction of equations on the
+fields. Unify those equations over finite types. A clash makes the
+accepted set empty. Otherwise, if <span
+class="math inline">\(\sigma\)</span> is a most general unifier, the
+accepted results are exactly the ground instances of <span
+class="math inline">\(p\sigma\)</span>, with its remaining variables
+existential. For example, checking that the first of three fields has
+type <code>Cargo</code> and the other two have the same type projects to
+<span class="math inline">\(\exists h.\,u=(\mathrm{Cargo},h,h)\)</span>.
+Keeping the repeated hole preserves the second test. This construction
+gives a specification for projecting such obligations directly.</p>
+</section>
+<section id="confirmation" class="level2">
+<h2>What the solver now checks</h2>
+<p>After a type-search failure involving a definition with external
+openings of its recursive result, the solver tries the positive branches
+again with those observation branches deferred. It retains the call
+itself, so its argument types can still determine which input predicate
+to choose. It also retains the defining branches and their recursive
+uses. When this search finds stable input and result predicates, it
+starts the next pass with the complete original branch list and an empty
+residual. Acceptance requires the ordinary stopping test on the complete
+problem. Negative branches retain their usual checks. This implements a
+second search order. The projection theorem above explains the
+obligation that the complete pass must discharge.</p>
+<p>For the two-constructor program, the proposal stabilizes on pass 5.
+It captures the argument type and gives both result components that
+type. Pass 6 reinstates the client and succeeds. Setting the outer
+budget to 5 prevents acceptance. Giving the program a right-hand client
+instead infers the symmetric type. Requiring the first component from
+<code>Left Box</code> to have type <code>Marker</code> produces a type
+mismatch on the complete pass. Asking one conjunctive scheme to support
+marked calls on both axes also fails, as the earlier lower bound
+predicts. <a href="thesis-review-17.py">Positive and negative
+controls</a> · <a href="thesis-review-1.html">Conjunctive coverage lower
+bound</a></p>
+</section>
+<section id="four" class="level2">
+<h2>A four-constructor counterexample after the repair</h2>
+<p>Let <span class="math inline">\(M\)</span> denote
+<code>Marker</code>. Each of the four constructors places its payload
+type in its own argument position of <code>Tag</code> and places <span
+class="math inline">\(M\)</span> in the other three. The base branch
+returns <span class="math inline">\((z,z)\)</span> from its payload
+<span class="math inline">\(z\)</span>. The successor recurses at the
+same tag. The sole attached call uses <code>Third Box</code>. A
+certificate is <span class="math display">\[
+  \forall a.\;\mathrm{Tag}(M,M,a,M)\to\mathrm{Nat}\to\exists().\,(a,a).
+\]</span> For <code>Third</code>, the payload has type <span
+class="math inline">\(a\)</span>. Matching any other constructor gives
+<span class="math inline">\(a=M\)</span> and a payload of type <span
+class="math inline">\(M\)</span>. All four branches are live at the
+all-<span class="math inline">\(M\)</span> input. In the erased
+constraints the unary function predicate ranges over these instances of
+the displayed arrow. Its binary postcondition relates <span
+class="math inline">\((a,a)\)</span> to the one-entry parameter tuple
+<span class="math inline">\(\langle a\rangle\)</span>. The successor
+preserves the same parameter at every depth, and the client instantiates
+<span class="math inline">\(a\)</span> with <code>Cargo</code>.
+InvarGenT checks the written type and the generated OCaml runs with each
+constructor. <a href="four_axis_payload.gadt">Source</a> · <a
+href="thesis-review-17.lean">Lean proof at arbitrary depth</a></p>
+<p>With the annotation erased and the arms in declaration order, the
+trace contains just the following candidate inputs. Letters <span
+class="math inline">\(a,b\)</span> are fresh within each row. The third
+marked argument would require the tuple <span
+class="math inline">\((M,M,\mathrm{Cargo},M)\)</span>.</p>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr>
+<th>Search</th>
+<th>Candidate index tuples in order</th>
+<th>Last result</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>All branches</td>
+<td><span class="math inline">\((a,b,b,b)\)</span>, <span
+class="math inline">\((M,M,M,a)\)</span>, <span
+class="math inline">\((a,a,a,b)\)</span></td>
+<td>Pass 0 exhausts term abduction on the next retry.</td>
+</tr>
+<tr>
+<td>External openings deferred</td>
+<td><span class="math inline">\((a,b,b,b)\)</span>, <span
+class="math inline">\((M,M,M,a)\)</span>, <span
+class="math inline">\((a,a,a,b)\)</span>, <span
+class="math inline">\((M,a,M,M)\)</span></td>
+<td>Pass 0 exhausts term abduction on the next retry.</td>
+</tr>
+</tbody>
+</table>
+<p>Each pass-0 candidate reaches pass 1, which rejects it with a type
+mismatch. The pass-1 errors and the final pass-0 errors occur before the
+outer timeout comparison. The only successful abduction passes that
+inspect the limit have pass number zero. The second search never returns
+a proposal, so the comparison that reserves a pass for confirmation is
+unreachable. Thus budget zero stops on the first pass and <strong>every
+positive outer budget follows the same finite failing path</strong>,
+with the component search settings fixed. The executable driver checks
+limits through 10,000. To reproduce the intermediate choices in
+<code>src/Invariants.ml</code>, print <code>iter_no</code> and
+<code>sol2</code> with <code>pr_chi_subst</code> immediately above
+<code>if not !initstep &amp;&amp; finished</code>. Print the pass and
+<code>msg</code> at the <code>Aux.Left (sort, e)</code> return above
+<code>match answer</code>. This counterexample concerns successful
+discovery. The solver returns an error on every run.</p>
+<p>Swapping the <code>Second</code> and <code>Fourth</code> arms
+preserves every constructor’s return expression. On the second search it
+changes the fourth candidate to <span
+class="math inline">\((M,M,a,M)\)</span>, which admits the marked call.
+The solver confirms the resulting type on pass 6. With the original arm
+order and the default outer budget, every inner failed-branch allowance
+from the default 10 through 28 rejects. At
+<code>-term_abduction_fail 29</code> the solver infers the certificate.
+Returning the ordinary unboxed pair in the original order still gives a
+term-abduction failure at the default settings. The remaining obstacle
+in this example is the component’s search over input types. The separate
+arithmetic moving-floor example still raises the question of what
+happens after arbitrarily many induction jumps. <a
+href="thesis-review-17.py">Arm-order comparison</a> · <a
+href="thesis-review-16.html#restarts">Arithmetic jump trace</a></p>
+</section>
+<section id="scope" class="level2">
+<h2>Quantifiers in the unifier</h2>
+<p>Two small formulas expose independent errors below the splitter. In
+<span class="math inline">\(\forall u\,\exists z.\ u=z\)</span>, the
+witness is <span class="math inline">\(z=u\)</span>. The old unifier
+checked whether it could bind the left operand before choosing the
+direction of the substitution. It rejected the displayed formula and
+accepted the same equation with its operands reversed.</p>
+<p>Now consider <span class="math inline">\(\exists x\,\forall
+u\,\exists z.\ x=\mathrm{Box}(z)\land z=u\)</span>. Choose two different
+ground types for <span class="math inline">\(u\)</span>. The earlier
+<span class="math inline">\(x\)</span> would have to equal both <span
+class="math inline">\(\mathrm{Box}(\mathrm{Marker})\)</span> and <span
+class="math inline">\(\mathrm{Box}(\mathrm{Cargo})\)</span>. If the old
+solver first bound <span class="math inline">\(x\)</span> to <span
+class="math inline">\(\mathrm{Box}(z)\)</span> and later bound <span
+class="math inline">\(z\)</span> to <span
+class="math inline">\(u\)</span>, it rechecked the old right-hand side
+and stored the new one. The resulting substitution assigned <span
+class="math inline">\(\mathrm{Box}(u)\)</span> to the earlier <span
+class="math inline">\(x\)</span>. Revision <code>8e0777e</code> checks
+the direction it actually binds and checks every rewritten right-hand
+side after composition. The source-level packed-payload failure remains
+reproducible with just this unifier repair. <a
+href="thesis-review-17.lean">Lean witnesses</a></p>
+<p>I compared quantified unification with an oracle that shares the
+ordinary unifier and checks scope separately. It freezes each universal
+as a distinct private constructor, solves the free equations, then
+checks every existential’s fully substituted term for later rigid
+symbols. A residual flexible hole can be filled with a fixed ground
+constant. The audit uses three ordered variables, both quantifiers at
+each position, two constants and a unary constructor applied to each
+variable. It considers all ordered pairs of oriented equations over the
+eight resulting terms.</p>
+<table>
+<thead>
+<tr>
+<th>Checker</th>
+<th style="text-align: right;">Systems</th>
+<th style="text-align: right;">False acceptances</th>
+<th style="text-align: right;">False rejections</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Before <code>8e0777e</code></td>
+<td style="text-align: right;">32,768</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">392</td>
+</tr>
+<tr>
+<td>After <code>8e0777e</code></td>
+<td style="text-align: right;">32,768</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+</tr>
+</tbody>
+</table>
+<p>The OCaml 5.3 compatibility suite passed all 301 active tests, with
+10 existing TODOs. All 145 earlier inferred signatures matched byte for
+byte. Both OCaml 5.3 and 5.5 executed the program comparisons.</p>
+<p>The scope audit exercises the pure type component with no designated
+parameters. To reproduce it, copy <code>scope_audit.ml</code> into the
+solver’s <code>src</code> directory in a build checkout and build
+<code>src/scope_audit.native</code> with the same OCaml libraries as the
+solver. It exits unsuccessfully on any disagreement. Run
+<code>lean thesis-review-17.lean</code> for the proofs and
+<code>python3 thesis-review-17.py /path/to/InvarGenT.native</code> for
+the programs. <a href="scope_audit.ml">Scope audit</a> · <a
+href="thesis-review-17.lean">Lean development</a> · <a
+href="thesis-review-17.py">Executable checks</a></p>
+</section>
+</article>
+<script src="/assets/theme-toggle.js"></script>
+</body>
+</html>
