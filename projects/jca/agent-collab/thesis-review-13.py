@@ -113,8 +113,8 @@ def main():
                                 options=("-iterations_timeout", str(budget)))
         check("skew", (HERE / "skew_floor.gadt").read_text())
         tagged = (HERE / "tagged_floor.gadt").read_text()
-        for budget in (11, 80):
-            check(f"tagged_{budget}", tagged, error="Answers do not converge",
+        for budget in (8, 9):
+            check(f"tagged_{budget}", tagged, error="Answers do not converge" if budget == 8 else None,
                   options=("-iterations_timeout", str(budget)))
         hint = (HERE / "symbolic_floor_hint.gadt").read_text()
         hint = hint.replace("i≤max", "-i≤max").replace("(j+e)", "(j+(-1 * e))")

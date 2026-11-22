@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <meta name="dcterms.date" content="2026-11-22">
+  <meta property="og:title" content="Which result index should the induction jump keep?">
+  <meta property="og:url" content="https://lukstafi.github.io/projects/jca/agent-collab/thesis-review-19.html">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="lukstafi&#x27;s blog">
+  <meta name="twitter:card" content="summary">
+  <title>Which result index should the induction jump keep?</title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <link rel="stylesheet" href="/assets/tufte.css">
+  <link rel="stylesheet" href="/assets/pandoc-tufte.css">
+  <link rel="stylesheet" href="/assets/site.css">
+  <script defer=""
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+  type="text/javascript"></script>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+  <script>(function(){var t=localStorage.getItem('theme-preference');if(t)document.documentElement.setAttribute('data-theme',t);})()</script>
+</head>
+<body>
+<nav class="site-nav">
+  <a href="/">Home</a> &middot; <a href="/study/">Study Guide</a> &middot; <a href="/about.html">About</a> &middot; <a href="https://lukstafi.substack.com">Substack</a>
+</nav>
+<div class="theme-toggle">
+  <button id="theme-btn" aria-label="Toggle dark mode">&#9788;</button>
+</div>
+<article>
+<header>
+<h1 class="title">Which result index should the induction jump
+keep?</h1>
+<p class="byline">2026-11-22</p>
+</header>
+<nav id="TOC">
+<ul>
+<li><a href="#guard" id="toc-guard">Where the recursive call gets its
+floor</a></li>
+<li><a href="#coordinate" id="toc-coordinate">Which field carries the
+witness?</a></li>
+<li><a href="#pivots" id="toc-pivots">Keeping every equation when
+selecting a witness</a></li>
+<li><a href="#bound" id="toc-bound">What a size bound buys</a></li>
+</ul>
+</nav>
+<p>InvarGenT now infers the same type for two ways of using a recursive
+result. The recursive call returns a payload <span
+class="math inline">\(r\)</span> and a tag <span
+class="math inline">\(t\)</span>. At the child’s floor <span
+class="math inline">\(q\)</span>, they satisfy <span
+class="math inline">\(t=q+r\)</span>. The caller can pass <span
+class="math inline">\(r\)</span> directly to its next operation, or it
+can compute <span class="math inline">\(t-p-e\)</span> using the parent
+floor <span class="math inline">\(p\)</span> and the floor increment
+<span class="math inline">\(e\)</span>. Both programs stop on pass 9.
+Revision <code>80624f9</code> already inferred the tag equation on pass
+2, yet the second program exhausted 171 passes. The missing step was to
+use the equation <span class="math inline">\(q=p+e\)</span> at the point
+where the caller asks for a bound. <a
+href="tagged_floor.gadt">Program</a> · <a
+href="thesis-review-18.html#graph">Earlier comparison</a> · <a
+href="thesis-review-19.py">Reproduce the comparison</a></p>
+<section id="guard" class="level2">
+<h2>Where the recursive call gets its floor</h2>
+<p>Table 4.4 generalizes the branches that construct a result, then uses
+that generalization at calls that open the result. A <em>binary
+postcondition</em> <span
+class="math inline">\(\chi_K(\delta,\delta&#39;)\)</span> relates the
+type <span class="math inline">\(\delta\)</span> carried by an
+existential package to its captured parameter tuple <span
+class="math inline">\(\delta&#39;\)</span>. The two arguments can
+describe a scalar payload just as well as a pair. In this example the
+carried type eventually becomes <span
+class="math inline">\((\mathrm{Num}(r),\mathrm{Num}(p+r))\)</span>, and
+the tuple captures the cap <span class="math inline">\(m\)</span> as
+well as the floor <span class="math inline">\(p\)</span>. <a
+href="../lukstafi-phd-thesis.pdf#page=71">Table 4.4</a> · <a
+href="thesis-review-13.html">Derivation of the scalar
+obligations</a></p>
+<p>On pass 2 the child’s actual input <span
+class="math inline">\(a\)</span> is defined unconditionally by <span
+class="math inline">\(a=p+e\)</span>. The branch that opens the package
+has the guard <span class="math inline">\(a=q\land q\le r\)</span>. Its
+conclusion contains <span class="math inline">\(t=q+r\)</span> and the
+administrative equations computing <span
+class="math inline">\(x=t-p-e\)</span>. The primitive <code>step</code>
+requires <span class="math inline">\(p\le x\le\max(m+20,p)\)</span>. The
+old abducer could take <span class="math inline">\(t=q+r\)</span> as a
+binding while the actual argument equation still referred to <span
+class="math inline">\(a\)</span>. Its resulting upper-bound request,
+simplified to parent coordinates, was <span class="math inline">\(r\le
+e+\max(m+20,p)\)</span>. The extra <span
+class="math inline">\(e\)</span> changed the subsequent search.</p>
+<p>Revision <code>1ffe1eb</code> substitutes the equations known on the
+whole guard into its conclusion equations before abduction splits the
+branch into numeric cases. On this branch it gets <span
+class="math inline">\(t=a+r\)</span>. The ordinary argument and
+arithmetic equations then give <span class="math inline">\(x=r\)</span>.
+Here are the passes where the outcome changes. <a
+href="thesis-review-19.py">Executable checks at budgets 8 and 9</a></p>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr>
+<th>Pass, from zero</th>
+<th>Supplier postcondition or change</th>
+<th>Caller feedback</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>The base returns <span class="math inline">\((p,2p)\)</span>.</td>
+<td>No extra demand.</td>
+</tr>
+<tr>
+<td>2</td>
+<td>The supplier proposes <span class="math inline">\((r,p+r)\)</span>
+with <span class="math inline">\(p\le r\)</span>.</td>
+<td>Requests <span class="math inline">\(r\le\max(m+20,p)\)</span>.</td>
+</tr>
+<tr>
+<td>8, the induction jump</td>
+<td>The supplier gives <span class="math inline">\(p\le
+r\le\max(p,m+19)\)</span> and captures <span
+class="math inline">\(m,p\)</span>.</td>
+<td>The caller needs no additional postcondition.</td>
+</tr>
+<tr>
+<td>9</td>
+<td>The stored inputs and result pass the stopping tests.</td>
+<td>Inference returns the same signature as the direct-payload
+program.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Guard substitution lemma.</strong> Let <span
+class="math inline">\(G\)</span> be the guard of one branch. Suppose a
+substitution <span class="math inline">\(\sigma\)</span> sends each
+assignment satisfying <span class="math inline">\(G\)</span> to itself.
+Then <span class="math inline">\(G\Rightarrow C\)</span> and <span
+class="math inline">\(G\Rightarrow C\sigma\)</span> agree at every
+assignment. On a guarded row this follows by substituting the same
+values into <span class="math inline">\(C\)</span>. On every other row
+both implications hold. The identity still holds after conjoining an
+arbitrary candidate answer and under the original quantifier prefix,
+using the same witnesses. Equations obtained by choosing just one arm of
+a disjunction satisfy the hypothesis only on that arm. This is why the
+implementation uses the unsplit guard. <a
+href="thesis-review-19.lean">Lean proof</a></p>
+<p>There is also an exact comparison for expressions in a solved guard.
+If <span class="math inline">\(h\)</span> maps the free coordinates onto
+exactly the rows satisfying <span class="math inline">\(G\)</span>,
+expressions <span class="math inline">\(u,v\)</span> agree on those rows
+if and only if <span class="math inline">\(u\circ h=v\circ h\)</span>.
+One direction evaluates at <span class="math inline">\(h(z)\)</span>.
+For the converse, every guarded row has such a <span
+class="math inline">\(z\)</span>. For affine equations over the
+rationals, a solved linear system supplies this parametrization.
+Additional inequalities restrict its parameter domain. <a
+href="thesis-review-19.lean">Formal equivalence</a></p>
+</section>
+<section id="coordinate" class="level2">
+<h2>Which field carries the witness?</h2>
+<p>Change the tag to <span class="math inline">\(t=r+kp+b\)</span>, with
+fixed signed integers <span class="math inline">\(k,b\)</span>. At the
+recursive input its value is <span
+class="math inline">\(r+k(p+e)+b\)</span>. The caller recovers <span
+class="math inline">\(r\)</span> by subtracting <span
+class="math inline">\(kp+ke+b\)</span>. For <strong>every</strong> <span
+class="math inline">\(k,b\)</span>, substituting in any caller predicate
+on the recovered value gives exactly the scalar predicate on <span
+class="math inline">\(r\)</span>. Each supplier constructs the tag from
+its own output and floor. The scalar inductive certificate therefore
+lifts to every member of the family. Its four input conditions and two
+payload inequalities are unchanged. This establishes existence for the
+entire family. <a href="thesis-review-19.lean">Lean proof for an
+arbitrary caller predicate</a> · <a
+href="thesis-review-18.html#graph">Supplier graph lemma</a></p>
+<p>For <span class="math inline">\(k=-1,b=0\)</span>, the same result
+type has two presentations. With <span class="math inline">\(r\)</span>
+as witness the fields are <span class="math inline">\((r,r-p)\)</span>.
+With <span class="math inline">\(s=t\)</span> as witness they are <span
+class="math inline">\((p+s,s)\)</span>. At floor <span
+class="math inline">\(q=p+e\)</span> the caller’s upper demand on <span
+class="math inline">\(s\)</span> becomes <span
+class="math inline">\(s\le\max(m+20-p-e,-e)\)</span>. With <span
+class="math inline">\(r\)</span> as witness it is simply <span
+class="math inline">\(r\le\max(m+20,p)\)</span>. The two demands agree
+under the change of variables. The solver’s guessing and widening
+operations inspect the written bounds. After the guard and substitution
+repairs alone, the negative-tag run with ordinary field order had still
+not returned after 120 seconds at the default budget. That observation
+gives a time limit on the experiment.</p>
+<p><strong>When must the caller know the floor?</strong> Fix the public
+inputs and let <span class="math inline">\(e\)</span> range over the
+private choices still allowed by the approximation. In the tag
+coordinate <span class="math inline">\(s\)</span>, suppose the supplier
+gives <span class="math inline">\(L_e\le s\)</span> and the caller asks
+for <span class="math inline">\(s\le T_e\)</span>. A single predicate
+<span class="math inline">\(D(s)\)</span> gives the exact answer on
+every feasible row if and only if each safe endpoint <span
+class="math inline">\(T_i\)</span> passes every other test at which it
+is feasible: <span class="math display">\[
+L_i\le T_i\ \land\ L_j\le T_i \quad\Longrightarrow\quad T_i\le T_j
+\qquad\text{for all }i,j.
+\]</span> Necessity tests <span class="math inline">\(D\)</span> at
+<span class="math inline">\(T_i\)</span>. For sufficiency take the union
+of the safe intervals <span class="math inline">\([L_i,T_i]\)</span>. If
+a point of such an interval is feasible at <span
+class="math inline">\(j\)</span>, its upper endpoint is feasible there
+too. The criterion puts the entire overlap below <span
+class="math inline">\(T_j\)</span>. If every floor admits a safe
+payload, this simplifies further: <strong>all thresholds must
+coincide</strong>. The larger of two distinct thresholds would be
+feasible at both floors and receive opposite answers. <a
+href="thesis-review-19.lean">Lean equivalences</a></p>
+<p>Here <span class="math inline">\(q=p+e\)</span>, the supplier gives
+<span class="math inline">\(q\le r\)</span>, and the caller requires
+<span class="math inline">\(r\le U\)</span> with <span
+class="math inline">\(U=\max(m+20,p)\)</span>. In tag coordinates <span
+class="math inline">\(L_e=q+kq+b\)</span> and <span
+class="math inline">\(T_e=U+kq+b\)</span>. Take <span
+class="math inline">\(p=3\)</span>, <span
+class="math inline">\(m=-16\)</span>, so <span
+class="math inline">\(U=4\)</span> and both floors <span
+class="math inline">\(3,4\)</span> admit safe payloads. Their thresholds
+differ by <span class="math inline">\(k\)</span>. Consequently the tag
+alone can express this exact pass-2 upper test for both floors
+<strong>if and only if <span
+class="math inline">\(k=0\)</span></strong>. For <span
+class="math inline">\(k=-1,b=0\)</span>, the same tag <span
+class="math inline">\(s=1\)</span> represents <span
+class="math inline">\(r=4\)</span> at floor 3 and <span
+class="math inline">\(r=5\)</span> at floor 4. Both satisfy the
+supplier’s current lower bound. Only the first satisfies the caller.
+This is a statement about the information available on pass 2. The final
+supplier has learned a stronger upper bound.</p>
+<p>The base already tells the solver something about a useful
+presentation. In <span class="math inline">\((p,0)\)</span> the payload
+position carries a bare index. When generalizing the next result,
+revision <code>f570a4b</code> aligns corresponding constructor fields
+with the preceding result type. If some fresh numeric indices occur in
+previously bare positions and others do not, it keeps the former as
+possible witnesses and solves the current equations for dependent
+fields. Thus <span class="math inline">\((0,p)\)</span> guides the
+solver to the payload in the second field as well. No equality between
+old and new witnesses is assumed. On the signed example the inferred
+type is <span class="math inline">\(\exists r\,[p\le
+r\le\max(p,m+19)].\,(\mathrm{Num}(r-p),\mathrm{Num}(r))\)</span> in that
+order.</p>
+<p>The driver checks eight <span class="math inline">\((k,b)\)</span>
+pairs in both tuple orders. Each run has a budget of 9 and a separate
+client requiring the tag equation. The emitted OCaml executes the calls
+and checks their tags. A client that shifts the required tag by one is
+rejected. These tests cover positive, negative, zero and repeated
+coordinates. Whether the concrete implementation follows the scalar run
+for every coefficient and every presentation remains open. <a
+href="thesis-review-19.py">Signed family and controls</a></p>
+</section>
+<section id="pivots" class="level2">
+<h2>Keeping every equation when selecting a witness</h2>
+<p>Consider <span class="math inline">\(n_1=n_2+n_3\)</span> and <span
+class="math inline">\(n_1=n_4+n_5\)</span>. A solver may prefer to write
+a single variable on the left. If it chooses <span
+class="math inline">\(n_1\)</span> for both equations and puts them in a
+substitution map, the second binding replaces the first. The assignment
+<span class="math inline">\((3,0,0,1,2)\)</span> satisfies the retained
+equation and violates the original system. Even pure aliases suffered
+this loss. For <span class="math inline">\(a=b\land b=c\)</span>, a call
+to the old numeric substitution routine returned only <span
+class="math inline">\(a=c\)</span>.</p>
+<p>Revision <code>9ae38cf</code> changes a pivot in the entire solved
+system. For example, pivoting the first row on <span
+class="math inline">\(n_1\)</span> requires a second row equating the
+two sums. In general, suppose <span
+class="math inline">\(a=f(s,b)\)</span> is equivalent to <span
+class="math inline">\(b=g(s,a)\)</span>, with <span
+class="math inline">\(s\)</span> denoting all remaining parameters. On
+that row, every occurrence of <span class="math inline">\(b\)</span> in
+the other equations can be replaced by <span
+class="math inline">\(g(s,a)\)</span>. Reversing the substitution on a
+satisfying assignment recovers every original row. Pure aliases keep the
+representative already selected by the solver. Equalities between
+variables protected from substitution are returned as residual
+constraints, including when the caller has requested a separate,
+unapplied substitution. <a href="thesis-review-19.lean">Row-exchange
+proof</a></p>
+<p>For alias equations there is an exact test for a loss. Draw an
+undirected edge for each retained equality. Over any domain with two
+distinguishable values, these edges imply <span
+class="math inline">\(x=y\)</span> exactly when <span
+class="math inline">\(x\)</span> and <span
+class="math inline">\(y\)</span> are connected. For necessity, give the
+component of <span class="math inline">\(x\)</span> one value and all
+other components the other. Sufficiency follows along the path. Three
+equal fields already need two edges. Previously the program with
+branches returning <span class="math inline">\((0,0,0)\)</span> and
+<span class="math inline">\((1,1,1)\)</span> failed inference when a
+client required all three fields to share one index. The inferred type
+is now <span class="math inline">\(\exists n\,[0\le n\le
+1].\,(\mathrm{Num}(n),\mathrm{Num}(n),\mathrm{Num}(n))\)</span>.
+Changing the last field to <span class="math inline">\(2\)</span> in the
+second branch is rejected. <a href="thesis-review-19.lean">Connectivity
+theorem</a> · <a href="thesis-review-19.py">Triple regression</a></p>
+<p>The numeric audit compares the input constraint with the returned
+substitution together with its residual, using the solver’s implication
+checker in both directions. Across 47,296 combinations of systems,
+protected and bound variable sets, and application and constant-handling
+flags, revision <code>80624f9</code> returned a weaker formula 11,628
+times. After the repair every comparison passed in both directions. The
+row-exchange proof addresses the algebraic operation independently of
+this finite audit. <a href="numeric_pivot_audit.ml">OCaml audit</a></p>
+</section>
+<section id="bound" class="level2">
+<h2>What a size bound buys</h2>
+<p>The arithmetic example now succeeds because the abducer can express
+the caller’s need in a coordinate the supplier keeps through the jump. A
+small certificate alone still gives no guarantee for Table 4.4. With the
+original common-atom jump, two inequalities suffice for a solution, yet
+every later pass reinstates the same caller demand and fails the
+stopping test. In the current implementation the reachable guarded call
+on the four-constructor example still exhausts term abduction before the
+jump for every positive outer budget. Its written certificate has zero
+constraint atoms and checks. These are distinct failures of discovery,
+one through perpetual feedback and the other through finite exhaustion.
+A fair search through a finite, checkable bounded certificate language
+has a separate completeness argument. <a
+href="thesis-review-3.html#update">Infinite recurrence</a> · <a
+href="thesis-review-18.html#guard">Guarded call and budget-independent
+control flow</a> · <a href="thesis-review-2.html">Bounded search</a></p>
+<p>The three solver changes are <code>1ffe1eb</code>,
+<code>9ae38cf</code> and <code>f570a4b</code>. The OCaml 5.3
+compatibility build passed all 306 active tests, with 10 existing TODOs.
+All 146 previously generated example signatures compared byte for byte
+with revision <code>80624f9</code>. The signed program driver used OCaml
+5.5.1 and the proofs used Lean 4.19. <a
+href="thesis-review-1.html">Build notes</a></p>
+</section>
+</article>
+<script src="/assets/theme-toggle.js"></script>
+</body>
+</html>

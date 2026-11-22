@@ -61,7 +61,7 @@ def written(source, signature):
     return source.replace("let rec f t =", f"let rec f : {signature} = fun t ->")
 
 
-def exercise(binary, long_runs):
+def exercise(binary, before_tag, long_runs):
     direct = (HERE / "four_axis_payload.gadt").read_text()
     guarded = (HERE / "guarded_payload.gadt").read_text()
     entailed = direct.replace(MARKED_CALL, f"match 1 with n when 1 <= n -> {MARKED_CALL} | _ -> True")
@@ -110,15 +110,26 @@ def exercise(binary, long_runs):
         assert tagged.count(header) == 1
         annotated = tagged.replace(header, f"let rec climb : {signature} = fun e d j m ->")
         check("same_certificate_on_recovered_payload", annotated)
-        for budget in ((11, 80, 171) if long_runs else (11,)):
-            check(f"recovered_numeric_payload_{budget}", tagged, budget, "Answers do not converge")
+        recovered_signature = check("recovered_numeric_payload", tagged, 9)
+        assert recovered_signature.split("val climb :")[1].strip() == signature
+        if before_tag:
+            for budget in ((11, 80, 171) if long_runs else (11,)):
+                compile_and_run(Path(tmp), before_tag, f"before_guard_reduction_{budget}", tagged,
+                                error="Answers do not converge",
+                                options=("-iterations_timeout", str(budget)))
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("invargent", type=Path, nargs="?", help="also compile and execute the source programs")
-    parser.add_argument("--long", action="store_true", help="also run the arithmetic example to passes 80 and 171")
+    parser.add_argument("--before-tag", type=Path, help="executable at 80624f9 for the historical failure")
+    parser.add_argument("--long", action="store_true", help="also run --before-tag to budgets 80 and 171")
     args = parser.parse_args()
+    if args.long and not args.before_tag:
+        parser.error("--long needs --before-tag")
+    if args.before_tag and not args.invargent:
+        parser.error("--before-tag needs a current executable")
     audit_patterns()
     if args.invargent:
-        exercise(args.invargent.resolve(strict=True), args.long)
+        exercise(args.invargent.resolve(strict=True),
+                 args.before_tag.resolve(strict=True) if args.before_tag else None, args.long)

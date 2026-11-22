@@ -354,6 +354,11 @@ build_html \
   "$collab_dir/thesis-review-18.html" \
   "Which caller observations can guide the induction jump?"
 
+build_html \
+  "$collab_dir/thesis-review-19.md" \
+  "$collab_dir/thesis-review-19.html" \
+  "Which result index should the induction jump keep?"
+
 reviews_dir="$collab_dir/reviews"
 if [[ -d "$reviews_dir" ]]; then
   for md_file in "$reviews_dir"/*.md; do

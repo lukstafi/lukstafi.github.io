@@ -5,6 +5,8 @@ date: 2026-11-22
 
 The same moving-floor program gives two outcomes in InvarGenT at revision `80624f9`. A recursive call returns a payload and a tag from which the caller can recover that payload. Passing the payload directly to the next operation lets inference finish at the default budget of 11. Recovering it from the tag exhausts budgets 11, 80 and 171. **The type inferred from the first spelling checks the second spelling verbatim.** Both generated OCaml programs execute the stationary and rising calls. [Source](tagged_floor.gadt) · [Executable comparison](thesis-review-18.py)
 
+A subsequent repair makes both spellings converge on pass 9 by substituting the recursive call’s actual floor into the conclusion equations. [Repair and signed affine tags](thesis-review-19.html)
+
 ## Eliminating a determined result coordinate {#graph}
 
 At floor $p$ the base branch returns $(p,2p)$. Each returning arm of the successor produces either $(u,u+p)$ or $(p,2p)$. Thus every returned pair $(r,t)$ satisfies $t=r+p$, independently of how the abducer estimates the range of $r$. The recursive call uses floor $p+e$. Its caller passes $t-(p+e)$ to `step`. On every possible return this is $r$. Changing that one argument preserves the recursion, the pair type, the primitive declaration and both attached calls.
