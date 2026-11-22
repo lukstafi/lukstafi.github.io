@@ -1,0 +1,22 @@
+datatype State : num
+datacons Neg : State (-3)
+datacons Pos : State 3
+datatype Nat
+datacons Z : Nat
+datacons S : Nat ⟶ Nat
+
+let base : ∀i. State i → Num i = function Neg -> (-3) | Pos -> 3
+external let negative : ∀i[i≤(-1)]. Num i → Bool = "fun n -> assert (n <= -1); true"
+external let positive : ∀i[1≤i]. Num i → Bool = "fun n -> assert (1 <= n); true"
+
+external let tick : Num 0 → Bool = "let state = ref false in fun _ -> state := not !state; !state"
+external let sample : ∀i. Bool → Num i → ∃j[i≤j ∧ j≤i+1]. Num j = "fun bump i -> if bump then i+1 else i"
+external let show : ∀i. Num i → Bool = "fun v -> print_endline (string_of_int v); true"
+let rec run : ∀i,k,n[0≤n ∧ (-3)≤i ∧ i≤3 ∧ min(i+3,3 + -i)≤0 ∧ k≤i ∧ i≤k+n].
+  State i → Num n → Nat → ∃l[k≤l ∧ l≤k+n+1]. Num l = fun s width -> efunction
+  | Z -> let p = sample (tick 0) (base s) in p
+  | S d -> let prior = run s width d in let other = prior in
+           (match prior with r when (-1) <= r && r <= (-1) -> True | _ -> (match other with q when (-4) <= q && q <= (-4) -> True | _ -> base s))
+test (let a = run Neg 19 (S Z) in let t = negative a in
+      let b = run Pos 237 (S (S Z)) in positive b)
+let logged = (let p = run Neg 5 Z in let t = show p in let q = run Neg 5 Z in show q)

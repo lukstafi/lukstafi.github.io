@@ -1,0 +1,18 @@
+--- a/src/Infer.ml
++++ b/src/Infer.ml
+@@ -950,6 +950,7 @@
+           (match paired_call gamma 0 e1 with
+            | None -> [],None,aux gamma ta0 e1
+            | Some (vs,phi,arrow,other) ->
++             Format.eprintf "PAIRED_OPEN %d@." loc.beg_pos.Lexing.pos_cnum;
+              vs,Some other,aux_in scope ~operator:(phi,arrow) gamma ta0 e1) in
+       (*[* Format.printf
+         "constr_gen-Letin: [%d] generated ta0=%a@ cn1=%a@\ne1=%a@\n%!"
+@@ -1315,6 +1316,7 @@
+         let obligations = PredVarU (chi_id,id,loc) :: Eqty (id,arrow,loc) ::
+             Eqty (TVar k,num endpoint,loc) :: hvsubst_formula renaming sig_cn in
+         arrow,obligations in
++      Format.eprintf "PAIRED_RETRY %s@." x;
+       let first,p = instance low and second,q = instance high in
+       (* Both calls must be admitted by the inferred predicate. Checking only
+          their written bounds can justify erasure for an unavailable key. *)

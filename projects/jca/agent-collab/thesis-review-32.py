@@ -56,9 +56,9 @@ def traces(trace, source, annotation):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("compiler", type=Path)
+    parser.add_argument("compiler", type=Path, help="InvarGenT at 3408672")
     parser.add_argument("--before", type=Path, help="InvarGenT at a549d0d")
-    parser.add_argument("--trace", type=Path, help="current compiler with the four review 28 diagnostics")
+    parser.add_argument("--trace", type=Path, help="3408672 with the four review 28 diagnostics")
     args = parser.parse_args()
     exe = args.compiler.resolve(strict=True)
     def source(name):
