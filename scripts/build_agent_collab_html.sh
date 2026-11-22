@@ -524,6 +524,11 @@ build_html \
   "$collab_dir/thesis-review-52.html" \
   "Can finitely many term schemes cover all safe calls?"
 
+build_html \
+  "$collab_dir/thesis-review-53.md" \
+  "$collab_dir/thesis-review-53.html" \
+  "Which recursive caller domains can finite term guards express?"
+
 reviews_dir="$collab_dir/reviews"
 if [[ -d "$reviews_dir" ]]; then
   for md_file in "$reviews_dir"/*.md; do

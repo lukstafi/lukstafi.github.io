@@ -1,0 +1,16 @@
+datatype Base
+datatype Step : type
+datatype Rep : type
+datacons Root : Rep Base
+datacons Next : ∀a. Rep a ⟶ Rep (Step a)
+
+datatype Even : type
+datacons ERoot : Even Base
+datacons EPair : ∀a. Even a ⟶ Even (Step (Step a))
+
+let rec certified : ∀a. Even a → Rep a → Bool = function
+  | ERoot -> (function Root -> True)
+  | EPair p -> (function Next (Next x) -> certified p x)
+
+external let check : Bool → Bool = "fun b -> assert b; b"
+let result = check (certified (EPair (EPair ERoot)) (Next (Next (Next (Next Root)))))
