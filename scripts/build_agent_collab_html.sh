@@ -394,6 +394,11 @@ build_html \
   "$collab_dir/thesis-review-26.html" \
   "Which calls make a fixed postcondition usable?"
 
+build_html \
+  "$collab_dir/thesis-review-27.md" \
+  "$collab_dir/thesis-review-27.html" \
+  "Choosing one package parameter for every use of an opening"
+
 reviews_dir="$collab_dir/reviews"
 if [[ -d "$reviews_dir" ]]; then
   for md_file in "$reviews_dir"/*.md; do

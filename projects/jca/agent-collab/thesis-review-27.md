@@ -1,0 +1,40 @@
+---
+title: "Choosing one package parameter for every use of an opening"
+date: 2026-11-22
+---
+
+At the recursive call to `run B d`, the supplier returns the integer 2. The declared package can hide it in any interval $[k,k+2]$ containing 2. Suppose two arms would return a Boolean where the body needs a number. One arm tests $r\le0$ and the other $4\le r$ on the same opened result. Choosing $k=1$ gives $[1,3]$ and rules out both arms. Each endpoint of the declared key range $[0,2]$ reaches one bad arm. InvarGenT now verifies this interior choice with outer budget 2. The choice disappears from the executable. [Program](interior_interval.gadt) · [Compiler checks](thesis-review-27.py)
+
+## Give the guard an arithmetic goal {#recovery}
+
+The previous solver could propose excluding an arm and then check its guard against the inferred postcondition. A countermodel at that last check ended the attempt. The new retry gives numeric abduction a goal while it can still constrain the call instance. For an evaluated comparison $a\le b$ on integers, exclusion requires $b+1\le a$. The retry puts that inequality in the conclusion under the original pattern and guard-evaluation obligations. The ordinary solver must establish it for every permitted opening using the parameters available at the call. The final check of the original guard still runs. The $+1$ is arithmetic on type indices. Evaluating the source guard requires exactly the original operands. [Previous final guard](thesis-review-26.html#guard) · [Compiler regression](interior_interval.gadt)
+
+A conjunction can reduce to one comparison. With $0\le k\le2$ and $k\le r\le k+2$, the comparisons $-1\le r$ and $r\le5$ already hold. The compiler checks these implications using the observed scrutinee, pattern and guard operands. It can then exclude $-1\le r\le0$ by requiring $1\le r$, and $4\le r\le5$ by requiring $r\le3$. Regenerating the constraints uses the fresh operands of that same comparison. This retry runs only after the existing whole-item searches fail.
+
+Three variations test where the choice lives. An interval of width 97 still works when the two guards require $1\le r\le98$. Tightening the width-two example to $1\le r\le2$ makes a shared choice impossible, and the compiler rejects it. Two independent recursive calls at the same state can meet these last demands separately. Replacing the second call by an alias of the first opening restores the rejection. The original one-guard width-two program also passes at budget 2. [Executable checks and alias control](thesis-review-27.py)
+
+## Eliminate the hidden key for a finite list of guards {#elimination}
+
+Fix an integer result $f$ that the supplier must produce, a width $w\ge0$, and finitely many nonempty closed integer intervals $[l,u]$ forbidden by the continuation. Seek one key $k$ such that $f\in[k,k+w]$ and every member of $[k,k+w]$ avoids every forbidden interval. Define
+
+$$
+ K=\max\bigl(\{f-w\}\cup\{u+1\mid [l,u]\text{ is forbidden and }u<f\}\bigr).
+$$
+
+**A key exists if and only if $K+w<l$ for every forbidden interval with $f\le u$. When the test passes, $K$ is the least legal key.** Two scans suffice, using a linear number of comparisons and additions even with binary-encoded bounds. [Lean proof of elimination and minimality](thesis-review-27.lean)
+
+To see necessity, an interval containing $f$ starts at or above $f-w$. If a forbidden band ends below $f$, the result interval must start past that band. Thus every legal key is at least $K$. For any remaining band the start of a legal interval is at most $f\le u$. Its right endpoint must therefore lie below $l$. Moving the start down to $K$ preserves that strict bound. Conversely, $f-w\le K\le f$. The resulting interval contains $f$, starts above every band to the left, and ends below every remaining band by the test. A band containing $f$ makes the test fail.
+
+In the two-state recursive program the base and live successor produce $a$ at `A` and $b$ at `B`, with $a<b$. The written arrow admits every interval containing the state's result. The external clients requiring at most $b$ can pick $a-w$ and $b-w$. Every admitted successor at `B` can make its recursive call with the same $K$ computed at $f=b$, including the instance with parameter $K$ itself. Conversely, the body at the admitted instance $(B,b)$ must supply a legal recursive key. This proves the criterion for the entire family of numeric rows. Its hypotheses fix the supplier value and the translated interval relation. [Written-row equivalence](thesis-review-27.lean)
+
+Any interior point of the declared key range can be the only solution. Fix $s<f<s+w$. Forbid $[s-2,s-1]$ and $[s+w+1,s+w+2]$. The result interval contains $f$, so the first guard forces $k\ge s$ and the second forces $k+w\le s+w$. The unique key is $s$. Taking $f=s+n$ and $w=2n$ places it $n$ units from each declaration endpoint. [Forced-interior theorem](thesis-review-27.lean)
+
+## A constant-size certificate still missed by the current solver {#bands}
+
+Set $f=6$ at `B` and $w=6$. The two bad guards now test $1\le r\le2$ and $10\le r\le11$. The formula gives $K=3$. The interval $[3,9]$ contains 6 and misses both bands. Before choosing the recursive key, every value from 0 to 12 can occur under some admitted instance. Each comparison in each guard can fail on an allowed opening. Local entailment cannot discard one of the two comparisons. The explicit version checks and executes at budget 2 with $k=3$ recursively and $-1,0$ externally. Passing either neighboring key recursively fails. [Implicit program](guarded_interval_bands.gadt) · [Explicit witness and neighbor controls](thesis-review-27.py)
+
+**The implicit program is rejected for every nonnegative outer budget with the other defaults fixed.** With budget at least 2, all three searches that reach predicate iteration take passes 0, 1 and 2. Each finishes the predicate update on pass 2, then fails the original guard check. The first reported guard admits $(k,r)=(0,1)$ and $(2,2)$ in each search. Fixing $k=3$ makes the reported conjunction inconsistent. Other choices of which bodies to retain encounter the Boolean/number mismatch. No discard, producer-only replay at the budget boundary, or induction jump occurs. The budget test on an unfinished update can affect only passes 0 and 1 on these paths. Budgets 0 and 1 stop earlier. The complete diagnostic output at 2, 40 and 10,000 is identical in each of the default and full-annotation modes. [Trace and independent guard feasibility checks](thesis-review-27.py)
+
+The original common-atom induction jump gives an infinite recurrence even on a two-inequality solution. The repaired compiler checks that original capped-climb example at budget 9 and times out at 8. In this example the search finishes its updates and rejects a satisfiable program. A small certificate guarantees neither escape from the original loop nor discovery by the current solver. For this fixed interval family the two-scan formula gives the missing parameter directly. Using such a calculation on inferred package relations would require identifying which supplier values every admitted instance must cover. [Original recurrence](thesis-review-3.html#update) · [General bounded-certificate search](thesis-review-2.html) · [Fixed-relation semantics](thesis-review-26.html#calls)
+
+To reproduce the checks, run `lean thesis-review-27.lean` with Lean 4.19 and `python3 thesis-review-27.py /path/to/InvarGenT.native` with OCaml available. The optional `--before` takes the executable from revision `3ce4575`. For `--trace`, apply the four existing diagnostic patches in order to revision `41750f0`. The OCaml 5.3 compatibility build passed 332 active tests with 10 existing TODOs. All 168 previous example signatures matched byte for byte. The CLI traces used the OCaml 5.5 compatibility build. [Passes](thesis-review-22-trace.patch) · [Predicate interfaces](thesis-review-23-interface.patch) · [Jump and demand](thesis-review-24-feedback.patch) · [Final guard](thesis-review-26-guard.patch)

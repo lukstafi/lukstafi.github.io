@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <meta name="dcterms.date" content="2026-11-22">
+  <meta property="og:title" content="Choosing one package parameter for every use of an opening">
+  <meta property="og:url" content="https://lukstafi.github.io/projects/jca/agent-collab/thesis-review-27.html">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="lukstafi&#x27;s blog">
+  <meta name="twitter:card" content="summary">
+  <title>Choosing one package parameter for every use of an
+opening</title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <link rel="stylesheet" href="/assets/tufte.css">
+  <link rel="stylesheet" href="/assets/pandoc-tufte.css">
+  <link rel="stylesheet" href="/assets/site.css">
+  <script defer=""
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+  type="text/javascript"></script>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+  <script>(function(){var t=localStorage.getItem('theme-preference');if(t)document.documentElement.setAttribute('data-theme',t);})()</script>
+</head>
+<body>
+<nav class="site-nav">
+  <a href="/">Home</a> &middot; <a href="/study/">Study Guide</a> &middot; <a href="/about.html">About</a> &middot; <a href="https://lukstafi.substack.com">Substack</a>
+</nav>
+<div class="theme-toggle">
+  <button id="theme-btn" aria-label="Toggle dark mode">&#9788;</button>
+</div>
+<article>
+<header>
+<h1 class="title">Choosing one package parameter for every use of an
+opening</h1>
+<p class="byline">2026-11-22</p>
+</header>
+<nav id="TOC">
+<ul>
+<li><a href="#recovery" id="toc-recovery">Give the guard an arithmetic
+goal</a></li>
+<li><a href="#elimination" id="toc-elimination">Eliminate the hidden key
+for a finite list of guards</a></li>
+<li><a href="#bands" id="toc-bands">A constant-size certificate still
+missed by the current solver</a></li>
+</ul>
+</nav>
+<p>At the recursive call to <code>run B d</code>, the supplier returns
+the integer 2. The declared package can hide it in any interval <span
+class="math inline">\([k,k+2]\)</span> containing 2. Suppose two arms
+would return a Boolean where the body needs a number. One arm tests
+<span class="math inline">\(r\le0\)</span> and the other <span
+class="math inline">\(4\le r\)</span> on the same opened result.
+Choosing <span class="math inline">\(k=1\)</span> gives <span
+class="math inline">\([1,3]\)</span> and rules out both arms. Each
+endpoint of the declared key range <span
+class="math inline">\([0,2]\)</span> reaches one bad arm. InvarGenT now
+verifies this interior choice with outer budget 2. The choice disappears
+from the executable. <a href="interior_interval.gadt">Program</a> · <a
+href="thesis-review-27.py">Compiler checks</a></p>
+<section id="recovery" class="level2">
+<h2>Give the guard an arithmetic goal</h2>
+<p>The previous solver could propose excluding an arm and then check its
+guard against the inferred postcondition. A countermodel at that last
+check ended the attempt. The new retry gives numeric abduction a goal
+while it can still constrain the call instance. For an evaluated
+comparison <span class="math inline">\(a\le b\)</span> on integers,
+exclusion requires <span class="math inline">\(b+1\le a\)</span>. The
+retry puts that inequality in the conclusion under the original pattern
+and guard-evaluation obligations. The ordinary solver must establish it
+for every permitted opening using the parameters available at the call.
+The final check of the original guard still runs. The <span
+class="math inline">\(+1\)</span> is arithmetic on type indices.
+Evaluating the source guard requires exactly the original operands. <a
+href="thesis-review-26.html#guard">Previous final guard</a> · <a
+href="interior_interval.gadt">Compiler regression</a></p>
+<p>A conjunction can reduce to one comparison. With <span
+class="math inline">\(0\le k\le2\)</span> and <span
+class="math inline">\(k\le r\le k+2\)</span>, the comparisons <span
+class="math inline">\(-1\le r\)</span> and <span
+class="math inline">\(r\le5\)</span> already hold. The compiler checks
+these implications using the observed scrutinee, pattern and guard
+operands. It can then exclude <span class="math inline">\(-1\le
+r\le0\)</span> by requiring <span class="math inline">\(1\le r\)</span>,
+and <span class="math inline">\(4\le r\le5\)</span> by requiring <span
+class="math inline">\(r\le3\)</span>. Regenerating the constraints uses
+the fresh operands of that same comparison. This retry runs only after
+the existing whole-item searches fail.</p>
+<p>Three variations test where the choice lives. An interval of width 97
+still works when the two guards require <span class="math inline">\(1\le
+r\le98\)</span>. Tightening the width-two example to <span
+class="math inline">\(1\le r\le2\)</span> makes a shared choice
+impossible, and the compiler rejects it. Two independent recursive calls
+at the same state can meet these last demands separately. Replacing the
+second call by an alias of the first opening restores the rejection. The
+original one-guard width-two program also passes at budget 2. <a
+href="thesis-review-27.py">Executable checks and alias control</a></p>
+</section>
+<section id="elimination" class="level2">
+<h2>Eliminate the hidden key for a finite list of guards</h2>
+<p>Fix an integer result <span class="math inline">\(f\)</span> that the
+supplier must produce, a width <span
+class="math inline">\(w\ge0\)</span>, and finitely many nonempty closed
+integer intervals <span class="math inline">\([l,u]\)</span> forbidden
+by the continuation. Seek one key <span class="math inline">\(k\)</span>
+such that <span class="math inline">\(f\in[k,k+w]\)</span> and every
+member of <span class="math inline">\([k,k+w]\)</span> avoids every
+forbidden interval. Define</p>
+<p><span class="math display">\[
+K=\max\bigl(\{f-w\}\cup\{u+1\mid [l,u]\text{ is forbidden and
+}u&lt;f\}\bigr).
+\]</span></p>
+<p><strong>A key exists if and only if <span
+class="math inline">\(K+w&lt;l\)</span> for every forbidden interval
+with <span class="math inline">\(f\le u\)</span>. When the test passes,
+<span class="math inline">\(K\)</span> is the least legal key.</strong>
+Two scans suffice, using a linear number of comparisons and additions
+even with binary-encoded bounds. <a href="thesis-review-27.lean">Lean
+proof of elimination and minimality</a></p>
+<p>To see necessity, an interval containing <span
+class="math inline">\(f\)</span> starts at or above <span
+class="math inline">\(f-w\)</span>. If a forbidden band ends below <span
+class="math inline">\(f\)</span>, the result interval must start past
+that band. Thus every legal key is at least <span
+class="math inline">\(K\)</span>. For any remaining band the start of a
+legal interval is at most <span class="math inline">\(f\le u\)</span>.
+Its right endpoint must therefore lie below <span
+class="math inline">\(l\)</span>. Moving the start down to <span
+class="math inline">\(K\)</span> preserves that strict bound.
+Conversely, <span class="math inline">\(f-w\le K\le f\)</span>. The
+resulting interval contains <span class="math inline">\(f\)</span>,
+starts above every band to the left, and ends below every remaining band
+by the test. A band containing <span class="math inline">\(f\)</span>
+makes the test fail.</p>
+<p>In the two-state recursive program the base and live successor
+produce <span class="math inline">\(a\)</span> at <code>A</code> and
+<span class="math inline">\(b\)</span> at <code>B</code>, with <span
+class="math inline">\(a&lt;b\)</span>. The written arrow admits every
+interval containing the state’s result. The external clients requiring
+at most <span class="math inline">\(b\)</span> can pick <span
+class="math inline">\(a-w\)</span> and <span
+class="math inline">\(b-w\)</span>. Every admitted successor at
+<code>B</code> can make its recursive call with the same <span
+class="math inline">\(K\)</span> computed at <span
+class="math inline">\(f=b\)</span>, including the instance with
+parameter <span class="math inline">\(K\)</span> itself. Conversely, the
+body at the admitted instance <span class="math inline">\((B,b)\)</span>
+must supply a legal recursive key. This proves the criterion for the
+entire family of numeric rows. Its hypotheses fix the supplier value and
+the translated interval relation. <a
+href="thesis-review-27.lean">Written-row equivalence</a></p>
+<p>Any interior point of the declared key range can be the only
+solution. Fix <span class="math inline">\(s&lt;f&lt;s+w\)</span>. Forbid
+<span class="math inline">\([s-2,s-1]\)</span> and <span
+class="math inline">\([s+w+1,s+w+2]\)</span>. The result interval
+contains <span class="math inline">\(f\)</span>, so the first guard
+forces <span class="math inline">\(k\ge s\)</span> and the second forces
+<span class="math inline">\(k+w\le s+w\)</span>. The unique key is <span
+class="math inline">\(s\)</span>. Taking <span
+class="math inline">\(f=s+n\)</span> and <span
+class="math inline">\(w=2n\)</span> places it <span
+class="math inline">\(n\)</span> units from each declaration endpoint.
+<a href="thesis-review-27.lean">Forced-interior theorem</a></p>
+</section>
+<section id="bands" class="level2">
+<h2>A constant-size certificate still missed by the current solver</h2>
+<p>Set <span class="math inline">\(f=6\)</span> at <code>B</code> and
+<span class="math inline">\(w=6\)</span>. The two bad guards now test
+<span class="math inline">\(1\le r\le2\)</span> and <span
+class="math inline">\(10\le r\le11\)</span>. The formula gives <span
+class="math inline">\(K=3\)</span>. The interval <span
+class="math inline">\([3,9]\)</span> contains 6 and misses both bands.
+Before choosing the recursive key, every value from 0 to 12 can occur
+under some admitted instance. Each comparison in each guard can fail on
+an allowed opening. Local entailment cannot discard one of the two
+comparisons. The explicit version checks and executes at budget 2 with
+<span class="math inline">\(k=3\)</span> recursively and <span
+class="math inline">\(-1,0\)</span> externally. Passing either
+neighboring key recursively fails. <a
+href="guarded_interval_bands.gadt">Implicit program</a> · <a
+href="thesis-review-27.py">Explicit witness and neighbor
+controls</a></p>
+<p><strong>The implicit program is rejected for every nonnegative outer
+budget with the other defaults fixed.</strong> With budget at least 2,
+all three searches that reach predicate iteration take passes 0, 1 and
+2. Each finishes the predicate update on pass 2, then fails the original
+guard check. The first reported guard admits <span
+class="math inline">\((k,r)=(0,1)\)</span> and <span
+class="math inline">\((2,2)\)</span> in each search. Fixing <span
+class="math inline">\(k=3\)</span> makes the reported conjunction
+inconsistent. Other choices of which bodies to retain encounter the
+Boolean/number mismatch. No discard, producer-only replay at the budget
+boundary, or induction jump occurs. The budget test on an unfinished
+update can affect only passes 0 and 1 on these paths. Budgets 0 and 1
+stop earlier. The complete diagnostic output at 2, 40 and 10,000 is
+identical in each of the default and full-annotation modes. <a
+href="thesis-review-27.py">Trace and independent guard feasibility
+checks</a></p>
+<p>The original common-atom induction jump gives an infinite recurrence
+even on a two-inequality solution. The repaired compiler checks that
+original capped-climb example at budget 9 and times out at 8. In this
+example the search finishes its updates and rejects a satisfiable
+program. A small certificate guarantees neither escape from the original
+loop nor discovery by the current solver. For this fixed interval family
+the two-scan formula gives the missing parameter directly. Using such a
+calculation on inferred package relations would require identifying
+which supplier values every admitted instance must cover. <a
+href="thesis-review-3.html#update">Original recurrence</a> · <a
+href="thesis-review-2.html">General bounded-certificate search</a> · <a
+href="thesis-review-26.html#calls">Fixed-relation semantics</a></p>
+<p>To reproduce the checks, run <code>lean thesis-review-27.lean</code>
+with Lean 4.19 and
+<code>python3 thesis-review-27.py /path/to/InvarGenT.native</code> with
+OCaml available. The optional <code>--before</code> takes the executable
+from revision <code>3ce4575</code>. For <code>--trace</code>, apply the
+four existing diagnostic patches in order to revision
+<code>41750f0</code>. The OCaml 5.3 compatibility build passed 332
+active tests with 10 existing TODOs. All 168 previous example signatures
+matched byte for byte. The CLI traces used the OCaml 5.5 compatibility
+build. <a href="thesis-review-22-trace.patch">Passes</a> · <a
+href="thesis-review-23-interface.patch">Predicate interfaces</a> · <a
+href="thesis-review-24-feedback.patch">Jump and demand</a> · <a
+href="thesis-review-26-guard.patch">Final guard</a></p>
+</section>
+</article>
+<script src="/assets/theme-toggle.js"></script>
+</body>
+</html>

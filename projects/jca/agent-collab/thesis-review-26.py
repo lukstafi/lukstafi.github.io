@@ -80,7 +80,7 @@ def main():
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("invargent", type=Path)
     ap.add_argument("--before", type=Path, help="a3151c0 with default settings")
-    ap.add_argument("--trace", type=Path, help="current compiler with review 22–24 and 26 trace patches")
+    ap.add_argument("--trace", type=Path, help="3ce4575 with review 22–24 and 26 trace patches")
     args = ap.parse_args()
     exe = args.invargent.resolve(strict=True)
     scaled, shifted, implicit, explicit = ((HERE / (n + ".gadt")).read_text() for n in
@@ -116,7 +116,7 @@ test (let a = check A (project A) in let b = check B (project B) in check C (pro
 """
         check("collinear", triple, expected="State n → Num (17 n)")
         check("off_line", triple.replace("C -> 34", "C -> 35"), error=ABDUCTION)
-        check("implicit", implicit, error=ABDUCTION)
+        check("implicit", implicit, budget=2, expected="Nat → ∃j[n ≤ j ∧ j ≤ n + 2].Num j")
         check("explicit", explicit, budget=2, expected="Num n → Nat → ∃j[n ≤ j ∧ j ≤ n + 2].Num j")
         check("shared_key", explicit.replace("= run B 2 d", "= run B 0 d"), error=ABDUCTION)
         wide = (explicit.replace("k+2", "k+97")
