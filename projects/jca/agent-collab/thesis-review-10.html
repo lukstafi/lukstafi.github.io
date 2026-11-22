@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <meta name="dcterms.date" content="2026-11-22">
+  <meta property="og:title" content="When can the induction jump reuse a failed guess?">
+  <meta property="og:url" content="https://lukstafi.github.io/projects/jca/agent-collab/thesis-review-10.html">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="lukstafi&#x27;s blog">
+  <meta name="twitter:card" content="summary">
+  <title>When can the induction jump reuse a failed guess?</title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <link rel="stylesheet" href="/assets/tufte.css">
+  <link rel="stylesheet" href="/assets/pandoc-tufte.css">
+  <link rel="stylesheet" href="/assets/site.css">
+  <script defer=""
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+  type="text/javascript"></script>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+  <script>(function(){var t=localStorage.getItem('theme-preference');if(t)document.documentElement.setAttribute('data-theme',t);})()</script>
+</head>
+<body>
+<nav class="site-nav">
+  <a href="/">Home</a> &middot; <a href="/study/">Study Guide</a> &middot; <a href="/about.html">About</a> &middot; <a href="https://lukstafi.substack.com">Substack</a>
+</nav>
+<div class="theme-toggle">
+  <button id="theme-btn" aria-label="Toggle dark mode">&#9788;</button>
+</div>
+<article>
+<header>
+<h1 class="title">When can the induction jump reuse a failed guess?</h1>
+<p class="byline">2026-11-22</p>
+</header>
+<nav id="TOC">
+<ul>
+<li><a href="#necessary" id="toc-necessary">The rejected inequality is
+necessary</a></li>
+<li><a href="#cuts" id="toc-cuts">What a discard certifies</a></li>
+<li><a href="#repair" id="toc-repair">Checking a replacement on the
+widened pass</a></li>
+<li><a href="#regions" id="toc-regions">The two symbolic shifts</a></li>
+</ul>
+</nav>
+<p>InvarGenT records <span class="math inline">\(p\le m+19\)</span> as a
+failed guess on pass 2 of the moving-cap example. Every valid type for
+this function must nevertheless imply that inequality. The solver needs
+to keep it and add <span class="math inline">\(1\le d\le2\)</span>.
+Recovering the second upper bound on pass 8 lets the definition converge
+on pass 10. <a href="moving_cap_interval.gadt">Complete program with
+both boundary calls</a> · <a href="thesis-review-9.py">Comparison
+driver</a> · <a href="thesis-review-10.lean">Lean proofs</a></p>
+<section id="necessary" class="level2">
+<h2>The rejected inequality is necessary</h2>
+<p>The function takes an arbitrary unindexed natural number as its
+recursion depth. At floor <span class="math inline">\(p\)</span> and cap
+parameter <span class="math inline">\(m\)</span>, its base case returns
+<span class="math inline">\(p\)</span>. Its recursive case calls the
+child at floor <span class="math inline">\(p+1\)</span> and cap
+parameter <span class="math inline">\(m+d\)</span>. The parent must
+supply that child’s return <span class="math inline">\(r\)</span> to an
+operation requiring <span class="math inline">\(p\le
+r\le\max(p,m+20)\)</span>. The operation can return the floor or a
+payload at most <span class="math inline">\(m+18\)</span>.</p>
+<p>Take any admitted input to any valid scheme, with arbitrary input and
+result predicates. Its child must also be admitted. That child can
+return its base value <span class="math inline">\(p+1\)</span>, which
+the parent must accept. Since <span
+class="math inline">\(p+1&gt;p\)</span>, it follows that <span
+class="math inline">\(p+1\le m+20\)</span>, hence <span
+class="math inline">\(p\le m+19\)</span>. This proves the inequality for
+every admitted input. <a href="thesis-review-10.lean">Proof of
+<code>cut_is_necessary</code></a></p>
+<p>Now try <span class="math inline">\(p\le m+19\)</span> as the
+<em>whole</em> input condition. It admits <span
+class="math inline">\(d=0,p=19,m=0\)</span>. The child has <span
+class="math inline">\(p=20,m=0\)</span> and violates the condition. No
+choice of result predicate repairs that recursive call. Adding <span
+class="math inline">\(1\le d\le2\)</span> does repair it. The five-atom
+scheme is <span class="math display">\[
+P(d,p,m)=(p\le m+19\land 1\le d\land d\le2),\qquad
+R(d,p,m,r)=(p\le r\land r\le\max(p,m+18)).
+\]</span> Consequently, a rule excluding every complete input predicate
+that entails the failed guess would exclude every solution. InvarGenT
+applies its discard test to local abductive answers. The trace shows
+that this particular test reaches the proposed input repair. <a
+href="thesis-review-10.lean">Invalid guess and certified refinement</a>
+· <a href="thesis-review-8.html#domain">Proof that the input domain is
+maximal</a></p>
+</section>
+<section id="cuts" class="level2">
+<h2>What a discard certifies</h2>
+<p>A branch-coverage failure and a failed implication justify different
+conclusions about stronger answers. Let <span
+class="math inline">\(A\)</span> be a candidate answer and <span
+class="math inline">\(D\)</span> the guard of a branch that requires a
+witness. If <span class="math inline">\(A\land D\)</span> has no
+witness, strengthening <span class="math inline">\(A\)</span> cannot
+create one. On a later pass the guard might be <span
+class="math inline">\(E\)</span>. Every coverage failure at <span
+class="math inline">\(D\)</span> transfers to <span
+class="math inline">\(E\)</span>, under every strengthening, exactly
+when <span class="math inline">\(E\Rightarrow D\)</span>. Sufficiency
+follows by taking a proposed new witness and applying both implications.
+For necessity, choose a point satisfying <span
+class="math inline">\(E\)</span> outside <span
+class="math inline">\(D\)</span> and take the singleton containing that
+point as both candidates. It has a new witness. This converse quantifies
+over arbitrary predicates. <a href="thesis-review-10.lean">Coverage
+transport theorem</a></p>
+<p>For a pointwise obligation <span class="math inline">\(G\)</span>,
+failure of <span class="math inline">\(A\Rightarrow G\)</span> gives one
+counterexample. That counterexample can disappear when <span
+class="math inline">\(A\)</span> is strengthened. In fact, <em>every
+nonempty strengthening</em> of <span class="math inline">\(A\)</span>
+fails the same obligation exactly when no point of <span
+class="math inline">\(A\)</span> satisfies <span
+class="math inline">\(G\)</span>. A single good point gives a successful
+singleton strengthening. This criterion isolates what can be inferred
+from the one obligation before considering other branches. <a
+href="thesis-review-10.lean">Nonempty-refinement theorem</a></p>
+<p>In Table 4.4 a failed call to the next iteration can send the
+previous split answer back to the search as a discard. At revision
+<code>02bc11c</code>, the numeric parameter test rejects local answers
+implying the recorded condition. On the example above it rejects the
+conjunction <span class="math inline">\(p\le m+19\land d\le2\)</span>
+because of its first conjunct. The test has remembered a formula but no
+witness showing why all its refinements would fail under the current
+postcondition. <a href="../lukstafi-phd-thesis.pdf#page=71">Table
+4.4</a></p>
+</section>
+<section id="repair" class="level2">
+<h2>Checking a replacement on the widened pass</h2>
+<p>At the recursive call the child promises <span
+class="math inline">\(r\le\max(p+1,m+d+18)\)</span>. The parent needs
+<span class="math inline">\(r\le\max(p,m+20)\)</span>. The candidate
+becomes visible once the abducer has collected the equations relating
+the two sets of arguments. Since <span
+class="math inline">\(p+1&gt;p\)</span>, the caller’s <span
+class="math inline">\(m+20\)</span> arm must cover <span
+class="math inline">\(p+1\)</span>. It is therefore larger than <span
+class="math inline">\(p\)</span> and must cover <span
+class="math inline">\(m+d+18\)</span> too. Subtraction gives <span
+class="math inline">\(p\le m+19\)</span> and <span
+class="math inline">\(d\le2\)</span>. Preservation of the input domain
+supplies the complementary bound <span class="math inline">\(1\le
+d\)</span>. <a href="thesis-review-10.lean">Endpoint lemma</a> · <a
+href="thesis-review-9.html#transport">Transport through the child
+parameters</a></p>
+<p>InvarGenT revision <code>2f2e099</code> tests this alternative on a
+fresh widened pass. It uses the completed answer’s equations, checks the
+scope of the proposed inequalities, and replays all original unsplit
+positive numeric obligations. Each previously possible branch must
+remain possible. Recursive uses also go through the solver’s existing
+validation. The ordinary search keeps its discard list. If the new pass
+itself fails and backtracks, that retry uses the usual cuts. The
+recovery is enabled for positive problems with binary predicates.</p>
+<table>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr>
+<th>Experiment on the <span class="math inline">\(m+18\)</span>
+example</th>
+<th>Result</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Original solver at <code>02bc11c</code></td>
+<td>Reports “Answers do not converge” at budgets 11 and 40.</td>
+</tr>
+<tr>
+<td>Clear the old numeric discards at the jump, using the original
+candidate search</td>
+<td>Still reaches the default limit.</td>
+</tr>
+<tr>
+<td>Generate both input bounds, applying the inherited discard test to
+the replacement</td>
+<td>Rejects the replacement and reaches the default limit.</td>
+</tr>
+<tr>
+<td>Generate the replacement on a fresh widened pass and check the
+current obligations</td>
+<td>Pass 8 recovers both inequalities. Pass 10 finishes with the
+five-atom scheme.</td>
+</tr>
+</tbody>
+</table>
+<p>Both <span class="math inline">\(d=1\)</span> and <span
+class="math inline">\(d=2\)</span> compile and execute at <span
+class="math inline">\(p=19,m=0\)</span>. Inference rejects <span
+class="math inline">\(d=0\)</span>, <span
+class="math inline">\(d=3\)</span>, and <span
+class="math inline">\(p=20,m=0\)</span>. With offsets <span
+class="math inline">\(c=3,L=6\)</span> and the same unit floor rise, the
+solver also finds the input range <span class="math inline">\(1\le
+d\le3\)</span>, <span class="math inline">\(p\le m+5\)</span>. <a
+href="thesis-review-9.py">Reproducible comparison</a></p>
+</section>
+<section id="regions" class="level2">
+<h2>The two symbolic shifts</h2>
+<p>The strictly missed endpoint supplies the decisive comparison in this
+repair. With a symbolic floor rise <span
+class="math inline">\(e\)</span>, the child floor may equal the parent
+floor. The program requiring both a stationary and a rising call still
+fails numeric abduction. Its solution has a conditional input bound. The
+general convergence question for the repaired iteration remains open. <a
+href="moving_floor_symbolic.gadt">Two symbolic increments</a> · <a
+href="thesis-review-8.html#domain">Their exact input domain</a></p>
+<p>At <span class="math inline">\(c=19,L=20\)</span> the exact integer
+domain splits into two regions. The stationary region has <span
+class="math inline">\(e=0,d\le1\)</span>. The rising region has <span
+class="math inline">\(e=d=1,p\le m+19\)</span>. Both use the same result
+band. With the result predicate fixed, the union of any family of safe,
+recursively closed input domains is again safe and recursively closed.
+Each admitted point belongs to one member, which supplies both its local
+safety proof and its children’s membership in the union. <a
+href="thesis-review-10.lean">Region equivalence and union
+theorem</a></p>
+<p>A control run isolates the rising region by applying an identity
+function of type <span class="math inline">\(\forall i[1\le
+i].\,\mathrm{Num}(i)\to\mathrm{Num}(i)\)</span> to <span
+class="math inline">\(e\)</span> in the successor branch. On the rising
+boundary call the executable infers <span
+class="math inline">\(e=d=1\)</span> and <span
+class="math inline">\(p\le m+19\)</span>. Weakening the identity’s guard
+to <span class="math inline">\(0\le i\)</span> makes that same call
+fail. Duplicating the original successor body on the two sides of
+<code>eif e &lt;= 0</code> still reaches the iteration limit. Recovering
+and combining the input regions is the remaining inference problem.</p>
+<p>Lean 4.19.0 checked the proofs using <code>Std</code>. The OCaml
+5.3.0 compatibility suite passed 273 cases with 10 existing TODOs. All
+130 previously generated signatures compared byte-for-byte equal. The
+new two-call fixture also passed on OCaml 5.5.1.</p>
+</section>
+</article>
+<script src="/assets/theme-toggle.js"></script>
+</body>
+</html>

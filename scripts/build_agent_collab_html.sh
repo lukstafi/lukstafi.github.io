@@ -309,6 +309,11 @@ build_html \
   "$collab_dir/thesis-review-9.html" \
   "Extracting an input bound from a recursive caller"
 
+build_html \
+  "$collab_dir/thesis-review-10.md" \
+  "$collab_dir/thesis-review-10.html" \
+  "When can the induction jump reuse a failed guess?"
+
 reviews_dir="$collab_dir/reviews"
 if [[ -d "$reviews_dir" ]]; then
   for md_file in "$reviews_dir"/*.md; do

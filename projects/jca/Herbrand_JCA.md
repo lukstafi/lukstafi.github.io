@@ -9,7 +9,9 @@ date: 2026-01-20
 
 This survey is written around Łukasz Stafiniak’s PhD thesis *GADTs for Reconstruction of Invariants and Postconditions* (University of Wrocław, 2015), focusing on Section 4.2 (“Constraint Abduction”), especially Section 4.2.4.1 (“Abduction for Terms”) and the **JCAQP over the free term algebra** \(\mathcal{T}(\mathcal{F})\) problem. The bibliography and appendix pointers (A.2.2, B.2.2, B.2.3) are aligned to the thesis’ full PDF.
 
-**Extracting an input bound from a recursive caller.** Comparing the child's cap with the caller's allowed result recovers the previously missing input equation. An exact closure theorem handles arbitrary sequences of integer translations. Lowering the supplier cap by one exposes a five-atom solution that the executable misses. [Inference repair, closure proof and boundary calls](agent-collab/thesis-review-9.html)
+**When can the induction jump reuse a failed guess?** A rejected inequality is necessary for every valid type of the moving-cap example. Checking a stronger input predicate against the current caller and suppliers recovers the five-atom scheme. [Proof, solver repair and boundary calls](agent-collab/thesis-review-10.html)
+
+**Extracting an input bound from a recursive caller.** Comparing the child's cap with the caller's allowed result recovers the previously missing input equation. An exact closure theorem handles arbitrary sequences of integer translations. Lowering the supplier cap by one exposes a five-atom solution that revision `02bc11c` misses. [Inference repair, closure proof and boundary calls](agent-collab/thesis-review-9.html)
 
 **When both ends of the result interval move.** Four numeric constraints describe exactly which input shifts admit a solution at arbitrary recursion depth. A special case has a four-atom linear solution and a strict infinite chain of backward approximations. The trace at revision `6642c67` shows the missing cap increment on a safe boundary call. [Theorem, counterexample and actual solver behavior](agent-collab/thesis-review-8.html)
 
