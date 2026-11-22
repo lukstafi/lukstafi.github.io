@@ -384,6 +384,11 @@ build_html \
   "$collab_dir/thesis-review-24.html" \
   "Where the induction jump loses the state index"
 
+build_html \
+  "$collab_dir/thesis-review-25.md" \
+  "$collab_dir/thesis-review-25.html" \
+  "Two calls at the same state can need different package parameters"
+
 reviews_dir="$collab_dir/reviews"
 if [[ -d "$reviews_dir" ]]; then
   for md_file in "$reviews_dir"/*.md; do

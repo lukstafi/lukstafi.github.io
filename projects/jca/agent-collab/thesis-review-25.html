@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <meta name="dcterms.date" content="2026-11-22">
+  <meta property="og:title" content="Two calls at the same state can need different package parameters">
+  <meta property="og:url" content="https://lukstafi.github.io/projects/jca/agent-collab/thesis-review-25.html">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="lukstafi&#x27;s blog">
+  <meta name="twitter:card" content="summary">
+  <title>Two calls at the same state can need different package
+parameters</title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <link rel="stylesheet" href="/assets/tufte.css">
+  <link rel="stylesheet" href="/assets/pandoc-tufte.css">
+  <link rel="stylesheet" href="/assets/site.css">
+  <script defer=""
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+  type="text/javascript"></script>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+  <script>(function(){var t=localStorage.getItem('theme-preference');if(t)document.documentElement.setAttribute('data-theme',t);})()</script>
+</head>
+<body>
+<nav class="site-nav">
+  <a href="/">Home</a> &middot; <a href="/study/">Study Guide</a> &middot; <a href="/about.html">About</a> &middot; <a href="https://lukstafi.substack.com">Substack</a>
+</nav>
+<div class="theme-toggle">
+  <button id="theme-btn" aria-label="Toggle dark mode">&#9788;</button>
+</div>
+<article>
+<header>
+<h1 class="title">Two calls at the same state can need different package
+parameters</h1>
+<p class="byline">2026-11-22</p>
+</header>
+<nav id="TOC">
+<ul>
+<li><a href="#scaled" id="toc-scaled">A counterexample at every outer
+budget</a></li>
+<li><a href="#choices" id="toc-choices">What the binary postcondition
+describes</a></li>
+<li><a href="#iteration" id="toc-iteration">What the iteration
+does</a></li>
+<li><a href="#contract" id="toc-contract">Giving a consumed match a
+contract</a></li>
+<li><a href="#retry" id="toc-retry">When a caller rejects a provisional
+result</a></li>
+</ul>
+</nav>
+<p>A recursive function with base results 0 and 4 has a one-equation
+solution. Current InvarGenT misses it at every outer iteration budget
+with default component settings. Another function, with base results 1
+and 2, lets us follow the induction jump itself. Its postcondition
+alternates through pass 40. One of the two proposals already has enough
+information to type the program. Using it requires two different choices
+of package parameter at the same input state. <a
+href="scaled_coordinate.gadt">All-budget counterexample</a> · <a
+href="observed_coordinate.gadt">Unshifted program</a> · <a
+href="translated_coordinate.gadt">Shifted program</a> · <a
+href="thesis-review-25.lean">Lean proofs</a></p>
+<section id="scaled" class="level2">
+<h2>A counterexample at every outer budget</h2>
+<p>Use the states <code>A : State 0</code> and <code>B : State 1</code>.
+At depth zero, <code>run</code> observes 0 at <code>A</code> and 4 at
+<code>B</code> with an index-preserving external function. At positive
+depth it returns 0 at <code>A</code>. At <code>B</code> it opens a
+recursive call at <code>B</code>, returning 5 if the result is at most 0
+and returning 4 otherwise. Both external clients require at most 4. The
+exact scheme <span class="math inline">\(\forall
+i.\,\mathsf{State}(i)\to\mathsf{Nat}\to\exists().\,\mathsf{Num}(4i)\)</span>
+checks and executes. The recursive result at <code>B</code> is 4, so the
+branch returning 5 cannot fire.</p>
+<p><strong>With the default component settings at <code>a3151c0</code>,
+no outer budget succeeds.</strong> At budget zero the solver times out
+after the first update on both available attempts. At budget one, each
+of the six attempts completes pass 0, enters pass 1 and returns a
+numeric abduction failure. There are no discard retries. On this path
+the outer budget is tested only on the successful pass-0 update. The
+pass-1 failure exits before the next budget test, and the next attempt
+is selected from the failure kind. Thus replacing one by any larger
+budget follows the same six paths. The traces at 1, 11 and 10,000 agree
+event for event. This refutes a convergence guarantee even under a
+constant bound large enough to admit the displayed solution. <a
+href="scaled_coordinate.gadt">Program</a> · <a
+href="thesis-review-25.py">Pass trace and controls</a></p>
+<p>The coefficient search and the iteration budget control different
+decisions. Increasing <code>-postcond_rotations</code> alone from 3 to 4
+still fails. Increasing <code>-num_abduction_rotations</code> alone to 4
+infers a valid scheme and executes both clients. With base results 0 and
+5, radius 4 again fails and radius 5 succeeds. The binary postcondition
+itself can use unit coefficients. For base results 0 and <span
+class="math inline">\(b&gt;0\)</span>, admit <span
+class="math inline">\(i\le b\)</span>, choose parameter <span
+class="math inline">\(k=i\)</span>, and require <span
+class="math inline">\(k\le o\le b\)</span>. A recursive opening at
+<code>B</code> now guarantees <span class="math inline">\(o\ge1\)</span>
+and excludes the dangerous branch. Lean checks this certificate for
+every positive integer <span class="math inline">\(b\)</span>. For <span
+class="math inline">\(b=4\)</span>, the compiler still fails on the
+written band with its default inner search and accepts it with abduction
+radius 4. <a href="thesis-review-25.lean">Exact and unit-coefficient
+certificates</a> · <a href="thesis-review-25.py">Executable
+comparisons</a></p>
+</section>
+<section id="choices" class="level2">
+<h2>What the binary postcondition describes</h2>
+<p>Write <span class="math inline">\(i\)</span> for the state index,
+<span class="math inline">\(k\)</span> for the parameter chosen at a
+call, and <span class="math inline">\(o\)</span> for the hidden index of
+the number found when the result is opened. The binary predicate <span
+class="math inline">\(R(k,o)\)</span> tells the caller which results to
+handle at its chosen <span class="math inline">\(k\)</span>. The unary
+predicate on the function’s arrow determines which choices of <span
+class="math inline">\(k\)</span> the function admits at <span
+class="math inline">\(i\)</span>. Each use may instantiate that arrow. A
+call fixes <span class="math inline">\(k\)</span> before seeing its
+result.</p>
+<p>In the shifted program the base case returns 1 at <code>A</code> and
+2 at <code>B</code>. A successor at <code>A</code> returns 1. At
+<code>B</code> it opens a recursive call at <code>B</code>, returns 3 if
+the result is at most 1, and otherwise returns 2. Both external clients
+require at most 2. One solution chooses <span
+class="math inline">\(k=i\)</span> everywhere and sets <span
+class="math inline">\(o=k+1\)</span>. The dangerous branch is then
+unreachable.</p>
+<p>Here is a second solution, using exactly the interval InvarGenT
+proposes on a full pass. Admit the arrows with <span
+class="math inline">\(k\le i\le k+1\)</span> and give each one the
+postcondition <span class="math inline">\(k+1\le o\le k+2\)</span>. The
+definition must verify <strong>every</strong> admitted arrow. At either
+state its actual result <span class="math inline">\(i+1\)</span> belongs
+to that interval. The following instantiations establish the recursive
+step and the external bounds.</p>
+<table>
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+</colgroup>
+<thead>
+<tr>
+<th>Call</th>
+<th>State index <span class="math inline">\(i\)</span></th>
+<th>Chosen <span class="math inline">\(k\)</span></th>
+<th>What the opening guarantees</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>External call at <code>A</code></td>
+<td>0</td>
+<td>0</td>
+<td><span class="math inline">\(1\le o\le2\)</span></td>
+</tr>
+<tr>
+<td>External call at <code>B</code></td>
+<td>1</td>
+<td>0</td>
+<td><span class="math inline">\(1\le o\le2\)</span></td>
+</tr>
+<tr>
+<td>Recursive call at <code>B</code></td>
+<td>1</td>
+<td>1</td>
+<td><span class="math inline">\(2\le o\le3\)</span>, so the guard <span
+class="math inline">\(o\le1\)</span> fails</td>
+</tr>
+</tbody>
+</table>
+<p><strong>The two choices at <code>B</code> are necessary for this
+interval.</strong> Suppose all calls there have the same <span
+class="math inline">\(k\)</span>. The external client requires every
+<span class="math inline">\(o\)</span> at <span
+class="math inline">\(k\)</span> to be at most 2. The recursive guard
+requires every such <span class="math inline">\(o\)</span> to exceed 1,
+since the guard would otherwise require the successor result to have
+both indices 2 and 3 in the joined typing obligations. The base case
+requires 2 to be present. Over the integers the relation at <span
+class="math inline">\(k\)</span> must therefore be exactly <span
+class="math inline">\(\{2\}\)</span>. No interval <span
+class="math inline">\([k+1,k+2]\)</span> has this property. InvarGenT
+accepts and executes the two-choice scheme written above and rejects the
+same interval with <span class="math inline">\(k\)</span> tied to the
+input. <a href="thesis-review-25.lean">Sufficiency and necessity</a> ·
+<a href="thesis-review-25.py">Both written interfaces</a></p>
+</section>
+<section id="iteration" class="level2">
+<h2>What the iteration does</h2>
+<p>For an offset <span class="math inline">\(z\)</span>, replacing an
+opening relation by <span
+class="math inline">\(R&#39;(k,o)=R(k,o-z)\)</span> transports every
+solution of the unshifted numeric rows to the shifted rows. Translating
+back gives the inverse. This preserves legal pre-observation choices,
+recursive openings, the declared observation, and both clients. An exact
+solution for every offset is <span class="math inline">\(o=k+z\)</span>
+with <span class="math inline">\(k=i\)</span>. A relation that forgets
+<span class="math inline">\(k\)</span> cannot solve these rows for any
+offset. Its base at <code>A</code> puts <span
+class="math inline">\(z\)</span> into the relation, where the recursive
+call at <code>B</code> can see it. <a
+href="thesis-review-25.lean">Translation and parameter-necessity
+proofs</a></p>
+<p>At offset 1 the solver infers the exact local match type <span
+class="math inline">\(\mathsf{State}(i)\to\mathsf{Num}(i+1)\)</span>.
+With the default jump threshold the final search attempt makes these
+binary updates on passes 4 through 40.</p>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr>
+<th>Pass</th>
+<th>Supplier proposal</th>
+<th>Caller contribution stored with it</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Even</td>
+<td>Parameter <span class="math inline">\(i\)</span>, payload <span
+class="math inline">\(i+1\le o\le i+2\)</span></td>
+<td><span class="math inline">\(i\le0\)</span></td>
+</tr>
+<tr>
+<td>Odd</td>
+<td>Empty parameter tuple, arbitrary numeric payload</td>
+<td><span class="math inline">\(o\le2\)</span> from each client</td>
+</tr>
+</tbody>
+</table>
+<p>On an even pass the upper endpoint at <code>B</code> is 3. Abduction
+can ensure the client bound by requiring <span
+class="math inline">\(i\le0\)</span>, which excludes its call at
+<code>B</code>. On an odd pass the caller again demands <span
+class="math inline">\(o\le2\)</span>, but the empty tuple loses the
+distinction needed by the recursive guard. With the default threshold 8,
+no numeric jump runs in the recorded passes. Moving the threshold to 3
+runs the jump on passes 3 and 4 and yields the same alternation from
+pass 5 onward. The earlier common-atom example proves an infinite
+recurrence for a particular Table 4.4 update rule. Here the evidence for
+the current implementation ends at pass 40. <a
+href="thesis-review-25.py">Trace checks</a> · <a
+href="thesis-review-3.html#update">Earlier infinite recurrence</a></p>
+</section>
+<section id="contract" class="level2">
+<h2>Giving a consumed match a contract</h2>
+<p>At offset zero, both
+<code>let t = (match state with …) in obs t</code> and
+<code>obs (match state with …)</code> now infer <span
+class="math inline">\(\forall
+i.\,\mathsf{State}(i)\to\mathsf{Nat}\to\exists().\,\mathsf{Num}(i)\)</span>
+at budget 4. After the existing attempts fail, inference gives the match
+arms a fresh local function. Its ordinary unary arrow predicate records
+<span
+class="math inline">\(\mathsf{State}(i)\to\mathsf{Num}(i)\)</span>.
+Instantiating the declared observer type then carries the index into the
+package. The closure keeps the captured environment. Scrutinee, failed
+guard, selected body and observer each execute once in their original
+order in the effect test. A local monomorphic alias retains its sharing
+across uses. <a href="thesis-review-24.html#counterexample">Previous
+failure at all budgets</a> · <a href="thesis-review-25.py">Effects,
+captures and higher-order uses</a></p>
+<p>There is an exact semantic criterion for introducing this helper with
+the other predicates fixed. Let <span class="math inline">\(d\)</span>
+range over legal definition histories, <span
+class="math inline">\(c\)</span> over legal call histories, and <span
+class="math inline">\(a\)</span> over candidate arrow instances. At an
+available observation <span class="math inline">\(v\)</span>, allow
+<span class="math inline">\(a\)</span> precisely when the body checks at
+<span class="math inline">\(a\)</span> for <strong>every</strong> <span
+class="math inline">\(d\)</span> with that observation. This gives the
+largest safe helper relation. There exists a safe relation covering all
+calls exactly when the largest relation covers them. At each <span
+class="math inline">\(c\)</span> at least one allowed arrow must also
+satisfy the continuation. Choosing one per call history suffices. The
+relation need not have a finite conjunctive presentation. In the
+two-valued capture example a local choice exists in each environment,
+but hiding the captured bit makes their shared relation impossible. <a
+href="thesis-review-25.lean">Elimination, thinning and capture
+example</a></p>
+</section>
+<section id="retry" class="level2">
+<h2>When a caller rejects a provisional result</h2>
+<p>The type-indexed version returns <code>Mark</code> at
+<code>M : Tag Marker</code> and <code>Box</code> at
+<code>C : Tag Cargo</code>. An external polymorphic identity observes
+the result. Merging the two caller demands into an empty-parameter
+package produces the incompatible equations <span
+class="math inline">\(o=\mathsf{Marker}\)</span> and <span
+class="math inline">\(o=\mathsf{Cargo}\)</span>. Unifying that stored
+proposal used to abort the search. InvarGenT now backtracks to its
+producers, then checks the replacement against both original callers. It
+infers <span class="math inline">\(\forall
+a.\,\mathsf{Tag}(a)\to\mathsf{Nat}\to\exists().\,a\)</span> at budget 5.
+Demanding a <code>Marker</code> at the <code>Cargo</code> client still
+fails. <a href="observed_tag.gadt">Type-indexed program</a> · <a
+href="thesis-review-25.lean">Certificate and necessity of a
+parameter</a></p>
+<p>Backtracking can also regenerate the same proposal with fresh names
+for its local witnesses. In one ill-typed client an instrumented earlier
+compiler reached 64 discards, repeatedly renaming the witness that had
+been forced to <code>Marker</code>. For a retry on the same pass,
+InvarGenT now reuses names when a sort-preserving bijection fixes the
+parameters and reproduces the entire previous formula. Each opening
+keeps its own local instance. The same client now terminates with a type
+error after 20 discards. <a href="thesis-review-25.py">Discard and
+opening checks</a> · <a href="thesis-review-25.lean">Witness
+transport</a></p>
+<p>Run <code>lean thesis-review-25.lean</code> with Lean 4.19 and
+<code>python3 thesis-review-25.py /path/to/InvarGenT.native</code> with
+OCaml available. The driver’s optional arguments compare named
+historical revisions and instrumented executables. For the current
+trace, apply the three diagnostic patches in order to InvarGenT revision
+<code>a3151c0</code>. The compiler suite passed 329 active tests with 10
+existing TODOs. All 164 example signatures generated before the
+match-contract change matched byte for byte. <a
+href="thesis-review-22-trace.patch">Pass trace</a> · <a
+href="thesis-review-23-interface.patch">Interface trace</a> · <a
+href="thesis-review-24-feedback.patch">Demand and jump trace</a></p>
+</section>
+</article>
+<script src="/assets/theme-toggle.js"></script>
+</body>
+</html>

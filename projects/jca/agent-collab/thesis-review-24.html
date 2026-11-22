@@ -118,13 +118,13 @@ run?</a></li>
 class="math inline">\(\forall
 i.\,\mathsf{State}(i)\to\mathsf{Nat}\to\exists().\,\mathsf{Num}(i)\)</span>
 at outer budget 3. Inserting a single index-preserving observation into
-its base case gives a constant-size solution that the current algorithm
-misses at <strong>every</strong> outer budget. A second spelling lets us
-watch the caller restore the same bound through pass 40 and test the
-induction jump itself. <a href="state_coordinate.gadt">Two-state
-program</a> · <a href="observed_coordinate.gadt">Counterexample with the
-observation</a> · <a href="thesis-review-24.py">Executable
-checks</a></p>
+its base case gives a constant-size solution that revision
+<code>fc7c3ab</code> misses at <strong>every</strong> outer budget. A
+second spelling lets us watch the caller restore the same bound through
+pass 40 and test the induction jump itself. <a
+href="state_coordinate.gadt">Two-state program</a> · <a
+href="observed_coordinate.gadt">Counterexample with the observation</a>
+· <a href="thesis-review-24.py">Executable checks</a></p>
 <section id="placement" class="level2">
 <h2>Which facts reach a package introduction?</h2>
 <p>In the base arm of <code>run</code>, a match on an input of type
@@ -236,8 +236,8 @@ abduction on pass 1. There are no discard retries. Budget zero stops on
 the first update. For every positive budget, none of the four attempts
 reaches another budget-dependent decision after passing the pass-0 test.
 The traces at 1 and 10,000 agree. This refutes convergence under a
-solution-size bound for the current default choices, including any
-polynomial bound that admits the displayed scheme. Moving
+solution-size bound for the default choices at that revision, including
+any polynomial bound that admits the displayed scheme. Moving
 <code>obs</code> separately into each base arm recovers the exact
 inferred type. <a href="observed_coordinate.gadt">Source</a> · <a
 href="thesis-review-24.py">Budget and placement comparisons</a></p>
@@ -276,22 +276,31 @@ cannot supply that distinction. <a href="thesis-review-24.py">Both
 schedules and the 39 repeated updates</a> · <a
 href="thesis-review-3.html#update">Original common-atom jump with a
 proved infinite recurrence</a></p>
+<p>The next revision introduces a local arrow predicate for the consumed
+match. Both spellings now infer the exact result at budget 4.
+Translating the payloads by one gives a new alternating pair of
+interfaces, one of which can already type the program with different
+external and recursive parameter choices. <a
+href="thesis-review-25.html#contract">Match contracts</a> · <a
+href="thesis-review-25.html#choices">Shifted postcondition</a></p>
 </section>
 <section id="checks" class="level2">
 <h2>Reproduction</h2>
 <p>Run
 <code>python3 thesis-review-24.py /path/to/InvarGenT.native</code> with
 OCaml on the path. Pass an executable from <code>e9d7a45</code> with
-<code>--before</code> for the original comparison. For
-<code>--trace</code>, build <code>fc7c3ab</code> with the three
-diagnostic patches. Run <code>lean thesis-review-24.lean</code> with
-Lean 4.19. The solver suite passed 327 active tests with 10 existing
-TODOs on the OCaml 5.3 compatibility build. The CLI and trace checks
-used the OCaml 5.5 compatibility build. All 162 previous generated
-example signatures matched byte for byte. <a
-href="thesis-review-22-trace.patch">Pass trace</a> · <a
-href="thesis-review-23-interface.patch">Interface trace</a> · <a
-href="thesis-review-24-feedback.patch">Demand and jump trace</a></p>
+<code>--before</code> for the original comparison. Pass
+<code>fc7c3ab</code> with <code>--before-contracts</code> for the
+observed failures. For <code>--trace</code>, build <code>fc7c3ab</code>
+with the three diagnostic patches. Run
+<code>lean thesis-review-24.lean</code> with Lean 4.19. The solver suite
+passed 327 active tests with 10 existing TODOs on the OCaml 5.3
+compatibility build. The CLI and trace checks used the OCaml 5.5
+compatibility build. All 162 previous generated example signatures
+matched byte for byte. <a href="thesis-review-22-trace.patch">Pass
+trace</a> · <a href="thesis-review-23-interface.patch">Interface
+trace</a> · <a href="thesis-review-24-feedback.patch">Demand and jump
+trace</a></p>
 </section>
 </article>
 <script src="/assets/theme-toggle.js"></script>

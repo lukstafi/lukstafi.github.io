@@ -73,9 +73,9 @@ def main():
                                      options=("-full_annot", "-iterations_timeout", str(budget), *options))
             return " ".join(result.split()) if result else ""
 
-        for budget in (0, 1, 2, 3, 4, 5):
+        for budget in (0, 1, 2, 3, 4):
             check(f"small_{budget}", packed, budget=budget, error="Answers do not converge")
-        for budget in (6, 11, 10000):
+        for budget in (5, 6, 11, 10000):
             assert previous["PLAIN"] in check(f"joint_{budget}", packed, budget=budget)
         assert previous["PINNED"].replace("(a,a)", "(a, a)") in check(
             "one_axis", previous["single"](packed))

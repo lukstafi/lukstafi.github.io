@@ -1,13 +1,13 @@
 --- a/src/Invariants.ml
 +++ b/src/Invariants.ml
-@@ -1340,2 +1340,7 @@
-                let lifted = lift_ex_types i incoming in
+@@ -1339,2 +1339,7 @@
+                assert (i = j);
 +               (try ignore (Sys.getenv "JCA_TRACE_DEMAND");
 +                    Format.eprintf "JUMP %d %b %b THRESHOLD %d INIT %b %b@." iter_no
 +                      (not (!initstep || old_initstep || iter_no < jump_at))
 +                      (supplier_pass = Some iter_no) jump_at old_initstep !initstep
 +                with Not_found -> ());
-                let names, tpar, (vs, _ as result) =
+                let lifted = lift_ex_types i incoming in
 @@ -1882,2 +1887,7 @@
            rol1 rol2 in
 +      (try ignore (Sys.getenv "JCA_TRACE_DEMAND");

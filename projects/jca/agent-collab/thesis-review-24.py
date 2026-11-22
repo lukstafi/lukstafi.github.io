@@ -63,7 +63,8 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("invargent", type=Path)
     parser.add_argument("--before", type=Path, help="optional executable at e9d7a45")
-    parser.add_argument("--trace", type=Path, help="current executable with all three trace patches")
+    parser.add_argument("--before-contracts", type=Path, help="optional executable at fc7c3ab")
+    parser.add_argument("--trace", type=Path, help="fc7c3ab with all three trace patches")
     args = parser.parse_args()
     exe = args.invargent.resolve(strict=True)
     state = (HERE / "state_coordinate.gadt").read_text()
@@ -100,13 +101,14 @@ def main():
         check("one_opening", opening)
         ml = " ".join((root / "one_opening.ml").read_text().split())
         assert "L -> let Ex1 xcase = any 0 in Ex2 xcase" in ml and "R -> let xcase = 0 in Ex2 xcase" in ml
-        for budget in (0, 1, 3, 11, 10000):
+        for budget in (0, 1, 3, 4, 11, 10000):
             check(f"observed_{budget}", observed, budget=budget,
-                  error=ABDUCTION if budget else "Answers do not converge")
+                  error=("Answers do not converge" if not budget else ABDUCTION) if budget < 4 else None,
+                  expected=SCHEME if budget >= 4 else None)
         check("certificate", written(observed), expected=SCHEME)
         joined = "(let t = " + MATCH + " in obs t)"
         applied = observed.replace(joined, "obs " + MATCH)
-        check("applied", applied, budget=40, error=ABDUCTION)
+        check("applied", applied, budget=40, expected=SCHEME)
         check("applied_certificate", written(applied), expected=SCHEME)
         check("local_observations", observed.replace(joined, "(match state with A -> obs 0 | B -> obs 1)"),
               expected=SCHEME)
@@ -114,6 +116,11 @@ def main():
             prev = args.before.resolve(strict=True)
             check("old_state", state, binary=prev, budget=10000, error=ABDUCTION)
             check("old_heterogeneous", SWITCH + HIDE, binary=prev, error="Type mismatch")
+        if args.before_contracts:
+            prev = args.before_contracts.resolve(strict=True)
+            for budget in (1, 3, 11, 10000):
+                check(f"old_observed_{budget}", observed, binary=prev, budget=budget, error=ABDUCTION)
+            check("old_applied", applied, binary=prev, budget=40, error=ABDUCTION)
         if args.trace:
             traced = args.trace.resolve(strict=True)
             failure = [("enter", 0), ("update", 0), ("enter", 1), ("fail", 1)]
