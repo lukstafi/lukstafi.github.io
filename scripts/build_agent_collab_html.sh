@@ -314,6 +314,11 @@ build_html \
   "$collab_dir/thesis-review-10.html" \
   "When can the induction jump reuse a failed guess?"
 
+build_html \
+  "$collab_dir/thesis-review-11.md" \
+  "$collab_dir/thesis-review-11.html" \
+  "Which calls can one convex recursive invariant cover?"
+
 reviews_dir="$collab_dir/reviews"
 if [[ -d "$reviews_dir" ]]; then
   for md_file in "$reviews_dir"/*.md; do

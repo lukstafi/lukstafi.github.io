@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <meta name="dcterms.date" content="2026-11-22">
+  <meta property="og:title" content="Which calls can one convex recursive invariant cover?">
+  <meta property="og:url" content="https://lukstafi.github.io/projects/jca/agent-collab/thesis-review-11.html">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="lukstafi&#x27;s blog">
+  <meta name="twitter:card" content="summary">
+  <title>Which calls can one convex recursive invariant cover?</title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <link rel="stylesheet" href="/assets/tufte.css">
+  <link rel="stylesheet" href="/assets/pandoc-tufte.css">
+  <link rel="stylesheet" href="/assets/site.css">
+  <script defer=""
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+  type="text/javascript"></script>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+  <script>(function(){var t=localStorage.getItem('theme-preference');if(t)document.documentElement.setAttribute('data-theme',t);})()</script>
+</head>
+<body>
+<nav class="site-nav">
+  <a href="/">Home</a> &middot; <a href="/study/">Study Guide</a> &middot; <a href="/about.html">About</a> &middot; <a href="https://lukstafi.substack.com">Substack</a>
+</nav>
+<div class="theme-toggle">
+  <button id="theme-btn" aria-label="Toggle dark mode">&#9788;</button>
+</div>
+<article>
+<header>
+<h1 class="title">Which calls can one convex recursive invariant
+cover?</h1>
+<p class="byline">2026-11-22</p>
+</header>
+<nav id="TOC">
+<ul>
+<li><a href="#rationals" id="toc-rationals">The exact domain over
+rational indices</a></li>
+<li><a href="#convex" id="toc-convex">The two maximal convex
+domains</a></li>
+<li><a href="#iteration" id="toc-iteration">Where the induction jump
+gets stuck</a></li>
+<li><a href="#annotation" id="toc-annotation">Supplying part of the
+invariant</a></li>
+</ul>
+</nav>
+<p>Moving one call into a <code>test</code> clause changes the type
+InvarGenT infers for the moving-floor function. The new type covers two
+safe calls that the original run failed to combine. Moving the
+stationary call one unit past the caller’s cap exposes a limit of that
+repair. Over the rational indices of the thesis, no convex input
+invariant can cover that call together with the rising call. A partial
+annotation lets InvarGenT infer the full two-region domain. <a
+href="moving_floor_symbolic.gadt">Unannotated source</a> · <a
+href="symbolic_floor_hint.gadt">Partial annotation and boundary
+calls</a> · <a href="thesis-review-11.py">Comparison driver</a></p>
+<section id="rationals" class="level2">
+<h2>The exact domain over rational indices</h2>
+<p>Let <span class="math inline">\(p\)</span> be the floor, <span
+class="math inline">\(m\)</span> the cap parameter and <span
+class="math inline">\(x=m-p\)</span>. Each child adds <span
+class="math inline">\(e\)</span> to the floor and <span
+class="math inline">\(d\)</span> to the cap parameter. The base case
+returns <span class="math inline">\(p\)</span>. The caller needs <span
+class="math inline">\(p\le r\le\max(p,m+L)\)</span> from the child. A
+successor can return the floor or any payload <span
+class="math inline">\(u\)</span> with <span class="math inline">\(p\le
+u\le m+c\)</span> and <span class="math inline">\(u\le r+1\)</span>. The
+depth is unrestricted. Assume <span class="math inline">\(c\le
+L\)</span>. <a href="thesis-review-8.html#domain">Program clauses and
+the integer domain theorem</a></p>
+<p><strong>Theorem.</strong> A rational input admits a solution,
+allowing arbitrary input and result predicates, exactly when <span
+class="math display">\[
+0\le e,\qquad d\le L-c,\qquad e\le\max(0,d),\qquad e\le\max(0,x+L).
+\]</span> One result predicate works throughout this domain, namely the
+band <span class="math inline">\(p\le r\le\max(p,m+c)\)</span>.</p>
+<p>For necessity, fix an admitted point and choose a common denominator
+<span class="math inline">\(N\ge1\)</span> for <span
+class="math inline">\(c,L,e,d,p,x\)</span>. Restrict the proposed
+predicates to inputs and payloads on the <span
+class="math inline">\(1/N\)</span> grid. Recursive calls and the
+floor-valued base case stay on this grid. Multiplying every index by
+<span class="math inline">\(N\)</span> gives integer numerator clauses
+with payload increment <span class="math inline">\(N\)</span>. In
+particular they allow every unit increment used in the integer necessity
+proof. Apply that theorem to the numerator predicates and divide the
+resulting inequalities by <span class="math inline">\(N\)</span>. This
+restriction works even when the proposed predicates have no finite
+description. For sufficiency, any proposed violation of the displayed
+input condition’s inductiveness or of the result band’s obligations uses
+finitely many rational values. Put those values on a common grid. The
+numerator band satisfies all constructor and caller obligations at
+stride <span class="math inline">\(N\)</span>, contradicting that
+violation. Lean checks both implications of the integer grid lemma for
+every positive stride. The passage to arbitrary rationals is the
+common-denominator argument above. <a href="thesis-review-8.lean">Proofs
+of <code>grid_scheme</code> and <code>grid_exact</code></a></p>
+<p>At <span class="math inline">\(c=19,L=20\)</span>, the integer rising
+case has <span class="math inline">\(e=d=1\)</span>. The rational domain
+also admits <span class="math inline">\(e=d=1/2\)</span>, <span
+class="math inline">\(p=39/2\)</span>, <span
+class="math inline">\(m=0\)</span>. The child floor reaches the caller
+limit <span class="math inline">\(20\)</span> exactly. The example runs
+with the float backend using exactly representable halves. <a
+href="thesis-review-11.py">Fractional boundary and unsafe
+midpoint</a></p>
+</section>
+<section id="convex" class="level2">
+<h2>The two maximal convex domains</h2>
+<p>Write <span class="math inline">\(s=x+L\)</span> and <span
+class="math inline">\(h=L-c\)</span>. For <span
+class="math inline">\(h&gt;0\)</span> the exact rational domain has
+exactly two maximal convex subsets <span
+class="math inline">\(S\)</span> and <span
+class="math inline">\(A\)</span>, given by <span class="math display">\[
+S=\{e=0,\ d\le h\},\qquad
+A=\{0\le e\le d,\ d\le h,\ e\le s\}.
+\]</span> Their union is the exact domain. Each is closed under
+recursive calls. In <span class="math inline">\(S\)</span> the floor
+stays fixed and the domain places no bound on <span
+class="math inline">\(s\)</span>. In <span
+class="math inline">\(A\)</span> the child has <span
+class="math inline">\(s&#39;=s+d-e\ge s\)</span>. Each region therefore
+supplies a solution with the same result band. When <span
+class="math inline">\(h=0\)</span>, <span
+class="math inline">\(S\)</span> contains the whole domain.</p>
+<p>To prove maximality, let a convex safe set contain a rising point
+<span class="math inline">\(v\)</span> and a stationary point <span
+class="math inline">\(w\)</span>. For every positive integer <span
+class="math inline">\(N\)</span>, the point <span
+class="math inline">\((Nw+v)/(N+1)\)</span> also belongs to the set. Its
+floor rises, so its <span class="math inline">\(d-e\)</span> and <span
+class="math inline">\(s-e\)</span> must both be nonnegative. If <span
+class="math inline">\(d(w)&lt;0\)</span>, the numerator <span
+class="math inline">\(N d(w)+d(v)-e(v)\)</span> is negative for
+sufficiently large <span class="math inline">\(N\)</span>. The same
+argument rules out <span class="math inline">\(s(w)&lt;0\)</span>. Thus
+<span class="math inline">\(w\)</span> belongs to <span
+class="math inline">\(A\)</span>. Every safe rising point also belongs
+to <span class="math inline">\(A\)</span>. It follows that every convex
+safe set lies wholly in <span class="math inline">\(S\)</span> or wholly
+in <span class="math inline">\(A\)</span>. For <span
+class="math inline">\(h&gt;0\)</span>, each has a point outside the
+other, proving the claim. This argument uses only rational convex
+combinations and applies even to convex sets with open boundaries. <a
+href="thesis-review-8.lean">Lean proof of the endpoint
+inequality</a></p>
+<p>Consequently a collection of safe test calls admits one conjunctive
+affine input guard exactly when all calls belong to <span
+class="math inline">\(S\)</span> or all belong to <span
+class="math inline">\(A\)</span>. Necessity holds for every choice of
+result predicate. For sufficiency, use the corresponding region itself
+as the input guard.</p>
+<p>For a concrete obstruction take <span
+class="math inline">\(p=3\)</span>. The stationary call has <span
+class="math inline">\((e,d,m)=(0,-1,-18)\)</span> and the rising call
+has <span class="math inline">\((1,1,-16)\)</span>. Both are safe. Their
+midpoint has <span class="math inline">\((e,d,m)=(1/2,0,-17)\)</span>.
+The child can immediately return <span
+class="math inline">\(3+1/2\)</span>, while the parent can accept at
+most <span class="math inline">\(\max(3,-17+20)=3\)</span>. This single
+base return rules out the midpoint for <em>any</em> result predicate. A
+finite set of test points can therefore require a nonconvex invariant
+even when those test points themselves are integers. The midpoint
+argument uses the thesis’s rational index semantics. <a
+href="thesis-review-8.lean">Lean checks on the halves grid</a></p>
+</section>
+<section id="iteration" class="level2">
+<h2>Where the induction jump gets stuck</h2>
+<p>InvarGenT normally finishes a top-level definition before processing
+later definitions. At revision <code>2f2e099</code>, the unannotated
+<code>climb</code> chooses <span class="math inline">\(e=0\)</span>
+before the induction jump. A later use cannot revise that choice. An
+attached <code>test</code> participates in the inference of the
+definition, as described in the thesis’s appendix on generating
+constraints. <a href="../lukstafi-phd-thesis-older.tex">Thesis
+source</a> · <a href="thesis-review-11.py">Reproducible runs</a></p>
+<table>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr>
+<th>Calls visible while inferring the definition (<span
+class="math inline">\(c=19\)</span>, <span
+class="math inline">\(L=20\)</span>, <span
+class="math inline">\(p=3\)</span>)</th>
+<th>Actual result</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>No attached call, rising use in a later binding</td>
+<td>Exports the stationary region. The later use fails.</td>
+</tr>
+<tr>
+<td>Rising call <span class="math inline">\((1,1,-16)\)</span>
+attached</td>
+<td>Infers <span class="math inline">\(A\)</span>. The later stationary
+call <span class="math inline">\((0,1,-17)\)</span> also passes.</td>
+</tr>
+<tr>
+<td>Both of those calls attached</td>
+<td>Infers <span class="math inline">\(A\)</span> and both run.</td>
+</tr>
+<tr>
+<td>Stationary call <span class="math inline">\((0,-1,-18)\)</span> and
+rising call <span class="math inline">\((1,1,-16)\)</span> attached</td>
+<td>Reports “Answers do not converge” with budgets 11 and 40.</td>
+</tr>
+</tbody>
+</table>
+<p>On the last input the three predicate comparison tests all succeed on
+passes 8 through 40. The input predicate has the function shape and no
+numeric restriction. The stored result includes the supplier band. On
+each pass the splitter again contributes the caller’s lower and upper
+bounds, so the stopping test for an empty postcondition contribution
+fails. With an unrestricted input, accepting the repeated predicates
+would admit the unsafe midpoint.</p>
+<p>The trace also shows why equality of the printed predicates alone
+fails to establish an infinite execution. Generalizing the suppliers
+allocates a fresh numeric result variable on every observed widened
+pass. The solver registers it among the variables owned by predicate
+instances. That set grows from 51 entries on pass 9 to 82 on pass 40,
+although the explicit predicate arguments and residual passed to the
+loop repeat. Extending this observation to every budget requires showing
+how those additional variables affect subsequent search. The failure
+through pass 40 is an executable counterexample to completeness at those
+budgets with a six-atom solution. The original common-atom jump has a
+separate recurrence proving failure at every budget. <a
+href="thesis-review-3.html#update">Original induction-jump
+counterexample</a></p>
+</section>
+<section id="annotation" class="level2">
+<h2>Supplying part of the invariant</h2>
+<p>InvarGenT revision <code>e7dc91c</code> accepts a written result band
+and three input atoms on the same definition. The user supplies <span
+class="math inline">\(d\le1\)</span>, <span
+class="math inline">\(e\le\max(0,d)\)</span> and <span
+class="math inline">\(e\le\max(0,m-p+20)\)</span>. Inference adds <span
+class="math inline">\(0\le e\)</span>, exports the exact domain and
+accepts the two calls whose midpoint is unsafe. It rejects a call
+violating each of the four input atoms individually. Both the integer
+boundary calls and the half-unit call execute against a primitive that
+checks its incoming bounds. <a href="symbolic_floor_hint.gadt">Source
+program</a> · <a href="thesis-review-11.py">Positive and negative
+controls</a></p>
+<p>A written top-level annotation in the thesis is partial. If its type
+is <span class="math inline">\(\tau(\alpha)\)</span> with guard <span
+class="math inline">\(D(\alpha)\)</span>, the permitted instances are
+the types <span class="math inline">\(b\)</span> satisfying <span
+class="math inline">\(\exists\alpha.\ b=\tau(\alpha)\land
+D(\alpha)\)</span>. The solver still infers a unary predicate <span
+class="math inline">\(\chi(b)\)</span>. For each admitted <span
+class="math inline">\(b\)</span> it must show that <span
+class="math inline">\(b\)</span> is a permitted instance and that the
+body typechecks at <span class="math inline">\(b\)</span>. Each
+recursive use instantiates the written scheme and the inferred predicate
+together. This formulation gives the unary predicate the variable
+argument expected by the splitter. The old implementation passed the
+entire arrow type as its argument, triggering an internal assertion even
+on an annotated numeric identity.</p>
+<p>When the declared return is existential, an <code>efunction</code> in
+that result position now packs each returning branch with the
+constructor for the declared existential. Its constructor obligations
+check the payload bounds. Previously the compiler synthesized a second,
+nominally distinct package. Printing the resulting signature also
+requires capture avoidance. If the caller’s floor is named <span
+class="math inline">\(n\)</span> and the package binds <span
+class="math inline">\(n\)</span>, the printer first chooses a new bound
+variable <span class="math inline">\(i\)</span>, preserving the lower
+bound <span class="math inline">\(n\le i\)</span>.</p>
+<p>One negative control exposed a separate error in guard generation.
+For
+<code>function x when x &lt;= 0 -&gt; assert false | x -&gt; x</code>,
+the old compiler inferred <span class="math inline">\(\forall a.\ a\to
+a\)</span> and admitted a call at zero. Keeping the impossible branch in
+generated OCaml exposed the ill-typed comparison between a polymorphic
+value and zero. Revision <code>d3be076</code> checks the guard using the
+actual scrutinee type. The default integer solver infers <span
+class="math inline">\(\forall n[1\le n].\
+\mathrm{Num}(n)\to\mathrm{Num}(n)\)</span>, accepts one and rejects
+zero.</p>
+<p>Lean 4.19.0 checked the grid and endpoint lemmas. The OCaml 5.3.0
+compatibility suite passed 278 tests with 10 existing TODOs. All 131
+previously generated signatures matched byte for byte. The new fixture
+also passed on OCaml 5.5.1.</p>
+</section>
+</article>
+<script src="/assets/theme-toggle.js"></script>
+</body>
+</html>

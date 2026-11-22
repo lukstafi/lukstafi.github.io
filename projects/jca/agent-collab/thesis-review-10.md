@@ -50,3 +50,5 @@ At $c=19,L=20$ the exact integer domain splits into two regions. The stationary 
 A control run isolates the rising region by applying an identity function of type $\forall i[1\le i].\,\mathrm{Num}(i)\to\mathrm{Num}(i)$ to $e$ in the successor branch. On the rising boundary call the executable infers $e=d=1$ and $p\le m+19$. Weakening the identity's guard to $0\le i$ makes that same call fail. Duplicating the original successor body on the two sides of `eif e <= 0` still reaches the iteration limit. Recovering and combining the input regions is the remaining inference problem.
 
 Lean 4.19.0 checked the proofs using `Std`. The OCaml 5.3.0 compatibility suite passed 273 cases with 10 existing TODOs. All 130 previously generated signatures compared byte-for-byte equal. The new two-call fixture also passed on OCaml 5.5.1.
+
+The next review characterizes the two maximal convex domains over rational indices and tests which calls the solver can combine. [Covering stationary and rising calls](thesis-review-11.html#convex)

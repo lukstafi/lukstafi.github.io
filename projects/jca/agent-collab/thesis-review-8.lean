@@ -9,20 +9,26 @@ def band (a x t : Int) : Prop := 0 ≤ t ∧ t ≤ max (x+a) 0
 def allows (c L e d x : Int) : Prop :=
   0 ≤ e ∧ d ≤ L-c ∧ e ≤ max 0 d ∧ e ≤ max 0 (x+L)
 
-structure Valid (c L e d : Int) (P : Int → Int → Prop) (Q : Int → Int → Int → Prop) : Prop where
+structure GridValid (c L e d stride : Int) (P : Int → Int → Prop) (Q : Int → Int → Int → Prop) : Prop where
   recur : ∀ p x, P p x → P (p+e) (x+d-e)
   base : ∀ p x, P p x → Q p x 0
   call : ∀ p x t, P p x → Q (p+e) (x+d-e) t → band L x (e+t)
   step : ∀ p x t u, P p x → Q (p+e) (x+d-e) t → band L x (e+t) →
-    band c x u → u ≤ e+t+1 → Q p x u
+    band c x u → u ≤ e+t+stride → Q p x u
 
-theorem scheme (c L e d : Int) :
-    Valid c L e d (fun _ x => allows c L e d x) (fun _ x t => band c x t) := by
+abbrev Valid (c L e d : Int) := GridValid c L e d 1
+
+theorem grid_scheme (c L e d stride : Int) :
+    GridValid c L e d stride (fun _ x => allows c L e d x) (fun _ x t => band c x t) := by
   constructor
   · unfold allows; intros; omega
   · unfold band; intros; omega
   · unfold allows band; intros; omega
   · intros; assumption
+
+theorem scheme (c L e d : Int) :
+    Valid c L e d (fun _ x => allows c L e d x) (fun _ x t => band c x t) :=
+  grid_scheme c L e d 1
 
 theorem first_call {c L e d : Int} {P Q} (h : Valid c L e d P Q)
     {p x : Int} (hp : P p x) : band L x e := by
@@ -92,6 +98,56 @@ theorem exact_input {c L e d p x : Int} (slack : c ≤ L) :
     · omega
   · intro allowed
     exact ⟨_,_,scheme c L e d,allowed⟩
+
+-- On a grid with denominator N, a payload increment of one is N numerator
+-- units. Every unit step used in the necessity proof is still available.
+theorem grid_exact {c L e d stride p x : Int} (slack : c ≤ L) (hstep : 1 ≤ stride) :
+    (∃ P Q, GridValid c L e d stride P Q ∧ P p x) ↔ allows c L e d x := by
+  constructor
+  · rintro ⟨P,Q,h,hp⟩
+    have unit : Valid c L e d P Q := by
+      refine ⟨h.recur, h.base, h.call, ?_⟩
+      intro p x t u hp ht hl hc hu
+      exact h.step p x t u hp ht hl hc (by omega)
+    exact (exact_input slack).mp ⟨P,Q,unit,hp⟩
+  · intro hp
+    exact ⟨_,_,grid_scheme c L e d stride,hp⟩
+
+-- The stationary set and the closure of the rising set each have a
+-- linear description. Their union is the full domain on every grid.
+theorem two_convex_regions (c L e d x : Int) :
+    allows c L e d x ↔ (e = 0 ∧ d ≤ L-c) ∨
+      (0 ≤ e ∧ e ≤ d ∧ d ≤ L-c ∧ e ≤ x+L) := by unfold allows; omega
+
+-- Along (N * stationary + rising)/(N+1), the positive numerator of
+-- the rise is fixed. Any affine margin valid on that entire segment
+-- must have a nonnegative value at the stationary endpoint.
+theorem stationary_margin {e a b : Int} (he : 0 < e)
+    (h : ∀ n : Nat, e ≤ max 0 ((n : Int)*a + b)) : 0 ≤ a := by
+  apply Classical.byContradiction
+  intro neg
+  let n := b.toNat + 1
+  have hn : b < (n : Int) := by dsimp [n]; omega
+  have low := Int.mul_le_mul_of_nonneg_left (show a ≤ -1 by omega)
+    (show 0 ≤ (n : Int) by omega)
+  simp at low
+  have bound := h n
+  omega
+
+theorem stationary_in_rising_closure {e d₀ d₁ s₀ s₁ : Int} (he : 0 < e)
+    (convex_safe : ∀ n : Nat,
+      e ≤ max 0 ((n : Int)*d₀+d₁) ∧ e ≤ max 0 ((n : Int)*s₀+s₁)) :
+    0 ≤ d₀ ∧ 0 ≤ s₀ :=
+  ⟨stationary_margin he (fun n => (convex_safe n).1),
+   stationary_margin he (fun n => (convex_safe n).2)⟩
+
+-- Numerators on the halves grid, where c=19 and L=20. Both endpoints
+-- are admissible, but their midpoint would require 1 ≤ max 0 0.
+theorem nonconvex_on_halves :
+    allows 38 40 0 (-2) (-42) ∧ allows 38 40 2 2 (-38) ∧
+    ¬ allows 38 40 1 0 (-40) := by unfold allows; decide
+
+theorem fractional_boundary : allows 38 40 1 1 (-39) := by unfold allows; decide
 
 theorem rising_domain (d x : Int) :
     allows 19 20 1 d x ↔ d = 1 ∧ -19 ≤ x := by unfold allows; omega
