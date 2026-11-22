@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <meta name="dcterms.date" content="2026-11-22">
+  <meta property="og:title" content="Can finitely many term schemes cover all safe calls?">
+  <meta property="og:url" content="https://lukstafi.github.io/projects/jca/agent-collab/thesis-review-52.html">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="lukstafi&#x27;s blog">
+  <meta name="twitter:card" content="summary">
+  <title>Can finitely many term schemes cover all safe calls?</title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <link rel="stylesheet" href="/assets/tufte.css">
+  <link rel="stylesheet" href="/assets/pandoc-tufte.css">
+  <link rel="stylesheet" href="/assets/site.css">
+  <script defer=""
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+  type="text/javascript"></script>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+  <script>(function(){var t=localStorage.getItem('theme-preference');if(t)document.documentElement.setAttribute('data-theme',t);})()</script>
+</head>
+<body>
+<nav class="site-nav">
+  <a href="/">Home</a> &middot; <a href="/study/">Study Guide</a> &middot; <a href="/about.html">About</a> &middot; <a href="https://lukstafi.substack.com">Substack</a>
+</nav>
+<div class="theme-toggle">
+  <button id="theme-btn" aria-label="Toggle dark mode">&#9788;</button>
+</div>
+<article>
+<header>
+<h1 class="title">Can finitely many term schemes cover all safe
+calls?</h1>
+<p class="byline">2026-11-22</p>
+</header>
+<nav id="TOC">
+<ul>
+<li><a href="#comparison" id="toc-comparison">A total comparison of type
+indices</a></li>
+<li><a href="#infinite" id="toc-infinite">Infinitely many maximal
+typings</a></li>
+<li><a href="#guard" id="toc-guard">A finite description of the exact
+precondition</a></li>
+<li><a href="#sequence" id="toc-sequence">The same form survives a
+sequence of calls</a></li>
+<li><a href="#compiler" id="toc-compiler">Keeping the inferred type
+across the compiler interface</a></li>
+</ul>
+</nav>
+<p>One recursive function suffices to produce infinitely many maximal
+conjunctive input types. Its indices are finite constructor terms. It
+uses no arithmetic and terminates on every pair of represented inputs.
+Its caller needs just one test on the indices, <span
+class="math inline">\(a\ne b\)</span>. The compiler can verify each
+fixed positive gap between the two types. No finite list of sound
+equational schemes covers all the calls that pass the test. <a
+href="compare_term_indices.gadt">InvarGenT program</a> · <a
+href="thesis-review-52.lean">Lean proof</a></p>
+<section id="comparison" class="level2">
+<h2>A total comparison of type indices</h2>
+<p>Let <span class="math inline">\(B\)</span> denote the type
+<code>Base</code> and <span class="math inline">\(S\)</span> the unary
+type constructor <code>Step</code>. A value of <code>Rep a</code>
+witnesses its index. The constructor <code>Root</code> represents <span
+class="math inline">\(B\)</span>, and <code>Next x</code> represents
+<span class="math inline">\(S(a)\)</span> when <span
+class="math inline">\(x\)</span> represents <span
+class="math inline">\(a\)</span>. Write <span class="math inline">\(S^n
+B\)</span> for a type with <span class="math inline">\(n\)</span>
+constructors above its base. Every inhabited index has this form.</p>
+<p>The function <code>compare</code> returns a value of
+<code>Comparison(a,b)</code>. Its <code>Same</code> constructor requires
+<span class="math inline">\(a=b\)</span>. Its <code>Apart</code>
+constructor is available at any pair of types. The implementation
+returns <code>Same</code> on two roots and <code>Apart</code> when only
+one argument is a root. On two successors it compares the children and
+returns the corresponding constructor. Induction on the first argument
+proves termination and shows that <code>Same</code> is returned exactly
+on equal indices. The caller <code>distinct</code> returns true on
+<code>Apart</code> and asserts that <code>Same</code> is unreachable.
+Thus its greatest safe domain on inhabited indices is precisely
+disequality. The type of the constructor rules out <code>Same</code> off
+the diagonal. The implementation witnesses failure everywhere on the
+inhabited diagonal.</p>
+<p>For each <span class="math inline">\(d&gt;0\)</span>, the domain
+<span class="math inline">\((h,S^d h)\)</span> is safe by the occurs
+check. InvarGenT accepts a written scheme with this domain and its
+mirror. The replay checks both orientations for <span
+class="math inline">\(d=1,2,4,8\)</span>. An unrestricted pair or an
+equal pair fails inference. The program executes both a successful
+distinctness check and the comparison of two equal nontrivial types. <a
+href="thesis-review-52.py">Executable checks</a></p>
+</section>
+<section id="infinite" class="level2">
+<h2>Infinitely many maximal typings</h2>
+<p>Each forward offset <span class="math inline">\((h,S^d h)\)</span> is
+already maximal among safe input patterns. A pattern covering this
+offset must admit every represented type on its first coordinate,
+including both a root and a successor. Hence this coordinate is a bare
+hole. The second coordinate can retain at most <span
+class="math inline">\(d\)</span> successors followed by a hole, since it
+must cover both <span class="math inline">\(S^d B\)</span> and
+arbitrarily long chains. If the two holes are independent, choose their
+values to put both coordinates at the same depth. Safety therefore
+forces one shared hole. Matching the pair at the base then forces
+exactly <span class="math inline">\(d\)</span> successors. Distinct
+positive offsets give incomparable maximal typings. <a
+href="thesis-review-52.lean">Lean theorem
+<code>offset_maximal</code></a></p>
+<p>On represented unary indices we can classify <em>every</em> maximal
+pattern. In addition to the offsets there are the domains <span
+class="math inline">\((S^n B,S^{n+1}h)\)</span> and their mirrors. These
+keep the shorter input fixed and admit every longer input. To see
+completeness, inspect the two tails after the written successors. If
+both tails are holes, safety forces a shared hole and a nonzero
+difference, so a fixed offset covers the pattern. If the left side is
+fixed at depth <span class="math inline">\(n\)</span> and the right ends
+in a hole, the right prefix must already be longer than <span
+class="math inline">\(n\)</span>. Otherwise a grounding can reach
+equality. The case with the right side fixed is symmetric. Two unequal
+fixed terms fit the domain determined by their shorter index. Each
+fixed-shorter domain is maximal: it contains two different longer inputs
+at the same shorter input, ruling out every offset, and its shortest
+allowed longer input prevents a stricter cutoff from covering it. Thus
+each unequal ground pair belongs to exactly <strong>two</strong> maximal
+domains, one remembering its offset and one remembering its shorter
+index. The compiler replay checks both directions of the fixed-shorter
+scheme at two depths. <a href="thesis-review-52.lean">Lean theorems
+<code>classify</code> and <code>cutoff_maximal</code></a></p>
+<p>A finite collection of patterns also fails if it attempts to cover
+the offsets <em>piecemeal</em>. Take <span
+class="math inline">\(n&gt;0\)</span> larger than every written
+constructor depth in the collection. Consider the safe input <span
+class="math inline">\((S^n B,S^{2n} B)\)</span>. A pattern matching it
+has a prefix of successors ending in a hole on both sides. Independent
+holes would admit an equal pair. A shared hole forces the difference of
+depths to be the difference of the two written prefix lengths. That
+difference has magnitude less than <span
+class="math inline">\(n\)</span>, whereas the example has difference
+<span class="math inline">\(n\)</span>. Every safe pattern in the
+collection therefore misses this pair. Projecting private equational
+witnesses still leaves a single pattern, so they do not enlarge what a
+finite family can cover. Lean uses natural numbers to encode unary
+chains. A constructor outside this unary signature cannot occur in a
+pattern matching the displayed pair. <a
+href="thesis-review-52.lean">Lean theorem
+<code>no_finite_cover</code></a> · <a
+href="thesis-review-50.html#patterns">Projection to public
+coordinates</a></p>
+</section>
+<section id="guard" class="level2">
+<h2>A finite description of the exact precondition</h2>
+<p>For a fixed branch let <span class="math inline">\(S(x,w)\)</span> be
+the pattern of states reaching a check, and <span
+class="math inline">\(T(x,w)\)</span> the pattern satisfying it. Here
+<span class="math inline">\(x\)</span> collects the public inputs and
+<span class="math inline">\(w\)</span> collects all branch-local
+observations. Existential witnesses belonging to the check may be
+projected inside <span class="math inline">\(T\)</span>. Either pattern
+may be empty. The obligation on a ground input is that every reached
+state passes. Form two public patterns <span class="math display">\[
+L(x)=\exists w\,S(x,w),\qquad
+G(x)=L(x)\land\forall w\,(S(x,w)\Rightarrow T(x,w)).
+\]</span> The <strong>weakest input precondition</strong> for this check
+is <span class="math inline">\(L(x)\Rightarrow G(x)\)</span>. An input
+outside <span class="math inline">\(L\)</span> cannot reach the check.
+At an input inside <span class="math inline">\(L\)</span>, the check
+succeeds exactly on <span class="math inline">\(G\)</span>. For the
+comparison’s forbidden arm, <span class="math inline">\(L\)</span> is
+the diagonal and <span class="math inline">\(G\)</span> is empty. The
+single implication retains all safe inputs.</p>
+<p>Both sides of the implication are computable by unification. Project
+<span class="math inline">\(S\)</span> onto <span
+class="math inline">\(x\)</span> to obtain <span
+class="math inline">\(L\)</span>. To obtain <span
+class="math inline">\(G\)</span>, write <span
+class="math inline">\(S\)</span> as <span
+class="math inline">\((p(a),q(a,u))\)</span>, where <span
+class="math inline">\(u\)</span> are the private holes absent from the
+input. Use two copies of <span class="math inline">\(q\)</span>, with
+all private holes set to <span class="math inline">\(B\)</span> in one
+and to distinct positive successor tags in the other. Unify the two
+public-and-local tuples with independently renamed copies of <span
+class="math inline">\(T\)</span>, keeping the public variables <span
+class="math inline">\(a\)</span> shared. Project the result onto <span
+class="math inline">\(p(a)\)</span>. At a fixed input, the two probes
+generalize to the whole reached fibre, so admission of both by <span
+class="math inline">\(T\)</span> proves admission of every state. This
+is the two-probe theorem applied with the public input retained in the
+checked tuple. Empty reach gives empty <span
+class="math inline">\(L\)</span> and <span
+class="math inline">\(G\)</span>. <a
+href="thesis-review-50.html#eliminate">Two-probe proof</a> · <a
+href="thesis-review-52.py">Symbolic implementation</a></p>
+<p>For a finite list of such obligations, keep one implication per check
+and conjoin them. Checking a proposed conjunctive scheme <span
+class="math inline">\(Q\)</span> requires only the tests <span
+class="math inline">\(Q\cap L_i\subseteq G_i\)</span>. Unify the
+left-hand patterns, renaming their holes apart. If the intersection is
+inhabited, check that <span class="math inline">\(G_i\)</span> matches
+the resulting pattern with its remaining holes rigid. On failure, at
+least one of the two tagged ground probes of the intersection witnesses
+an unsafe input for this obligation. The replay checks 5,448 proposed
+public patterns and validates 2,256 returned counterexamples against
+direct one-sided matching. This result assumes fixed descriptions of the
+reached and accepted states. Recursive invariant discovery can still be
+needed to obtain them. <a href="thesis-review-52.lean">Lean
+equivalences</a> · <a href="thesis-review-52.py">Executable
+checker</a></p>
+<p>There is a useful sufficient condition for eliminating these
+implications again. Over a finite ranked signature, if each <span
+class="math inline">\(L_i\)</span> is <em>linear</em> (no repeated
+hole), its complement is a finite union of patterns. A mismatch is
+witnessed by a different constructor at one of the finitely many
+specified positions, with matching constructors along the path to it.
+Linearity makes all remaining holes independent. Union with <span
+class="math inline">\(G_i\)</span> and intersection across checks
+preserve finite representability. The repeated hole in the diagonal
+explains precisely where this construction breaks in the example. <a
+href="https://www.cs.cmu.edu/~fp/papers/negpat01.pdf">First-order
+complement construction in Momigliano and Pfenning, §2</a></p>
+</section>
+<section id="sequence" class="level2">
+<h2>The same form survives a sequence of calls</h2>
+<p>A contract can now give its domain <span
+class="math inline">\(D\)</span> by a conjunction of pattern
+implications and give its possible results, on that domain, by one
+positive pattern <span class="math inline">\(H(x,y)\)</span>. This form
+is closed under sequential composition of fixed contracts. Suppose the
+first call returns <span class="math inline">\(y\)</span>, and a second
+call can inspect both <span class="math inline">\(x\)</span> and <span
+class="math inline">\(y\)</span>. For each second-call requirement <span
+class="math inline">\(L_i(x,y)\Rightarrow G_i(x,y)\)</span>, the first
+call must guarantee <span class="math display">\[
+  \forall y\,\bigl(H(x,y)\land L_i(x,y)\Rightarrow G_i(x,y)\bigr).
+\]</span> Unify <span class="math inline">\(H\)</span> with <span
+class="math inline">\(L_i\)</span> to obtain the reaching pattern. The
+preceding construction turns this universal into one implication on
+<span class="math inline">\(x\)</span>. Keep the first call’s own
+requirements and add each translated requirement. An admitted first call
+whose result section is empty makes every second-call requirement
+vacuous. If the second call’s positive result pattern is <span
+class="math inline">\(J(x,y,z)\)</span>, the positive result of the
+composition is <span class="math inline">\(\exists y\,(H(x,y)\land
+J(x,y,z))\)</span>. On the computed domain every intermediate result
+already passes the second call’s requirements. Unifying and projecting
+therefore gives the exact result relation there.</p>
+<p>Consequently a straight-line sequence of fixed calls contributes at
+most the sum of their numbers of domain implications and retains one
+positive result pattern. Private result types are fresh at each call.
+Shared variables in a single result stay shared. For example, the replay
+sends <span class="math inline">\((a,b)\)</span> to <span
+class="math inline">\((b,(a,a))\)</span>, demands that the first
+component differ from the copies, then requires the original <span
+class="math inline">\(b\)</span> to be <span
+class="math inline">\(B\)</span> and returns <span
+class="math inline">\((a,a)\)</span>. Both associations of the three
+calls give <span class="math inline">\(a\ne b\)</span> and <span
+class="math inline">\(b=B\)</span>, with the same repeated result. Term
+sizes can still grow during projection. <a
+href="thesis-review-52.lean">Lean composition equivalences</a> · <a
+href="thesis-review-52.py">Symbolic composition</a></p>
+</section>
+<section id="compiler" class="level2">
+<h2>Keeping the inferred type across the compiler interface</h2>
+<p>A recursive function opens <code>Hide x</code> and returns a closure
+comparing its argument with <span class="math inline">\(x\)</span>. Its
+result packages a <strong>function on the private type</strong>.
+InvarGenT previously printed <code>Hidden → Nat → ∃a.a → Bool</code>. In
+the source grammar the existential dot binds more tightly than an arrow.
+Copying that text into a declaration gave a function taking three
+arguments, the last an existential package. The generated OCaml for the
+original had two arguments and returned the package. The repaired
+signature prints <code>Hidden → Nat → ∃a.(a → Bool)</code>. The printer
+also encloses a closed existential used as a type-constructor argument,
+so <code>Wrap (∃a.a)</code> can be read back. The parser regression
+compares both the public type and the underlying package definitions. <a
+href="thesis-review-52.py">Signature replay</a></p>
+<p>The index comparison exposed a separate export failure. When printing
+fully annotated OCaml, InvarGenT gave the <em>whole</em> inner match the
+result annotation <code>(_ step, _ step) comparison</code>. OCaml then
+failed to type the branch returning <code>Same</code>, although it
+accepted the ordinary export. For a match result containing unnamed type
+variables, the exporter now places the result annotation inside each
+branch. Each branch can use the refinements learned from its own
+pattern. Both exports compile and run. The command-line driver now
+propagates the OCaml verifier’s failure status and uses the selected
+output path on an annotation retry. The replay also checks verification
+in a directory with spaces and verifies that a retry respects an
+existing protected output file. <a href="thesis-review-52.py">Full
+comparison and verification replay</a></p>
+</section>
+</article>
+<script src="/assets/theme-toggle.js"></script>
+</body>
+</html>
