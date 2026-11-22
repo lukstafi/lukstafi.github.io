@@ -101,6 +101,8 @@ InvarGenT first eliminates the rational keys and private witnesses as in the ear
 
 This test is exact on unions of cells whose rounded inequalities are integer difference bounds. A rational solution of $z_i-z_j\le b$ with integral $b$ still satisfies the inequality after flooring every coordinate. Unary bounds use zero as the other coordinate. General integer feasibility can require more work. For example, $1\le5(i+r)\le9$ and $-4\le5(i-r)\le4$ round to $i+r=1$ and $i-r=0$. The rational point $(1/2,1/2)$ survives the relaxed joint check. The integer caller still needs another proof. [Arithmetic replay](thesis-review-45.py) · [Omega Project on eliminating integer variables](https://www.cs.umd.edu/projects/omega/paragraphstar3_2_0_0_2.html)
 
+The next review lets both predicates vary and asks when they can express a particular relation between inputs and opened results. [Choosing admission and package witnesses together](thesis-review-46.html#fit)
+
 ## Reproducing the checks {#checks}
 
 The OCaml 5.3 compatibility build of InvarGenT revision `c74beee` passed all 378 active tests, with ten marked TODO. All 193 previously generated example signatures were byte-identical to those at `f872939`. The whole-program replay and arithmetic driver ran on the OCaml 5.5 compatibility build.

@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <meta name="dcterms.date" content="2026-11-22">
+  <meta property="og:title" content="Can the admission and package predicates express the same induction hypothesis?">
+  <meta property="og:url" content="https://lukstafi.github.io/projects/jca/agent-collab/thesis-review-46.html">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="lukstafi&#x27;s blog">
+  <meta name="twitter:card" content="summary">
+  <title>Can the admission and package predicates express the same
+induction hypothesis?</title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <link rel="stylesheet" href="/assets/tufte.css">
+  <link rel="stylesheet" href="/assets/pandoc-tufte.css">
+  <link rel="stylesheet" href="/assets/site.css">
+  <script defer=""
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+  type="text/javascript"></script>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+  <script>(function(){var t=localStorage.getItem('theme-preference');if(t)document.documentElement.setAttribute('data-theme',t);})()</script>
+</head>
+<body>
+<nav class="site-nav">
+  <a href="/">Home</a> &middot; <a href="/study/">Study Guide</a> &middot; <a href="/about.html">About</a> &middot; <a href="https://lukstafi.substack.com">Substack</a>
+</nav>
+<div class="theme-toggle">
+  <button id="theme-btn" aria-label="Toggle dark mode">&#9788;</button>
+</div>
+<article>
+<header>
+<h1 class="title">Can the admission and package predicates express the
+same induction hypothesis?</h1>
+<p class="byline">2026-11-22</p>
+</header>
+<nav id="TOC">
+<ul>
+<li><a href="#flip" id="toc-flip">One recursive call that can forget its
+input</a></li>
+<li><a href="#opening" id="toc-opening">What recursive rules
+see</a></li>
+<li><a href="#fit" id="toc-fit">Choosing compatible witnesses</a></li>
+<li><a href="#conflicts" id="toc-conflicts">A failure can require many
+callers</a></li>
+<li><a href="#jump" id="toc-jump">What the induction jump can
+use</a></li>
+</ul>
+</nav>
+<p>A recursive function returns a bit or an error. Its caller only needs
+to rule out the error. Suppose the strongest description of its
+behaviour says that it returns its input bit. Keeping that equality can
+cost an extra package key. Forgetting which bit came in can give a
+one-key induction hypothesis that proves the caller safe. How can we
+tell whether a given hypothesis fits the interface? For the supplier
+clauses in which each call opens at every admitted key, there is an
+exact test that chooses admission and the package together. <a
+href="thesis-review-46.lean">Formal proofs</a></p>
+<section id="flip" class="level2">
+<h2>One recursive call that can forget its input</h2>
+<p>Let <span class="math inline">\(x\)</span> be a bit. The base returns
+<span class="math inline">\(x\)</span>. The recursive arm calls at the
+opposite bit and flips the returned bit. Flipping an error propagates
+the error. The least relation closed under these suppliers is <span
+class="math inline">\(r=x\)</span>. The base requires both diagonal
+pairs, and the recursive arm preserves the diagonal.</p>
+<p>With just one possible key, each legal input must admit it. The two
+inputs therefore open exactly the same set of results. The least
+relation requires different sets and cannot be expressed. But the single
+package “the result is a bit” contains both base results, survives the
+flip, and excludes the error. If the caller also requires <span
+class="math inline">\(r=x\)</span>, two keys suffice by admitting only
+the key for the input bit. Thus failure to express the least relation
+tells us something about that particular induction hypothesis. A weaker
+one can still satisfy the original caller. <a
+href="thesis-review-46.lean">Lean proofs in the namespace
+<code>Flip</code></a></p>
+</section>
+<section id="opening" class="level2">
+<h2>What recursive rules see</h2>
+<p>Write <span class="math inline">\(A(x,k)\)</span> when input <span
+class="math inline">\(x\)</span> admits key <span
+class="math inline">\(k\)</span>, and <span
+class="math inline">\(P(k,r)\)</span> when the package at <span
+class="math inline">\(k\)</span> permits result <span
+class="math inline">\(r\)</span>. A key can be a tuple. Any private
+package witnesses have already been quantified inside <span
+class="math inline">\(P\)</span>. The relation available at an all-keys
+opening is <span class="math display">\[
+S(x,r)\iff \forall k\, (A(x,k)\Rightarrow P(k,r)).
+\]</span></p>
+<p>Fix the local values of a supplier clause so that its static premises
+hold. The clause opens a finite list <span
+class="math inline">\((y_i,s_i)\)</span>, returns <span
+class="math inline">\(t\)</span> at <span
+class="math inline">\(x\)</span>, and must store <span
+class="math inline">\(t\)</span> at every key admitted at <span
+class="math inline">\(x\)</span>. Its entire obligation is <span
+class="math display">\[
+\bigwedge_i S(y_i,s_i)\ \Longrightarrow\ S(x,t).
+\]</span> An empty list gives a base rule. A caller whose premises only
+observe opened results likewise tests <span
+class="math inline">\(S\)</span> directly. Thus two schemes with the
+same <span class="math inline">\(S\)</span> pass exactly the same tests
+of these forms. A caller that explicitly demands a particular typing
+also needs an admission check. <a href="thesis-review-46.lean">Supplier
+equivalence in Lean</a> · <a href="thesis-review-39.html#all">Scope of
+all-keys opening</a></p>
+<p>Starting with the empty <span class="math inline">\(S\)</span>, the
+direct supplier iteration reaches the least closed relation by <span
+class="math inline">\(\omega\)</span>. Every derived observation has a
+finite proof tree. Conversely, attaching the finitely many trees for a
+rule’s premises gives a tree for its conclusion. If all input values can
+themselves serve as keys, admitting just <span
+class="math inline">\(k=x\)</span> and storing <span
+class="math inline">\(P(k,r)=S(k,r)\)</span> realizes any such relation.
+With downward-preserved caller requirements and this unrestricted
+interface, testing the caller on the least relation settles semantic
+existence. A prescribed family of keys adds a representation problem, as
+the bit example shows. Even the unrestricted iteration can require
+infinitely many finite steps when a small solution exists. Base zero and
+successor over the integers keep introducing new natural numbers
+although the single inequality <span
+class="math inline">\(r\ge0\)</span> is inductive. <a
+href="thesis-review-23.html">Finite derivation trees</a> · <a
+href="thesis-review-3.html#update">Why the original Table 4.4 jump can
+repeat forever</a></p>
+</section>
+<section id="fit" class="level2">
+<h2>Choosing compatible witnesses</h2>
+<p>Fix lower and upper admission bounds <span
+class="math inline">\(L_x\subseteq U_x\)</span>. Let <span
+class="math inline">\(H(x,r)\)</span> list observations that must open.
+An obligation <span class="math inline">\(i\)</span> at input <span
+class="math inline">\(x_i\)</span> asks for one admitted key from a set
+<span class="math inline">\(C_i\)</span> that rejects every result in a
+set <span class="math inline">\(B_i\)</span>. To exclude a single
+observation, take <span class="math inline">\(B_i=\{r\}\)</span>. To
+require an inhabited menu, take <span
+class="math inline">\(B_i=\varnothing\)</span> and allow any key.
+Several observations may each have their own rejecting key. Put them in
+the same <span class="math inline">\(B_i\)</span> only when one key must
+reject them all.</p>
+<p><strong>Witness criterion.</strong> Admission and package relations
+satisfying these requirements exist exactly when each obligation can be
+assigned a key <span class="math inline">\(k_i\)</span> obeying all
+three conditions.</p>
+<ol type="1">
+<li><span class="math inline">\(k_i\in C_i\cap U_{x_i}\)</span>.</li>
+<li>Whenever <span class="math inline">\(k_i\in L_y\)</span>, none of
+the results in <span class="math inline">\(B_i\)</span> is required to
+open at <span class="math inline">\(y\)</span>.</li>
+<li>Whenever <span class="math inline">\(k_i=k_j\)</span>, none of the
+results in <span class="math inline">\(B_i\)</span> is required to open
+at <span class="math inline">\(x_j\)</span>. This includes <span
+class="math inline">\(j=i\)</span>.</li>
+</ol>
+<p>For necessity, choose the witnessing key in a satisfying scheme.
+Every mandatory or chosen admission at that key forces it to store the
+results required at that input. Each of the three conditions follows.
+Conversely, admit exactly the mandatory and chosen keys. The package at
+each key collects the required results from all inputs admitting it.
+<span class="math display">\[
+A_x=L_x\cup\{k_i:x_i=x\},\qquad
+P(k,r)\iff\exists y\,(k\in A_y\land H(y,r)).
+\]</span> Every observation in <span class="math inline">\(H\)</span>
+opens. If <span class="math inline">\(P(k_i,r)\)</span> held for some
+<span class="math inline">\(r\in B_i\)</span>, its source <span
+class="math inline">\(y\)</span> would either admit <span
+class="math inline">\(k_i\)</span> mandatorily or be the input of
+another obligation choosing <span class="math inline">\(k_i\)</span>.
+The last two conditions rule out both sources. These formulas recover
+both predicates from the witnesses. <a href="thesis-review-46.lean">Lean
+theorems <code>construct</code> and
+<code>simultaneous_fit</code></a></p>
+<p><strong>Joint inference.</strong> Given a proposed <span
+class="math inline">\(S\)</span>, set <span
+class="math inline">\(H=S\)</span>, demand an admission at each legal
+input, and demand a rejecting key for each <span
+class="math inline">\((x,r)\)</span> outside <span
+class="math inline">\(S\)</span>. The criterion now realizes <span
+class="math inline">\(S\)</span> <em>exactly</em>. It follows that a
+joint solution exists iff some <span class="math inline">\(S\)</span>
+satisfies the supplier and caller clauses and its witness requirements
+are compatible. Extra caller demands of the form “admit a key in <span
+class="math inline">\(C\)</span>” can be included among the obligations.
+Each key rejects a rectangle of observations, the product of the inputs
+admitting it and the results it rejects. In a finite table these
+rectangles cover the complement of <span
+class="math inline">\(S\)</span>. The mandatory admissions and key
+restrictions say which rectangles a particular key can cover. <a
+href="thesis-review-46.lean">Lean theorem
+<code>joint_solution</code></a> · <a
+href="https://doi.org/10.1016/j.disc.2006.01.010">Cornaz and Fonlupt on
+biclique covers and colouring</a></p>
+</section>
+<section id="conflicts" class="level2">
+<h2>A failure can require many callers</h2>
+<p>Take a cycle of inputs. At each vertex <span
+class="math inline">\(x\)</span>, the base suppliers require its two
+neighbours to open as results. The caller at <span
+class="math inline">\(x\)</span> excludes the result <span
+class="math inline">\(x\)</span>. Give every input the same two possible
+keys. A key witnessing the caller at <span
+class="math inline">\(x\)</span> rejects <span
+class="math inline">\(x\)</span>. An adjacent input must open <span
+class="math inline">\(x\)</span>, so its caller witness must choose a
+different key. Conversely, given any proper two-colouring, admit the
+colour of each vertex and store, at that colour, the neighbours of every
+vertex using it. Every base and caller passes. The argument works for
+any graph and any set of keys. <a href="thesis-review-46.lean">Lean
+theorem <code>graph_feasible</code></a></p>
+<p>A failed check can require arbitrarily many callers, even with two
+keys. On a cycle of length <span class="math inline">\(2n+1\)</span> for
+<span class="math inline">\(n\ge1\)</span>, put callers only at vertices
+<span class="math inline">\(0,2,\ldots,2n\)</span> in cyclic order. A
+vertex with a caller needs a key excluding itself. At every other vertex
+just choose an admitted key. Two neighbours must choose different keys
+whenever either has a caller. Conversely, a colouring satisfying those
+inequalities constructs a scheme by the same storage rule. Every edge of
+the cycle has a caller at one end, so no two-colouring works. Remove any
+one of the <span class="math inline">\(n+1\)</span> callers. At least
+one edge now has no caller at either end. The remaining inequalities lie
+on paths and admit an alternating colouring. All the bases and all the
+nonempty-menu requirements still hold. Thus every proper subset of these
+callers is compatible, even though their union fails.</p>
+</section>
+<section id="jump" class="level2">
+<h2>What the induction jump can use</h2>
+<p>For a proposed invariant there are now two distinct explanations of
+failure. A supplier counterexample gives recursive results in <span
+class="math inline">\(S\)</span> whose conclusion falls outside <span
+class="math inline">\(S\)</span>. A witness conflict can occur even when
+every supplier preserves <span class="math inline">\(S\)</span>.
+Repeating the supplier check will then return the same answer. The bit
+example shows how the jump can enlarge the opening, preserve the caller
+guarantee and reconstruct the predicates.</p>
+<p>On finite input, result and key sets the witness conditions are a
+finite assignment problem. For an infinite domain the construction gives
+semantic relations. An InvarGenT implementation must also express them
+in its answer language and verify the exported scheme against the
+original clauses. The actual Table 4.4 update uses abduction,
+generalization and an induction jump. The equivalence here gives a
+specification for a candidate that such a jump might propose. Whether a
+practical search finds the candidate remains open. <a
+href="../lukstafi-phd-thesis.pdf#page=71">Table 4.4</a> · <a
+href="thesis-review-45.html#compiler">How InvarGenT checks a moving
+admission</a></p>
+<p>The companion proof checks with Lean 4.19 and mathlib v4.19.0.</p>
+</section>
+</article>
+<script src="/assets/theme-toggle.js"></script>
+</body>
+</html>

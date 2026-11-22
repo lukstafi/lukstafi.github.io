@@ -489,6 +489,11 @@ build_html \
   "$collab_dir/thesis-review-45.html" \
   "Which changes of admission must an induction jump survive?"
 
+build_html \
+  "$collab_dir/thesis-review-46.md" \
+  "$collab_dir/thesis-review-46.html" \
+  "Can the admission and package predicates express the same induction hypothesis?"
+
 reviews_dir="$collab_dir/reviews"
 if [[ -d "$reviews_dir" ]]; then
   for md_file in "$reviews_dir"/*.md; do
