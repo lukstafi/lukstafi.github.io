@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <meta name="dcterms.date" content="2026-11-22">
+  <meta property="og:title" content="What can every typing of one recursive call tell its consumer?">
+  <meta property="og:url" content="https://lukstafi.github.io/projects/jca/agent-collab/thesis-review-39.html">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="lukstafi&#x27;s blog">
+  <meta name="twitter:card" content="summary">
+  <title>What can every typing of one recursive call tell its
+consumer?</title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <link rel="stylesheet" href="/assets/tufte.css">
+  <link rel="stylesheet" href="/assets/pandoc-tufte.css">
+  <link rel="stylesheet" href="/assets/site.css">
+  <script defer=""
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+  type="text/javascript"></script>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+  <script>(function(){var t=localStorage.getItem('theme-preference');if(t)document.documentElement.setAttribute('data-theme',t);})()</script>
+</head>
+<body>
+<nav class="site-nav">
+  <a href="/">Home</a> &middot; <a href="/study/">Study Guide</a> &middot; <a href="/about.html">About</a> &middot; <a href="https://lukstafi.substack.com">Substack</a>
+</nav>
+<div class="theme-toggle">
+  <button id="theme-btn" aria-label="Toggle dark mode">&#9788;</button>
+</div>
+<article>
+<header>
+<h1 class="title">What can every typing of one recursive call tell its
+consumer?</h1>
+<p class="byline">2026-11-22</p>
+</header>
+<nav id="TOC">
+<ul>
+<li><a href="#all" id="toc-all">The complete guard check for a fixed
+scheme</a></li>
+<li><a href="#elimination" id="toc-elimination">A refuting tuple and a
+strict boundary</a></li>
+<li><a href="#half" id="toc-half">An integer result needs a rational
+typing</a></li>
+<li><a href="#hinge" id="toc-hinge">Two affine tuple expressions are
+sometimes necessary</a></li>
+<li><a href="#exponential" id="toc-exponential">How many affine
+proposals can a small package require?</a></li>
+<li><a href="#controls" id="toc-controls">What the quantifiers
+protect</a></li>
+<li><a href="#supplier" id="toc-supplier">Where candidate inference can
+still stop</a></li>
+<li><a href="#replay" id="toc-replay">Reproducing the checks</a></li>
+</ul>
+</nav>
+<p>One recursive call can have many typings of the same runtime
+arguments. Every terminating result must satisfy the result package of
+<strong>each</strong> admitted typing. InvarGenT now checks this
+condition over the whole rational tuple of package indices. The compiler
+accepts the example that needs to move <span
+class="math inline">\((k,j)\)</span> from <span
+class="math inline">\((0,0)\)</span> to <span
+class="math inline">\((n,n)\)</span> with a two-pass budget. The
+preceding revision still rejected it at budget 10,000. At odd input
+widths a second program needs a fractional type index. Both programs
+compile and execute with native OCaml integers. <a
+href="tied_result_keys.gadt">Tied indices</a> · <a
+href="scaled_result_key.gadt">Fractional index</a> · <a
+href="thesis-review-38.html#diagonal">Previous obstruction</a></p>
+<section id="all" class="level2">
+<h2>The complete guard check for a fixed scheme</h2>
+<p>Fix the numeric coordinates <span class="math inline">\(x\)</span> of
+the runtime argument types. Let <span
+class="math inline">\(A(x,z)\)</span> say that the written and inferred
+domains both admit the arrow with package coordinates <span
+class="math inline">\(z\)</span>. It is the intersection of their
+projections onto the full arrow. Let <span
+class="math inline">\(P(x,z,r,w)\)</span> be the facts from opening that
+package at payload <span class="math inline">\(r\)</span> with private
+witnesses <span class="math inline">\(w\)</span>. Write <span
+class="math inline">\(B(x,r)\)</span> for the facts already available
+from the ordinary call, with its original typing and witnesses in scope.
+A guard <span class="math inline">\(G\)</span> is excluded by the
+rational package information exactly when the following formula has no
+model.</p>
+<p><span class="math display">\[
+B(x,r)\land G(x,r)\land
+\forall z.\bigl(A(x,z)\Rightarrow\exists w.\ P(x,z,r,w)\bigr).
+\]</span></p>
+<p><strong>Soundness.</strong> A real execution reaching the guard gives
+the original observation. At every admitted tuple the recursive typing
+supplies a witness for that same result. This would give a model.
+<strong>Completeness for these facts.</strong> A model permits the
+observation under every admitted typing. Every probe chosen from the
+input, the result, or facts from earlier openings draws on one of those
+typings. Repeating such openings cannot eliminate the model. The next
+predicate update in Table 4.4 can still change the scheme itself. <a
+href="thesis-review-39.lean">All-probes lemma</a> · <a
+href="thesis-review-38.html#fibre">Arrow admission</a> · <a
+href="../lukstafi-phd-thesis.pdf#page=71">Table 4.4</a></p>
+<p>This check is invariant under changes of numeric coordinates that
+cover all admitted typings and preserve their sets of possible results.
+Several new tuples may describe the same old typing. For each old tuple
+choose a preimage to recover its package, and apply the forward map for
+the converse. The implementation invokes this test for recognized
+numeric guard bands on a recursive call with a written scheme and a
+single numeric payload. It can decline a check if a computed coefficient
+exceeds its term representation. The checker keeps all argument
+coordinates fixed, including a sum appearing as one argument index. Only
+the return package coordinates range over <span
+class="math inline">\(z\)</span>. <a
+href="thesis-review-39.lean">Change-of-coordinates theorem</a> · <a
+href="thesis-review-38.html#fibre">Compound argument example</a></p>
+</section>
+<section id="elimination" class="level2">
+<h2>A refuting tuple and a strict boundary</h2>
+<p>Project <span class="math inline">\(w\)</span> out of <span
+class="math inline">\(P\)</span> first. A tuple refutes <span
+class="math inline">\(r\)</span> when <span
+class="math inline">\(A\)</span> holds there and every cell of the
+projected package fails. Project <span class="math inline">\(z\)</span>
+out of that refutation. The remaining question is whether an observation
+in <span class="math inline">\(B\land G\)</span> lies outside every
+projected refutation. InvarGenT uses its existing rational equality and
+inequality solver for the projections. A finite conjunction of strict
+comparisons uses a shared positive slack <span
+class="math inline">\(d\)</span>, chosen separately at each observation.
+<a href="thesis-review-39.py">Tuple checker and arithmetic oracle</a> ·
+<a href="thesis-review-37.html#check">Strict comparisons in the finite
+check</a></p>
+<p>The order of these choices matters. Let <span
+class="math inline">\(0\le x\le1\)</span> and admit <span
+class="math inline">\(0\le k\le x\)</span>, with an additional key <span
+class="math inline">\(k=2\)</span> at <span
+class="math inline">\(x=0\)</span>. Suppose the package requires <span
+class="math inline">\(k\le0\)</span>. Every observation has a refuting
+key. For <span class="math inline">\(x&gt;0\)</span> choose <span
+class="math inline">\(k=x\)</span>, and for <span
+class="math inline">\(x=0\)</span> choose 2. No single positive margin
+works at all observations, since the positive values of <span
+class="math inline">\(x\)</span> approach zero.</p>
+<p>At a fixed observation the refutation with margin <span
+class="math inline">\(d\)</span> persists when <span
+class="math inline">\(d\)</span> decreases toward zero. Projection
+preserves that property for the union of cells. For a row <span
+class="math inline">\(u+cd&gt;0\)</span>, its eventual truth as <span
+class="math inline">\(d\downarrow0\)</span> is <span
+class="math inline">\(u\ge0\)</span> if <span
+class="math inline">\(c&gt;0\)</span>, and <span
+class="math inline">\(u&gt;0\)</span> if <span
+class="math inline">\(c\le0\)</span>. Take a common threshold for the
+finitely many rows before deciding their Boolean combination. This gives
+the exact complement of the projected refutations, including their
+boundaries. The compiler prunes a branch when its constraints already
+preclude positive slack under the guard. <a
+href="thesis-review-39.lean">Sign and finite-threshold lemmas</a> · <a
+href="thesis-review-39-numeric.ml">Boundary, empty-domain and
+private-witness checks</a></p>
+<p>The search can stop as soon as one projected refutation covers the
+guard. When several refutations matter, the search visits regions left
+over after excluding earlier cells. If a region and the next cell are
+disjoint at every positive slack, the search can skip that cell. An
+observation in the region persists as its slack shrinks. If it belonged
+to the limiting cell, the two would meet at sufficiently small positive
+slack. The argument needs neither a uniform margin nor a bound on the
+size of the recursive solution. The finite product of possible failed
+rows can still be large. On arithmetic problem 548 the first projected
+refutation covers the guard. An instrumented eager search visited 25,800
+cases before interruption. The new search projects one and returns the
+same answer as Z3. <a href="thesis-review-39.lean">Disjoint-cell
+lemma</a></p>
+<p>There is also a constructive statement about possible probes. Every
+fixed finite rational-linear formula of this kind admits <strong>a
+finite family of rational-affine tuple expressions</strong> covering all
+refutable observations. Expand its refutation into linear cases,
+including open inequalities. Eliminate the tuple coordinates in one
+case. When reconstructing a witness, choose the midpoint of its greatest
+lower and least upper bounds if both exist. If they coincide,
+feasibility makes that endpoint legal. With only lower bounds choose
+their maximum plus one, with only upper bounds their minimum minus one,
+and with no bounds choose zero. Solved equalities give their unique
+values. On each choice of active bounds these expressions are
+rational-affine. There are finitely many choices, and back-substitution
+preserves affinity on each resulting region. The implemented projection
+checks coverage without constructing this family. <a
+href="thesis-review-38.html#projection">One-coordinate
+reconstruction</a></p>
+</section>
+<section id="half" class="level2">
+<h2>An integer result needs a rational typing</h2>
+<p>Rescale the old key in the flag program to <span
+class="math inline">\(2k\)</span>. At flag one the admitted range is
+<span class="math inline">\(0\le 2k\le n\)</span>. The package permits a
+payload <span class="math inline">\(r\)</span> if <span
+class="math inline">\(2k+r\le n\)</span> or <span
+class="math inline">\(n+2\le2k+r\)</span>, along with <span
+class="math inline">\(0\le r\le f\)</span>. At the guard <span
+class="math inline">\(f=r=1\)</span>, so the refuting tuples satisfy
+<span class="math inline">\(n-1&lt;2k&lt;n+1\)</span>. Key <span
+class="math inline">\(n/2\)</span> works for every <span
+class="math inline">\(n\ge2\)</span>. At odd <span
+class="math inline">\(n\)</span>, no integer <span
+class="math inline">\(k\)</span> can satisfy the two strict
+inequalities. Even a collection containing <strong>every integral
+key</strong> would leave the guard feasible at width five. The compiler
+now retains the full rescaled scheme, and running the program at widths
+four and five prints zero twice. The thesis assigns the numeric type
+variables to rational arithmetic. <a
+href="scaled_result_key.gadt">Program</a> · <a
+href="thesis-review-39.lean">Odd-width proof</a> · <a
+href="../lukstafi-phd-thesis.pdf#page=18">Numeric sort in the
+thesis</a></p>
+</section>
+<section id="hinge" class="level2">
+<h2>Two affine tuple expressions are sometimes necessary</h2>
+<p>Let the observed offset satisfy <span class="math inline">\(-2n\le
+s\le0\)</span>. Give the result package another visible parameter <span
+class="math inline">\(j=\max(0,k+s)\)</span> and a bound <span
+class="math inline">\(r\le j+2\)</span>. The flag-one guard again needs
+a key <span class="math inline">\(n-1&lt;k\le n\)</span>. Two tuple
+expressions suffice. Use <span class="math inline">\((n,0)\)</span> when
+<span class="math inline">\(s\le-n\)</span>, and <span
+class="math inline">\((n,n+s)\)</span> when <span
+class="math inline">\(s\ge-n\)</span>. The exported type retains the
+entire offset range. The compiled example visits both sides and their
+shared endpoint. <a href="hinged_result_keys.gadt">Program</a> · <a
+href="thesis-review-39.py">Exported type and four executions</a></p>
+<p>One rational-affine tuple expression cannot certify this guard on all
+inputs. Fix <span class="math inline">\(f=r=1\)</span>, <span
+class="math inline">\(n\ge2\)</span> and the ordinary tuple <span
+class="math inline">\((0,0)\)</span>, which permits this result at every
+offset. At <span class="math inline">\(s=-2n\)</span> and <span
+class="math inline">\(s=-n\)</span>, every admitted refutation has <span
+class="math inline">\(j=0\)</span>. At <span
+class="math inline">\(s=0\)</span>, every refutation has <span
+class="math inline">\(j=k&gt;0\)</span>. An affine expression in <span
+class="math inline">\(s\)</span> that vanishes at the first two offsets
+also vanishes at the third. Clearing the denominators gives the same
+argument for rational coefficients. This is a sharp lower bound for
+affine proposals in the original observations. <a
+href="thesis-review-39.lean">Two proposals and the three-offset
+obstruction</a></p>
+</section>
+<section id="exponential" class="level2">
+<h2>How many affine proposals can a small package require?</h2>
+<p>Give the call <span class="math inline">\(d\ge1\)</span> independent
+integer offsets <span class="math inline">\(s_i\in[-2n,0]\)</span>. Add
+one visible coordinate <span
+class="math inline">\(j_i=\max(0,k+s_i)\)</span> and one package bound
+<span class="math inline">\(r\le j_i+2\)</span> per offset. The number
+of coordinates and atoms grows linearly with <span
+class="math inline">\(d\)</span>. The one-equation result <span
+class="math inline">\(r=0\)</span> still solves the recursive example.
+To exclude the guard using the <em>written</em> package, exactly <span
+class="math inline">\(2^d\)</span> rational-affine full-tuple proposals
+in the original observations suffice and can be necessary. A single
+expression using <span class="math inline">\(d\)</span> maxima suffices
+if maxima are allowed.</p>
+<p><strong>Upper bound.</strong> Use <span
+class="math inline">\(k=n\)</span>. For each coordinate choose either
+zero or <span class="math inline">\(n+s_i\)</span>. The <span
+class="math inline">\(2^d\)</span> combinations include the admitted
+tuple at every offset. Its package excludes <span
+class="math inline">\(r=1\)</span>.</p>
+<p><strong>Lower bound using only integer observations.</strong> Fix the
+ordinary observation <span class="math inline">\(f=r=1\)</span> and
+<span class="math inline">\((k,j_1,\ldots,j_d)=0\)</span>. Fix even the
+width, taking <span class="math inline">\(n=2^d+1\)</span> and <span
+class="math inline">\(L=n-1\)</span>. For each coordinate choose a grid
+of <span class="math inline">\(L\)</span> cold offsets in <span
+class="math inline">\([-2n,-n-1]\)</span> or all <span
+class="math inline">\(L\)</span> hot offsets in <span
+class="math inline">\([2-n,0]\)</span>. This gives <span
+class="math inline">\(2^d\)</span> grids of <span
+class="math inline">\(L^d\)</span> input tuples. Any refuting typing
+needs <span class="math inline">\(n-1&lt;k\le n\)</span>. Its <span
+class="math inline">\(j_i\)</span> is zero on a cold axis and strictly
+positive on a hot axis.</p>
+<p>Suppose fewer than <span class="math inline">\(L\)</span> affine
+proposals cover every input. In each grid some proposal covers more than
+<span class="math inline">\(L^{d-1}\)</span> points, since otherwise
+their union is too small. A nonzero affine row vanishes at most <span
+class="math inline">\(L^{d-1}\)</span> times on a grid. For a
+nonconstant row, fix all coordinates except one with nonzero
+coefficient. There is at most one root on each of the <span
+class="math inline">\(L^{d-1}\)</span> resulting lines. A nonzero
+constant has no roots. Hence every cold coordinate of the selected
+proposal is identically zero as a function of the offsets at this width.
+Every hot coordinate is nonzero somewhere. These identically zero rows
+identify the grid’s hot/cold pattern uniquely. Distinct patterns
+therefore need distinct proposals, which gives the contradiction. The
+argument also allows the proposed <span class="math inline">\(k\)</span>
+to depend on all the offsets. The unbounded family uses mathematical
+integers. At <span class="math inline">\(d=2\)</span>, width five
+suffices for all four grids. <a
+href="thesis-review-39.lean">Grid-counting and affine-root
+lemmas</a></p>
+<p>The bound concerns flattening the admissible tuples into a list of
+affine expressions. The linear-size graph with its original maxima is
+also a certificate. The refutation procedure above can use this graph
+directly. In dimensions one through four, Z3 checks coverage of the
+affine proposals on all rational offsets. InvarGenT’s arithmetic checker
+retains zero and excludes one directly from each graph. <a
+href="thesis-review-39.py">Coverage replay</a></p>
+<p>The isolated two-offset definition compiles with budget two. Its
+exported domain selects <span class="math inline">\(f=1\)</span> and
+retains every written offset and key there. The public package has both
+hinge bounds. At width five a separate OCaml caller ran the generated
+function at all 121 integer offset pairs in <span
+class="math inline">\([-10,0]^2\)</span> and obtained zero each time.
+Flag zero also has a valid typing in the written scheme. The
+source-level inference still has to choose the domain on which the guard
+certificate runs. <a href="double_hinged_result_keys.gadt">Two-offset
+definition</a> · <a href="thesis-review-39.py">Signature comparison and
+native grid</a></p>
+</section>
+<section id="controls" class="level2">
+<h2>What the quantifiers protect</h2>
+<p>At flag one, a function returning the flag can reach a guard for
+positive results. The correct checker rejects its Boolean guarded arm. A
+mutant quantifies the input slots too, which lets the checker use the
+zero result at <strong>flag zero</strong> to rule out a result at flag
+one. Another version of the program carries a private witness <span
+class="math inline">\(m\)</span> with <span
+class="math inline">\(r=m+k\)</span>. Each key <span
+class="math inline">\(k\)</span> admits its own <span
+class="math inline">\(m=r-k\)</span>. A second mutant shares these
+witnesses across all keys. Both mutants accept their respective programs
+and reach the compiler-generated assertion at the erased arm. <a
+href="fixed_result_input.gadt">Fixed-input program</a> · <a
+href="thesis-review-39.py">Mutations and assertion locations</a></p>
+<p>The rational closure also identifies a limit of the native-integer
+analysis. A seed package permits <span class="math inline">\(0\le
+r\)</span>, <span class="math inline">\(2r\le3\)</span> and <span
+class="math inline">\(r\le0\lor3\le2r\)</span>. Its rational results are
+<span class="math inline">\(0\)</span> and <span
+class="math inline">\(3/2\)</span>. Its only integer result is zero. At
+flag two, <span class="math inline">\(3/2\)</span> remains possible
+under every rational typing and lies in the guard <span
+class="math inline">\(1\le r\le2\)</span>. InvarGenT rejects the Boolean
+arm. Replacing that arm by numeric zero compiles and executes. The
+phantom key in the width-five example can take fractional values, while
+the <em>returned native integer</em> here has a stronger interpretation.
+<a href="fractional_guard_result.gadt">Seed program</a> · <a
+href="thesis-review-39.lean">Integer proof</a></p>
+</section>
+<section id="supplier" class="level2">
+<h2>Where candidate inference can still stop</h2>
+<p>Change the package to require <span class="math inline">\(0\le r\le
+f\)</span> and <span class="math inline">\(\min(k+r-n,n-k)\le0\)</span>.
+The base case and the numeric recursive arm both return zero. At <span
+class="math inline">\(r=0\)</span> the package asks for <span
+class="math inline">\(\min(k-n,n-k)\le0\)</span>, which holds at every
+key. At the guarded observation <span
+class="math inline">\(f=r=1\)</span>, any key strictly between <span
+class="math inline">\(n-1\)</span> and <span
+class="math inline">\(n\)</span> refutes the package. For example <span
+class="math inline">\(k=n-1/2\)</span> is admitted for every <span
+class="math inline">\(n\ge2\)</span>. These two facts give a supplier
+and a guard certificate for the written scheme. <a
+href="thesis-review-39.py">Executable variants</a></p>
+<p>Even with the annotation <span class="math inline">\(r=0\)</span>,
+revision <code>4785b90</code> failed during supplier abduction. Its
+equality solver substituted zero and left both opposing arms in the
+abduction problem. InvarGenT now discards a disjunction <span
+class="math inline">\(u\le0\lor v\le0\)</span> when positive weights
+<span class="math inline">\(a,b\)</span> give a constant <span
+class="math inline">\(au+bv\le0\)</span>. If both arms were positive
+their weighted sum would be positive. The compiler accepts the annotated
+program with budget two, and it prints zero twice. Remove just <span
+class="math inline">\(r=0\)</span> and the same budget still ends in a
+type mismatch. The remaining failure occurs while finding a candidate
+for the suppliers, before the guard checker can use the interior key.
+This example isolates a question about Table 4.4 that survives a
+complete check of the typings of a fixed call. <a
+href="thesis-review-39.lean">Opposing-arms lemma</a> · <a
+href="thesis-review-39.py">Supplier variant and replay</a></p>
+</section>
+<section id="replay" class="level2">
+<h2>Reproducing the checks</h2>
+<p>InvarGenT revisions <code>4785b90</code>, <code>a810765</code> and
+<code>ea0cf2c</code> implement tuple checking, the opposing-arm
+simplification and the coverage pruning respectively. At the last
+revision the OCaml 5.3 compatibility build passed all 367 active suite
+cases, with ten recorded as TODO. All 186 previous example signatures
+were byte-identical. Run Lean 4.19 on <a
+href="thesis-review-39.lean">the proof file</a>. With OCaml and Python’s
+<code>z3-solver</code> available, run
+<code>python3 thesis-review-39.py /path/to/InvarGenT.native --interior --double-hinge</code>.
+The replay compares the exported domains and packages over both integer
+and real coordinates and runs the generated OCaml. The optional
+<code>--before</code> takes the compiler at <code>e3b1348</code>. For
+<code>--trace</code>, build a copy with the <a
+href="thesis-review-22-trace.patch">iteration trace</a> and the <a
+href="thesis-review-39-trace.patch">tuple trace</a>.</p>
+<p>To check the arithmetic separately, copy <a
+href="thesis-review-39-numeric.ml">the OCaml driver</a> to
+<code>src/JointOracle.ml</code>, build its native target alongside
+InvarGenT, and pass the executable as <code>--numeric-driver</code>. The
+driver uses the compiler’s numeric solver. Of the 780 arithmetic checks,
+768 compare the answers with independently quantified formulas in Z3 and
+12 fix expected boundary cases. They include fractional coefficients,
+empty fibres, private witnesses and disjunctive packages. Add
+<code>--problem 548</code> to print and check that input. Building the
+driver with the tuple trace also prints its projection count.</p>
+</section>
+</article>
+<script src="/assets/theme-toggle.js"></script>
+</body>
+</html>

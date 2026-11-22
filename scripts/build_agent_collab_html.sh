@@ -454,6 +454,11 @@ build_html \
   "$collab_dir/thesis-review-38.html" \
   "Which witnesses may change at a recursive call?"
 
+build_html \
+  "$collab_dir/thesis-review-39.md" \
+  "$collab_dir/thesis-review-39.html" \
+  "What can every typing of one recursive call tell its consumer?"
+
 reviews_dir="$collab_dir/reviews"
 if [[ -d "$reviews_dir" ]]; then
   for md_file in "$reviews_dir"/*.md; do

@@ -1,0 +1,27 @@
+--- a/src/Infer.ml
++++ b/src/Infer.ml
+@@ -1790,5 +1790,7 @@
+           | At_most hi -> [Leq (observed,hi,loc)]
+           | Between (lo,hi) -> [Leq (lo,observed,loc); Leq (observed,hi,loc)] in
+-        not (NumS.common_result_possible ~keys ~witnesses ~admissions:cells ~post (inside @ facts)) in
++        let excluded = not (NumS.common_result_possible ~keys ~witnesses ~admissions:cells ~post (inside @ facts)) in
++        Format.eprintf "TUPLE %d %b@." (VarSet.cardinal keys) excluded;
++        excluded in
+       if List.for_all refuted bands then Admitted else Unavailable
+     | Open_at_keys query ->
+--- a/src/NumS.ml
++++ b/src/NumS.ml
+@@ -4851,4 +4851,5 @@
+     let failed_posts = List.map (complements positive) (project_exists ~vars:witnesses post) in
++    let count = ref 0 in
+     let rec refutations state facts = function
+-      | [] -> lazy (LazCons (project_exists ~vars:keys facts,laznil))
++      | [] -> lazy (incr count; LazCons (project_exists ~vars:keys facts,laznil))
+       | choices::rest -> lazconcat_map (fun more -> match extend state more with
+@@ -4872,4 +4873,5 @@
+         collect (List.rev_append cells seen) tail in
+-    collect [] (refutations initial [] (admissions :: failed_posts))
++    let answer = collect [] (refutations initial [] (admissions :: failed_posts)) in
++    Format.eprintf "refuting cases projected %d@." !count; answer
+
+ (* Solve a row a*k + t <= 0 for an integral affine endpoint. For the

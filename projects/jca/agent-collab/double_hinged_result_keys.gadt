@@ -1,0 +1,11 @@
+datatype Nat
+datacons Z : Nat
+datacons S : Nat ⟶ Nat
+
+external let observe : ∀i. Num i → Bool = "fun v -> print_endline (string_of_int v); v = 0"
+let rec run : ∀i,n,k,j,m,m1,j1[m1≤0 ∧ 0≤m1+2 n ∧ j1=max(0,k+m1) ∧ m≤0 ∧ 0≤m+2 n ∧ j=max(0,k+m) ∧ 0≤i ∧ i≤1 ∧ 2≤n ∧ 0≤k ∧ k≤n ∧ min(k,1 + -i)≤0].
+  Num i → Num n → Num m → Num m1 → Nat → ∃l[l≤j1+2 ∧ l≤j+2 ∧ 0≤l ∧ l≤i ∧ min(k+l + -n,n+2 + -k + -l)≤0]. Num l =
+  fun flag width offset shift -> efunction
+  | Z -> 0
+  | S d -> let prior = run flag width offset shift d in
+           (match prior with r when 1 <= r && r <= flag -> True | _ -> 0)
