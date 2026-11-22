@@ -449,6 +449,11 @@ build_html \
   "$collab_dir/thesis-review-37.html" \
   "Which recursive typings can rule out this guard?"
 
+build_html \
+  "$collab_dir/thesis-review-38.md" \
+  "$collab_dir/thesis-review-38.html" \
+  "Which witnesses may change at a recursive call?"
+
 reviews_dir="$collab_dir/reviews"
 if [[ -d "$reviews_dir" ]]; then
   for md_file in "$reviews_dir"/*.md; do

@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <meta name="dcterms.date" content="2026-11-22">
+  <meta property="og:title" content="Which witnesses may change at a recursive call?">
+  <meta property="og:url" content="https://lukstafi.github.io/projects/jca/agent-collab/thesis-review-38.html">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="lukstafi&#x27;s blog">
+  <meta name="twitter:card" content="summary">
+  <title>Which witnesses may change at a recursive call?</title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <link rel="stylesheet" href="/assets/tufte.css">
+  <link rel="stylesheet" href="/assets/pandoc-tufte.css">
+  <link rel="stylesheet" href="/assets/site.css">
+  <script defer=""
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+  type="text/javascript"></script>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+  <script>(function(){var t=localStorage.getItem('theme-preference');if(t)document.documentElement.setAttribute('data-theme',t);})()</script>
+</head>
+<body>
+<nav class="site-nav">
+  <a href="/">Home</a> &middot; <a href="/study/">Study Guide</a> &middot; <a href="/about.html">About</a> &middot; <a href="https://lukstafi.substack.com">Substack</a>
+</nav>
+<div class="theme-toggle">
+  <button id="theme-btn" aria-label="Toggle dark mode">&#9788;</button>
+</div>
+<article>
+<header>
+<h1 class="title">Which witnesses may change at a recursive call?</h1>
+<p class="byline">2026-11-22</p>
+</header>
+<nav id="TOC">
+<ul>
+<li><a href="#fibre" id="toc-fibre">The domain at a tuple of arrow
+coordinates</a></li>
+<li><a href="#projection" id="toc-projection">Projecting rational
+indices</a></li>
+<li><a href="#cells" id="toc-cells">How many cells can be
+needed?</a></li>
+<li><a href="#diagonal" id="toc-diagonal">Two visible coordinates that
+must move together</a></li>
+</ul>
+</nav>
+<p>In the flag program, a recursive call can use key zero at both flag
+values. If its result reaches the guard, the flag and the result must
+both be one. At that observation the call can also use key <span
+class="math inline">\(n\)</span>, and the package at <span
+class="math inline">\(n\)</span> rules out one. Add a quantified <span
+class="math inline">\(j\)</span> to the input predicate with <span
+class="math inline">\(j=k\)</span>. The caller can instantiate <span
+class="math inline">\(j=0\)</span> at its first typing and <span
+class="math inline">\(j=n\)</span> at its second. InvarGenT used to
+freeze <span class="math inline">\(j\)</span> at zero. It now accepts
+this declaration with an iteration budget of two. The same holds for
+<span class="math inline">\(2j=k\)</span>, for <span
+class="math inline">\(j\le k\le j+1\)</span>, and for <span
+class="math inline">\(j=\max(k,1-k)\)</span>. All four export the
+original domain and result relation. <a
+href="private_result_key.gadt">Runnable inequality example</a> · <a
+href="thesis-review-37.html#private">Earlier failure</a> · <a
+href="thesis-review-38.py">Compiler and signature checks</a></p>
+<section id="fibre" class="level2">
+<h2>The domain at a tuple of arrow coordinates</h2>
+<p>Fix the nonnumeric shape of the recursive arrow. Write <span
+class="math inline">\(p(a)\)</span> for the tuple of
+<strong>all</strong> its numeric positions in the inferred scheme,
+including the arguments of the returned existential type constructor.
+Let <span class="math inline">\(D(a)\)</span> be its inferred admission
+predicate. Use <span class="math inline">\(q(b),E(b)\)</span> for the
+corresponding written scheme. The assignments <span
+class="math inline">\(a,b\)</span> range over their own quantified
+indices. Any free indices keep their surrounding values. Bind a proposed
+second typing to a tuple <span class="math inline">\(z\)</span> of
+concrete coordinate values. Its exact numeric admission test is</p>
+<p><span class="math display">\[
+A(z) = (\exists a.\ D(a)\land p(a)=z)
+        \land (\exists b.\ E(b)\land q(b)=z).
+\]</span></p>
+<p><strong>Proof.</strong> Each legal instantiation gives the values of
+the variables bound by its scheme, and matching the arrow gives the
+tuple equations. Conversely the two witnesses instantiate both schemes
+with the same numeric arrow. At a fixed tuple the existential type
+constructor supplies the same package predicate. Each opening of that
+package may still choose its own private result witnesses. If <span
+class="math inline">\(a_1+a_2\)</span> occupies one arrow position, only
+the sum is fixed by that position. If <span
+class="math inline">\(a_1\)</span> also occurs in another position, the
+same <span class="math inline">\(a_1\)</span> must satisfy both
+equations. <a href="thesis-review-38.lean">Tuple compatibility
+lemma</a></p>
+<p>A third runtime argument makes the distinction observable. Give it
+type <span class="math inline">\(\mathrm{Num}(j+m)\)</span> and require
+<span class="math inline">\(j=k\)</span>, <span
+class="math inline">\(0\le m\)</span> and <span
+class="math inline">\(n\le j+m\)</span>. If the argument value is <span
+class="math inline">\(t\)</span>, the new witnesses are <span
+class="math inline">\(j=k\)</span> and <span
+class="math inline">\(m=t-k\)</span>. Every key in <span
+class="math inline">\([0,n]\)</span> remains available when <span
+class="math inline">\(n\le t\)</span>. At <span
+class="math inline">\(n=t=4\)</span>, changing the key from zero to four
+changes the decomposition of the <em>same</em> argument from <span
+class="math inline">\((0,4)\)</span> to <span
+class="math inline">\((4,0)\)</span>. InvarGenT accepts with budget two
+and exports precisely the extra condition <span
+class="math inline">\(n\le t\)</span>. <a
+href="compound_result_key.gadt">Compound-coordinate program</a> · <a
+href="thesis-review-38.py">Exported-domain check</a></p>
+<p>At a call, <span class="math inline">\(z\)</span> comes from the
+written arrow with the selected key replaced by the probe expression.
+The compiler binds bare quantified coordinates directly to tuple
+positions and eliminates the remaining quantified variables. It projects
+the inferred and written schemes separately. Suppose the intersection is
+a union of cells <span class="math inline">\(A_c(z)\)</span>. Opening a
+package with postcondition <span class="math inline">\(P\)</span>
+wherever the key is legal amounts to imposing <span
+class="math inline">\(A_c(z)\Rightarrow\exists w.\ P(z,r,w)\)</span> for
+every cell. A particular probe may have no admitted cell at the observed
+result. Checking a mandatory endpoint instead requires the premise to
+entail the <strong>union</strong> of its cells. This distinction also
+applies to keys licensed in successive rounds. Adding the hidden strip
+<span class="math inline">\(j\le k\le j+1\)</span> to the fixed-endpoint
+and staged examples preserves both exported signatures. <a
+href="thesis-review-38.lean">Conditional opening lemma</a> · <a
+href="thesis-review-37.html#check">Guard countermodel</a> · <a
+href="thesis-review-35.html">Staged admissions</a></p>
+</section>
+<section id="projection" class="level2">
+<h2>Projecting rational indices</h2>
+<p>In each linear case solve the equalities with hidden coordinates
+first. For a remaining hidden coordinate <span
+class="math inline">\(h\)</span>, write its inequalities as lower bounds
+<span class="math inline">\(L_i\le h\)</span> and upper bounds <span
+class="math inline">\(h\le U_j\)</span>. Eliminating <span
+class="math inline">\(h\)</span> leaves every pair <span
+class="math inline">\(L_i\le U_j\)</span>. For any assignment satisfying
+the pairs, choose the greatest lower bound in the finite list, or the
+least upper bound if there are only upper bounds. With neither, choose
+zero. This constructs a rational witness. Reversing the pivot order
+extends a solution of the retained rows to a solution of the whole case.
+A numeric type index can be fractional even when the observed OCaml
+result is an integer. <a href="thesis-review-38.lean">Formal one-pivot
+proof, including empty bound lists</a></p>
+<p>An extremum involving a remaining hidden variable splits into its two
+linear alternatives. An extremum that becomes public after an equality
+substitution can stay as a single atom. For instance, projecting <span
+class="math inline">\(j=k\)</span> together with <span
+class="math inline">\(\min(j+1-n,n+1-j)\le0\)</span> leaves <span
+class="math inline">\(k\le n-1\lor n+1\le k\)</span>. The hole at <span
+class="math inline">\(n\)</span> survives. The numeric regression tests
+include shared-coordinate equations, one-sided bounds, incompatible
+bounds and a fractional witness. In a compiler control the base returns
+one, so the inferred key domain excludes <span
+class="math inline">\(n\)</span>. Adding <span
+class="math inline">\(j=k\)</span> preserves rejection of the reachable
+Boolean arm. Its numeric counterpart executes with the narrowed domain.
+A separate driver compared the returned formulas with Z3’s existential
+arithmetic over the reals at <strong>every</strong> visible valuation
+for 1,280 generated problems, including 640 with fractional
+coefficients. <a href="thesis-review-38-projection.ml">Projection
+driver</a> · <a href="thesis-review-38.py">Equivalence check</a></p>
+<p>Admission replay happens after candidate inference. On <span
+class="math inline">\(j\le k\le j+1\)</span>, fixing replay alone still
+missed the two-pass budget. For this declaration the abducer can use the
+projected domain immediately. The compiler now does so on a retyping
+attempt when it can express the projection as one scheme predicate. It
+checks the candidate against the original declaration as well as the
+exported scheme. <a href="private_result_key.gadt">Inequality
+example</a></p>
+</section>
+<section id="cells" class="level2">
+<h2>How many cells can be needed?</h2>
+<p>Introduce <span class="math inline">\(m\)</span> private digits <span
+class="math inline">\(b_i\)</span> with <span class="math inline">\(0\le
+b_i\le2\)</span> and <span
+class="math inline">\(\min(b_i,2-b_i)\le0\)</span>. Each digit is zero
+or two. Starting with <span class="math inline">\(s_0=0\)</span>,
+require <span class="math inline">\(s_{i+1}=3s_i+b_i\)</span> and expose
+only <span class="math inline">\(k=s_m\)</span>. The lifted description
+uses <span class="math inline">\(O(m)\)</span> atoms and coefficients of
+constant size. Its projection has exactly <span
+class="math inline">\(2^m\)</span> values. Reading the last digit modulo
+three and dividing out that digit recovers the entire sequence at fixed
+length.</p>
+<p>Every legal value is even. An interval containing two legal values
+also contains the odd integer immediately above the smaller one. Thus an
+exact union of convex cells needs at least <span
+class="math inline">\(2^m\)</span> cells, and singleton cells attain the
+bound. This holds for either rational or integral visible coordinates.
+The bound concerns an explicit <em>convex-cell</em> representation. With
+one digit the compiler keeps the public disjunction in one cell. At
+lengths two through five, the projection driver returns 4, 8, 16 and 32
+singleton cells. The replay checks every cell and the union against the
+digit set. <a href="thesis-review-38.lean">Injectivity and the
+one-code-per-interval theorem</a></p>
+</section>
+<section id="diagonal" class="level2">
+<h2>Two visible coordinates that must move together</h2>
+<p>Now retain <span class="math inline">\(j=k\)</span> and add <span
+class="math inline">\(r\le j+2\)</span> to the <strong>result</strong>
+package. The condition follows from the other bounds at every legal key.
+Its presence puts <span class="math inline">\(j\)</span> in the written
+package’s parameter tuple. At <span class="math inline">\(f=1\)</span>,
+<span class="math inline">\(n\ge2\)</span>, the ordinary typing <span
+class="math inline">\((k,j)=(0,0)\)</span> permits result one. Changing
+only <span class="math inline">\(k\)</span> or only <span
+class="math inline">\(j\)</span> leaves zero as the sole admitted pair
+reachable from that typing. The simultaneous change to <span
+class="math inline">\((n,n)\)</span> is legal, and the package there
+excludes one. This gives a complete guard proof using one additional
+typing. InvarGenT still rejects the Boolean guarded arm at budgets two
+and 10,000. Keeping the extra package parameter and replacing that arm
+by numeric zero compiles and runs. Supplying the stronger result
+predicate <span class="math inline">\(r=0\)</span> also lets the
+original Boolean arm check at budget two. The diagonal obstruction
+applies to what these scalar retypings can derive from the given
+package. <a href="thesis-review-38.py">Executable variants</a> · <a
+href="thesis-review-38.lean">Proof for every width</a></p>
+<p>For <span class="math inline">\(d\)</span> visible coordinates
+required to be equal, even a sequence of legal moves changing at most
+<span class="math inline">\(d-1\)</span> coordinates at a time cannot
+leave the original diagonal point. Every move retains one coordinate,
+whose value determines all the others. Moving all <span
+class="math inline">\(d\)</span> together reaches any other admitted
+diagonal point. This gives a lower bound on the number of coordinates a
+<em>single retyping</em> must be able to change, independently of how
+many scalar probes the checker tries. <a
+href="thesis-review-38.lean">Diagonal lemma</a></p>
+<p>Here the coordinate count depends on the presentation of the scheme.
+Substitute <span class="math inline">\(k\)</span> for <span
+class="math inline">\(j\)</span> throughout the package and remove the
+equation <span class="math inline">\(j=k\)</span>. The original Boolean
+arm then checks with budget two, and the public signature matches the
+two-coordinate numeric control. More generally, if the domain entails
+<span class="math inline">\(j=g(k)\)</span>, substituting <span
+class="math inline">\(g(k)\)</span> in both the domain and every arrow
+position preserves the set of observable typings. In the presence of an
+explicit graph equation its witness is <span
+class="math inline">\(j=g(k)\)</span> in the reverse direction. Such
+equations can generate a vector of candidate keys from one scalar
+target. The admission proof already accepts a tuple <span
+class="math inline">\(z\)</span>. Evaluating every changed coordinate at
+the proposed target and checking <span
+class="math inline">\(A(z)\)</span> licenses the new package opening on
+the same runtime result. <a href="thesis-review-38.lean">Substitution
+lemma</a> · <a href="thesis-review-38.py">Source-level replay</a></p>
+<p>The convergence counterexample for Table 4.4 still applies. On the
+capped climb the original common-atom jump loses the upper bound on
+every pass from pass 8 onward. The consumer restores it each time. A
+stored solution with two inequalities suffices for the cycle. With
+InvarGenT revision <code>e3b1348</code>, budget 8 fails and budget 9
+accepts the band from <span class="math inline">\(m\)</span> to <span
+class="math inline">\(m+20\)</span>. The hidden-witness examples concern
+what can be certified before the jump. <a
+href="thesis-review-3.html#update">Induction-jump recurrence and
+original trace</a> · <a href="thesis-review-21.html#feedback">Current
+pass-9 trace</a></p>
+<p>The OCaml 5.3 compatibility suite passed all 362 active tests, with
+ten existing TODOs. All 185 prior example signatures matched byte for
+byte. The compiler and arithmetic replays used OCaml 5.5.1.</p>
+<p>Run Lean 4.19 on <code>thesis-review-38.lean</code>. With Python’s
+<code>z3-solver</code> and OCaml installed, run
+<code>python3 thesis-review-38.py /path/to/InvarGenT.native</code>. The
+optional <code>--before</code> takes revision <code>be8af94</code>. For
+<code>--numeric-driver</code>, copy the linked OCaml driver to
+<code>src/ProjectionOracle.ml</code> and build its native target
+alongside InvarGenT.</p>
+</section>
+</article>
+<script src="/assets/theme-toggle.js"></script>
+</body>
+</html>
