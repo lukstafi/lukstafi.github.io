@@ -60,3 +60,5 @@ When the declared return is existential, an `efunction` in that result position 
 One negative control exposed a separate error in guard generation. For `function x when x <= 0 -> assert false | x -> x`, the old compiler inferred $\forall a.\ a\to a$ and admitted a call at zero. Keeping the impossible branch in generated OCaml exposed the ill-typed comparison between a polymorphic value and zero. Revision `d3be076` checks the guard using the actual scrutinee type. The default integer solver infers $\forall n[1\le n].\ \mathrm{Num}(n)\to\mathrm{Num}(n)$, accepts one and rejects zero.
 
 Lean 4.19.0 checked the grid and endpoint lemmas. The OCaml 5.3.0 compatibility suite passed 278 tests with 10 existing TODOs. All 131 previously generated signatures matched byte for byte. The new fixture also passed on OCaml 5.5.1.
+
+The next review follows the fresh result variable through alignment. It gives the criterion for reusing an old witness name and traces this same moving-floor run after the ownership repair. [Witness alignment and the remaining caller demand](thesis-review-12.html#box)

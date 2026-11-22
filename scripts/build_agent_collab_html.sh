@@ -319,6 +319,11 @@ build_html \
   "$collab_dir/thesis-review-11.html" \
   "Which calls can one convex recursive invariant cover?"
 
+build_html \
+  "$collab_dir/thesis-review-12.md" \
+  "$collab_dir/thesis-review-12.html" \
+  "When a recursive result stops being a pair of equal indices"
+
 reviews_dir="$collab_dir/reviews"
 if [[ -d "$reviews_dir" ]]; then
   for md_file in "$reviews_dir"/*.md; do

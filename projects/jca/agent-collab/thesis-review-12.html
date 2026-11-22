@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <meta name="dcterms.date" content="2026-11-22">
+  <meta property="og:title" content="When a recursive result stops being a pair of equal indices">
+  <meta property="og:url" content="https://lukstafi.github.io/projects/jca/agent-collab/thesis-review-12.html">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="lukstafi&#x27;s blog">
+  <meta name="twitter:card" content="summary">
+  <title>When a recursive result stops being a pair of equal
+indices</title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <style type="text/css">
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="/assets/tufte.css">
+  <link rel="stylesheet" href="/assets/pandoc-tufte.css">
+  <link rel="stylesheet" href="/assets/site.css">
+  <script defer=""
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+  type="text/javascript"></script>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+  <script>(function(){var t=localStorage.getItem('theme-preference');if(t)document.documentElement.setAttribute('data-theme',t);})()</script>
+</head>
+<body>
+<nav class="site-nav">
+  <a href="/">Home</a> &middot; <a href="/study/">Study Guide</a> &middot; <a href="/about.html">About</a> &middot; <a href="https://lukstafi.substack.com">Substack</a>
+</nav>
+<div class="theme-toggle">
+  <button id="theme-btn" aria-label="Toggle dark mode">&#9788;</button>
+</div>
+<article>
+<header>
+<h1 class="title">When a recursive result stops being a pair of equal
+indices</h1>
+<p class="byline">2026-11-22</p>
+</header>
+<nav id="TOC">
+<ul>
+<li><a href="#pair" id="toc-pair">A spurious fixed point</a></li>
+<li><a href="#alignment" id="toc-alignment">Which names may be
+reused?</a></li>
+<li><a href="#delay" id="toc-delay">A cap that hides the first unequal
+pair</a></li>
+<li><a href="#box" id="toc-box">Two affine bounds suffice for the
+remaining feedback loop</a></li>
+</ul>
+</nav>
+<p>At revision <code>e7dc91c</code>, InvarGenT accepts a function whose
+first three results are <span
+class="math inline">\((0,0),(1,1),(1,2)\)</span> as returning two equal
+numbers. Its client compiles to OCaml and fails an equality assertion at
+depth two. A second example takes the inference through the induction
+jump and fails its assertion at depth nine. Both expose the same
+operation in the implementation of Table 4.4. Giving two new existential
+witnesses one old name adds an equality to the result. <a
+href="separating_pair.gadt">Small program</a> · <a
+href="thesis-review-12.py">Executable comparisons</a> · <a
+href="../lukstafi-phd-thesis.pdf#page=71">Table 4.4</a></p>
+<section id="pair" class="level2">
+<h2>A spurious fixed point</h2>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode ocaml"><code class="sourceCode ocaml"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">let</span> <span class="kw">rec</span> pair = efunction</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  | Z -&gt; (<span class="dv">0</span>, <span class="dv">0</span>)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  | S t -&gt; <span class="kw">let</span> (x,y) = pair t <span class="kw">in</span> (<span class="dv">1</span>, x+<span class="dv">1</span>)</span></code></pre></div>
+<p>After the base and the first successor, one index <span
+class="math inline">\(n\)</span> suffices to name both coordinates. The
+next successor needs two. To compare passes,
+<code>Invariants.converge</code> aligned the new shape <span
+class="math inline">\((\mathrm{Num}\ i,\mathrm{Num}\ j)\)</span> with
+the old shape <span class="math inline">\((\mathrm{Num}\ n,\mathrm{Num}\
+n)\)</span>. Unification identified both <span
+class="math inline">\(i\)</span> and <span
+class="math inline">\(j\)</span> with <span
+class="math inline">\(n\)</span>. It made the two answers appear to
+agree by removing the result <span class="math inline">\((1,2)\)</span>
+from the new answer.</p>
+<p>The old solver stops on pass 4, counting from zero. It exports <span
+class="math inline">\(\exists n[0\le n\le1].(\mathrm{Num}\
+n,\mathrm{Num}\ n)\)</span>. The successor of its admitted point <span
+class="math inline">\((1,1)\)</span> violates this postcondition. No
+increase in the iteration budget can repair a run that has already
+returned. A client declared at <span class="math inline">\(\forall
+i.(\mathrm{Num}\ i,\mathrm{Num}\ i)\to\mathrm{Bool}\)</span> witnesses
+the error by checking equality at runtime. The smaller program stops
+before the numeric jump scheduled for pass 8.</p>
+<p>Revision <code>5099580</code> stops on pass 6 with <span
+class="math display">\[
+  0\le x,\qquad y\le2x,\qquad x=\min(1,y).
+\]</span> These three atoms describe exactly the three reachable integer
+pairs. They admit the base and are closed under <span
+class="math inline">\((x,y)\mapsto(1,x+1)\)</span>, also over rational
+indices. The rational interpretation additionally contains points
+between <span class="math inline">\((0,0)\)</span> and <span
+class="math inline">\((1,1)\)</span> on the diagonal and between <span
+class="math inline">\((1,1)\)</span> and <span
+class="math inline">\((1,2)\)</span> on the vertical segment. The
+repaired solver rejects the equality client. Changing the successor to
+<span class="math inline">\((y+1,x+1)\)</span> makes equality inductive,
+and the same client passes. <a href="thesis-review-12.lean">Lean proofs
+of the integer characterization and closure</a> · <a
+href="thesis-review-12.py">Positive and negative clients</a></p>
+</section>
+<section id="alignment" class="level2">
+<h2>Which names may be reused?</h2>
+<p>Fix an observable result and values for its parameters. Let <span
+class="math inline">\(I\)</span> be the live names and <span
+class="math inline">\(R(u)\)</span> the condition saying that assignment
+<span class="math inline">\(u\)</span> realizes this result at those
+parameters. Include the ambient names that must remain fixed in <span
+class="math inline">\(I\)</span>, pinning their values in <span
+class="math inline">\(R\)</span>. A naming map <span
+class="math inline">\(h:I\to K\)</span> keeps these ambient names fixed.
+After aligning, one assignment <span class="math inline">\(v\)</span> to
+the target names supplies <span
+class="math inline">\(u(i)=v(h(i))\)</span> at every occurrence.</p>
+<p><strong>Witness criterion.</strong> The observable survives alignment
+exactly when it has an admissible witness <span
+class="math inline">\(u\)</span> constant on every fiber of <span
+class="math inline">\(h\)</span>. In one direction take <span
+class="math inline">\(u=v\circ h\)</span>. In the other, define <span
+class="math inline">\(v\)</span> on each inhabited fiber by its common
+value and assign any value of the appropriate sort elsewhere.</p>
+<p>Consequently, for names of a sort with at least two values, alignment
+preserves <em>every</em> incoming relation exactly when <span
+class="math inline">\(h\)</span> is injective on its live names. If two
+names collide, choose a relation requiring different values for them.
+For a particular relation, identifying them can still be exact. Each
+observable then needs at least one compatible witness. The old result
+type alone cannot establish this property of the new suppliers. <a
+href="thesis-review-12.lean">Lean proofs of factorization, pointwise
+preservation and uniform injectivity</a></p>
+<p>The repair uses matching type positions to suggest old names. A fresh
+local witness can take an unoccupied old local name of the same sort
+once. Names shared with another package, a captured parameter or the
+surrounding constraints retain their meaning. The solver applies each
+renaming to the supplier branches and both sides of the result
+equations. It registers the binders that survive alignment. A repeated
+index already present in the incoming type stays repeated. The same
+change fixes a second failure. A base result <span
+class="math inline">\((z,2z)\)</span> and successor <span
+class="math inline">\((x,y+1)\)</span> used to trigger an internal
+assertion when the alignment treated a scaled term as a variable. The
+repaired solver derives <span class="math inline">\(2x\le y\)</span>. <a
+href="thesis-review-12.py">Reproducer for scaled witnesses</a></p>
+</section>
+<section id="delay" class="level2">
+<h2>A cap that hides the first unequal pair</h2>
+<p>Let <span class="math inline">\(M\ge0\)</span> be a natural cap.
+Replace the successor by <span class="math display">\[
+  (x,y)\longmapsto (\min(M,x+1),\,x+1).
+\]</span> Starting at <span class="math inline">\((0,0)\)</span>, the
+result at depth <span class="math inline">\(d\)</span> is <span
+class="math inline">\((\min(M,d),\min(M+1,d))\)</span>, by induction.
+The first unequal result occurs at depth <span
+class="math inline">\(M+1\)</span>. The exact reachable relation on
+natural numbers is <span class="math inline">\(x=\min(M,y)\land y\le
+M+1\)</span>. Every pair satisfying this relation occurs at depth <span
+class="math inline">\(y\)</span>. Thus a test based only on bounded
+concrete unrolling can preserve a false equality for <span
+class="math inline">\(2^k\)</span> steps when <span
+class="math inline">\(M=2^k\)</span>, although the program and the exact
+invariant use <span class="math inline">\(O(k)\)</span> bits for their
+constants. Symbolic induction checks the transition directly. <a
+href="thesis-review-12.lean">Lean proofs of the depth formula and exact
+reachable set</a></p>
+<p>For <span class="math inline">\(M=8\)</span> the old solver crosses
+its default jump and terminates on pass 10 with <span
+class="math inline">\(\exists n[0\le n].(\mathrm{Num}\ n,\mathrm{Num}\
+n)\)</span>. Its equality client compiles and fails on <span
+class="math inline">\((8,9)\)</span>. The repaired solver also stops on
+pass 10 for the bare definition. Its type has independent <span
+class="math inline">\(x,y\)</span> and asserts <span
+class="math inline">\(0\le x\)</span>, which all successors satisfy. A
+later call needing <span class="math inline">\(y\le9\)</span> fails
+inference. Increasing the timeout leaves the previously exported type in
+place. <a href="capped_pair.gadt">Source of the capped transition</a> ·
+<a href="thesis-review-12.py">Executable clients</a></p>
+</section>
+<section id="box" class="level2">
+<h2>Two affine bounds suffice for the remaining feedback loop</h2>
+<p>Suppose the caller requires only <span class="math inline">\(y\le
+M+1\)</span>. The <strong>greatest inductive relation</strong>
+satisfying the caller and containing the base is <span
+class="math display">\[
+  x\le M\quad\land\quad y\le M+1.
+\]</span> Necessity uses the caller twice. At the current pair it gives
+<span class="math inline">\(y\le M+1\)</span>. At the next pair it gives
+<span class="math inline">\(x+1\le M+1\)</span>. For sufficiency,
+capping guarantees the next first coordinate is at most <span
+class="math inline">\(M\)</span>, and the current first bound guarantees
+the next second bound. The base satisfies both. This argument works over
+integers and rationals. One backward step from the caller’s bound
+supplies the first-coordinate bound, and a second backward step adds
+nothing. <a href="thesis-review-12.lean">Lean proof over
+integers</a></p>
+<p>An attached <code>test</code> makes the caller visible while
+InvarGenT is inferring the definition. These are runs of revision
+<code>5099580</code> on the same transition with <span
+class="math inline">\(M=8\)</span>.</p>
+<table>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr>
+<th>Requirement visible to the definition</th>
+<th>Result</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><span class="math inline">\(y\le9\)</span></td>
+<td>Reports “Answers do not converge” at budgets 11, 40 and 80.</td>
+</tr>
+<tr>
+<td><span class="math inline">\(y\le9\)</span>, jump delayed from pass 8
+to pass 13</td>
+<td>Succeeds with budget 30.</td>
+</tr>
+<tr>
+<td><span class="math inline">\(x\le8\land y\le9\)</span>, default
+jump</td>
+<td>Infers both bounds and <span class="math inline">\(0\le x\)</span>.
+The boundary call at depth 9 runs.</td>
+</tr>
+</tbody>
+</table>
+<p>On the first input, the trace shows the caller asking for an upper
+bound, then the splitter producing an inequality between two indices,
+then the solver restarting. From passes 12 through 80 the four-pass
+pattern recurs with newly allocated names. The count of owned variables
+is 31 on pass 12 and 167 on pass 80. This gives a two-linear-atom
+counterexample to successful convergence at each tested budget. An
+all-budget proof for this revised joint run would have to control the
+state carried across restarts. The original common-atom jump already has
+an all-budget counterexample with a distinct mechanism. <a
+href="capped_pair.gadt">Runnable cap-8 input</a> · <a
+href="thesis-review-12.py">Budget and scheduling controls</a> · <a
+href="thesis-review-3.html#update">Unbounded recurrence for the original
+jump</a></p>
+<p>The earlier two-call moving-floor example behaves differently after
+the alignment repair. Its owned-variable count stays at 45 from pass 8
+through pass 80. The fresh-variable counter advances from 212 to 284. On
+each of those passes the three predicate comparisons succeed while the
+caller still contributes its two bounds. Transient variable ownership
+explained the growth seen in the earlier trace. Removing that growth
+leaves the missing input restriction to be inferred. <a
+href="thesis-review-11.html#iteration">Moving-floor obligations and
+earlier trace</a></p>
+<p>Lean 4.19.0 checked the companion proofs. The OCaml 5.3.0
+compatibility build passed 281 tests with 10 existing TODOs. All 132
+previously generated signatures matched byte for byte. The compiler
+comparison runs both the generated OCaml and its failing baseline
+clients. To reproduce it, run
+<code>python3 thesis-review-12.py /path/to/fixed/InvarGenT.native --baseline /path/to/e7dc91c/InvarGenT.native</code>.
+<a href="thesis-review-12.py">Driver</a> · <a
+href="thesis-review-12.lean">Lean companion</a></p>
+</section>
+</article>
+<script src="/assets/theme-toggle.js"></script>
+</body>
+</html>
