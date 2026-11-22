@@ -93,7 +93,7 @@ class="math inline">\((h,h)\)</span>. Abduction can impose an equation
 on the branch assumptions or the call interface to make the caller’s
 obligation hold. Changing those assumptions changes the rows reaching
 generalization. InvarGenT also tries admissible substitutions while
-anti-unifying; its convergence step aligns witness names and carries
+anti-unifying. Its convergence step aligns witness names and carries
 forward the new type equations. <a
 href="https://homepages.inf.ed.ac.uk/gdp/publications/MI6_further_note.pdf">Plotkin
 on least general generalization</a> · <a
@@ -233,6 +233,49 @@ can share subtrees, so an unfolded size bound and a stored DAG size
 bound differ. <a
 href="thesis-review-2.html#a-positive-convergence-theorem-for-free-term-predicates">Finite-height
 proof</a></p>
+<p><strong>Fixed-admission theorem.</strong> Fix the admissions and all
+public interfaces. Suppose the positive supplier clauses induce a
+monotone operator <span class="math inline">\(F\)</span> on stored
+package relations. A package interpretation <span
+class="math inline">\(Q\)</span> satisfies the suppliers when <span
+class="math inline">\(F(Q)\subseteq Q\)</span>. There is a <em>least
+inductive tuple of conjunctive term patterns</em> in this setting,
+allowing the empty relation. Start every package empty. At each round
+replace each component by the least pattern covering its old entries and
+the entries demanded by <span class="math inline">\(F\)</span>. The
+iteration terminates. Every component ascends, and each strict ascent
+after the first nonempty entry lowers its rank. For leastness, take any
+inductive pattern tuple <span class="math inline">\(Q\)</span>. From
+<span class="math inline">\(S\subseteq Q\)</span> we get <span
+class="math inline">\(F(S)\subseteq F(Q)\subseteq Q\)</span>, so the
+least covering pattern still lies inside <span
+class="math inline">\(Q\)</span>. Induction gives the claim at
+termination. A caller forbidding an opening or a simultaneous tuple of
+openings is downward closed for fixed admission. If any inductive
+pattern package meets that caller, the least one does too. <a
+href="thesis-review-50.lean">Inductiveness and leastness in Lean</a> ·
+<a href="thesis-review-47.html#cover">Positive suppliers and opening
+semantics</a></p>
+<p>The least cover exists even for an infinite set of required tuples.
+Choose one ground row in it. There are finitely many patterns above this
+row, and their intersection when they cover the whole set is a single
+pattern by unification. For finitely described first-order supplier
+steps over an effective finite free signature this gives an algorithm.
+Decide whether the required set is empty. Otherwise obtain a ground row
+by enumeration and test each covering candidate by first-order
+entailment. For conjunctive branches with admitted recursive calls, one
+can substitute the two-probe opening, unify and project each branch,
+then anti-unify their output patterns. For example, a base supplies
+<span class="math inline">\((A,(A,A))\)</span> and a successor takes
+<span class="math inline">\((k,(x,y))\)</span> to <span
+class="math inline">\((S(k),(S(x),S(y)))\)</span>. After the first
+successor the least pattern is <span
+class="math inline">\((h,(h,h))\)</span> and the following round
+verifies it. This invariant preserves sharing even at keys beyond the
+reachable unary chain. <a href="thesis-review-50.py">Executable closure
+example</a> · <a
+href="https://lics.siglog.org/archive/1988/Maher-Completeaxiomatizat.html">Maher
+on first-order free trees</a></p>
 <p>There is also a bound on the <em>alternative answers</em> under a
 coverage assumption. Give one mandatory ground tuple for every nonempty
 predicate and fix all interfaces. Every pattern admitting such a tuple

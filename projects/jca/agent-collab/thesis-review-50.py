@@ -75,6 +75,31 @@ def checks():
     print(f"{len(examples)} projected openings, {queries} tests against rigid matching, {positives} accepted.")
 
 
+def fixed_admission():
+    """Exact supplier closure for a base row and an admitted successor call."""
+    def S(x):
+        return F("S",x)
+    base=pair(A,pair(A,A))
+    k,x,y=map(V,("k","x","y"))
+    old=base
+    for step in range(2):
+        sol=unify([(old,pair(k,pair(x,y)))])
+        supplied=apply(pair(S(k),pair(S(x),S(y))),sol)
+        # Anti-unify symbolic rows by preserving matching constructor heads.
+        memo={}
+        def join(left,right):
+            if left[0] != "var" and left[0] == right[0]:
+                return F(left[0],*(join(a,b) for a,b in zip(left[1:],right[1:])))
+            return memo.setdefault((left,right),V(("join",len(memo))))
+        new=join(old,supplied)
+        equivalent=matches(old,new) is not None and matches(new,old) is not None
+        assert equivalent == (step == 1)
+        old=new
+    goal=pair(k,pair(k,k))
+    assert matches(goal,old) is not None and matches(old,goal) is not None
+    print("Fixed admissions stabilize at (k,(k,k)) after the base and one strict generalization.")
+
+
 def programs(compiler):
     source = (HERE/"packed_payload.gadt").read_text()
     branches = source[:source.index("datatype Nat")] + "let payload = function Left y -> y | Right x -> x\n"
@@ -106,5 +131,6 @@ if __name__ == "__main__":
     parser.add_argument("--compiler",type=Path)
     args=parser.parse_args()
     checks()
+    fixed_admission()
     if args.compiler:
         programs(args.compiler.resolve())

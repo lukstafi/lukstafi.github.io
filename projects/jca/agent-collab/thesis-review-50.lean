@@ -129,4 +129,39 @@ theorem probes_cover (shape : Pat Nat) (target : Pat V) :
     intro n _
     simp [tag,zipTrees,fill]
 
+section Producers
+
+variable {X : Type*}
+abbrev Sub (S T : X → Prop) := ∀ x, S x → T x
+
+/-- Fixed admissions make all-keys opening monotone in the stored entries. -/
+theorem opening_mono {A : K → Prop} {P Q : K → R → Prop}
+    (h : ∀ k r, P k r → Q k r) (r : R) :
+    (∀ k, A k → P k r) → ∀ k, A k → Q k r :=
+  fun opens k hk => h k r (opens k hk)
+
+def stages (hull F : (X → Prop) → X → Prop) : Nat → X → Prop
+  | 0 => fun _ => False
+  | n+1 => hull (fun x => stages hull F n x ∨ F (stages hull F n) x)
+
+/-- Any inductive pattern contains every accumulated producer stage. -/
+theorem below_inductive (hull F : (X → Prop) → X → Prop) (Q : X → Prop)
+    (mono : ∀ S T, Sub S T → Sub (F S) (F T)) (inductiveQ : Sub (F Q) Q)
+    (least : ∀ S, Sub S Q → Sub (hull S) Q) (n : Nat) : Sub (stages hull F n) Q := by
+  induction n with
+  | zero => exact fun _ h => False.elim h
+  | succ n ih =>
+    apply least
+    rintro x (old | fresh)
+    · exact ih x old
+    · exact inductiveQ x (mono _ _ ih x fresh)
+
+theorem stationary_inductive (hull F : (X → Prop) → X → Prop)
+    (extensive : ∀ S, Sub S (hull S)) (n : Nat)
+    (stopped : Sub (stages hull F (n+1)) (stages hull F n)) :
+    Sub (F (stages hull F n)) (stages hull F n) :=
+  fun x hx => stopped x (extensive _ x (Or.inr hx))
+
+end Producers
+
 end TermPackages
