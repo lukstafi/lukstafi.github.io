@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <meta name="dcterms.date" content="2026-11-22">
+  <meta property="og:title" content="What happens at the limit of recursive package openings?">
+  <meta property="og:url" content="https://lukstafi.github.io/projects/jca/agent-collab/thesis-review-43.html">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="lukstafi&#x27;s blog">
+  <meta name="twitter:card" content="summary">
+  <title>What happens at the limit of recursive package
+openings?</title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <link rel="stylesheet" href="/assets/tufte.css">
+  <link rel="stylesheet" href="/assets/pandoc-tufte.css">
+  <link rel="stylesheet" href="/assets/site.css">
+  <script defer=""
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+  type="text/javascript"></script>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+  <script>(function(){var t=localStorage.getItem('theme-preference');if(t)document.documentElement.setAttribute('data-theme',t);})()</script>
+</head>
+<body>
+<nav class="site-nav">
+  <a href="/">Home</a> &middot; <a href="/study/">Study Guide</a> &middot; <a href="/about.html">About</a> &middot; <a href="https://lukstafi.substack.com">Substack</a>
+</nav>
+<div class="theme-toggle">
+  <button id="theme-btn" aria-label="Toggle dark mode">&#9788;</button>
+</div>
+<article>
+<header>
+<h1 class="title">What happens at the limit of recursive package
+openings?</h1>
+<p class="byline">2026-11-22</p>
+</header>
+<nav id="TOC">
+<ul>
+<li><a href="#operator" id="toc-operator">Which update is being
+iterated?</a></li>
+<li><a href="#menus" id="toc-menus">How many parameters does a choice of
+keys carry?</a></li>
+<li><a href="#example" id="toc-example">One extra admission changes the
+limit</a></li>
+<li><a href="#finite" id="toc-finite">Every finite
+approximation</a></li>
+<li><a href="#limits" id="toc-limits">The two limits</a></li>
+<li><a href="#closed" id="toc-closed">What a closed constraint language
+can express</a></li>
+<li><a href="#compiler" id="toc-compiler">What the compiler
+checks</a></li>
+<li><a href="#replay" id="toc-replay">Reproducing the checks</a></li>
+</ul>
+</nav>
+<p>An exact recursive update can finish its first infinite sequence of
+rounds and still produce a new result on the next round. A scalar affine
+supplier gives an example with a constant-size inductive answer. Its
+least relation takes exactly <span
+class="math inline">\(\omega+\omega\)</span> rounds. The extra rounds
+come from a choice the previous rank calculation held fixed. A single
+runtime result must satisfy the package at <strong>every</strong>
+admitted key. <a href="thesis-review-42.html#rank">Single-key rank
+theorem</a> · <a href="thesis-review-39.html#all">InvarGenT’s all-keys
+check</a></p>
+<section id="operator" class="level2">
+<h2>Which update is being iterated?</h2>
+<p>Let <span class="math inline">\(A_x\)</span> be the nonempty set of
+keys admitted at input <span class="math inline">\(x\)</span>. Write
+<span class="math inline">\(R(k)\)</span> for the set of results in the
+package at key <span class="math inline">\(k\)</span>. Opening the
+recursive call at all its typings permits the set <span
+class="math display">\[
+H_R(x)=\bigcap_{k\in A_x}R(k).
+\]</span> A base supplier returns <span
+class="math inline">\(x\)</span>. A successor at the same input maps a
+result <span class="math inline">\(r\)</span> to <span
+class="math inline">\(f_x(r)\)</span>. Every introduced result must be
+stored at every admitted key. The exact producer step is <span
+class="math display">\[
+F(R)(k)=\{x:k\in A_x\}\ \cup\!
+    \bigcup_{x:\,k\in A_x} f_x(H_R(x)).
+\]</span> The sets range over legal inputs. Take <span
+class="math inline">\(R_0\)</span> to be the base and <span
+class="math inline">\(R_{\alpha+1}=F(R_\alpha)\)</span>. At a limit take
+the union separately at each key. The sequence is increasing by
+monotonicity. It is contained in every relation satisfying the base and
+successor clauses. Its first fixed point is therefore the least such
+relation. This gives a semantic version of the producer update in
+(4.1–4.2) with exact simultaneous openings. InvarGenT uses the all-keys
+rule for selected checks on an inferred scheme. Table 4.4 also runs
+generalization, caller abduction and widening. <a
+href="../lukstafi-phd-thesis.pdf#page=71">Table 4.4</a> · <a
+href="https://www.di.ens.fr/~cousot/COUSOTpapers/Tarski-79.shtml">Cousot
+and Cousot on transfinite fixed-point iteration</a></p>
+<p>If each <span class="math inline">\(A_x\)</span> is finite, the union
+of the finite rounds is already a fixed point. For <span
+class="math inline">\(r\)</span> to survive at <span
+class="math inline">\(x\)</span> in the union, each key must have
+admitted <span class="math inline">\(r\)</span> at some finite round.
+The largest of those finitely many round numbers works for all keys.
+This gives <span class="math inline">\(H_{\cup_n R_n}(x)=\bigcup_n
+H_{R_n}(x)\)</span>, and the producer images and unions commute with the
+ascending union. There need be no uniform bound on the sizes of the
+finite <span class="math inline">\(A_x\)</span>. The same proof works if
+each input has finitely many distinct types of key, where keys have the
+same type when exactly the same legal inputs admit them. Such keys start
+equal and receive identical introductions at every round. <a
+href="thesis-review-43.lean">Finite synchronization proof</a></p>
+<p>Changing admission between rounds has two effects. Adding a key gives
+an introduction another place to store its result and gives an opening
+another constraint to satisfy. For example, let inputs zero and one
+admit only keys <span class="math inline">\(a\)</span> and <span
+class="math inline">\(b\)</span>, respectively. Take a candidate <span
+class="math inline">\(R(a)=\{0,1,2\}\)</span>, <span
+class="math inline">\(R(b)=\{0,1\}\)</span> and successor <span
+class="math inline">\(f_x(r)=2r-x\)</span>. The old step stores <span
+class="math inline">\(4\)</span> at <span
+class="math inline">\(a\)</span>, and at <span
+class="math inline">\(b\)</span> it stores only <span
+class="math inline">\(-1\)</span> and <span
+class="math inline">\(1\)</span>. Now also admit <span
+class="math inline">\(b\)</span> at input zero. Its common opening
+shrinks to <span class="math inline">\(\{0,1\}\)</span>. The new step
+loses <span class="math inline">\(4\)</span> at <span
+class="math inline">\(a\)</span> and gains <span
+class="math inline">\(2\)</span> at <span
+class="math inline">\(b\)</span>. The candidate covers the base for both
+admissions. Even adjoining the candidate itself to both updates leaves
+them incomparable, since neither differing result was already stored at
+its respective key. A convergence proof for changing admissions needs
+another invariant besides pointwise growth of the stored relation. <a
+href="thesis-review-43.py">Finite calculation</a></p>
+</section>
+<section id="menus" class="level2">
+<h2>How many parameters does a choice of keys carry?</h2>
+<p>Some supplier families force an opening to determine its input
+exactly. For example, on <span class="math inline">\([0,1]^d\)</span>
+let the base return the vector <span class="math inline">\(x\)</span>.
+The successors recenter <span class="math inline">\(r\mapsto
+x+T(r-x)\)</span> at that same input. One matrix shifts errors one place
+left and another negates them. The caller only checks <span
+class="math inline">\(r_1\le x_1\)</span>. If <span
+class="math inline">\(r\)</span> survives every key of <span
+class="math inline">\(x\)</span>, successive shifts move any chosen
+error to the first coordinate. The caller bounds it above by zero.
+Negating before the shifts bounds its negative above by zero as well.
+Thus <span class="math inline">\(r=x\)</span>.</p>
+<p>For such a family a package exists exactly when <span
+class="math inline">\(A_x\subseteq A_y\)</span> implies <span
+class="math inline">\(x=y\)</span> on legal inputs. Indeed, the base at
+<span class="math inline">\(y\)</span> supplies result <span
+class="math inline">\(y\)</span> at every key of <span
+class="math inline">\(A_y\)</span>. Inclusion then opens <span
+class="math inline">\(y\)</span> at <span
+class="math inline">\(x\)</span>, forcing equality. Conversely, store
+<span class="math inline">\(r\)</span> at <span
+class="math inline">\(k\)</span> exactly when <span
+class="math inline">\(r\)</span> is legal and <span
+class="math inline">\(k\in A_r\)</span>. The opening at <span
+class="math inline">\(x\)</span> now gives <span
+class="math inline">\(A_x\subseteq A_r\)</span> and hence <span
+class="math inline">\(r=x\)</span>. Every recentered successor preserves
+<span class="math inline">\(x\)</span>. Nonempty admissions ensure that
+a result surviving all keys is legal. <a
+href="thesis-review-43.lean">Exact-opening criterion in Lean</a></p>
+<p>One scalar key <strong>with <span class="math inline">\(d\)</span>
+choices</strong> suffices on the cube. At input <span
+class="math inline">\(x\)</span> admit the keys <span
+class="math inline">\(2j+x_j\)</span> for <span
+class="math inline">\(j=0,\ldots,d-1\)</span>. Their disjoint unit
+intervals identify the coordinate. Inclusion of two menus implies
+equality in every interval. The single-key theorem requires <span
+class="math inline">\(d\)</span> independent affine parameters on this
+same cube. The distinction is the information carried by all the choices
+together.</p>
+<p>More precisely, suppose each menu consists of at most <span
+class="math inline">\(m\)</span> points in <span
+class="math inline">\(\mathbb Q^p\)</span>, and admission is rational
+semilinear. Then <span class="math inline">\(mp\ge d\)</span> is
+necessary on any domain containing an open <span
+class="math inline">\(d\)</span>-dimensional box. Sort each nonempty
+menu lexicographically and repeat its last point to fill <span
+class="math inline">\(m\)</span> slots. This is a definable map into
+<span class="math inline">\(\mathbb Q^{mp}\)</span> by linear quantifier
+elimination, and distinct menus give distinct lists. A semilinear
+single-valued map is affine on finitely many polyhedral pieces. To see
+this, split its graph into relatively open convex polyhedra. The affine
+hull of each such piece projects injectively onto the input coordinates,
+since a vertical direction would give two outputs inside the piece. One
+input piece has full dimension, and an injective affine map there has
+rank <span class="math inline">\(d\)</span>. On the cube this bound is
+sharp. Group the coordinates into blocks of at most <span
+class="math inline">\(p\)</span>, pad the last block with zeros, and
+give each block a disjoint unit interval in its first key coordinate by
+adding an even integer. Exactly <span class="math inline">\(\lceil
+d/p\rceil\)</span> choices suffice for <span
+class="math inline">\(p\ge1\)</span>. The arithmetic replay checks menus
+for one through six input coordinates and one or two coordinates per
+key, including what becomes possible when one key is omitted. <a
+href="thesis-review-43.py">Menu checks</a></p>
+</section>
+<section id="example" class="level2">
+<h2>One extra admission changes the limit</h2>
+<p>Let the legal inputs and keys be rationals in <span
+class="math inline">\([0,1]\)</span>. An input admits every key <span
+class="math inline">\(k\le1-x\)</span>. The input <span
+class="math inline">\(x=1\)</span> also admits <span
+class="math inline">\(k=1\)</span>. Equivalently the joint admission is
+a closed triangle together with the point <span
+class="math inline">\((1,1)\)</span>. The successor returns <span
+class="math display">\[
+f_x(r)=2r-x .
+\]</span> One caller requires <span class="math inline">\(r\le
+x\)</span> at every input. The following closed package has constant
+size. <span class="math display">\[
+C(k,r)\ \equiv\ r\le1\ \land\ (k+r\le1\ \lor\ k=1).
+\]</span> For <span class="math inline">\(x&gt;0\)</span>, open at <span
+class="math inline">\(k=1-x&lt;1\)</span> to get <span
+class="math inline">\(r\le x\)</span>. At <span
+class="math inline">\(x=0\)</span> all ordinary <span
+class="math inline">\(k&lt;1\)</span> give <span
+class="math inline">\(r\le1-k\)</span>, hence <span
+class="math inline">\(r\le0\)</span>. Conversely every <span
+class="math inline">\(r\le x\)</span> satisfies the package at each
+admitted key. The base returns <span class="math inline">\(x\)</span>
+and <span class="math inline">\(2r-x\le x\)</span> whenever <span
+class="math inline">\(r\le x\)</span>. This proves all three clauses. A
+finite collection of keys at input zero still leaves a positive rational
+result possible, since each ordinary cap in that collection is positive.
+<a href="thesis-review-43.lean">Inductiveness and caller bound in
+Lean</a></p>
+</section>
+<section id="finite" class="level2">
+<h2>Every finite approximation</h2>
+<p>Put <span class="math inline">\(c_n=2^n-1\)</span> and <span
+class="math inline">\(S_n=\{1\}\cup\{1-2^j:0\le j\le n\}\)</span>. The
+exact finite relation and its openings are</p>
+<table>
+<thead>
+<tr>
+<th>Place</th>
+<th>Results after round <span class="math inline">\(n\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Ordinary key <span class="math inline">\(0\le k&lt;1\)</span></td>
+<td><span class="math inline">\([-c_n(1-k),\,1-k]\)</span></td>
+</tr>
+<tr>
+<td>Exceptional key <span class="math inline">\(k=1\)</span></td>
+<td><span class="math inline">\(S_n\)</span></td>
+</tr>
+<tr>
+<td>Input <span class="math inline">\(x=0\)</span>, after opening all
+its keys</td>
+<td><span class="math inline">\(\{0\}\)</span></td>
+</tr>
+<tr>
+<td>Input <span class="math inline">\(0&lt;x&lt;1\)</span>, after
+opening all its keys</td>
+<td><span class="math inline">\([-c_n x,\,x]\)</span></td>
+</tr>
+<tr>
+<td>Input <span class="math inline">\(x=1\)</span>, after opening both
+keys</td>
+<td><span class="math inline">\(S_n\)</span></td>
+</tr>
+</tbody>
+</table>
+<p>At round zero the intervals give just the base results stored at each
+key. For <span class="math inline">\(0&lt;x&lt;1\)</span>, the smallest
+admitted interval is the one at <span
+class="math inline">\(1-x\)</span>. Applying the successor to it gives
+<span class="math inline">\([-(2c_n+1)x,x]\)</span>. For an ordinary
+<span class="math inline">\(k&gt;0\)</span>, input <span
+class="math inline">\(x=1-k\)</span> fills the whole new interval. At
+<span class="math inline">\(k=0\)</span> inputs <span
+class="math inline">\(x&lt;1\)</span> fill its interior and input one
+supplies both endpoints. At key one the only suppliers are inputs zero
+and one. They supply zero, one and the images <span
+class="math inline">\(2(1-2^j)-1=1-2^{j+1}\)</span>. This proves the
+table by induction. In particular, for <em>every</em> finite round a
+caller at zero asking for <span class="math inline">\(r\ge0\)</span>
+passes. <a href="thesis-review-43.py">Symbolic replay over all rational
+inputs and results</a></p>
+</section>
+<section id="limits" class="level2">
+<h2>The two limits</h2>
+<p>At the first limit an ordinary key <span
+class="math inline">\(k&lt;1\)</span> admits every rational <span
+class="math inline">\(r\le1-k\)</span>, since its negative endpoint
+tends to <span class="math inline">\(-\infty\)</span>. At key one the
+stored results are <span class="math inline">\(1\)</span> and <span
+class="math inline">\(1-2^j\)</span> for natural <span
+class="math inline">\(j\)</span>. Thus <span
+class="math inline">\(-1\)</span> now survives <strong>all</strong> keys
+at input zero. No finite round admitted it at that input. For a direct
+proof against any proposed invariant, fix an ordinary <span
+class="math inline">\(k\)</span> and choose <span
+class="math inline">\(n\)</span> large enough that <span
+class="math inline">\(x=1/(2^n-1)\le1-k\)</span>. Result zero is
+available at every key of this <span class="math inline">\(x\)</span>
+from the base at zero. Applying the successor <span
+class="math inline">\(n\)</span> times at <span
+class="math inline">\(x\)</span> forces <span
+class="math inline">\(-(2^n-1)x=-1\)</span> at <span
+class="math inline">\(k\)</span>. At the exceptional key use <span
+class="math inline">\(x=1\)</span> and one step. Every producer
+invariant therefore violates the lower-bound caller at zero. This is a
+limitation of the specified package interface. The source recursion
+starting at its own base always returns <span
+class="math inline">\(x\)</span>. <a href="thesis-review-43.lean">Proof
+for arbitrary candidate relations</a></p>
+<p>The producer itself also moves at the limit. At input zero the newly
+common <span class="math inline">\(-1\)</span> gives <span
+class="math inline">\(-2\)</span>, which has never appeared at key one.
+From here the ordinary keys keep their half-lines. A successor at input
+<span class="math inline">\(x&gt;0\)</span> receives only <span
+class="math inline">\(r\le x\)</span>, so its output is <span
+class="math inline">\(\le x\le1-k\)</span> at each ordinary key it
+supplies. At input zero all common results are nonpositive. The
+exceptional key keeps <span class="math inline">\(1\)</span>. Describe
+its other values by their nonnegative deficits <span
+class="math inline">\(d=-r\)</span>. At the first limit the deficits are
+<span class="math inline">\(2^j-1\)</span>, binary strings of ones
+including zero. Input zero sends <span class="math inline">\(d\)</span>
+to <span class="math inline">\(2d\)</span> and input one sends it to
+<span class="math inline">\(2d+1\)</span>. Both inputs can use every
+stored deficit. Each successor round retains the old values and appends
+one binary digit to any old deficit.</p>
+<p>After <span class="math inline">\(m\)</span> further rounds, at most
+<span class="math inline">\(m\)</span> digits have been appended to an
+initial string of ones. In particular <span
+class="math inline">\(2^{m+1}\)</span> is still missing, and the next
+round produces it from <span class="math inline">\(2^m\)</span>. Its
+binary expansion needs <span class="math inline">\(m+1\)</span> trailing
+zeros after a positive starting value. At the second limit every
+nonnegative integer occurs, since every finite binary string can be
+built from zero. Only the exceptional key has changed since the first
+limit. If a result survives all keys at the second limit, it already
+survives them together at the finite stage after the first limit when
+that exceptional key admits it. If the input does not admit the
+exceptional key, its first-limit opening already suffices. This
+synchronizes the surviving result for the next producer step. The least
+fixed point is reached at <strong>exactly <span
+class="math inline">\(\omega+\omega\)</span></strong>. Its section at
+key one consists of <span class="math inline">\(1\)</span> and the
+nonpositive integers, so no finite union of rational intervals and
+points defines it. The closed formula <span
+class="math inline">\(C\)</span> still certifies the upper-bound caller.
+<a href="thesis-review-43.lean">Strict steps, both limits, fixedness and
+leastness in Lean</a></p>
+</section>
+<section id="closed" class="level2">
+<h2>What a closed constraint language can express</h2>
+<p>Closing the <em>joint graph</em> of the relation at the first limit
+gives a different exact result. For <span
+class="math inline">\(k&lt;1\)</span>, every nonpositive rational <span
+class="math inline">\(r\)</span> is already stored. To see this directly
+for any producer invariant, choose <span
+class="math inline">\(n\)</span> with <span
+class="math inline">\(x=-r/(2^n-1)\le1-k\)</span> and repeat the
+argument for <span class="math inline">\(-1\)</span>. If the graph is
+closed, approaching <span class="math inline">\(k=1\)</span> with that
+same <span class="math inline">\(r\)</span> puts <span
+class="math inline">\(r\)</span> at the exceptional key too. Input one
+supplies the point <span class="math inline">\((1,1)\)</span>. Together
+with the base triangle these facts force the closed relation <span
+class="math display">\[
+D(k,r)\quad\equiv\quad r\le1-k\ \lor\ (k=1\land r=1)
+\]</span> on legal keys. It is inductive. At input zero the possible
+results are nonpositive. At input one they are nonpositive or exactly
+one. Both sets are preserved by their respective successors. Every other
+input sees <span class="math inline">\(r\le x\)</span>, just as it did
+with <span class="math inline">\(C\)</span>. Thus <span
+class="math inline">\(D\)</span> is the <strong>least closed producer
+invariant</strong>, and taking joint closure at the first limit reaches
+it. Convexifying each individual key section of <span
+class="math inline">\(D\)</span> gives <span
+class="math inline">\(C\)</span>. Convexifying the joint graph would
+lose the caller bound even at input zero. The two base points <span
+class="math inline">\((0,1)\)</span> and <span
+class="math inline">\((1,1)\)</span> force <span
+class="math inline">\((k,1)\)</span> at every key by convexity. <a
+href="thesis-review-43.lean">Least-closed-invariant proof</a></p>
+<p>Remove the single admission <span
+class="math inline">\((1,1)\)</span> and the difference becomes an
+expressibility obstruction. Input zero is now the only supplier at key
+one. That key keeps <span class="math inline">\(\{0\}\)</span>, while
+each <span class="math inline">\(k&lt;1\)</span> eventually admits every
+<span class="math inline">\(r\le1-k\)</span>. This relation is fixed at
+the first limit and validates the lower-bound caller <span
+class="math inline">\(r\ge0\)</span> at zero. Its key sections are
+individually closed. Any <em>jointly</em> closed producer invariant
+still contains <span class="math inline">\((1,-1)\)</span> by the
+ordinary keys approaching one, so it fails that caller. A formula with
+finitely many rational affine equations, weak inequalities, min/max
+branches and existential rational witnesses defines a finite union of
+closed polyhedra. Each conjunction projects by linear elimination and
+the finite union stays closed. No package in that language can certify
+this lower bound at the specified interface. Allowing a strict test
+<span class="math inline">\(k&lt;1\)</span> expresses the displayed
+solution. <a href="thesis-review-43.lean">Triangle control and
+closed-graph obstruction in Lean</a> · <a
+href="thesis-review-38.html#projection">Projection of private
+witnesses</a></p>
+<p>The choice of interface resolves the lower-bound failure in both
+examples. Carry <span class="math inline">\(x\)</span> along with <span
+class="math inline">\(k\)</span> and use the single equation <span
+class="math inline">\(r=x\)</span>. It contains the base, and <span
+class="math inline">\(2x-x=x\)</span> proves the successor clause. In
+the version with the isolated admission, every candidate at the old
+interface had failed. In the triangle alone, a candidate existed there
+but the weak inequalities of the answer language could not express it.
+This gives two distinct reasons to add a parameter when a postcondition
+update continues to fail. <a
+href="../lukstafi-phd-thesis.pdf#page=134">Thesis discussion of branch
+generalization</a></p>
+</section>
+<section id="compiler" class="level2">
+<h2>What the compiler checks</h2>
+<p>The <a href="limit_result_keys.gadt">source example</a> gives the
+recursive function the admission above and the package <span
+class="math inline">\(C\)</span>. It passes <span
+class="math inline">\(x+1\)</span> as a second numeric argument. Before
+computing <span class="math inline">\(2r-x\)</span>, the successor
+checks the guard <span class="math inline">\(x+1\le r\)</span> and gives
+that arm a Boolean result. Inferring the numeric function therefore
+requires ruling out the arm. The external arithmetic operation returns
+the exact integer when it succeeds. A range check can stop it before
+overflow. At the two tested inputs the program returns zero and one.</p>
+<p>There is a short certificate for the guard. The key <span
+class="math inline">\((1-x)/2\)</span> is admitted at every input. Its
+ordinary upper bound is <span class="math inline">\((1+x)/2\)</span>,
+strictly below <span class="math inline">\(1+x\)</span>. Even the
+stronger rational claim <span class="math inline">\(r\le x\)</span> has
+a single refuting expression once the hypothetical result is known. For
+<span class="math inline">\(x&lt;r\le1\)</span> take <span
+class="math inline">\(k=1-(x+r)/2\)</span>. It is admitted, is less than
+one, and gives <span class="math inline">\(k+r&gt;1\)</span>. The
+absence of a finite input-only sample at zero concerns the exact
+rational upper bound. <a href="thesis-review-43.py">Symbolic checks for
+both choices</a></p>
+<p>The previous compiler scheduled the all-keys check early when an
+admission disjunction mentioned the key on only one side. Here both
+sides mention it. The source uses <span
+class="math inline">\(i+k\le1\)</span> or <span
+class="math inline">\(i+k\ge2\)</span>, which is exactly the triangle
+and isolated point in the unit square. The two inequalities give
+opposite directions in <span class="math inline">\(k\)</span>. The box
+bounds also imply <span class="math inline">\(2-i-k\ge0\)</span>, so the
+second inequality can hold only at equality. InvarGenT now normalizes
+the key coefficients and tries the complete guard check early when the
+two directions are opposite and an arm is confined to an attainable
+equality by the linear admission constraints. A key-free arm retains the
+earlier priority. Two separated intervals with interior keep their
+existing order of probes. The criterion selects a proposal. Admission
+still uses the intersection of the written and inferred domains, and the
+checker verifies the original guard against every admitted typing before
+using the exclusion.</p>
+<p>To compare proposals, first let the successor return <span
+class="math inline">\(x\)</span> after the guard. Revision
+<code>a953fc1</code> tried three families of probes before the all-keys
+check succeeded. With the change that check is the first proposal. The
+two exported schemes have the same domain and the same package.
+Restoring <span class="math inline">\(2r-x\)</span> also passes in the
+revised compiler at outer budget four. On that transfer the diagnostic
+for the earlier revision was stopped during its second probe proposal
+after 230 seconds. Its eventual outcome is unknown. In a control the
+base returns one, and its written package permits one at every admitted
+key. At input zero the Boolean arm is reachable and the compiler rejects
+it. Returning the numeric value from that arm instead prints one. A
+further source control requires <span class="math inline">\(r=x\)</span>
+in the package and gives the negative-result arm a Boolean body. Its
+full exported scheme retains that equality, and the two calls print zero
+and one. <a href="thesis-review-43-trace.patch">Proposal diagnostic</a>
+· <a href="thesis-review-43.py">Scheme, execution and diagnostic
+replay</a></p>
+</section>
+<section id="replay" class="level2">
+<h2>Reproducing the checks</h2>
+<p>InvarGenT revision <code>f872939</code> implements the proposal
+order. Its OCaml 5.3 compatibility run passed all 375 active tests, with
+ten recorded as TODO. The 192 earlier example signatures were
+byte-identical to those at <code>a953fc1</code>. The arithmetic driver
+on the OCaml 5.5 compatibility build checked 92 finite menus and 80
+guards, each with a rational and an integral observation.</p>
+<p>Run the <a href="thesis-review-43.lean">Lean proof</a> with Lean 4.19
+and mathlib v4.19.0. The theorems <code>finite_strict</code>,
+<code>after_strict</code>, <code>second_fixed</code> and
+<code>second_least</code> use the producer step itself. Run
+<code>python3 thesis-review-43.py</code> with <code>z3-solver</code>.
+The <a href="thesis-review-43.py">replay</a> eliminates the input and
+key quantifiers to compare the first ten entire producer steps with the
+displayed formulas. It also checks the closed solution and the binary
+deficits through 4096. Pass <code>--driver</code> with the executable
+built from the <a href="thesis-review-41-numeric.ml">InvarGenT
+arithmetic driver</a> to check the closed solution and slices of the
+finite approximations against the implemented all-keys predicate, with
+both rational and native observations. Add <code>--compiler</code> for
+the end-to-end source checks. Build each compiler with the diagnostic
+and pass it as <code>--before-trace</code> or <code>--trace</code> to
+replay the proposal counts.</p>
+</section>
+</article>
+<script src="/assets/theme-toggle.js"></script>
+</body>
+</html>

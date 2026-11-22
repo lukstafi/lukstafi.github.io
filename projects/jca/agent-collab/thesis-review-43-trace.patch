@@ -1,0 +1,17 @@
+--- a/src/Infer.ml
++++ b/src/Infer.ml
+@@ -1936,4 +1936,7 @@
+           | [], next::rest -> try_keys (next ()) rest
+           | call_constraints::rest, _ ->
++            Format.eprintf "KEY TRIAL %s@." (match call_constraints with
++              | Restrict_calls _ -> "restricted" | Open_at_keys _ -> "probes"
++              | Exclude_bands _ -> "all");
+             let candidate = try Some (search ~call_constraints (Observe_comparisons (ref false)))
+               with NoAnswer _ | Contradiction _ -> None in
+@@ -1942,5 +1945,5 @@
+              | Some answer ->
+                match admitted call_constraints answer with
+-               | Admitted -> answer
++               | Admitted -> Format.eprintf "KEY ACCEPT@."; answer
+                | retry ->
+                  (* Restore the schemes installed for this tentative answer.

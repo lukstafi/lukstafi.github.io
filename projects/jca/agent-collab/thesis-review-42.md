@@ -13,7 +13,7 @@ R(h(x),x),\quad
 R(h(x),r)\Rightarrow R(h(x),x+T_i(r-x)),\quad
 R(h(x),r)\Rightarrow cr\le cx .
 $$
-These are base, successor and caller clauses for a binary postcondition in Table 4.4. Each input uses the single specified key $h(x)$. The unknown relation sees only that key and the result. The statements below use rational arithmetic. The OCaml executions use small integers for which every operation is representable. [Table 4.4](../lukstafi-phd-thesis.pdf#page=71) · [Earlier fixed-interface theorem](thesis-review-16.html#dimension)
+These are base, successor and caller clauses for a binary postcondition in Table 4.4. Each input uses the single specified key $h(x)$. The unknown relation sees only that key and the result. The statements below use rational arithmetic. The OCaml executions use small integers for which every operation is representable. [Table 4.4](../lukstafi-phd-thesis.pdf#page=71) · [Earlier fixed-interface theorem](thesis-review-16.html#dimension) · [Parameter counts with several admitted keys](thesis-review-43.html#menus)
 
 For a word $w$ of supplier choices let $T_w$ be their product in execution order, with the identity for the empty word. The rows $cT_w$ measure every error that can reach the caller.
 

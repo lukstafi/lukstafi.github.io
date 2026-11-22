@@ -474,6 +474,11 @@ build_html \
   "$collab_dir/thesis-review-42.html" \
   "Which inputs must survive an induction jump?"
 
+build_html \
+  "$collab_dir/thesis-review-43.md" \
+  "$collab_dir/thesis-review-43.html" \
+  "What happens at the limit of recursive package openings?"
+
 reviews_dir="$collab_dir/reviews"
 if [[ -d "$reviews_dir" ]]; then
   for md_file in "$reviews_dir"/*.md; do
