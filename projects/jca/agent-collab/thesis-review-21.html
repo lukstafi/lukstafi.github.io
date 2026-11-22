@@ -49,19 +49,19 @@ matters</a></li>
 </ul></li>
 <li><a href="#retry" id="toc-retry">Trying a type that works even if the
 guard succeeds</a></li>
-<li><a href="#residual" id="toc-residual">A constant-size solution that
-still fails at every positive budget</a></li>
+<li><a href="#residual" id="toc-residual">A constant-size solution
+missed at every positive budget in <code>16509d9</code></a></li>
 <li><a href="#checks" id="toc-checks">Reproduction</a></li>
 </ul>
 </nav>
 <p>A bound on solution size cannot guarantee that Table 4.4 finds a
 solution. Two examples fail at different points. In the first, the
 induction jump loses an inequality that the caller asks for again on
-every pass. In the second, the current InvarGenT search exhausts its
-type proposals before reaching the induction jump. Both examples have
-fixed-size certificates. <a href="capped_climb.gadt">Arithmetic
-program</a> · <a href="opaque_guard_pair.gadt">Guarded two-call
-counterexample</a></p>
+every pass. In the second, the InvarGenT search at revision
+<code>16509d9</code> exhausts its type proposals before reaching the
+induction jump. Both examples have fixed-size certificates. <a
+href="capped_climb.gadt">Arithmetic program</a> · <a
+href="opaque_guard_pair.gadt">Guarded two-call counterexample</a></p>
 <section id="feedback" class="level2">
 <h2>A demand that survives every induction jump</h2>
 <p>A binary postcondition <span
@@ -216,8 +216,8 @@ payload. <a href="thesis-review-21.py">Generated-code and budget
 checks</a></p>
 </section>
 <section id="residual" class="level2">
-<h2>A constant-size solution that still fails at every positive
-budget</h2>
+<h2>A constant-size solution missed at every positive budget in
+<code>16509d9</code></h2>
 <p>Put <strong>both</strong> calls behind
 <code>1 &lt;= observed n</code>. Each uses a fresh instance of
 <code>f</code>, opens the pair, and tests the first component against
@@ -272,7 +272,7 @@ an answer is unreachable as well. With the remaining settings fixed,
 every positive outer budget therefore gives the same finite quantifier
 violation. Budget zero stops at the first successful update. We compared
 the complete pass traces at budgets 1 and 10,000. This refutes
-successful convergence of the <strong>current search</strong> on
+successful convergence of the search at <code>16509d9</code> on
 size-bounded satisfiable constraints without claiming an infinite run of
 its repaired arithmetic jump. <a
 href="thesis-review-21-trace.patch">Instrumentation</a> · <a
@@ -286,6 +286,11 @@ a search that can reach every bounded certificate, together with a
 decision procedure for checking each one. <a
 href="thesis-review-2.html">Bounded certificate theorem and its
 hypotheses</a></p>
+<p>A later solver uses the guard-evaluation obligations and checks this
+two-call program on pass 5. A local helper whose return is itself
+packaged gives a new constant-size certificate and three failed pass-6
+replays. <a href="thesis-review-22.html#binary">Guard contracts and the
+second binary postcondition</a></p>
 </section>
 <section id="checks" class="level2">
 <h2>Reproduction</h2>

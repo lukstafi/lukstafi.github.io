@@ -369,6 +369,11 @@ build_html \
   "$collab_dir/thesis-review-21.html" \
   "What happens to a recursive call behind an impossible guard?"
 
+build_html \
+  "$collab_dir/thesis-review-22.md" \
+  "$collab_dir/thesis-review-22.html" \
+  "When the guard needs a second recursive postcondition"
+
 reviews_dir="$collab_dir/reviews"
 if [[ -d "$reviews_dir" ]]; then
   for md_file in "$reviews_dir"/*.md; do

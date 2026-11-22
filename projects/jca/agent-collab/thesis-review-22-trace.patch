@@ -1,0 +1,25 @@
+--- a/src/Invariants.ml
++++ b/src/Invariants.ml
+@@ -9,2 +9,4 @@
+ (* Should be greater than the last disj_step. *)
++let trace_cuts = ref 0
++let trace_limit = try int_of_string (Sys.getenv "JCA_TRACE_CUT_LIMIT") with Not_found -> max_int
+ let timeout_count = ref 11
+@@ -1153,2 +1155,3 @@
+         (fun (_,(_,cnj)) -> cnj) sol1 in
++    Format.eprintf "TRACE enter %d@." iter_no;
+     let old_initstep = !initstep in
+@@ -1554,2 +1557,3 @@
+         *]*)
++        Format.eprintf "TRACE fail %d@." iter_no;
+         Aux.Left (sort, e) in
+@@ -1605,2 +1609,5 @@
+                NumDefs.pr_formula s_discard.at_num; *]*)
++             Format.eprintf "TRACE cut %d %a END_CUT@." iter_no pr_subst (snd s_discard.at_typ);
++             incr trace_cuts;
++             if !trace_cuts >= trace_limit then exit 86;
+              let discard =
+@@ -1885,2 +1892,3 @@
+         finished1 finished2 finished3 finished; *]*)
++      Format.eprintf "TRACE update %d@." iter_no;
+       if not !initstep && finished

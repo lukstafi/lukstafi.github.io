@@ -43,7 +43,8 @@ def main():
     parser.add_argument("invargent", type=Path)
     parser.add_argument("--before", type=Path, help="optional executable at 253cd6b")
     parser.add_argument("--before-retry", type=Path, help="optional executable at 18f071c")
-    parser.add_argument("--trace", type=Path, help="executable built with thesis-review-21-trace.patch")
+    parser.add_argument("--before-contract", type=Path, help="optional executable at 16509d9")
+    parser.add_argument("--trace", type=Path, help="16509d9 executable built with thesis-review-21-trace.patch")
     args = parser.parse_args()
     current = args.invargent.resolve(strict=True)
     dead, pair, observe = programs()
@@ -87,9 +88,17 @@ def main():
         residual = (HERE / "opaque_guard_pair.gadt").read_text()
         assert residual.split() == observe("1 <= observed n", body=pair).replace(
             "with Pick n", "with | Pick n").split()
-        for budget in (0, 1, 4, 6, 11, 80, 10000):
-            check(f"opaque_pair_{budget}", residual, budget,
-                  "Quantifier violation" if budget else "Answers do not converge")
+        for budget in (0, 1, 4, 5, 6, 11, 80, 10000):
+            if budget >= 5:
+                expect_type(f"opaque_pair_{budget}", residual, budget, PLAIN)
+            else:
+                check(f"opaque_pair_{budget}", residual, budget,
+                      "Quantifier violation" if budget else "Answers do not converge")
+        if args.before_contract:
+            old = args.before_contract.resolve(strict=True)
+            check("pair_before_contract", residual, 10000, "Quantifier violation", exe=old)
+            check("written_pair_before_contract", previous["written"](residual, PINNED),
+                  error="Type mismatch", exe=old)
         if args.trace:
             trace = args.trace.resolve(strict=True)
             source = Path(tmp) / "opaque_pair_11.gadt"
@@ -108,7 +117,7 @@ def main():
                                  ("enter 0", "enter 1", "fail 0", "fail 1", "updated 0", "strengthen")}
             assert events(10000) == path
             print("same 25 attempted passes at budgets 1 and 10000", flush=True)
-        check("written_pair", previous["written"](residual, PINNED), error="Type mismatch")
+        check("written_pair", previous["written"](residual, PINNED))
         check("written_direct_pair", previous["written"](dead.replace(CALL, pair), PINNED))
         check("overflow_before_constructor", OVERFLOW)
         direct = '''datatype Seed
