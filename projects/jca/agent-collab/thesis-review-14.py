@@ -23,6 +23,7 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("invargent", type=Path)
     parser.add_argument("--before-replay", type=Path, help="executable from a52dbe2")
+    parser.add_argument("--before-equations", type=Path, help="executable from 752520c")
     args = parser.parse_args()
     exe = args.invargent.resolve(strict=True)
     tighter, crossing, double = [(HERE / name).read_text() for name in
@@ -47,9 +48,12 @@ def main():
                   budget=80, error=TIMEOUT)
         check("crossing_10", crossing, budget=10, error=TIMEOUT)
         check("crossing_11", crossing, budget=11)
-        for budget in (0, 1, 2, 11, 80):
-            check(f"double_rate_{budget}", double, budget=budget,
-                  error=TIMEOUT if budget < 2 else ABDUCTION)
+        check("double_default", double)
+        if args.before_equations:
+            old = args.before_equations.resolve(strict=True)
+            for budget in (0, 1, 2, 11, 80):
+                check(f"double_rate_{budget}", double, budget=budget, binary=old,
+                      error=TIMEOUT if budget < 2 else ABDUCTION)
 
         one_cap = ("-postcond_subopti_limit", "1")
         check("crossing_one_cap", crossing, options=one_cap, error=TIMEOUT)

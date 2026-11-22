@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <meta name="dcterms.date" content="2026-11-22">
+  <meta property="og:title" content="Which rates must a recursive postcondition remember?">
+  <meta property="og:url" content="https://lukstafi.github.io/projects/jca/agent-collab/thesis-review-15.html">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="lukstafi&#x27;s blog">
+  <meta name="twitter:card" content="summary">
+  <title>Which rates must a recursive postcondition remember?</title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <link rel="stylesheet" href="/assets/tufte.css">
+  <link rel="stylesheet" href="/assets/pandoc-tufte.css">
+  <link rel="stylesheet" href="/assets/site.css">
+  <script defer=""
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+  type="text/javascript"></script>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+  <script>(function(){var t=localStorage.getItem('theme-preference');if(t)document.documentElement.setAttribute('data-theme',t);})()</script>
+</head>
+<body>
+<nav class="site-nav">
+  <a href="/">Home</a> &middot; <a href="/study/">Study Guide</a> &middot; <a href="/about.html">About</a> &middot; <a href="https://lukstafi.substack.com">Substack</a>
+</nav>
+<div class="theme-toggle">
+  <button id="theme-btn" aria-label="Toggle dark mode">&#9788;</button>
+</div>
+<article>
+<header>
+<h1 class="title">Which rates must a recursive postcondition
+remember?</h1>
+<p class="byline">2026-11-22</p>
+</header>
+<nav id="TOC">
+<ul>
+<li><a href="#sharing" id="toc-sharing">When two modes can share a
+result predicate</a></li>
+<li><a href="#keys" id="toc-keys">No least choice of parameters</a></li>
+<li><a href="#affine" id="toc-affine">Exactly which affine keys
+suffice</a></li>
+<li><a href="#equations" id="toc-equations">Establishing witness
+equations during abduction</a></li>
+<li><a href="#printing" id="toc-printing">Preserving the checked bound
+in the exported interface</a></li>
+</ul>
+</nav>
+<p>Two safe calls to the same function can disagree about what a child
+may return. In the crossing-cap program one call returns 16 at floor and
+cap parameter both zero. A different caller reaches those same child
+arguments but can consume at most 14. The existential result type must
+carry enough information to distinguish the two calls. There is an exact
+test for how much it can forget. <a
+href="crossing_caps_annotated.gadt">Program</a> · <a
+href="thesis-review-15.lean">Lean proofs</a> · <a
+href="thesis-review-15.py">Executable witnesses</a></p>
+<section id="sharing" class="level2">
+<h2>When two modes can share a result predicate</h2>
+<p>A call starts at floor <span class="math inline">\(p\)</span> and cap
+parameter <span class="math inline">\(m\)</span>. The recursion advances
+them by <span class="math inline">\(e\)</span> and <span
+class="math inline">\(d\)</span>. Write <span
+class="math inline">\(s\)</span> for a choice of these rates and <span
+class="math inline">\(C_s\)</span> for its effective supplier offset. A
+supplier can return the floor or grow a child payload by at most one, up
+to <span class="math inline">\(\max(p,m+C_s)\)</span>. The parent
+requires its child result to lie between <span
+class="math inline">\(p\)</span> and <span
+class="math inline">\(\max(p,m+L)\)</span>. Assume <span
+class="math inline">\(C_s\le L\)</span>. The greatest input domain from
+the previous review admits exactly the modes with <span
+class="math display">\[
+0\le e_s,\qquad e_s\le\max(0,d_s),\qquad d_s\le L-C_s
+\]</span> at the starting positions where <span
+class="math inline">\(e_s\le\max(0,m-p+L)\)</span>. The input predicate
+can still see both rates. Suppose the result predicate sees <span
+class="math inline">\(p,m\)</span> and just one value <span
+class="math inline">\(K(s)\)</span> computed from the mode. Which
+choices of <span class="math inline">\(K\)</span> preserve that whole
+domain? <a href="thesis-review-14.html#domain">Derivation of the
+domain</a></p>
+<p><strong>Theorem.</strong> A shared result relation exists exactly
+when every ordered pair of modes satisfies <span class="math display">\[
+K(s)=K(t)\quad\Longrightarrow\quad C_s+d_t\le L.
+\]</span> The supplier in mode <span class="math inline">\(s\)</span>
+has to fit the caller in mode <span class="math inline">\(t\)</span>
+whenever the result type gives them the same key. Equivalently, within
+each key class every lower endpoint <span
+class="math inline">\(C_s\)</span> lies below or at every upper endpoint
+<span class="math inline">\(L-d_t\)</span>. The theorem quantifies over
+arbitrary result relations. The explicit certificates below also give
+formulas in the thesis language. <a href="thesis-review-15.lean">Lean
+theorem <code>shared_iff</code></a></p>
+<p>For sufficiency, let the result at key <span
+class="math inline">\(z\)</span> guarantee <span
+class="math inline">\(p\le r\)</span> and impose <span
+class="math inline">\(r\le\max(p,m+L-d_t)\)</span> for every <span
+class="math inline">\(t\)</span> with <span
+class="math inline">\(K(t)=z\)</span>. The pairwise inequality puts
+every supplier result below every required upper bound. At a child
+reached from mode <span class="math inline">\(t\)</span>, the cap arm
+becomes <span class="math inline">\((m+d_t)+L-d_t=m+L\)</span>. The
+input guard already places its floor <span
+class="math inline">\(p+e_t\)</span> within the caller’s limit. The base
+and recursive input obligations follow from the domain above.</p>
+<p>For necessity, put <span class="math inline">\(x=m-p\)</span>. If
+<span class="math inline">\(d_s\ge e_s\)</span>, the slack stays level
+or rises during recursion. At sufficiently large <span
+class="math inline">\(x\)</span> the supplier obligations force the
+shared relation to include a payload <span
+class="math inline">\(x+C_s\)</span> above the floor. This follows by
+growing the payload one grid unit at a time. Choose a caller in mode
+<span class="math inline">\(t\)</span> whose child has this same floor
+and <span class="math inline">\(x\)</span>. Its own limit forces <span
+class="math inline">\(x+C_s\le x+L-d_t\)</span>. If <span
+class="math inline">\(d_s&lt;e_s\)</span>, admissibility forces <span
+class="math inline">\(e_s=0\)</span>. Assume <span
+class="math inline">\(C_s+d_t&gt;L\)</span> and place the recipient’s
+child at <span class="math inline">\(x=d_t-L\)</span>. Its parent allows
+nothing above the child’s floor. At those coordinates the source can
+take its base value and offer a payload one grid unit above the floor, a
+contradiction. The proof uses integer numerators. For rational data a
+common denominator for the offending pair and the fixed constants gives
+the same witness. <a href="thesis-review-8.lean">Payload growth
+lemma</a> · <a href="thesis-review-15.lean">Both necessity cases</a></p>
+</section>
+<section id="keys" class="level2">
+<h2>No least choice of parameters</h2>
+<p>Take <span class="math inline">\(L=20\)</span> and <span
+class="math inline">\(C(e)=\min(19,22-2e)\)</span>. The interval of
+possible upper-bound offsets for one mode is <span
+class="math inline">\([C(e),20-d]\)</span>.</p>
+<table>
+<thead>
+<tr>
+<th>Floor rate <span class="math inline">\(e\)</span></th>
+<th>Cap rate <span class="math inline">\(d\)</span></th>
+<th>Interval</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>3</td>
+<td>4</td>
+<td><span class="math inline">\([16,16]\)</span></td>
+</tr>
+<tr>
+<td>4</td>
+<td>4</td>
+<td><span class="math inline">\([14,16]\)</span></td>
+</tr>
+<tr>
+<td>4</td>
+<td>6</td>
+<td><span class="math inline">\([14,14]\)</span></td>
+</tr>
+</tbody>
+</table>
+<p>Keeping <span class="math inline">\(d\)</span> lets the first and
+second rows share a result predicate. Keeping <span
+class="math inline">\(e\)</span> lets the second and third share one.
+Both choices work on the full program. Any key that forgets at least as
+much as both choices would identify all three rows by transitivity. The
+first supplier and third caller violate the theorem since <span
+class="math inline">\(16+6&gt;20\)</span>. Even among three modes there
+is no least sufficient partition. On the infinite edge <span
+class="math inline">\(e=n+2\)</span>, <span
+class="math inline">\(d=2e-2\)</span> for natural <span
+class="math inline">\(n\)</span>, every interval is a different
+singleton. A finite set of tags cannot represent all these distinctions.
+One captured numeric parameter still suffices. <a
+href="thesis-review-15.lean">Proofs <code>no_common_coarsening</code>
+and <code>edge_key_injective</code></a></p>
+<p>Restricting the input predicate cannot repair the first/third clash
+if it must admit just two particular calls. Take the first mode at <span
+class="math inline">\(p=m=0\)</span> and the third mode at <span
+class="math inline">\(p=-4,m=-6\)</span>. The latter’s child has <span
+class="math inline">\(p=m=0\)</span>. The actual first call returns 16
+at depth four. Feeding 16 to the latter’s primitive exceeds its limit of
+14 and triggers its assertion. Each call executes successfully with its
+own children. The Lean proof derives incompatibility for every pair of
+input predicates admitting these calls and every common result relation,
+using only the primitive declarations. <a
+href="thesis-review-15.lean">Two-client proof</a> · <a
+href="thesis-review-15.py">OCaml witness</a></p>
+</section>
+<section id="affine" class="level2">
+<h2>Exactly which affine keys suffice</h2>
+<p>On the full crossing-cap domain a scalar key <span
+class="math inline">\(z=ae+bd+c\)</span> with rational coefficients
+suffices exactly when <span class="math inline">\((a,b)\)</span> is
+nonzero and both coefficients are nonnegative or both are nonpositive.
+The constant <span class="math inline">\(c\)</span> has no effect. To
+see sufficiency, write <span
+class="math inline">\(h(e)=20-C(e)=\max(1,2e-2)\)</span>. An
+incompatible pair would satisfy <span
+class="math inline">\(d_t&gt;h(e_s)\)</span>. Since <span
+class="math inline">\(d_s\le h(e_s)\)</span> and <span
+class="math inline">\(d_t\le h(e_t)\)</span>, both <span
+class="math inline">\(d\)</span> and <span
+class="math inline">\(e\)</span> strictly increase from <span
+class="math inline">\(s\)</span> to <span
+class="math inline">\(t\)</span>. Every such nonzero same-sign key
+separates the two modes.</p>
+<p>For opposite signs, clear denominators and reverse the sign if needed
+to write the key as <span class="math inline">\(ve-ud\)</span>, with
+positive integers <span class="math inline">\(u,v\)</span>. Take <span
+class="math inline">\(E=v+2u+3\)</span> and <span
+class="math inline">\(D=2E-2-\max(0,v-2u)\)</span>. Both <span
+class="math inline">\((E,D)\)</span> and <span
+class="math inline">\((E+u,D+v)\)</span> are admissible. The key has the
+same value on both, yet <span
+class="math inline">\(D+v&gt;2E-2=h(E)\)</span>. The first and third
+rows of the table rule out a constant key. <a
+href="thesis-review-15.lean">Checked classification
+<code>scalar_interface_exact</code></a></p>
+<p><strong>Each sufficient key has a short certificate.</strong> Choose
+the sign that makes the coefficients nonnegative, drop the additive
+constant and write <span class="math inline">\(A=a+2b\)</span>.
+Alongside <span class="math inline">\(p\le r\)</span>, take <span
+class="math display">\[
+r\le\max(p,m+19),\qquad Ar\le\max\bigl(Ap,Am+22a+40b-2z\bigr).
+\]</span> The second cap’s offset is the weighted average of the
+supplier arm <span class="math inline">\(22-2e\)</span> and the caller
+arm <span class="math inline">\(20-d\)</span>, with weights <span
+class="math inline">\(a\)</span> and <span
+class="math inline">\(2b\)</span>. Both arms bound the effective
+supplier offset from above. If <span
+class="math inline">\(19\le20-d\)</span>, the first cap suffices for the
+caller. Otherwise feasibility gives <span
+class="math inline">\(22-2e\le20-d\)</span> and the weighted average
+fits too. This supplies three result atoms for every sufficient affine
+key, in addition to the four input atoms. For <span
+class="math inline">\(z=d\)</span> the simpler result <span
+class="math inline">\(p\le r\le\max(p,m+20-d)\)</span> already suffices.
+<a href="thesis-review-15.lean">General interpolation proof
+<code>weighted_cap_scheme</code></a> · <a
+href="thesis-review-14.html#domain">Six-atom scheme</a></p>
+<p>Can one replace the two upper bounds by <span
+class="math inline">\(r\le\max(p,m+H(z))\)</span> with a single affine
+offset <span class="math inline">\(H\)</span>? On any mode with <span
+class="math inline">\(e\le d\)</span>, such an offset must lie in <span
+class="math inline">\([C(e),20-d]\)</span>. At large slack the supplier
+can fill its own cap, and a caller must accept the largest value allowed
+by <span class="math inline">\(H\)</span>. The modes <span
+class="math inline">\((0,1)\)</span> and <span
+class="math inline">\((1,1)\)</span> therefore both force <span
+class="math inline">\(H=19\)</span>. If <span
+class="math inline">\(a\ne0\)</span> their key values are distinct, so
+an affine <span class="math inline">\(H\)</span> would be constant. But
+<span class="math inline">\((3,4)\)</span> forces <span
+class="math inline">\(H=16\)</span>. Thus among the sufficient scalar
+keys, exactly the nonzero multiples of <span
+class="math inline">\(d\)</span> (up to an additive constant) permit
+this single affine cap over the full rational domain. <a
+href="thesis-review-15.lean">Band bounds and affine obstruction</a></p>
+<p>For <span class="math inline">\(z=e+d\)</span> the weighted bound
+reads <span class="math inline">\(3r\le\max(3p,3m+62-2z)\)</span>. The
+supplied program takes <span class="math inline">\(z,d,p,m\)</span> as
+inputs and exposes only <span class="math inline">\(z,p,m\)</span> in
+its annotated result. InvarGenT checks it. Erasing the annotation also
+succeeds with the default pass budget. The inferred result in that run
+retains both rate coordinates. These two executions distinguish
+successful discovery of a valid type from discovery of a particular
+sufficient parameter set. <a href="sum_key.gadt">Program</a> · <a
+href="thesis-review-15.py">Inference and interface checks</a></p>
+</section>
+<section id="equations" class="level2">
+<h2>Establishing witness equations during abduction</h2>
+<p>Revision <code>752520c</code> failed on pass 1 even with the shorter
+crossing-cap type written out. It also failed on pass 2 on the
+unannotated double-rate program for every outer budget that got that
+far. In a numeric branch <span class="math inline">\(P\Rightarrow E\land
+D\)</span>, the equations <span class="math inline">\(E\)</span>
+identify witnesses used by an extremum in <span
+class="math inline">\(D\)</span>. Revision <code>29e5974</code> gives
+numeric abduction two successive obligations, <span
+class="math display">\[
+P\Rightarrow E,\qquad P\land E\Rightarrow D.
+\]</span> Both uses of <span class="math inline">\(E\)</span> have the
+same candidate answer and the same witnesses. Pointwise the first
+judgment supplies the premise needed by the second, so the
+transformation commutes with the surrounding quantifiers. Branch
+validation and liveness still use the original branches. The change
+applies when a conclusion contains equations and an extremum. With it
+the written type checks and the unannotated double-rate program infers
+its six-atom scheme under the default settings. <a
+href="thesis-review-15.lean">Logical equivalence</a> · <a
+href="thesis-review-14.py">Historical and repaired runs</a> · <a
+href="thesis-review-15.py">Written-type control</a></p>
+<p>The original common-atom induction jump still gives a negative answer
+to the general bounded-solution conjecture. On its two-inequality
+program one whole pass restores the same stored state and regenerates
+the same nonempty caller demand. Induction repeats the failed stopping
+test at every later pass. That recurrence was repaired. On today’s
+solver the two-result moving-floor program still exhausts outer budgets
+11 and 80 despite its six-atom certificate. A proof that it exhausts
+<em>every</em> budget would have to track the state of its backtracking
+search. <a href="thesis-review-3.html#update">Original recurrence</a> ·
+<a href="thesis-review-13.html#tag">Two-result certificate and remaining
+convergence question</a></p>
+</section>
+<section id="printing" class="level2">
+<h2>Preserving the checked bound in the exported interface</h2>
+<p>The sum-key certificate exposed an independent error. When writing a
+min or max constraint, InvarGenT isolated a variable common to the two
+arms and silently dropped its coefficient. Even the function that
+returns the first of two arguments demonstrated the effect. Give it the
+result constraint <span class="math inline">\(3r\le\max(3i,3j)\)</span>.
+The old interface printed <span
+class="math inline">\(r\le\max(3i,3j)\)</span>. At <span
+class="math inline">\(i=j=-1\)</span> a client reading the signature
+could conclude <span class="math inline">\(r\le-3\)</span>. That client
+passed typechecking and its assertion failed on the returned value <span
+class="math inline">\(-1\)</span>.</p>
+<p>Revision <code>e5cd09c</code> prints the coefficient on the isolated
+term. Reading the exported signature back now rejects the false client.
+Equality and inequality round trips cover both directions of min and
+max, including rational coefficients. The sum-key program also
+round-trips a genuine non-unit bound. At <span
+class="math inline">\(p=m=-100\)</span>, <span
+class="math inline">\(z=7\)</span>, <span
+class="math inline">\(d=4\)</span>, the reimported signature proves
+<span class="math inline">\(r\le-84\)</span> and rejects <span
+class="math inline">\(r\le-252\)</span>. <a
+href="thesis-review-15.py">End-to-end signature tests</a></p>
+<p>Lean 4.19.0 checked the proofs. Compile
+<code>thesis-review-8.lean</code> and <code>thesis-review-14.lean</code>
+in that order with <code>lean -o</code>, placing the matching
+<code>.olean</code> files on <code>LEAN_PATH</code>, then run
+<code>lean thesis-review-15.lean</code>. The OCaml 5.3 compatibility
+suite passed 295 tests with 10 existing TODOs. All 141 previously
+generated signatures matched byte for byte. The comparison driver takes
+the InvarGenT executable and optionally <code>--before-equations</code>
+with a binary from <code>752520c</code>. <a
+href="thesis-review-15.py">Runnable checks</a></p>
+</section>
+</article>
+<script src="/assets/theme-toggle.js"></script>
+</body>
+</html>

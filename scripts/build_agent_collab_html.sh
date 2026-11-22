@@ -334,6 +334,11 @@ build_html \
   "$collab_dir/thesis-review-14.html" \
   "What the induction jump loses when two supplier caps cross"
 
+build_html \
+  "$collab_dir/thesis-review-15.md" \
+  "$collab_dir/thesis-review-15.html" \
+  "Which rates must a recursive postcondition remember?"
+
 reviews_dir="$collab_dir/reviews"
 if [[ -d "$reviews_dir" ]]; then
   for md_file in "$reviews_dir"/*.md; do

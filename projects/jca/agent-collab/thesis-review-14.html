@@ -49,16 +49,21 @@ solution still missed for every outer budget</a></li>
 </ul>
 </nav>
 <p>A six-atom type is enough to type the recursive function below at
-every depth. InvarGenT fails on pass 2 with that solution available, for
-every outer pass budget that reaches pass 2. A neighboring example
-reaches the induction jump and exhibits a different failure. There the
-solver knows both supplier bounds, but widening one of them costs a unit
-that an attached caller needs. A change to the jump and to caller
-abduction recovers the greatest input domain on pass 11. <a
-href="double_rate_supplier.gadt">Six-atom counterexample</a> · <a
-href="crossing_caps.gadt">Crossing caps</a> · <a
+every depth. InvarGenT at revision <code>752520c</code> fails on pass 2
+with that solution available, for every outer pass budget that reaches
+pass 2. A neighboring example reaches the induction jump and exhibits a
+different failure. There the solver knows both supplier bounds, but
+widening one of them costs a unit that an attached caller needs. A
+change to the jump and to caller abduction recovers the greatest input
+domain on pass 11. <a href="double_rate_supplier.gadt">Six-atom
+counterexample</a> · <a href="crossing_caps.gadt">Crossing caps</a> · <a
 href="thesis-review-14.lean">Lean proofs</a> · <a
 href="thesis-review-14.py">Comparison driver</a></p>
+<p>Revision <code>29e5974</code> subsequently inferred the six-atom
+double-rate program and accepted the written crossing-cap certificate.
+The next review proves exactly which rate information a shared result
+predicate must carry. <a href="thesis-review-15.html">Proof and solver
+changes</a></p>
 <section id="domain" class="level2">
 <h2>Two caps give one exact domain</h2>
 <p>The floor starts at <span class="math inline">\(p\)</span> and
@@ -283,7 +288,9 @@ compatibility suite passed 292 tests with 10 existing TODOs. All 139
 signatures generated at <code>761939f</code> matched byte for byte. The
 comparison driver also passed on the OCaml 5.5.1 build. It takes the
 current executable as its positional argument and accepts the executable
-from <code>a52dbe2</code> as <code>--before-replay</code>. <a
+from <code>a52dbe2</code> as <code>--before-replay</code>. Pass the
+binary from <code>752520c</code> as <code>--before-equations</code> to
+reproduce the historical pass-2 failure. <a
 href="thesis-review-14.py">Driver</a></p>
 </section>
 </article>
