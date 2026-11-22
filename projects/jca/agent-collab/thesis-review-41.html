@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <meta name="dcterms.date" content="2026-11-22">
+  <meta property="og:title" content="When does a recursive guard have a finite certificate?">
+  <meta property="og:url" content="https://lukstafi.github.io/projects/jca/agent-collab/thesis-review-41.html">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="lukstafi&#x27;s blog">
+  <meta name="twitter:card" content="summary">
+  <title>When does a recursive guard have a finite certificate?</title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <link rel="stylesheet" href="/assets/tufte.css">
+  <link rel="stylesheet" href="/assets/pandoc-tufte.css">
+  <link rel="stylesheet" href="/assets/site.css">
+  <script defer=""
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+  type="text/javascript"></script>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+  <script>(function(){var t=localStorage.getItem('theme-preference');if(t)document.documentElement.setAttribute('data-theme',t);})()</script>
+</head>
+<body>
+<nav class="site-nav">
+  <a href="/">Home</a> &middot; <a href="/study/">Study Guide</a> &middot; <a href="/about.html">About</a> &middot; <a href="https://lukstafi.substack.com">Substack</a>
+</nav>
+<div class="theme-toggle">
+  <button id="theme-btn" aria-label="Toggle dark mode">&#9788;</button>
+</div>
+<article>
+<header>
+<h1 class="title">When does a recursive guard have a finite
+certificate?</h1>
+<p class="byline">2026-11-22</p>
+</header>
+<nav id="TOC">
+<ul>
+<li><a href="#fixed" id="toc-fixed">Finite certificates at one
+input</a></li>
+<li><a href="#uniform" id="toc-uniform">A uniform bound when admission
+varies continuously from below</a></li>
+<li><a href="#jump" id="toc-jump">Unbounded counts inside a unit
+box</a></li>
+<li><a href="#native" id="toc-native">The native value has an integer
+index</a></li>
+<li><a href="#replay" id="toc-replay">Reproducing the checks</a></li>
+</ul>
+</nav>
+<p>Fix the numeric inputs of a recursive call. If no result in a closed,
+bounded guard satisfies every admitted typing, finitely many rational
+typings already exclude the guard. The number needed can grow without
+bound as the input varies, even when the input, key and guarded result
+all stay in <span class="math inline">\([0,1]\)</span>. For a native
+integer payload the same example needs at most two keys. <a
+href="thesis-review-41.lean">Topological and counting proofs</a> · <a
+href="thesis-review-40.html#packing">Previous sharp count at unbounded
+widths</a></p>
+<section id="fixed" class="level2">
+<h2>Finite certificates at one input</h2>
+<p>Let <span class="math inline">\(x\)</span> contain the input
+coordinates and any surrounding parameters shared by the admission and
+package. Let <span class="math inline">\(A(x,k)\)</span> admit a tuple
+of package indices. Write <span class="math inline">\(B(x,k,r)\)</span>
+for the result package after existentially projecting its private
+witnesses, and <span class="math inline">\(G(x,r)\)</span> for the
+possible guarded observations before further openings. A key refutes an
+observation when <span class="math inline">\(A(x,k)\land\neg
+B(x,k,r)\)</span>. One execution has to satisfy the package at every
+admitted key. <a href="thesis-review-39.html#all">Quantifiers for
+recursive typings</a></p>
+<p>The thesis’s weak linear inequalities, equations and extrema describe
+finite unions of closed rational polyhedra. Projecting private witnesses
+preserves this property. In each linear cell Fourier–Motzkin elimination
+pairs lower and upper bounds with weak inequalities. The projected
+package <span class="math inline">\(B\)</span> is therefore closed
+jointly in <span class="math inline">\((x,k,r)\)</span>. Its complement
+is open. <a href="thesis-review-38.html#projection">Projection in
+InvarGenT</a> · <a
+href="https://theory.stanford.edu/people/nikolaj/thesis.pdf">Fourier–Motzkin
+elimination</a></p>
+<p><strong>Finite-certificate theorem.</strong> Fix a rational input
+<span class="math inline">\(x\)</span>. Suppose the real interpretation
+of <span class="math inline">\(G_x\)</span> is closed and bounded and
+every rational guarded result has an admitted rational refuting key.
+Then a single finite set of admitted rational keys refutes the whole
+guard, including its real interpretation.</p>
+<p>The quantified exclusion statement is first-order linear arithmetic
+with rational coefficients once <span class="math inline">\(x\)</span>
+is fixed. Elimination gives the same truth value over the rationals and
+the reals, so every real guarded result has a real refuting key. Keep
+the result fixed. Refutation persists in a neighborhood of that key
+since <span class="math inline">\(B\)</span> is closed. The admission
+cell at this input is a rational polyhedron, and rational points are
+dense in it, also on a lower-dimensional face. To see density, intersect
+the cell with any open rational box containing the real point. The
+feasible rational linear system has a rational solution. Thus some
+admitted <strong>rational</strong> key refutes the real result and an
+open neighborhood of results. These neighborhoods cover the compact real
+guard. A finite subcover gives the desired keys. Taking the real
+interpretation matters here. A closed bounded interval of rational
+points can fail to be compact. <a
+href="thesis-review-41.lean">Finite-subcover proof</a> · <a
+href="https://leanprover-community.github.io/mathlib4_docs/Mathlib/Topology/MetricSpace/Bounded.html#Metric.isCompact_of_isClosed_isBounded">Heine–Borel
+theorem</a></p>
+<p>There is a terminating construction for a bounded scalar guard. Check
+the all-keys formula first to detect a surviving result. For an excluded
+guard, enclose it in a rational interval. At each node discard an empty
+piece, or solve for one admitted rational key that refutes every guard
+result in that piece. Bisect any other piece. A finite open subcover has
+a positive Lebesgue number on the compact guard, so sufficiently short
+intervals all pass the one-key test. The replay constructs certificates
+and checks admission and coverage again on the original formulas. At
+radius <span class="math inline">\(1/16\)</span> in the example below,
+bisection returns 16 keys and the optimum is nine. <a
+href="thesis-review-41.py">Certificate construction</a></p>
+<p>Both hypotheses on the guard matter. The open guard <span
+class="math inline">\(0&lt;r\le1\)</span> in the interior-key example
+admits no finite certificate. For an unbounded closed guard <span
+class="math inline">\(r\ge0\)</span>, admit <span
+class="math inline">\(k\ge0\)</span> and let the package require <span
+class="math inline">\(r\le-1\)</span> or <span
+class="math inline">\(k+1\le r\)</span>. Key <span
+class="math inline">\(k=r\)</span> refutes every guarded result. Any
+finite sample still permits all sufficiently large results. A supplier
+returning <span class="math inline">\(-1\)</span> satisfies every
+typing. <a href="thesis-review-40.html#finite">Bounded open-guard
+example</a></p>
+</section>
+<section id="uniform" class="level2">
+<h2>A uniform bound when admission varies continuously from below</h2>
+<p>Now let <span class="math inline">\(x\)</span> vary in the real
+interpretation. Assume the joint guard <span
+class="math inline">\(G\subseteq X\times R\)</span> is compact. Give the
+legal input domain <span class="math inline">\(X\)</span> its relative
+topology. For an open key neighborhood <span
+class="math inline">\(W\)</span>, define its set of inputs by <span
+class="math inline">\(H_W=\{x\mid A_x\cap W\ne\varnothing\}\)</span>.
+Admission is <em>lower hemicontinuous</em> if each <span
+class="math inline">\(H_W\)</span> is open. Informally, a key admitted
+at an input can be approximated by admitted keys at every sufficiently
+nearby input.</p>
+<p><strong>Uniform-certificate theorem.</strong> If admission is lower
+hemicontinuous, the package is jointly closed, and every guarded point
+has a refutation, a finite family of partial choices <span
+class="math inline">\(k_j(x)\)</span> covers the joint guard. Each
+choice depends only on the input. Whenever it returns a key, that key is
+admitted.</p>
+<p>For each guarded pair <span class="math inline">\((x,r)\)</span> pick
+a refuting <span class="math inline">\(k\)</span>. Openness gives a
+product <span class="math inline">\(U\times W\)</span> around <span
+class="math inline">\(((x,r),k)\)</span> on which the package fails.
+Intersect <span class="math inline">\(U\)</span> with the observations
+whose input lies in <span class="math inline">\(H_W\)</span>. This is an
+open neighborhood of <span class="math inline">\((x,r)\)</span>. Select
+one key from <span class="math inline">\(A_{x&#39;}\cap W\)</span> for
+each <span class="math inline">\(x&#39;\in H_W\)</span>. The same
+selection works for every result in the neighborhood at <span
+class="math inline">\(x&#39;\)</span>. A finite subcover of the joint
+guard now yields finitely many such selections. A key equal to <span
+class="math inline">\(x&#39;\)</span> may have to move with the input.
+The proof keeps the result out of the selection. <a
+href="thesis-review-41.lean">Machine-checked uniform theorem</a></p>
+<p>For rational-linear data the neighborhoods above can use boxes with
+rational endpoints. The test <span class="math inline">\(A_x\cap
+W\ne\varnothing\)</span> is rational-linear, and a key there can be
+selected piecewise rational-affinely in <span
+class="math inline">\(x\)</span> by reconstructing the eliminated
+coordinates. This gives input-only expressions on their regions of
+admission. For a prescribed positive bound <span
+class="math inline">\(t\)</span>, there is a direct arithmetic check.
+For each input with a nonempty guard, ask for <span
+class="math inline">\(t\)</span> admitted keys such that every guarded
+result fails at least one of their packages. Repetition pads a smaller
+nonempty certificate. The order is <span class="math inline">\(\forall
+x\,\exists k_1\ldots k_t\,\forall r\)</span>. Eliminate private
+witnesses separately in each package. If the uniform theorem applies,
+increasing <span class="math inline">\(t\)</span> from one eventually
+succeeds. <a href="thesis-review-39.html#elimination">Piecewise-affine
+selection</a></p>
+<p>One frequent admission relation satisfies the continuity hypothesis.
+Let <span class="math inline">\(A\)</span> be a single convex
+polyhedron, and <span class="math inline">\(X\)</span> its input
+projection. Fix <span class="math inline">\((x_0,k_0)\in A\)</span> and
+a small open box <span class="math inline">\(W\)</span> about <span
+class="math inline">\(k_0\)</span>. Suppose inputs outside <span
+class="math inline">\(H_W\)</span> accumulate at <span
+class="math inline">\(x_0\)</span>. Their set is semilinear by
+elimination, so some one of its finitely many convex linear cells has
+<span class="math inline">\(x_0\)</span> in its closure. Choose <span
+class="math inline">\(x_1\)</span> in that cell and any <span
+class="math inline">\(k_1\in A_{x_1}\)</span>. Every point strictly
+between <span class="math inline">\(x_0\)</span> and <span
+class="math inline">\(x_1\)</span> belongs to the bad cell. Its strict
+inequalities hold at <span class="math inline">\(x_1\)</span> and hold
+weakly at <span class="math inline">\(x_0\)</span>. Convexity of <span
+class="math inline">\(A\)</span> admits the interpolated keys on that
+segment. Near <span class="math inline">\(x_0\)</span> those keys lie in
+<span class="math inline">\(W\)</span>, a contradiction. The argument
+extends to a finite union of such cells when each has the same input
+projection.</p>
+</section>
+<section id="jump" class="level2">
+<h2>Unbounded counts inside a unit box</h2>
+<p>Let <span class="math inline">\(0\le x\le1\)</span>. Admit ordinary
+keys <span class="math inline">\(0\le k\le1\)</span>, and admit an extra
+key <span class="math inline">\(k=3\)</span> exactly when <span
+class="math inline">\(x=0\)</span>. The package is <span
+class="math display">\[
+-1\le r\le1,\qquad (r=-1\lor0\le r),\qquad
+(r+x\le k\lor k+x\le r),\qquad (k\le1\lor r\le-1).
+\]</span> A supplier can always return <span
+class="math inline">\(-1\)</span>. The guard is the compact square <span
+class="math inline">\(0\le x,r\le1\)</span>. At <span
+class="math inline">\(x&gt;0\)</span> the admitted key <span
+class="math inline">\(k=r\)</span> refutes every guarded result. At
+<span class="math inline">\(x=0\)</span> the extra key refutes the
+entire guard. The common result set is <span
+class="math inline">\(\{-1\}\)</span> at every input. The extra key is
+isolated and disappears at every positive input. To put every key in
+<span class="math inline">\([0,1]\)</span>, use the coordinate <span
+class="math inline">\(h=k/3\)</span> and substitute <span
+class="math inline">\(3h\)</span> for <span
+class="math inline">\(k\)</span> throughout. This bijection preserves
+exactly which observations each key refutes.</p>
+<p>At <span class="math inline">\(x=1/n\)</span>, an ordinary key
+refutes the open interval <span
+class="math inline">\((k-1/n,k+1/n)\)</span>. Multiplying the result and
+key by <span class="math inline">\(n\)</span> reduces this to radius one
+on <span class="math inline">\([0,n]\)</span>. Exactly <span
+class="math inline">\(\lfloor n/2\rfloor+1\)</span> keys are needed. In
+particular, against any proposed bound <span
+class="math inline">\(t\ge1\)</span>, choose <span
+class="math inline">\(x=1/(2t)\)</span>. Among the <span
+class="math inline">\(t+1\)</span> marks <span
+class="math inline">\(0,1/t,\ldots,1\)</span>, any one key refutes at
+most one. This defeats arbitrary input-only selection rules, including
+nonlinear choices. The admission graph is closed and bounded. It fails
+lower hemicontinuity at the extra key. The reciprocal inputs are legal
+because the thesis interprets the type coordinate <span
+class="math inline">\(x\)</span> over the rationals. <a
+href="thesis-review-41.lean">Scaled obstruction in Lean</a> · <a
+href="thesis-review-40.html#packing">Matching midpoint construction</a>
+· <a href="thesis-review-41.py">Compiler arithmetic checks</a></p>
+<p>For an integer payload the same bounded guard has just two
+observations, zero and one. At <span
+class="math inline">\(x&gt;0\)</span> choose keys zero and one. Both are
+needed for <span class="math inline">\(x\le1/2\)</span>, since an open
+interval of radius at most <span class="math inline">\(1/2\)</span>
+cannot contain both endpoints. For <span
+class="math inline">\(x&gt;1/2\)</span> the midpoint alone suffices. At
+zero the extra key suffices. More generally, if at most <span
+class="math inline">\(M\)</span> distinct native results occur anywhere
+in the guard, one refuting key per possible result gives a uniform
+per-input bound <span class="math inline">\(M\)</span> with no
+continuity assumption. The certificate can be chosen before seeing which
+value the call returns. <a
+href="thesis-review-41.lean">Finite-observation proof</a></p>
+</section>
+<section id="native" class="level2">
+<h2>The native value has an integer index</h2>
+<p>A seed package allows <span class="math inline">\(r=0\)</span> or
+<span class="math inline">\(r=3/2\)</span>. A recursive function returns
+that seed at depth zero and tests <span class="math inline">\(1\le r\le
+f\)</span> on its child’s result. InvarGenT at <code>f11480e</code>
+rejected a Boolean expression in the guarded arm because <span
+class="math inline">\(3/2\)</span> is a rational countermodel at flag
+two. On a native OCaml <code>int</code> target, only zero can actually
+arrive. InvarGenT revision <code>581f479</code> accepts the program with
+iteration budget two and preserves the declared rational package. The
+generated program prints zero. On a float target a seed returning <span
+class="math inline">\(1.5\)</span> reaches the arm. A second native seed
+allowing zero and two also reaches it. Both Boolean arms are rejected. A
+numeric replacement prints the observed values <span
+class="math inline">\(1.5\)</span> and <span
+class="math inline">\(2\)</span> inside the guards. <a
+href="fractional_guard_result.gadt">Source</a> · <a
+href="thesis-review-41.py">Schemes, controls and executions</a></p>
+<p>The all-typings checker already projects rational tuple coordinates
+and private witnesses. Its remaining uncovered regions describe the
+possible original observations with a shared positive slack <span
+class="math inline">\(d\)</span> for strict inequalities. At any such
+leaf, a fixed feasible observation remains feasible as <span
+class="math inline">\(d\)</span> decreases toward zero. For a native
+guard introduce one fresh coordinate <span
+class="math inline">\(p\)</span> equal to the term indexing the
+<strong>observed payload</strong>. Project everything except <span
+class="math inline">\(p,d\)</span> from that leaf. The projected formula
+is a finite union of linear cells. A fixed <span
+class="math inline">\(p\)</span> survives at some positive slack exactly
+when some cell holds for all sufficiently small positive <span
+class="math inline">\(d\)</span>. In one direction, downward closure
+gives arbitrarily small feasible slack at the same <span
+class="math inline">\(p\)</span>, and each of the finitely many linear
+cells has an eventual truth value. In the other direction, any
+sufficiently small positive slack gives a witness. <a
+href="thesis-review-39.lean">Slack and finite-threshold lemmas</a></p>
+<p>A row <span class="math inline">\(ap+bd+c\le0\)</span> then requires
+<span class="math inline">\(ap+c&lt;0\)</span> when <span
+class="math inline">\(b&gt;0\)</span> and <span
+class="math inline">\(ap+c\le0\)</span> otherwise. In a strict row clear
+the rational denominators of <span class="math inline">\(a,c\)</span> by
+a positive multiple. For integral <span
+class="math inline">\(p\)</span>, the resulting integer-valued
+expression must be at most <span class="math inline">\(-1\)</span>.
+Rounding the lower and upper bounds tests interval feasibility,
+including open endpoints, unbounded intervals and singletons. Split the
+remaining extremum alternatives and accept a leaf if any resulting
+interval contains an integer. This computes the exact mixed test for one
+designated integral term when the projections fit the compiler’s
+coefficient representation. Keys and private witnesses still range over
+the rationals. If that term is <span class="math inline">\(2l\)</span>,
+the observation <span class="math inline">\(l=1/2\)</span> supplies the
+native value one. <a href="thesis-review-41-numeric.ml">Arithmetic
+driver</a> · <a href="thesis-review-41.py">Differential replay</a></p>
+<p>The new check assumes integrality only of the observed value. A
+relation <span class="math inline">\(i+r=1/2\)</span> with <span
+class="math inline">\(i,r\in[0,1]\)</span> illustrates the next boundary
+if both coordinates arise from native values. Requiring <span
+class="math inline">\(r\)</span> integral allows <span
+class="math inline">\((1/2,0)\)</span>, and requiring <span
+class="math inline">\(i\)</span> integral allows <span
+class="math inline">\((0,1/2)\)</span>. Requiring both simultaneously
+excludes the whole relation. The finite-certificate theorems and mixed
+decision each concern one candidate recursive scheme. Table 4.4 can
+still change that scheme on its next update. <a
+href="thesis-review-21.html#feedback">Predicate iteration and the
+induction jump</a></p>
+</section>
+<section id="replay" class="level2">
+<h2>Reproducing the checks</h2>
+<p>Use Lean 4.19 and mathlib v4.19.0 to run
+<code>lake env lean thesis-review-41.lean</code>. The file proves the
+compact-cover implications, the finite-result bound and the obstruction
+for arbitrarily many keys at reciprocal inputs. The rational-to-real
+transfer and the polyhedral continuity argument are proved above. With
+Python’s <code>z3-solver</code>, run
+<code>python3 thesis-review-41.py</code> to synthesize and recheck
+finite certificates. Add
+<code>--compiler /path/to/InvarGenT.native</code> for the native and
+float programs and <code>--before</code> with the compiler at
+<code>f11480e</code> for the earlier failure. To replay the arithmetic
+checks, copy the <a href="thesis-review-41-numeric.ml">numeric
+driver</a> to <code>src/NativeOracle.ml</code> in an InvarGenT build at
+<code>581f479</code>. Build the <code>src/NativeOracle.native</code>
+target with the same ocamlbuild options as the compiler. Pass the
+resulting executable as <code>--driver</code> for the 244 boundary cases
+and 44 cases from the compact family.</p>
+<p>The separate <code>--stress</code> option adds 480 seeded formulas
+with up to two private witnesses. Its oracle eliminates rational keys
+and witnesses in Z3, then checks both rational payloads and an integral
+observed term. Add <code>--case-timeout 2</code> to try each compiler
+query for up to two seconds and report the numbers of all unfinished
+queries. On the OCaml 5.5 compatibility build of <code>581f479</code>,
+472 cases agreed on both answers. Cases 170, 185, 224, 258, 282, 359,
+374 and 426 exceeded that limit and remain unverified in this
+comparison. The OCaml 5.3 regression suite passed all 371 active cases,
+with ten recorded as TODO. All 190 earlier example signatures were
+byte-identical.</p>
+</section>
+</article>
+<script src="/assets/theme-toggle.js"></script>
+</body>
+</html>
