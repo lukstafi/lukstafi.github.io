@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <meta name="dcterms.date" content="2026-11-23">
+  <meta property="og:title" content="What may the compiler learn from a cyclic constructor value?">
+  <meta property="og:url" content="https://lukstafi.github.io/projects/jca/agent-collab/thesis-review-56.html">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="lukstafi&#x27;s blog">
+  <meta name="twitter:card" content="summary">
+  <title>What may the compiler learn from a cyclic constructor
+value?</title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <style type="text/css">
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="/assets/tufte.css">
+  <link rel="stylesheet" href="/assets/pandoc-tufte.css">
+  <link rel="stylesheet" href="/assets/site.css">
+  <script defer=""
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+  type="text/javascript"></script>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+  <script>(function(){var t=localStorage.getItem('theme-preference');if(t)document.documentElement.setAttribute('data-theme',t);})()</script>
+</head>
+<body>
+<nav class="site-nav">
+  <a href="/">Home</a> &middot; <a href="/study/">Study Guide</a> &middot; <a href="/about.html">About</a> &middot; <a href="https://lukstafi.substack.com">Substack</a>
+</nav>
+<div class="theme-toggle">
+  <button id="theme-btn" aria-label="Toggle dark mode">&#9788;</button>
+</div>
+<article>
+<header>
+<h1 class="title">What may the compiler learn from a cyclic constructor
+value?</h1>
+<p class="byline">2026-11-23</p>
+</header>
+<nav id="TOC">
+<ul>
+<li><a href="#values" id="toc-values">Facts that are safe to
+erase</a></li>
+<li><a href="#paths" id="toc-paths">Exact index domains for a fixed
+constructor graph</a></li>
+<li><a href="#affine" id="toc-affine">An affine limit in a single
+inference step</a></li>
+<li><a href="#rotation" id="toc-rotation">A cyclic value whose domain is
+a disk</a></li>
+<li><a href="#replay" id="toc-replay">Replaying the checks</a></li>
+</ul>
+</nav>
+<p>The short indexed-list <code>append</code> from thesis §5.2.2 now
+accepts two empty lists. Its generated OCaml still matches only the
+first list. Establishing which length facts could be made available at
+the second list binding exposed a distinction that matters for the
+compiler. InvarGenT accepts the following closed program.</p>
+<pre class="text"><code>datatype Tower : num
+datacons Floor : Tower 0
+datacons Step : ∀n. Tower n ⟶ Tower (n+1)
+let rec spiral = Step spiral
+let observed : Tower (-1) = spiral</code></pre>
+<p>Inference gives <code>spiral : ∀n. Tower n</code>. At index <span
+class="math inline">\(q\)</span> its child has index <span
+class="math inline">\(q-1\)</span>, another instance of the same
+binding. OCaml allocates one constructor whose child pointer leads back
+to it. The replay checks physical identity at runtime. Every
+<em>finite</em> tower has nonnegative height. Attaching that fact to an
+arbitrary tower binding would allow a consumer at <span
+class="math inline">\(-1\)</span> to assume its argument is nonnegative.
+The proof by structural induction applies when we know the value is
+finite. OCaml admits cyclic constructor values in its recursive
+definitions. <a href="constructor_value_bounds.gadt">Runnable
+example</a> · <a href="thesis-review-56.lean">Finite-tower proof</a> ·
+<a
+href="https://caml.inria.fr/pub/distrib/ocaml-5.0/ocaml-5.0-refman.html">OCaml
+manual, recursive definitions of values</a> · <a
+href="https://arxiv.org/abs/1811.08134">Reynaud, Scherer and Yallop on
+recursive initialization</a></p>
+<section id="values" class="level2">
+<h2>Facts that are safe to erase</h2>
+<p>Take a finite pool of candidate index predicates for each declared
+datatype. Start with no certified facts. At each round, ask whether
+every constructor establishes a candidate on its result, given its guard
+and the facts certified in earlier rounds about its direct value fields.
+Keep each established fact. A proof from round <span
+class="math inline">\(k\)</span> needs at most <span
+class="math inline">\(k\)</span> layers of constructor observations.
+Induct on <span class="math inline">\(k\)</span>. Opening one actual
+constructor verifies its guard and gives actual child values, even if
+some of them point back to the same node. The induction hypothesis
+applies at the smaller observation depth. The compiler can erase this
+proof without inserting a runtime traversal.</p>
+<p>The process terminates after at most as many strict rounds as there
+are candidates. Its result is the least closed set of certificates in
+this template system. Any closed set contains the first round and,
+inductively, every subsequent round. Conversely the fixed point is
+closed. Starting with <em>all</em> candidates and deleting failures, as
+in review 55, computes the greatest jointly inductive subset. Both
+procedures justify list nonnegativity when the cons constructor requires
+a nonnegative tail index. Only the latter justifies it from the two
+unguarded tower constructors. The cycle above shows why choosing between
+these procedures changes a type check. Even for acyclic inputs the
+finite observation procedure can miss true facts. Foreign values must
+honor their declared indexed constructor contracts. <a
+href="thesis-review-56.lean">Lean proofs <code>stage_sound</code> and
+<code>stage_least</code></a> · <a
+href="thesis-review-55.html#values">Finite-value construction</a></p>
+<p>InvarGenT checks signs of numeric parameters and orders between pairs
+of parameters. It uses the constructor declarations of the whole
+compilation unit, including constructors that occur later. It can
+propagate facts through wrappers. For example, if a packet constructor
+guarantees <span class="math inline">\(n\ge0\)</span>, a cargo
+constructor with a field of type <span
+class="math inline">\(\mathrm{Packet}(n)\)</span> can establish <span
+class="math inline">\(n\ge0\)</span> one round later. Adding
+<code>Owed : Cargo(-1)</code> prevents that conclusion. Swapping the
+indices in a wrapper also swaps the order the caller may assume.
+Abstract datatypes without declared constructors supply no facts.</p>
+<p>The compiler rechecks eligible function declarations using the facts
+at bare argument bindings whose datatype heads it has identified. The
+pattern constraint requires that head. The constructor facts enter the
+branch premise at the corresponding indices. On a successful declaration
+a public guard comparison checks that the new scheme admits the old
+inputs, admits more index assignments, and preserves the public result
+type. This also recovers a written first-order signature that inference
+had unnecessarily strengthened. For the short <code>append</code>,
+<code>LNil</code> supplies the fact at zero and the guard of
+<code>LCons</code> supplies it at every other realizable root. The
+original body now gets the unrestricted result length <span
+class="math inline">\(k+n\)</span>. There is no generated view or extra
+match. A consumer of the unguarded <code>Tower</code> retains its
+arithmetic precondition. <a
+href="constructor_value_bounds.gadt">Compiler examples</a> · <a
+href="thesis-review-56-native.py">Runtime and rejection controls</a></p>
+</section>
+<section id="paths" class="level2">
+<h2>Exact index domains for a fixed constructor graph</h2>
+<p>The cycle suggests a way to infer a <em>specific recursive
+value</em>. Give each node <span class="math inline">\(v\)</span> of a
+finite graph a constructor, a tuple of rational indices <span
+class="math inline">\(x\)</span>, and a guard <span
+class="math inline">\(G_v(x)\)</span>. An edge <span
+class="math inline">\(e:v\to w\)</span> gives the child’s indices <span
+class="math inline">\(f_e(x)\)</span>. The graph records the runtime
+sharing. Every recursive use may instantiate its indices afresh. Assume
+the maps are deterministic and the node guards include all remaining
+obligations, including those of any fixed payload.</p>
+<p>A root index is admissible exactly when the guard at the end of every
+finite walk holds at its transported indices. To prove necessity, follow
+the child typings along a walk. For sufficiency, give each node the
+indices for which all walks starting there pass. The zero-length walk
+gives its own guard. Prefixing a walk by an edge gives the property at
+that child. This family validates the cyclic typing and contains every
+other such family. The same heap node can occur at different indices on
+successive visits. Requiring a single index per node would already lose
+<code>spiral</code>. <a href="thesis-review-56.lean">Lean proofs
+<code>safe_unfold</code> and <code>greatest_safe</code></a></p>
+<p>When the maps translate by vectors <span
+class="math inline">\(d_e\)</span> and the guards are rational affine
+rows <span class="math inline">\(a\cdot x\le b\)</span>, one
+shortest-path computation per guard normal gives the exact domain. A
+walk to a node testing that row imposes <span class="math display">\[
+a\cdot x\ \le\ b-\sum_{e\text{ on the walk}} a\cdot d_e.
+\]</span> If a positive-weight cycle can be reached from the root and
+can reach that observation, repeating it rules out every root index.
+Otherwise removing cycles only tightens the bound. Take the minimum over
+simple paths to the relevant observations. Reverse relaxation finds
+these minima, including for a branching graph. A cycle on a sibling
+branch may affect one coordinate while never leading to a test of that
+coordinate. The replay compares 2,560 ground decisions with an
+independent system of linear inequalities on node potentials. <a
+href="thesis-review-56.py">Graph solver and checks</a> · <a
+href="https://ocw.mit.edu/courses/6-006-introduction-to-algorithms-spring-2008/4cba0f3f32437aebc2df74212e2ebeb9_lec16.pdf">Bellman–Ford
+and target-relevant cycles</a></p>
+</section>
+<section id="affine" class="level2">
+<h2>An affine limit in a single inference step</h2>
+<p>For an affine edge <span
+class="math inline">\(f_e(x)=M_ex+t_e\)</span>, a child observation
+<span class="math inline">\(a\)</span> pulls back to <span
+class="math inline">\(aM_e\)</span>. Start at the guards and propagate
+these rows backward along edges from reachable nodes. Identify rows that
+differ by a <em>positive</em> scale. Suppose the live nonzero directions
+form a finite family. Introduce a scalar cap <span
+class="math inline">\(c_{v,d}\)</span> for each live direction <span
+class="math inline">\(d\)</span> at node <span
+class="math inline">\(v\)</span>. A local guard <span
+class="math inline">\(d\cdot x\le b\)</span> imposes <span
+class="math inline">\(c_{v,d}\le b\)</span> after normalization.
+Whenever <span class="math inline">\(a M_e=\lambda d\)</span> with <span
+class="math inline">\(\lambda&gt;0\)</span>, impose <span
+class="math display">\[
+  \lambda c_{v,d}+a\cdot t_e\ \le\ c_{w,a}.
+\]</span> If the pullback is zero, the left side is just <span
+class="math inline">\(a\cdot t_e\)</span>. To type a given root, also
+impose <span class="math inline">\(d\cdot x\le
+c_{\mathrm{root},d}\)</span> for every live root direction. These are
+rational linear constraints.</p>
+<p><strong>Projection onto the root indices gives their exact admissible
+domain.</strong> A feasible cap assignment proves each guard along every
+finite walk. Conversely, fix an admissible root and take each cap to be
+the supremum of that row over all indices reaching its node. Each node
+considered is reachable. Each live direction has a finite backward
+derivation from a guard with a positive product of scales, which bounds
+the supremum above. Extending a walk by one edge gives the cap
+inequality, including when the supremum is approached without being
+attained. Rational linear projection therefore yields a closed rational
+polyhedron. The intermediate supremum argument uses real caps. For fixed
+rational root coordinates the feasible linear system also has rational
+witnesses. Equivalently the cap system, before imposing a root, is
+closed under componentwise maximum. When feasible, its coordinatewise
+greatest vector exists because the live coordinates are bounded above
+and rational linear optima are attained. <a
+href="thesis-review-56.py">Affine solver and independent edge
+checks</a></p>
+<p>The native implementation recognizes a recursive value given by one
+constructor whose fields all refer to that value. It checks closed
+linear guards and affine field maps on distinct public numeric
+parameters. Its library includes the guard normals, their first
+pullbacks through the fields, and the signed coordinate directions. When
+this library closes, it projects the cap variables with the existing
+numeric solver, replays the inferred contract against the original
+declaration and checks that every proposed root index can instantiate
+the exported scheme. An empty projection gives a definitive failure. An
+unsupported direction leaves the ordinary inference search
+available.</p>
+<table>
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+</colgroup>
+<thead>
+<tr>
+<th>Recursive field indices</th>
+<th>Root guard</th>
+<th>Previous native result</th>
+<th>Current native result</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><span class="math inline">\(2n+1\)</span></td>
+<td><span class="math inline">\(n\le0\)</span></td>
+<td>Iteration limit</td>
+<td><span class="math inline">\(n\le-1\)</span></td>
+</tr>
+<tr>
+<td><span class="math inline">\(-n\)</span></td>
+<td><span class="math inline">\(n\le3\)</span></td>
+<td><span class="math inline">\(n=0\)</span></td>
+<td><span class="math inline">\(-3\le n\le3\)</span></td>
+</tr>
+<tr>
+<td><span class="math inline">\((-i,-j)\)</span></td>
+<td><span class="math inline">\(i+j\le3\)</span></td>
+<td><span class="math inline">\(i+j=0\)</span></td>
+<td><span class="math inline">\(-3\le i+j\le3\)</span></td>
+</tr>
+<tr>
+<td><span class="math inline">\((2i+1,2j+1)\)</span></td>
+<td><span class="math inline">\(i+j\le0\)</span></td>
+<td>Iteration limit</td>
+<td><span class="math inline">\(i+j\le-2\)</span></td>
+</tr>
+<tr>
+<td><span class="math inline">\((2j+1,i)\)</span> and <span
+class="math inline">\((j,2i+1)\)</span></td>
+<td><span class="math inline">\(i\le0\)</span></td>
+<td>Iteration limit</td>
+<td><span class="math inline">\(i\le-1\ \land\ j\le-1\)</span></td>
+</tr>
+</tbody>
+</table>
+<p>For the first row the index after <span
+class="math inline">\(k\)</span> steps is <span
+class="math inline">\(2^k(n+1)-1\)</span>. Each finite prefix allows an
+index above <span class="math inline">\(-1\)</span>. The single
+inequality <span class="math inline">\(2c+1\le c\)</span> obtains the
+limiting cap immediately. In the second row the ordinary solver already
+had a sound answer at zero. Reflection exchanges the two endpoints, so
+both <span class="math inline">\(-3\)</span> and <span
+class="math inline">\(3\)</span> can type the same recursive value. The
+native replay compares 360 ground instantiations across 45 scalar
+declarations and 160 across 20 two-index declarations with the affine
+calculation. <a href="affine_cyclic_values.gadt">Programs</a> · <a
+href="thesis-review-56.lean">Lean proof of the limiting guard</a> · <a
+href="thesis-review-56-native.py">Native replay</a></p>
+</section>
+<section id="rotation" class="level2">
+<h2>A cyclic value whose domain is a disk</h2>
+<p>One constructor with two phantom indices suffices to leave the
+polyhedral language.</p>
+<pre class="text"><code>datacons Turn : ∀i,j[i≤1]. Orbit (3/5 i + -4/5 j, 4/5 i + 3/5 j) ⟶ Orbit (i,j)
+let rec ring = Turn ring</code></pre>
+<p>The child map <span class="math inline">\(R\)</span> is a rotation.
+It preserves <span class="math inline">\(i^2+j^2\)</span>. Its positive
+powers are dense among the planar rotations. To see why there is no
+period, put <span class="math inline">\(M=5R\)</span>. Modulo five,
+<span class="math inline">\(M^2=M\)</span>, and <span
+class="math inline">\(M(1,0)=(3,4)\)</span> has nonzero residue. Thus
+<span class="math inline">\(M^k(1,0)\)</span> cannot equal <span
+class="math inline">\((5^k,0)\)</span> for any <span
+class="math inline">\(k&gt;0\)</span>. An infinite subgroup of the
+circle is dense, and the closure of the positive powers of a rotation is
+a subgroup. It follows that all rational points in the closed unit disk
+satisfy the guard on every unfolding. From any point outside it some
+iterate has first coordinate greater than one. The squared radius is a
+single quadratic certificate for the exact domain. This is a
+constructor-value instance of the dense-rotation obstruction studied for
+invariants of linear dynamical systems. <a
+href="thesis-review-56.lean">Lean norm, aperiodicity and twenty-step
+checks</a> · <a
+href="https://drops.dagstuhl.de/entities/document/10.4230/LIPIcs.STACS.2017.29">Fijalkow
+et al., semialgebraic invariants for the Orbit Problem</a> · <a
+href="https://people.mpi-sws.org/~joel/publications/Monniaux-JACM25.pdf">Semilinear
+invariants in the Monniaux problem</a></p>
+<figure>
+<img src="cyclic-rotation.svg"
+alt="Finite unfoldings give polygons outside the exact disk. The rational point (1, 1/5) passes twenty guards before it fails. The compiler infers the centre." />
+<figcaption aria-hidden="true">Finite unfoldings give polygons outside
+the exact disk. The rational point (1, 1/5) passes twenty guards before
+it fails. The compiler infers the centre.</figcaption>
+</figure>
+<p><strong>Every sound finite union of polyhedral recursive typings for
+this value is contained in the origin.</strong> Its union <span
+class="math inline">\(S\)</span> must be forward invariant and must
+satisfy the guard, so it lies in the disk. Suppose <span
+class="math inline">\(S\)</span> contains a nonzero point. Its closure
+is a finite union of compact polytopes. This also holds for Boolean
+combinations of rational affine tests on rational indices, by taking the
+closures of their nonempty rational cells. Pick a point of maximum
+radius <span class="math inline">\(r&gt;0\)</span> in the closure.
+Continuity and invariance keep its forward orbit in the closure. Density
+puts the whole circle of radius <span class="math inline">\(r\)</span>
+there. The convex hull of the closure is consequently the disk of radius
+<span class="math inline">\(r\)</span>. Yet the convex hull of finitely
+many compact polytopes is a polytope. The disk has infinitely many
+extreme points. InvarGenT infers <code>Orbit (0,0)</code>, its most
+general polyhedral recursive typing. The single index <span
+class="math inline">\((1,0)\)</span> is semantically safe, but adding
+any finite number of affine alternatives cannot certify its recursive
+calls.</p>
+<p>This gives the refined-datatype programme an arithmetic counterpart.
+The branching search needed a vocabulary for evidence about siblings.
+This cyclic value needs a vocabulary that can name squared radius. The
+finite-direction solver detects when the selected observations close
+under recursive calls. How to discover a new observation when that
+closure fails remains open. A reduction using six indices shows that the
+number of inequalities needed for a polyhedral recursive typing has no
+computable bound in general. <a
+href="thesis-review-57.html#bound">Size-bound theorem</a> · <a
+href="refined-datatypes/index.html">Branching evidence
+construction</a></p>
+</section>
+<section id="replay" class="level2">
+<h2>Replaying the checks</h2>
+<p>Use Python with <code>z3-solver</code>, an InvarGenT executable and
+OCaml on the path. The first command checks the graph calculations. The
+second checks the exported types, emitted OCaml and rejected ground
+instances. The optional <code>--before</code> argument takes the
+preceding compiler. The Lean companion uses Lean 4.19 and mathlib.</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python3</span> thesis-review-56.py</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="ex">python3</span> thesis-review-56-native.py <span class="at">--compiler</span> /path/to/InvarGenT.native</span></code></pre></div>
+<p>The native replays use compatibility builds of InvarGenT revision
+<code>a3e9d71</code> for OCaml 5.3.0 and 5.5.1. Both builds pass all 520
+ground-index comparisons. On 5.3.0 the full suite passed all 393 active
+tests, with ten existing TODOs. All 202 example signatures generated by
+the preceding revision match byte for byte. <a
+href="https://github.com/lukstafi/invargent/commit/a3e9d71">InvarGenT
+implementation</a></p>
+</section>
+</article>
+<script src="/assets/theme-toggle.js"></script>
+</body>
+</html>

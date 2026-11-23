@@ -143,7 +143,10 @@ def compiler_checks(compiler, before):
     source = (HERE/"constructor_value_view.gadt").read_text()
     header, rest = source.split("let view :", 1)
     clients = "let empty :" + rest.split("let empty :", 1)[1]
-    compile_case(compiler, header + short_append(False) + clients, False)
+    # Review 56 also admits the short source directly on newer compilers.
+    plain_sig = scheme(compile_case(compiler, header + short_append(False)), "append")
+    compile_case(compiler, header + short_append(False) + clients,
+                 accept="[" not in plain_sig.split(".")[0])
     append = short_append(True) + clients
     source = header + list_view(True) + "\n" + append
     shallow_sig = compile_case(compiler,source)

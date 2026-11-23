@@ -540,6 +540,16 @@ build_html \
   "Which callers can a stronger inference procedure recover?"
 
 build_html \
+  "$collab_dir/thesis-review-56.md" \
+  "$collab_dir/thesis-review-56.html" \
+  "What may the compiler learn from a cyclic constructor value?"
+
+build_html \
+  "$collab_dir/thesis-review-57.md" \
+  "$collab_dir/thesis-review-57.html" \
+  "Can a computable size bound suffice for cyclic constructor typings?"
+
+build_html \
   "$collab_dir/refined-datatypes/README.md" \
   "$collab_dir/refined-datatypes/index.html" \
   "Synthesizing datatypes for the successful inputs of an algorithm"

@@ -1,0 +1,6 @@
+datatype Orbit : num * num * num * num * num * num
+datacons Fork : ∀i,j,k,l,m,n[1≤i+l+n]. Orbit (i + j + 1/4 l,1/4 j + 1/8 l,1/4 k + 1/8 m,1/16 l,1/16 m,1/16 n) * Orbit (i + 5/4 j + 25/64 l,1/16 j + 5/128 l,1/4 k + 5/32 m,1/256 l,1/64 m,1/16 n) ⟶ Orbit (i,j,k,l,m,n)
+let rec ring : ∀i,j,k,l,m,n[i+4/3 j+4/9 l=4 ∧ j+2/3 l≤6 ∧ 0≤l ∧ 0≤n ∧ 1≤i+l+n]. Orbit (i,j,k,l,m,n) = Fork (ring,ring)
+datatype Seen
+datacons Observe : ∀n[1≤n]. Orbit (0,0,0,n,n,n) ⟶ Seen
+let observed = Observe ring
