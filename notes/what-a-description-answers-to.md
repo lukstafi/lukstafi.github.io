@@ -1,6 +1,6 @@
 ---
 title: "What a Description Answers To"
-subtitle: "Structural realists hold that the world's structure is modal, and decline to say what it is the structure of. An account of what makes a pattern real, on which counterfactuals come with descriptions and production does not"
+subtitle: "Structural realists hold that the world's structure is modal, and decline to say what it is the structure of. An account of what makes a pattern real: counterfactuals come with descriptions, and production does not"
 author: "Łukasz Stafiniak and Claude (Anthropic)"
 date: 2026-11-17
 ---
