@@ -1,0 +1,777 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <meta name="dcterms.date" content="2026-11-23">
+  <meta property="og:title" content="Can a safe cyclic value at a fixed ground type lack a polyhedral proof?">
+  <meta property="og:url" content="https://lukstafi.github.io/projects/jca/agent-collab/thesis-review-58.html">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="lukstafi&#x27;s blog">
+  <meta name="twitter:card" content="summary">
+  <title>Can a safe cyclic value at a fixed ground type lack a
+polyhedral proof?</title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <style type="text/css">
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="/assets/tufte.css">
+  <link rel="stylesheet" href="/assets/pandoc-tufte.css">
+  <link rel="stylesheet" href="/assets/site.css">
+  <script defer=""
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+  type="text/javascript"></script>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+  <script>(function(){var t=localStorage.getItem('theme-preference');if(t)document.documentElement.setAttribute('data-theme',t);})()</script>
+</head>
+<body>
+<nav class="site-nav">
+  <a href="/">Home</a> &middot; <a href="/study/">Study Guide</a> &middot; <a href="/about.html">About</a> &middot; <a href="https://lukstafi.substack.com">Substack</a>
+</nav>
+<div class="theme-toggle">
+  <button id="theme-btn" aria-label="Toggle dark mode">&#9788;</button>
+</div>
+<article>
+<header>
+<h1 class="title">Can a safe cyclic value at a fixed ground type lack a
+polyhedral proof?</h1>
+<p class="byline">2026-11-23</p>
+</header>
+<nav id="TOC">
+<ul>
+<li><a href="#fixed" id="toc-fixed">The fixed caller</a>
+<ul>
+<li><a href="#why-an-infinite-match-excludes-every-polyhedral-typing"
+id="toc-why-an-infinite-match-excludes-every-polyhedral-typing">Why an
+infinite match excludes every polyhedral typing</a></li>
+<li><a href="#a-single-polyhedron-when-no-infinite-match-exists"
+id="toc-a-single-polyhedron-when-no-infinite-match-exists">A single
+polyhedron when no infinite match exists</a></li>
+<li><a href="#quadratic" id="toc-quadratic">Quadratic observations and
+their witnesses</a></li>
+</ul></li>
+<li><a href="#witnesses" id="toc-witnesses">When recursive schemes can
+be joined</a></li>
+<li><a href="#probe" id="toc-probe">The three-index value inside the
+proof</a>
+<ul>
+<li><a href="#coverage" id="toc-coverage">One scheme for a family of
+callers</a></li>
+<li><a href="#facets" id="toc-facets">How many inequalities does the
+probe need?</a></li>
+</ul></li>
+<li><a href="#compiler" id="toc-compiler">Two unfoldings recover the
+sharp caller</a></li>
+<li><a href="#replay" id="toc-replay">Replay</a></li>
+</ul>
+</nav>
+<p><strong>It is undecidable whether a cyclic constructor value admits a
+rational polyhedral recursive typing at one prescribed ground type, even
+when every finite walk from that type satisfies the constructor
+guard.</strong> Eight numeric indices, homogeneous linear field maps,
+one constructor, one heap node and one linear guard suffice. Every
+positive instance has one conjunctive rational polyhedral scheme. On a
+negative instance even a finite union of polyhedra fails. The ground
+tuple is the same in every instance. The undecidability concerns the
+existence of a finite proof in the index language. The proof below also
+gives a decidable three-index example in which provable ground calls
+exhaust an infinite increasing sequence of schemes. <a
+href="fixed_orbit.gadt">Runnable positive instance</a> · <a
+href="thesis-review-58.py">Exact arithmetic and compiler replay</a></p>
+<p>Monniaux also proves undecidability of polyhedral invariant existence
+for linear programmes over the rationals or integers, using counter
+machines with control locations and guarded piecewise-affine
+transitions. The constructor instance below has unconditional
+homogeneous field maps. Fijalkow et al.’s tile construction supplies the
+convergence to zero needed to distinguish its ground typings. <a
+href="https://arxiv.org/abs/2609.31146">Monniaux, September 2026
+preprint</a> · <a
+href="https://people.mpi-sws.org/~joel/publications/Monniaux-JACM25.pdf">Fijalkow
+et al., JACM 2025</a></p>
+<section id="fixed" class="level2">
+<h2>The fixed caller</h2>
+<p>Start with the three-dimensional rational tile matrices <span
+class="math inline">\(A_i\)</span> from the infinite Post correspondence
+reduction of Fijalkow et al. Let <span
+class="math inline">\(x=(0,1,1)^T\)</span>, let <span
+class="math inline">\(Q\)</span> range over symmetric three-by-three
+matrices, and put <span class="math inline">\(B_i Q=A_i Q
+A_i^T\)</span>. Writing the six independent entries of <span
+class="math inline">\(Q\)</span> as indices makes each <span
+class="math inline">\(B_i\)</span> a linear map on those indices. Write
+<span class="math inline">\(T(Q)\)</span> for the trace and <span
+class="math inline">\(e=(1,0)\)</span>. Add two indices <span
+class="math inline">\(p\)</span> for a point of the plane. Use the
+rational rotation <span class="math display">\[
+R=\tfrac15\begin{pmatrix}3&amp;-4\\4&amp;3\end{pmatrix}.
+\]</span> There is one recursive field per tile, and one extra field for
+a spin. The declared guard is <span
+class="math inline">\(p_x\le1+T(Q)\)</span>. <a
+href="https://people.mpi-sws.org/~joel/publications/Monniaux-JACM25.pdf">Tile
+construction, Lemmas 4.1–4.3</a> · <a
+href="thesis-review-57.html#source">Six-index construction</a> · <a
+href="thesis-review-56.html#rotation">Aperiodicity of this
+rotation</a></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Child indices</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Tile <span class="math inline">\(i\)</span></td>
+<td><span class="math inline">\((B_iQ,p)\)</span></td>
+</tr>
+<tr>
+<td>Spin</td>
+<td><span class="math inline">\((2Q,Rp)\)</span></td>
+</tr>
+</tbody>
+</table>
+<p>Use <code>let rec knot = Fork (knot,…,knot)</code> and demand <span
+class="math inline">\(\mathrm{Fixed}(xx^T,e)\)</span>. In scalar
+coordinates the caller always asks for <span
+class="math inline">\((0,0,0,1,1,1,1,0)\)</span>. A walk with <span
+class="math inline">\(k\)</span> spins and tile subsequence <span
+class="math inline">\(w\)</span> reaches <span
+class="math inline">\((2^k zz^T,R^k e)\)</span>, where <span
+class="math inline">\(z=A_w x\)</span>. This follows by induction. A
+tile acts on <span class="math inline">\(z\)</span>, while a spin
+doubles the matrix and rotates the point. Hence <span
+class="math inline">\(T(Q)=2^k\lVert z\rVert^2\ge0\)</span> and <span
+class="math inline">\(p_x\le1\)</span>. <strong>Every finite walk is
+safe for every tile instance</strong>, including every instance without
+a polyhedral typing. The replay compares the two formulas for all 1,458
+words of length six in two concrete programmes. <a
+href="thesis-review-58.py">Word replay</a></p>
+<section id="why-an-infinite-match-excludes-every-polyhedral-typing"
+class="level3">
+<h3>Why an infinite match excludes every polyhedral typing</h3>
+<p>An infinite word match has prefixes <span
+class="math inline">\(w\)</span> with <span class="math inline">\(A_w
+x\to0\)</span>. Follow tiles only. The start belongs to the scheme and
+recursive closure puts <span class="math inline">\((zz^T,e)\)</span> in
+it for each prefix. Its real closure therefore contains <span
+class="math inline">\((0,e)\)</span>. Continuous field maps preserve the
+closure, and the guard is closed. The same argument applies to schemes
+on rational indices by taking the real closures of their nonempty
+rational polyhedral cells.</p>
+<p>Intersect the closure with <span class="math inline">\(Q=0\)</span>.
+On this section the spin is an ordinary rotation and the guard is <span
+class="math inline">\(p_x\le1\)</span>. The positive powers of <span
+class="math inline">\(R\)</span> are dense. Consequently the section is
+contained in the closed unit disk. Since it contains <span
+class="math inline">\(e\)</span>, it contains the whole unit circle. The
+convex hull of the section is exactly the disk. But for a finite union
+of polyhedra the bounded section is a finite union of compact polytopes.
+Its convex hull is a polytope. This contradiction excludes every such
+scheme at the fixed caller. The limit point itself has a safe infinite
+unfolding. <a href="thesis-review-56.html#rotation">Disk obstruction and
+Lean aperiodicity proof</a></p>
+</section>
+<section id="a-single-polyhedron-when-no-infinite-match-exists"
+class="level3">
+<h3>A single polyhedron when no infinite match exists</h3>
+<p>In this case the symmetric-product construction gives a rational
+polyhedral cone <span class="math inline">\(K\)</span> in coordinates
+<span class="math inline">\((Q,h)\)</span> and a rational <span
+class="math inline">\(\delta&gt;0\)</span> such that <span
+class="math inline">\((xx^T,1)\in K\)</span>, <span
+class="math inline">\((Q,h)\mapsto(B_iQ,h)\)</span> preserves <span
+class="math inline">\(K\)</span>, and <span
+class="math inline">\(T(Q)\ge\delta h\)</span> on <span
+class="math inline">\(K\)</span>. The construction uses the finitely
+many short word prefixes and the two separately invariant sign regions
+of the tile system. Since <span class="math inline">\(K\)</span> is a
+cone, <span class="math inline">\((2Q,2h)\)</span> belongs to it
+whenever <span class="math inline">\((Q,h)\)</span> does. The auxiliary
+coordinate <span class="math inline">\(h\)</span> is a witness in this
+proof. The programme’s caller has eight fixed indices. <a
+href="thesis-review-57.html#convex">Construction of <span
+class="math inline">\(K\)</span></a></p>
+<p>Take <span class="math inline">\(N\)</span> with <span
+class="math inline">\(2^N\delta\ge1\)</span>. Form the following finite
+collection of rational polyhedra, projecting away <span
+class="math inline">\(h\)</span> in each case.</p>
+<ul>
+<li>For <span class="math inline">\(0\le k&lt;N\)</span>, take the
+states with <span class="math inline">\(p=R^k e\)</span> and <span
+class="math inline">\((Q,h)\in K\)</span> for some <span
+class="math inline">\(h\ge2^k\)</span>.</li>
+<li>For the remaining spins, take the states with <span
+class="math inline">\((Q,h)\in K\)</span>, <span
+class="math inline">\(h\ge1\)</span>, and <span
+class="math inline">\(\lVert p\rVert_\infty\le\delta h\)</span>.</li>
+</ul>
+<p>The start is in the first region or, if <span
+class="math inline">\(N=0\)</span>, in the last. Each tile preserves its
+region with the same <span class="math inline">\(h\)</span>. A spin
+doubles <span class="math inline">\(h\)</span> and advances the prefix.
+At spin <span class="math inline">\(N\)</span> the last region admits
+the point because <span class="math inline">\(\lVert R^N
+e\rVert_\infty\le1\)</span>. That region is itself stable since <span
+class="math inline">\(\lVert Rp\rVert_\infty\le(7/5)\lVert
+p\rVert_\infty\le2\delta h\)</span>. Each region satisfies the guard.
+The closed convex hull of finitely many rational polyhedra is a rational
+polyhedron. Every field maps the union into itself. Linearity and
+continuity preserve its closed convex hull, and the closed half-space
+defining the guard contains that hull. It gives the required single
+recursive scheme.</p>
+<p>As in the preceding reduction, a computable bound on the number of
+public facets would decide the problem by real quantifier elimination.
+With a proposed bound, quantify the half-space coefficients, require the
+fixed tuple to lie in the polyhedron, and check the guard and all field
+maps universally. Positive instances have rational witnesses. Negative
+instances exclude real polyhedral witnesses as well. Arbitrarily many
+private rational coordinates cannot give a computable bound on the
+number of inequalities either. If an extended description has <span
+class="math inline">\(m\)</span> rows <span
+class="math inline">\(Aq+Bz\le c\)</span>, its private variables affect
+the rows only through the column space of <span
+class="math inline">\(B\)</span>. A rational basis needs at most <span
+class="math inline">\(m\)</span> columns. Quantifying at most <span
+class="math inline">\(m\)</span> private coordinates therefore suffices
+to test a putative bound over the reals, with one fresh opening at each
+field. This argument now holds under the promise that every walk is safe
+and with no choice of scale by the caller. <a
+href="thesis-review-57.html#bound">Facet-bound argument</a></p>
+</section>
+<section id="quadratic" class="level3">
+<h3>Quadratic observations and their witnesses</h3>
+<p>There is a fixed-size nonlinear certificate for every instance.
+Require <span class="math inline">\(Q\)</span> to be positive
+semidefinite and <span class="math inline">\(p_x^2+p_y^2\le1\)</span>.
+Congruence by <span class="math inline">\(A_i\)</span> and doubling
+preserve positive semidefiniteness. Rotation preserves squared length.
+The trace of a positive semidefinite matrix is nonnegative, so these
+conditions prove the linear guard immediately. Seven principal-minor
+inequalities describe positive semidefiniteness in dimension three.
+These two properties give the refined-datatype programme a vocabulary
+that can type the entire family. <a
+href="refined-datatypes/index.html">Other synthesized
+observations</a></p>
+<p>The reachable matrices even have rank at most one. Requiring all
+two-by-two minors to vanish, the trace to be nonnegative, and the disk
+inequality gives a certificate of degree at most two entirely in public
+coordinates. A real symmetric matrix of rank at most one has at most one
+nonzero eigenvalue, equal to its trace. The matrix is therefore positive
+semidefinite. Congruence preserves both properties. Thus degree two is
+sharp for a polynomial observation language on this family. A finite
+Boolean combination of linear rational constraints, even with private
+rational linear witnesses, still projects to a finite union of
+polyhedral cells. Closing those cells gives exactly the obstruction in
+the negative case.</p>
+<p>The same public matrix relation has an exact rational description
+with one hidden vector <span class="math inline">\(u\)</span> and one
+scalar <span class="math inline">\(s\)</span>. Require <span
+class="math inline">\(s\ge1\)</span> and <span
+class="math inline">\(sQ=uu^T\)</span>. For a nonzero rational matrix in
+the relation, choose a positive diagonal entry <span
+class="math inline">\(d=Q_{ii}\)</span> and let <span
+class="math inline">\(u\)</span> be column <span
+class="math inline">\(i\)</span>. Vanishing minors give <span
+class="math inline">\(dQ=uu^T\)</span>. If <span
+class="math inline">\(d&lt;1\)</span>, multiplying <span
+class="math inline">\(u\)</span> by <span
+class="math inline">\(1/d\)</span> and <span
+class="math inline">\(d\)</span> by <span
+class="math inline">\((1/d)^2\)</span> puts the scale above one. Zero
+has witnesses <span class="math inline">\((0,1)\)</span>. The caller
+starts with <span class="math inline">\((x,1)\)</span>. A tile carries
+<span class="math inline">\((A_i u,s)\)</span>, and a spin carries <span
+class="math inline">\((2u,2s)\)</span>. These are <strong>affine
+rational witness terms</strong>. More generally a field <span
+class="math inline">\(Q&#39;=\lambda A Q A^T\)</span> with <span
+class="math inline">\(\lambda&gt;0\)</span> can choose <span
+class="math inline">\((aAu,(a^2/\lambda)s)\)</span> for any fixed
+rational <span class="math inline">\(a\)</span> with <span
+class="math inline">\(a^2\ge\lambda\)</span>. A zero multiplier chooses
+<span class="math inline">\((0,1)\)</span>. This describes which hidden
+data a refined datatype could expose and how each occurrence could
+instantiate it. <a href="thesis-review-58.py">Exact field replay</a></p>
+<p>A second quadratic description permits matrices of rank two. At each
+opening expose two private three-vectors <span
+class="math inline">\(u,v\)</span> with <span
+class="math inline">\(Q=uu^T+vv^T\)</span>, and require <span
+class="math inline">\(p_x^2+p_y^2\le1\)</span>. The caller chooses <span
+class="math inline">\((u,v)=(x,0)\)</span>. A tile chooses <span
+class="math inline">\((A_i u,A_i v)\)</span>. A spin chooses <span
+class="math inline">\((u+v,u-v)\)</span> since the two cross terms
+cancel in each matrix entry. Thus six quadratic equations and one disk
+inequality cover the whole family. The trace is a sum of rational
+squares. Even the doubling step uses rational witnesses at every
+opening. Both descriptions expose a fixed number of private coordinates
+independently of the tile instance. <a
+href="thesis-review-58.lean">Witness identities</a> · <a
+href="thesis-review-58.py">Exact field replay</a></p>
+</section>
+</section>
+<section id="witnesses" class="level2">
+<h2>When recursive schemes can be joined</h2>
+<p>There is a general reason why one convex scheme suffices on the
+positive instances. Take a fixed finite constructor graph and a finite
+family of sound rational polyhedral typings. At each node take the
+closed convex hull of the corresponding polyhedra. With affine field
+maps and a closed convex polyhedral local relation, the resulting family
+is again a sound typing. This gives a common generalization for any
+finite list of answers in this setting.</p>
+<p>The argument also handles a private numeric witness shared by several
+fields. Write the local obligation as <span class="math display">\[
+  \forall x\in P_v\;\exists z.\; C_v(x,z)\ \land\ \bigwedge_{e:v\to w}
+f_e(x,z)\in P_w .
+\]</span> Let <span class="math inline">\(H_w\)</span> be the proposed
+hull at each child. The set of parents that can satisfy this obligation
+with the new children is the projection onto <span
+class="math inline">\(x\)</span> of a single closed rational polyhedron
+in <span class="math inline">\((x,z)\)</span>. The projection is itself
+closed and convex and contains each original parent polyhedron. It
+therefore contains their closed convex hull <span
+class="math inline">\(H_v\)</span>. At a rational parent there is a
+rational witness, and it satisfies the tests at <em>all</em> siblings.
+This proof covers unbounded regions, including limiting points where an
+argument based on converging witness sequences would need a separate
+justification. A designated parameter visible before selecting <span
+class="math inline">\(z\)</span> can be included in <span
+class="math inline">\(x\)</span> and copied unchanged through each
+relevant field. <a href="thesis-review-2.html#combination">Witness scope
+in Theorem 4.5R</a></p>
+<p>A projected witness need only exist at each opening in this semantic
+rule. There is a stronger construction when the two original answers
+carry <em>affine witness terms</em> and the new scheme keeps its
+decomposition. Use the Balas formulation of the closed hull. Write <span
+class="math inline">\(x=y_0+y_1\)</span>, with <span
+class="math inline">\(y_0\)</span> in the first polyhedron scaled by
+<span class="math inline">\(\theta\)</span> and <span
+class="math inline">\(y_1\)</span> in the second scaled by <span
+class="math inline">\(1-\theta\)</span>, for <span
+class="math inline">\(0\le\theta\le1\)</span>. Homogenize each affine
+constraint and interpret a zero weight by its recession cone. If the two
+witness terms are <span class="math inline">\(L_i x+b_i\)</span>, choose
+<span class="math inline">\(z=L_0y_0+\theta
+b_0+L_1y_1+(1-\theta)b_1\)</span>. This is one affine term in the
+extended opening. Each sibling receives the same <span
+class="math inline">\(z\)</span>. For a child map <span
+class="math inline">\(Ax+Dz+c\)</span>, carry the two pieces <span
+class="math inline">\(Ay_i+D(L_i y_i+\theta_i b_i)+\theta_i c\)</span>
+with their original weights <span
+class="math inline">\(\theta_i\)</span>. The local inequalities and the
+child decompositions follow by adding the two homogenized derivations,
+also at weight zero for nonempty cells. Thus the extended scheme can
+retain a uniform affine policy even when projection onto public
+coordinates would lose its syntax. <a
+href="https://arxiv.org/abs/1711.00891">Balas formulation</a> · <a
+href="thesis-review-2.html#combination">Witness-order conventions</a> ·
+<a href="thesis-review-58.lean">Formal closure argument</a></p>
+<p>Here is a case where the decomposition matters. On the unit square
+require <span class="math inline">\(0\le z\)</span>, <span
+class="math inline">\(x+y-1\le z\)</span>, <span
+class="math inline">\(z\le x\)</span> and <span
+class="math inline">\(z\le y\)</span>. At <span
+class="math inline">\(y=0\)</span> take <span
+class="math inline">\(z=0\)</span>, and at <span
+class="math inline">\(y=1\)</span> take <span
+class="math inline">\(z=x\)</span>. The joined square forces <span
+class="math inline">\(z=0\)</span> at three corners and <span
+class="math inline">\(z=1\)</span> at <span
+class="math inline">\((1,1)\)</span>, so there is no affine witness in
+the public coordinates. In the extended opening write <span
+class="math inline">\(y=\theta\)</span>, <span
+class="math inline">\(x=u+v\)</span>, with <span
+class="math inline">\(0\le u\le1-\theta\)</span> and <span
+class="math inline">\(0\le v\le\theta\)</span>. All four inequalities
+hold with the single affine witness <span
+class="math inline">\(z=v\)</span>. <a href="thesis-review-58.lean">Lean
+proofs for both descriptions</a></p>
+<p>The order of choices matters. If one witness must be chosen before
+the parent index, the obligation <span class="math inline">\(\exists
+z\;\forall x\in P.\ z=x\)</span> admits either singleton <span
+class="math inline">\(\{0\}\)</span> or <span
+class="math inline">\(\{1\}\)</span>. It fails on their hull. The Horn
+clause <span class="math inline">\(P(x)\land P(y)\Rightarrow
+x=y\)</span> gives the same obstruction with two independently admitted
+parents.</p>
+<p>For independent premises there is an exact compatibility test.
+Suppose the clause reads several parent indices <span
+class="math inline">\(x_j\)</span> independently. At position <span
+class="math inline">\(j\)</span> answer <span
+class="math inline">\(a\)</span> admits <span
+class="math inline">\(P_j^a\)</span>, and the proposed join admits <span
+class="math inline">\(H_j=\overline{\mathrm{conv}}\bigcup_a
+P_j^a\)</span>. Let <span class="math inline">\(K\)</span> be the closed
+convex set of parent tuples that can discharge the clause with one
+common witness and the joined children. <strong>The join works if and
+only if <span class="math inline">\(\prod_j P_j^{a_j}\subseteq
+K\)</span> for every choice of answers <span
+class="math inline">\((a_1,\ldots,a_m)\)</span>.</strong> Each
+containment is a rational polyhedral check. The original derivations
+cover the choices where all the answers agree. The other choices state
+exactly what remains to check.</p>
+<p>Indeed the product of the <span class="math inline">\(H_j\)</span> is
+the closed convex hull of all the displayed products. Before taking
+closures, express each coordinate as a convex combination and multiply
+their weights. This gives a convex combination of tuples with the
+specified coordinate marginals. Taking coordinatewise limits proves the
+identity for unbounded sets as well. For the equality example, the mixed
+tuple <span class="math inline">\((0,1)\)</span> immediately refutes the
+join.</p>
+<p>A guard coupling the parent choices can create new premises after
+taking the hull. For instance, <span class="math inline">\(P(x)\land
+x=0\Rightarrow\bot\)</span> holds separately at the singletons <span
+class="math inline">\(-1\)</span> and <span
+class="math inline">\(1\)</span> and fails on their hull. With a
+rational polyhedral coupling <span class="math inline">\(G\)</span>,
+test <span class="math inline">\((\prod_j H_j)\cap G\subseteq K\)</span>
+directly. The same test handles equality of designated parameters across
+openings. The predecessor projects the shared witness only after
+imposing all the sibling constraints. These tests settle compatibility
+for a proposed join with these affine, closed polyhedral obligations.
+The unrestricted clauses in Theorem 4.5R may have other witness scopes.
+<a href="thesis-review-2.html#combination">Theorem 4.5R</a></p>
+</section>
+<section id="probe" class="level2">
+<h2>The three-index value inside the proof</h2>
+<p>Consider the independent binding
+<code>let rec probe = Spin probe</code> with indices <span
+class="math inline">\((p,t)\)</span>, child <span
+class="math inline">\((Rp,2t)\)</span> and guard <span
+class="math inline">\(p_x\le1+t\)</span>. On this value alone, the
+ground question has an exact decision procedure.</p>
+<ul>
+<li>At <span class="math inline">\(t&lt;0\)</span> the right side
+eventually falls below every possible rotated first coordinate.</li>
+<li>At <span class="math inline">\(t=0\)</span> the origin admits a
+polyhedral typing. Every other point is excluded by the bounded rotation
+section, even a semantically safe point inside the disk.</li>
+<li>At <span class="math inline">\(t&gt;0\)</span>, check the guards
+until <span class="math inline">\(\lVert R^k p\rVert_\infty\le2^k
+t\)</span>. This test terminates because the numerator is bounded and
+the denominator doubles. A violated guard rejects the point. Reaching
+the cone proves all remaining guards.</li>
+</ul>
+<p>For a scheme at depth <span class="math inline">\(N\)</span>, require
+<span class="math inline">\(t\ge0\)</span>, the first <span
+class="math inline">\(N\)</span> guards, and <span
+class="math inline">\(\lVert R^N p\rVert_\infty\le2^N t\)</span>. These
+are closed rational linear inequalities. Each such scheme is inductive,
+and the schemes increase with depth because the final cone is
+stable.</p>
+<p><strong>Every sound finite polyhedral typing for this value is
+contained in one of these schemes.</strong> Take the closure and examine
+the finitely many generators of its nonempty convex cells. No point has
+negative <span class="math inline">\(t\)</span>. The only point at zero
+is the origin. A recession direction with zero <span
+class="math inline">\(t\)</span> has zero planar component, since the
+guards from finitely many rotations already bound the planar section at
+any fixed <span class="math inline">\(t\)</span>. Every remaining vertex
+or ray has a finite ratio <span class="math inline">\(\lVert
+p\rVert_2/t\)</span>. The maximum of these generator ratios bounds that
+ratio on the cells by the triangle inequality. Choose <span
+class="math inline">\(2^N\)</span> above the maximum. Then every
+admitted point reaches the last cone by depth <span
+class="math inline">\(N\)</span>. This proves cofinality. Yet every
+<span class="math inline">\((e,t)\)</span> with <span
+class="math inline">\(t&gt;0\)</span> has some typing, while no finite
+polyhedral typing can admit them all. A caller-directed iteration along
+this chain succeeds whenever a solution exists for the specified ground
+point. <a href="thesis-review-58.py">Decision procedure</a> · <a
+href="thesis-review-58.lean">Lean chain and guard proofs</a></p>
+<section id="coverage" class="level3">
+<h3>One scheme for a family of callers</h3>
+<p>Let the caller demand any finite union <span
+class="math inline">\(D\)</span> of closed rational polyhedra in <span
+class="math inline">\((p,t)\)</span>. <strong>If every rational point of
+<span class="math inline">\(D\)</span> has a polyhedral typing
+individually, one finite scheme covers the whole demand.</strong> The
+least sufficient depth in the chain is computable, even when <span
+class="math inline">\(D\)</span> is unbounded. This statement concerns
+calls to the three-index probe.</p>
+<p>For each nonempty cell write a finite set of base points and
+recession generators, including both signs of a lineality basis. At
+every base point we need <span class="math inline">\(t\ge0\)</span>, and
+<span class="math inline">\(t=0\)</span> forces <span
+class="math inline">\(p=0\)</span>. Every ray also has nonnegative <span
+class="math inline">\(t\)</span> direction. A ray with zero <span
+class="math inline">\(t\)</span> direction and nonzero planar direction
+would make the section at its base point’s <span
+class="math inline">\(t\)</span> unbounded. The guards at finitely many
+spin depths already bound this entire section because their planar
+normals positively span the plane. The rational points on that ray
+therefore include a caller that fails a guard. These tests can reject a
+demand before any unrolling.</p>
+<p>On the remaining generators with <span
+class="math inline">\(t&gt;0\)</span> take the maximum of <span
+class="math inline">\((|p_x|+|p_y|)/t\)</span>, or zero for an empty
+list. This rational number bounds <span class="math inline">\(\lVert
+p\rVert_2/t\)</span> on the whole demand. Once <span
+class="math inline">\(2^N\)</span> reaches the bound, every point of
+<span class="math inline">\(D\)</span> satisfies the final square test.
+Test the earlier guards on the base points and their homogeneous
+versions on the rays. A failure exhibits a rejected caller, and passing
+them gives a single depth-<span class="math inline">\(N\)</span> scheme.
+Testing the square at each earlier step returns the least sufficient
+depth. For the closed demand <span
+class="math inline">\(\{(e,t):t\ge2^{-25}\}\)</span> this is 25. If one
+allows the <em>open</em> demand <span
+class="math inline">\(\{(e,t):t&gt;0\}\)</span>, every point is typable
+but no finite scheme covers it. <a href="thesis-review-58.py">Exact
+caller-family procedure</a></p>
+<p>In particular, a polynomial solution-size promise holds for this
+probe with an explicitly supplied caller. If each rational generator
+uses at most <span class="math inline">\(L\)</span> bits per coordinate,
+the ratio bound above is at most <span
+class="math inline">\(2^{O(L)}\)</span>. Depth <span
+class="math inline">\(O(L)\)</span> suffices. The scheme has <span
+class="math inline">\(O(L)\)</span> inequalities, and its depth-<span
+class="math inline">\(j\)</span> coefficients have <span
+class="math inline">\(O(j+1)\)</span> bits because they come from <span
+class="math inline">\(R^j\)</span> and <span
+class="math inline">\(2^j\)</span>. Its whole description takes <span
+class="math inline">\(O(L^2)\)</span> bits. This bound is for the
+displayed induction scheme. Table 4.4 may choose different updates.</p>
+<p>One can also split the eight-index reduction into two source
+bindings. Give <code>probe</code> the type above. Give the search
+constructor six indices <span class="math inline">\(Q\)</span>, its
+original tile fields at <span class="math inline">\(B_iQ\)</span>, and a
+field of type <span
+class="math inline">\(\mathrm{Probe}(e,T(Q))\)</span>. Define
+<code>let rec search = Fork (search,…,search,probe)</code> and require
+<span class="math inline">\(\mathrm{Search}(xx^T)\)</span>. A positive
+instance has a search scheme with <span
+class="math inline">\(T(Q)\ge\delta\)</span> by taking the slice <span
+class="math inline">\(h=1\)</span> of <span
+class="math inline">\(K\)</span>. One sufficiently deep probe scheme
+admits all its calls. For an infinite match, tile prefixes force calls
+<span class="math inline">\(\mathrm{Probe}(e,T(Q))\)</span> with <span
+class="math inline">\(T(Q)\to0\)</span>. No one finite probe scheme
+admits them. This variant keeps the largest datatype at six indices and
+uses two heap nodes. The positive programme supplies written schemes for
+both. InvarGenT checks them and OCaml verifies that each tile points
+back to the search node and the probe points back to itself. <a
+href="split_orbit.gadt">Two-binding programme</a></p>
+</section>
+<section id="facets" class="level3">
+<h3>How many inequalities does the probe need?</h3>
+<p>Even for this fixed three-index definition, the number of public
+facets required for <span class="math inline">\((e,\varepsilon)\)</span>
+grows without bound as positive rational <span
+class="math inline">\(\varepsilon\)</span> tends to zero. Here is an
+exact finite check. Choose <span class="math inline">\(n\ge3\)</span>,
+<span class="math inline">\(t_0=2^{-2n}\)</span> and <span
+class="math inline">\(\varepsilon=2^{-3n}\)</span>. Intersect any
+candidate polyhedron with <span class="math inline">\(0\le t\le
+t_0\)</span> and project it onto the plane. The projected polygon
+contains <span class="math inline">\(R^j e\)</span> for <span
+class="math inline">\(0\le j\le n\)</span>. It lies inside the
+half-planes <span class="math inline">\((R^j p)_x\le1+2^{-n}\)</span>
+for the same <span class="math inline">\(j\)</span>, by recursive
+closure.</p>
+<p>Let <span class="math inline">\(g\)</span> be the largest angular gap
+between the outer normals. Once <span
+class="math inline">\(g&lt;\pi\)</span>, the outer polygon is inside the
+disk of squared radius <span
+class="math inline">\(M=2(1+2^{-n})^2/(1+\cos g)\)</span>. Each inner
+orbit point <span class="math inline">\(u\)</span> requires a vertex
+<span class="math inline">\(v\)</span> with <span
+class="math inline">\(u\cdot v\ge1\)</span>. Two inner points <span
+class="math inline">\(u,w\)</span> cannot use the same vertex if <span
+class="math inline">\(M(1+u\cdot w)&lt;2\)</span>, by Cauchy–Schwarz
+applied to <span class="math inline">\(u+w\)</span>. Density gives
+arbitrarily many pairwise separated inner directions as <span
+class="math inline">\(M\)</span> tends to one. For each fixed number of
+directions the same conclusion holds for all sufficiently small positive
+<span class="math inline">\(\varepsilon\)</span> by using a fixed <span
+class="math inline">\(n\)</span> and the same slab.</p>
+<p>If the original scheme has <span class="math inline">\(F\)</span>
+public facets, the bounded three-dimensional slab has at most <span
+class="math inline">\(F+2\)</span> facets and hence at most <span
+class="math inline">\(2F\)</span> vertices by Euler’s formula. The first
+four spin iterates are affinely independent. Their three difference
+vectors have determinant <span
+class="math inline">\(208\varepsilon/125\)</span>, so the slab is full
+dimensional. Projection cannot create more vertices. The check orders
+rational unit vectors by cross products, computes <span
+class="math inline">\(M\)</span> exactly, and greedily selects
+incompatible directions. At <span class="math inline">\(n=64\)</span> it
+finds 30 directions, requiring at least 15 facets. At <span
+class="math inline">\(n=256\)</span> it finds 68, requiring <strong>at
+least 34 public facets</strong> for the ground slack <span
+class="math inline">\(2^{-768}\)</span>. These counts concern a
+conjunction in the public three-dimensional space. Private witnesses can
+give a smaller extended description. <a
+href="thesis-review-58.py">Rational facet certificates</a></p>
+</section>
+</section>
+<section id="compiler" class="level2">
+<h2>Two unfoldings recover the sharp caller</h2>
+<p>InvarGenT now checks numerical schemes for a direct recursive
+constructor against all its fields. With private witnesses it first
+tries carrying the same witnesses to each child. It can also project
+them away and check that each convex cell maps into a licensed child
+cell. If this proof succeeds, a large written invariant can be checked
+without searching for it again. The eight-index positive programme uses
+an octagonal norm with rows <span class="math inline">\(\pm
+p_x\)</span>, <span class="math inline">\(\pm p_y\)</span>, and <span
+class="math inline">\(\tfrac23(\pm p_x\pm p_y)\)</span>. Its induced
+norm for <span class="math inline">\(R\)</span> is exactly <span
+class="math inline">\(11/10\)</span>. The compiler checks the
+certificate and the generated OCaml has three fields pointing back to
+the same root. <a href="fixed_orbit.gadt">Programme</a> · <a
+href="thesis-review-58.py">Independent octagon and field checks</a></p>
+<p>For unannotated cycles the compiler can decompose an affine guard row
+into verified simultaneous eigenforms of the field maps. It takes
+candidate rational eigenvalues from their diagonal entries, including
+one for the constant coordinate. The projection identities and
+multipliers are checked exactly. A fixed component stays public. A
+changing component gets a private upper bound. A negative multiplier may
+also need a bound on the opposite component. The inequalities on these
+bounds ensure that each child can keep them. The compiler checks the
+guard at the root and after one field exactly, then bounds each
+two-field observation by the products of its multipliers. A separate
+replay checks the resulting scheme. A caller chooses the private bounds
+afresh when it instantiates the binding.</p>
+<p>The original arithmetic search can find a different sound scheme. The
+compiler checks containment after projecting private bounds. When
+neither scheme contains the other it constructs their closed convex hull
+by splitting the public tuple, homogenizing the two sets of
+inequalities, and eliminating the private coordinates. It checks both
+inputs against the proposed hull and replays the hull against every
+field. If elimination would make an intermediate step exceed the
+quadratic row budget, the compiler can keep the two alternatives with a
+minimum of private upper bounds on their violations. Tests for
+unsupported input still go through ordinary inference. This combination
+is specific to an independently checked recursive constructor value.</p>
+<p>Take the six-index positive instance with tiles <span
+class="math inline">\((2,0)\)</span> and <span
+class="math inline">\((22,0)\)</span>. On the caller’s ray the exact
+minimum scale is <strong><span
+class="math inline">\(8/3\)</span></strong>. After the first short tile
+the unsquared word coordinates are <span
+class="math inline">\((1/2,1/4,1/4)\)</span>, with squared norm <span
+class="math inline">\(3/8\)</span>. The long tile has squared norm <span
+class="math inline">\(117/256\)</span>. After two or more tiles the
+second coordinate <span class="math inline">\(b\le1/16\)</span> and the
+first equals <span class="math inline">\(\frac23(1-b)\)</span>, so its
+square alone is at least <span
+class="math inline">\(25/64&gt;3/8\)</span>. The initial squared norm is
+two. For sufficiency at the sharp scale, the fixed component of the
+trace is <span class="math inline">\(4/9\)</span> per unit of scale. Its
+only potentially negative component at the root is <span
+class="math inline">\(-8/9\)</span>, and each tile contracts it by at
+least a factor of four. At depth two the common lower bound is therefore
+<span class="math inline">\(4/9-(8/9)/16=7/18&gt;3/8\)</span>. The exact
+first-step check supplies the sharp inequality. The native compiler now
+accepts the unannotated binding at <span
+class="math inline">\(8/3\)</span> and rejects <span
+class="math inline">\(5/2\)</span>. The one-step prototype had needed
+<span class="math inline">\(9/2\)</span>. <a
+href="spectral_cyclic_value.gadt">Unannotated programme</a> · <a
+href="thesis-review-57.html#jump">One-step construction</a></p>
+<p>The hull can also recover a caller admitted by neither input scheme.
+For field <span class="math inline">\((i/2,j/3,k/5)\)</span> under root
+guard <span class="math inline">\(i+j+k\le0\)</span>, ordinary inference
+admits <span class="math inline">\((-1,0,1)\)</span> and the spectral
+scheme admits <span class="math inline">\((0,-1,0)\)</span>. Their
+midpoint <span class="math inline">\((-1/2,-1/2,1/2)\)</span> falls
+outside both. InvarGenT now infers four inequalities for the hull, <span
+class="math inline">\(i+j+k\le0\)</span>, <span
+class="math inline">\(i+k\le0\)</span>, <span
+class="math inline">\(9i+4j\le0\)</span>, and <span
+class="math inline">\(i\le0\)</span>, and accepts the midpoint. <a
+href="spectral_cyclic_value.gadt">Native example</a> · <a
+href="thesis-review-58.py">Independent hull checks</a></p>
+</section>
+<section id="replay" class="level2">
+<h2>Replay</h2>
+<p>Run the Python companion with <code>z3-solver</code> installed and
+OCaml on the path. It checks 1,458 mixed field selections, compares 90
+ground calls with independent linear descriptions, and executes both
+fixed-caller heaps. It also emits six probe schemes, from depth zero
+through twelve, and checks each at a symbolic family of admissible
+slacks and at an excluded ground slack. The replay passed with OCaml
+5.3.0 and 5.5.1 compatibility builds of <a
+href="https://github.com/lukstafi/invargent/commit/1a11502b99830d12d4ce705e6f7171fc2a51316a">InvarGenT
+1a11502</a>. The full OCaml 5.3 suite passed all 396 active tests, with
+ten existing TODOs. All 204 previously generated signatures matched byte
+for byte. The native search on the unannotated eight-index shrinking
+instance reached our 150-second wall limit without an answer. Its
+exclusion follows from the disk proof.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python3</span> thesis-review-58.py <span class="at">--compiler</span> /path/to/InvarGenT.native</span></code></pre></div>
+<p>Lean checks the rational factor updates, the rotation identities, the
+positive-slack equivalence between finite certification and orbit
+safety, the abstract common-witness argument, the square witness
+example, and the sharp first-tile bound. The reduction from infinite
+Post correspondence and the polyhedral generator arguments are proved
+above. <a href="thesis-review-58.lean">Lean file</a></p>
+</section>
+</article>
+<script src="/assets/theme-toggle.js"></script>
+</body>
+</html>

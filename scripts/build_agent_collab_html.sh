@@ -550,6 +550,11 @@ build_html \
   "Can a computable size bound suffice for cyclic constructor typings?"
 
 build_html \
+  "$collab_dir/thesis-review-58.md" \
+  "$collab_dir/thesis-review-58.html" \
+  "Can a safe cyclic value at a fixed ground type lack a polyhedral proof?"
+
+build_html \
   "$collab_dir/refined-datatypes/README.md" \
   "$collab_dir/refined-datatypes/index.html" \
   "Synthesizing datatypes for the successful inputs of an algorithm"

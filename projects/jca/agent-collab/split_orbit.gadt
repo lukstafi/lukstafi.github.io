@@ -1,0 +1,8 @@
+datatype Probe : num * num * num
+datacons Spin : ∀i,j,k[i≤1+k]. Probe (3/5 i + -4/5 j,4/5 i + 3/5 j,2 k) ⟶ Probe (i,j,k)
+let rec probe : ∀i,j,k[2/9≤k ∧ i≤1+k ∧ -1 i≤1+k ∧ j≤1+k ∧ -1 j≤1+k ∧ -2/3 i + -2/3 j≤1+k ∧ -2/3 i + 2/3 j≤1+k ∧ 2/3 i + -2/3 j≤1+k ∧ 2/3 i + 2/3 j≤1+k]. Probe (i,j,k) = Spin probe
+
+datatype Search : num * num * num * num * num * num
+datacons Fork : ∀i,j,k,l,m,n. Search (i + j + 1/4 l,1/4 j + 1/8 l,1/4 k + 1/8 m,1/16 l,1/16 m,1/16 n) * Search (i + 5/4 j + 25/64 l,1/16 j + 5/128 l,1/4 k + 5/32 m,1/256 l,1/64 m,1/16 n) * Probe (1,0,i+l+n) ⟶ Search (i,j,k,l,m,n)
+let rec search : ∀i,j,k,l,m,n[-1 i + -4/3 j + -4/9 l≤-4/9 ∧ -3/2 i + -1 j≤0 ∧ -1 l≤0 ∧ -1 n≤0 ∧ -1/2 i + 2/3 j + -7/9 l + -1 n≤0]. Search (i,j,k,l,m,n) = Fork (search,search,probe)
+let at_start : Search (0,0,0,1,1,1) = search

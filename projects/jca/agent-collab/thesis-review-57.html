@@ -341,8 +341,10 @@ candidate. The theorem rules out a universal computable completeness
 budget for this source class. In particular, a known bound can justify a
 separate bounded search. Proving that Table 4.4 itself visits an
 available bounded solution would require a property of its updates. The
-caller here chooses a scale. Whether a single prescribed six-index
-ground point has the same hardness needs a separate argument. <a
+caller here chooses a scale. The next construction fixes the caller
+completely, using eight indices at one node or six at the largest of two
+nodes. <a href="thesis-review-58.html#fixed">Fixed-caller proof</a> · <a
+href="thesis-review-58.html#coverage">Two-node construction</a> · <a
 href="thesis-review-56.html#affine">Exact finite-direction
 inference</a></p>
 </section>
@@ -376,12 +378,14 @@ components of the trace, five inequalities in the scheme, and scale
 <span class="math inline">\(9/2\)</span>. A driver synthesizes the
 annotation from the matrices and the caller, checks closure
 independently, then asks InvarGenT to type the value at exactly that
-scale. The original unannotated search misses this caller. The proposed
-jump uses information from the later ground use, which the compiler’s
-present per-binding cycle solver does not consume. <a
-href="thesis-review-57.py">Synthesizer and compiler replay</a> · <a
-href="thesis-review-56.html#affine">Native solver for finite guard
-directions</a></p>
+scale. The unannotated compiler used for this experiment missed this
+caller. A subsequent compiler infers the sharp scale <span
+class="math inline">\(8/3\)</span> by leaving the bounds available for
+instantiation at the binding. <a
+href="thesis-review-58.html#compiler">Native inference at the sharp
+boundary</a> · <a href="thesis-review-57.py">Synthesizer and compiler
+replay</a> · <a href="thesis-review-56.html#affine">Native solver for
+finite guard directions</a></p>
 </section>
 <section id="replay" class="level2">
 <h2>Replaying the construction</h2>
@@ -394,14 +398,12 @@ class="math inline">\(a+2b/3\)</span> is invariant. Its square supplies
 a linear equality in the six indices. At scale nine this equality reads
 <span class="math inline">\(Q_{00}+4Q_{01}/3+4Q_{11}/9=4\)</span>.
 InvarGenT accepts the explicit scheme and the closed use. The emitted
-OCaml has two fields that both point back to the root. Without the
-annotation the current solver infers a scheme that excludes the caller.
-The driver also checks the independently synthesized scheme above. A
-second instance contains the tile <span
-class="math inline">\((0,0)\)</span>, whose repeated application divides
-the trace on the start ray by sixteen. The negative control checks
-rejection. <a href="scaled_orbit.gadt">Runnable annotated
-programme</a></p>
+OCaml has two fields that both point back to the root. The driver also
+checks the independently synthesized scheme above. A second instance
+contains the tile <span class="math inline">\((0,0)\)</span>, whose
+repeated application divides the trace on the start ray by sixteen. The
+negative control checks rejection. <a href="scaled_orbit.gadt">Runnable
+annotated programme</a></p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python3</span> thesis-review-57.py <span class="at">--compiler</span> /path/to/InvarGenT.native</span></code></pre></div>
 </section>
 </article>
