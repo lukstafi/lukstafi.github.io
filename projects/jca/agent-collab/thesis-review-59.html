@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <meta name="dcterms.date" content="2026-11-23">
+  <meta property="og:title" content="How many private indices does a small recursive typing need?">
+  <meta property="og:url" content="https://lukstafi.github.io/projects/jca/agent-collab/thesis-review-59.html">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="lukstafi&#x27;s blog">
+  <meta name="twitter:card" content="summary">
+  <title>How many private indices does a small recursive typing
+need?</title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <style type="text/css">
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="/assets/tufte.css">
+  <link rel="stylesheet" href="/assets/pandoc-tufte.css">
+  <link rel="stylesheet" href="/assets/site.css">
+  <script defer=""
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+  type="text/javascript"></script>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+  <script>(function(){var t=localStorage.getItem('theme-preference');if(t)document.documentElement.setAttribute('data-theme',t);})()</script>
+</head>
+<body>
+<nav class="site-nav">
+  <a href="/">Home</a> &middot; <a href="/study/">Study Guide</a> &middot; <a href="/about.html">About</a> &middot; <a href="https://lukstafi.substack.com">Substack</a>
+</nav>
+<div class="theme-toggle">
+  <button id="theme-btn" aria-label="Toggle dark mode">&#9788;</button>
+</div>
+<article>
+<header>
+<h1 class="title">How many private indices does a small recursive typing
+need?</h1>
+<p class="byline">2026-11-23</p>
+</header>
+<nav id="TOC">
+<ul>
+<li><a href="#source" id="toc-source">A slowly turning value</a>
+<ul>
+<li><a href="#lower" id="toc-lower">Exponentially many vertices at the
+caller</a></li>
+<li><a href="#rounds" id="toc-rounds">Exact convergence of public guard
+unfolding</a></li>
+</ul></li>
+<li><a href="#lift" id="toc-lift">A typing with rational private
+witnesses</a>
+<ul>
+<li><a href="#dimension" id="toc-dimension">A lower bound on the number
+of private coordinates</a></li>
+<li><a href="#policies" id="toc-policies">How many affine witness
+choices does one ground orbit need?</a></li>
+<li><a href="#measurement" id="toc-measurement">Discovering a public
+measurement</a></li>
+</ul></li>
+<li><a href="#compiler" id="toc-compiler">What InvarGenT infers from its
+callers</a></li>
+<li><a href="#replay" id="toc-replay">Replay</a></li>
+</ul>
+</nav>
+<p>A cyclic value with three public rational indices and a single
+recursive field can require <strong>exponentially many public
+facets</strong> with the same ground use and the same guard on every
+instance. Exact unfolding of the public guard reaches its fixed point in
+exponentially many rounds. The same value and use have a conjunctive
+linear typing with <strong>linearly many inequalities and private
+coordinates</strong>. With polynomially many inequalities the minimum
+number of private coordinates is <span
+class="math inline">\(\Theta(n/\log n)\)</span> for this family of
+inputs of bit length <span class="math inline">\(\Theta(n)\)</span>.
+Even the witness dimension matters when promising Table 4.4 a small
+solution. <a href="thesis-review-59.py">Exact arithmetic replay</a> · <a
+href="thesis-review-58.html#fixed">Earlier fixed-caller undecidability
+theorem</a></p>
+<section id="source" class="level2">
+<h2>A slowly turning value</h2>
+<p>Write the indices as a point <span
+class="math inline">\(p=(x,y)\)</span> and a slack <span
+class="math inline">\(t\)</span>. The constructor checks <span
+class="math inline">\(x\le1+t\)</span>. Its only field has indices <span
+class="math inline">\((Rp,\lambda t)\)</span>. Bind
+<code>let rec probe = Spin probe</code> and ask for <span
+class="math inline">\(\mathrm{Probe}(2,0,1)\)</span> on every instance.
+For <span class="math inline">\(n\ge2\)</span> set <span
+class="math display">\[
+h=2^{-n},\qquad
+R=\frac1{1+h^2}\begin{pmatrix}1-h^2&amp;-2h\\2h&amp;1-h^2\end{pmatrix},
+\qquad\lambda=1+h^3/16 .
+\]</span> Each rational coefficient takes <span
+class="math inline">\(O(n)\)</span> bits to write as a fraction of
+integers. All the programmes have the same single-node heap. The angle
+<span class="math inline">\(\theta=2\arctan h\)</span> lies between
+<span class="math inline">\(h\)</span> and <span
+class="math inline">\(2h\)</span>. A walk of length <span
+class="math inline">\(j\)</span> reaches <span
+class="math inline">\((2R^j e,\lambda^j)\)</span> for <span
+class="math inline">\(e=(1,0)\)</span>. Its guard always holds. The
+folded scheme below gives a finite public certificate on each individual
+instance by projection. Here the rotation varies with the input. <a
+href="thesis-review-58.html#probe">Earlier chain of public
+typings</a></p>
+<section id="lower" class="level3">
+<h3>Exponentially many vertices at the caller</h3>
+<p>Suppose a closed convex rational polyhedron <span
+class="math inline">\(P\)</span> certifies this ground call. We can work
+over the reals. Rational points are dense in a rational polyhedron, the
+guard is closed, and the field map is continuous. Let <span
+class="math inline">\(K=\lfloor 2\pi/\theta\rfloor\)</span> and <span
+class="math inline">\(t_0=\lambda^K\)</span>. Cut <span
+class="math inline">\(P\)</span> with <span class="math inline">\(0\le
+t\le t_0\)</span> and project the slab onto the plane, dividing the
+planar coordinates by two. The resulting polygon contains <span
+class="math inline">\(R^j e\)</span> for <span
+class="math inline">\(0\le j\le K\)</span>. Every point <span
+class="math inline">\(p\)</span> of the polygon also satisfies <span
+class="math display">\[
+(R^j p)_x\le(1+\lambda^{2K})/2 \qquad (0\le j\le K).
+\]</span> Indeed a point of the slab has a lift at some <span
+class="math inline">\(t\le t_0\)</span> and its next <span
+class="math inline">\(j\)</span> unfoldings remain in <span
+class="math inline">\(P\)</span>. Put <span
+class="math inline">\(\eta=(\lambda^{2K}-1)/2\)</span>. Since <span
+class="math inline">\(K&lt;7/h\)</span>, the inequality <span
+class="math inline">\(1+u\le e^u\)</span> gives <span
+class="math inline">\(\lambda^{2K}\le\exp(7h^2/8)\)</span>. For <span
+class="math inline">\(0\le u\le1/2\)</span> we have <span
+class="math inline">\(e^u\le1/(1-u)\le1+2u\)</span>. Thus <span
+class="math inline">\(\eta\le7h^2/8&lt;h^2\)</span>.</p>
+<p>The normals of these half-spaces turn once around the circle with
+gaps at most <span class="math inline">\(\theta\)</span>. Every
+projected point therefore has radius at most <span
+class="math inline">\((1+\eta)/\cos(\theta/2)=(1+\eta)\sqrt{1+h^2}\)</span>.
+This is less than <span
+class="math inline">\(1/\cos\theta=(1+h^2)/(1-h^2)\)</span> because
+<span class="math inline">\((1-h^2)^2(1+h^2)&lt;1\)</span>. The slab is
+bounded. For each inner direction <span class="math inline">\(u=R^j
+e\)</span>, the polygon must have a vertex <span
+class="math inline">\(v\)</span> with <span class="math inline">\(u\cdot
+v\ge1\)</span>. The angle between such a vertex and <span
+class="math inline">\(u\)</span> is strictly less than <span
+class="math inline">\(\theta\)</span>.</p>
+<p>Take <span class="math inline">\(j=0,2,\ldots,2^n\)</span>. These
+<span class="math inline">\(2^{n-1}+1\)</span> directions lie on an arc
+of length at most two radians. Two of them cannot use the same vertex.
+If <span class="math inline">\(P\)</span> has <span
+class="math inline">\(F\)</span> public facets, the slab has at most
+<span class="math inline">\(F+2\)</span> and, in dimension three, at
+most <span class="math inline">\(2F\)</span> vertices by Euler’s
+formula. It is full dimensional: the first four orbit points in <span
+class="math inline">\((x,y,t)\)</span> are affinely independent. Their
+augmented coordinate matrix is equivalent over <span
+class="math inline">\(\mathbb C\)</span> to a Vandermonde matrix at the
+four distinct numbers <span
+class="math inline">\(1,\exp(i\theta),\exp(-i\theta),\lambda\)</span>.
+Projection cannot create more vertices. Thus <strong><span
+class="math inline">\(F\ge2^{n-2}+1\)</span></strong>. The same support
+argument applied to the convex hull of a union also handles public
+Boolean combinations. With <span class="math inline">\(m\)</span>
+distinct affine tests in three dimensions, all bounded slab-cell
+vertices come from triples of the <span
+class="math inline">\(m+2\)</span> hyperplanes. Even these formulas need
+<span class="math inline">\(2^{\Omega(n)}\)</span> tests. For strict
+tests take the closures of the nonempty cells first. Linearity and
+continuity preserve the guard and recursive closure. <a
+href="thesis-review-59.py">Rational checks of the angular gaps and
+distinct supports</a></p>
+</section>
+<section id="rounds" class="level3">
+<h3>Exact convergence of public guard unfolding</h3>
+<p>On the domain <span class="math inline">\(t\ge1\)</span> there is a
+matching <strong><span class="math inline">\(\Theta(2^n)\)</span> bound
+on the number of public facets and on the number of rounds of exact
+guard unfolding</strong>. Begin with <span
+class="math inline">\(P_0=\{t\ge1\}\)</span> and put <span
+class="math inline">\(P_{j+1}=\{t\ge1,\ x\le1+t,\ (Rp,\lambda t)\in
+P_j\}\)</span>. Thus <span class="math inline">\(P_j\)</span> asks for
+the first <span class="math inline">\(j\)</span> guards. Set <span
+class="math inline">\(L=23\cdot2^n\)</span>. The first <span
+class="math inline">\(K+1\)</span> guard normals from the lower-bound
+proof already imply <span class="math display">\[
+\lVert p\rVert_2\le(1+\lambda^Kt)\sqrt{1+h^2}.
+\]</span> We have <span class="math inline">\(L-K\ge16/h\)</span>, so
+Bernoulli’s inequality gives <span
+class="math inline">\(\lambda^{L-K}\ge1+h^2\)</span>. For <span
+class="math inline">\(u=\lambda^Kt\ge1\)</span>, the last radial bound
+is at most <span
+class="math inline">\((1+u)(1+h^2/2)\le1+u(1+h^2)\le1+\lambda^Lt\)</span>.
+Hence <strong>every guard at depth <span
+class="math inline">\(L\)</span> or greater already follows</strong>.
+The prefix <span class="math inline">\(P_L\)</span> gives exactly the
+safe domain with <span class="math inline">\(t\ge1\)</span>, and has at
+most <span class="math inline">\(L+1\)</span> facets. Conversely, every
+prefix contains the caller. If <span
+class="math inline">\(P_j=P_{j+1}\)</span>, it is itself a certificate
+with at most <span class="math inline">\(j+1\)</span> facets, so <span
+class="math inline">\(j\ge2^{n-2}\)</span>. This is exponential
+stabilization of this particular preimage iteration despite the
+polynomial-size lifted solution below. It gives a round bound for a
+concrete constructor update. The general Table 4.4 feedback loop also
+changes the predicate through abduction and generalization.</p>
+<p>There is an exact test for the first redundant guard using only the
+plane <span class="math inline">\(t=1\)</span>. Write <span
+class="math inline">\(v_i=(R^i)^T e/(1+\lambda^i)\)</span>. The guard at
+<span class="math inline">\(j\)</span> follows from its predecessors on
+that slice exactly when <span
+class="math inline">\(v_j\in\operatorname{conv}(0,v_0,\ldots,v_{j-1})\)</span>.
+Indeed, at <span class="math inline">\(t=1\)</span> each predecessor
+says <span class="math inline">\(v_i\cdot p\le1\)</span>, and separation
+gives the converse. Equivalently, nonnegative weights <span
+class="math inline">\(w_i\)</span> express the unit normal at <span
+class="math inline">\(j\)</span> as a sum of earlier unit normals with
+<span class="math inline">\(\sum_i
+w_i(1+\lambda^i)\le1+\lambda^j\)</span>. The triangle inequality gives
+<span class="math inline">\(\sum_i w_i\ge1\)</span>, whence <span
+class="math inline">\(\sum_i w_i\lambda^i\le\lambda^j\)</span>. The same
+weights prove the guard on every <span
+class="math inline">\(t\ge1\)</span>. This lets us stop at the
+<em>first</em> return to the planar convex hull and certify the complete
+public fixed point. The first redundant guard has index <strong>51, 76,
+151 and 201</strong> at <span class="math inline">\(n=2,3,4,5\)</span>,
+respectively, numbering the root guard zero. A vertex of the final polar
+hull corresponds to an indispensable guard at <span
+class="math inline">\(t=1\)</span>, while the weights remove every other
+guard at all larger slacks. The four full public domains have 52, 77,
+152 and 202 facets, respectively, including <span
+class="math inline">\(t\ge1\)</span>. <a
+href="thesis-review-59.py">Exact polar-hull replay</a></p>
+</section>
+</section>
+<section id="lift" class="level2">
+<h2>A typing with rational private witnesses</h2>
+<p>At an opening the scheme may quantify additional coordinates used in
+its constraints. Projecting them away gives its admitted public tuples.
+A child may choose fresh private coordinates. We use the folded
+approximation of a Euclidean disk from the lifted second-order cone
+construction of Ben-Tal and Nemirovski. Kocuk gives rational versions
+using Pythagorean triples. Here dyadic half-angle parameters give
+rational coefficients and explicit witnesses, with the precision fixed
+by the growth of the slack. <a
+href="https://www2.isye.gatech.edu/~nemirovs/Mor-LorentzAppr_2001.pdf">Ben-Tal
+and Nemirovski, 2001</a> · <a
+href="https://arxiv.org/pdf/1912.00256">Kocuk, §3</a></p>
+<p>Set <span class="math inline">\(a_j=2^{-j}\)</span>, <span
+class="math inline">\(c_j=(1-a_j^2)/(1+a_j^2)\)</span> and <span
+class="math inline">\(s_j=2a_j/(1+a_j^2)\)</span>. First describe a
+region <span class="math inline">\(U\)</span> that can serve after one
+unfolding. Introduce private pairs <span
+class="math inline">\((X_j,Y_j)\)</span> for <span
+class="math inline">\(0\le j\le m\)</span>. The following is a
+conjunction of linear constraints. Each absolute value in a lower bound
+stands for two inequalities. <span class="math display">\[
+\begin{aligned}
+X_0&amp;\ge |x|,&amp;Y_0&amp;\ge |y|,\\
+X_j&amp;=c_jX_{j-1}+s_jY_{j-1},&amp;
+Y_j&amp;\ge |c_jY_{j-1}-s_jX_{j-1}| &amp;&amp;(1\le j\le m),\\
+c_mY_m&amp;\le s_m X_m,&amp; X_m+a_mY_m&amp;\le1+t,&amp; t&amp;\ge1 .
+\end{aligned}
+\]</span></p>
+<p><strong>Every admitted point satisfies <span
+class="math inline">\(\lVert p\rVert_2\le1+t\)</span>.</strong> The
+private coordinates are nonnegative. The initial inequalities and each
+relaxed fold can only increase squared length, because <span
+class="math inline">\(c_j^2+s_j^2=1\)</span>. The last wedge inequality
+implies <span class="math inline">\((1-a_m^2)Y_m\le2a_mX_m\)</span>.
+Multiplying by <span class="math inline">\(Y_m\)</span> gives <span
+class="math inline">\(X_m^2+Y_m^2\le(X_m+a_mY_m)^2\)</span>. This proves
+the constructor guard for every opening.</p>
+<p><strong>Every point with <span class="math inline">\((1+\delta)\lVert
+p\rVert_2\le1+t\)</span> and <span class="math inline">\(t\ge1\)</span>
+has an opening</strong>, where <span
+class="math inline">\(\delta=4^{-m}/2\)</span>. Use equality in the
+absolute-value bounds. Each step rotates towards the horizontal axis and
+reflects the vertical component if necessary. After the first step the
+angle is at most <span
+class="math inline">\(\theta_1=2\arctan(1/2)\)</span>, because <span
+class="math inline">\(\theta_1\ge\pi/4\)</span>. Thereafter <span
+class="math inline">\(\theta_{j-1}\le2\theta_j\)</span> by concavity of
+<span class="math inline">\(\arctan\)</span> on the positive axis.
+Folding a point between angles zero and <span
+class="math inline">\(\theta_{j-1}\)</span> therefore leaves it between
+zero and <span class="math inline">\(\theta_j\)</span>. The last wedge
+holds. The tight folds preserve length and Cauchy–Schwarz gives <span
+class="math inline">\(X_m+a_mY_m\le\sqrt{1+a_m^2}\lVert
+p\rVert_2\le(1+\delta)\lVert p\rVert_2\)</span>. The witnesses use
+rational linear operations and absolute values, including at the next
+recursive field.</p>
+<p>Choose <span class="math inline">\(m=\lceil(3n+4)/2\rceil\)</span>.
+Then <span class="math inline">\(2\delta\le\lambda-1\)</span>, so <span
+class="math inline">\((1+\delta)(1+t)\le1+\lambda t\)</span> for every
+<span class="math inline">\(t\ge1\)</span>. Rotation preserves length.
+Thus every point in <span class="math inline">\(U\)</span> maps to a
+point in <span class="math inline">\(U\)</span> with newly chosen tight
+witnesses.</p>
+<p>The fixed caller sits exactly on the first guard. Use the scheme
+<span class="math inline">\(P=\{(p,t):t\ge1,\ x\le1+t,\ (Rp,\lambda
+t)\in U\}\)</span>. Its child belongs to <span
+class="math inline">\(U\)</span>, and <span
+class="math inline">\(U\subseteq P\)</span> by the preceding induction
+and guard proofs. At the start <span class="math inline">\(\lVert
+R(2e)\rVert_2=2\)</span> and <span
+class="math inline">\(2(1+\delta)\le1+\lambda\)</span>, so the child
+admits a tight opening. Writing the folds on <span
+class="math inline">\(Rp\)</span> at the root needs <span
+class="math inline">\(2m+2\)</span> private coordinates and <span
+class="math inline">\(4m+8\)</span> inequalities, counting an equality
+as two and omitting the redundant <span class="math inline">\(\lambda
+t\ge1\)</span>. The coefficient bit lengths sum to <span
+class="math inline">\(O(n^2)\)</span>. At <span
+class="math inline">\(n=20\)</span> these counts are <strong>66 private
+coordinates and 136 inequalities</strong>, against a lower bound of
+<strong>262,145 public facets</strong>. The source and certificate
+bounds use the thesis’s unbounded rational literals. <a
+href="thesis-review-59.lean">Arbitrary-depth rational witness and
+induction proofs in Lean</a> · <a href="thesis-review-59.py">Source
+scheme generator</a></p>
+<section id="dimension" class="level3">
+<h3>A lower bound on the number of private coordinates</h3>
+<p>Suppose a conjunctive scheme uses <span
+class="math inline">\(m&#39;\)</span> inequalities and <span
+class="math inline">\(d\)</span> private coordinates. Cut its extended
+polyhedron with the same two slab inequalities. Each vertex of the
+planar projection lifts to a distinct nonempty face: maximize a linear
+functional that exposes that vertex. This holds even if the fibre or the
+extended slab is unbounded. A face can be specified by at most <span
+class="math inline">\(D=d+3\)</span> independent tight rows relative to
+the affine hull. There are at most <span
+class="math inline">\(2^{m&#39;+2}\)</span> faces and at most <span
+class="math inline">\(\sum_{j=0}^{D}\binom{m&#39;+2}{j}\)</span> choices
+of independent rows. Equalities can be counted as two inequalities or
+absorbed into the affine hull. <a href="#lower">Why the projection needs
+many vertices</a></p>
+<p>The first bound gives <span
+class="math inline">\(m&#39;=\Omega(n)\)</span>. If <span
+class="math inline">\(m&#39;\)</span> is polynomial in <span
+class="math inline">\(n\)</span>, the second gives <span
+class="math inline">\(d=\Omega(n/\log n)\)</span>. If <span
+class="math inline">\(m&#39;=O(n)\)</span>, it gives <span
+class="math inline">\(d=\Omega(n)\)</span>: when <span
+class="math inline">\(D=o(n)\)</span> the logarithm of the binomial sum
+is at most <span class="math inline">\(O(D\log(en/D))=o(n)\)</span>. The
+lifted scheme therefore attains the asymptotically optimal counts when
+the number of inequalities is linear.</p>
+<p>The <span class="math inline">\(\Omega(n/\log n)\)</span> bound for
+polynomially many inequalities is also attainable. Keep private
+coordinates only at the ends of blocks of <span
+class="math inline">\(b=\lceil\log_2 n\rceil\)</span> consecutive folds
+and eliminate all the intermediate pairs within each block. Each block
+has <span class="math inline">\(O(b)\)</span> inequalities, so the
+projection describing the relation between its two endpoints has at most
+<span class="math inline">\(2^{O(b)}\)</span> facets. Its coefficients
+still have polynomial bit length. After clearing row denominators,
+Farkas elimination uses extreme nonnegative row combinations cancelling
+the discarded columns. These can be chosen from determinants of order
+<span class="math inline">\(O(b)\)</span> of entries of <span
+class="math inline">\(O(n)\)</span> bits. The projected blocks fit
+together exactly because neighbouring blocks share only their endpoint
+pairs. This gives <span class="math inline">\(O(n/\log n)\)</span>
+private coordinates and polynomial total size.</p>
+<p>More generally, write <span class="math inline">\(M_n(d)\)</span> for
+the least number of inequalities in a certificate with at most <span
+class="math inline">\(d\)</span> private coordinates. For <span
+class="math inline">\(0\le d\le n\)</span> the trade-off is <span
+class="math display">\[
+\log_2\!\left(1+\frac{M_n(d)}{d+1}\right)=\Theta\!\left(\frac{n}{d+1}\right).
+\]</span> For the upper bound use <span class="math inline">\(\lfloor
+d/2\rfloor+1\)</span> blocks of nearly equal size, keeping just the two
+coordinates at each internal boundary. The first block absorbs the
+initial absolute values and the last absorbs the final wedge. Each block
+projects to at most <span
+class="math inline">\(2^{O(1+n/(d+1))}\)</span> inequalities on its
+public variables and retained endpoints. For the converse put <span
+class="math inline">\(B=M_n(d)+2\)</span> and <span
+class="math inline">\(D=d+3\)</span>. When <span
+class="math inline">\(D\le B\)</span>, the binomial sum above is at most
+<span class="math inline">\((e B/D)^D\)</span>. Together with the <span
+class="math inline">\(2^{n-1}+1\)</span> exposed vertices this gives the
+stated lower bound. When <span class="math inline">\(D&gt;B\)</span>,
+the bound <span class="math inline">\(B\ge n-1\)</span> already suffices
+since <span class="math inline">\(d\le n\)</span>. In particular,
+<strong>every fixed private dimension costs exponentially many
+inequalities</strong>, while a linear inequality budget forces linear
+private dimension.</p>
+</section>
+<section id="policies" class="level3">
+<h3>How many affine witness choices does one ground orbit need?</h3>
+<p>Fix any conjunctive certificate with <span
+class="math inline">\(M\ge2\)</span> inequalities. Suppose an opening
+chooses from <span class="math inline">\(k\)</span> assignments of the
+form <span class="math inline">\(z=L_i q+b_i\)</span>, where <span
+class="math inline">\(q=(x,y,t)\)</span> is the public tuple and <span
+class="math inline">\(z\)</span> contains all private indices. Even if
+we ask for witnesses only on the first <span
+class="math inline">\(2^n+1\)</span> points of the fixed caller’s orbit,
+we need <span class="math display">\[
+k\ \ge\ \left\lceil\frac{2^{n-1}+1}{2M}\right\rceil .
+\]</span></p>
+<p>To see this, substitute each assignment in the certificate. The
+public tuples for which it succeeds form a polyhedron with at most <span
+class="math inline">\(M\)</span> inequalities inside the certified
+domain. Clip each of these polyhedra to the slab from the lower-bound
+proof. A three-dimensional cell has at most <span
+class="math inline">\(2M\)</span> vertices by Euler’s formula. A
+two-dimensional cell has at most <span class="math inline">\(M+2\le
+2M\)</span> vertices, and a segment or a point has at most two. The
+projected convex hull of the resulting cells lies inside the same outer
+radius and contains the selected orbit points. Its <span
+class="math inline">\(2^{n-1}+1\)</span> required vertices must come
+from the clipped cells. This proves the bound. If the witness assignment
+for a recursive call reads the <em>parent’s public</em> tuple, the
+inverse of the affine field map expresses that tuple in the child’s
+coordinates. Taking the odd orbit points <span
+class="math inline">\(1,3,\ldots,2^n+1\)</span> gives the same bound for
+recursive calls alone.</p>
+<p>At <span class="math inline">\(n=20\)</span>, any 136-row certificate
+needs <strong>at least 1,928 affine witness choices</strong>. A circuit
+that computes witnesses with affine operations and <span
+class="math inline">\(s\)</span> binary choices, including absolute
+values, has at most <span class="math inline">\(2^s\)</span> affine
+cases. Thus <span class="math inline">\(s\ge n-O(\log M)\)</span> even
+along this one walk. The tight folds attain <span
+class="math inline">\(O(n)\)</span> such operations. They open the fixed
+caller and every child of an arbitrary admitted parent, using fresh
+witnesses at the child. The small certificate comes with a small
+<em>composed</em> witness computation. Expanding the computation into a
+list of affine substitutions can cost exponentially more. This matters
+when applying the compatibility and coverage conditions in the repair to
+Theorem 4.5. <a href="thesis-review-2.html#combination">Rigid interfaces
+and chosen discharged witnesses</a> · <a href="#lift">Fold
+construction</a></p>
+<p>For comparison, an exponential list always suffices on the whole
+domain of a rational conjunctive lift with <span
+class="math inline">\(M\)</span> rows and <span
+class="math inline">\(d\)</span> private coordinates. In each nonempty
+fibre add <span class="math inline">\(-w\le z_j\le w\)</span> and <span
+class="math inline">\(w\ge0\)</span>, and minimize <span
+class="math inline">\(w\)</span>. The optimal face is nonempty and
+bounded, so it contains a vertex. At that vertex, <span
+class="math inline">\(d+1\)</span> independent tight rows determine
+<span class="math inline">\((z,w)\)</span> as an affine function of the
+public tuple. Enumerating the row subsets gives at most <span
+class="math inline">\(2^{M+2d+1}\)</span> choices. In particular, for
+linearly many rows and private coordinates the worst-case list size on
+this family is <span class="math inline">\(2^{\Theta(n)}\)</span>.</p>
+</section>
+<section id="measurement" class="level3">
+<h3>Discovering a public measurement</h3>
+<p>The two public inequalities <span
+class="math inline">\(x^2+y^2\le4\)</span> and <span
+class="math inline">\(t\ge1\)</span> suffice if the index language can
+express squared radius. They admit the fixed caller, imply the guard,
+and survive the recursive field. The constructor itself determines which
+quadratic to try, even after an arbitrary invertible rational affine
+change of the three public coordinates.</p>
+<p>Append a constant coordinate and let <span
+class="math inline">\(A\)</span> be the resulting four-by-four field
+matrix. Solve <span class="math inline">\(A^T H A=H\)</span> for a
+symmetric matrix <span class="math inline">\(H\)</span>. The equations
+are rational and linear in its ten unknown entries. Over the complex
+numbers, the eigenvalues of <span class="math inline">\(A\)</span> are
+<span class="math inline">\(e^{i\theta},e^{-i\theta},\lambda,1\)</span>.
+They are distinct, so the action on quadratic forms is diagonalizable
+with eigenvalues given by unordered products of two eigenvalues of <span
+class="math inline">\(A\)</span>, allowing repetition. Exactly two
+products are one. The preserved forms are therefore the constants and
+multiples of squared radius, in any affine coordinate system. Choose a
+nonconstant solution and orient its quadratic part to be positive
+semidefinite. Its value at the caller supplies the upper bound,
+absorbing any additive constant.</p>
+<p>The determinant of the three-by-three linear part gives <span
+class="math inline">\(\lambda\)</span>. In homogeneous coordinates there
+is a unique line of affine forms satisfying <span
+class="math inline">\(\ell A=\lambda\ell\)</span>. Normalize its
+generator to take value one at the fixed caller. This recovers <span
+class="math inline">\(t\)</span>, and its lower bound is the second
+conjunct. Together the two computations recover the certificate for
+every rational affine conjugate of the family. This supplies the
+refined-datatype programme with a case where the datatype declaration
+determines a useful new measurement and the caller determines its bound.
+<a href="thesis-review-59.py">Exact recovery on transformed inputs</a> ·
+<a href="thesis-review-59.lean">Quadratic certificate and uniqueness of
+the planar measurement in Lean</a> · <a
+href="refined-datatypes/index.html">Companion programme on synthesizing
+datatypes</a></p>
+</section>
+</section>
+<section id="compiler" class="level2">
+<h2>What InvarGenT infers from its callers</h2>
+<p>On the earlier rotation <span
+class="math inline">\((3/5,4/5)\)</span> with <span
+class="math inline">\(t&#39;=2t\)</span>, the previous compiler inferred
+<span class="math inline">\(p=0,\ t\ge0\)</span> for the unannotated
+value. It rejected even <span class="math inline">\((1,0,1)\)</span>.
+The compiler now reads the written types of later aliases of the same
+binding, respecting shadowing. These types give the search a family of
+requested tuples. Every use still goes through the ordinary type checker
+against the one scheme published for the recursive binding.</p>
+<p>For an affine guard <span class="math inline">\(a\cdot p\le
+bt+c\)</span> with <span class="math inline">\(b&gt;0\)</span> and <span
+class="math inline">\(c\ge0\)</span>, the square <span
+class="math inline">\(\lVert p\rVert_\infty\le (b/\lVert
+a\rVert_1)t\)</span> supplies a candidate. The solver tries the signed
+public coordinates as <span class="math inline">\(t\)</span>, intersects
+the bounds from all guard rows, and checks each candidate against the
+actual fields. For an inductive seed <span
+class="math inline">\(S\)</span>, put <span
+class="math inline">\(P_0=S\)</span> and <span
+class="math inline">\(P_{j+1}=G\cap\bigcap_e f_e^{-1}(P_j)\)</span>,
+where <span class="math inline">\(G\)</span> is the constructor guard.
+Monotonicity and <span class="math inline">\(S\subseteq P_1\)</span>
+make this an increasing family of inductive polyhedra. Every candidate
+published by the compiler is rechecked against all original fields. It
+retains the previous type’s admitted tuples through the existing
+inclusion and join checks. <a
+href="thesis-review-58.html#witnesses">Earlier witness and join
+proof</a></p>
+<p>An identity field would make every update stop at <span
+class="math inline">\(S\)</span>. For a convex inductive type the
+identity imposes no condition. The compiler removes it and any field
+lying in the convex hull of the identity and the other affine maps
+before unrolling. It checks convex membership with one set of
+nonnegative weights for the whole matrix and translation. If each
+retained field maps <span class="math inline">\(P\)</span> into <span
+class="math inline">\(P\)</span>, a convex combination of their images
+and the parent also lies in <span class="math inline">\(P\)</span>. The
+procedure removes one map at a time, so equivalent fields cannot all
+disappear without a justification. This changes which inductive types
+the iteration can reach.</p>
+<p>The replay includes rotation in both directions, an identity field, a
+convex combination of a rotation and the identity, an unannotated alias
+and a symbolic caller family. On <span
+class="math inline">\(\{(1,0,t):t\ge2^{-12}\}\)</span> InvarGenT now
+infers one scheme covering the whole family. Re-eliminating the inferred
+constraints at a plain alias used to overflow on this case. The alias
+can reuse the original polymorphic scheme. Numerical search still has a
+configurable step budget, and exported coefficients must fit the native
+integer representation. An intermediate rational coefficient may be much
+larger. Internal containment checks retain the exact rational row. A
+contradiction can also be reported when the row explaining it exceeds
+the printable range. On the hard unannotated family the compiler now
+locates an oversized inferred answer at the source binding. On a written
+lifted scheme the checker can eliminate private equalities first,
+discard implied inequalities when eliminating a coordinate would produce
+too many pairs, and check containment on the remaining public space. To
+refute a row over a nonempty polyhedron, it looks for a point in the
+homogenized cone with violation at least one. This also catches
+violations along recession directions. At an explicitly typed alias it
+can substitute the requested public arguments before projecting private
+coordinates. <a href="caller_cyclic_value.gadt">Native example</a> · <a
+href="thesis-review-59.py">Caller oracle and generated OCaml
+replay</a></p>
+</section>
+<section id="replay" class="level2">
+<h2>Replay</h2>
+<div class="sourceCode" id="cb1"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python3</span> thesis-review-59.py <span class="at">--compiler</span> /path/to/InvarGenT.native</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="ex">python3</span> thesis-review-59.py <span class="at">--instance</span> 20 <span class="at">--folded</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="ex">python3</span> thesis-review-59.py <span class="at">--rounds</span> 4</span></code></pre></div>
+<p>The exact checks use Python’s rational arithmetic. A separate
+three-variable Z3 query confirmed both sides of the stabilization
+threshold at <span class="math inline">\(n=2,3,4,5\)</span>. The native
+replay compares 48 accepted and rejected ground uses with the
+independent orbit procedure, checks five symbolic families through depth
+twelve, and checks written certificates with one through five folds.
+InvarGenT also accepts the five-fold <span
+class="math inline">\(n=2\)</span> member of the fixed-caller family,
+and OCaml verifies its back pointer. At <span
+class="math inline">\(n=3\)</span> the native checker reached a
+five-minute diagnostic limit on the seven-fold written scheme. Lean 4.19
+checks the arbitrary-depth folded certificate at the source rotation and
+rate, as well as the shared finite-frontier argument for caller
+families. The facet counts and the geometric classification are proved
+in the text. <a href="folded_cyclic_value.gadt">Written three-fold
+example</a> · <a href="thesis-review-59.lean">Lean proofs</a></p>
+<p>Both research replays passed with the OCaml 5.3 and 5.5.1
+compatibility builds. The full 5.3 suite passed all 404 active tests,
+with ten existing TODOs. All 206 previously generated signatures matched
+byte for byte. On 480 further lifted-polyhedron containment questions,
+Z3 and the native checker agreed on 59 positive and 421 negative
+answers. In a separate check with coefficients exceeding the source
+integer range, 80 entailments that previously raised an exception now
+returned their exact truth values. <a
+href="https://github.com/lukstafi/invargent/commit/b390f9622f956891408a2baed297e02178dbbd41">Caller-directed
+synthesis and private opening checks</a> · <a
+href="https://github.com/lukstafi/invargent/commit/0fb35c0b365da8c6b3ce69f9197f61f144f77dcd">Internal
+rational arithmetic and source diagnostics</a></p>
+<p>The same slice argument decides exact stabilization for any number of
+orthogonal fields with expanding slack. It also identifies a case where
+every safe ground call has a convex typing although their union has
+infinitely many facets. <a
+href="thesis-review-60.html#criterion">Switched-field
+classification</a></p>
+</section>
+</article>
+<script src="/assets/theme-toggle.js"></script>
+</body>
+</html>

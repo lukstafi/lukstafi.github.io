@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <meta name="dcterms.date" content="2026-11-23">
+  <meta property="og:title" content="When do all recursive field guards stabilize?">
+  <meta property="og:url" content="https://lukstafi.github.io/projects/jca/agent-collab/thesis-review-60.html">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="lukstafi&#x27;s blog">
+  <meta name="twitter:card" content="summary">
+  <title>When do all recursive field guards stabilize?</title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <style type="text/css">
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="/assets/tufte.css">
+  <link rel="stylesheet" href="/assets/pandoc-tufte.css">
+  <link rel="stylesheet" href="/assets/site.css">
+  <script defer=""
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+  type="text/javascript"></script>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+  <script>(function(){var t=localStorage.getItem('theme-preference');if(t)document.documentElement.setAttribute('data-theme',t);})()</script>
+</head>
+<body>
+<nav class="site-nav">
+  <a href="/">Home</a> &middot; <a href="/study/">Study Guide</a> &middot; <a href="/about.html">About</a> &middot; <a href="https://lukstafi.substack.com">Substack</a>
+</nav>
+<div class="theme-toggle">
+  <button id="theme-btn" aria-label="Toggle dark mode">&#9788;</button>
+</div>
+<article>
+<header>
+<h1 class="title">When do all recursive field guards stabilize?</h1>
+<p class="byline">2026-11-23</p>
+</header>
+<nav id="TOC">
+<ul>
+<li><a href="#fields" id="toc-fields">A shared guard and expanding
+slack</a></li>
+<li><a href="#criterion" id="toc-criterion">The fixed part of the guard
+decides stabilization</a></li>
+<li><a href="#coverage" id="toc-coverage">Every safe individual caller
+still has a convex typing</a></li>
+<li><a href="#families" id="toc-families">One family of callers can
+require more than all its ground instances</a></li>
+<li><a href="#replay" id="toc-replay">Replay</a></li>
+</ul>
+</nav>
+<p>A recursive value may have a finite convex typing at <strong>every
+safe ground caller</strong>, even though <strong>no finite public
+polyhedron describes all its safe callers</strong>. For a family with
+any number of isometric recursive fields we can decide which behaviour
+occurs. The criterion uses the part of the guard normal that every field
+fixes.</p>
+<section id="fields" class="level2">
+<h2>A shared guard and expanding slack</h2>
+<p>Let a node have public rational indices <span
+class="math inline">\((p,t)\)</span>, with <span
+class="math inline">\(p\in\mathbb Q^d\)</span>, <span
+class="math inline">\(t\ge1\)</span> and guard <span
+class="math inline">\(a\cdot p\le1+t\)</span>. Take <span
+class="math inline">\(a\ne0\)</span>. Each of finitely many recursive
+fields maps <span class="math inline">\((p,t)\)</span> to <span
+class="math inline">\((O_e p,r_e t)\)</span>, where <span
+class="math inline">\(O_e\)</span> is a rational orthogonal matrix and
+every rational <span class="math inline">\(r_e&gt;1\)</span>. There is
+at least one field. For a word <span class="math inline">\(w\)</span> of
+fields put <span class="math inline">\(a_w=O_w^T a\)</span> and <span
+class="math inline">\(r_w=\prod_{e\in w}r_e\)</span>. The empty word has
+<span class="math inline">\(a_w=a\)</span> and <span
+class="math inline">\(r_w=1\)</span>. An exact unfolding through depth
+<span class="math inline">\(j\)</span> imposes all guards of word length
+less than <span class="math inline">\(j\)</span>. The limiting predicate
+is the greatest safe domain on <span
+class="math inline">\(t\ge1\)</span>. This is the maximal output
+admissible set for these switched linear updates with the stated guard.
+<a
+href="https://web.eecs.umich.edu/~grizzle/GilbertFest/Gilbert%2865%29.pdf">Gilbert
+and Tan on maximal output admissible sets</a> · <a
+href="thesis-review-59.html#rounds">The single-rotation instance and its
+exact depths</a></p>
+<p>At <span class="math inline">\(t=1\)</span>, take the convex hull
+<span class="math inline">\(H\)</span> of zero and all <span
+class="math inline">\(v_w=a_w/(1+r_w)\)</span>. This hull is compact.
+The nonzero points have zero as their only possible accumulation point
+along words of unbounded length, since <span
+class="math inline">\(r_w\ge (\min_e r_e)^{|w|}\)</span>. The safe slice
+is the polar <span class="math inline">\(H^\circ\)</span>. It contains a
+ball about zero, so its rational points are dense and we may take the
+real polar. A finite subset of word guards describes the slice exactly
+when its scaled normals together with zero generate <span
+class="math inline">\(H\)</span>.</p>
+<p>The same subset describes every slice <span
+class="math inline">\(t\ge1\)</span>. Express each omitted <span
+class="math inline">\(v_w\)</span> as a convex combination allowing
+zero. After undoing the scalings we have <span
+class="math inline">\(a_w=\sum_i c_i a_i\)</span> and <span
+class="math inline">\(\sum_i c_i(1+r_i)\le1+r_w\)</span> with <span
+class="math inline">\(c_i\ge0\)</span>. All the normals have the same
+nonzero Euclidean length, hence <span class="math inline">\(\sum_i
+c_i\ge1\)</span>. It follows that <span class="math inline">\(\sum_i c_i
+r_i\le r_w\)</span>. The weights prove the omitted guard at every larger
+slack. If the slice is any polyhedron at all, polarity makes <span
+class="math inline">\(H\)</span> a polytope. Its extreme points belong
+to the compact generating set, so a finite set of word guards suffices.
+A finite public polyhedron, finite determination by unfolding, and
+polytopality of <span class="math inline">\(H\)</span> are therefore
+equivalent here. <a href="thesis-review-59.lean">Unit-slice transfer in
+Lean</a></p>
+</section>
+<section id="criterion" class="level2">
+<h2>The fixed part of the guard decides stabilization</h2>
+<p>Write <span class="math inline">\(F=\bigcap_e\ker(O_e^T-I)\)</span>
+and let <span class="math inline">\(f\)</span> be the orthogonal
+projection of <span class="math inline">\(a\)</span> on <span
+class="math inline">\(F\)</span>. The exact public iteration stabilizes
+<strong>if and only if <span class="math inline">\(f=0\)</span> or the
+orbit of <span class="math inline">\(a\)</span> is finite</strong>.</p>
+<p>First, <span class="math inline">\(H\)</span> is a polytope exactly
+when finitely many actual orbit directions generate the positive cone of
+all orbit directions. One implication follows by taking the positive
+cone of its finite vertex set. For the converse, take scaled
+representatives of a finite conical generating set and add zero. Their
+convex hull contains its cone in a sufficiently small ball about zero.
+Indeed, facets through zero already hold on the cone, and every other
+facet has positive distance from zero in the span. All sufficiently long
+words fall inside this hull. Only finitely many shorter words remain to
+be added.</p>
+<p>If <span class="math inline">\(f\ne0\)</span>, every <span
+class="math inline">\(a_w\)</span> lies on <span
+class="math inline">\(f\cdot y=\lVert f\rVert^2\)</span>. Intersect the
+cone with this hyperplane. Every distinct <span
+class="math inline">\(a_w\)</span> is an exposed point of the section,
+since its dot product with itself is strictly larger than with any other
+point of the orbit. An infinite orbit therefore gives infinitely many
+extreme rays. A finite orbit directly supplies a finite generating
+set.</p>
+<p>If <span class="math inline">\(f=0\)</span>, take the closed convex
+hull <span class="math inline">\(C\)</span> of the
+<strong>unscaled</strong> orbit. Each field preserves <span
+class="math inline">\(C\)</span> onto itself. Positive powers of an
+orthogonal map approximate the identity by compactness, so the closure
+of the semigroup contains its inverse. The centroid of <span
+class="math inline">\(C\)</span> in its affine hull is therefore fixed
+by all the fields. The whole orbit is perpendicular to <span
+class="math inline">\(F\)</span>, so this centroid is zero. A compact
+convex body’s centroid lies in its relative interior: a supporting
+hyperplane through the centroid would put a positive-volume subset
+strictly to one side. Thus <span class="math inline">\(C\)</span>
+contains a relative ball about zero. Finitely many actual orbit points
+have zero in the interior of their convex hull in that span. For
+example, approximate the vertices of a small cross-polytope inside the
+ball by finite convex combinations of orbit points, keeping the
+approximation smaller than its inradius. These points positively span
+the entire orbit span, as required.</p>
+<p>This criterion is effective over the rationals. Linear equations give
+<span class="math inline">\(f\)</span>. For the other test compute the
+reachable linear span of dimension <span
+class="math inline">\(k\)</span> by closing a basis under the field
+transposes. If the orbit is finite, the restrictions of the field maps
+permute a finite spanning set faithfully, so their group is finite. A
+finite subgroup of <span class="math inline">\(\mathrm{GL}_k(\mathbb
+Q)\)</span> preserves a full lattice, obtained by summing the images of
+the integer lattice in a rational basis. It embeds in <span
+class="math inline">\(\mathrm{GL}_k(\mathbb F_3)\)</span> by reduction
+modulo three on that lattice. For the last step, a nontrivial element in
+the kernel of prime order <span class="math inline">\(p\)</span> would
+be <span class="math inline">\(I+3^sB\)</span>, <span
+class="math inline">\(s\ge1\)</span>, with <span
+class="math inline">\(B\)</span> nonzero modulo three. Taking its <span
+class="math inline">\(p\)</span>th power modulo <span
+class="math inline">\(3^{s+1}\)</span> forces <span
+class="math inline">\(p=3\)</span>. Cubing modulo <span
+class="math inline">\(3^{s+2}\)</span> is then impossible. Thus
+breadth-first enumeration can stop on closure or after exceeding <span
+class="math inline">\(|\mathrm{GL}_k(\mathbb F_3)|&lt;3^{k^2}\)</span>
+distinct vectors. This bound establishes decidability. A single
+infinite-order action on the guard can give a much shorter proof in a
+given input. <a href="https://arxiv.org/abs/1011.0346">Serre on
+Minkowski’s lemma and finite rational matrix groups</a></p>
+<p>The criterion also applies when the public basis hides the metric.
+For rational field matrices <span class="math inline">\(T_e\)</span>,
+solve the simultaneous linear equations <span
+class="math inline">\(T_e^T Q T_e=Q\)</span> on symmetric matrices. The
+rational solution space contains a positive-definite matrix exactly when
+its real span does. Positive definiteness is open, so rational
+approximation within the solution space suffices. Feasibility can be
+decided by testing positivity of the leading principal minors over the
+reals. Such a <span class="math inline">\(Q\)</span> makes the fields
+orthogonal after a real change of basis and gives the corresponding dual
+metric <span class="math inline">\(Q^{-1}\)</span> on guard normals. The
+fixed-space projection and orbit enumeration can both be carried out in
+the original rational coordinates. The seed construction below uses any
+rational upper bound on the ratio between the resulting norm and the
+coordinate norms in both directions. <a
+href="thesis-review-59.html#measurement">Discovering a preserved
+quadratic from field equations</a></p>
+</section>
+<section id="coverage" class="level2">
+<h2>Every safe individual caller still has a convex typing</h2>
+<p>Let <span class="math inline">\(b=1/\lVert a\rVert_1\)</span> and
+<span class="math inline">\(B=\{t\ge1,\ \lVert p\rVert_\infty\le b
+t\}\)</span>. This rational box implies the guard. Choose <span
+class="math inline">\(m\)</span> with <span
+class="math inline">\((\min_e r_e)^m\ge\sqrt d\)</span>. Every word of
+length <span class="math inline">\(m\)</span> sends <span
+class="math inline">\(B\)</span> back into <span
+class="math inline">\(B\)</span>, since <span
+class="math inline">\(\lVert O_w p\rVert_\infty\le\lVert
+p\rVert_2\le\sqrt d\,\lVert p\rVert_\infty\)</span>. The intersection
+<span class="math inline">\(S=\bigcap_{|w|&lt;m} f_w^{-1}(B)\)</span>,
+where <span class="math inline">\(f_w(p,t)=(O_w p,r_wt)\)</span>, is
+consequently a rational convex, one-step inductive seed.</p>
+<p>For a fixed rational caller <span
+class="math inline">\((p_0,t_0)\)</span> choose <span
+class="math inline">\(N\)</span> such that <span
+class="math inline">\(b(\min_e r_e)^N t_0\ge\lVert p_0\rVert_2\)</span>.
+Every descendant at depth <span class="math inline">\(N\)</span> lies in
+<span class="math inline">\(S\)</span>, because its entire future lies
+in <span class="math inline">\(B\)</span>. Check the finitely many
+guards before <span class="math inline">\(N\)</span>. A failure gives an
+unsafe word. On success, unfolding the guarded predecessor of <span
+class="math inline">\(S\)</span> exactly <span
+class="math inline">\(N\)</span> times gives an inductive rational
+polyhedron containing the caller. This argument also works uniformly for
+a family of callers with a common bound on <span
+class="math inline">\(\lVert p_0\rVert_2/t_0\)</span>. Thus even in the
+nonstabilizing case the greatest safe domain is the union of its
+conjunctive polyhedral typings. <a href="thesis-review-59.lean">General
+induction from a seed in Lean</a></p>
+<p>When <span class="math inline">\(f=0\)</span>, the increasing seed
+iteration can recover the <strong>whole</strong> greatest safe domain as
+well. Work on the span <span class="math inline">\(W\)</span> of the
+normals. Its orthogonal complement is invisible to the guard and
+invariant under the fields, so the seed may ignore that component. The
+finitely many positively spanning normals imply a constant bound on
+<span class="math inline">\(\lVert \operatorname{proj}_W
+p\rVert_2/t\)</span> for all safe tuples with <span
+class="math inline">\(t\ge1\)</span>. Indeed, a relative ball about zero
+lies in their convex hull, while their guards bound their dot products
+with <span class="math inline">\(p/t\)</span> uniformly. The preceding
+<span class="math inline">\(N\)</span> now works for the whole safe
+domain. A rational implementation can use the infinity norm of the
+projected vector in the original coordinates. Orthogonal projection onto
+the rational subspace <span class="math inline">\(W\)</span> is
+rational.</p>
+<p>The increasing and decreasing iterations can have very different
+depths. In the slowly turning three-index family, the box used above is
+<span class="math inline">\(\lVert p\rVert_\infty\le t\)</span>. Every
+descendant of the fixed caller has <span class="math inline">\(\lVert
+p\rVert_\infty\ge\sqrt2\)</span>. The caller therefore cannot reach
+<span class="math inline">\(S\)</span> before <span
+class="math inline">\(\lambda^N\ge\sqrt2\)</span>, and it certainly
+reaches <span class="math inline">\(S\)</span> once <span
+class="math inline">\(\lambda^N\ge2\)</span>. With <span
+class="math inline">\(\lambda=1+2^{-3n}/16\)</span>, the increasing
+iteration takes <strong><span
+class="math inline">\(\Theta(2^{3n})\)</span> rounds just to include
+this caller</strong>, against <span
+class="math inline">\(\Theta(2^n)\)</span> for stabilization from the
+public guard. Both counts concern exact predecessor updates with the
+specified initial predicates. An induction jump that changes the
+representation can follow a different sequence. <a
+href="thesis-review-59.html#rounds">Matching bound from the
+guard</a></p>
+<p>For an example take <span class="math inline">\(a=(1,0,1)\)</span>
+and one field that rotates the first two coordinates by <span
+class="math inline">\((3/5,4/5)\)</span>, fixes the third and doubles
+<span class="math inline">\(t\)</span>. Its fixed axis contributes <span
+class="math inline">\((0,0,1)\)</span> to <span
+class="math inline">\(a\)</span>. The rotation has infinite order. In
+Gaussian integers <span
+class="math inline">\((3+4i)^2\equiv3+4i\pmod5\)</span>, so every
+positive power of <span class="math inline">\((3+4i)/5\)</span> retains
+a denominator divisible by five. The exact public domains never
+stabilize. <strong>Adding one more recursive field makes them
+stabilize.</strong> Let the new field negate the third coordinate, fix
+the other two and double <span class="math inline">\(t\)</span>. Now the
+common fixed subspace is zero. Both programmes have finite certificates
+at each safe ground caller. <a href="thesis-review-60.py">Exact switched
+example replay</a></p>
+</section>
+<section id="families" class="level2">
+<h2>One family of callers can require more than all its ground
+instances</h2>
+<p>Return to the one-field example with its fixed third coordinate <span
+class="math inline">\(z\)</span>. Every member of <span
+class="math inline">\((s,0,-2s,1)\)</span>, <span
+class="math inline">\(s\ge0\)</span>, is safe: every future planar <span
+class="math inline">\(x\)</span> coordinate is at most <span
+class="math inline">\(s\)</span>. <strong>No finite convex polyhedral
+typing covers the whole family.</strong> The obstruction persists at
+this strict radial margin. In source terms the caller asks for</p>
+<pre><code>let family : ∀m[0≤m]. Node (m,0,-2 m,1) = node</code></pre>
+<p>Each fixed <span class="math inline">\(s\)</span> permits its own
+inductive typing. This annotation requires one typing of
+<code>node</code> for all <span class="math inline">\(s\)</span>. It
+gives a source example of the distinction between pointwise witnesses
+and uniform coverage at a designated parameter. <a
+href="thesis-review-2.html#combination">Witness compatibility in the
+repair to Theorem 4.5</a></p>
+<p>Indeed, let <span class="math inline">\(E\)</span> be any nonempty
+convex polyhedral typing and let <span
+class="math inline">\(K=\operatorname{rec}(E)\)</span>. The field
+preserves <span class="math inline">\(K\)</span>, and <span
+class="math inline">\(K\)</span> satisfies the homogeneous guard <span
+class="math inline">\(\Delta x+\Delta z\le\Delta t\)</span>. Suppose
+<span class="math inline">\(K\)</span> contains a direction <span
+class="math inline">\((u,v,z,0)\)</span> with nonzero planar component.
+Intersect <span class="math inline">\(K\)</span> with the plane at this
+fixed <span class="math inline">\(z\)</span> and <span
+class="math inline">\(\Delta t=0\)</span>. All positive rotations
+preserve this closed section. The rotation is dense on the circle, so
+all rotations preserve it. Their guard bounds it by the disk of radius
+<span class="math inline">\(-z\)</span>. A bounded convex polygon
+preserved by all rotations can only be the origin: a nonzero point of
+maximum norm would give infinitely many exposed points. Yet the section
+contains <span class="math inline">\((u,v)\)</span>. Covering the whole
+ray would put <span class="math inline">\((1,0,-2,0)\)</span> in <span
+class="math inline">\(K\)</span>, a contradiction. Finitely many
+disjuncts and private linear indices do not help, since projection and
+closed convex hull would give an inductive public polyhedron. In a
+quadratic language the three public inequalities <span
+class="math inline">\(z\le0\)</span>, <span
+class="math inline">\(x^2+y^2\le z^2\)</span> and <span
+class="math inline">\(t\ge1\)</span> cover the whole ray. <a
+href="thesis-review-59.lean">Fixed-axis quadratic certificate in
+Lean</a></p>
+<p>This gives a decision test for <strong>arbitrary nonempty rational
+polyhedral caller families</strong> <span
+class="math inline">\(C\subseteq\{t\ge1\}\)</span> on this example.
+Every recession direction with <span class="math inline">\(\Delta
+t=0\)</span> must lie on the negative <span
+class="math inline">\(z\)</span> axis, including zero. Conversely,
+suppose they all do. There is no lineality, since both signs of a
+nonzero direction cannot lie on that ray. Write <span
+class="math inline">\(C=D+K_0\)</span> using its vertices and recession
+rays, putting the zero-slack rays in <span
+class="math inline">\(K_0\)</span> and retaining every vertex and
+positive-slack ray in <span class="math inline">\(D\)</span>. On <span
+class="math inline">\(D\)</span> the ratio <span
+class="math inline">\(\lVert p\rVert_2/t\)</span> is bounded by the
+largest ratio on a vertex or a retained ray. Thus the finite-depth test
+above either finds an unsafe member of <span
+class="math inline">\(D\)</span> or supplies a common inductive
+polyhedron <span class="math inline">\(P\)</span>. In the latter case
+<span class="math inline">\(P+K_0\)</span> covers <span
+class="math inline">\(C\)</span>, is polyhedral, preserves the guard,
+and is inductive because the field fixes <span
+class="math inline">\(K_0\)</span>. This proves both directions. There
+is a direct implementation with linear feasibility tests alone. Check
+the zero-slack recession directions first. Then double <span
+class="math inline">\(M\)</span> until the caller implies <span
+class="math inline">\(\pm x,\pm y,z\le Mt\)</span>. The one-sided seed
+<span class="math inline">\(\lVert(x,y)\rVert_\infty\le t/2,\ z\le t/2,\
+t\ge1\)</span> is inductive for this field. Choose <span
+class="math inline">\(2^N\ge4M\)</span>, test the first <span
+class="math inline">\(N\)</span> guards, and use the <span
+class="math inline">\(N\)</span>th guarded predecessor of this seed. The
+validator checks the resulting predicate against the entire family and
+the field. A written type covers <span
+class="math inline">\((1,0,-s,1)\)</span> for every <span
+class="math inline">\(s\ge0\)</span>. <a href="#coverage">Every
+individual caller</a></p>
+</section>
+<section id="replay" class="level2">
+<h2>Replay</h2>
+<p>With Python and <code>z3-solver</code>, the replay checks six cases
+of the decision procedure, including two rational reflections whose
+product has infinite order. Five further symbolic families exercise the
+recession obstruction, successful common typings and a guard that fails
+after one field. The fixed-axis replay checks independently that each of
+its first 26 layers adds a guard. The switched example reaches its exact
+fixed point at depth <strong>six</strong>. Eleven distinct word guards,
+together with <span class="math inline">\(t\ge1\)</span>, suffice. Z3
+checks each field on the full unbounded public domain. InvarGenT checks
+the written recursive type, accepts the caller <span
+class="math inline">\((1,0,1,1)\)</span> and rejects <span
+class="math inline">\((2,0,1,1)\)</span>. OCaml verifies that both
+emitted fields point to the original node. On the unannotated switched
+binding, inference at a caller requesting the full exact domain reached
+a 45-second diagnostic limit. <a href="thesis-review-60.py">Source
+generator and checks</a></p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python3</span> thesis-review-60.py <span class="at">--compiler</span> /path/to/InvarGenT.native</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="ex">python3</span> thesis-review-60.py <span class="at">--source</span></span></code></pre></div>
+</section>
+</article>
+<script src="/assets/theme-toggle.js"></script>
+</body>
+</html>

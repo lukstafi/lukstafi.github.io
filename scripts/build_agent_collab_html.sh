@@ -555,6 +555,16 @@ build_html \
   "Can a safe cyclic value at a fixed ground type lack a polyhedral proof?"
 
 build_html \
+  "$collab_dir/thesis-review-59.md" \
+  "$collab_dir/thesis-review-59.html" \
+  "How many private indices does a small recursive typing need?"
+
+build_html \
+  "$collab_dir/thesis-review-60.md" \
+  "$collab_dir/thesis-review-60.html" \
+  "When do all recursive field guards stabilize?"
+
+build_html \
   "$collab_dir/refined-datatypes/README.md" \
   "$collab_dir/refined-datatypes/index.html" \
   "Synthesizing datatypes for the successful inputs of an algorithm"
