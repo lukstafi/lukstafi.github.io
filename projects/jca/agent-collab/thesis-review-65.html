@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <meta name="dcterms.date" content="2026-11-23">
+  <meta property="og:title" content="Can one affine recursive field type a whole caller family?">
+  <meta property="og:url" content="https://lukstafi.github.io/projects/jca/agent-collab/thesis-review-65.html">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="lukstafi&#x27;s blog">
+  <meta name="twitter:card" content="summary">
+  <title>Can one affine recursive field type a whole caller
+family?</title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <link rel="stylesheet" href="/assets/tufte.css">
+  <link rel="stylesheet" href="/assets/pandoc-tufte.css">
+  <link rel="stylesheet" href="/assets/site.css">
+  <script defer=""
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+  type="text/javascript"></script>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+  <script>(function(){var t=localStorage.getItem('theme-preference');if(t)document.documentElement.setAttribute('data-theme',t);})()</script>
+</head>
+<body>
+<nav class="site-nav">
+  <a href="/">Home</a> &middot; <a href="/study/">Study Guide</a> &middot; <a href="/about.html">About</a> &middot; <a href="https://lukstafi.substack.com">Substack</a>
+</nav>
+<div class="theme-toggle">
+  <button id="theme-btn" aria-label="Toggle dark mode">&#9788;</button>
+</div>
+<article>
+<header>
+<h1 class="title">Can one affine recursive field type a whole caller
+family?</h1>
+<p class="byline">2026-11-23</p>
+</header>
+<nav id="TOC">
+<ul>
+<li><a href="#realization" id="toc-realization">What a guard sees along
+a word</a></li>
+<li><a href="#decision" id="toc-decision">Deciding whether a scalar
+realization exists</a></li>
+<li><a href="#margin" id="toc-margin">A safe caller with an increasing
+margin and no type</a></li>
+<li><a href="#native" id="toc-native">What InvarGenT now infers</a></li>
+</ul>
+</nav>
+<p><strong>Yes.</strong> Let a required recursive field transform a
+public rational index tuple by any affine map <span
+class="math inline">\(f\)</span>. Give the constructor finitely many
+closed rational affine guards and specify a nonempty rational polyhedral
+family <span class="math inline">\(C\)</span> of callers. It is
+decidable whether there is a rational polyhedron <span
+class="math inline">\(P\)</span> with <span class="math display">\[
+C\subseteq P,\qquad f(P)\subseteq P,\qquad P\subseteq G,
+\]</span> where <span class="math inline">\(G\)</span> is the
+conjunction of the guards. Dimension, coefficients and the number of
+facets of the answer are unrestricted. An affirmative answer also
+permits synthesis. Enumerate rational polyhedra and check the three
+inclusions by rational linear programming until a witness appears. The
+faster scalar test below decides existence in either direction. <a
+href="thesis-review-65.py">Exact decision procedure and examples</a></p>
+<p>The five-layer example supplies a stronger answer for its particular
+constructor. Its greatest type admits every typable caller
+simultaneously and can be recovered from a finite prefix of the fields.
+Here the caller is part of the question. Each safe caller can require a
+different type, and a safe caller can even lack any polyhedral type. The
+distinction matters already with a single field. General families of
+required affine fields make the same specified-caller question
+undecidable. <a href="thesis-review-64.html#example">Five-layer
+example</a> · <a href="thesis-review-58.html">Branching undecidability
+with a fixed caller</a></p>
+<section id="realization" class="level2">
+<h2>What a guard sees along a word</h2>
+<p>Write a public point as <span class="math inline">\((x,1)\)</span>
+and a recession direction as <span class="math inline">\((v,0)\)</span>.
+Homogenization gives a rational matrix <span
+class="math inline">\(F\)</span> for the field and rows <span
+class="math inline">\(b_i\)</span> for the guards, oriented so <span
+class="math inline">\(b_i(x,1)\ge0\)</span>. Generate the caller cone by
+finitely many rational columns <span class="math inline">\(v_j\)</span>.
+Use at least one base point and both signs for each lineality direction.
+This works for a caller with lines and no vertices by choosing base
+points modulo its lineality space. For every guard and generator
+consider its <strong>sequence of slacks</strong> <span
+class="math display">\[
+s^{ij}_n=b_iF^n v_j,\qquad n\ge0.
+\]</span> A nonnegative rational realization of a sequence consists of a
+finite matrix <span class="math inline">\(A\)</span>, row <span
+class="math inline">\(a\)</span>, and column <span
+class="math inline">\(u\)</span>, all entrywise nonnegative and
+rational, with <span class="math inline">\(s_n=aA^nu\)</span> for every
+<span class="math inline">\(n\)</span>.</p>
+<p><strong>Compatibility theorem.</strong> One common polyhedral typing
+exists exactly when every <span class="math inline">\(s^{ij}\)</span>
+has a nonnegative rational realization. The same equivalence holds with
+multiple required fields. Then <span class="math inline">\(n\)</span>
+becomes a word <span class="math inline">\(w\)</span>, <span
+class="math inline">\(F_w\)</span> is the corresponding product of field
+matrices, and a scalar realization uses one nonnegative matrix per field
+for every word. The decision below uses the single-field case.</p>
+<p>For necessity take the closed homogenization of a typing <span
+class="math inline">\(P\)</span>. It is generated by finitely many
+rational columns <span class="math inline">\(V\)</span>. Each field
+preserves the cone, so <span class="math inline">\(FV=VA\)</span> for a
+nonnegative rational matrix <span class="math inline">\(A\)</span>,
+found column by column. Each caller generator satisfies <span
+class="math inline">\(v_j=Vu_j\)</span> for some <span
+class="math inline">\(u_j\ge0\)</span>. For a caller ray, add the ray to
+a feasible caller base point and pass to the homogeneous limit. The rows
+<span class="math inline">\(a_i=b_iV\)</span> are nonnegative. This one
+matrix already realizes every pair.</p>
+<p>For sufficiency fix a pair <span class="math inline">\((i,j)\)</span>
+with realization <span class="math inline">\((a,A,u)\)</span>. In the
+direct sum of public coordinates and realization coordinates form the
+rational subspace <span class="math display">\[
+S=\operatorname{span}\{(F^nv_j,A^nu):n\ge0\}.
+\]</span> Successive span extension stops in finite dimension. The
+subspace is invariant under <span class="math inline">\(F\oplus
+A\)</span>. Throughout <span class="math inline">\(S\)</span> the
+identity <span class="math inline">\(b_i x=a h\)</span> holds by
+linearity. Intersect <span class="math inline">\(S\)</span> with <span
+class="math inline">\(h\ge0\)</span> and project to <span
+class="math inline">\(x\)</span>. The result is a rational polyhedral
+cone containing <span class="math inline">\(v_j\)</span>, preserved by
+<span class="math inline">\(F\)</span>, on which <span
+class="math inline">\(b_i x\ge0\)</span>. For each fixed <span
+class="math inline">\(v_j\)</span> intersect the cones of <strong>all
+guards</strong>. Then sum these cones over the <strong>caller
+generators</strong>. Intersection keeps every constraint on that caller,
+and addition keeps the guards because they are homogeneous. Intersecting
+the sum with last coordinate one gives the promised type. For multiple
+fields take the span over all words and apply each field to the
+corresponding synchronized coordinates. There is no need to identify
+private states from different realizations.</p>
+<p>Projection also handles existentially hidden rational linear indices
+with fresh child witnesses. Conversely a public polyhedron is already
+such a typing. Allowing a finite union of closed rational polyhedra in
+this rule yields the same existence question. The closed convex hull
+still satisfies every guard and every affine field maps it into itself.
+<a href="thesis-review-58.html#witnesses">Shared witnesses and the
+closed-hull argument</a></p>
+</section>
+<section id="decision" class="level2">
+<h2>Deciding whether a scalar realization exists</h2>
+<p>The generating function of <span
+class="math inline">\(s_n=bF^nv\)</span> is rational. Soittola’s
+theorem, in its version for the subfield <span
+class="math inline">\(\mathbb Q\subset\mathbb R\)</span>, characterizes
+which rational series with nonnegative coefficients have a nonnegative
+rational realization. There must be a period <span
+class="math inline">\(p\)</span> such that each residue sequence <span
+class="math inline">\(s_{pn+j}\)</span> either has finite support or has
+a single distinct characteristic root of largest modulus. For an
+infinite nonnegative residue this root is real and positive. Its
+multiplicity can exceed one. The roots here are the active roots of the
+reduced scalar recurrence. An eigenvalue of <span
+class="math inline">\(F\)</span> can disappear at the caller, at the
+guard, or after a residue split. <a
+href="https://www-igm.univ-mlv.fr/~berstel/Articles/2008Soittola.pdf">Berstel
+and Reutenauer, Theorem 2.1 and Corollary 2.2</a> · <a
+href="https://iris.uniroma1.it/handle/11573/243819">Positive matrix
+realizations in linear systems</a></p>
+<p>One computable period suffices. Take twice the least common multiple
+of the orders of all root-of-unity quotients of the nonzero active
+roots. This also clears the phase of any root whose argument is a
+rational multiple of <span class="math inline">\(\pi\)</span>, since its
+quotient by its conjugate occurs and the extra factor of two makes any
+real sign positive. For the square-free nonzero-root polynomial <span
+class="math inline">\(h\)</span>, the resultant of <span
+class="math inline">\(h(X)\)</span> and <span
+class="math inline">\(h(ZX)\)</span> contains every such quotient among
+its roots. Factor over <span class="math inline">\(\mathbb Q\)</span>
+and retain the cyclotomic factors. For a cyclotomic factor of degree
+<span class="math inline">\(d\)</span> it suffices to try orders at most
+<span class="math inline">\(2d^2\)</span>. Indeed <span
+class="math inline">\(\varphi(n)^2/n\)</span> is the product of <span
+class="math inline">\(p^{e-2}(p-1)^2\)</span> over <span
+class="math inline">\(p^e\Vert n\)</span> and is at least <span
+class="math inline">\(1/2\)</span>.</p>
+<p>After splitting, combine terms with identical exponential roots,
+remove zero coefficients, and recompute the active modes for each
+residue. The remaining distinct roots have no root-of-unity quotient.
+Taking a further subsequence therefore preserves every surviving mode
+and its polynomial degree, apart from a finite zero-root transient. If
+any period worked, the common multiple of that period and ours would
+work. Refinement preserves a unique positive dominant root, and after
+our split it can never remove competing modes or make an infinite-order
+phase positive. Thus a failed spectral test on one residue rules out a
+polyhedral type. The fact that the dominating polynomial has higher
+degree than any competing polynomial at the same modulus leaves those
+roots active.</p>
+<p>Termwise nonnegativity on the surviving residues is decidable. A
+short termination proof uses two searches in parallel. One enumerates
+terms looking for a negative value. The other enumerates rational
+nonnegative matrices, initial columns and output rows looking for an
+exact realization. Equality of two scalar representations is decidable
+by checking a basis of their synchronized reachable span. For a
+spectrally qualifying nonnegative residue, Soittola guarantees that the
+second search succeeds. Finite-support residues need only their finite
+prefix.</p>
+<p>The replay uses a faster exact tail test. If <span
+class="math inline">\(\rho&gt;0\)</span> is the unique dominant root of
+multiplicity <span class="math inline">\(h\)</span>, write <span
+class="math inline">\(s_n/\rho^n=P(n)+e_n\)</span> with <span
+class="math inline">\(\deg P=h-1\)</span>. The companion matrix <span
+class="math inline">\(T\)</span> of <span
+class="math inline">\(e\)</span> has all roots strictly inside the unit
+disk, checked by the Schur recursion. Compute a power with <span
+class="math inline">\(\|T^k\|_\infty\le1\)</span> and a common bound
+<span class="math inline">\(B\)</span> on the intervening powers. Then
+every future error is at most <span class="math inline">\(B\)</span>
+times the current error window’s maximum norm. Write <span
+class="math inline">\(P(n+j)\)</span> in the binomial basis in <span
+class="math inline">\(j\)</span>. Once its coefficients are nonnegative
+and its constant covers that error bound, the whole future is
+nonnegative. A positive leading coefficient eventually passes this test,
+while a negative leading coefficient gives eventual violations. The code
+checks every prefix term up to certification and retains finite
+transients. All operations use rational or real algebraic numbers. <a
+href="thesis-review-65.py">Python replay</a></p>
+</section>
+<section id="margin" class="level2">
+<h2>A safe caller with an increasing margin and no type</h2>
+<p>Rotate <span class="math inline">\((x,y)\)</span> by <span
+class="math inline">\((3/5,4/5)\)</span>, send <span
+class="math inline">\(t\)</span> to <span
+class="math inline">\(t+1\)</span>, and require <span
+class="math inline">\(x\le t\)</span>. At <span
+class="math inline">\((1,0,2)\)</span> the slack is <span
+class="math inline">\(n+2-\cos(n\theta)\ge n+1\)</span>. The eigenvalues
+<span class="math inline">\(1,e^{i\theta},e^{-i\theta}\)</span>
+nevertheless have the same modulus, and the last two survive every
+residue split. Their phase has infinite order because <span
+class="math inline">\(2\cos\theta=6/5\)</span> is rational and is not an
+algebraic integer, whereas a root of unity plus its inverse is an
+algebraic integer. This caller is safe for every unfolding and has
+<strong>no rational polyhedral recursive typing</strong>. Halving the
+rotating coordinates at each step makes the same caller typable.
+Starting the original rotation at the origin removes it from the guard
+sequence entirely.</p>
+<p>The test also distinguishes a nonnegative sequence from one whose
+first failure comes long after the recurrence order. <span
+class="math inline">\((n-99)^2\)</span> and <span
+class="math inline">\((n-99)^2-1\)</span> both have just the triple root
+one. The latter fails at step 99. This family measures what a bound on
+the <em>size</em> of the answer would cost. <a
+href="thesis-review-66.html#size">Public facets and fresh child
+witnesses</a></p>
+</section>
+<section id="native" class="level2">
+<h2>What InvarGenT now infers</h2>
+<p>InvarGenT now keeps a worklist of necessary guard rows for an
+unannotated recursive constructor. Pull each retained row back through
+each required field. Drop an entailed pullback. When the frontier is
+empty, all retained rows follow from actual words and their conjunction
+is inductive. This proves greatestness, even with multiple fields. A
+separate feasibility and one-step inclusion check replays the result
+within the arithmetic search budget. On the five-layer example, nine
+printed inequalities are equivalent to the ten literal word guards. The
+binding and its alias both admit <span
+class="math inline">\((1,-1,1,1)\)</span> and reject <span
+class="math inline">\((-11,-5,-5,1)\)</span>. <a
+href="thesis-review-64.py">Native export and Z3 comparison</a></p>
+<p>Sometimes a necessary row first appears in the limit. For a field
+pullback <span class="math inline">\(T\)</span>, suppose the written
+violation row <span class="math inline">\(g\le0\)</span> has <span
+class="math inline">\((T-r)(T-a)g=0\)</span> with rational <span
+class="math inline">\(r\ge a&gt;0\)</span>. Then <span
+class="math inline">\(h=(T-a)g\le0\)</span> is necessary. For <span
+class="math inline">\(r&gt;a\)</span>, divide <span
+class="math inline">\(T^ng=a^ng+(r^n-a^n)h/(r-a)\)</span> by <span
+class="math inline">\(r^n\)</span> and take the limit. For <span
+class="math inline">\(r=a\)</span>, use <span
+class="math inline">\(T^ng=r^ng+nr^{n-1}h\)</span>. The compiler tests
+the row recurrence exactly, including its constant coordinate, and
+retries the frontier with the necessary sign.</p>
+<p>For example, send <span class="math inline">\((x,y,t)\)</span> to
+<span class="math inline">\((x+y,y,2t)\)</span> and require <span
+class="math inline">\(x\le1+t\)</span>, <span
+class="math inline">\(y\le8t\)</span>. The second guard supplies <span
+class="math inline">\(t\ge0\)</span> in the limit. The greatest type
+then has six rows. They are the sign, <span
+class="math inline">\(y\le8t\)</span>, and <span
+class="math inline">\(x+ky\le1+2^kt\)</span> for <span
+class="math inline">\(0\le k\le3\)</span>. The fourth pullback follows
+from <span class="math inline">\(y\le8t\)</span> and the third. Every
+finite prefix alone admits negative <span
+class="math inline">\(t\)</span> if <span
+class="math inline">\(x,y\)</span> are sufficiently negative. InvarGenT
+now accepts the whole zero-slack family <span
+class="math inline">\(x\le1, y\le0\)</span> and excludes <span
+class="math inline">\((-7,6,1)\)</span> at step three. The general
+positive-realization decision is implemented in the research replay. The
+compiler uses the bounded frontier and the two rational induction jumps
+described here and in the quadratic example. <a
+href="thesis-review-66.html#compiler">Quadratic induction jump</a></p>
+</section>
+</article>
+<script src="/assets/theme-toggle.js"></script>
+</body>
+</html>

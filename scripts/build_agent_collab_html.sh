@@ -585,6 +585,16 @@ build_html \
   "When does one recursive typing cover every typable caller?"
 
 build_html \
+  "$collab_dir/thesis-review-65.md" \
+  "$collab_dir/thesis-review-65.html" \
+  "Can one affine recursive field type a whole caller family?"
+
+build_html \
+  "$collab_dir/thesis-review-66.md" \
+  "$collab_dir/thesis-review-66.html" \
+  "How large a type does one quadratic guard orbit need?"
+
+build_html \
   "$collab_dir/refined-datatypes/README.md" \
   "$collab_dir/refined-datatypes/index.html" \
   "Synthesizing datatypes for the successful inputs of an algorithm"

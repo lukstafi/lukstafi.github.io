@@ -181,23 +181,22 @@ def native(exe, retained, outside):
         p = Path(folder)/'fixed.gadt'
         lib['native'](exe,p,source)
         lib['native'](exe,p,source+'let wrong : Node ('+','.join(map(str,outside))+') = node\n',ok=False)
-        # The ordinary unannotated loop can specialize a written alias. Check
-        # its actual export instead of treating success at that alias as coverage.
+        # Check binding and alias over every public tuple, also without a caller annotation.
         direct = source.split('let rec node')[0]
         demand = f'let whole : ∀i,j,k,n[{rows}]. Node (i,j,k,n) = node\n'
-        inferred = lib['native'](exe,p,direct+'let rec node = Step node\n'+demand+
-            'let centre : Node (0,0,1,0) = whole\nlet nonzero : Node (0,1,1,1) = whole\n')
+        binding = direct+'let rec node = Step node\n'
         import z3
         x,y,z,t = z3.Reals('ix iy iz it')
         exact = z3.And([sum(lib['z'](v)*u for v,u in zip(a,(x,y,z))) <= lib['z'](c)+lib['z'](r)*t
                         for a,c,r in retained])
-        for name in ('node','whole'):
-            pub, actual = lib['scheme'](lib['signature'](inferred,name))
-            domain = lib['constraints'](actual,dict(zip(pub,(x,y,z,t))))
-            lib['check'](z3.unsat, domain, z3.Not(exact))
-            lib['check'](z3.sat, exact, z3.Not(domain), x==1, y==-1, z==1, t==1)
-        lib['native'](exe,p,source+'let missing : Node (1,-1,1,1) = node\n')
-    print(f'InvarGenT checked the ten-row typing and rejected the late counterexample {outside}.')
+        for alias in ('let whole = node\n', demand):
+            inferred = lib['native'](exe,p,binding+alias+'let needed : Node (1,-1,1,1) = whole\n')
+            for name in ('node','whole'):
+                pub, actual = lib['scheme'](lib['signature'](inferred,name))
+                domain = lib['constraints'](actual,dict(zip(pub,(x,y,z,t))))
+                lib['check'](z3.unsat, z3.Xor(domain,exact))
+        lib['native'](exe,p,binding+'let wrong : Node ('+','.join(map(str,outside))+') = node\n',ok=False)
+    print(f'Both unannotated exports equal the ten word guards. The late caller {outside} is rejected.')
 
 
 if __name__ == '__main__':
