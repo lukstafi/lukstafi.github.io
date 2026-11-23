@@ -2,7 +2,7 @@
 title: "Study notes: What a Description Answers To"
 essay: what-a-description-answers-to
 track: physics-and-reality
-reviewed-against: "753a176"
+reviewed-against: "225e496"
 requires:
   - {at: the-grain-of-the-hard-problem#what-a-coarse-graining-is, for: "the intervention criterion: a coarse variable earns reality when interventions and interactions respect it"}
   - {at: causation-computation-indexicality#real-patterns-and-constitutive-grounding, for: "the morphism criterion and the dust man", strength: helpful}
