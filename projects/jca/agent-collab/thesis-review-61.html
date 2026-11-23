@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <meta name="dcterms.date" content="2026-11-23">
+  <meta property="og:title" content="Can InvarGenT infer a small typing without unfolding its public facets?">
+  <meta property="og:url" content="https://lukstafi.github.io/projects/jca/agent-collab/thesis-review-61.html">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="lukstafi&#x27;s blog">
+  <meta name="twitter:card" content="summary">
+  <title>Can InvarGenT infer a small typing without unfolding its public
+facets?</title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <style type="text/css">
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="/assets/tufte.css">
+  <link rel="stylesheet" href="/assets/pandoc-tufte.css">
+  <link rel="stylesheet" href="/assets/site.css">
+  <script defer=""
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+  type="text/javascript"></script>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+  <script>(function(){var t=localStorage.getItem('theme-preference');if(t)document.documentElement.setAttribute('data-theme',t);})()</script>
+</head>
+<body>
+<nav class="site-nav">
+  <a href="/">Home</a> &middot; <a href="/study/">Study Guide</a> &middot; <a href="/about.html">About</a> &middot; <a href="https://lukstafi.substack.com">Substack</a>
+</nav>
+<div class="theme-toggle">
+  <button id="theme-btn" aria-label="Toggle dark mode">&#9788;</button>
+</div>
+<article>
+<header>
+<h1 class="title">Can InvarGenT infer a small typing without unfolding
+its public facets?</h1>
+<p class="byline">2026-11-23</p>
+</header>
+<nav id="TOC">
+<ul>
+<li><a href="#witnesses" id="toc-witnesses">What the checker uses as a
+witness</a></li>
+<li><a href="#metric" id="toc-metric">Recovering a measurement from the
+field and guard</a></li>
+<li><a href="#synthesis" id="toc-synthesis">Why increasing the precision
+terminates on a class of callers</a>
+<ul>
+<li><a href="#prefix" id="toc-prefix">Extending the construction beyond
+the disk</a></li>
+</ul></li>
+<li><a href="#callers" id="toc-callers">How to check a whole caller
+family</a></li>
+<li><a href="#replay" id="toc-replay">Native replay and arithmetic
+diagnostics</a></li>
+</ul>
+</nav>
+<p>InvarGenT now infers the recursive type of
+<code>let rec probe = Spin probe</code> at the boundary caller <span
+class="math inline">\(\mathrm{Probe}(2,0,1)\)</span> on the slowly
+rotating family. At <span class="math inline">\(n=18\)</span>, every
+conjunctive certificate using public coordinates alone needs at least
+<strong>65,537 facets</strong>. The inferred type has <strong>129
+inequalities and 62 private indices</strong>, counting an equality
+twice. Feeding the exported type back as an annotation checks the same
+caller. The heap still consists of one node. <a
+href="thesis-review-59.html#lower">Lower bound for this caller</a> · <a
+href="thesis-review-61.py">Native and independent replay</a></p>
+<section id="witnesses" class="level2">
+<h2>What the checker uses as a witness</h2>
+<p>A public point has coordinates <span
+class="math inline">\(p\)</span>. Two rational affine measurements <span
+class="math inline">\(u(p),v(p)\)</span> give it a length <span
+class="math inline">\(R=\sqrt{u^2+Dv^2}\)</span>, for rational <span
+class="math inline">\(D&gt;0\)</span>. The constructor and its type
+contain only linear terms. Square roots occur in the correctness
+argument. For example, a field can rotate the measured plane while
+multiplying a third coordinate <span class="math inline">\(t\)</span> by
+a rational rate greater than one. A single affine choice of all the
+child’s private indices can fail even when every parent has a child
+opening. On the slowly rotating family, any polynomial-size lift needs
+exponentially many affine choices to open the whole ground orbit. <a
+href="thesis-review-59.html#policies">Witness-policy lower bound</a></p>
+<p>The type starts with private variables <span
+class="math inline">\(X_0\ge |u|\)</span> and <span
+class="math inline">\(Y_0\ge |v|\)</span>. Each absolute-value lower
+bound abbreviates two linear inequalities. A fold with <span
+class="math inline">\(c,s&gt;0\)</span> and <span
+class="math inline">\(c^2+Ds^2=1\)</span> introduces a
+<strong>fresh</strong> pair <span class="math display">\[
+X&#39;=cX+DsY,\qquad Y&#39;\ge|cY-sX|.
+\]</span> Every allowed opening can only increase squared length.
+Choosing equality in every absolute-value bound preserves length. A
+chain of <span class="math inline">\(m\)</span> such choices gives a
+piecewise-linear witness with <span class="math inline">\(O(m)\)</span>
+operations. Its intermediate values can be shared.</p>
+<p>For the tight opening, the first fold maps the nonnegative quadrant
+into <span class="math inline">\(cY&#39;\le sX&#39;\)</span> if <span
+class="math inline">\(c^2\le Ds^2\)</span>. Suppose the preceding pair
+is in <span class="math inline">\(Y\le kX\)</span>. The next tight pair
+satisfies <span class="math inline">\(cY&#39;\le sX&#39;\)</span> if
+<span class="math inline">\(k(c^2-Ds^2)\le 2cs\)</span>. To see the
+inequality, take the two signs of <span
+class="math inline">\(cY-sX\)</span>. Only the positive sign needs the
+preceding wedge bound. The checker obtains each <span
+class="math inline">\(c,s,D\)</span> from the input rows, checks the
+common <span class="math inline">\(D\)</span>, and accounts for every
+private constraint. The matcher requires each stage to allocate distinct
+private indices. <a href="thesis-review-61.lean">Weighted fold and wedge
+lemmas in Lean</a></p>
+<p>The last pair lies in a written wedge <span
+class="math inline">\(0\le Y\le kX\)</span>. A terminal cap has the form
+<span class="math inline">\(X+aY\le B(p)\)</span> with <span
+class="math inline">\(a\ge0\)</span>. If <span
+class="math inline">\((D-a^2)k\le 2a\)</span>, then <span
+class="math inline">\(X^2+DY^2\le(X+aY)^2\)</span>. Hence <strong>every
+opening</strong> gives <span class="math inline">\(R\le B(p)\)</span>.
+Conversely the tight opening satisfies <span
+class="math inline">\(X+aY\le\sqrt{1+a^2/D}\,R\)</span> by weighted
+Cauchy–Schwarz. For a field, the checker introduces one rational-LP
+variable standing for the parent’s radius and puts it below every cap.
+It checks the guard and each child cap against those simultaneous
+bounds. It also checks that the tight child lies in its written wedge
+and that the parent type has an opening. At each field occurrence the
+child gets fresh witnesses. Rational approximation only enlarges the
+upper bounds used in sufficient checks. Feasibility over rational linear
+inequalities also establishes the corresponding real implications. <a
+href="https://arxiv.org/abs/1912.00256">Rational lifted approximations
+of the second-order cone, Kocuk</a></p>
+</section>
+<section id="metric" class="level2">
+<h2>Recovering a measurement from the field and guard</h2>
+<p>Consider a direct constructor with three public indices. After an
+unknown rational affine change of coordinates, one field rotates a plane
+and sends <span class="math inline">\(t\)</span> to <span
+class="math inline">\(rt\)</span>, where <span
+class="math inline">\(r&gt;1\)</span>. Suppose its guard is <span
+class="math inline">\(g=u-t+C\le0\)</span> with constant <span
+class="math inline">\(C\)</span> and nonzero rotating component <span
+class="math inline">\(u\)</span>. Let <span
+class="math inline">\(A\)</span> act on affine forms by composition with
+the field. For the field’s linear part <span
+class="math inline">\(L\)</span>, put <span
+class="math inline">\(r=|\det L|\)</span> and <span
+class="math inline">\(s=\operatorname{tr} L-r\)</span>. On the rotating
+plane <span class="math inline">\(A^2-sA+I=0\)</span>. Consequently
+<span class="math display">\[
+H=(A^2-sA+I)g=-(r^2-sr+1)t+(2-s)C,\qquad
+t=-\frac{(A-I)H}{(r-1)(r^2-sr+1)}.
+\]</span> This also recovers <span class="math inline">\(C\)</span> and
+<span class="math inline">\(u=g+t-C\)</span>. Write <span
+class="math inline">\(c=s/2\)</span>, take any positive rational <span
+class="math inline">\(K\ge\sqrt{1-c^2}\)</span>, and set <span
+class="math display">\[
+v=(Au-cu)/K,\qquad D=K^2/(1-c^2).
+\]</span> In these coordinates <span
+class="math inline">\(Au=cu+Kv\)</span> and <span
+class="math inline">\(Av=-(1-c^2)u/K+cv\)</span>, so <span
+class="math inline">\(A\)</span> preserves <span
+class="math inline">\(u^2+Dv^2\)</span>. The implementation checks that
+the three recovered forms have independent linear parts. It verifies the
+actual action of <strong>every</strong> field on the same quadratic form
+and on the slack. It can try a composition of two fields to expose the
+plane. Two reflections preserving <span
+class="math inline">\(x^2+2y^2\)</span> give a regression case where the
+product supplies the rotation and the original two fields must each pass
+the check.</p>
+<p>The weight matters over the rationals. If <span
+class="math inline">\(x^2+2y^2=q(U^2+V^2)\)</span> for two rational
+linear coordinates with matrix <span class="math inline">\(M\)</span>
+and rational <span class="math inline">\(q\)</span>, determinants give
+<span class="math inline">\(2=(q\det M)^2\)</span>. This is impossible.
+In the native example the matrix with rows <span
+class="math inline">\((7/9,-8/9)\)</span> and <span
+class="math inline">\((4/9,7/9)\)</span> preserves <span
+class="math inline">\(x^2+2y^2\)</span>. With the public coordinates
+renamed and translated to <span
+class="math inline">\((u,v,t)=(i+j+1,j+k-2,i+j+k-1)\)</span>, the guard
+becomes <span class="math inline">\(1\le k\)</span>. The same
+source-level inference succeeds, including for symbolic callers. <a
+href="thesis-review-61.py">Generate the reindexed program</a></p>
+</section>
+<section id="synthesis" class="level2">
+<h2>Why increasing the precision terminates on a class of callers</h2>
+<p><strong>Theorem.</strong> Suppose all fields preserve <span
+class="math inline">\(R=\sqrt{u^2+Dv^2}\)</span> and send <span
+class="math inline">\(t\)</span> to <span class="math inline">\(r_e
+t\)</span>, where <span class="math inline">\(r=\min_e
+r_e&gt;1\)</span>. Use the single guard <span
+class="math inline">\(u\le1+t\)</span>. Let a family of requested
+callers satisfy <span class="math display">\[
+t\ge0,\qquad |u|,|v|\le b t,\qquad R\le1+t
+\]</span> for a common finite <span
+class="math inline">\(b&gt;0\)</span>. For the weight recovered above,
+the dyadic construction below yields a finite conjunctive rational
+inductive typing covering the whole family. The inequalities allow
+callers on the guard or disk boundary, and slack approaching zero. This
+is a certificate-existence theorem in the unbounded rational syntax.</p>
+<p>Choose a rational <span class="math inline">\(h\)</span> with <span
+class="math inline">\(R\le ht\)</span> on the callers and a rational
+<span class="math inline">\(H&gt;h\)</span>. The generator doubles <span
+class="math inline">\(b\)</span> from one until the two coordinate
+bounds hold, then uses <span class="math inline">\(H=(1+D)b\)</span>.
+One can take <span class="math inline">\(h=(1+D/2)b\)</span>, since
+<span class="math inline">\((1+D/2)^2\ge1+D\)</span>. Keep the public
+guard and <span class="math inline">\(t\ge0\)</span>. Give the private
+folds two caps, with right-hand sides <span
+class="math inline">\(Ht\)</span> and <span
+class="math inline">\(1+rt\)</span>. The first cap gives a feasible
+zero-radius opening at <span class="math inline">\(t=0\)</span>. The
+second allows the boundary point <span
+class="math inline">\((2,0,1)\)</span> as soon as the fold is precise
+enough.</p>
+<p>For <span class="math inline">\(j=1,\dots,m\)</span>, put <span
+class="math inline">\(a_j=2^{-j}\)</span>, <span
+class="math inline">\(c_j=(1-Da_j^2)/(1+Da_j^2)\)</span> and <span
+class="math inline">\(s_j=2a_j/(1+Da_j^2)\)</span>. Take <span
+class="math inline">\(a=Da_m\)</span> in both terminal caps. The
+generator rounds the square root of a rational <span
+class="math inline">\(n/d\)</span> upwards as <span
+class="math inline">\(\lceil\sqrt{nd}\rceil/d\)</span> for positive
+coprime integers <span class="math inline">\(n,d\)</span>. Hence its
+recovered weight satisfies <span class="math inline">\(1\le
+D&lt;4\)</span>. The first fold angle <span
+class="math inline">\(2\arctan(\sqrt D/2)\)</span> in the coordinates
+<span class="math inline">\((u,\sqrt D v)\)</span> is at least <span
+class="math inline">\(\pi/4\)</span> and less than <span
+class="math inline">\(\pi/2\)</span>. Concavity of <span
+class="math inline">\(\arctan\)</span> gives an angular decrease of at
+most a factor of two at each later stage. Thus the tight folds meet
+their final wedge. The last wedge and cap satisfy the preceding rational
+inequalities with slope <span class="math inline">\(s_m/c_m\)</span>.
+The tight overhead is at most <span
+class="math inline">\(1+\delta\)</span> with <span
+class="math inline">\(\delta=D4^{-m}/2\)</span>.</p>
+<p>Every admitted parent has <span class="math inline">\(R\le
+Ht\)</span> and <span class="math inline">\(R\le1+rt\)</span>. To open
+the child it suffices to have <span class="math display">\[
+\delta\le r-1,\qquad \delta H\le r(r-1).
+\]</span> Indeed <span class="math inline">\((1+\delta)R\le
+Hrt\)</span>. Also <span class="math inline">\(R+\delta R\le1+rt+\delta
+Ht\le1+r^2t\)</span>. Every child satisfies its public guard since <span
+class="math inline">\(u&#39;\le R\le1+rt\)</span>. The same argument
+works for any <span class="math inline">\(r_e\ge r\)</span>.</p>
+<p>For the callers it suffices that <span
+class="math inline">\((1+\delta)h\le H\)</span> and <span
+class="math inline">\(\delta h\le r-1\)</span>. The first condition
+gives the conical cap. The second gives <span
+class="math inline">\(R+\delta R\le1+t+\delta ht\le1+rt\)</span>. All
+four precision bounds have strictly positive headroom at <span
+class="math inline">\(\delta=0\)</span>, so a finite <span
+class="math inline">\(m\)</span> satisfies them. The proof uses the same
+bounds at the point where the tighter cap changes. <a
+href="thesis-review-61.lean">Child caps, caller caps and finite
+precision in Lean</a></p>
+<p>For the fixed ground use of the slowly rotating family, <span
+class="math inline">\(H,h,D\)</span> can be held constant and <span
+class="math inline">\(r-1=2^{-3n}/16\)</span>. This proves <span
+class="math inline">\(m=O(n)\)</span> precision refinements. Exact
+public preimage iteration needs <span
+class="math inline">\(\Theta(2^n)\)</span> rounds on <span
+class="math inline">\(t\ge1\)</span>. Here the induction jump constructs
+the private invariant directly. The original Table 4.4 update can loop
+even with a two-inequality solution. A size promise alone supplies no
+termination proof for that iteration. The native generator also has
+finite literal and search budgets. <a
+href="thesis-review-59.html#rounds">Exact public unfolding</a> · <a
+href="thesis-review-3.html#update">Two-inequality recurrence</a></p>
+<section id="prefix" class="level3">
+<h3>Extending the construction beyond the disk</h3>
+<p>Some safe callers violate even <span
+class="math inline">\(R\le1+rt\)</span>, an upper bound imposed by the
+inferred one-step cap. There is a finite extension with the <strong>same
+private fold chain</strong> for any safe caller family satisfying <span
+class="math inline">\(t\ge0\)</span> and <span
+class="math inline">\(R\le ht\)</span> for finite <span
+class="math inline">\(h\)</span>. Choose <span
+class="math inline">\(H&gt;h\)</span>. Retain the actual public guards
+for all field words of lengths <span class="math inline">\(0\)</span>
+through <span class="math inline">\(N-1\)</span>. Replace the future cap
+<span class="math inline">\(1+rt\)</span> by <span
+class="math inline">\(1+r^N t\)</span>. Each child owes one new layer of
+public guards at the frontier. The parent radius is at most <span
+class="math inline">\(1+r^Nt\)</span>, and all words of length <span
+class="math inline">\(N\)</span> multiply the slack by at least <span
+class="math inline">\(r^N\)</span>. This pays for every frontier
+guard.</p>
+<p>Write <span class="math inline">\(L=r^N\)</span>. The child cap proof
+above now needs <span class="math inline">\(\delta H\le L(r-1)\)</span>
+and <span class="math inline">\(\delta\le r-1\)</span>. Choose <span
+class="math inline">\(N\)</span> with <span
+class="math inline">\(L&gt;h\)</span>, and then choose <span
+class="math inline">\(m\)</span> with <span
+class="math inline">\((1+\delta)h\le\min(H,L)\)</span> as well. These
+choices open the entire caller family. If the family is specified by a
+rational polyhedron, checking the finite prefix against it is rational
+linear entailment. A failure supplies a violating caller and word. A
+success supplies a typing. This gives a decision procedure on the
+cone-bounded class with known geometry. Its number of explicit word
+guards can be large. The finite-horizon seed construction also decides
+this class. Here <strong>one</strong> folded relation serves every
+frontier word. <a href="thesis-review-60.html#coverage">Predecessor
+construction from a robust seed</a></p>
+<p>An explicit polyhedral caller also determines how many guards to
+retain. Write its image in <span class="math inline">\((u,v,t)\)</span>
+as the convex hull of finitely many vertices plus the cone of finitely
+many recession generators. The cone bound permits only the zero measured
+direction at zero slack. For a vertex <span
+class="math inline">\(v\)</span> with <span
+class="math inline">\(t_v&gt;0\)</span>, take <span
+class="math inline">\((R(v)-1)/t_v\)</span>. For a ray <span
+class="math inline">\(d\)</span> with <span
+class="math inline">\(t_d&gt;0\)</span>, take <span
+class="math inline">\(R(d)/t_d\)</span>, using the linear part of the
+measurements on directions. Let <span class="math inline">\(A\)</span>
+be the maximum of these numbers, with an empty maximum imposing no
+condition. Then <span class="math inline">\(R\le1+Lt\)</span> on the
+entire caller exactly when <span class="math inline">\(L\ge A\)</span>,
+for <span class="math inline">\(L&gt;0\)</span>. Necessity follows at
+the vertices and by taking a limit along each ray. Sufficiency follows
+by the triangle inequality in a vertex-and-ray decomposition. Since
+there are finitely many generators, <span
+class="math inline">\(L&gt;A\)</span> gives room for a common positive
+<span class="math inline">\(\delta\)</span> in <span
+class="math inline">\((1+\delta)R\le1+Lt\)</span>. Equality can still
+admit a tight opening and needs a separate check. The first positive
+<span class="math inline">\(N\)</span> with <span
+class="math inline">\(r^N&gt;A\)</span> is computable by squared
+rational comparisons, doubling and bisection. For the fixed boundary
+caller <span class="math inline">\((2,0,1)\)</span> this rule picks
+<span class="math inline">\(N=1\)</span> for every <span
+class="math inline">\(n\)</span>. Thus the choice of horizon preserves
+the linear-depth result even when <span class="math inline">\(r\)</span>
+is extremely close to one. From the generators one can also check every
+retained public guard, choose <span class="math inline">\(H\)</span> by
+doubling, and select the first depth meeting the four cap inequalities.
+The standalone procedure recovers the native fold counts at all six
+tested values of <span class="math inline">\(n\)</span>. For two
+rotating fields, it agrees with an independent finite guard check on 98
+point and ray callers, including 52 safe cases.</p>
+<p>For the <span class="math inline">\(x^2+2y^2\)</span> field above,
+take <span class="math inline">\((x,y,t)=(-51/25,0,1)\)</span>. Its
+radius exceeds <span class="math inline">\(1+r^2\)</span> for <span
+class="math inline">\(r=65/64\)</span>. The first three guards hold.
+Using <span class="math inline">\(N=3\)</span>, <span
+class="math inline">\(H=8\)</span> and five folds gives a written
+inductive type that the compiler verifies at this caller. The current
+native generator selects the one-step cap. The replay selects a prefix
+from explicit caller generators. Extending the native synthesis path to
+make that selection from caller constraints would cover these points
+directly. <a href="thesis-review-61.py">Executable three-guard
+example</a> · <a href="thesis-review-61.lean">Child frontier in
+Lean</a></p>
+</section>
+</section>
+<section id="callers" class="level2">
+<h2>How to check a whole caller family</h2>
+<p>The generated scheme is a conjunction, so its projection is convex.
+Fix all but one public coordinate of a rational polyhedral caller. A
+bounded nonempty fibre is an interval. Open both endpoints and take
+convex combinations of the complete lifted points. If the interval is a
+ray, open the finite endpoint and lift the unbounded direction into the
+recession cone. A whole line needs a section and both signs of its
+direction. Each finite endpoint is attained on an input hyperplane.
+Substitution there removes a coordinate. This proves a finite
+verification rule provided its leaf obligations can be solved. Rational
+public points can use rational interpolation coefficients.</p>
+<p>The implementation first substitutes equations with a single
+unresolved private variable, then takes tight absolute values whose
+signs the caller fixes. It rechecks every affine row after substitution.
+If the signs vary it can apply the interval rule above, subject to a
+budget. General projection remains a fallback. A plain value alias can
+copy an already checked folded scheme. These steps give one published
+type covering a point, a box crossing both coordinate axes, and an
+unbounded ray. The replay independently asks Z3 for a violating point
+anywhere in either symbolic family. <a
+href="thesis-review-61.py">Executable caller checks</a></p>
+</section>
+<section id="replay" class="level2">
+<h2>Native replay and arithmetic diagnostics</h2>
+<p>For <span class="math inline">\(n=2,3,4,8,12,18\)</span>, the
+compiler checks the earlier written certificates, synthesizes a type for
+the unannotated binding, and verifies its own exported type on re-entry.
+The written seven-fold <span class="math inline">\(n=3\)</span> case
+previously reached a five-minute diagnostic cutoff. At <span
+class="math inline">\(n=18\)</span>, the written type uses 29 folds and
+inference chooses 30. A separate exact check reads the exported
+constraints of the weighted examples, leaves every parent witness
+arbitrary, and instantiates the child’s tight witnesses. Z3 proves
+closure over the entire parent domain in the original and affinely
+reindexed examples. It finds a counterexample when a field expands <span
+class="math inline">\(u\)</span> tenfold. OCaml checks that each caller
+still points to the original node. A partially annotated caller can
+acquire a stronger precondition when its requested family is too broad.
+The ground negative control requires a definite outside point. <a
+href="thesis-review-61.py">Source and checks</a> · <a
+href="https://github.com/lukstafi/invargent/commit/a92a630d1aab58f361fb221ac938224da1fd90e1">InvarGenT
+implementation</a> · <a href="thesis-review-11.html">Partial annotations
+in the thesis</a></p>
+<p>The numeric synthesis routine also finds a common type for two
+reflections by trying their product. End-to-end unannotated inference on
+that source and on a two-field affine reindexing each reached a
+90-second diagnostic cutoff at default settings. On the reindexed
+source, instrumentation placed the delay in ordinary inference before
+the folded proposal. Setting only <code>-term_abduction_timeout 1</code>
+lets both examples reach the proposal and infer their types. The replay
+checks both original fields against each exported scheme, including both
+heap pointers. The compiler first tries to preserve a successful
+existing type. Reaching the folded proposal promptly by default while
+retaining that coverage remains open.</p>
+<p>The large coefficients exposed an independent error before the
+rational solver. With <span class="math inline">\(M\)</span> the
+machine’s largest positive integer, <code>Num (M i + M i)</code> could
+parse as <code>Num (-2 i)</code>. At <span
+class="math inline">\(i=1\)</span> the old compiler consequently
+accepted a result annotated <code>Num (-2)</code>. Arithmetic on large
+source coefficients now uses exact fractions, with an unevaluated sum
+available when its coefficient exceeds the literal range. The erroneous
+call fails and the same declaration still works at <span
+class="math inline">\(i=0\)</span>. A closed example reproduces the bug
+using just two datatypes. A constructor from <span
+class="math inline">\(\mathrm{Input}(i)\)</span> to <span
+class="math inline">\(\mathrm{Output}(Mi+Mi)\)</span> previously
+admitted <span class="math inline">\(\mathrm{Output}(-2)\)</span> at
+<span class="math inline">\(i=1\)</span>. InvarGenT can retain the
+original sum in the constructor guard when a normalized coefficient
+would exceed the source range. The constructor still gives <span
+class="math inline">\(\mathrm{Output}(0)\)</span> at <span
+class="math inline">\(i=0\)</span>. The smallest signed literal keeps
+its sign, a second negation outside the range gets a source diagnostic,
+and a zero denominator is rejected at its location. <a
+href="https://github.com/lukstafi/invargent/commit/50b2a4e9ee7863cc13af031498ab799a2328d119">Constructor
+normalization</a> · <a
+href="https://github.com/lukstafi/invargent/commit/319abd0414e502993f5332bb68400014cb36a21f">Exact
+source arithmetic</a></p>
+<p>The native replay passed on OCaml 5.3 and 5.5.1 compatibility builds.
+The full 5.3 suite passed all 410 active tests, with ten existing TODOs.
+All 208 previously generated signatures matched byte for byte.</p>
+<p>A differential replay removes individual rows, changes signs and
+weights, reuses private names, and adds inconsistent bounds. It
+eliminates the private coordinates independently and asks Z3 about the
+resulting public polyhedron. The native checker agreed on all 416 cases,
+including 36 inductive schemes. <a
+href="thesis-review-61-oracle.py">Projection oracle and OCaml
+driver</a></p>
+<p>With Python and <code>z3-solver</code>, run the following next to the
+preceding review’s source generator.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python3</span> thesis-review-61.py <span class="at">--compiler</span> /path/to/InvarGenT.native</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="ex">python3</span> thesis-review-61.py <span class="at">--source</span></span></code></pre></div>
+</section>
+</article>
+<script src="/assets/theme-toggle.js"></script>
+</body>
+</html>

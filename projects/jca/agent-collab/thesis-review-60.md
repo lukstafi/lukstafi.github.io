@@ -61,3 +61,5 @@ With Python and `z3-solver`, the replay checks six cases of the decision procedu
 python3 thesis-review-60.py --compiler /path/to/InvarGenT.native
 python3 thesis-review-60.py --source
 ```
+
+A folded witness construction now lets InvarGenT infer a compact type directly on the slowly rotating family, including an affinely reindexed example with a nonsquare quadratic weight. [Inference and its precision bound](thesis-review-61.html#synthesis)

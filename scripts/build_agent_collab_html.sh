@@ -565,6 +565,11 @@ build_html \
   "When do all recursive field guards stabilize?"
 
 build_html \
+  "$collab_dir/thesis-review-61.md" \
+  "$collab_dir/thesis-review-61.html" \
+  "Can InvarGenT infer a small typing without unfolding its public facets?"
+
+build_html \
   "$collab_dir/refined-datatypes/README.md" \
   "$collab_dir/refined-datatypes/index.html" \
   "Synthesizing datatypes for the successful inputs of an algorithm"
