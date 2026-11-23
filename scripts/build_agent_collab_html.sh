@@ -570,6 +570,21 @@ build_html \
   "Can InvarGenT infer a small typing without unfolding its public facets?"
 
 build_html \
+  "$collab_dir/thesis-review-62.md" \
+  "$collab_dir/thesis-review-62.html" \
+  "Which whole caller families have a polyhedral recursive typing?"
+
+build_html \
+  "$collab_dir/thesis-review-63.md" \
+  "$collab_dir/thesis-review-63.html" \
+  "What if a recursive field preserves, contracts, or reverses slack?"
+
+build_html \
+  "$collab_dir/thesis-review-64.md" \
+  "$collab_dir/thesis-review-64.html" \
+  "When does one recursive typing cover every typable caller?"
+
+build_html \
   "$collab_dir/refined-datatypes/README.md" \
   "$collab_dir/refined-datatypes/index.html" \
   "Synthesizing datatypes for the successful inputs of an algorithm"

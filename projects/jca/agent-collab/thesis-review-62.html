@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <meta name="dcterms.date" content="2026-11-23">
+  <meta property="og:title" content="Which whole caller families have a polyhedral recursive typing?">
+  <meta property="og:url" content="https://lukstafi.github.io/projects/jca/agent-collab/thesis-review-62.html">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="lukstafi&#x27;s blog">
+  <meta name="twitter:card" content="summary">
+  <title>Which whole caller families have a polyhedral recursive
+typing?</title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <style type="text/css">
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="/assets/tufte.css">
+  <link rel="stylesheet" href="/assets/pandoc-tufte.css">
+  <link rel="stylesheet" href="/assets/site.css">
+  <script defer=""
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+  type="text/javascript"></script>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+  <script>(function(){var t=localStorage.getItem('theme-preference');if(t)document.documentElement.setAttribute('data-theme',t);})()</script>
+</head>
+<body>
+<nav class="site-nav">
+  <a href="/">Home</a> &middot; <a href="/study/">Study Guide</a> &middot; <a href="/about.html">About</a> &middot; <a href="https://lukstafi.substack.com">Substack</a>
+</nav>
+<div class="theme-toggle">
+  <button id="theme-btn" aria-label="Toggle dark mode">&#9788;</button>
+</div>
+<article>
+<header>
+<h1 class="title">Which whole caller families have a polyhedral
+recursive typing?</h1>
+<p class="byline">2026-11-23</p>
+</header>
+<nav id="TOC">
+<ul>
+<li><a href="#criterion" id="toc-criterion">The caller test</a></li>
+<li><a href="#necessity" id="toc-necessity">Why a finite orbit is
+necessary</a></li>
+<li><a href="#sufficiency" id="toc-sufficiency">A single rational typing
+suffices</a>
+<ul>
+<li><a href="#witnesses" id="toc-witnesses">Compatible field witnesses
+in generator coordinates</a></li>
+</ul></li>
+<li><a href="#finite" id="toc-finite">Computing the whole zero-slack
+domain</a></li>
+<li><a href="#frame" id="toc-frame">Recovering the geometry from affine
+fields</a></li>
+<li><a href="#native" id="toc-native">What InvarGenT infers</a></li>
+<li><a href="#replay" id="toc-replay">Replay</a></li>
+</ul>
+</nav>
+<p>A caller with <strong>zero slack</strong> can satisfy every recursive
+guard and still have no polyhedral typing. Rotate <span
+class="math inline">\((1/4,0)\)</span> through an angle of infinite
+order about the origin and require <span
+class="math inline">\(x\le1\)</span>. The whole orbit stays strictly
+inside the unit disk. Any inductive polygon containing the caller would
+have to accommodate every rotation of its own vertices. In this example
+only the origin has a polyhedral typing at zero slack.</p>
+<p>For several required recursive fields and any number of measured
+indices, the same obstruction has an exact linear description. The
+zero-slack values that have finite orbits in the coordinates visible to
+the guards form a computable <strong>rational subspace</strong>.
+Intersect that subspace with finitely many guards and one obtains the
+greatest polyhedrally typable zero-slack domain. This gives a decision
+for a <em>whole polyhedral family</em> of callers, including families
+with positive slack arbitrarily close to zero and unbounded families
+with zero-slack recession directions. <a
+href="thesis-review-60.html#families">Earlier fixed-axis example</a></p>
+<section id="criterion" class="level2">
+<h2>The caller test</h2>
+<p>Suppose the public indices are <span
+class="math inline">\((p,t)\)</span> with <span
+class="math inline">\(p\in\mathbb Q^d\)</span>. Each required field
+sends them to <span class="math inline">\((O_ep,r_et)\)</span>, where
+<span class="math inline">\(r_e&gt;1\)</span> and every <span
+class="math inline">\(O_e\)</span> preserves the same positive-definite
+rational form <span class="math inline">\(Q\)</span>. The guards are
+<span class="math inline">\(a_i p\le c_i+t\)</span> for finitely many
+rational rows <span class="math inline">\(a_i\)</span> and constants
+<span class="math inline">\(c_i\)</span>. Both the field list and the
+guard list are nonempty. A strictly positive coefficient of slack in a
+guard can be normalized to one. A typing is a closed rational polyhedron
+satisfying the guards, closed under <strong>each</strong> field, and
+covering the designated callers. This is an existence question about the
+invariant that can supply a Table 4.4 postcondition. The table’s
+iteration still has its own convergence question. <a
+href="thesis-review-2.html#convergence">Table 4.4 and bounded
+solutions</a> · <a href="https://arxiv.org/abs/1907.08257">Fijalkow and
+colleagues on the general affine invariant problem</a></p>
+<p>Compute a basis <span class="math inline">\(B\)</span> of the row
+span of all <span class="math inline">\(a_iO_w\)</span>, where <span
+class="math inline">\(w\)</span> ranges over field words, including the
+empty word. Closing a row basis under the finitely many generators gives
+this span after at most <span class="math inline">\(d\)</span>
+independent rows. Set <span class="math inline">\(y=Bp\)</span>, write
+each guard as <span class="math inline">\(b_i y\le c_i+t\)</span>, and
+define <span class="math inline">\(M_e\)</span> by <span
+class="math inline">\(BO_e=M_e B\)</span>. Thus every guard at every
+descendant depends only on <span class="math inline">\(y\)</span> and
+<span class="math inline">\(t\)</span>. Projecting a typing onto these
+coordinates preserves inductiveness, and taking its inverse image
+supplies a typing in the original coordinates. The quotient metric is
+<span class="math inline">\(P=(BQ^{-1}B^T)^{-1}\)</span>, since <span
+class="math inline">\(M_e\)</span> preserves the inverse form <span
+class="math inline">\(BQ^{-1}B^T\)</span> on rows. With zero observable
+dimensions all guard evaluations simply omit <span
+class="math inline">\(y\)</span>.</p>
+<p>Write a nonempty caller polyhedron as a convex hull of rational
+points plus a cone of rational recession generators. Include both signs
+for each lineality direction. Map each generator to <span
+class="math inline">\((y,t,\lambda)\)</span> with <span
+class="math inline">\(\lambda=1\)</span> for a point and <span
+class="math inline">\(\lambda=0\)</span> for a direction. The
+homogeneous guard is <span class="math inline">\(b_i y\le
+c_i\lambda+t\)</span>.</p>
+<p><strong>Theorem.</strong> One polyhedral typing covers the caller
+exactly when every generator passes the following test.</p>
+<table>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr>
+<th>Slack of generator</th>
+<th>Test</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><span class="math inline">\(t&lt;0\)</span></td>
+<td>Reject. Repeating any field sends the slack to <span
+class="math inline">\(-\infty\)</span>, while the measured part stays
+bounded.</td>
+</tr>
+<tr>
+<td><span class="math inline">\(t=0\)</span></td>
+<td>The orbit of <span class="math inline">\(y\)</span> under the <span
+class="math inline">\(M_e\)</span> must be finite. Every image <span
+class="math inline">\(v\)</span> in that orbit must satisfy <span
+class="math inline">\(b_i v\le c_i\lambda\)</span> for all guards.</td>
+</tr>
+<tr>
+<td><span class="math inline">\(t&gt;0\)</span></td>
+<td>Check the actual guards through a finite prefix of field words. Stop
+before depth <span class="math inline">\(N\)</span> once <span
+class="math inline">\(c_i\lambda+r_{\min}^N t\ge\lVert
+b_i\rVert_{P^{-1}}\lVert y\rVert_P\)</span> for every guard, where <span
+class="math inline">\(r_{\min}=\min_e r_e\)</span>.</td>
+</tr>
+</tbody>
+</table>
+<p>The last test terminates even for a negative intercept. The left side
+eventually becomes positive and grows without bound. Every word of
+length at least <span class="math inline">\(N\)</span> satisfies every
+guard by Cauchy–Schwarz. Squaring after the sign check keeps the
+computation rational. A failed guard on a recession direction gives
+actual failing callers sufficiently far along that direction.</p>
+<p>The theorem also covers a finite union of caller polyhedra and
+finitely many private rational linear indices in the typing. Project
+private indices first. For an inductive finite union, take the closed
+convex hull of its public cells. This is rational polyhedral, the closed
+convex guards contain it, and each continuous affine field preserves it.
+Thus these representations give the same existence test. <a
+href="thesis-review-58.html">Projection and disjunctive typings</a></p>
+</section>
+<section id="necessity" class="level2">
+<h2>Why a finite orbit is necessary</h2>
+<p>Homogenize an alleged typing. For a nonempty polyhedron <span
+class="math inline">\(Ay+bt\le d\)</span>, its closed homogenization is
+<span class="math inline">\(Ay+bt\le d\lambda\)</span>, <span
+class="math inline">\(\lambda\ge0\)</span>. At <span
+class="math inline">\(\lambda=0\)</span> this includes its entire
+recession cone. It contains every lifted caller generator and is
+preserved by <span class="math inline">\((y,t,\lambda)\mapsto(M_e y,r_e
+t,\lambda)\)</span>. Rational polyhedra have dense rational points, so
+we can work with their real realizations.</p>
+<p>Let <span class="math inline">\(G\)</span> be the closure of the
+positive products of the <span class="math inline">\(M_e\)</span>,
+including the identity. It is a compact group of isometries. Positive
+powers of each generator approach the identity along a subsequence, so
+its inverse lies in the closure. On the slice <span
+class="math inline">\(t=0\)</span> with <span
+class="math inline">\(\lambda\)</span> fixed, all of <span
+class="math inline">\(G\)</span> therefore preserves the homogenized
+typing onto itself. Fix also the component <span
+class="math inline">\(f\)</span> of <span
+class="math inline">\(y\)</span> that is fixed by all of <span
+class="math inline">\(G\)</span>, using the orthogonal projection in the
+metric <span class="math inline">\(P\)</span>.</p>
+<p>The remaining, moving coordinates in this slice are bounded. To see
+this, identify each guard normal with a vector using the metric.
+Subtract its fixed part and take the closed convex hull of its <span
+class="math inline">\(G\)</span>-orbit. The centroid in its affine hull
+is fixed by <span class="math inline">\(G\)</span> and orthogonal to
+every fixed vector. Hence it is zero. The centroid belongs to the
+relative interior, so the hull contains a ball about zero in its span.
+Together these moving spans fill the orthogonal complement of the fixed
+space, by the construction of <span class="math inline">\(B\)</span>.
+The convex hull of their union thus contains a ball in the whole moving
+space. Each orbit normal has an upper bound on its pairing with the
+moving coordinates, given by <span class="math inline">\(c_i\lambda-b_i
+f\)</span>. The ball gives a common bound on their length.</p>
+<p>The slice containing the generator is consequently a nonempty bounded
+polyhedron. Each <span class="math inline">\(g\in G\)</span> permutes
+its finitely many vertices. An action on the vertices determines the
+action throughout their convex hull. Every point of this slice has a
+finite orbit. This also explains why an unobservable infinite orbit is
+harmless. A guard on a fixed coordinate alone leaves a rotating plane
+entirely free. <a href="thesis-review-60.html#criterion">Centroid
+argument for a guard orbit</a></p>
+</section>
+<section id="sufficiency" class="level2">
+<h2>A single rational typing suffices</h2>
+<p>Choose rational <span class="math inline">\(b&gt;0\)</span> with
+<span class="math inline">\(b\lVert b_i\rVert_1\le1/2\)</span> for every
+guard and put <span
+class="math inline">\(c_-=\max(0,\max_i(-c_i))\)</span>. The rational
+cone <span class="math display">\[
+D=\{\lambda\ge0,\quad t\ge 2c_-\lambda,\quad \lVert y\rVert_\infty\le
+bt\}
+\]</span> satisfies all guards. The products <span
+class="math inline">\(M_w\)</span> have a common bound <span
+class="math inline">\(K\)</span> on their infinity operator norms, by
+their common metric. For instance one can take any rational <span
+class="math inline">\(K\ge1\)</span> whose square is at least <span
+class="math inline">\((\max_i(P^{-1})_{ii})\sum_{ij}|P_{ij}|\)</span> in
+positive dimension. Choose <span class="math inline">\(m\ge1\)</span>
+with <span class="math inline">\(r_{\min}^m\ge K\)</span>. Every
+length-<span class="math inline">\(m\)</span> word maps <span
+class="math inline">\(D\)</span> into <span
+class="math inline">\(D\)</span>. The intersection <span
+class="math inline">\(S\)</span> of the inverse images of <span
+class="math inline">\(D\)</span> under the words of length less than
+<span class="math inline">\(m\)</span> is therefore one-step
+inductive.</p>
+<p>Use all the images of the passing zero-slack generators. There are
+finitely many. For each positive-slack generator, every sufficiently
+long word sends it into <span class="math inline">\(D\)</span>, since
+its measured length remains bounded. Take a single <span
+class="math inline">\(N\ge1\)</span> large enough for all of them. Every
+word of length <span class="math inline">\(N\)</span> already sends its
+generator into <span class="math inline">\(S\)</span>, since all further
+images lie in <span class="math inline">\(D\)</span> as well.</p>
+<p>Form the conic hull of <span class="math inline">\(S\)</span>, the
+finite zero-slack orbits, and all positive-slack images at depths less
+than <span class="math inline">\(N\)</span>. This is a finitely
+generated rational cone. Every generator satisfies every homogeneous
+guard. Every successor either belongs to the same finite sets or has
+reached <span class="math inline">\(S\)</span>. Linearity then proves
+inductiveness on the entire cone. Its section at <span
+class="math inline">\(\lambda=1\)</span> gives one conjunctive typing,
+with witnesses compatible across every point and ray of the caller. Lean
+checks the conic closure and the finite-prefix step in this proof. <a
+href="thesis-review-62.lean">Lean lemmas</a></p>
+<section id="witnesses" class="level3">
+<h3>Compatible field witnesses in generator coordinates</h3>
+<p>The construction can emit a certificate without projecting out the
+private indices. Put <span class="math inline">\(H=\max(1,2c_-)\)</span>
+and choose <span class="math inline">\(b=1/(2K\max(1,\max_i\lVert
+b_i\rVert_1))\)</span>. The inner box <span class="math inline">\(\lVert
+y\rVert_\infty\le bt\)</span>, <span class="math inline">\(t\ge
+H\lambda\)</span>, <span class="math inline">\(\lambda\ge0\)</span>, has
+explicit generators. At <span class="math inline">\(t=1\)</span> take
+every corner <span class="math inline">\(y\in\{-b,b\}^k\)</span> with
+<span class="math inline">\(\lambda=0\)</span> and with <span
+class="math inline">\(\lambda=1/H\)</span>. Every word image of this box
+satisfies the guards, since the transient growth of <span
+class="math inline">\(y\)</span> is at most <span
+class="math inline">\(K\)</span> and the slack never decreases. Every
+length-<span class="math inline">\(m\)</span> word takes the box into
+itself. Thus one may use the cone of the images of its corners under
+words of length less than <span class="math inline">\(m\)</span> as the
+seed. Add the same finite zero orbits and positive paths until they
+enter the box.</p>
+<p>Write <span class="math inline">\(V\)</span> for the matrix of the
+resulting generator columns. The private indices are the nonnegative
+weights <span class="math inline">\(z\)</span> in <span
+class="math inline">\(Vz=(y,t,1)\)</span>. For each field’s homogeneous
+matrix <span class="math inline">\(F_e\)</span>, open each column of
+<span class="math inline">\(F_eV\)</span> in the cone of <span
+class="math inline">\(V\)</span>. The chosen coefficients give a
+rational nonnegative matrix <span class="math inline">\(A_e\)</span>
+with <span class="math inline">\(F_e V=V A_e\)</span>. A parent opening
+<span class="math inline">\(z\)</span> supplies the child opening <span
+class="math inline">\(A_e z\)</span>, for <em>every</em> parent opening
+and all siblings. Caller generators get coefficients in exactly the same
+way, including the recession generators with final coordinate zero.</p>
+<p>This last argument works for <strong>any</strong> rational polyhedral
+invariant under deterministic affine fields, using its homogenized
+generators. It gives a uniform linear child-witness policy in the
+extended coordinates. Listing the generators can be expensive. A compact
+folded type may need many distinct affine choices when asked to open its
+private indices from the public point alone. The replay constructs a
+131-column generator lift for a three-dimensional measurement with two
+required fields and checks every rational coefficient equation,
+including a nonzero zero-slack caller. <a
+href="thesis-review-62.py">Generator certificate</a> · <a
+href="thesis-review-59.html#policies">Size of witness policies</a></p>
+<p><strong>Opening at the caller is a different witness
+problem.</strong> If a homogeneous caller generator <span
+class="math inline">\(u_j\)</span> designates the public state <span
+class="math inline">\(D u_j\)</span>, a single affine opening from the
+caller parameters exists precisely when there is a matrix <span
+class="math inline">\(T\)</span> with <span class="math inline">\(T
+u_j\ge0\)</span> and <span class="math inline">\(V T u_j=D u_j\)</span>
+for every <span class="math inline">\(j\)</span>. These are rational
+linear constraints on the entries of <span
+class="math inline">\(T\)</span>. They cover unbounded callers by
+including their recession generators. Individual openings at the
+generators suffice for pointwise coverage. They need not give a single
+<span class="math inline">\(T\)</span>.</p>
+<p>For a bounded polytope in its own vertex lift, such a global affine
+opening exists exactly when the polytope is a simplex in its affine
+hull. At each vertex the weights must be its corresponding unit vector.
+An affine map can send all the vertices to these affinely independent
+vectors only if the original vertices are affinely independent.
+Conversely a simplex has affine barycentric coordinates. On the unit
+square, take weights <span
+class="math inline">\(z_{00},z_{01},z_{10},z_{11}\)</span>. Choosing
+<span class="math inline">\(z_{11}=\min(i,j)\)</span> and solving the
+three affine equations supplies an opening on the full square in two
+pieces. The recursive quarter turn and the field that replaces both
+coordinates by their average still have one <em>linear</em> weight
+update each. InvarGenT checks this four-weight written type and a caller
+ranging over the entire square. An independent linear query finds a
+policy on each triangle and proves the single-policy query infeasible on
+their union. <a href="thesis-review-62.py">Caller and native
+checks</a></p>
+</section>
+</section>
+<section id="finite" class="level2">
+<h2>Computing the whole zero-slack domain</h2>
+<p>There is a finite computation even when the group on the observable
+space is infinite. Choose an odd prime <span
+class="math inline">\(\ell\)</span> coprime to the denominators of the
+entries of all <span class="math inline">\(M_e\)</span> and <span
+class="math inline">\(M_e^{-1}\)</span>. Their reductions generate a
+finite group in <span class="math inline">\(\mathrm{GL}_k(\mathbb
+F_\ell)\)</span>, where <span class="math inline">\(k\)</span> is the
+observable dimension. Traverse this finite graph once. For each residue
+<span class="math inline">\(s\)</span> keep one actual word matrix <span
+class="math inline">\(g_s\)</span>, starting with <span
+class="math inline">\(g_I=I\)</span>. For every edge <span
+class="math inline">\(s\xrightarrow{e}s&#39;\)</span> impose the linear
+equations <span class="math display">\[
+(M_e g_s-g_{s&#39;})y=0.
+\]</span> Call their common kernel <span
+class="math inline">\(L\)</span>. If <span class="math inline">\(y\in
+L\)</span>, induction on word length gives exactly the finite set of
+images <span class="math inline">\(g_s y\)</span>.</p>
+<p>Conversely, suppose <span class="math inline">\(y\)</span> has finite
+orbit. Its rational linear span <span class="math inline">\(W\)</span>
+is invariant, and the group acts on <span
+class="math inline">\(W\)</span> by permuting a finite spanning set. The
+two matrices on each edge have the same reduction, so <span
+class="math inline">\(h=g_{s&#39;}^{-1}M_e g_s\)</span> is congruent to
+the identity. Work over the rationals with denominators prime to <span
+class="math inline">\(\ell\)</span>. Their coordinate lattice
+intersected with <span class="math inline">\(W\)</span> is a full
+lattice in <span class="math inline">\(W\)</span> over this local ring.
+If <span class="math inline">\((h-I)u\)</span> is divisible by <span
+class="math inline">\(\ell\)</span> in the ambient lattice, dividing by
+<span class="math inline">\(\ell\)</span> keeps it in <span
+class="math inline">\(W\)</span>. Thus the restriction of <span
+class="math inline">\(h\)</span> is still congruent to the identity in a
+basis of the smaller lattice.</p>
+<p>The congruence kernel at an odd prime is torsion-free. Indeed, an
+element of prime order <span class="math inline">\(q\)</span> in it
+would have the form <span class="math inline">\(I+\ell^j A\)</span> with
+<span class="math inline">\(j\ge1\)</span> and <span
+class="math inline">\(A\)</span> nonzero modulo <span
+class="math inline">\(\ell\)</span>. Expanding its <span
+class="math inline">\(q\)</span>th power modulo <span
+class="math inline">\(\ell^{j+1}\)</span> forces <span
+class="math inline">\(q=\ell\)</span>. Expanding again modulo <span
+class="math inline">\(\ell^{j+2}\)</span> leaves the nonzero term <span
+class="math inline">\(\ell^{j+1}A\)</span>. The restriction of <span
+class="math inline">\(h\)</span> acts in a finite group, so it is the
+identity. In particular the edge equations hold on <span
+class="math inline">\(y\)</span>. <a
+href="https://arxiv.org/abs/1011.0346">Serre on Minkowski’s lemma and
+finite matrix groups</a></p>
+<p>It follows that the whole typable face at zero slack is the rational
+polyhedron <span class="math display">\[
+y\in L,\qquad b_i g_s y\le c_i\quad\text{for every }i,s.
+\]</span> Use zero intercepts for the corresponding recession cone. The
+face itself is inductive. For a single generator the replay can instead
+restrict to its cyclic span and stop on the first collision of unequal
+rational matrices with the same reduction. The two implementations agree
+on 81 vectors in a mixed system with an infinite rotation, a sign change
+and a fixed coordinate. Two reflections of order two give a separate
+check. Their product has infinite order, and the common finite-orbit
+subspace is zero. <a href="thesis-review-62.py">Exact rational
+algorithms</a></p>
+</section>
+<section id="frame" class="level2">
+<h2>Recovering the geometry from affine fields</h2>
+<p>The rates, metric, centre and measured coordinates need not be
+supplied. Given raw fields <span class="math inline">\(x\mapsto A_e
+x+d_e\)</span>, a conjugacy of the required shape forces <span
+class="math inline">\(r_e=|\det A_e|&gt;1\)</span>. Solve the
+simultaneous equations <span
+class="math inline">\((I-A_e)x_0=d_e\)</span> for a common centre. The
+shared expanding right and left eigenspaces for eigenvalues <span
+class="math inline">\(r_e\)</span> must each be one-dimensional and pair
+nontrivially. Indeed every eigenvalue in the isometric part has absolute
+value one. Choose a right generator <span
+class="math inline">\(u\)</span> and a left generator <span
+class="math inline">\(s\)</span>. The kernel of <span
+class="math inline">\(s\)</span> is the measured plane, of codimension
+one in any dimension. A basis of this kernel followed by <span
+class="math inline">\(u\)</span> gives rational coordinates <span
+class="math inline">\((p,t)\)</span> for <span
+class="math inline">\(x-x_0\)</span>.</p>
+<p>Orient <span class="math inline">\(u\)</span> so that every written
+guard normal has strictly negative pairing with it. Division by the
+negative of that pairing puts each guard in the required form. On the
+measured subspace solve the linear equations <span
+class="math inline">\(O_e^TQO_e=Q\)</span> on symmetric forms. Existence
+of a positive-definite solution is decidable over the reals. The
+solution space is rational and positive definiteness is open, so
+rational coefficients sufficiently close to a positive solution supply
+an exact rational metric. These checks are necessary and sufficient for
+the stated affine class. The replay recovers a frame for two translated
+fields with different rates and two nonparallel guards. It rejects a
+shear, incompatible centres, and opposite required slack signs. <a
+href="thesis-review-62.py">Executable recognition test</a></p>
+</section>
+<section id="native" class="level2">
+<h2>What InvarGenT infers</h2>
+<p>For the field preserving <span
+class="math inline">\(x^2+2y^2\)</span> with slack gain <span
+class="math inline">\(65/64\)</span>, the caller <span
+class="math inline">\((-51/25,0,1)\)</span> previously required a
+written annotation. InvarGenT now infers <strong>three actual word
+guards and four private folds</strong>. The same type admits the whole
+ray <span class="math inline">\((-26s/25,0,1+s)\)</span> for <span
+class="math inline">\(s\ge0\)</span>. Its recession slope also exceeds
+<span class="math inline">\((65/64)^2\)</span>. Adding the inverse
+rotation with gain <span class="math inline">\(2\)</span> still needs
+only those three guards and the same folds. The compiler orders words by
+the product of their slack gains. It retains an early guard if earlier
+rows do not imply it. When every caller has enough radial headroom, a
+single folded bound pays for the unexamined frontier. The final checker
+replays the proposed type on every original field and caller. A separate
+ground caller passes the first two guards and fails the third. <a
+href="thesis-review-61.html#prefix">Previous written certificate</a></p>
+<p>To measure headroom in source callers, the compiler projects their
+private indices, homogenizes the public constraints and takes the
+section <span class="math inline">\(t+\lambda=1\)</span>. Its existing
+cone bound on both measured coordinates makes the section compact. A
+convex norm fits below an affine cap on the section exactly when it fits
+at every vertex. Vertices with <span
+class="math inline">\(\lambda=0\)</span> measure the recession
+directions. The four-fold type has ten private indices and 27
+inequalities counting an equality twice. Z3 checks that the emitted
+inequalities admit every point of the ray and that each field can open
+the type from every allowed parent.</p>
+<p>A different example has a public answer with no private indices. Take
+<span class="math inline">\(H(x,y)=((x-3y)/2,(x+y)/2)\)</span>, a sixth
+turn for <span class="math inline">\(x^2+3y^2\)</span>. Give <span
+class="math inline">\(H\)</span> slack gain <span
+class="math inline">\(6/5\)</span> and <span
+class="math inline">\(H^{-1}\)</span> gain <span
+class="math inline">\(9\)</span>, with guard <span
+class="math inline">\(x\le1+t\)</span>. Every orientation is reached by
+at most five forward turns. The cheapest way to reach the
+<strong>inverse</strong> orientation costs <span
+class="math inline">\((6/5)^5&lt;9\)</span>. The greatest safe domain
+consists of <span class="math inline">\(t\ge0\)</span> and the six
+guards obtained by zero through five forward turns. At <span
+class="math inline">\((2,2,1)\)</span> all words through length four
+pass. Five forward turns give <span
+class="math inline">\(4&gt;1+(6/5)^5\)</span>. The earlier compiler
+inferred the origin alone and rejected the safe zero-slack caller <span
+class="math inline">\((1,0,0)\)</span>. The new compiler infers all
+seven inequalities at default settings and rejects the late failure. Z3
+proves that both the exported binding and its ordinary alias equal this
+exact domain. <a href="thesis-review-62.py">Source and independent
+checks</a></p>
+<p>For a finite group of recovered planar isometries the compiler can
+make this proposal before ordinary abduction. At nonnegative slack the
+least gain at each guard orientation gives its strongest constraint. At
+negative slack the guard used to recover the frame eventually fails.
+Every retained row is therefore necessary, and the independent closure
+check establishes sufficiency. A finite planar rotation group is cyclic.
+Its generator has rational trace, which is an algebraic integer, so its
+order is one of <span class="math inline">\(1,2,3,4,6\)</span>.
+Including reflections gives at most twelve orientations per original
+guard. The compiler uses this bound when exploring a candidate
+frame.</p>
+<p>Two further affine reindexings have three guards, including a
+negative intercept and a guard independent of slack. The first uses
+three fields. The second uses two noncommuting reflections. Each native
+result equals an independent eleven-level unfolding with orientation
+costs minimized by word length. On the three-field program an ordinary
+unannotated alias previously reached a 60-second diagnostic cutoff after
+its source binding had already inferred the exact answer. A plain alias
+now reuses that checked scheme directly, including through subsequent
+aliases. <a
+href="https://github.com/lukstafi/invargent/commit/48178c0a73ad51f3e7fca7ff122ecdb018f42256">Compiler
+change</a></p>
+<p>The general decision procedure is available in the replay. Native
+inference recovers selected planar frames and still has budgets for word
+search and source coefficients. The binary infinite-rotation replay uses
+<code>-term_abduction_timeout 1</code> to reach its folded proposal
+promptly. For a field that leaves slack unchanged, the finite-orbit
+restriction can apply even to strictly positive slack. InvarGenT now
+exploits this in the plane. <a
+href="thesis-review-63.html#signed">Arbitrary rational slack gains</a> ·
+<a href="thesis-review-63.html#compiler">Exact neutral inference</a> ·
+<a href="thesis-review-61.html#replay">Earlier scheduling
+behaviour</a></p>
+</section>
+<section id="replay" class="level2">
+<h2>Replay</h2>
+<p>The final native build passed all 413 active tests on OCaml 5.3, with
+ten existing TODOs. All 209 previously generated signatures matched byte
+for byte. The new golden example has identical signature tokens on the
+5.3 and 5.5.1 compatibility builds, with different line wrapping. On
+both builds OCaml also checked that the recursive fields and their
+callers point to the original nodes. The earlier 416-case differential
+check of folded schemes still agrees with independent projection. <a
+href="thesis-review-61-oracle.py">Projection oracle</a></p>
+<p>Run the first command with Python 3.10 or later. The second also
+checks affine recognition and the actual compiler exports with
+<code>z3-solver</code>. The independent seven-inequality formula agrees
+with the decision on 200 point and ray examples, including zero and
+negative slack.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python3</span> thesis-review-62.py</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="ex">python3</span> thesis-review-62.py <span class="at">--compiler</span> /path/to/InvarGenT.native</span></code></pre></div>
+</section>
+</article>
+<script src="/assets/theme-toggle.js"></script>
+</body>
+</html>

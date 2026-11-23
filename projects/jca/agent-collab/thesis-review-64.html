@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <meta name="dcterms.date" content="2026-11-23">
+  <meta property="og:title" content="When does one recursive typing cover every typable caller?">
+  <meta property="og:url" content="https://lukstafi.github.io/projects/jca/agent-collab/thesis-review-64.html">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="lukstafi&#x27;s blog">
+  <meta name="twitter:card" content="summary">
+  <title>When does one recursive typing cover every typable
+caller?</title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <style type="text/css">
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="/assets/tufte.css">
+  <link rel="stylesheet" href="/assets/pandoc-tufte.css">
+  <link rel="stylesheet" href="/assets/site.css">
+  <script defer=""
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+  type="text/javascript"></script>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+  <script>(function(){var t=localStorage.getItem('theme-preference');if(t)document.documentElement.setAttribute('data-theme',t);})()</script>
+</head>
+<body>
+<nav class="site-nav">
+  <a href="/">Home</a> &middot; <a href="/study/">Study Guide</a> &middot; <a href="/about.html">About</a> &middot; <a href="https://lukstafi.substack.com">Substack</a>
+</nav>
+<div class="theme-toggle">
+  <button id="theme-btn" aria-label="Toggle dark mode">&#9788;</button>
+</div>
+<article>
+<header>
+<h1 class="title">When does one recursive typing cover every typable
+caller?</h1>
+<p class="byline">2026-11-23</p>
+</header>
+<nav id="TOC">
+<ul>
+<li><a href="#cone" id="toc-cone">From caller coverage to a cone of
+normals</a></li>
+<li><a href="#test" id="toc-test">A finite test for all the guards
+together</a></li>
+<li><a href="#unfolding" id="toc-unfolding">Does the iteration itself
+derive the sign?</a></li>
+<li><a href="#example" id="toc-example">The five-layer example and the
+signed extension</a></li>
+</ul>
+</nav>
+<p>A decision for each caller leaves two questions. Is there
+<strong>one</strong> polyhedral typing that covers every typable caller?
+If so, will unfolding the written guards actually reach it? For the
+isometric fields with scalar slack, we can decide the first question.
+When every field strictly expands positive slack, we can also decide the
+second. The answers can differ even for a two-inequality greatest
+type.</p>
+<p>Two guards can also succeed together when each fails separately.
+Rotate <span class="math inline">\((x,y)\)</span> by <span
+class="math inline">\((3/5,4/5)\)</span>, fix <span
+class="math inline">\(z\)</span>, and double <span
+class="math inline">\(t\)</span>. Each of the guards <span
+class="math inline">\(x+z\le1+t\)</span> and <span
+class="math inline">\(y-z\le-1+t\)</span>, taken alone, has no greatest
+polyhedral typing. Their conjunction reaches its greatest typing after
+<strong>five layers</strong>, with two guards per layer. A Z3 check
+proves closure. InvarGenT checks the ten-row recursive type and rejects
+a caller violating only the last layer. <a
+href="thesis-review-64.py">Executable example</a></p>
+<section id="cone" class="level2">
+<h2>From caller coverage to a cone of normals</h2>
+<p>Take the strictly expanding system <span
+class="math inline">\(f_e(p,t)=(M_e p,r_e t)\)</span> in observable
+coordinates. Every <span class="math inline">\(r_e&gt;1\)</span>, every
+<span class="math inline">\(M_e\)</span> preserves a common positive
+form, and the written guards are <span class="math inline">\(b_i p\le
+c_i+t\)</span>. We work over the rationals with closed polyhedral types.
+The earlier caller theorem gives a typing at every safe point with <span
+class="math inline">\(t&gt;0\)</span>. A safe point at <span
+class="math inline">\(t=0\)</span> is a limit of safe points with
+positive slack. Each negative-slack point eventually violates a guard.
+Hence a greatest polyhedral typing, if it exists, must equal the whole
+semantic safe domain. Conversely, a polyhedral safe domain that
+describes all words is itself inductive. In this argument rational safe
+points suffice. Taking <span class="math inline">\(p=0\)</span> and
+sufficiently large <span class="math inline">\(t\)</span> gives an
+interior point with uniform strict margin, because the unscaled guard
+normals have bounded length. Convex interpolation with this point and
+rational approximation give density. <a
+href="thesis-review-62.html#criterion">Individual and family
+coverage</a></p>
+<p>Homogenize the intercept with <span
+class="math inline">\(\lambda\ge0\)</span>. An augmented normal is <span
+class="math inline">\(a_i=(b_i^T,-c_i)\)</span>, and a field acts on
+normals by <span
+class="math inline">\(D_e=\operatorname{diag}(M_e^T,1)\)</span>. Include
+<span class="math inline">\(d=(0,-1)\)</span> for <span
+class="math inline">\(\lambda\ge0\)</span>. The orbit normals impose
+<span class="math display">\[
+(D_w a_i)\cdot(p,\lambda)\le r_w t,\qquad d\cdot(p,\lambda)\le0,
+\]</span> where <span class="math inline">\(r_w\)</span> is the product
+of the field gains. Reversing a word when following transposes gives
+exactly the same set of all words and costs. For a nonempty safe domain
+its recession directions are exactly the homogeneous word constraints at
+<span class="math inline">\(\lambda=0\)</span>. One direction follows by
+adding a feasible base point, the other by following a ray to
+infinity.</p>
+<p>At <span class="math inline">\(t=1\)</span> the polar of the safe
+slice is <span class="math display">\[
+D=\operatorname{conv}\big(\{0\}\cup\{D_w
+a_i/r_w\}_{i,w}\big)+\operatorname{cone}(d).
+\]</span> The scaled orbit points tend uniformly to zero with word
+length. Their union with zero is compact, so its convex hull is compact
+and the displayed sum is closed. The polar description follows by
+separation. The entire homogeneous domain on <span
+class="math inline">\(t\ge0\)</span> is recovered from the unit slice by
+scaling and adjoining its recession directions.</p>
+<p>Let <span class="math inline">\(C\)</span> be the closed positive
+cone of the <strong>unscaled</strong> orbit normals and <span
+class="math inline">\(d\)</span>. If the safe domain is polyhedral,
+<span class="math inline">\(D\)</span> is a polyhedron, and its conic
+hull is polyhedral and closed. That hull is <span
+class="math inline">\(C\)</span>. In the opposite direction, suppose
+finitely many <em>actual word normals</em> and <span
+class="math inline">\(d\)</span> generate <span
+class="math inline">\(C\)</span>. Keep the scaled versions of those
+normals, zero and the ray through <span
+class="math inline">\(d\)</span>. Their convex hull plus the ray
+contains <span class="math inline">\(C\)</span> in a sufficiently small
+neighbourhood of zero. Indeed the facets through zero define the tangent
+cone <span class="math inline">\(C\)</span>, and the other facets have
+positive distance from zero in its span. Every sufficiently long scaled
+word normal is already inside. Adding the finitely many shorter words
+therefore gives the whole polar. <a
+href="thesis-review-60.html#fields">Single-guard polar argument on <span
+class="math inline">\(t\ge1\)</span></a></p>
+</section>
+<section id="test" class="level2">
+<h2>A finite test for all the guards together</h2>
+<p>Let <span class="math inline">\(G\)</span> be the compact closure of
+the word actions <span class="math inline">\(D_w\)</span>. Write <span
+class="math inline">\(F\)</span> for its fixed space. For every initial
+normal <span class="math inline">\(a\)</span>, including <span
+class="math inline">\(d\)</span>, let <span
+class="math inline">\(f_a\)</span> be its orthogonal projection onto
+<span class="math inline">\(F\)</span> in an invariant metric on
+normals. Form the finite cone <span
+class="math inline">\(C_F=\operatorname{cone}\{f_a\}\)</span>, and let
+<span class="math inline">\(J=C_F\cap(-C_F)\)</span> be its lineality,
+the subspace in which both directions belong to the cone. Finally form
+<span class="math display">\[
+W=\operatorname{span}\{D_w a : f_a\in J\}.
+\]</span></p>
+<p><strong>Criterion.</strong> A greatest polyhedral typing exists
+exactly when every initial normal has a <strong>finite orbit modulo
+<span class="math inline">\(W\)</span></strong>. In that case finitely
+many actual word guards, together with <span
+class="math inline">\(t\ge0\)</span>, describe it. All spaces and tests
+are rational. The moving complement of <span
+class="math inline">\(F\)</span> is the sum of the images of <span
+class="math inline">\(D_e-I\)</span>, so the fixed projection can be
+found by linear equations. Membership in <span
+class="math inline">\(J\)</span> needs only conic feasibility, and
+finite orbit on the quotient is decidable by modular reduction. <a
+href="thesis-review-64.py">Rational implementation</a> · <a
+href="thesis-review-62.html#finite">Finite-orbit test</a></p>
+<p>To prove the criterion, first compute the lineality of <span
+class="math inline">\(C\)</span>. For each <span
+class="math inline">\(a\)</span>, the closed convex hull of its orbit
+has <span class="math inline">\(f_a\)</span> in its relative interior.
+Its fixed component is constant, and the centroid of its moving orbit
+hull is zero. In particular <span class="math inline">\(f_a\)</span> is
+a convex combination of finitely many actual word images. To see why
+closure causes no problem, take a small cross-polytope about <span
+class="math inline">\(f_a\)</span> inside its relative affine hull and
+approximate its vertices by convex combinations of actual orbit points,
+within less than its inradius. In dimension zero the orbit is a
+singleton. The projections and word images are rational, so feasibility
+of the finite convex combination also gives rational coefficients.</p>
+<p>For <span class="math inline">\(f_a\in J\)</span>, its negative is a
+conic combination of the fixed projections. We just saw how to realize
+those projections using actual normals. Thus the cone of actual normals
+also contains <span class="math inline">\(D_w a-f_a\)</span> for every
+<span class="math inline">\(w\)</span>. These differences positively
+span the moving part of that orbit, since zero is in the relative
+interior of their convex hull. Together with <span
+class="math inline">\(\pm f_a\)</span> they generate the whole orbit
+span in both signs. It follows that finitely many actual normals and
+<span class="math inline">\(d\)</span> already generate <span
+class="math inline">\(W\)</span> as a cone.</p>
+<p>To prove the reverse inclusion, choose a fixed linear functional that
+vanishes on <span class="math inline">\(J\)</span> and is strictly
+positive on the remaining finitely many <span
+class="math inline">\(f_a\)</span>. Such a functional exists on the
+pointed finite cone <span class="math inline">\(C_F/J\)</span>. Its
+value on every image of <span class="math inline">\(a\)</span> equals
+its value on <span class="math inline">\(f_a\)</span>. If a sequence of
+conic combinations converges to a point with functional value zero, the
+total weight on each remaining orbit must tend to zero. The unscaled
+orbit vectors are bounded, so their contribution disappears. The limit
+belongs to <span class="math inline">\(W\)</span>. If there are no
+remaining normals, the preceding construction already gives <span
+class="math inline">\(C=W\)</span>. Thus <span
+class="math inline">\(W\)</span> is exactly the lineality, and <span
+class="math inline">\(C/W\)</span> is pointed.</p>
+<p>If <span class="math inline">\(C\)</span> is polyhedral, the compact
+group on this pointed quotient permutes finitely many extreme rays.
+Normalize each ray to unit length in the quotient metric. The resulting
+finite set spans the cone’s linear span, so the action on that span is
+finite. Conversely, when every initial normal has finite orbit modulo
+<span class="math inline">\(W\)</span>, choose one actual representative
+for each projected image. Together with the finite generators for <span
+class="math inline">\(W\)</span>, these generate every actual normal,
+and their cone is closed. The polar argument supplies a finite word
+horizon. In the positive case one can synthesize the type by unfolding
+until a whole new layer follows from its predecessors and <span
+class="math inline">\(t\ge0\)</span>.</p>
+<p>A strictly positive written floor <span
+class="math inline">\(t\ge\tau&gt;0\)</span> changes the test in a
+simple way. It adds the normal <span
+class="math inline">\((0,\tau)\)</span>, while <span
+class="math inline">\(d=(0,-1)\)</span> is already present. The entire
+intercept axis is now lineality, so the existence of a greatest typing
+depends only on the measured normals and the fields. For one dense plane
+rotation, <span class="math inline">\(x\le1+t\)</span> has a greatest
+type on <span class="math inline">\(t\ge1\)</span> and lacks one on
+<span class="math inline">\(t\ge0\)</span>. At zero slack its semantic
+disk contains points with infinite observable orbit. <a
+href="thesis-review-60.html#criterion">Earlier positive-floor
+criterion</a></p>
+</section>
+<section id="unfolding" class="level2">
+<h2>Does the iteration itself derive the sign?</h2>
+<p>The constructor need not state <span
+class="math inline">\(t\ge0\)</span>. With that row omitted initially,
+<strong>raw guard unfolding stabilizes exactly when the criterion above
+succeeds and at least one written guard has <span
+class="math inline">\(f_{a_i}\in J\)</span></strong>. The second
+condition concerns an actual written guard, so <span
+class="math inline">\(d\)</span> alone does not count.</p>
+<p>Indeed finite word guards entail <span
+class="math inline">\(t\ge0\)</span> exactly when some nonzero
+nonnegative combination of their measured normals vanishes and the same
+combination of their intercepts is nonpositive. This is Farkas’ lemma
+applied to the finite, feasible system. The coefficient on <span
+class="math inline">\(t\)</span> is then strictly negative, since every
+gain is positive. In homogeneous notation the condition is a positive
+dependence among actual augmented normals and <span
+class="math inline">\(d\)</span>, with at least one actual guard
+assigned positive weight. Projecting that dependence to <span
+class="math inline">\(F\)</span> forces the relevant fixed projection
+into <span class="math inline">\(J\)</span>. Conversely any such guard
+belongs to <span class="math inline">\(W\)</span>, and its negative has
+a finite conic expression from actual normals and <span
+class="math inline">\(d\)</span>. This gives the required dependence.
+Once a finite prefix proves the sign, the finite word description from
+the criterion closes the iteration. If a prefix is already inductive, it
+implies every word guard and hence the sign.</p>
+<p>For example, let <span class="math inline">\(x\)</span> stay fixed,
+double <span class="math inline">\(t\)</span>, and require <span
+class="math inline">\(x\le1+t\)</span>. The greatest type is exactly
+<span class="math inline">\(t\ge0\)</span> and <span
+class="math inline">\(x\le1+t\)</span>. No finite prefix produces it
+from the written guard. At <span class="math inline">\(x=0\)</span>,
+take <span class="math inline">\(t=-2^{-(N+1)}\)</span>. Every word
+through length <span class="math inline">\(N\)</span> passes and a later
+word fails. An induction jump can insert the necessary sign immediately.
+Lean checks the finite positive-dependence implication and a
+negative-slack counterexample for every finite prefix of this example.
+The replay realizes all four combinations of the two tests. This is
+exact public unfolding for the specified field updates. Table 4.4 also
+makes choices of abduction and generalization that can change the
+sequence of predicates. <a href="thesis-review-64.lean">Lean sign and
+nonconvergence lemmas</a> · <a
+href="thesis-review-2.html#convergence">Bounded solutions and the
+feedback loop</a></p>
+</section>
+<section id="example" class="level2">
+<h2>The five-layer example and the signed extension</h2>
+<p>In the opening example the two fixed projections, in coordinates
+<span class="math inline">\((z,\lambda)\)</span>, are <span
+class="math inline">\((1,-1)\)</span> and <span
+class="math inline">\((-1,1)\)</span>. Together they generate a line.
+Both guards consequently enter <span class="math inline">\(W\)</span>,
+including their moving directions. Either guard alone leaves an infinite
+orbit in the pointed quotient. For the pair, coverage at zero slack
+reduces to <span class="math inline">\((x,y,z)=(0,0,1)\)</span>. Four
+layers are insufficient. At <span
+class="math inline">\((-11,-5,-5,1)\)</span> the guards through depth
+three hold. At depth four the second guard requires <span
+class="math inline">\(9456/625\le15\)</span>. InvarGenT checks the
+recursive scheme containing depths zero through four. With the recursive
+annotation removed and the same ten rows requested through a later
+alias, ordinary inference supplies a stronger six-inequality type. Both
+the binding and the alias exclude <span
+class="math inline">\((1,-1,1,1)\)</span>, which the written greatest
+scheme admits. This gives a concrete target for passing an exact
+unfolding certificate to the induction jump. Z3 verifies that those rows
+imply nonnegative slack as well as the next layer. A separate replay
+compares 45 two-guard systems with literal unfolding through sixteen
+layers. Twenty-nine reach closure with the sign available, and
+twenty-nine derive the sign. <a href="thesis-review-64.py">Independent
+unfolding and native replay</a></p>
+<p>For nonnegative gains with both neutral and expanding fields, decide
+greatest-type existence <strong>after</strong> restricting to the
+largest admissible subspace and saturating the neutral group. If a
+greatest reduced typing exists, closing its finitely many neutral
+translates produces an original typing containing it. This closure also
+satisfies the reduced problem, so greatestness forces equality.
+Conversely a greatest original typing contains every reduced one because
+each reduced typing has such a closure. In the remaining signed or
+contracting cases the finite-domain construction already computes the
+whole greatest polyhedral domain. The empty domain represents the case
+with no typable caller. The raw sign test above uses strictly expanding
+fields. <a href="thesis-review-63.html#neutral">Neutral reduction and
+signed domains</a></p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python3</span> thesis-review-64.py</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="ex">python3</span> thesis-review-64.py <span class="at">--compiler</span> /path/to/InvarGenT.native</span></code></pre></div>
+</section>
+</article>
+<script src="/assets/theme-toggle.js"></script>
+</body>
+</html>

@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <meta name="dcterms.date" content="2026-11-23">
+  <meta property="og:title" content="What if a recursive field preserves, contracts, or reverses slack?">
+  <meta property="og:url" content="https://lukstafi.github.io/projects/jca/agent-collab/thesis-review-63.html">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="lukstafi&#x27;s blog">
+  <meta name="twitter:card" content="summary">
+  <title>What if a recursive field preserves, contracts, or reverses
+slack?</title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <style type="text/css">
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="/assets/tufte.css">
+  <link rel="stylesheet" href="/assets/pandoc-tufte.css">
+  <link rel="stylesheet" href="/assets/site.css">
+  <script defer=""
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+  type="text/javascript"></script>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+  <script>(function(){var t=localStorage.getItem('theme-preference');if(t)document.documentElement.setAttribute('data-theme',t);})()</script>
+</head>
+<body>
+<nav class="site-nav">
+  <a href="/">Home</a> &middot; <a href="/study/">Study Guide</a> &middot; <a href="/about.html">About</a> &middot; <a href="https://lukstafi.substack.com">Substack</a>
+</nav>
+<div class="theme-toggle">
+  <button id="theme-btn" aria-label="Toggle dark mode">&#9788;</button>
+</div>
+<article>
+<header>
+<h1 class="title">What if a recursive field preserves, contracts, or
+reverses slack?</h1>
+<p class="byline">2026-11-23</p>
+</header>
+<nav id="TOC">
+<ul>
+<li><a href="#neutral" id="toc-neutral">Fields that leave slack
+unchanged</a></li>
+<li><a href="#signed" id="toc-signed">Any rational multiplier</a></li>
+<li><a href="#recognition" id="toc-recognition">Recognizing the class in
+the source coordinates</a></li>
+<li><a href="#compiler" id="toc-compiler">What the compiler
+exploits</a></li>
+</ul>
+</nav>
+<p>Let one recursive field rotate <span
+class="math inline">\((x,y)\)</span> through an angle of infinite order
+and leave <span class="math inline">\(t\)</span> fixed. Let a second
+field fix <span class="math inline">\((x,y)\)</span> and double <span
+class="math inline">\(t\)</span>. The guard is <span
+class="math inline">\(x\le1+t\)</span>. The caller <span
+class="math inline">\((1/4,0,20)\)</span> has ample room at every
+descendant. <strong>No polyhedral typing covers it.</strong> InvarGenT
+infers the greatest polyhedrally typable domain, <span
+class="math inline">\(x=y=0\)</span> and <span
+class="math inline">\(t\ge0\)</span>. Changing the first field to a
+sixth turn gives a different answer. The compiler now infers the entire
+growing hexagon, including its boundary.</p>
+<p>Allowing the rational multipliers of <span
+class="math inline">\(t\)</span> to vary freely still gives a decision
+for whole caller families. A reset, a sign change and an arbitrarily
+long sequence of slack-preserving steps have distinct effects. In most
+cases the construction computes the <strong>greatest polyhedrally
+typable domain</strong> outright. <a
+href="thesis-review-62.html#criterion">Expanding fields and the
+zero-slack face</a></p>
+<section id="neutral" class="level2">
+<h2>Fields that leave slack unchanged</h2>
+<p>Use rational indices <span class="math inline">\((y,t)\)</span> in
+the observable coordinates of the guards. The field <span
+class="math inline">\(e\)</span> acts by <span
+class="math inline">\((M_e y,r_e t)\)</span>, with every <span
+class="math inline">\(M_e\)</span> preserving a common positive
+quadratic form. A guard is <span class="math inline">\(b_i y\le
+c_i+t\)</span>. For recession directions replace <span
+class="math inline">\(c_i\)</span> by zero. First suppose <span
+class="math inline">\(r_e\ge1\)</span> for all fields, with both neutral
+fields (<span class="math inline">\(r_e=1\)</span>) and expanding fields
+(<span class="math inline">\(r_e&gt;1\)</span>).</p>
+<p>Let <span class="math inline">\(H\)</span> be the group generated by
+the neutral matrices. Compute the subspace <span
+class="math inline">\(L_H\)</span> of vectors with finite <span
+class="math inline">\(H\)</span>-orbit by the residue graph from the
+preceding note. Then compute the largest subspace <span
+class="math inline">\(U\subseteq L_H\)</span> preserved by
+<strong>all</strong> fields. If <span class="math inline">\(L_H\)</span>
+is given by row equations, close their span under right multiplication
+by every <span class="math inline">\(M_e\)</span> and take the common
+kernel. This takes at most <span class="math inline">\(\dim y\)</span>
+independent rows. <a href="thesis-review-62.html#finite">Finite-orbit
+subspace</a></p>
+<p>Every polyhedrally typable point has <span class="math inline">\(y\in
+U\)</span>, at <strong>any</strong> slack. Indeed, intersect its
+homogenized typing with the slice at the given <span
+class="math inline">\((t,\lambda)\)</span>. Every neutral word preserves
+this slice, and the compact closure of the neutral matrices acts onto
+it. Choose finitely many normals <span
+class="math inline">\(b_iM_w\)</span> spanning the observable row space.
+The word <span class="math inline">\(w\)</span> may include expanding
+fields. Its inequality bounds that normal by <span
+class="math inline">\(c_i\lambda+r_wt\)</span>, a constant on the slice.
+All neutral translates of this normal obey the same bound, since the
+neutral prefix leaves <span class="math inline">\(t\)</span> fixed. Fix
+the common fixed component of <span class="math inline">\(y\)</span>
+under <span class="math inline">\(H\)</span>. The centred normal orbits
+bound the remaining coordinates, so the slice is a bounded polyhedron on
+which <span class="math inline">\(H\)</span> permutes the vertices. Thus
+<span class="math inline">\(y\in L_H\)</span>. Every reachable image
+must satisfy this requirement, which gives <span
+class="math inline">\(y\in U\)</span>. <a
+href="thesis-review-62.html#necessity">Bounded-slice proof</a></p>
+<p>The second restriction can discard a caller whose <em>initial</em>
+neutral orbit is a singleton. A rotation fixes the <span
+class="math inline">\(z\)</span> axis. Take a second field that
+exchanges <span class="math inline">\(x\)</span> and <span
+class="math inline">\(z\)</span> and doubles <span
+class="math inline">\(t\)</span>, and keep the guard <span
+class="math inline">\(x\le1+t\)</span>. Starting at <span
+class="math inline">\((0,0,1,20)\)</span> is safe, since every measured
+vector has length one. The expanding field sends it to the rotating
+plane. This caller has no polyhedral typing.</p>
+<p>On <span class="math inline">\(U\)</span> the action of <span
+class="math inline">\(H\)</span> is finite. Every basis vector has a
+finite orbit, and a matrix is determined by its action on the basis.
+Enumerate the resulting finite group <span
+class="math inline">\(J\)</span>. For each original guard and <span
+class="math inline">\(h\in J\)</span> require <span
+class="math inline">\(b_i h y\le c_i+t\)</span>. For each expanding
+matrix <span class="math inline">\(M_e\)</span> include the combined
+field <span class="math inline">\((M_e h,r_e)\)</span> for every <span
+class="math inline">\(h\in J\)</span>. Apply the strictly expanding
+caller theorem on <span class="math inline">\(U\)</span> to these guards
+and fields. Any original typing satisfies the new obligations.
+Conversely, if the reduced problem has typing <span
+class="math inline">\(P\)</span>, take the closed convex hull of the
+finitely many <span class="math inline">\(hP\)</span>. Each neutral
+field permutes these copies. Each expanding field takes every copy back
+into <span class="math inline">\(P\)</span>. The strengthened guards
+cover every copy. This proves both directions for points, arbitrary
+closed polyhedral families and recession generators. If all fields are
+neutral, their finite action on <span class="math inline">\(L_H\)</span>
+directly gives the greatest polyhedral typing there, for either sign of
+<span class="math inline">\(t\)</span>. <a
+href="thesis-review-62.html#criterion">Expanding caller test</a> · <a
+href="thesis-review-63.py">Executable neutral reduction</a> · <a
+href="thesis-review-63.lean">Neutral saturation in Lean</a></p>
+</section>
+<section id="signed" class="level2">
+<h2>Any rational multiplier</h2>
+<p><strong>Theorem.</strong> For finitely many required isometric fields
+with rational <span class="math inline">\(r_e\)</span> of any sign or
+magnitude, a finite algorithm decides whether one closed rational
+polyhedral typing covers a given nonempty rational polyhedral caller
+family. Finite unions and private linear indices are allowed. The test
+first projects to the observable coordinates, including when some gain
+vanishes. All <span class="math inline">\(M_e\)</span> on these
+coordinates are invertible, even when the full field resets <span
+class="math inline">\(t\)</span> to zero.</p>
+<p>The neutral reduction handles all <span
+class="math inline">\(r_e\ge1\)</span>. For every other case write <span
+class="math inline">\(L\)</span> for the subspace of vectors with finite
+orbit under the <strong>full</strong> group of measured matrices. Each
+of the following arguments forces <span class="math inline">\(y\in
+L\)</span>.</p>
+<ul>
+<li>If some <span class="math inline">\(|r_e|&lt;1\)</span>, repeat that
+field. Along a subsequence its isometric part tends to the identity, and
+its slack tends to zero. A closed typing must contain <span
+class="math inline">\((y,0,\lambda)\)</span>. The zero-slack theorem now
+applies.</li>
+<li>If some <span class="math inline">\(|r_e|&gt;1\)</span> and some
+gain is negative, only <span class="math inline">\(t=0\)</span> is
+possible. Repeated use of a negative expanding field has a subsequence
+with slack tending to <span class="math inline">\(-\infty\)</span> from
+either nonzero sign. For a positive expanding field, apply a negative
+field first whenever a sign change is needed. The bounded measured part
+cannot meet any guard at arbitrarily negative slack.</li>
+<li>If all <span class="math inline">\(|r_e|=1\)</span>, fix <span
+class="math inline">\(\lambda\)</span> and intersect the typing with
+<span class="math inline">\(|t|\le T\)</span> for the chosen <span
+class="math inline">\(T=|t_0|\)</span>. Project this polyhedron onto
+<span class="math inline">\(y\)</span>. Every field preserves the
+projection, and every guard normal along every word has an upper bound
+<span class="math inline">\(c_i\lambda+T\)</span> on it. Fixing the
+common fixed component again gives a bounded polyhedron. Its vertices
+prove finite orbit.</li>
+</ul>
+<p>These cases cover the remaining rational gains. On <span
+class="math inline">\(L\)</span>, enumerate the finite group <span
+class="math inline">\(J\)</span> of measured actions. Its guards can now
+be written as finitely many homogeneous rows. The table gives the
+<strong>whole</strong> greatest polyhedrally typable domain there. Use
+<span class="math inline">\(\lambda=1\)</span> for public states and
+<span class="math inline">\(\lambda=0\)</span> for recession
+directions.</p>
+<table>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr>
+<th>Gains</th>
+<th>Domain on <span class="math inline">\(L\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Some <span class="math inline">\(|r_e|&gt;1\)</span> and some <span
+class="math inline">\(r_e&lt;0\)</span></td>
+<td><span class="math inline">\(t=0\)</span> and <span
+class="math inline">\(b_i g y\le c_i\lambda\)</span> for every guard
+<span class="math inline">\(i\)</span> and <span
+class="math inline">\(g\in J\)</span>.</td>
+</tr>
+<tr>
+<td>All <span class="math inline">\(r_e\ge0\)</span>, with an expansion
+and at least one gain below one</td>
+<td><span class="math inline">\(t\ge0\)</span> and <span
+class="math inline">\(b_i g y\le c_i\lambda\)</span> for every guard
+<span class="math inline">\(i\)</span> and <span
+class="math inline">\(g\in J\)</span>.</td>
+</tr>
+<tr>
+<td>All <span class="math inline">\(|r_e|\le1\)</span></td>
+<td>Use the signed word bounds below.</td>
+</tr>
+</tbody>
+</table>
+<p>In the second row, negative slack is impossible by repetition of the
+expanding field. At nonnegative slack the zero-slack guards are
+sufficient for every descendant. Necessity follows by reaching the
+zero-slack limit before applying any word.</p>
+<p>For the last row, a word with measured action <span
+class="math inline">\(g\)</span>, product sign <span
+class="math inline">\(s\)</span> and product magnitude <span
+class="math inline">\(q\)</span> requires <span
+class="math inline">\(b_i g y\le c_i\lambda+sqt\)</span>. Build the
+finite graph of pairs <span class="math inline">\((g,s)\)</span>,
+starting from <span class="math inline">\((I,+1)\)</span>. An edge with
+nonzero gain multiplies <span class="math inline">\(q\)</span> by <span
+class="math inline">\(|r_e|\le1\)</span>. For every reachable pair keep
+its largest <span class="math inline">\(q\)</span>. A simple path
+attains it, since removing a cycle can only increase the product.
+Equivalently use a shortest-path search with exact multiplicative costs
+<span class="math inline">\(1/|r_e|\)</span>. Retain the resulting guard
+for each pair.</p>
+<p>If a field contracts or resets, also retain the row with product zero
+for <em>every</em> <span class="math inline">\(g\in J\)</span>. Its
+measured action has finite order on <span
+class="math inline">\(L\)</span>, so powers returning to the identity
+can drive the product arbitrarily close to zero. A reset attains zero
+outright. Follow these powers by a word with the desired action <span
+class="math inline">\(g\)</span>. The limiting row is necessary by
+closedness. Every actual nonzero slope of the same sign lies between
+zero and the retained extremum, so both endpoint inequalities imply its
+guard at every <span class="math inline">\(t\)</span>. If all magnitudes
+equal one, the attainable signed slopes are already their own extrema.
+In each case the rows describe every word guard on the invariant
+subspace <span class="math inline">\(L\)</span>. Hence the domain they
+define is itself inductive. <a href="thesis-review-63.py">Exact
+enumeration and independent signed checks</a> · <a
+href="thesis-review-63.lean">Endpoint implication in Lean</a></p>
+</section>
+<section id="recognition" class="level2">
+<h2>Recognizing the class in the source coordinates</h2>
+<p>One can discard invisible dynamics <em>before</em> looking for a
+metric or a slack axis. For raw affine fields <span
+class="math inline">\(x\mapsto A_e x+d_e\)</span> and written guard
+normals <span class="math inline">\(a_i\)</span>, close the row span of
+the <span class="math inline">\(a_i\)</span> under the <span
+class="math inline">\(A_e\)</span> and write its basis as <span
+class="math inline">\(B\)</span>. A field induces <span
+class="math inline">\((BA_e)x+Bd_e\)</span> on <span
+class="math inline">\(Bx\)</span> and <span
+class="math inline">\(BA_e\)</span> factors through <span
+class="math inline">\(B\)</span>. All guards factor as well. Projection
+carries every typing to a typing of this observable system. Taking the
+inverse image lifts any such typing to the raw coordinates. The caller
+and its recession generators project by the same linear map. This
+argument permits arbitrary affine dynamics on the invisible directions.
+In the replay two hidden indices include a translation with no fixed
+point and an eigenvalue five, concealed by a change of basis. The full
+system has no common isometric frame. Its observable quotient admits one
+and decides the caller, including lineality in the hidden indices.</p>
+<p>On the observable quotient, look for a simultaneous rational affine
+change of coordinates to <span class="math inline">\((M_e y,r_e
+t)\)</span> and written guards with strictly positive slack allowance. A
+common fixed point is necessary and found by linear equations. Also
+<span class="math inline">\(|r_e|=|\det A_e|\)</span>.</p>
+<p>If some determinant has magnitude different from one, try both signs
+for that field’s scalar. In a valid frame its scalar eigenspace and left
+eigenspace are simple and pair nontrivially. This includes a zero
+eigenvalue at a reset. The two lines give a candidate slack axis and a
+complementary measured space. Check that every other field has the same
+right and left directions with matching scalar, that all guards can
+share the chosen slack orientation, and that a common positive rational
+metric exists on the complement.</p>
+<p>If all determinants have magnitude one, a candidate frame makes the
+full linear matrices isometries for a common positive metric. Compute
+such a rational <span class="math inline">\(Q\)</span> or reject.
+Enumerate the finitely many sign choices <span
+class="math inline">\(r_e\in\{1,-1\}\)</span>. In the corresponding
+joint eigenspace seek an axis <span class="math inline">\(u\)</span>
+with <span class="math inline">\(a_i u\le-1\)</span> for every written
+guard normal. This rational linear feasibility condition is equivalent
+to strict negativity by scaling. The <span
+class="math inline">\(Q\)</span>-orthogonal complement of <span
+class="math inline">\(u\)</span> is invariant. In particular an identity
+field can have many possible slack axes. Choosing the first vector in an
+eigenbasis would miss valid guard orientations. These checks decide
+recognition as well as caller coverage. <a
+href="thesis-review-62.html#frame">Metric test</a> · <a
+href="thesis-review-63.py">Signed affine recognizer</a></p>
+</section>
+<section id="compiler" class="level2">
+<h2>What the compiler exploits</h2>
+<p>For a direct recursive constructor InvarGenT can recover a rotation
+from one field, from the product of two reflections, or by composing a
+neutral turn with a separate expanding field. In the recovered plane, a
+rational rotation has infinite order exactly when its trace is outside
+<span class="math inline">\(\{-2,-1,0,1,2\}\)</span>. The same test on a
+pair of neutral reflections can detect an infinite neutral subgroup even
+though each reflection has order two.</p>
+<p>At a fixed <span class="math inline">\(t\)</span> the orbit of the
+recovered guard then bounds the whole measured plane of any invariant
+section. Every polyhedrally typable point must have both measured
+coordinates zero. The compiler retains those two equations, nonnegative
+slack, and the source guards, and checks the candidate on every actual
+field. These necessary conditions, once verified inductive, give the
+greatest polyhedrally typable domain. With finite neutral action and
+finite total orientation group, the least-gain search also admits edges
+of cost one. Orientations are visited once. <a
+href="https://github.com/lukstafi/invargent/commit/48178c0a73ad51f3e7fca7ff122ecdb018f42256">InvarGenT
+implementation</a></p>
+<p>The native replay checks three affinely reindexed programs. A single
+neutral turn of infinite order and a pair of neutral reflections each
+give exactly the slack axis. Each rejects the safe point with positive
+slack from the opening example. A neutral sixth turn gives its full
+hexagon. Z3 checks the exported domain in both directions, and two
+ordinary aliases reuse it. The general signed decision and recognition
+procedures run separately in Python. For the Table 4.4 feedback loop,
+the remaining question is how to choose among these verified jumps and
+ordinary abduction when neither answer covers the other. One can also
+decide whether a single greatest typing covers all the individually
+typable callers. <a href="thesis-review-64.html#test">Greatest-type
+criterion and finite unfolding</a> <a href="thesis-review-63.py">Source
+and replay</a></p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python3</span> thesis-review-63.py</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="ex">python3</span> thesis-review-63.py <span class="at">--compiler</span> /path/to/InvarGenT.native</span></code></pre></div>
+</section>
+</article>
+<script src="/assets/theme-toggle.js"></script>
+</body>
+</html>
