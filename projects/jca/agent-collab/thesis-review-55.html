@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <meta name="dcterms.date" content="2026-11-23">
+  <meta property="og:title" content="Which callers can a stronger inference procedure recover?">
+  <meta property="og:url" content="https://lukstafi.github.io/projects/jca/agent-collab/thesis-review-55.html">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="lukstafi&#x27;s blog">
+  <meta name="twitter:card" content="summary">
+  <title>Which callers can a stronger inference procedure
+recover?</title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <style type="text/css">
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="/assets/tufte.css">
+  <link rel="stylesheet" href="/assets/pandoc-tufte.css">
+  <link rel="stylesheet" href="/assets/site.css">
+  <script defer=""
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+  type="text/javascript"></script>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+  <script>(function(){var t=localStorage.getItem('theme-preference');if(t)document.documentElement.setAttribute('data-theme',t);})()</script>
+</head>
+<body>
+<nav class="site-nav">
+  <a href="/">Home</a> &middot; <a href="/study/">Study Guide</a> &middot; <a href="/about.html">About</a> &middot; <a href="https://lukstafi.substack.com">Substack</a>
+</nav>
+<div class="theme-toggle">
+  <button id="theme-btn" aria-label="Toggle dark mode">&#9788;</button>
+</div>
+<article>
+<header>
+<h1 class="title">Which callers can a stronger inference procedure
+recover?</h1>
+<p class="byline">2026-11-23</p>
+</header>
+<nav id="TOC">
+<ul>
+<li><a href="#guards" id="toc-guards">Improving a successful arithmetic
+answer</a></li>
+<li><a href="#split" id="toc-split">A caller cell that two keys must
+split</a></li>
+<li><a href="#keys" id="toc-keys">Constructing both supports</a></li>
+<li><a href="#values" id="toc-values">What a bound list value
+reveals</a></li>
+<li><a href="#programme" id="toc-programme">Generating the datatype a
+caller needs</a></li>
+<li><a href="#replay" id="toc-replay">Replaying the checks</a></li>
+</ul>
+</nav>
+<p>Three callers expose three different losses in inference. Two bounds
+on the same hidden number can justify a weaker function precondition
+than the first successful answer. Two package keys can jointly protect a
+caller even when neither key covers its entire branch. An ordinary list
+argument can carry a length fact that inference currently rediscovers
+only by a pattern match. The first example changes the native compiler.
+The other two have executable constructions.</p>
+<section id="guards" class="level2">
+<h2>Improving a successful arithmetic answer</h2>
+<p>A constructor hides a number <span class="math inline">\(x\)</span>
+and publishes indices <span class="math inline">\(i,j\)</span> with
+<span class="math inline">\(x\le i\)</span> and <span
+class="math inline">\(x\le j\)</span>. The function <code>check</code>
+compares the payload with a public cap <span
+class="math inline">\(z\)</span>. Its weakest safe guard is <span
+class="math inline">\(\min(i,j)\le z\)</span>. Choosing <span
+class="math inline">\(x=\min(i,j)\)</span> proves necessity. InvarGenT
+previously found <span class="math inline">\(j\le z\)</span> and
+stopped. It now infers the minimum and runs both calls at <span
+class="math inline">\((i,j,z)=(0,6,0)\)</span> and <span
+class="math inline">\((8,2,2)\)</span>. A call with payload 3 and cap 2
+is rejected. <a href="broader_guard.gadt">Program</a> · <a
+href="thesis-review-54.html#alternatives">Prior search</a></p>
+<p>The ordinary search records when a goal involving a private variable
+produces two distinct candidate inequalities. For an eligible successful
+definition, it replays inference. In the replay each candidate must
+independently prove the goal under the branch premises before the
+abducer can try their disjunction. All branch obligations still run. For
+instance, change the function to check a second payload with public
+index <span class="math inline">\(j\)</span> against the same cap. The
+call with payloads <span class="math inline">\((0,4)\)</span> and cap 0
+must now fail. It does. <a href="thesis-review-55-views.py">Native
+replay and controls</a></p>
+<p>The final comparison aligns the two schemes’ public input variables
+by their positions in identical first-order argument constructors. Every
+quantified variable must be determined there. The result type must agree
+under that alignment, including any dependency on an input. In rational
+arithmetic the old guard must imply the new guard and the converse must
+fail. This pass applies to unannotated nonrecursive functions with a
+previously inferred guard and no fresh result package. More than two
+alternatives, incomparable schemes, and improvements that change the
+result relationship are still open.</p>
+</section>
+<section id="split" class="level2">
+<h2>A caller cell that two keys must split</h2>
+<p>Give each input a neutral key. It can admit two extra keys on
+supports <span class="math inline">\(P\)</span> and <span
+class="math inline">\(Q\)</span>, each a conjunction of weak affine
+inequalities. A result opens at an input if every admitted key stores
+it. Suppose a nonempty region <span class="math inline">\(B\)</span>
+supplies one marked result and every caller in <span
+class="math inline">\(H\)</span> must exclude it. The neutral key stores
+the marker. Every extra key used to exclude it must miss <span
+class="math inline">\(B\)</span>. A solution therefore exists exactly
+when <span class="math inline">\(H\subseteq P\cup Q\)</span> and both
+supports miss <span class="math inline">\(B\)</span>. An unused extra
+key can be given empty support. Conversely, store the marker at the
+neutral key alone and permit every other result at every key. This
+constructs the package as well as its admissions. <a
+href="thesis-review-48.html#symbolic">Opening semantics</a></p>
+<p>The three caller cells are the tips <span
+class="math inline">\((-2,2),(2,2)\)</span> and the entire base segment
+<span class="math inline">\([-2,2]\times\{0\}\)</span>. Place the
+suppliers at <span class="math inline">\((0,1)\)</span> and <span
+class="math inline">\((0,2)\)</span>. The halfspaces <span
+class="math inline">\(P=\{x+y\le0\}\)</span> and <span
+class="math inline">\(Q=\{-x+y\le0\}\)</span> work. The left tip belongs
+to <span class="math inline">\(P\)</span> and the right tip to <span
+class="math inline">\(Q\)</span>. The base switches keys at zero. Any
+convex support containing both tips contains the supplier at their
+midpoint. Any support containing one tip and the entire base contains
+<span class="math inline">\((0,1)\)</span>, halfway to the opposite
+endpoint. Assigning a single key to each whole caller cell would reject
+this instance. <a href="thesis-review-55.lean">Lean proof</a></p>
+<figure>
+<img src="two-key-split.svg"
+alt="The left and right shaded halfspaces cover the base and one tip each. Both suppliers lie in the gap between them." />
+<figcaption aria-hidden="true">The left and right shaded halfspaces
+cover the base and one tip each. Both suppliers lie in the gap between
+them.</figcaption>
+</figure>
+<p>Even a single straight cut through each caller cell can be too
+restrictive. Take the diamond <span
+class="math inline">\(|x|+|y|\le4\)</span> and two more callers at <span
+class="math inline">\((12,0)\)</span> and <span
+class="math inline">\((0,12)\)</span>. Put suppliers at <span
+class="math inline">\((6,6),(3,3),(-3,3),(3,-3)\)</span>. The strips
+<span class="math inline">\(|x|\le2\)</span> and <span
+class="math inline">\(|y|\le2\)</span> cover every caller and avoid
+every supplier. In <em>any</em> two-key solution the two outer tips need
+different keys because their midpoint is <span
+class="math inline">\((6,6)\)</span>. Each horizontal vertex of the
+diamond needs the horizontal tip’s key. One quarter of the way from that
+vertex to the vertical tip is the supplier <span
+class="math inline">\((3,3)\)</span> or <span
+class="math inline">\((-3,3)\)</span>. The same argument forces the
+diamond’s two vertical vertices onto the other key. A line separating
+the two keys’ portions of the diamond would therefore weakly separate
+the horizontal vertex pair from the vertical pair. For a cut <span
+class="math inline">\(ax+by=c\)</span> this forces <span
+class="math inline">\(4|a|\le c\le-4|b|\)</span>, hence <span
+class="math inline">\(a=b=0\)</span>. The two-key search must allow a
+more general division even inside this single bounded cell. <a
+href="thesis-review-55.py">Strip certificate</a> · <a
+href="thesis-review-55.lean">Lean proofs <code>forced_axes</code> and
+<code>cannot_cut_diamond</code></a></p>
+<figure>
+<img src="two-key-diamond.svg"
+alt="The horizontal and vertical strips cover the hatched diamond and the two caller tips. Suppliers at the crosses force the two pairs of opposite diamond vertices onto different keys." />
+<figcaption aria-hidden="true">The horizontal and vertical strips cover
+the hatched diamond and the two caller tips. Suppliers at the crosses
+force the two pairs of opposite diamond vertices onto different
+keys.</figcaption>
+</figure>
+</section>
+<section id="keys" class="level2">
+<h2>Constructing both supports</h2>
+<p>Let <span class="math inline">\(H=\bigcup_i H_i\)</span> and <span
+class="math inline">\(B=\bigcup_{j=1}^m B_j\)</span> be finite unions of
+nonempty closed rational polyhedra. A cell can be given by weak
+inequalities, as it is in a clause, or by finitely many generating
+points and recession rays. A line can use both opposite rays. Work first
+over the reals. With empty <span class="math inline">\(B\)</span> the
+whole space is available. Otherwise <strong>two supports, if feasible,
+need at most <span class="math inline">\(2m\)</span> inequalities in
+total</strong>.</p>
+<p>For each key <span class="math inline">\(a\)</span> and supplier cell
+<span class="math inline">\(B_j\)</span>, seek an affine form <span
+class="math inline">\(f_{aj}\)</span> that is at most zero throughout
+<span class="math inline">\(B_j\)</span>. Define key <span
+class="math inline">\(a\)</span> by the inequalities <span
+class="math inline">\(f_{aj}\ge1\)</span> for every <span
+class="math inline">\(j\)</span>. To see that these suffice, start with
+any successful supports. Farkas’ lemma separates each nonempty support
+from each disjoint supplier polyhedron with a positive gap, which can be
+scaled to one. An empty support may use zero forms. Intersecting the new
+halfspaces for a key preserves all its old callers and still excludes
+every supplier. <a
+href="https://people.math.carleton.ca/~kcheung/math/notes/MATH3801/04/4_1_farkas_lemma.html">Polyhedral
+separation certificate</a></p>
+<p>For a caller <span class="math inline">\(x\)</span>, membership in
+either complete support is equivalent to <span
+class="math inline">\(f_{1j}(x)\ge1\)</span> or <span
+class="math inline">\(f_{2k}(x)\ge1\)</span> for <strong>every</strong>
+pair <span class="math inline">\((j,k)\)</span>. If membership fails for
+both keys, one failed inequality from each supplies a counterexample
+pair. Fix one pair and one caller cell <span
+class="math inline">\(H_i\)</span>. The pair condition holds on the
+whole cell iff there is a single <span
+class="math inline">\(t\in[0,1]\)</span> such that <span
+class="math display">\[
+t f_{1j}(x)+(1-t)f_{2k}(x)\ \ge\ 1\qquad(x\in H_i).
+\]</span> Indeed, the affine image of <span
+class="math inline">\(H_i\)</span> under the two forms is convex. The
+pair condition says that this image misses the open quadrant <span
+class="math inline">\((-\infty,1)^2\)</span>. A separating normal has
+nonnegative coordinates because the quadrant extends downward in both
+directions. Normalize their sum to one. The supremum on the quadrant is
+then one, yielding the displayed inequality. Conversely, if both forms
+were below one, their mixture would be too. The weight may differ
+between pairs and cells. <a
+href="https://web.stanford.edu/~boyd/cvxbook/bv_cvxbook.pdf">Separation
+theorem in §2.5.1</a> · <a href="thesis-review-55.lean">Lean checks for
+distribution and mixture</a></p>
+<p>Check the mixture on each generating point and its linear part on
+each ray. Check the supplier inequalities the same way with signs
+reversed. For a cell given directly by <span class="math inline">\(Mx\le
+d\)</span>, impose any required upper bound <span
+class="math inline">\(a\cdot x+b\le0\)</span> by introducing <span
+class="math inline">\(u\ge0\)</span> with <span
+class="math inline">\(u^TM=a^T\)</span> and <span
+class="math inline">\(u^Td\le-b\)</span>. This is exact by Farkas’ lemma
+for a nonempty cell. The caller’s mixture is handled by giving <span
+class="math inline">\(1\)</span> minus the mixture as the row to bound
+by zero. Thus either input representation gives a polynomial-size
+existential real system for two keys, without converting between
+representations. The products of weights and face coefficients make it
+bilinear. Real feasibility is decidable. The size estimate concerns the
+formula, without a running-time or coefficient-bit bound.</p>
+<p><strong>When all caller cells are bounded, real feasibility is
+equivalent to existence of rational supports.</strong> Double every face
+of a real solution. At a covered point all faces of at least one key now
+reach two. The coefficient vectors valid at level zero on a given
+supplier form a rational polyhedral cone, so rational vectors are dense
+in it. Approximate each doubled face inside its own cone. The union of
+caller cells is compact, so sufficiently close approximations change
+every value there by less than one. Each caller retains a key and each
+supplier remains excluded. Given an algebraic model one can shrink
+rational boxes around its doubled faces, solve rational linear systems
+inside the cones and check the resulting supports against the original
+coverage and exclusion obligations. This terminates under the
+bounded-caller hypothesis, including for unbounded suppliers. For
+rational faces, counterexamples to these obligations are linear systems
+over rational data, so checking them over the reals also checks rational
+inputs. <a href="thesis-review-55.py">Solver and independent linear
+certificate check</a> · <a
+href="https://theory.stanford.edu/~nikolaj/programmingz3.html">Z3’s real
+arithmetic procedures</a></p>
+<p>The same proof works for <span class="math inline">\(k\)</span> extra
+keys. Distribute coverage over all <span
+class="math inline">\(m^k\)</span> ways to choose one face from each
+key. For each choice and each caller cell, separate its image in <span
+class="math inline">\(\mathbb R^k\)</span> from <span
+class="math inline">\((-\infty,1)^k\)</span>. The normalized separating
+normal is now a vector of <span class="math inline">\(k\)</span>
+nonnegative weights summing to one. This uses at most <span
+class="math inline">\(km\)</span> faces. The compactness argument for
+rational reconstruction is unchanged. The replay includes three disjoint
+caller intervals separated by two suppliers. It rejects two keys and
+constructs three. <a href="thesis-review-55.py">Fixed-budget
+synthesis</a></p>
+<p>For unbounded caller cells the real criterion still applies, and each
+proposed rational answer can still be checked. Uniform rational
+reconstruction in higher dimensions remains open here. On the line,
+first reject any intersection of <span class="math inline">\(H\)</span>
+and <span class="math inline">\(B\)</span>. Each remaining connected gap
+of the complement of <span class="math inline">\(B\)</span> that meets
+<span class="math inline">\(H\)</span> needs its own interval key. The
+interval hull of the caller pieces in that gap suffices because it joins
+finitely many closed intervals with rational finite endpoints. The
+replay checks 360 one- and two-key decisions against the gap count, as
+well as examples with rays. The construction treats an explicitly given
+marker supplier. Inferring such regions from recursive suppliers and
+feeding the resulting certificate into InvarGenT’s induction jump remain
+separate problems.</p>
+</section>
+<section id="values" class="level2">
+<h2>What a bound list value reveals</h2>
+<p>Apply the candidate-elimination method of Flanagan and Leino’s
+Houdini to datatype constructors. Start with a finite pool of proposed
+index facts for each datatype. At each constructor, assume its guard and
+the current facts for its immediate inductive fields. Remove every
+candidate that those premises fail to imply for the result. A failed
+candidate cannot belong to any jointly inductive subset of the current
+pool. Its counterexample still satisfies the weaker child assumptions of
+that subset. Consequently every inductive subset survives every pass.
+After at most one deletion per original candidate the surviving set is
+itself inductive and contains all the others. Induction on finite
+constructor values proves the surviving facts, including for mutually
+recursive declarations. A foreign producer must supply values satisfying
+the same contract. <a
+href="https://fastpl.doc.ic.ac.uk/SoftwareReliability/2016-2017/papers/Houdini.pdf">Flanagan
+and Leino, §3</a> · <a href="thesis-review-55.lean">Pruning and
+structural induction in Lean</a> · <a
+href="thesis-review-55-views.py">Executable template elimination</a></p>
+<p>For a list with indices <span class="math inline">\(0\)</span> and
+<span class="math inline">\(n+1\)</span>, this procedure retains <span
+class="math inline">\(n\ge0\)</span>. Adding a <code>Debt</code>
+constructor at <span class="math inline">\(-1\)</span> eliminates it.
+For mutually recursive even- and odd-length datatypes the same
+calculation retains the respective lower bounds zero and one. The list
+elaboration emits an identity function with the following existential
+result.</p>
+<pre class="text"><code>view : ∀a,n. List(a,n) → ∃k[k=n ∧ 0≤k]. List(a,k)</code></pre>
+<p>Opening <code>view l</code> at the second argument of the short
+<code>append</code> exposes the fact about that particular value.
+InvarGenT then infers <span
+class="math inline">\(\mathrm{List}(a,k)\to\mathrm{List}(a,n)\to\mathrm{List}(a,n+k)\)</span>
+with no input guard. The calls on two empty lists and on two singleton
+lists both run. If the cons constructor already requires a nonnegative
+tail index, the generated view inspects only the outer constructor.
+Remove that guard and a shallow view acquires an input precondition. The
+generator instead opens the tail’s view in the cons branch. The
+induction hypothesis recovers the same unrestricted interface. Both
+helpers return the original list. The recursive helper can traverse its
+spine each time a binding opens it. With the constructor guard removed,
+plain <code>append</code> already accepts all lengths. In that variant
+recursion is needed to export the nonnegativity fact itself. The
+prototype targets a designated list binding. General placement and
+erasure of such evidence in the compiler remain open. <a
+href="constructor_value_view.gadt">Checked program</a> · <a
+href="thesis-review-55-views.py">Generator and native comparisons</a> ·
+<a
+href="thesis-review-1.html#what-a-variable-pattern-knows-about-list-length">Thesis
+§5.2.2 example</a></p>
+</section>
+<section id="programme" class="level2">
+<h2>Generating the datatype a caller needs</h2>
+<p>The list view expresses a fact about an existing datatype. A
+unique-mark tree search goes a step further. The caller needs a path to
+a mark and evidence that every sibling along that path is empty. Five
+constructors generated from a supplied finite classification of the
+search results express these facts. Lean proves that the resulting
+family is inhabited exactly on trees where the search returns a path.
+InvarGenT can then infer an existential that pairs a tree and its
+evidence at a common hidden index. Deriving the classification from the
+program, and determining when a comparison between siblings needs richer
+evidence, belong to the separate refined-datatype programme. <a
+href="refined-datatypes/index.html">Construction, proofs and research
+programme</a></p>
+</section>
+<section id="replay" class="level2">
+<h2>Replaying the checks</h2>
+<p>The Python drivers require <code>z3-solver</code>. From this
+directory, run the following commands with OCaml on the path. The second
+driver compiles the inferred clients, runs their OCaml output, and
+checks the rejection controls.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python3</span> thesis-review-55.py</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="ex">python3</span> thesis-review-55-views.py <span class="at">--compiler</span> /path/to/InvarGenT.native</span></code></pre></div>
+<p>Lean 4.19 with mathlib checks the propositional distribution, the
+sufficient mixture inequality, both geometric obstructions and the
+constructor-induction arguments. The separation and
+rational-reconstruction proofs are given above. The research replays use
+temporary compatibility builds of InvarGenT revision
+<code>5bea865</code> for OCaml 5.3.0 and 5.5.1. The full 5.3.0 suite
+passed all 390 active tests, with ten existing TODOs. All 200 previously
+generated example signatures match the preceding revision byte for byte.
+<a href="thesis-review-55.lean">Lean companion</a> · <a
+href="refined-datatypes/replay.py">Branching example replay</a></p>
+</section>
+</article>
+<script src="/assets/theme-toggle.js"></script>
+</body>
+</html>

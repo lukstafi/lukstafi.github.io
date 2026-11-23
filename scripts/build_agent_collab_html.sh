@@ -534,6 +534,16 @@ build_html \
   "$collab_dir/thesis-review-54.html" \
   "What can arithmetic abduction gain by combining premises?"
 
+build_html \
+  "$collab_dir/thesis-review-55.md" \
+  "$collab_dir/thesis-review-55.html" \
+  "Which callers can a stronger inference procedure recover?"
+
+build_html \
+  "$collab_dir/refined-datatypes/README.md" \
+  "$collab_dir/refined-datatypes/index.html" \
+  "Synthesizing datatypes for the successful inputs of an algorithm"
+
 reviews_dir="$collab_dir/reviews"
 if [[ -d "$reviews_dir" ]]; then
   for md_file in "$reviews_dir"/*.md; do

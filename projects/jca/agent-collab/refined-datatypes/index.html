@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <meta property="og:title" content="Synthesizing datatypes for the successful inputs of an algorithm">
+  <meta property="og:url" content="https://lukstafi.github.io/projects/jca/agent-collab/refined-datatypes/index.html">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="lukstafi&#x27;s blog">
+  <meta name="twitter:card" content="summary">
+  <title>Synthesizing datatypes for the successful inputs of an
+algorithm</title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <style type="text/css">
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="/assets/tufte.css">
+  <link rel="stylesheet" href="/assets/pandoc-tufte.css">
+  <link rel="stylesheet" href="/assets/site.css">
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+  <script>(function(){var t=localStorage.getItem('theme-preference');if(t)document.documentElement.setAttribute('data-theme',t);})()</script>
+</head>
+<body>
+<nav class="site-nav">
+  <a href="/">Home</a> &middot; <a href="/study/">Study Guide</a> &middot; <a href="/about.html">About</a> &middot; <a href="https://lukstafi.substack.com">Substack</a>
+</nav>
+<div class="theme-toggle">
+  <button id="theme-btn" aria-label="Toggle dark mode">&#9788;</button>
+</div>
+<article>
+<nav id="TOC">
+<ul>
+<li><a
+href="#synthesizing-datatypes-for-the-successful-inputs-of-an-algorithm"
+id="toc-synthesizing-datatypes-for-the-successful-inputs-of-an-algorithm">Synthesizing
+datatypes for the successful inputs of an algorithm</a>
+<ul>
+<li><a href="#where-the-new-datatype-enters"
+id="toc-where-the-new-datatype-enters">Where the new datatype
+enters</a></li>
+<li><a href="#first-result-locating-a-unique-mark"
+id="toc-first-result-locating-a-unique-mark">First result — locating a
+unique mark</a></li>
+<li><a href="#what-the-invargent-run-establishes"
+id="toc-what-the-invargent-run-establishes">What the InvarGenT run
+establishes</a></li>
+<li><a href="#relation-to-existing-constructions"
+id="toc-relation-to-existing-constructions">Relation to existing
+constructions</a></li>
+<li><a href="#what-changes-if-a-branch-tests-sibling-equality"
+id="toc-what-changes-if-a-branch-tests-sibling-equality">What changes if
+a branch tests sibling equality?</a></li>
+<li><a href="#research-programme" id="toc-research-programme">Research
+programme</a></li>
+<li><a href="#replay" id="toc-replay">Replay</a></li>
+</ul></li>
+</ul>
+</nav>
+<section
+id="synthesizing-datatypes-for-the-successful-inputs-of-an-algorithm"
+class="level1">
+<h1>Synthesizing datatypes for the successful inputs of an
+algorithm</h1>
+<p>A tree search can return the path to its unique marked leaf. What
+type should a caller supply if it needs a path on every call? A path to
+a mark certifies existence. Uniqueness also requires a fact about every
+sibling the path passes. In this directory five constructors express
+both facts. A generator obtains their types from the search’s
+transitions. Lean checks that the resulting family is inhabited on
+exactly the successful inputs. <a href="Search.lean">Search</a> · <a
+href="replay.py">Generator</a> · <a href="Unique.lean">Proof</a></p>
+<section id="where-the-new-datatype-enters" class="level2">
+<h2>Where the new datatype enters</h2>
+<p>InvarGenT can infer an existential result when different branches
+produce values with different private type indices. A caller opening
+such a package can use relationships among its components. For example,
+two values may share the same hidden type. This inference works over a
+vocabulary of declared datatypes. Review 53 shows what happens when a
+recursive caller needs a property outside its finite equational guard
+language. On unary inputs, finite Boolean combinations of patterns are
+eventually constant in depth. Even depth needs a recursive definition.
+Review 53 supplies one by turning the accepting base cases and successor
+transitions of a finite machine into constructors of an indexed proof.
+<a href="../thesis-review-51.md">Inferred packages in review 51</a> · <a
+href="../thesis-review-53.md">Unary evidence in review 53</a> · <a
+href="../../lukstafi-phd-thesis.pdf">InvarGenT thesis</a></p>
+<p>The research question is how to obtain that vocabulary from the
+computation. In review 53 a parent passes a control state down to its
+child. Here each child returns a summary and the parent combines two
+summaries. The summary needed to decide success is finite even though
+the path returned on success has unbounded length.</p>
+</section>
+<section id="first-result-locating-a-unique-mark" class="level2">
+<h2>First result — locating a unique mark</h2>
+<p>The input is a finite ordered tree with two kinds of leaf,
+<code>Clear</code> and <code>Mark</code>, and a binary
+<code>Fork</code>. The search returns <code>zero</code> at a clear leaf
+and <code>hit(here)</code> at a mark. A fork with one hit and one empty
+child prefixes the path with the direction of the hit. Two empty
+children give <code>zero</code>. Two hits give <code>many</code>, as
+does either child already reporting <code>many</code>. Only a hit counts
+as success at the root. For example, on
+<code>Fork(Fork(Clear, Mark), Clear)</code> the answer is left, then
+right.</p>
+<p>Write <code>one</code> for the tag of any hit. Lean proves that the
+parent tag depends only on the two child tags. The generator can
+therefore run the actual combining function on one representative per
+tag, using <code>hit(here)</code> for every hit. It reads both leaf
+outcomes and all nine fork outcomes. Every row producing
+<code>many</code> can be dropped because that tag persists in every
+enclosing tree. An empty subtree, in contrast, can be the sibling of a
+hit. Its evidence must survive. <a href="Search.lean">Proofs
+<code>step_exact</code> and <code>many_absorbs</code>, and transition
+enumeration</a></p>
+<table>
+<thead>
+<tr>
+<th>Input</th>
+<th>Child evidence, in order</th>
+<th>Parent evidence</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Clear</code></td>
+<td>—</td>
+<td><code>E(zero, Clear)</code></td>
+</tr>
+<tr>
+<td><code>Mark</code></td>
+<td>—</td>
+<td><code>E(one, Mark)</code></td>
+</tr>
+<tr>
+<td><code>Fork(l,r)</code></td>
+<td><code>E(zero,l)</code>, <code>E(zero,r)</code></td>
+<td><code>E(zero, Fork(l,r))</code></td>
+</tr>
+<tr>
+<td><code>Fork(l,r)</code></td>
+<td><code>E(zero,l)</code>, <code>E(one,r)</code></td>
+<td><code>E(one, Fork(l,r))</code></td>
+</tr>
+<tr>
+<td><code>Fork(l,r)</code></td>
+<td><code>E(one,l)</code>, <code>E(zero,r)</code></td>
+<td><code>E(one, Fork(l,r))</code></td>
+</tr>
+</tbody>
+</table>
+<p>Each row becomes one constructor. Its first index names a state. Its
+second describes the entire labelled input tree. Fresh variables
+<code>l</code> and <code>r</code> in a fork preserve the identity and
+order of its children. The generator emits both the Lean family and the
+InvarGenT declaration from those same rows. The two emitted sections are
+checked on every replay. <a href="unique.gadt">Generated constructors
+and consumer</a> · <a href="replay.py">Generator</a></p>
+<p><strong>For every finite tree <code>t</code>, the following three
+statements are equivalent.</strong></p>
+<ol type="1">
+<li>There is a finite constructor value of type
+<code>Evidence(one,t)</code>.</li>
+<li>The search on <code>t</code> returns a path.</li>
+<li>The number of marked leaves in <code>t</code> is one.</li>
+</ol>
+<p>For soundness, read a witness from its root. A fork witness supplies
+evidence that the sibling is empty as well as evidence for the child
+containing the mark. Induction on the witness gives the exact path the
+search returns. Following it in the original tree reaches a mark. For
+completeness, recurse on the tree. Each child search supplies the
+evidence appropriate to its outcome. When the parent returns a hit or
+zero, its transition identifies the constructor to apply. A separate
+induction adds the child mark counts and relates the result to each of
+the three search outcomes. These arguments cover trees of arbitrary
+finite depth. <a href="Unique.lean">Lean definitions and proofs
+<code>certify</code>, <code>sound</code>, <code>route_hits</code>,
+<code>unique_iff</code>, <code>empty_iff</code> and
+<code>exactly_one</code></a></p>
+<p>The three tags are necessary for a total deterministic bottom-up
+recognizer of success. Take a clear leaf, a marked leaf and a fork with
+two marks. At the root only the marked leaf succeeds. Placing each of
+the other two trees in the hole of <code>Fork(□,Mark)</code> accepts the
+clear leaf and rejects the two-mark fork. Thus every pair has a
+distinguishing context. Three is a bound on <em>control states</em>. The
+path and the recursive proof can both grow with the input.</p>
+</section>
+<section id="what-the-invargent-run-establishes" class="level2">
+<h2>What the InvarGenT run establishes</h2>
+<p>The consumer has the written interface
+<code>∀a. Evidence(One,a) → Tree a → Path</code>. It follows the branch
+selected by the proof and returns an ordinary path. Its caller supplies
+an explicit constructor value. On an already certified tree the consumer
+follows only the path, whereas certifying an arbitrary tree may require
+inspecting every node. This distinction matters if a tree is certified
+once and handed to several clients. <a href="unique.gadt">Consumer
+<code>locate</code></a></p>
+<p>The producer <code>choose</code> has two branches with different tree
+shapes. Each branch explicitly builds its tree and proof. Its result
+type is unwritten. InvarGenT infers</p>
+<pre class="text"><code>val choose : Bool → ∃a.(Tree a, Evidence (One, a))</code></pre>
+<p>Opening one result yields precisely the common index
+<code>locate</code> needs. The replay checks the inferred scheme and
+executes both branches in generated OCaml. It also checks three type
+rejections. Swapping the leaves makes a valid proof refer to a different
+one-mark tree. Supplying two mark witnesses prevents construction of the
+claimed one-mark proof. Finally, opening two packages independently
+gives the caller no equality between their private shapes. That client
+fails even though each package individually contains a valid proof. <a
+href="unique.gadt">Runnable source</a> · <a href="replay.py">Compiler
+controls</a></p>
+<p>The finite-state abstraction and the consumer are supplied in this
+experiment. Constructor generation is automatic once the tag map and its
+transition law are available. Lean’s <code>certify</code> builds
+evidence for an arbitrary tree by structural recursion. The two
+InvarGenT producer branches show existential inference over that new
+vocabulary. Recovering a suitable abstraction from source code and
+inserting a call to a certifier at an ordinary program boundary are
+further synthesis problems.</p>
+</section>
+<section id="relation-to-existing-constructions" class="level2">
+<h2>Relation to existing constructions</h2>
+<ul>
+<li><strong>Indexed GADTs.</strong> Matching a constructor can refine an
+index in the branch that handles it. Xi, Chen and Chen’s type
+representations tie a runtime witness to the type it represents. Here
+matching a witness for a fork exposes the exact child indices as well as
+their control states. Generating those declarations makes this
+established mechanism available to a new consumer. <a
+href="https://www.cs.bu.edu/~hwxi/atslangweb/MYDATA/GRDT-popl03.pdf">Xi,
+Chen and Chen, <em>Guarded Recursive Datatype Constructors</em></a></li>
+<li><strong>Finite tree automata.</strong> For a ranked constructor
+<code>f</code> of arity <code>k</code>, turn the transition
+<code>f(q₁,…,qₖ) → q</code> into a constructor taking one
+<code>E(qᵢ,xᵢ)</code> per child and returning
+<code>E(q,f(x₁,…,xₖ))</code>. Distinct variables make the child indices
+independent. A finite constructor value spells out an automaton run, and
+every accepting run builds such a value by induction. Forget the input
+index and the rules are a regular tree grammar, one nonterminal per
+state. Determinism gives a unique run for a fixed tree. A
+nondeterministic machine may give several witnesses, which matters to a
+consumer that computes with them. <a
+href="https://inria.hal.science/hal-03367725">Comon et al., <em>Tree
+Automata Techniques and Applications</em>, chapters 1–2</a></li>
+<li><strong>Datatype refinement.</strong> Freeman and Pfenning let the
+programmer specify recursive subclasses of an ML datatype and infer
+types using those distinctions. The <code>zero</code> and
+<code>one</code> rows above could be read as two such subclasses of the
+same tree datatype. Jones and Ramsay infer constructor restrictions for
+pattern-match safety. Here the requested output is a recursive witness
+family whose elimination computes a path and whose index can be shared
+through an existential package. An evaluation should measure both the
+accepted input language and what a client can recover on opening the
+result. <a href="https://www.cs.cmu.edu/~fp/papers/pldi91.pdf">Freeman
+and Pfenning, <em>Refinement Types for ML</em></a> · <a
+href="https://arxiv.org/abs/2008.01452">Jones and Ramsay,
+<em>Intensional Datatype Refinement</em></a></li>
+</ul>
+</section>
+<section id="what-changes-if-a-branch-tests-sibling-equality"
+class="level2">
+<h2>What changes if a branch tests sibling equality?</h2>
+<p>Consider a second algorithm that accepts <code>Fork(l,r)</code>
+exactly when <code>l = r</code>, over the same free algebra of finite
+labelled trees. Any deterministic bottom-up state assignment to
+recognize this diagonal must distinguish every pair of different trees.
+If <code>s</code> and <code>t</code> had the same state, the parent
+would receive the same pair of states on <code>Fork(s,s)</code> and
+<code>Fork(s,t)</code>. The first must succeed and the second must fail.
+There are infinitely many trees, so no finite assignment suffices.
+Determinization extends the obstruction to ordinary nondeterministic
+finite tree automata. Comparing the two finite <em>tags</em> in the
+unique-mark search poses no such problem. <a href="Unique.lean">Lean
+lemma <code>diagonal_separates</code></a> · <a
+href="https://inria.hal.science/hal-03367725">Tree automata with sibling
+constraints, §4.3</a></p>
+<p>A GADT can still express the diagonal by repeating the index, for
+example <code>Twin : ∀a. Tree a → EqualFork(Fork(a,a))</code>. A client
+holding <code>Tree(Fork(l,r))</code> can pair it with this witness only
+when the indices agree. On an unknown input, a certifier must establish
+that agreement, for example by structural comparison returning an
+equality witness. In this example the index records every leaf tag, so
+equal indices describe equal trees. Adding an unindexed payload would
+restrict this technique to equality of the indexed shape. Equality of
+payloads would need its own representation or comparison evidence. A
+sibling-equality transition belongs to a studied constrained automaton
+model with decidable emptiness. That model needs its own decision
+procedure. <a href="../compare_term_indices.gadt">Review 52’s indexed
+comparison</a> · <a href="https://inria.hal.science/hal-03367725">Comon
+et al., §4.3.1–3</a></p>
+</section>
+<section id="research-programme" class="level2">
+<h2>Research programme</h2>
+<ol type="1">
+<li><strong>Extract the finite observations from source.</strong> Start
+with pure, terminating structural folds whose clauses inspect their
+child results by pattern matching. Use the tested result constructors as
+candidate states. Check for each input constructor that equal child tags
+imply equal parent tags for all payloads. The path payload here is a
+positive control. A branch that accepts only equal-height child trees is
+a counterexample to an abstraction retaining just their root tags.
+Deliver either a validated transition table or two argument tuples that
+the proposed tags conflate. Restrict the first extractor to a finite
+pattern fragment in which these obligations are decidable.</li>
+<li><strong>Synthesize the interface for a client observation.</strong>
+Mark the accepting states for the question the caller asks. Remove
+unreachable states and states from which no accepting context is
+reachable. Minimize a completed deterministic automaton by
+distinguishability in contexts. Measure state count, constructor count,
+and which indices the client must share. For unique mark, the two
+distinguishing contexts above give an independent minimality check. If a
+consumer returns data, check its output separately. Merging states that
+agree on success can discard information used to compute the
+result.</li>
+<li><strong>Elaborate producers and consumers.</strong> For the
+validated fragment, generate a structural certifier and prove that
+erasing its evidence preserves the source verdict and observable result.
+An indexed input <code>Tree a</code> should keep its public
+<code>a</code> on success. A producer starting with an unindexed tree
+can reify the shape and return an optional
+<code>∃a.(Tree a, Evidence(One,a))</code>. Test that these interfaces
+compose with existing existential inference, that mismatched trees still
+fail to type-check, and that a typed caller can reuse the proof. Compare
+separate proof construction with construction fused into the original
+traversal.</li>
+<li><strong>Admit equality at a stated boundary.</strong> Begin with
+structural equality between immediate children whose full labelled trees
+are reflected in the indices. Generate a nonlinear result index and an
+equality-producing comparison. Use the diagonal as the first test, then
+add a payload omitted from the index as the rejection control. The proof
+obligation is equivalence to the source comparison. Report separately
+the cost of checking one given tree and the decision problem of whether
+<em>any</em> tree inhabits the generated family.</li>
+</ol>
+</section>
+<section id="replay" class="level2">
+<h2>Replay</h2>
+<p>From this directory, with Python 3 and Lean 4.19 on the path, run</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python3</span> replay.py</span></code></pre></div>
+<p>For the package, path and rejection checks, also put OCaml on the
+path and supply an InvarGenT executable.</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python3</span> replay.py <span class="at">--compiler</span> /path/to/InvarGenT.native</span></code></pre></div>
+<p>The full replay passed with Lean 4.19.0, OCaml 5.5.1 and the local
+review 54 InvarGenT compatibility build (<code>jointdecl5455</code>). It
+checked five constructors, the existential scheme above, paths at the
+root and at depth two, and all three rejections. The default replay
+verifies that the recorded declarations match fresh generation. After
+changing the search, use <code>--write</code> to replace the two
+generated sections and rerun the proofs.
+<code>--lean /path/to/lean</code> selects an executable. All compiler
+outputs are temporary. <a href="replay.py">Replay driver</a></p>
+</section>
+</section>
+</article>
+<script src="/assets/theme-toggle.js"></script>
+</body>
+</html>

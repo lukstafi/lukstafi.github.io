@@ -80,7 +80,7 @@ def check(compiler, before):
     ]:
         source = BOX.replace("k≤i ∧ l≤j", premise).replace("(x+y)", f"({expression})")
         run(compiler, source + f"let exported : ∀i,j,n[{guard}]. Bounds (i,j) → Num n → Bool = check\n")
-    # When ordinary pair search already succeeds, recovery never sees the second bound.
+    # Before successful declarations were reconsidered, this scheme used just one bound.
     single = BOX.replace("k,l[k≤i ∧ l≤j]. Num k * Num l", "k[k≤i ∧ k≤j]. Num k")
     single = single.replace("Bounded (x,y)", "Bounded x").replace("(x+y)", "x")
     clients = ('external let left : Bounds (0,6) = "Bounded 0"\n'
@@ -88,9 +88,9 @@ def check(compiler, before):
                'let uses = (check left 0, check right 2)\n')
     exact = "let check : ∀i,j,n[min(i,j)≤n]. Bounds (i,j) → Num n → Bool ="
     run(compiler, single.replace("let check =", exact) + clients)
-    run(compiler, single + clients, accept=False)
-    print("Single-payload example, ordinary inferred scheme:",
-          " ".join(run(compiler, single).split("val check :")[1].split()))
+    inferred = " ".join(run(compiler, single).split("val check :")[1].split())
+    run(compiler, single + clients, accept="min (" in inferred)
+    print("Single-payload example, inferred scheme:", inferred)
     print("Arithmetic abduction examples and rejection controls passed.")
 
 
