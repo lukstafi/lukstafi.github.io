@@ -1,0 +1,37 @@
+datatype Clear
+datatype Mark
+datatype Fork : type * type
+datatype Tree : type
+datacons Blank : Tree Clear
+datacons Star : Tree Mark
+datacons Node : ∀a,b. Tree a * Tree b ⟶ Tree (Fork (a,b))
+
+datatype Zero
+datatype One
+(* BEGIN generated rows *)
+datatype Evidence : type * type
+datacons ClearZero : Evidence (Zero,Clear)
+datacons MarkOne : Evidence (One,Mark)
+datacons ForkZeroZero : ∀a,b. Evidence (Zero,a) * Evidence (Zero,b) ⟶ Evidence (Zero,Fork (a,b))
+datacons ForkZeroOne : ∀a,b. Evidence (Zero,a) * Evidence (One,b) ⟶ Evidence (One,Fork (a,b))
+datacons ForkOneZero : ∀a,b. Evidence (One,a) * Evidence (Zero,b) ⟶ Evidence (One,Fork (a,b))
+(* END generated rows *)
+
+datatype Path
+datacons Here : Path
+datacons Left : Path ⟶ Path
+datacons Right : Path ⟶ Path
+
+let rec locate : ∀a. Evidence (One,a) → Tree a → Path = function
+  | MarkOne -> (function Star -> Here)
+  | ForkZeroOne (_,p) -> (function Node (_,r) -> Right (locate p r))
+  | ForkOneZero (p,_) -> (function Node (l,_) -> Left (locate p l))
+
+let choose = efunction
+  | True -> (Star, MarkOne)
+  | False -> (Node (Node (Blank,Star),Blank),
+              ForkOneZero (ForkZeroOne (ClearZero,MarkOne),ClearZero))
+
+external let check : Path → Path → Bool = "fun p q -> assert (p = q); true"
+let root = let (t,p) = choose True in check (locate p t) Here
+let nested = let (t,p) = choose False in check (locate p t) (Left (Right Here))
