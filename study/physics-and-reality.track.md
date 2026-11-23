@@ -48,3 +48,31 @@ The essay says that Life's problem "is not that its speeds are quantized but tha
 ::: answer
 Fact 2: a ship with speed $r/q$ whose phases fit in a box of area $A$ has $q\le2^A$. Resolving a speed to precision $1/q$ costs only $\log_2q$ cells, so for patterns of macroscopic size counting forbids no speed an observer could resolve ([mathematics](/notes/the-standard-of-motion-mathematics.html#moving-patterns-in-a-cellular-automaton)). The gap is in which speeds the dynamics realizes, and by what: the glider's nearest neighbors in speed are unrelated ships. The mathematics page states the test for carriers: they must come in families where neighboring speeds are realized by nearly the same pattern, at the scale an observer resolves. The essay states it as a theorem to be proved: a natural class of rules whose persistent structures have moving twins across the range of speeds below $c$, with no gaps ([essay](/notes/the-standard-of-motion.html#a-computational-physics-must-earn-its-first-law)).
 :::
+
+## Structure and what answers to it
+
+Questions that draw on *What a Description Answers To* together with the pages it builds on.
+
+### One requirement, stated twice {kind=connect}
+
+*The Standard of Motion* ends on a test that a rewriting rule must pass. *What a Description Answers To* makes a requirement on physics. How are the two related, and what does the later essay take from the earlier one's obstacle?
+
+::: answer
+The earlier essay distinguishes passive invariance, the independence of a description from the observer's frame, from active invariance, the existence of the transformed thing, and says the test is a theorem: a natural class of rules under which persistent structures have moving twins across the range of speeds ([essay](/notes/the-standard-of-motion.html#a-computational-physics-must-earn-its-first-law)). The later essay applies the same distinction to a shift of base. That rules can emulate one another is passive. That physics exists, as the same pattern, over each base of a region is active, and it is "a theorem nobody has" ([essay](/notes/what-a-description-answers-to.html#bases-and-where-we-are)). From the obstacle, that exact Lorentz symmetry seems to need unboundedly many causal neighbours while a finite rule gives finitely many, it draws a wider reading: physics may be a pattern in the applications of many rules taken together. Its list of what would change the author's mind restates the earlier test: if rules in general slow a free body or make it swerve, inertia holds only over rules chosen to protect it.
+:::
+
+### Is a rule a frame? {kind=connect}
+
+The exposition of the Wolfram model treats an observer's foliation as its reference frame and places observers at locations in rulial space. What does *What a Description Answers To* deny about rules and frames, and on what ground?
+
+::: answer
+In the exposition different observers induce different foliations, "just as different observers in general relativity induce different foliations of spacetime" ([exposition](/notes/wolfram-physics-quantum-mechanics.html#measurement-as-knuth-bendix-completion)), and an observer samples a neighbourhood of rules ([exposition](/notes/wolfram-physics-quantum-mechanics.html#the-ruliad-why-the-choice-of-rule-shouldnt-matter)). The later essay holds that a base is a process and not a frame. A frame is a description, and if bases were descriptions their production would fall on the modal side and the regress of section three would start again. Against the stronger reading, one Ruliad with each rule a frame on it, it replies that the Ruliad taken all at once, as one object, would be a structure and so a description, with nothing that generates. What generates is each application of a rule ([essay](/notes/what-a-description-answers-to.html#bases-and-where-we-are)).
+:::
+
+### Esse and measure, carried forward {kind=connect}
+
+*Presence and Actuality* granted Thomas's second tier, could not see what *esse* adds, and left reality measure unresolved. What does *What a Description Answers To* add on each point, and what does it still leave open?
+
+::: answer
+The earlier essay: "we cannot grant that it exists and then ask whether it additionally possesses existence" ([essay](/notes/presence-and-actuality.html#what-does-michał-mean-by-actuality)), and the problem of reality measure, how occurrences should be counted or weighted, stays unresolved ([essay](/notes/presence-and-actuality.html#suffering-and-reality-measure)). The later essay gives *esse* a place in closure: a perfectly closed level is a base when taken in itself, so a pattern has production of its own in the limit of closure and by degrees short of it ([essay](/notes/what-a-description-answers-to.html#what-makes-a-thing-one)). It expects a Thomist to reply that a degree of closure still describes what a thing is. On measure it says only what kind of thing a measure would be: a count of ways of being generated, and not a weight that occurrences carry, so that chances enter with types as counterfactuals do. It lists the measure as a debt and does not answer how much what occurs elsewhere counts for ([essay](/notes/what-a-description-answers-to.html#a-thesis-with-a-hostage)).
+:::
