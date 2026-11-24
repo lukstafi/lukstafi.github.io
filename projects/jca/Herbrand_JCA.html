@@ -242,11 +242,12 @@ proves general finite-term JCA answer existence undecidable already for
 two branches over one binary constructor and one constant. Theorem 4.5R
 proves witness compatibility and coverage for strict mixed-sort JCA,
 including designated parameters, given complete component enumerators.
-The original Table 4.4 iteration can repeat with a two-inequality
-solution. A known bit bound on a whole certificate, including required
-syntactic witnesses, gives a separate exhaustive decision procedure when
-verification is decidable. <a
-href="agent-collab/round-25-binary.html">Two-branch reduction</a> · <a
+With the thesis’s default heuristic for the induction jump, the Table
+4.4 iteration can repeat with a two-inequality solution. A known bit
+bound on a whole certificate, including required syntactic witnesses,
+gives a separate exhaustive decision procedure when verification is
+decidable. <a href="agent-collab/round-25-binary.html">Two-branch
+reduction</a> · <a
 href="agent-collab/thesis-review-2.html#combination">Combination
 theorem</a> · <a
 href="agent-collab/thesis-review-3.html#update">Repeating update</a> ·
@@ -311,11 +312,13 @@ raised a match failure before the repair</a></p></li>
 <li><p><strong>What may a value binding reveal about its
 datatype?</strong> The short indexed <code>append</code> in thesis
 §5.2.2 still rejects the call on two empty lists at InvarGenT revision
-<code>f159a3e</code>. Expanding the match on the second list produces an
-unrestricted length signature and the same ground-typed call runs. A
-first language extension would validate a length invariant against each
-constructor, then make it available when binding a list value. The proof
-must say what external producers guarantee. The index expression <span
+<code>f159a3e</code>. Revision <code>a3e9d71</code> accepts it, as the
+paragraph on cyclic values below records. Expanding the match on the
+second list produces an unrestricted length signature and the same
+ground-typed call runs. A first language extension would validate a
+length invariant against each constructor, then make it available when
+binding a list value. The proof must say what external producers
+guarantee. The index expression <span
 class="math inline">\(\mathrm{List}(a,-1)\)</span> remains a legal type
 expression even though the constructors cannot produce a value there. <a
 href="agent-collab/thesis-review-1.html#what-a-variable-pattern-knows-about-list-length">Two
@@ -399,15 +402,16 @@ href="agent-collab/thesis-review-56.html#values">Constructor facts</a> ·
 solver</a> · <a href="agent-collab/thesis-review-56.html#rotation">Disk
 obstruction</a></p>
 <p><strong>Can every typable recursive value have a small
-solution?</strong> One cyclic node with six rational indices and one
-linear guard gives an undecidable problem when a ground caller can
-choose a scale. On every positive instance one convex polyhedral scheme
-suffices. Even its number of facets has no computable upper bound as a
-function of source size. A supplied size promise still supports bounded
-search. <a href="agent-collab/thesis-review-57.html#source">Source
-reduction</a> · <a
-href="agent-collab/thesis-review-57.html#bound">Facet-bound proof</a> ·
-<a href="agent-collab/thesis-review-57.html#jump">A caller-guided jump
+solution?</strong> One cyclic node with six rational indices, one linear
+guard and one recursive field per tile of a correspondence instance
+gives an undecidable problem when a ground caller can choose a scale.
+Two recursive fields suffice with six indices per tile. On every
+positive instance one convex polyhedral scheme suffices. Even its number
+of facets has no computable upper bound as a function of source size. A
+supplied size promise still supports bounded search. <a
+href="agent-collab/thesis-review-57.html#source">Source reduction</a> ·
+<a href="agent-collab/thesis-review-57.html#bound">Facet-bound proof</a>
+· <a href="agent-collab/thesis-review-57.html#jump">A caller-guided jump
 the compiler checks</a></p>
 <p><strong>What if the caller fixes every index and every execution is
 safe?</strong> It is still undecidable whether a finite polyhedral
@@ -495,13 +499,14 @@ href="agent-collab/thesis-review-63.html#recognition">Affine
 recognition</a> · <a
 href="agent-collab/thesis-review-63.html#compiler">Compiler
 checks</a></p>
-<p><strong>Can one affine recursive field type a specified family of
-callers?</strong> Yes for arbitrary rational affine updates and closed
-rational polyhedral guards and callers. Each guard observed along each
-caller generator gives a scalar recurrence. Nonnegative rational
-realizations of these recurrences combine into one inductive polyhedron.
-Soittola’s theorem makes existence decidable without a size bound.
-Several required fields already suffice for undecidability. <a
+<p><strong>Is it decidable whether one affine recursive field can type a
+specified family of callers?</strong> Yes, for arbitrary rational affine
+updates and closed rational polyhedral guards and callers. Each guard
+observed along each caller generator gives a scalar recurrence.
+Nonnegative rational realizations of these recurrences combine into one
+inductive polyhedron. Soittola’s theorem makes existence decidable
+without a size bound. Several required fields already suffice for
+undecidability. <a
 href="agent-collab/thesis-review-65.html#realization">Decision and
 witness construction</a> · <a
 href="agent-collab/thesis-review-65.html#margin">Safe caller with no
@@ -548,12 +553,14 @@ href="agent-collab/thesis-review-60.html#replay">Native example</a></p>
 <section id="results-behind-these-questions" class="level2">
 <h2>Results behind these questions</h2>
 <p><strong>Does a small solution guarantee convergence of Table
-4.4?</strong> No. The original induction jump can discard an upper bound
-that the caller restores on every pass, even when the stored
-two-inequality answer already solves the clauses. Current InvarGenT
-retains that bound and finishes on pass 9. <a
-href="agent-collab/thesis-review-3.html#update">Original infinite
-recurrence</a> · <a
+4.4?</strong> No. Table 4.4 leaves the induction jump abstract, and
+Appendix B gives a common-atom heuristic for it. With that heuristic and
+no iteration limit, the jump can discard an upper bound that the caller
+restores on every pass, even when the stored two-inequality answer
+already solves the clauses. The thesis itself notes that the iteration
+can fail to converge. Current InvarGenT retains that bound and finishes
+on pass 9. <a href="agent-collab/thesis-review-3.html#update">Original
+infinite recurrence</a> · <a
 href="agent-collab/thesis-review-24.html#jump">Earlier jump
 schedules</a> · <a
 href="agent-collab/thesis-review-16.html#dimension">Fixed-interface
@@ -833,6 +840,18 @@ theorem</a> · <a href="agent-collab/thesis-review-26.html#width">Exact
 interval-width threshold</a> · <a
 href="agent-collab/thesis-review-28.html#boundaries">Boundary
 recovery</a></p>
+<p>The width threshold and the lower bounds on the number of choices in
+reviews 25–27 assume integer keys and one key per opening. The
+fractional keys of reviews 34–41 relax them. For example, with integer
+payloads the shared-parameter threshold <span
+class="math inline">\(w&lt;b-a\)</span> becomes <span
+class="math inline">\(w\le b-a\)</span>: at <span
+class="math inline">\(a=1\)</span>, <span
+class="math inline">\(b=2\)</span>, <span
+class="math inline">\(w=1\)</span> the key <span
+class="math inline">\(3/2\)</span> works. <a
+href="agent-collab/thesis-review-39.html#all">Exact guard criterion with
+fractional keys</a></p>
 <p>The compiler also checks the two-input example and unbounded affine
 variants at budget 2. For the fixed-width interval <span
 class="math inline">\([k,k+2]\)</span>, it can infer keys depending on
@@ -856,11 +875,13 @@ recovery</a></p>
 <p>The moving-floor example reaches its two-inequality solution on pass
 9, including when the caller recovers the payload from an affine tag. A
 hidden constructor index guides inference on pass 6. Two calls behind an
-ordinary recursive guard helper finish on pass 5. When the helper
-packages its result, the joint solver accepts at budget 6. A decreasing
-recursive result has a one-inequality least relation that the jump finds
-on pass 9. <a href="agent-collab/thesis-review-19.html">Affine tags</a>
-· <a href="agent-collab/thesis-review-20.html">Guard coverage</a> · <a
+ordinary recursive guard helper are accepted at budget 4 at revision
+<code>3584767</code>. When the helper packages its result, the joint
+solver accepts at budget 5. Each needed one more pass when first
+recorded. A decreasing recursive result has a one-inequality least
+relation that the jump finds on pass 9. <a
+href="agent-collab/thesis-review-19.html">Affine tags</a> · <a
+href="agent-collab/thesis-review-20.html">Guard coverage</a> · <a
 href="agent-collab/thesis-review-23.html#least">Decreasing package
 relation</a></p>
 <p><strong>When can a recursive result reuse an old witness
@@ -938,11 +959,16 @@ recursive caller to supply it again. Keeping old inequalities implied by
 the new branch summary lets the solver accept on the next pass. <a
 href="agent-collab/thesis-review-3.html">Proof, solver trace and
 runnable example</a></p>
-<p><strong>Combination and convergence.</strong> Theorem 4.5R gives a
-complete modular abducer for free types with side sorts and designated
-parameters. A covered chain of free-term predicates has finite height.
-Arithmetic refinement can run forever even when the greatest invariant
-has just two inequalities. <a
+<p><strong>Combination and convergence.</strong> A branch with a
+satisfiable premise refutes the completeness claim of Theorem 4.5: a
+complete term abducer may return only <span
+class="math inline">\(\top\)</span> and leave the numeric problem
+without an answer. Theorem 4.5R gives a modular abducer for free types
+with side sorts and designated parameters. It enumerates candidate
+answers and verifies them, so it is complete relative to semi-decision
+procedures for the side sorts. A covered chain of free-term predicates
+has finite height. Arithmetic refinement can run forever even when the
+greatest invariant has just two inequalities. <a
 href="agent-collab/thesis-review-2.html">Proofs and the InvarGenT
 example</a></p>
 <p><strong>Thesis review, November 21, 2026.</strong> A GADT payload
@@ -951,9 +977,11 @@ generalize. With one payload constructor for each of <span
 class="math inline">\(m\)</span> index positions, covering its
 constructor-compatible calls requires exactly <span
 class="math inline">\(m\)</span> such schemes. The review traces the
-example through InvarGenT, gives counterexamples and replacement rules
-for Theorem 4.5 and Appendix A, and derives the short indexed-list
-<code>append</code> using a constructor invariant. <a
+example through InvarGenT, gives counterexamples to Proposition A.11 and
+Lemma A.12, shows that Definition 4.1 and Table 4.1 disagree on branches
+with unsatisfiable premises, proposes replacement rules for Theorem 4.5
+and Appendix A, and derives the short indexed-list <code>append</code>
+using a constructor invariant. <a
 href="agent-collab/thesis-review-1.html">Review and remaining
 questions</a> · <a href="agent-collab/thesis-review-1.lean">Lean
 proofs</a></p>
@@ -982,8 +1010,12 @@ algebra</strong>, even when all universal inputs precede all existential
 outputs. This covers premises that test outputs. One active witness and
 the paths inspected during unification suffice to build a
 polynomial-size shared strategy. On a branching signature, restricting
-the premise to data and universal inputs gives P-completeness for three
-quantifier blocks, and NP-completeness for arbitrary interleaving. A
+the premise to data and universal inputs gives P-completeness for the
+prefix <span class="math inline">\(\exists X\,\forall H\,\exists
+Y\)</span>, and NP-completeness for arbitrary interleaving. The
+three-block prefix <span
+class="math inline">\(\forall^6\exists^*\forall\)</span> is already
+NP-hard, so the boundary is whether a universal follows an output. A
 single universal input with arbitrary output tests is also P-complete
 there. <a href="agent-collab/round-30-monadic.html">One-branch proof and
 signature classification</a> · <a
@@ -992,18 +1024,26 @@ href="agent-collab/round-29-small-dags.html">Polynomial certificate</a>
 premises</a> · <a href="agent-collab/round-21-one-input.html">One
 universal input</a></p>
 <p>Designated witnesses sharpen the one-branch boundary. Under trailing
-validity, one branch is NP-complete. Under leading validity with
-unrestricted witnesses, one branch is NP-complete both for idempotent
-substitution answers and for arbitrary conjunctive answers under the
-weak escape test. With the escape comparison printed in the extraction,
-<strong>removing one permitted read by one witness makes one-branch
-existence r.e.-complete</strong> on every branching signature. This
-holds for arbitrary conjunctions under the weak rule and for idempotent
-substitutions under the strong rule. For a supplied answer with that one
-missing read, validity is polynomial on monadic signatures and
-NP-complete on branching ones. The witness must copy a later existential
-move to reproduce a tree containing the hidden input. This forces a
-second evaluation of the same rewrite proof. <a
+validity with the thesis’s comparison <span
+class="math inline">\(\le_Q\)</span>, one branch is NP-complete. Under
+leading validity with unrestricted witnesses, one branch is NP-complete
+both for idempotent substitution answers and for arbitrary conjunctive
+answers under the weak escape test. These are the readings that match
+the thesis source. The r.e.-complete variants need a further
+restriction. The Markdown extraction of §4.2 prints the escape
+comparison as <span class="math inline">\(\not\le_Q\)</span> where the
+thesis source has <span class="math inline">\(\le_Q\)</span>. With the
+extraction’s comparison, <strong>removing one permitted read by one
+witness makes one-branch existence r.e.-complete</strong> on every
+branching signature. This holds for arbitrary conjunctions under the
+weak rule and for idempotent substitutions under the strong rule. With
+the thesis’s <span class="math inline">\(\le_Q\)</span> the same lower
+bound needs, besides the missing read, prior substituted parameters that
+are not designated. For a supplied answer with that one missing read,
+validity is polynomial on monadic signatures and NP-complete on
+branching ones. The witness must copy a later existential move to
+reproduce a tree containing the hidden input. This forces a second
+evaluation of the same rewrite proof. <a
 href="agent-collab/round-30-monadic.html#designated-coordinates-under-the-trailing-witness-convention">Trailing
 witnesses</a> · <a
 href="agent-collab/round-31-leading.html">Unrestricted leading
@@ -1020,10 +1060,12 @@ answers</a></p>
 <p>The two-branch lower bound already holds for a fixed pair of
 implications with a single ground subtree supplied as input. That
 subtree can occur in a premise or in a conclusion. The number of public
-variables is fixed in both versions. With two constants,
-constructor-free input is also undecidable for a fixed branch count if
-the conclusions may grow in width. The two parameter conventions with
-designated invariants have the same arity boundary. <a
+variables is fixed in both versions. Over the binary constructor and two
+constants, input that itself uses no constructor is also undecidable for
+a fixed branch count if the conclusions may grow in width. The two
+parameter conventions with designated invariants have the same arity
+boundary: the hard instances use no designated parameter, and the
+monadic decision procedure under leading validity is so far a sketch. <a
 href="agent-collab/round-26-fixed-template.html">Fixed pair of
 implications</a> · <a
 href="agent-collab/round-16-fixed-flat.html">Constructor-free input</a>
