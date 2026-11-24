@@ -89,3 +89,7 @@ The author finished the read-through on 24 Nov ("It's all good"), having read th
 - Loorits and Howell: exact. Howell's sentence is about phenomenality being "just along for the causal ride"; the essay applies it to quiddities, as Alter does in 15.2.3.
 
 **Still unchecked at this point.** The quotations from the Brown conversation against the recording by ear. Page numbers for the book. Alter's section 1.5, chapters 3 and 10–14, and section 8.1. Williamson, Burge and Churchland at first hand. Whether the essay should mention the "that's all" clause (see the note on section 7.3 above).
+
+## Publication (24 Nov 2026)
+
+The index entry is dated ("Updated 2026-11-24") and carries the prompts and study links. The prompts page takes the prompts about Alter from the sessions of 16 Oct and 14 to 17 Nov that were left out of the page for *What a Description Answers To*, and those of the reading pass. The study page has 24 questions and introduces 18 terms; the essay joins the stage "Structure and what answers to it" of the track on physics and reality, with two cross-essay questions. Not done: a Substack draft. The essay is about 10,800 words; the README gives 10,000 as the limit for an essay and the author has used about 11,000 as the point that forces a split, so whether to send it to Substack whole or in two parts (the break would fall after "What she can deduce") is the author's to decide.

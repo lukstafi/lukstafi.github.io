@@ -51,7 +51,7 @@ Fact 2: a ship with speed $r/q$ whose phases fit in a box of area $A$ has $q\le2
 
 ## Structure and what answers to it
 
-Questions that draw on *What a Description Answers To* together with the pages it builds on.
+Questions that draw on *What a Description Answers To* together with the pages it builds on, and on its companion, *What Mary Could Not Build*.
 
 ### One requirement, stated twice {kind=connect}
 
@@ -75,4 +75,20 @@ In the exposition different observers induce different foliations, "just as diff
 
 ::: answer
 The earlier essay: "we cannot grant that it exists and then ask whether it additionally possesses existence" ([essay](/notes/presence-and-actuality.html#what-does-michał-mean-by-actuality)), and the problem of reality measure, how occurrences should be counted or weighted, stays unresolved ([essay](/notes/presence-and-actuality.html#suffering-and-reality-measure)). The later essay gives *esse* a place in closure: a perfectly closed level is a base when taken in itself, so a pattern has production of its own in the limit of closure and by degrees short of it ([essay](/notes/what-a-description-answers-to.html#what-makes-a-thing-one)). It expects a Thomist to reply that a degree of closure still describes what a thing is. On measure it says only what kind of thing a measure would be: a count of ways of being generated, and not a weight that occurrences carry, so that chances enter with types as counterfactuals do. It lists the measure as a debt and does not answer how much what occurs elsewhere counts for ([essay](/notes/what-a-description-answers-to.html#a-thesis-with-a-hostage)).
+:::
+
+### Production is not a quiddity {kind=connect}
+
+*What a Description Answers To* answers van Fraassen by granting that structure needs something that is not structure. *What Mary Could Not Build* faces the charge that this gives it a quiddity of its own. How does the second essay use the first's answer, and what does it add?
+
+::: answer
+The first essay accepts what van Fraassen's second option demands and denies its cost: "Something that is not structure is needed, and it is production. Production is not a bearer." A bearer is what it is apart from its structure, and an occurrence individuated by what it came from is nothing apart from the generation ([essay](/notes/what-a-description-answers-to.html#counterfactuals-come-with-descriptions)). The second essay grants Alter that beneath structure there is no nature, for the same reason: an occurrence has no character of its own that a lesson could leave out ([essay](/notes/what-mary-could-not-build.html#what-i-grant)). Against the Russellian it adds what a quiddity is asked to do and production is not. A quiddity is a nature that experience is said to be made of. Production has nothing in it to be acquainted with, and a stone is produced as much as an experience is ([essay](/notes/what-mary-could-not-build.html#russellian-monism)). It also adds a contrast over laws: Alter has to posit a law that ties a quiddity to the disposition it underlies, while an experience, being an organization at a grain, needs no law to join it to the physics.
+:::
+
+### Describable, conceivable, possible {kind=connect}
+
+The first essay postulates that what descriptions answer to is not one more description, and says what the postulate buys. The second uses the postulate against the view of possibility behind Alter's bridge principle. Trace the connection, and say what the stone and the zombie have in common.
+
+::: answer
+The first essay says that if the whole of what is generated were abstract, "Every structure that can be coherently described would have the same standing", and to describe a thing would be to show that it exists ([essay](/notes/what-a-description-answers-to.html#bases-and-where-we-are)). Its account of what is possible is that the stone's hitting the window is possible if a support for it could be rebuilt, level by level, down to a base, which we imagine in a toy model that is a proxy and "can skip a step" ([essay](/notes/what-a-description-answers-to.html#the-neighbours)). The second essay turns both on Chalmers, for whom what is coherent to describe is possible once the description is ideal. It answers that a description does not make a possibility, that restricting the possible to what can be built removes a modal primitive and adds none, and that this rests on the postulate ([essay](/notes/what-mary-could-not-build.html#possible-and-conceivable)). The stone and the zombie are both conceived by an imagined rebuilding. The stone's hitting survives it. The zombie is conceived by skipping a step, since a physical duplicate imagined in the full detail of the physics already has the organization at the grain of experience.
 :::
