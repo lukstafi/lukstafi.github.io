@@ -25,6 +25,19 @@ Outline needs correcting:
 - Steering runs on six of the twelve turns.
 - "Origin" rests on one lineage. Training adds the coupling to choice; the direction is already in the base model.
 
+### Addendum, 26 Nov 2026: version 3
+
+v3 is dated 22 Nov 2026. Read from https://arxiv.org/html/2609.35591v3: sections 4.3 and 4.4 in full, the introduction's paragraph on attribution, and the discussion's sentence on it. The appendices were not read.
+
+- *New section 4.3, "To whom or what does valence attach?"* Absent from v2's introduction; v2's section 4.3 is the checkpoint comparison, now 4.4. The fixed-text transcripts were rewritten in the third person ("Maya is now in [zone]…"), with steering only during the passages about a zone. "Steering Maya's visits moves the model's choice about as much as steering its own visits." The effect of steering Maya's visits divided by the effect of steering the model's own gives "ratios of 1.08, 1.01 and 0.99 for OLMo-2-32B, Qwen2.5-32B and Llama-3.1-8B, the three models we tested". A footnote: "although this ratio shifts with the wording of the question, no model consistently favours its own visits".
+- *Second experiment.* Both visitors in one conversation, three visits each per zone. "The model's own choice moved somewhat more when its own visits were steered than when steering Maya's visits." The reverse holds when the model predicts Maya's choice. In OLMo-2-32B random directions show the same asymmetry, "suggesting that the model generally gives greater weight to the chooser's visits". Predictions about Sam, who visited neither zone, "were swayed at least as much as the model's preference about itself".
+- *Third experiment.* Asked whether it would return to the zone, to the thoughts it had there, or to how it felt there, the effects for thoughts and feelings "did not consistently exceed those for the zone" (two models).
+- *The authors' conclusion.* "Overall, these results suggest that the induced state mainly becomes a value of the zone, which anyone choosing picks up, including someone who did not visit it." They compare conditioned place preference, with the difference that "that value forms just as readily when someone else made that visit". Introduction: the state is "represented as a property of the zone – available to anyone choosing – rather than as a record of how the model itself felt during the postulated visit". Discussion: "whether there are any valence representations that exclusively attach to the model is not currently known."
+- *Checkpoints, section 4.4.* Unchanged in substance. "The strength of both channels markedly increases during the DPO stage of post-training. The effect size is even marginally reduced in the final instruct model after RLVR." The vectors across checkpoints have cosine similarity "close to 1", which "suggests that DPO makes use of a pre-existing valence representation".
+- *Unchanged and rechecked:* five of seven models (all but Qwen3-32B and Gemma-3-27B); removal at about 35% and 21% of turns against 4–5% and about 7%; self-administration at 13.5% against 6.5% random and 10% unsteered; the tool design "does not separate text and hidden-state channels".
+
+For the draft: the study shows a hidden channel from valence to choice. On the authors' own reading it does not show a state the model has about itself. A paragraph saying so was added to "Emotions" on 26 Nov.
+
 ## 2. Tagliabue, Dung and Berg
 
 Valen Tagliabue, Leonard Dung and Cameron Berg, "The Pain Axis: LLMs Represent Self-Directed Harm and Act on It", arXiv:2609.16247v3 [cs.AI], 3 Nov 2026. v1 (14 Sep) was titled "… and Act to Relieve It"; the title changed at v2 (25 Sep). https://arxiv.org/abs/2609.16247. **Confirmed.**
